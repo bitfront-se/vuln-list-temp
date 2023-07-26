@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2023-07-25T17:46:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vyper"
+  },
+  "Advisory": {
+    "DatabaseId": 216608,
+    "Id": "GSA_kwCzR0hTQS1mNXg2LTdxZ3AtamhmM84AA04g",
+    "GhsaId": "GHSA-f5x6-7qgp-jhf3",
+    "References": [
+      {
+        "Url": "https://github.com/vyperlang/vyper/security/advisories/GHSA-f5x6-7qgp-jhf3"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/commit/019a37ab98ff53f04fecfadf602b6cd5ac748f7f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2023-37902"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f5x6-7qgp-jhf3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f5x6-7qgp-jhf3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2023-37902"
+      }
+    ],
+    "Description": "### Impact\nthe ecrecover precompile does not fill the output buffer if the signature does not verify, see https://github.com/ethereum/go-ethereum/blob/b058cf454b3bdc7e770e2b3cec83a0bcb48f55ee/core/vm/contracts.go#L188. however, the ecrecover builtin will still return whatever is at memory location 0.\n\nthis means that the if the compiler has been convinced to write to the 0 memory location with specially crafted data (generally, this can happen with a hashmap access or immutable read) just before the ecrecover, a signature check might pass on an invalid signature.\n\n### Patches\nv0.3.10\n\n### Workarounds\n_Is there a way for users to fix or remediate the vulnerability without upgrading?_\n\n### References\n_Are there any links users can visit to find out more?_\n",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2023-07-25T17:46:19Z",
+    "Severity": "MODERATE",
+    "Summary": "ecrecover can return undefined data if signature does not verify",
+    "UpdatedAt": "2023-07-25T23:24:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.10"
+      },
+      "VulnerableVersionRange": "\u003c 0.3.10"
+    }
+  ]
+}
