@@ -1,11 +1,11 @@
 {
   "id": "GHSA-ffq8-576r-v26g",
-  "modified": "2023-04-11T01:37:12.185013Z",
+  "modified": "2023-08-08T09:25:30.004051Z",
   "published": "2019-07-05T21:11:05Z",
   "aliases": [
     "CVE-2016-6581"
   ],
-  "summary": "High severity vulnerability that affects hpack",
+  "summary": "HPACK Denial of Service vulnerability (HPACK Bomb)",
   "details": "A HTTP/2 implementation built using any version of the Python HPACK library between v1.0.0 and v2.2.0 could be targeted for a denial of service attack, specifically a so-called \"HPACK Bomb\" attack. This attack occurs when an attacker inserts a header field that is exactly the size of the HPACK dynamic header table into the dynamic header table. The attacker can then send a header block that is simply repeated requests to expand that field in the dynamic table. This can lead to a gigantic compression ratio of 4,096 or better, meaning that 16kB of data can decompress to 64MB of data on the target machine.",
   "affected": [
     {
@@ -37,6 +37,11 @@
         "2.1.1",
         "2.2.0"
       ],
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
+      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2019/07/GHSA-ffq8-576r-v26g/GHSA-ffq8-576r-v26g.json"
       }
@@ -52,8 +57,12 @@
       "url": "https://github.com/advisories/GHSA-ffq8-576r-v26g"
     },
     {
+      "type": "PACKAGE",
+      "url": "https://github.com/python-hyper/hpack"
+    },
+    {
       "type": "WEB",
-      "url": "https://python-hyper.org/hpack/en/latest/security/CVE-2016-6581.html"
+      "url": "http://python-hyper.org/projects/hpack/en/stable/security/CVE-2016-6581.html"
     },
     {
       "type": "WEB",
