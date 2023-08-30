@@ -1,12 +1,12 @@
 {
   "id": "GHSA-9jcx-pr2f-qvq5",
-  "modified": "2021-05-11T00:44:23Z",
+  "modified": "2023-08-29T21:48:23Z",
   "published": "2021-05-18T18:34:25Z",
   "aliases": [
     "CVE-2018-17419"
   ],
-  "summary": "Denial of Service (DoS)",
-  "details": "An issue was discovered in setTA in scan_rr.go in the Miek Gieben DNS library before 1.0.10 for Go. A dns.ParseZone() parsing error causes a segmentation violation, leading to denial of service.",
+  "summary": "miekg/dns parsing error leads to nil pointer dereference and DoS",
+  "details": "An issue was discovered in `setTA` in `scan_rr.go` in the Miek Gieben DNS library before 1.0.10 for Go. A `dns.ParseZone()` parsing error causes a segmentation violation, leading to denial of service.",
   "affected": [
     {
       "package": {
@@ -27,6 +27,11 @@
           ]
         }
       ],
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
+      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-9jcx-pr2f-qvq5/GHSA-9jcx-pr2f-qvq5.json"
       }
@@ -40,6 +45,10 @@
     {
       "type": "WEB",
       "url": "https://github.com/miekg/dns/issues/742"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/miekg/dns/pull/745/commits/f71d7d9d77d439b30a5e50900df5b1f988a50e5e"
     },
     {
       "type": "WEB",
