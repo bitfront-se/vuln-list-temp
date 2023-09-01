@@ -1,12 +1,12 @@
 {
   "id": "GHSA-537h-rv9q-vvph",
-  "modified": "2023-04-11T01:46:08.932223Z",
+  "modified": "2023-09-01T10:29:51.605846Z",
   "published": "2021-03-24T18:24:39Z",
   "aliases": [
     "CVE-2020-13757"
   ],
-  "summary": "Access Restriction Bypass",
-  "details": "Python-RSA 4.0 ignores leading '\\0' bytes during decryption of ciphertext. This could conceivably have a security-relevant impact, e.g., by helping an attacker to infer that an application uses Python-RSA, or if the length of accepted ciphertext affects application behavior (such as by causing excessive memory allocation).",
+  "summary": "Python-RSA decryption of ciphertext leads to DoS",
+  "details": "Python-RSA before 4.1 ignores leading '\\0' bytes during decryption of ciphertext. This could conceivably have a security-relevant impact, e.g., by helping an attacker to infer that an application uses Python-RSA, or if the length of accepted ciphertext affects application behavior (such as by causing excessive memory allocation).",
   "affected": [
     {
       "package": {
@@ -52,6 +52,11 @@
         "3.4.2",
         "4.0"
       ],
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
+      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/03/GHSA-537h-rv9q-vvph/GHSA-537h-rv9q-vvph.json"
       }
@@ -69,6 +74,10 @@
     {
       "type": "WEB",
       "url": "https://github.com/sybrenstuvel/python-rsa/issues/146#issuecomment-641845667"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/sybrenstuvel/python-rsa"
     },
     {
       "type": "WEB",

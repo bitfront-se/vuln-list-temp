@@ -1,12 +1,12 @@
 {
   "id": "GHSA-h96w-mmrf-2h6v",
-  "modified": "2023-08-23T21:16:06.917570Z",
+  "modified": "2023-09-01T10:30:55.062423Z",
   "published": "2020-03-31T15:42:42Z",
   "aliases": [
     "CVE-2020-10108"
   ],
   "summary": "Improper Input Validation in Twisted",
-  "details": "In Twisted Web through 20.3.0, there was an HTTP request splitting vulnerability. When presented with two content-length headers, it ignored the first header. When the second content-length value was set to zero, the request body was interpreted as a pipelined request.",
+  "details": "In Twisted Web before 20.3.0, there was an HTTP request splitting vulnerability. When presented with two content-length headers, it ignored the first header. When the second content-length value was set to zero, the request body was interpreted as a pipelined request.",
   "affected": [
     {
       "package": {
@@ -105,12 +105,6 @@
         "8.2.0",
         "9.0.0"
       ],
-      "ecosystem_specific": {
-        "affected_functions": [
-          "twisted.web.http.HTTPChannel",
-          "twisted.web.http.HTTPChannel.headerReceived"
-        ]
-      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/03/GHSA-h96w-mmrf-2h6v/GHSA-h96w-mmrf-2h6v.json"
       }
