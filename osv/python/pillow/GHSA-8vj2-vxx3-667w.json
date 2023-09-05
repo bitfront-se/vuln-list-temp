@@ -1,12 +1,12 @@
 {
   "id": "GHSA-8vj2-vxx3-667w",
-  "modified": "2023-04-11T01:31:02.050625Z",
+  "modified": "2023-09-04T17:03:22.655825Z",
   "published": "2022-01-12T20:07:33Z",
   "aliases": [
     "CVE-2022-22817"
   ],
   "summary": "Arbitrary expression injection in Pillow",
-  "details": "PIL.ImageMath.eval in Pillow before 9.0.0 allows evaluation of arbitrary expressions, such as ones that use the Python exec method `ImageMath.eval(\"exec(exit())\")`.\n\nWhile Pillow 9.0.0 restricted top-level builtins available to PIL.ImageMath.eval(), it did not prevent builtins available to lambda expressions. These are now also restricted in 9.0.1.",
+  "details": "`PIL.ImageMath.eval` in Pillow before 9.0.0 allows evaluation of arbitrary expressions, such as ones that use the Python exec method `ImageMath.eval(\"exec(exit())\")`.\n\nWhile Pillow 9.0.0 restricted top-level builtins available to PIL.ImageMath.eval(), it did not prevent builtins available to lambda expressions. These are now also restricted in 9.0.1.",
   "affected": [
     {
       "package": {
@@ -114,11 +114,6 @@
         "8.4.0",
         "9.0.0"
       ],
-      "ecosystem_specific": {
-        "affected_functions": [
-          "PIL.ImageMath.eval"
-        ]
-      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-8vj2-vxx3-667w/GHSA-8vj2-vxx3-667w.json"
       }

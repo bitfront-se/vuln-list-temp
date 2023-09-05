@@ -1,12 +1,12 @@
 {
   "id": "GHSA-9j59-75qj-795w",
-  "modified": "2023-04-11T01:32:19.504843Z",
+  "modified": "2023-09-04T17:20:00.990189Z",
   "published": "2022-03-11T23:10:32Z",
   "aliases": [
     "CVE-2022-24303"
   ],
   "summary": "Path traversal in Pillow",
-  "details": "If the path to the temporary directory on Linux or macOS contained a space, this would break removal of the temporary image file after im.show() (and related actions), and potentially remove an unrelated file. This been present since PIL.",
+  "details": "Pillow before 9.0.1 allows attackers to delete files because spaces in temporary pathnames are mishandled.",
   "affected": [
     {
       "package": {
@@ -114,12 +114,6 @@
         "8.4.0",
         "9.0.0"
       ],
-      "ecosystem_specific": {
-        "affected_functions": [
-          "PIL.ImageShow.MacViewer.show_file",
-          "PIL.ImageShow.UnixViewer.show_file"
-        ]
-      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/03/GHSA-9j59-75qj-795w/GHSA-9j59-75qj-795w.json"
       }
