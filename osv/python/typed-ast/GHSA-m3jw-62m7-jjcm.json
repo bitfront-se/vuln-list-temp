@@ -1,11 +1,11 @@
 {
   "id": "GHSA-m3jw-62m7-jjcm",
-  "modified": "2023-04-11T01:26:32.964781Z",
+  "modified": "2023-09-05T15:00:52.012957Z",
   "published": "2019-12-02T18:02:02Z",
   "aliases": [
     "CVE-2019-19274"
   ],
-  "summary": "Out-of-bounds read in typed-ast and cpython may allow an attacker to crash the interpreter process (handle_keywordonly_args case).",
+  "summary": "typed-ast Out-of-bounds Read",
   "details": "typed_ast 1.3.0 and 1.3.1 has a handle_keywordonly_args out-of-bounds read. An attacker with the ability to cause a Python interpreter to parse Python source (but not necessarily execute it) may be able to crash the interpreter process. This could be a concern, for example, in a web-based service that parses (but does not execute) Python code. (This issue also affected certain Python 3.8.0-alpha prereleases.)",
   "affected": [
     {
@@ -34,6 +34,11 @@
         "1.3.4",
         "1.3.5"
       ],
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
+      },
       "database_specific": {
         "last_known_affected_version_range": "\u003c= 1.3.1",
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2019/12/GHSA-m3jw-62m7-jjcm/GHSA-m3jw-62m7-jjcm.json"
@@ -64,6 +69,10 @@
     {
       "type": "WEB",
       "url": "https://bugs.python.org/issue36495"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/python/typed_ast"
     },
     {
       "type": "WEB",
