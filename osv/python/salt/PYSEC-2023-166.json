@@ -1,11 +1,10 @@
 {
-  "id": "GHSA-vpjg-wmf8-29h9",
-  "modified": "2023-09-07T21:49:15.865645Z",
-  "published": "2023-09-05T12:30:16Z",
+  "id": "PYSEC-2023-166",
+  "modified": "2023-09-07T20:23:20.197102Z",
+  "published": "2023-09-05T11:15:00Z",
   "aliases": [
     "CVE-2023-20897"
   ],
-  "summary": "Salt vulnerable to denial of service",
   "details": "Salt masters prior to 3005.2 or 3006.2 contain a DOS in minion return. After receiving several bad packets on the request server equal to the number of worker threads, the master will become unresponsive to return requests until restarted.\n",
   "affected": [
     {
@@ -18,6 +17,12 @@
         {
           "type": "ECOSYSTEM",
           "events": [
+            {
+              "introduced": "3006.0"
+            },
+            {
+              "fixed": "3006.2"
+            },
             {
               "introduced": "0"
             },
@@ -238,68 +243,18 @@
         "3005",
         "3005.1",
         "3005rc1",
-        "3005rc2"
-      ],
-      "ecosystem_specific": {
-        "affected_functions": [
-          ""
-        ]
-      },
-      "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/09/GHSA-vpjg-wmf8-29h9/GHSA-vpjg-wmf8-29h9.json"
-      }
-    },
-    {
-      "package": {
-        "ecosystem": "PyPI",
-        "name": "salt",
-        "purl": "pkg:pypi/salt"
-      },
-      "ranges": [
-        {
-          "type": "ECOSYSTEM",
-          "events": [
-            {
-              "introduced": "3006.0rc1"
-            },
-            {
-              "fixed": "3006.2"
-            }
-          ]
-        }
-      ],
-      "versions": [
+        "3005rc2",
         "3006.0",
-        "3006.0rc1",
-        "3006.0rc2",
-        "3006.0rc3",
         "3006.1"
       ],
-      "ecosystem_specific": {
-        "affected_functions": [
-          ""
-        ]
-      },
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/09/GHSA-vpjg-wmf8-29h9/GHSA-vpjg-wmf8-29h9.json"
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/salt/PYSEC-2023-166.yaml"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-20897"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/salt/PYSEC-2023-166.yaml"
-    },
-    {
-      "type": "PACKAGE",
-      "url": "https://github.com/saltstack/salt"
-    },
-    {
-      "type": "WEB",
       "url": "https://saltproject.io/security-announcements/2023-08-10-advisory/"
     }
   ]
