@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2018-11-30T19:54:17Z",
+  "UpdatedAt": "2023-09-08T23:58:17Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "i18next"
@@ -33,16 +33,16 @@
         "Value": "CVE-2017-16010"
       }
     ],
-    "Description": "Affected versions of `i18next` may fail to sanitize user input when certain configuration options are used. When using the `.init` method, passing interpolation options without passing an `escapeValue` will default to `undefined` rather than the assumed `true`. \n\n## Proof of Concept\n\n```\nvar init = i18n.init({\n  interpolation: {\n    prefix: \"__\",\n    suffix: \"__\",\n    escapeValue: true\n  }\n}, function(){\n  var test = i18n.t('__firstName__ __lastName__', {\n        firstName: 'Bob',\n        lastName: '[\"foo\",\"bar\"]',\n  });\n  console.log(test);\n});\n```\nWhen `escapeValue` is explicitly passed, the result of `test` is: \n\n```\n\u0026lt;script\u0026gt;alert(1)\u0026lt;\u0026#x2F;script\u0026gt; Johnson\n```\n\nThis is supposed to be the default. However, if `escapeValue` is not included, the result is the unescaped string: \n \n```\n\u003cscript\u003ealert(1)\u003c/script\u003e Johnson\n```\n\n\n## Recommendation\n\nUpdate to version 3.4.4 or later.",
+    "Description": "Affected versions of `i18next` may fail to sanitize user input when certain configuration options are used. When using the `.init` method, passing interpolation options without passing an `escapeValue` will default to `undefined` rather than the assumed `true`. \n\n## Proof of Concept\n\n```js\nvar init = i18n.init({\n  interpolation: {\n    prefix: \"__\",\n    suffix: \"__\",\n    escapeValue: true\n  }\n}, function(){\n  var test = i18n.t('__firstName__ __lastName__', {\n        firstName: 'Bob',\n        lastName: '[\"foo\",\"bar\"]',\n  });\n  console.log(test);\n});\n```\nWhen `escapeValue` is explicitly passed, the result of `test` is: \n\n```html\n\u0026lt;script\u0026gt;alert(1)\u0026lt;\u0026#x2F;script\u0026gt; Johnson\n```\n\nThis is supposed to be the default. However, if `escapeValue` is not included, the result is the unescaped string: \n \n```html\n\u003cscript\u003ealert(1)\u003c/script\u003e Johnson\n```\n\n\n## Recommendation\n\nUpdate to version 3.4.4 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-07-24T19:58:33Z",
     "Severity": "MODERATE",
     "Summary": "Cross-Site Scripting in i18next",
-    "UpdatedAt": "2023-01-09T05:03:01Z",
+    "UpdatedAt": "2023-09-08T23:58:17Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 6.1,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
     }
   },
   "Versions": [

