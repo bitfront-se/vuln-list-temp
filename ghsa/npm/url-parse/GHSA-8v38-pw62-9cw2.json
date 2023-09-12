@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2022-02-22T18:08:06Z",
+  "UpdatedAt": "2023-09-11T22:51:44Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "url-parse"
@@ -36,12 +36,12 @@
         "Value": "CVE-2022-0639"
       }
     ],
-    "Description": "A specially crafted URL with an '@' sign but empty user info and no hostname, when parsed with url-parse, url-parse will return the incorrect href. In particular,\n`````\nparse(\\\"http://@/127.0.0.1\\\")\n`````\nWill return:\n`````\n{\n slashes: true,\n protocol: 'http:',\n hash: '',\n query: '',\n pathname: '/127.0.0.1',\n auth: '',\n host: '',\n port: '',\n hostname: '',\n password: '',\n username: '',\n origin: 'null',\n href: 'http:///127.0.0.1'\n }\n`````\nIf the 'hostname' or 'origin' attributes of the output from url-parse are used in security decisions and the final 'href' attribute of the output is then used to make a request, the decision may be incorrect.\n",
+    "Description": "A specially crafted URL with an '@' sign but empty user info and no hostname, when parsed with url-parse, url-parse will return the incorrect href. In particular,\n\n```js\nparse(\\\"http://@/127.0.0.1\\\")\n```\nWill return:\n```yaml\n{\n slashes: true,\n protocol: 'http:',\n hash: '',\n query: '',\n pathname: '/127.0.0.1',\n auth: '',\n host: '',\n port: '',\n hostname: '',\n password: '',\n username: '',\n origin: 'null',\n href: 'http:///127.0.0.1'\n }\n```\nIf the 'hostname' or 'origin' attributes of the output from url-parse are used in security decisions and the final 'href' attribute of the output is then used to make a request, the decision may be incorrect.\n",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2022-02-18T00:00:33Z",
     "Severity": "MODERATE",
-    "Summary": "Incorrect returned href via an '@' sign but no user info and hostname",
-    "UpdatedAt": "2023-02-23T22:07:17Z",
+    "Summary": "url-parse Incorrectly parses URLs that include an '@'",
+    "UpdatedAt": "2023-09-11T22:51:44Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.5,

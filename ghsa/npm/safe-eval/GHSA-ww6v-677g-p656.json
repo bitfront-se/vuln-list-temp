@@ -1,6 +1,6 @@
 {
   "Severity": "CRITICAL",
-  "UpdatedAt": "2020-08-31T18:19:48Z",
+  "UpdatedAt": "2023-09-11T22:19:20Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "safe-eval"
@@ -39,16 +39,16 @@
         "Value": "CVE-2017-16088"
       }
     ],
-    "Description": "Affected versions of `safe-eval` are vulnerable to a sandbox escape. By accessing object constructors, un-sanitized user input can access the entire standard library and effectively break out of the sandbox. \n\n## Proof of Concept:\nThis code accesses the process object and calls `.exit()`\n```\nvar safeEval = require('safe-eval');\nsafeEval(\"this.constructor.constructor('return process')().exit()\");\n```\n\n\n## Recommendation\n\nUpdate to version 0.4.0 or later",
+    "Description": "Affected versions of `safe-eval` are vulnerable to a sandbox escape. By accessing object constructors, un-sanitized user input can access the entire standard library and effectively break out of the sandbox. \n\n## Proof of Concept:\nThis code accesses the process object and calls `.exit()`\n```js\nvar safeEval = require('safe-eval');\nsafeEval(\"this.constructor.constructor('return process')().exit()\");\n```\n\n\n## Recommendation\n\nUpdate to version 0.4.0 or later",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-07-18T18:28:10Z",
     "Severity": "CRITICAL",
     "Summary": "Sandbox Breakout in safe-eval",
-    "UpdatedAt": "2023-01-09T05:03:16Z",
+    "UpdatedAt": "2023-09-11T22:19:20Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 10,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
     }
   },
   "Versions": [
