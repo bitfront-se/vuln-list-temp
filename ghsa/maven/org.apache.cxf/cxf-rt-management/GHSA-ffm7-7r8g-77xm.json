@@ -1,9 +1,9 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2021-05-07T18:12:21Z",
+  "UpdatedAt": "2023-09-26T10:43:36Z",
   "Package": {
     "Ecosystem": "MAVEN",
-    "Name": "org.apache.cxf:cxf"
+    "Name": "org.apache.cxf:cxf-rt-management"
   },
   "Advisory": {
     "DatabaseId": 4147,
@@ -32,6 +32,9 @@
         "Url": "https://security.netapp.com/advisory/ntap-20220210-0001/"
       },
       {
+        "Url": "https://github.com/apache/cxf/commit/1cf4fed546904a4a2560f53a2a2391d834b4026c"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-ffm7-7r8g-77xm"
       }
     ],
@@ -45,12 +48,12 @@
         "Value": "CVE-2020-1954"
       }
     ],
-    "Description": "Apache CXF has the ability to integrate with JMX by registering an InstrumentationManager extension with the CXF bus. If the ‘createMBServerConnectorFactory’ property of the default InstrumentationManagerImpl is not disabled, then it is vulnerable to a man-in-the-middle (MITM) style attack. An attacker on the same host can connect to the registry and rebind the entry to another server, thus acting as a proxy to the original. They are then able to gain access to all of the information that is sent and received over JMX.",
+    "Description": "Apache CXF has the ability to integrate with JMX by registering an `InstrumentationManager` extension with the CXF bus. If the `createMBServerConnectorFactory` property of the default `InstrumentationManagerImpl` is not disabled, then it is vulnerable to a man-in-the-middle (MITM) style attack. An attacker on the same host can connect to the registry and rebind the entry to another server, thus acting as a proxy to the original. They are then able to gain access to all of the information that is sent and received over JMX.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2022-02-10T22:38:50Z",
     "Severity": "MODERATE",
-    "Summary": "Exposure of Sensitive Information to an Unauthorized Actor in Apache CXF",
-    "UpdatedAt": "2023-02-01T05:05:31Z",
+    "Summary": "Apache CXF JMX Integration is vulnerable to a MITM attack",
+    "UpdatedAt": "2023-09-26T10:43:36Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,
@@ -62,7 +65,13 @@
       "FirstPatchedVersion": {
         "Identifier": "3.3.6"
       },
-      "VulnerableVersionRange": "\u003c 3.3.6"
+      "VulnerableVersionRange": "\u003e= 3.3.0, \u003c 3.3.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.13"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.13"
     }
   ]
 }
