@@ -1,12 +1,12 @@
 {
   "id": "GHSA-m54r-vrmv-hw33",
-  "modified": "2021-11-19T15:28:38Z",
+  "modified": "2023-10-02T14:09:08Z",
   "published": "2021-05-24T16:57:12Z",
   "aliases": [
     "CVE-2020-15186"
   ],
   "summary": "Improper Sanitizing of plugin names in helm",
-  "details": "### Impact\n\nSecurity researchers at Trail of Bits discovered that plugin names are not sanitized properly. As a result, a malicious plugin author could use characters in a plugin name that would result in unexpected behavior, such as duplicating the name of another plugin or spoofing the output to `helm --help`.\n\n### Patches\n\nThis issue has been patched in Helm 3.3.2.\n\n### Workarounds\n\nDo not install untrusted Helm plugins. Examine the `name` field in the `plugin.yaml` file for a plugin, looking for characters outside of the [a-zA-Z0-9._-] range.",
+  "details": "### Impact\n\nSecurity researchers at Trail of Bits discovered that plugin names are not sanitized properly. As a result, a malicious plugin author could use characters in a plugin name that would result in unexpected behavior, such as duplicating the name of another plugin or spoofing the output to `helm --help`.\n\n### Specific Go Packages Affected\nhelm.sh/helm/v3/pkg/plugin\n\n### Patches\n\nThis issue has been patched in Helm 3.3.2.\n\n### Workarounds\n\nDo not install untrusted Helm plugins. Examine the `name` field in the `plugin.yaml` file for a plugin, looking for characters outside of the [a-zA-Z0-9._-] range.",
   "affected": [
     {
       "package": {
@@ -27,6 +27,11 @@
           ]
         }
       ],
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
+      },
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-m54r-vrmv-hw33/GHSA-m54r-vrmv-hw33.json"
       }
@@ -50,52 +55,11 @@
           ]
         }
       ],
-      "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-m54r-vrmv-hw33/GHSA-m54r-vrmv-hw33.json"
-      }
-    },
-    {
-      "package": {
-        "ecosystem": "Go",
-        "name": "helm.sh/helm/v3/pkg/plugin",
-        "purl": "pkg:golang/helm.sh/helm/v3/pkg/plugin"
+      "ecosystem_specific": {
+        "affected_functions": [
+          ""
+        ]
       },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "2.0.0"
-            },
-            {
-              "fixed": "2.16.11"
-            }
-          ]
-        }
-      ],
-      "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-m54r-vrmv-hw33/GHSA-m54r-vrmv-hw33.json"
-      }
-    },
-    {
-      "package": {
-        "ecosystem": "Go",
-        "name": "helm.sh/helm/v3/pkg/plugin",
-        "purl": "pkg:golang/helm.sh/helm/v3/pkg/plugin"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "3.0.0"
-            },
-            {
-              "fixed": "3.3.2"
-            }
-          ]
-        }
-      ],
       "database_specific": {
         "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-m54r-vrmv-hw33/GHSA-m54r-vrmv-hw33.json"
       }
