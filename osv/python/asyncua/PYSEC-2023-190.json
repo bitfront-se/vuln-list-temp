@@ -1,11 +1,10 @@
 {
-  "id": "GHSA-gfvq-mxw3-mfq3",
-  "modified": "2023-10-04T22:18:28.066990Z",
-  "published": "2023-10-03T06:30:26Z",
+  "id": "PYSEC-2023-190",
+  "modified": "2023-10-04T18:37:48.407821Z",
+  "published": "2023-10-03T05:15:00Z",
   "aliases": [
     "CVE-2023-26151"
   ],
-  "summary": "asyncua vulnerable to denial of service via infinite loop",
   "details": "Versions of the package asyncua before 0.9.96 are vulnerable to Denial of Service (DoS) such that an attacker can send a malformed packet and as a result, the server will enter into an infinite loop and consume excessive memory.",
   "affected": [
     {
@@ -15,6 +14,18 @@
         "purl": "pkg:pypi/asyncua"
       },
       "ranges": [
+        {
+          "type": "GIT",
+          "repo": "https://github.com/FreeOpcUa/opcua-asyncio",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "f6603daa34a93a658f0e176cb0b9ee5a6643b262"
+            }
+          ]
+        },
         {
           "type": "ECOSYSTEM",
           "events": [
@@ -55,40 +66,15 @@
         "0.9.94",
         "0.9.95"
       ],
-      "ecosystem_specific": {
-        "affected_functions": [
-          ""
-        ]
-      },
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-gfvq-mxw3-mfq3/GHSA-gfvq-mxw3-mfq3.json"
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/asyncua/PYSEC-2023-190.yaml"
       }
     }
   ],
   "references": [
     {
-      "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26151"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/FreeOpcUa/opcua-asyncio/issues/1013"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/FreeOpcUa/opcua-asyncio/pull/1039"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/FreeOpcUa/opcua-asyncio/commit/f6603daa34a93a658f0e176cb0b9ee5a6643b262"
-    },
-    {
       "type": "WEB",
       "url": "https://gist.github.com/artfire52/1540b234350795e0ecb4d672608dbec8"
-    },
-    {
-      "type": "PACKAGE",
-      "url": "https://github.com/FreeOpcUa/opcua-asyncio"
     },
     {
       "type": "WEB",
@@ -96,11 +82,19 @@
     },
     {
       "type": "WEB",
-      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/asyncua/PYSEC-2023-190.yaml"
+      "url": "https://security.snyk.io/vuln/SNYK-PYTHON-ASYNCUA-5673709"
     },
     {
-      "type": "WEB",
-      "url": "https://security.snyk.io/vuln/SNYK-PYTHON-ASYNCUA-5673709"
+      "type": "REPORT",
+      "url": "https://github.com/FreeOpcUa/opcua-asyncio/issues/1013"
+    },
+    {
+      "type": "FIX",
+      "url": "https://github.com/FreeOpcUa/opcua-asyncio/pull/1039"
+    },
+    {
+      "type": "FIX",
+      "url": "https://github.com/FreeOpcUa/opcua-asyncio/commit/f6603daa34a93a658f0e176cb0b9ee5a6643b262"
     }
   ]
 }
