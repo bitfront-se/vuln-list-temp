@@ -1,12 +1,12 @@
 {
-  "id": "GHSA-79h8-gxhq-q3jg",
-  "modified": "2024-09-13T18:46:03.830989Z",
-  "published": "2024-06-24T00:34:02Z",
+  "id": "GHSA-3x47-w4rx-6pm7",
+  "modified": "2024-09-13T19:57:44.611139Z",
+  "published": "2024-06-06T21:30:37Z",
   "aliases": [
-    "CVE-2024-3121"
+    "CVE-2024-3429"
   ],
-  "summary": "Remote Code Execution in create_conda_env function in lollms",
-  "details": "A remote code execution vulnerability exists in the create_conda_env function of the parisneo/lollms repository. The vulnerability arises from the use of shell=True in the subprocess.Popen function, which allows an attacker to inject arbitrary commands by manipulating the env_name and python_version parameters. This issue could lead to a serious security breach as demonstrated by the ability to execute the 'whoami' command among potentially other harmful commands.",
+  "summary": "LoLLMS Path Traversal vulnerability",
+  "details": "A path traversal vulnerability exists in the parisneo/lollms application, specifically within the `sanitize_path_from_endpoint` and `sanitize_path` functions in `lollms_core\\lollms\\security.py`. This vulnerability allows for arbitrary file reading when the application is running on Windows. The issue arises due to insufficient sanitization of user-supplied input, enabling attackers to bypass the path traversal protection mechanisms by crafting malicious input. Successful exploitation could lead to unauthorized access to sensitive files, information disclosure, and potentially a denial of service (DoS) condition by including numerous large or resource-intensive files. This vulnerability affects the latest version prior to 9.5.0.",
   "affected": [
     {
       "package": {
@@ -21,7 +21,9 @@
             {
               "introduced": "0"
             },
-            {}
+            {
+              "fixed": "9.5.0"
+            }
           ]
         }
       ],
@@ -288,27 +290,29 @@
         "6.7.0",
         "6.9.0",
         "7.2.0",
-        "9.3.0",
-        "9.5.0",
-        "9.5.1"
+        "9.3.0"
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-79h8-gxhq-q3jg/GHSA-79h8-gxhq-q3jg.json"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-3x47-w4rx-6pm7/GHSA-3x47-w4rx-6pm7.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-3121"
-    },
-    {
-      "type": "PACKAGE",
-      "url": "https://github.com/ParisNeo/lollms"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-3429"
     },
     {
       "type": "WEB",
-      "url": "https://huntr.com/bounties/db57c343-9b80-4c1c-9ab0-9eef92c9b27b"
+      "url": "https://github.com/parisneo/lollms/commit/f4424cfc3d6dfb3ad5ac17dd46801efe784933e9"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/parisneo/lollms"
+    },
+    {
+      "type": "WEB",
+      "url": "https://huntr.com/bounties/fd8f50c8-17f0-40be-a2c6-bb8d80f7c409"
     }
   ]
 }
