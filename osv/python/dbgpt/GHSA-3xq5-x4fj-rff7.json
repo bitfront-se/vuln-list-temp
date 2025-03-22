@@ -1,12 +1,12 @@
 {
-  "id": "GHSA-6xgj-c5fx-5v57",
-  "modified": "2025-03-21T16:43:08.324146Z",
+  "id": "GHSA-3xq5-x4fj-rff7",
+  "modified": "2025-03-21T16:43:08.520714Z",
   "published": "2025-03-20T12:32:40Z",
   "aliases": [
-    "CVE-2024-10829"
+    "CVE-2024-10902"
   ],
-  "summary": "DB-GPT Uncontrolled Resource Consumption vulnerability",
-  "details": "A Denial of Service (DoS) vulnerability in the multipart request boundary processing mechanism of eosphoros-ai/db-gpt v0.6.0 allows unauthenticated attackers to cause excessive resource consumption. The server fails to handle excessive characters appended to the end of multipart boundaries, leading to an infinite loop and complete denial of service for all users. This vulnerability affects all endpoints processing multipart/form-data requests.",
+  "summary": "DB-GPT vulnerable to Arbitrary File Upload with Path Traversal",
+  "details": "In eosphoros-ai/db-gpt version v0.6.0, the web API `POST /v1/personal/agent/upload` is vulnerable to Arbitrary File Upload with Path Traversal. This vulnerability allows unauthorized attackers to upload arbitrary files to the victim's file system at any location. The impact of this vulnerability includes the potential for remote code execution (RCE) by writing malicious files, such as a malicious `__init__.py` in the Python's `/site-packages/` directory.",
   "affected": [
     {
       "package": {
@@ -48,14 +48,14 @@
         "0.5.9rc0"
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-6xgj-c5fx-5v57/GHSA-6xgj-c5fx-5v57.json"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-3xq5-x4fj-rff7/GHSA-3xq5-x4fj-rff7.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10829"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10902"
     },
     {
       "type": "PACKAGE",
@@ -63,7 +63,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://huntr.com/bounties/e3a4a0ad-a2e0-497f-a2e0-e3c0ec7c4de4"
+      "url": "https://huntr.com/bounties/f7fbf76e-aa1c-4106-b007-e9579f4f7d5f"
     }
   ]
 }
