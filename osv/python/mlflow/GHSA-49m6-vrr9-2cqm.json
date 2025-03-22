@@ -1,12 +1,12 @@
 {
-  "id": "GHSA-4rj2-9gcx-5qhx",
-  "modified": "2025-03-22T00:05:50.012602Z",
-  "published": "2025-03-20T12:32:53Z",
+  "id": "GHSA-49m6-vrr9-2cqm",
+  "modified": "2025-03-22T01:05:45.213661Z",
+  "published": "2025-03-20T12:32:52Z",
   "aliases": [
-    "CVE-2025-1474"
+    "CVE-2025-0453"
   ],
-  "summary": "MLflow has Weak Password Requirements",
-  "details": "In mlflow/mlflow version 2.18, an admin is able to create a new user account without setting a password. This vulnerability could lead to security risks, as accounts without passwords may be susceptible to unauthorized access. Additionally, this issue violates best practices for secure user account management. The issue is fixed in version 2.19.0.",
+  "summary": "MLflow Uncontrolled Resource Consumption vulnerability",
+  "details": "In mlflow/mlflow version 2.17.2, the `/graphql` endpoint is vulnerable to a denial of service attack. An attacker can create large batches of queries that repeatedly request all runs from a given experiment. This can tie up all the workers allocated by MLFlow, rendering the application unable to respond to other requests. This vulnerability is due to uncontrolled resource consumption.",
   "affected": [
     {
       "package": {
@@ -21,9 +21,7 @@
             {
               "introduced": "0"
             },
-            {
-              "fixed": "2.19.0"
-            }
+            {}
           ]
         }
       ],
@@ -126,9 +124,6 @@
         "2.17.0rc0",
         "2.17.1",
         "2.17.2",
-        "2.18.0",
-        "2.18.0rc0",
-        "2.19.0rc0",
         "2.2.0",
         "2.2.1",
         "2.2.2",
@@ -149,18 +144,14 @@
         "2.9.2"
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-4rj2-9gcx-5qhx/GHSA-4rj2-9gcx-5qhx.json"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-49m6-vrr9-2cqm/GHSA-49m6-vrr9-2cqm.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-1474"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/mlflow/mlflow/commit/149c9e18aa219bc47e86b432e130e467a36f4a17"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-0453"
     },
     {
       "type": "PACKAGE",
@@ -168,7 +159,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://huntr.com/bounties/e79f7774-10fe-46b2-b522-e73b748e3b2d"
+      "url": "https://huntr.com/bounties/788327ec-714a-4d5c-83aa-8df04dd7612b"
     }
   ]
 }
