@@ -5,6 +5,9 @@
   "aliases": [
     "CVE-2025-46331"
   ],
+  "related": [
+    "CGA-6628-94x4-736p"
+  ],
   "summary": "OpenFGA Authorization Bypass",
   "details": "Overview\nOpenFGA v1.8.10 or previous (Helm chart \u003c= openfga-0.2.28, docker \u003c= v.1.8.10) are vulnerable to authorization bypass when certain Check and ListObject calls are executed.\n\nAm I Affected?\nIf you are using OpenFGA v1.8.10 or previous, specifically under the following conditions, you are affected by this authorization bypass vulnerability:\n- Calling Check API or ListObjects with an [authorization model](https://openfga.dev/docs/concepts#what-is-an-authorization-model) that has tuple cycle.\n- [Check query cache](https://github.com/openfga/openfga/blob/9b5974458b777707ed2a30ba6303699499e655ee/.config-schema.json#L528) is enabled, and\n- There are multiple check / list objects requests involving the tuple cycle within the check query TTL\n\nFix\nUpgrade to v1.8.11. This upgrade is backwards compatible.",
   "affected": [
