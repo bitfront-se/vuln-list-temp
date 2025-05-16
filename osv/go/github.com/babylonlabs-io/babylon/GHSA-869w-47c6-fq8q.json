@@ -1,7 +1,10 @@
 {
   "id": "GHSA-869w-47c6-fq8q",
-  "modified": "2025-05-15T14:05:50Z",
+  "modified": "2025-05-15T20:57:03.307897Z",
   "published": "2025-05-15T14:05:50Z",
+  "aliases": [
+    "GO-2025-3687"
+  ],
   "summary": "Babylon Integer Overflow in Distribution Module CumulativeRewardRatio Calculation Leading to Chain Halt",
   "details": "### Summary\nMinting large amount of tokens through ibc transfer and then depositing them in validator rewards pool (via `DepositValidatorRewardsPool` message) can lead to integer overflow panic when calculating `cumulative_reward_ratio` for the validator.\n\nThis calculation happens in `x/epoching` module `EndBlocker`, thus the panic will halt the chain.\n\n### Impact\n\nDenial of Service - Due to panic in the `EndBlocker` Babylon Genesis will halt",
   "affected": [
