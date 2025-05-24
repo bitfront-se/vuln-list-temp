@@ -1,6 +1,6 @@
 {
   "id": "GHSA-7cx3-6m66-7c5m",
-  "modified": "2025-05-16T14:49:41.050758Z",
+  "modified": "2025-05-23T17:37:33.966224Z",
   "published": "2025-05-16T14:12:40Z",
   "aliases": [
     "CVE-2025-47287"
@@ -14,7 +14,7 @@
     "CGA-qg24-ggf8-2fq7"
   ],
   "summary": "Tornado vulnerable to excessive logging caused by malformed multipart form data",
-  "details": "### Summary\n\nWhen Tornado's ``multipart/form-data`` parser encounters certain errors, it logs a warning but continues trying to parse the remainder of the data. This allows remote attackers to generate an extremely high volume of logs, constituting a DoS attack. This DoS is compounded by the fact that the logging subsystem is synchronous.\n\n### Affected versions\n\nAll versions of Tornado prior to 6.5.0 are affected. The vulnerable parser is enabled by default.\n\n### Solution\n\nUpgrade to Tornado version 6.5. In the meantime, risk can be mitigated by blocking `Content-Type: multipart/form-data` in a proxy.",
+  "details": "### Summary\n\nWhen Tornado's ``multipart/form-data`` parser encounters certain errors, it logs a warning but continues trying to parse the remainder of the data. This allows remote attackers to generate an extremely high volume of logs, constituting a DoS attack. This DoS is compounded by the fact that the logging subsystem is synchronous.\n\n### Affected versions\n\nAll versions of Tornado prior to 6.5 are affected. The vulnerable parser is enabled by default.\n\n### Solution\n\nUpgrade to Tornado version 6.5. In the meantime, risk can be mitigated by blocking `Content-Type: multipart/form-data` in a proxy.",
   "affected": [
     {
       "package": {
@@ -30,7 +30,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "6.5.0"
+              "fixed": "6.5"
             }
           ]
         }
