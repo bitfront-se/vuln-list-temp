@@ -1,13 +1,12 @@
 {
-  "id": "GHSA-rh4j-5rhw-hr54",
+  "id": "PYSEC-2025-58",
   "modified": "2025-06-27T21:56:54.188774Z",
-  "published": "2025-01-27T20:50:30Z",
+  "published": "2025-01-27T18:15:41Z",
   "aliases": [
     "CVE-2025-24357",
-    "PYSEC-2025-58"
+    "GHSA-rh4j-5rhw-hr54"
   ],
-  "summary": "vllm: Malicious model to RCE by torch.load in hf_model_weights_iterator",
-  "details": "### Description\nThe vllm/model_executor/weight_utils.py implements hf_model_weights_iterator to load the model checkpoint, which is downloaded from huggingface. It use torch.load function and weights_only parameter is default value False. There is a security warning on https://pytorch.org/docs/stable/generated/torch.load.html, when torch.load load a malicious pickle data it will execute arbitrary code during unpickling.\n\n### Impact\nThis vulnerability can be exploited to execute arbitrary codes and OS commands in the victim machine who fetch the pretrained repo remotely.\n\nNote that most models now use the safetensors format, which is not vulnerable to this issue.\n\n### References\n* https://pytorch.org/docs/stable/generated/torch.load.html\n* Fix: https://github.com/vllm-project/vllm/pull/12366",
+  "details": "vLLM is a library for LLM inference and serving. vllm/model_executor/weight_utils.py implements hf_model_weights_iterator to load the model checkpoint, which is downloaded from huggingface. It uses the torch.load function and the weights_only parameter defaults to False. When torch.load loads malicious pickle data, it will execute arbitrary code during unpickling. This vulnerability is fixed in v0.7.0.",
   "affected": [
     {
       "package": {
@@ -16,6 +15,18 @@
         "purl": "pkg:pypi/vllm"
       },
       "ranges": [
+        {
+          "type": "GIT",
+          "repo": "https://github.com/vllm-project/vllm",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "d3d6bb13fb62da3234addf6574922a4ec0513d04"
+            }
+          ]
+        },
         {
           "type": "ECOSYSTEM",
           "events": [
@@ -78,34 +89,22 @@
         "0.6.6.post1"
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/01/GHSA-rh4j-5rhw-hr54/GHSA-rh4j-5rhw-hr54.json"
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/vllm/PYSEC-2025-58.yaml"
       }
     }
   ],
   "references": [
     {
-      "type": "WEB",
+      "type": "ADVISORY",
       "url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-rh4j-5rhw-hr54"
     },
     {
-      "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-24357"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/vllm-project/vllm/pull/12366"
-    },
-    {
-      "type": "WEB",
+      "type": "FIX",
       "url": "https://github.com/vllm-project/vllm/commit/d3d6bb13fb62da3234addf6574922a4ec0513d04"
     },
     {
-      "type": "PACKAGE",
-      "url": "https://github.com/vllm-project/vllm"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/vllm-project/vllm/releases/tag/v0.7.0"
+      "type": "REPORT",
+      "url": "https://github.com/vllm-project/vllm/pull/12366"
     },
     {
       "type": "WEB",
