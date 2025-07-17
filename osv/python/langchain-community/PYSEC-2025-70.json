@@ -1,12 +1,11 @@
 {
-  "id": "GHSA-h5gc-rm8j-5gpr",
+  "id": "PYSEC-2025-70",
   "modified": "2025-07-16T21:57:03.454237Z",
-  "published": "2025-06-23T21:31:56Z",
+  "published": "2025-06-23T21:15:25Z",
   "aliases": [
     "CVE-2025-2828",
-    "PYSEC-2025-70"
+    "GHSA-h5gc-rm8j-5gpr"
   ],
-  "summary": "LangChain Community SSRF vulnerability exists in RequestsToolkit component ",
   "details": "A Server-Side Request Forgery (SSRF) vulnerability exists in the RequestsToolkit component of the langchain-community package (specifically, langchain_community.agent_toolkits.openapi.toolkit.RequestsToolkit) in langchain-ai/langchain version 0.0.27. This vulnerability occurs because the toolkit does not enforce restrictions on requests to remote internet addresses, allowing it to also access local addresses. As a result, an attacker could exploit this flaw to perform port scans, access local services, retrieve instance metadata from cloud environments (e.g., Azure, AWS), and interact with servers on the local network. This issue has been fixed in version 0.0.28.",
   "affected": [
     {
@@ -16,6 +15,18 @@
         "purl": "pkg:pypi/langchain-community"
       },
       "ranges": [
+        {
+          "type": "GIT",
+          "repo": "https://github.com/langchain-ai/langchain",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "e188d4ecb085d4561a0be3c583d26aa9c2c3283f"
+            }
+          ]
+        },
         {
           "type": "ECOSYSTEM",
           "events": [
@@ -60,27 +71,18 @@
         "0.0.9"
       ],
       "database_specific": {
-        "last_known_affected_version_range": "\u003c 0.0.27",
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-h5gc-rm8j-5gpr/GHSA-h5gc-rm8j-5gpr.json"
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/langchain-community/PYSEC-2025-70.yaml"
       }
     }
   ],
   "references": [
     {
-      "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-2828"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/langchain-ai/langchain/commit/e188d4ecb085d4561a0be3c583d26aa9c2c3283f"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/langchain-ai/langchain-community"
-    },
-    {
       "type": "WEB",
       "url": "https://huntr.com/bounties/8f771040-7f34-420a-b96b-5b93d4a99afc"
+    },
+    {
+      "type": "FIX",
+      "url": "https://github.com/langchain-ai/langchain/commit/e188d4ecb085d4561a0be3c583d26aa9c2c3283f"
     }
   ]
 }
