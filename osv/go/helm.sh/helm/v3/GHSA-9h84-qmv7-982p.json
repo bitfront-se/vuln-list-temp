@@ -1,0 +1,47 @@
+{
+  "id": "GHSA-9h84-qmv7-982p",
+  "modified": "2025-08-14T00:27:23.474854Z",
+  "published": "2025-08-14T00:01:34Z",
+  "aliases": [
+    "CVE-2025-55199"
+  ],
+  "summary": "Helm Charts with Specific JSON Schema Values Can Cause Memory Exhaustion",
+  "details": "A Helm contributor discovered that it was possible to craft a JSON Schema file in a manner which could cause Helm to use all available memory and have an out of memory (OOM) termination.\n\n### Impact\nA malicious chart can point `$ref` in _values.schema.json_ to a device (e.g. `/dev/*`) or other problem file which could cause Helm to use all available memory and have an out of memory (OOM) termination.\n\n### Patches\nThis issue has been resolved in Helm v3.18.5.\n\n### Workarounds\nMake sure that all Helm charts that are being loaded into Helm doesn't have any reference of `$ref` pointing to `/dev/zero`.\n\n### References\nHelm's security policy is spelled out in detail in our [SECURITY](https://github.com/helm/community/blob/master/SECURITY.md) document.\n\n### Credits\nDisclosed by Jakub Ciolek at AlphaSense.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Go",
+        "name": "helm.sh/helm/v3",
+        "purl": "pkg:golang/helm.sh/helm/v3"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {}
+          ]
+        }
+      ],
+      "database_specific": {
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/08/GHSA-9h84-qmv7-982p/GHSA-9h84-qmv7-982p.json"
+      }
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/helm/helm/security/advisories/GHSA-9h84-qmv7-982p"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/helm/helm/commit/b78692c18f0fb38fe5ba4571a674de067a4c53a5"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/helm/helm"
+    }
+  ]
+}
