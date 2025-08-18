@@ -1,12 +1,12 @@
 {
-  "id": "GHSA-jhmr-57cj-q6g9",
+  "id": "GO-2025-3873",
   "modified": "2025-08-18T13:57:31.011223Z",
-  "published": "2025-08-12T00:13:36Z",
+  "published": "2025-08-18T13:17:23Z",
   "aliases": [
-    "GO-2025-3873"
+    "GHSA-jhmr-57cj-q6g9"
   ],
-  "summary": "Komari vulnerable to 2FA Authentication Bypass",
-  "details": "### Summary\n\nLogic error in 2FA verification condition allows bypass of two-factor authentication\n\n### Details\n\nhttps://github.com/komari-monitor/komari/blob/bd5a6934e1b79a12cf1e6a9bba5372d0e04f3abc/api/login.go#L55\n\nThere is no way for `Verify2Fa` to return an error **AND** true as `ok` at the same time, any codes are considered as valid.\n\n### PoC\n\nUse any 6 digits as 2FA code\n\n### Impact\n\nBypass 2FA Authentication",
+  "summary": "Komari vulnerable to 2FA Authentication Bypass in github.com/komari-monitor/komari",
+  "details": "Komari vulnerable to 2FA Authentication Bypass in github.com/komari-monitor/komari",
   "affected": [
     {
       "package": {
@@ -28,22 +28,18 @@
         }
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/08/GHSA-jhmr-57cj-q6g9/GHSA-jhmr-57cj-q6g9.json"
+        "source": "https://vuln.go.dev/ID/GO-2025-3873.json"
       }
     }
   ],
   "references": [
     {
-      "type": "WEB",
+      "type": "ADVISORY",
       "url": "https://github.com/komari-monitor/komari/security/advisories/GHSA-jhmr-57cj-q6g9"
     },
     {
-      "type": "WEB",
+      "type": "FIX",
       "url": "https://github.com/komari-monitor/komari/commit/cc3d54bff4c6495beaa1c7483379cd04542c557f"
-    },
-    {
-      "type": "PACKAGE",
-      "url": "https://github.com/komari-monitor/komari"
     },
     {
       "type": "WEB",
