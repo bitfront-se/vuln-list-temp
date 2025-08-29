@@ -5,6 +5,9 @@
   "aliases": [
     "CVE-2025-48956"
   ],
+  "related": [
+    "CGA-p6fc-q7qm-79gh"
+  ],
   "summary": "vllm API endpoints vulnerable to Denial of Service Attacks",
   "details": "### Summary\nA Denial of Service (DoS) vulnerability can be triggered by sending a single HTTP GET request with an extremely large header to an HTTP endpoint. This results in server memory exhaustion, potentially leading to a crash or unresponsiveness. The attack does not require authentication, making it exploitable by any remote user.\n\n### Details\nThe vulnerability leverages the abuse of HTTP headers. By setting a header such as `X-Forwarded-For` to a very large value like `(\"A\" * 5_800_000_000)`, the server's HTTP parser or application logic may attempt to load the entire request into memory, overwhelming system resources.\n\n### Impact\n_What kind of vulnerability is it? Who is impacted?_\nType of vulnerability: Denial of Service (DoS)\n\n### Resolution\nUpgrade to a version of vLLM that includes appropriate HTTP limits by deafult, or use a proxy in front of vLLM which provides protection against this issue.",
   "affected": [
