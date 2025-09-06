@@ -5,6 +5,10 @@
   "aliases": [
     "CVE-2025-9566"
   ],
+  "related": [
+    "CGA-4gh3-f9gj-7298",
+    "CGA-whmf-2f99-945q"
+  ],
   "summary": "podman kube play symlink traversal vulnerability",
   "details": "### Impact\n\nThe podman kube play command can overwrite host files when the kube file contains a ConfigMap or Secret volume mount and the volume already contains a symlink to a host file.\nThis allows a malicious container to write to arbitrary files on the host BUT the attacker only controls the target path not the contents that will be written to the file. The contents are defined in the yaml file by the end user.\n\n### Requirements to exploit:\npodman kube play must be used with a ConfigMap or Secret volume mount AND must be run more than once on the same volume. All the attacker has to do is create the malicious symlink on the volume the first time it is started. After that all following starts would follow the symlink and write to the host location. \n\n\n### Patches\nFixed in podman v5.6.1\nhttps://github.com/containers/podman/commit/43fbde4e665fe6cee6921868f04b7ccd3de5ad89\n\n### Workarounds\n\nDon't use podman kube play with ConfigMap or Secret volume mounts.",
   "affected": [
