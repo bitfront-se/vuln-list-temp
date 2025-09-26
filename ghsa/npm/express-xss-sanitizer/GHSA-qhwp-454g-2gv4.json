@@ -23,6 +23,12 @@
         "Url": "https://www.npmjs.com/package/express-xss-sanitizer"
       },
       {
+        "Url": "https://dbugs.ptsecurity.com/vulnerability/PT-2025-37434"
+      },
+      {
+        "Url": "https://www.tenable.com/cve/CVE-2025-59364"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-qhwp-454g-2gv4"
       }
     ],
@@ -36,16 +42,16 @@
         "Value": "CVE-2025-59364"
       }
     ],
-    "Description": "The express-xss-sanitizer (aka Express XSS Sanitizer) package through 2.0.0 for Node.js has an unbounded recursion depth in sanitize in lib/sanitize.js for a JSON request body.",
+    "Description": "The `express-xss-sanitizer` package for Node.js has an unbounded recursion in the `sanitize` function (`lib/sanitize.js`) when processing JSON request bodies. A remote attacker can send a deeply nested payload to any endpoint that applies this sanitizer, driving excessive recursion and resource consumption (CPU) until the process becomes unresponsive or crashes (e.g., “Maximum call stack size exceeded”). This causes a denial of service. The issue is present through version 2.0.0; no fixed release is available as of this update.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2025-09-15T00:30:15Z",
     "Severity": "MODERATE",
     "Summary": "express-xss-sanitizer has an unbounded recursion depth",
-    "UpdatedAt": "2025-09-15T20:32:24Z",
+    "UpdatedAt": "2025-09-25T23:21:42Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 5.3,
-      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      "Score": 0,
+      "VectorString": ""
     }
   },
   "Versions": [
