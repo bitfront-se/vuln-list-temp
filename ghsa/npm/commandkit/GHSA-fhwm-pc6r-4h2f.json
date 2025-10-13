@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-10-13T17:43:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "commandkit"
+  },
+  "Advisory": {
+    "DatabaseId": 316689,
+    "Id": "GSA_kwCzR0hTQS1maHdtLXBjNnItNGgyZs4ABNUR",
+    "GhsaId": "GHSA-fhwm-pc6r-4h2f",
+    "References": [
+      {
+        "Url": "https://github.com/underctrl-io/commandkit/security/advisories/GHSA-fhwm-pc6r-4h2f"
+      },
+      {
+        "Url": "https://github.com/underctrl-io/commandkit/commit/440385a3e5de3fa3d2a76d23a807995cb29602fd"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fhwm-pc6r-4h2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fhwm-pc6r-4h2f"
+      }
+    ],
+    "Description": "### Impact\nA logic flaw exists in the message command handler of CommandKit that affects how the `commandName` property is exposed to both middleware functions and command execution contexts when handling command aliases. When a message command is invoked using an alias, the `ctx.commandName` value reflects the alias rather than the canonical command name. This occurs in both middleware functions and within the command’s own run function.\n\nDevelopers who rely on `ctx.commandName` for logic that assumes it represents the canonical command identifier may introduce unintended behavior. In security-sensitive cases, such as middleware used for permission checks, rate limiting, or audit logging, this behavior could allow unauthorized command execution or inaccurate access control decisions. Slash commands and context menu commands are not affected.\n\n### Patches\nFixed in v1.2.0-rc.12.\n`ctx.commandName` now consistently returns the actual command name, regardless of the alias used to invoke it.\n\n### Workaround\n\nIf upgrading isn't immediately possible:\n- Use `ctx.command.data.command.name` for permission validations, or\n- Include all command aliases in your permission logic.\n\n### References\n- [CommandKit repository](https://github.com/underctrl-io/commandkit)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-10-13T17:43:51Z",
+    "Severity": "MODERATE",
+    "Summary": "CommandKit has incorrect command name exposure in context object for message command aliases",
+    "UpdatedAt": "2025-10-13T17:43:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.0-rc.12"
+      },
+      "VulnerableVersionRange": "\u003e= 1.2.0-rc.1, \u003c= 1.2.0-rc.11"
+    }
+  ]
+}
