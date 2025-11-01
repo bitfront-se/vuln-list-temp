@@ -1,12 +1,13 @@
 {
-  "id": "PYSEC-2020-220",
+  "id": "GHSA-f556-49jc-4rvc",
   "modified": "2025-10-31T19:27:23.653384Z",
-  "published": "2020-10-05T14:15:00Z",
+  "published": "2025-10-31T17:31:57Z",
   "aliases": [
     "CVE-2020-25635",
-    "GHSA-f556-49jc-4rvc"
+    "PYSEC-2020-220"
   ],
-  "details": "A flaw was found in Ansible Base when using the aws_ssm connection plugin as garbage collector is not happening after playbook run is completed. Files would remain in the bucket exposing the data. This issue affects directly data confidentiality.",
+  "summary": "Ansible does not collect garbage after playbook run",
+  "details": "A flaw was found in Ansible Base when using the aws_ssm connection plugin as its garbage collector is not happening after the playbook run is completed. Files would remain in the bucket exposing the data. This issue directly affects data confidentiality.",
   "affected": [
     {
       "package": {
@@ -263,31 +264,47 @@
         "2.9.24rc1",
         "2.9.25",
         "2.9.25rc1",
+        "2.9.26",
+        "2.9.26rc1",
+        "2.9.27",
+        "2.9.27rc1",
         "2.9.3",
         "2.9.4",
         "2.9.5",
         "2.9.6",
         "2.9.7",
         "2.9.8",
-        "2.9.9",
-        "2.9.26",
-        "2.9.26rc1",
-        "2.9.27",
-        "2.9.27rc1"
+        "2.9.9"
       ],
       "database_specific": {
-        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/ansible/PYSEC-2020-220.yaml"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/10/GHSA-f556-49jc-4rvc/GHSA-f556-49jc-4rvc.json"
       }
     }
   ],
   "references": [
     {
-      "type": "REPORT",
+      "type": "ADVISORY",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-25635"
+    },
+    {
+      "type": "WEB",
       "url": "https://github.com/ansible-collections/community.aws/issues/222"
     },
     {
-      "type": "REPORT",
+      "type": "WEB",
+      "url": "https://github.com/ansible-collections/community.aws/pull/237#issuecomment-1468591094"
+    },
+    {
+      "type": "WEB",
       "url": "https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2020-25635"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/ansible/ansible"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/ansible/PYSEC-2020-220.yaml"
     }
   ]
 }
