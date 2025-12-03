@@ -1,0 +1,65 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2025-12-03T16:57:51Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mozilla:rhino"
+  },
+  "Advisory": {
+    "DatabaseId": 324163,
+    "Id": "GSA_kwCzR0hTQS0zdzhxLXhxOTctNWo3eM4ABPJD",
+    "GhsaId": "GHSA-3w8q-xq97-5j7x",
+    "References": [
+      {
+        "Url": "https://github.com/mozilla/rhino/security/advisories/GHSA-3w8q-xq97-5j7x"
+      },
+      {
+        "Url": "https://github.com/mozilla/rhino/commit/2bcf4c43deace35f1f57d86377c6767b0608986e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3w8q-xq97-5j7x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3w8q-xq97-5j7x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66453"
+      }
+    ],
+    "Description": "When an application passed an attacker controlled float poing number into the `toFixed()` function, it might lead to high CPU consumption and a potential Denial of Service.\n\nSmall numbers go through this call stack: `NativeNumber.numTo \u003e DToA.JS_dtostr \u003e DToA.JS_dtoa \u003e DToA.pow5mult`\nwhere `pow5mult` attempts to raise `5` to a ridiculous power.\n\nExample code: `(4.47118444E-314).toFixed(2)`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-03T16:57:50Z",
+    "Severity": "LOW",
+    "Summary": "Rhino has high CPU usage and potential DoS when passing specific numbers to `toFixed()` function",
+    "UpdatedAt": "2025-12-03T16:57:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "= 1.8.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.15.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.7.15, \u003c 1.7.15.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.14.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.14.1"
+    }
+  ]
+}
