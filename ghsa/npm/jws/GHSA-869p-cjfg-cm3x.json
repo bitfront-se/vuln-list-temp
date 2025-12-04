@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-04T16:54:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jws"
+  },
+  "Advisory": {
+    "DatabaseId": 324270,
+    "Id": "GSA_kwCzR0hTQS04NjlwLWNqZmctY20zeM4ABPKu",
+    "GhsaId": "GHSA-869p-cjfg-cm3x",
+    "References": [
+      {
+        "Url": "https://github.com/auth0/node-jws/security/advisories/GHSA-869p-cjfg-cm3x"
+      },
+      {
+        "Url": "https://github.com/auth0/node-jws/commit/34c45b2c04434f925b638de6a061de9339c0ea2e"
+      },
+      {
+        "Url": "https://github.com/auth0/node-jws/commit/4f6e73f24df42f07d632dec6431ade8eda8d11a6"
+      },
+      {
+        "Url": "https://github.com/auth0/node-jws/releases/tag/v3.2.3"
+      },
+      {
+        "Url": "https://github.com/auth0/node-jws/releases/tag/v4.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-869p-cjfg-cm3x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-869p-cjfg-cm3x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-65945"
+      }
+    ],
+    "Description": "### Overview\nAn improper signature verification vulnerability exists when using auth0/node-jws with the HS256 algorithm under specific conditions.\n\n### Am I Affected?\nYou are affected by this vulnerability if you meet all of the following preconditions:\n\n1. Application uses the auth0/node-jws implementation of JSON Web Signatures, versions \u003c=3.2.2 || 4.0.0\n2. Application uses the jws.createVerify() function for HMAC algorithms\n3. Application uses user-provided data from the JSON Web Signature Protected Header or Payload in the HMAC secret lookup routines\n\nYou are NOT affected by this vulnerability if you meet any of the following preconditions:\n1. Application uses the jws.verify() interface (note: `auth0/node-jsonwebtoken` users fall into this category and are therefore NOT affected by this vulnerability)\n2. Application uses only asymmetric algorithms (e.g. RS256)\n3. Application doesn’t use user-provided data from the JSON Web Signature Protected Header or Payload in the HMAC secret lookup routines\n\n### Fix\nUpgrade auth0/node-jws version to version 3.2.3 or 4.0.1\n\n### Acknowledgement\nOkta would like to thank Félix Charette for discovering this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-04T16:54:15Z",
+    "Severity": "HIGH",
+    "Summary": "auth0/node-jws Improperly Verifies HMAC Signature",
+    "UpdatedAt": "2025-12-04T16:54:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.1"
+      },
+      "VulnerableVersionRange": "= 4.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.3"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.3"
+    }
+  ]
+}
