@@ -1,0 +1,89 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-05T02:27:48Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/sirupsen/logrus"
+  },
+  "Advisory": {
+    "DatabaseId": 324362,
+    "Id": "GSA_kwCzR0hTQS00Zjk5LTRxN3AtcDNnaM4ABPMK",
+    "GhsaId": "GHSA-4f99-4q7p-p3gh",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-65637"
+      },
+      {
+        "Url": "https://github.com/sirupsen/logrus/issues/1370"
+      },
+      {
+        "Url": "https://github.com/sirupsen/logrus/pull/1376"
+      },
+      {
+        "Url": "https://github.com/mjuanxd/logrus-dos-poc"
+      },
+      {
+        "Url": "https://github.com/mjuanxd/logrus-dos-poc/blob/main/README.md"
+      },
+      {
+        "Url": "https://github.com/sirupsen/logrus/releases/tag/v1.8.3"
+      },
+      {
+        "Url": "https://github.com/sirupsen/logrus/releases/tag/v1.9.1"
+      },
+      {
+        "Url": "https://github.com/sirupsen/logrus/releases/tag/v1.9.3"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-GOLANG-GITHUBCOMSIRUPSENLOGRUS-5564391"
+      },
+      {
+        "Url": "https://github.com/sirupsen/logrus/commit/6acd903758687c4a3db3c11701e6c414fcf1c1f7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4f99-4q7p-p3gh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4f99-4q7p-p3gh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-65637"
+      }
+    ],
+    "Description": "A denial-of-service vulnerability exists in github.com/sirupsen/logrus when using Entry.Writer() to log a single-line payload larger than 64KB without newline characters. Due to limitations in the internal bufio.Scanner, the read fails with \"token too long\" and the writer pipe is closed, leaving Writer() unusable and causing application unavailability (DoS). This affects versions \u003c 1.8.3, 1.9.0, and 1.9.2. The issue is fixed in 1.8.3, 1.9.1, and 1.9.3+, where the input is chunked and the writer continues to function even if an error is logged.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-04T21:31:04Z",
+    "Severity": "HIGH",
+    "Summary": "Logrus is vulnerable to DoS when using Entry.Writer()",
+    "UpdatedAt": "2025-12-05T02:27:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.3"
+      },
+      "VulnerableVersionRange": "= 1.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "= 1.9.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.3"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.3"
+    }
+  ]
+}
