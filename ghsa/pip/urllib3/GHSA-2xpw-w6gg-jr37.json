@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-05T18:15:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "urllib3"
+  },
+  "Advisory": {
+    "DatabaseId": 324496,
+    "Id": "GSA_kwCzR0hTQS0yeHB3LXc2Z2ctanIzN84ABPOQ",
+    "GhsaId": "GHSA-2xpw-w6gg-jr37",
+    "References": [
+      {
+        "Url": "https://github.com/urllib3/urllib3/security/advisories/GHSA-2xpw-w6gg-jr37"
+      },
+      {
+        "Url": "https://github.com/urllib3/urllib3/commit/c19571de34c47de3a766541b041637ba5f716ed7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-66471"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2xpw-w6gg-jr37"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2xpw-w6gg-jr37"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66471"
+      }
+    ],
+    "Description": "### Impact\n\nurllib3's [streaming API](https://urllib3.readthedocs.io/en/2.5.0/advanced-usage.html#streaming-and-i-o) is designed for the efficient handling of large HTTP responses by reading the content in chunks, rather than loading the entire response body into memory at once.\n\nWhen streaming a compressed response, urllib3 can perform decoding or decompression based on the HTTP `Content-Encoding` header (e.g., `gzip`, `deflate`, `br`, or `zstd`). The library must read compressed data from the network and decompress it until the requested chunk size is met. Any resulting decompressed data that exceeds the requested amount is held in an internal buffer for the next read operation.\n\nThe decompression logic could cause urllib3 to fully decode a small amount of highly compressed data in a single operation. This can result in excessive resource consumption (high CPU usage and massive memory allocation for the decompressed data; CWE-409) on the client side, even if the application only requested a small chunk of data.\n\n\n### Affected usages\n\nApplications and libraries using urllib3 version 2.5.0 and earlier to stream large compressed responses or content from untrusted sources.\n\n`stream()`, `read(amt=256)`, `read1(amt=256)`, `read_chunked(amt=256)`, `readinto(b)` are examples of `urllib3.HTTPResponse` method calls using the affected logic unless decoding is disabled explicitly.\n\n\n### Remediation\n\nUpgrade to at least urllib3 v2.6.0 in which the library avoids decompressing data that exceeds the requested amount.\n\nIf your environment contains a package facilitating the Brotli encoding, upgrade to at least Brotli 1.2.0 or brotlicffi 1.2.0.0 too. These versions are enforced by the `urllib3[brotli]` extra in the patched versions of urllib3.\n\n\n### Credits\n\nThe issue was reported by @Cycloctane.\nSupplemental information was provided by @stamparm during a security audit performed by [7ASecurity](https://7asecurity.com/) and facilitated by [OSTIF](https://ostif.org/).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-05T18:15:54Z",
+    "Severity": "HIGH",
+    "Summary": "urllib3 streaming API improperly handles highly compressed data",
+    "UpdatedAt": "2025-12-05T18:33:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.6.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0, \u003c 2.6.0"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-05T18:54:56Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.lz4:lz4-java"
+  },
+  "Advisory": {
+    "DatabaseId": 324533,
+    "Id": "GSA_kwCzR0hTQS1jbXA2LW00d2otcTYzcc4ABPO1",
+    "GhsaId": "GHSA-cmp6-m4wj-q63q",
+    "References": [
+      {
+        "Url": "https://github.com/yawkat/lz4-java/security/advisories/GHSA-cmp6-m4wj-q63q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-66566"
+      },
+      {
+        "Url": "https://github.com/yawkat/lz4-java/commit/33d180cb70c4d93c80fb0dc3ab3002f457e93840"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cmp6-m4wj-q63q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cmp6-m4wj-q63q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66566"
+      }
+    ],
+    "Description": "### Summary\n\nInsufficient clearing of the output buffer in Java-based decompressor implementations in lz4-java 1.10.0 and earlier allows remote attackers to read previous buffer contents via crafted compressed input. In applications where the output buffer is reused without being cleared, this may lead to disclosure of sensitive data.\n\nJNI-based implementations are *not* affected.\n\n### Details\n\nDuring the decompression process, the lz4 algorithm may have to repeat data that was previously decompressed in the same input frame. In the Java implementation, this is implemented by copy operations within the output buffer.\n\nWith a crafted input, an attacker may induce the Java implementation to copy from a region in the output buffer that does not contain decompressed data yet. If that region contains sensitive information because the output buffer was not cleared prior to decompression, that data will then be copied to the decompressed output.\n\n- `LZ4Factory.nativeInstance().safeDecompressor()` *is not* affected.\n- `LZ4Factory.nativeInstance().fastDecompressor()` *is* affected because it actually uses `safeInstance()` since 1.8.1. In 1.8.0 and earlier versions, this implementation is instead vulnerable to the more severe [CVE‐2025‐12183](https://sites.google.com/sonatype.com/vulnerabilities/cve-2025-12183), so downgrading is not a solution.\n- Both decompressors of `LZ4Factory.safeInstance()`, `LZ4Factory.unsafeInstance()` and `LZ4Factory.fastestJavaInstance()` are affected.\n- `LZ4Factory.fastestInstance()` uses the `nativeInstance` or `fastestJavaInstance` depending on platform. `LZ4Factory.fastestInstance().fastDecompressor()` is always affected, while `LZ4Factory.fastestInstance().safeDecompressor()` is affected only when JNI cannot be used (e.g. on unsupported platforms).\n\nIndependent of this vulnerability, it is recommended that users migrate from `fastDecompressor` to `safeDecompressor`, as the latter is more performant (despite the name).\n\nThe impact of this vulnerability depends on how user code interacts with the decompression API. Users that allocate a new destination buffer each time, or use only zeroed buffers, are not impacted. When the buffer is reused, however, the confidentiality impact can be severe. This vulnerability is marked as VC:H out of caution.\n\n### Mitigation\n\nlz4-java 1.10.1 fixes this issue without requiring changes in user code.\n\nIf you cannot upgrade to 1.10.1, you can mitigate this vulnerability by zeroing the output buffer before passing it to the decompression function.\n\n### Relation to CVE‐2025‐12183\n\nThis CVE is a different attack than [CVE‐2025‐12183](https://sites.google.com/sonatype.com/vulnerabilities/cve-2025-12183), affecting different implementations with different impact. This new vulnerability was discovered by [CodeIntelligence](https://www.code-intelligence.com/) during research that followed up on CVE‐2025‐12183. Users are recommended to upgrade to 1.10.1 to fix both vulnerabilities.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-05T18:54:55Z",
+    "Severity": "HIGH",
+    "Summary": "yawkat LZ4 Java has a possible information leak in Java safe decompressor",
+    "UpdatedAt": "2025-12-05T18:54:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.1"
+    }
+  ]
+}
