@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-08T17:56:58Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/1Panel-dev/1Panel"
+  },
+  "Advisory": {
+    "DatabaseId": 324790,
+    "Id": "GSA_kwCzR0hTQS03Y3F2LXFjcTItcjc2Nc4ABPS2",
+    "GhsaId": "GHSA-7cqv-qcq2-r765",
+    "References": [
+      {
+        "Url": "https://github.com/1Panel-dev/1Panel/security/advisories/GHSA-7cqv-qcq2-r765"
+      },
+      {
+        "Url": "https://github.com/1Panel-dev/1Panel/commit/94f7d78cc9768ee244da33e09408017d1f68b5ed"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7cqv-qcq2-r765"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7cqv-qcq2-r765"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66508"
+      }
+    ],
+    "Description": "### Summary\nThe server trusts all reverse-proxy headers by default, so any remote client can spoof `X-Forwarded-For` to bypass IP-based protections (AllowIPs, API IP whitelist, “localhost-only” checks). All IP-based access control becomes ineffective.\n\n### Details\n- Gin is created with defaults (`gin.Default()`), which sets `TrustedProxies = 0.0.0.0/0` and uses `X-Forwarded-For`/`X-Real-IP` to compute `ClientIP()`.\n\n- IP-based controls rely on `ClientIP()`:\n    - AllowIPs / BindDomain (core/middleware/ip_limit.go, core/utils/security/security.go).\n    - API IP whitelist (core/middleware/api_auth.go).\n    - \"localhost-only\" checks that depend on `ClientIP()`.\n\n- Because no trusted-proxy range is enforced, any client can send `X-Forwarded-For: 127.0.0.1` (or a whitelisted IP) and be treated as coming from that address.\n\n### Impact\nAll IP-based access control is rendered ineffective: remote clients can masquerade as localhost or any whitelisted IP, defeating AllowIPs, API IP whitelists, and “localhost-only” protections.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-08T17:56:57Z",
+    "Severity": "MODERATE",
+    "Summary": "1Panel IP Access Control Bypass via Untrusted X-Forwarded-For Headers",
+    "UpdatedAt": "2025-12-08T17:56:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.14"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.14"
+    }
+  ]
+}

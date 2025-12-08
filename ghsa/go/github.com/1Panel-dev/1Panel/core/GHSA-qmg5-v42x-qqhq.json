@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-08T17:56:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/1Panel-dev/1Panel/core"
+  },
+  "Advisory": {
+    "DatabaseId": 324789,
+    "Id": "GSA_kwCzR0hTQS1xbWc1LXY0MngtcXFocc4ABPS1",
+    "GhsaId": "GHSA-qmg5-v42x-qqhq",
+    "References": [
+      {
+        "Url": "https://github.com/1Panel-dev/1Panel/security/advisories/GHSA-qmg5-v42x-qqhq"
+      },
+      {
+        "Url": "https://github.com/1Panel-dev/1Panel/commit/ac43f00273be745f8d04b90b6e2b9c1a40ef7bca"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qmg5-v42x-qqhq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qmg5-v42x-qqhq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66507"
+      }
+    ],
+    "Description": "### Summary\n\nA CAPTCHA bypass vulnerability in the 1Panel authentication API allows an unauthenticated attacker to disable CAPTCHA verification by abusing a client-controlled parameter. Because the server previously trusted this value without proper validation, CAPTCHA protections could be bypassed, enabling automated login attempts and significantly increasing the risk of account takeover (ATO).\n\n### Details\n\nThe /api/login endpoint accepts a boolean field named ignoreCaptcha directly from the client request body:\n\n`\"ignoreCaptcha\": true`\n\n\nThe backend implementation uses this value to determine whether CAPTCHA validation should be performed:\n\n```\nif !req.IgnoreCaptcha {\n    if errMsg := captcha.VerifyCode(req.CaptchaID, req.Captcha); errMsg != \"\" {\n        helper.BadAuth(c, errMsg, nil)\n        return\n    }\n}\n\n```\n\nBecause req.IgnoreCaptcha is taken directly from user input—with no server-side validation, no session binding, and no privilege checks—any unauthenticated attacker can force CAPTCHA validation to be skipped.\n\nThere are no additional conditions, such as:\n\nno requirement for MFA\n\nno trusted device\n\nno IP reputation checks\n\nno prior valid session\n\nno rate limiting\n\nThis results in CAPTCHA being entirely client-controlled, which violates fundamental authentication and anti-automation security assumptions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-08T17:56:27Z",
+    "Severity": "HIGH",
+    "Summary": "1Panel – CAPTCHA Bypass via Client-Controlled Flag ",
+    "UpdatedAt": "2025-12-08T17:56:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20251128030527-ac43f00273be"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20251128030527-ac43f00273be"
+    }
+  ]
+}
