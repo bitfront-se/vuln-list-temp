@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-08T21:30:21Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nicegui"
+  },
+  "Advisory": {
+    "DatabaseId": 324870,
+    "Id": "GSA_kwCzR0hTQS03MnFjLXd4Y2gtNzRtZ84ABPUG",
+    "GhsaId": "GHSA-72qc-wxch-74mg",
+    "References": [
+      {
+        "Url": "https://github.com/zauberzeug/nicegui/security/advisories/GHSA-72qc-wxch-74mg"
+      },
+      {
+        "Url": "https://github.com/zauberzeug/nicegui/commit/a8fd25b7d5e23afb1952d0f60a1940e18b5f1ca8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72qc-wxch-74mg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72qc-wxch-74mg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66469"
+      }
+    ],
+    "Description": "### Summary\nA Cross-Site Scripting (XSS) vulnerability exists in `ui.add_css`, `ui.add_scss`, and `ui.add_sass` functions in NiceGUI (v3.3.1 and earlier).\n\nThese functions allow developers to inject styles dynamically. However, they lack proper sanitization or encoding for the JavaScript context they generate. An attacker can break out of the intended `\u003cstyle\u003e` or `\u003cscript\u003e` tags by injecting closing tags (e.g., `\u003c/style\u003e` or `\u003c/script\u003e`), allowing for the execution of arbitrary JavaScript.\n\n### Details\nThe vulnerability stems from how these functions inject content into the DOM using `client.run_javascript` (or `add_head_html` internally) without sufficient escaping for the transport layer.\n\n* **`ui.add_css`**: Injects content into a `\u003cstyle\u003e` tag. Input containing `\u003c/style\u003e` closes the tag prematurely, allowing subsequent HTML/JS injection.\n* **`ui.add_scss` / `ui.add_sass`**: These rely on client-side compilation within `\u003cscript\u003e` tags. Input containing `\u003c/script\u003e` breaks the execution context, allowing XSS.\n\n### PoC\n**Scenario:** A developer allows users to customize a theme color via a URL parameter.\n\n```python\nfrom nicegui import ui\n\n@ui.page('/')\ndef main(color: str = 'blue'):\n    # Vulnerable implementation of dynamic theming\n    ui.add_css(f'.q-btn {{ background-color: {color} !important; }}')\n    ui.button('Click Me')\n\nui.run(port=8082)\n```\n**Attack Vector:**\nAccessing the following URL executes arbitrary JavaScript:\n`http://localhost:8082/?color=red;}\u003c/style\u003e\u003cimg src=x onerror=alert(document.domain)\u003e\u003cstyle\u003e`\n\n### Impact\n* **Type:** Reflected XSS\n* **Severity:** Moderate \n* **Affected Components:** Applications using `ui.add_css`, `ui.add_scss`, or `ui.add_sass` with untrusted input (e.g., dynamic theming based on user input).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-08T21:30:20Z",
+    "Severity": "MODERATE",
+    "Summary": "NiceGUI Reflected XSS in ui.add_css, ui.add_scss, and ui.add_sass via Style Injection",
+    "UpdatedAt": "2025-12-08T21:30:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.3.1"
+    }
+  ]
+}

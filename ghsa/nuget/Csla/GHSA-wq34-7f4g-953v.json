@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-08T22:15:57Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Csla"
+  },
+  "Advisory": {
+    "DatabaseId": 324884,
+    "Id": "GSA_kwCzR0hTQS13cTM0LTdmNGctOTUzds4ABPUU",
+    "GhsaId": "GHSA-wq34-7f4g-953v",
+    "References": [
+      {
+        "Url": "https://github.com/MarimerLLC/csla/security/advisories/GHSA-wq34-7f4g-953v"
+      },
+      {
+        "Url": "https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2310"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wq34-7f4g-953v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wq34-7f4g-953v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66631"
+      }
+    ],
+    "Description": "### Impact\nVersions of CSLA .NET prior to version 6 allow the use of WcfProxy. WcfProxy uses the NetDataContractSerializer (NDCS) which has known vulnerabilities that can allow remote execution of code during deserialization. NDCS itself is considered obsolete, and you should avoid using WcfProxy or upgrade to CSLA 6 or higher where this issue does not exist.\n\n### Patches\nCSLA .NET version 6 and higher do not use WCF or NetDataContractSerializer.\n\n### Workarounds\nIf you are using a version CSLA .NET older than version 6, you should stop using WcfProxy in your data portal configuration. Doing this avoids the use of WCF and the NetDataContractSerializer, avoiding the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-08T22:15:56Z",
+    "Severity": "HIGH",
+    "Summary": "Csla affected by Remote Code Execution via WcfProxy (NetDataContractSerializer)",
+    "UpdatedAt": "2025-12-08T22:15:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.0.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2025-12-08T21:30:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 324869,
+    "Id": "GSA_kwCzR0hTQS13cHFjLWg5d3AtY2htcc4ABPUF",
+    "GhsaId": "GHSA-wpqc-h9wp-chmq",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-wpqc-h9wp-chmq"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/d5a1171f95f75def5c3ac577707ab913e22aef04"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wpqc-h9wp-chmq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wpqc-h9wp-chmq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-65964"
+      }
+    ],
+    "Description": "### Impact\n\nThe n8n Git node allows workflows to set arbitrary Git configuration values through the _Add Config_ operation. When an attacker-controlled workflow sets `core.hooksPath` to a directory within the cloned repository containing a Git hook such as `pre-commit`, Git executes that hook during subsequent Git operations. Because Git hooks run as local system commands, this behavior can lead to **arbitrary command execution** on the underlying n8n host.\n\nSuccessful exploitation requires the ability to create or modify an n8n workflow that uses the Git node.\n\nAffected versions: **≥ 0.123.1 and \u003c 1.119.2**\n\n### Patches\n\nThis issue has been patched in **n8n version 1.119.2**.\n\nAll users running affected versions should upgrade to **1.119.2 or later**.\n\n### Workarounds\n\nIf upgrading is not immediately possible, the following mitigations can reduce exposure:\n\n- Exclude the Git node ([Docs](https://n8n-docs.teamlab.info/hosting/securing/blocking-nodes/#exclude-nodes)).\n- Avoid cloning or interacting with untrusted repositories using the Git Node.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-08T21:30:07Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n vulnerable to Remote Code Execution via Git Node Custom Pre-Commit Hook",
+    "UpdatedAt": "2025-12-08T21:30:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.119.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.123.1, \u003c 1.119.2"
+    }
+  ]
+}
