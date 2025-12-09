@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-09T17:12:20Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Umbraco.Cms"
+  },
+  "Advisory": {
+    "DatabaseId": 324978,
+    "Id": "GSA_kwCzR0hTQS1oZnYyLXBmNjgtbTMzeM4ABPVy",
+    "GhsaId": "GHSA-hfv2-pf68-m33x",
+    "References": [
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/security/advisories/GHSA-hfv2-pf68-m33x"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/commit/7505efd433189037f46547932d4a8b603fd4a615"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hfv2-pf68-m33x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hfv2-pf68-m33x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66625"
+      }
+    ],
+    "Description": "### Impact\nDue to unsafe handling and deletion of temporary files during the dictionary upload process, an attacker with access to the backoffice can trigger predictable requests to temporary file paths. The application’s error responses (HTTP 500 when a file exists, 404 when it does not) allow the attacker to enumerate the existence of arbitrary files on the server’s filesystem. This vulnerability does not allow reading or writing file contents.\n\nIn certain configurations, incomplete clean-up of temporary upload files may additionally expose the NTLM hash of the Windows account running the Umbraco application. The direct impact of this vulnerability is therefore limited to confidentiality, which is reflected in its CVSS base score of 4.9\n\nWhile the CVSS Base Score captures only the immediate effect, the practical risk varies significantly based on hosting environment and identity configuration. Umbraco Cloud sites run under low-privilege, isolated Azure App Service worker identities, which mitigates the impact of any credential exposure. In contrast, self-hosted deployments could run Umbraco using privileged local or domain accounts. If such an account’s NTLM hash is disclosed, an attacker may be able to:\n- Perform NTLM relay attacks\n- Crack the hash offline to recover the underlying password\n- Authenticate as the compromised identity\n- Access internal systems trusted by that identity\n- Move laterally within the network\n- Potentially escalate to full domain compromise in weakly segmented environments\n\nThese outcomes are not part of the CVSS base score, which only rates the immediate confidentiality impact, but represent realistic downstream consequences for installations using elevated or widely-trusted service accounts. Self-hosted environments running Umbraco under privileged identities are therefore at significantly higher risk.\n\nVulnerability found and reported by Tomasz Holeksa at Pentest Limited\n\n### Patches\nThe issue has been patched in 13.12.1.\n\n### Workarounds\nThe issue can only be exploited by authorized backoffice accounts with access to the \"Translations\" section.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-09T17:12:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Umbraco Vulnerable to Improper File Access and Credential Exposure in Dictionary Import Functionality",
+    "UpdatedAt": "2025-12-09T17:12:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.12.1"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c= 13.12.0"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-09T17:17:23Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/argoproj/argo-workflows/v3"
+  },
+  "Advisory": {
+    "DatabaseId": 324979,
+    "Id": "GSA_kwCzR0hTQS14cnFjLTd4Z3gtYzl2aM4ABPVz",
+    "GhsaId": "GHSA-xrqc-7xgx-c9vh",
+    "References": [
+      {
+        "Url": "https://github.com/argoproj/argo-workflows/security/advisories/GHSA-xrqc-7xgx-c9vh"
+      },
+      {
+        "Url": "https://github.com/argoproj/argo-workflows/commit/6b92af23f35aed4d4de8b04adcaf19d68f006de1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p84v-gxvw-73pf"
+      },
+      {
+        "Url": "https://github.com/argoproj/argo-workflows/blob/5291e0b01f94ba864f96f795bb500f2cfc5ad799/workflow/executor/executor.go#L1034-L1037"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xrqc-7xgx-c9vh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xrqc-7xgx-c9vh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66626"
+      }
+    ],
+    "Description": "### Summary\nThe patch deployed against CVE-2025-62156 is ineffective against malicious archives containing symbolic links.\n\n### Details\nThe untar code that handles symbolic links in archives is unsafe. Concretely, the computation of the link's target and the subsequent check are flawed: \nhttps://github.com/argoproj/argo-workflows/blob/5291e0b01f94ba864f96f795bb500f2cfc5ad799/workflow/executor/executor.go#L1034-L1037\n\n### PoC\n1. Create a malicious archive containing two files: a symbolik link with path \"./work/foo\" and target \"/etc\", and a normal text file with path \"./work/foo/hostname\".\n2. Deploy a workflow like the one in https://github.com/argoproj/argo-workflows/security/advisories/GHSA-p84v-gxvw-73pf with the malicious archive mounted at /work/tmp.\n3. Submit the workflow and wait for its execution. \n4. Connect to the corresponding pod and observe that the file \"/etc/hostname\" was altered by the untar operation performed on the malicious archive. The attacker can hence alter arbitrary files in this way. \n\n### Impact\nThe attacker can overwrite the file /var/run/argo/argoexec with a script of their choice, which will be executed at the pod's start.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-09T17:17:22Z",
+    "Severity": "HIGH",
+    "Summary": " RCE via ZipSlip and symbolic links in argoproj/argo-workflows",
+    "UpdatedAt": "2025-12-09T17:17:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.14"
+      },
+      "VulnerableVersionRange": "\u003c 3.6.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.7.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.7.0, \u003c 3.7.5"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-09T17:12:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "elysia"
+  },
+  "Advisory": {
+    "DatabaseId": 324977,
+    "Id": "GSA_kwCzR0hTQS04dmNoLW0zZjQtcThqZs4ABPVx",
+    "GhsaId": "GHSA-8vch-m3f4-q8jf",
+    "References": [
+      {
+        "Url": "https://github.com/elysiajs/elysia/security/advisories/GHSA-8vch-m3f4-q8jf"
+      },
+      {
+        "Url": "https://github.com/elysiajs/elysia/security/advisories/GHSA-hxj9-33pp-j2cc"
+      },
+      {
+        "Url": "https://github.com/elysiajs/elysia/pull/1564"
+      },
+      {
+        "Url": "https://github.com/elysiajs/elysia/commit/26935bf76ebc43b4a43d48b173fc853de43bb51e"
+      },
+      {
+        "Url": "https://github.com/elysiajs/elysia/commit/3af978663e437dccc6c1a2a3aff4b74e1574849e"
+      },
+      {
+        "Url": "https://github.com/sportshead/elysia-poc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8vch-m3f4-q8jf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8vch-m3f4-q8jf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66457"
+      }
+    ],
+    "Description": "Arbitrary code execution from cookie config. If dynamic cookies are enabled (ie there exists a schema for cookies), the cookie config is injected into the compiled route without first being sanitised.\n\nAvailability of this exploit is generally low, as it requires write access to either the Elysia app's source code (in which case the vulnerability is meaningless) or write access to the cookie config (perhaps where it is assumed to be provisioned by the environment). \n\nHowever when combined with GHSA-hxj9-33pp-j2cc, this vulnerability allows for a full RCE chain.\n\n### Impact\n- aot enabled (default)\n- cookie schema passed to route\n- Cookie config controllable eg. via env\n\nExample of vulnerable code\n```js\nnew Elysia({\n\tcookie: {\n\t\tsecrets: `' + console.log('pwned from secrets') + '`\n\t},\n})\n\t.get(\"/\", () =\u003e \"hello world\", {\n\t\tcookie: t.Cookie({\n\t\t\tfoo: t.Any(),\n\t\t}),\n\t})\n```\n\nPOC: https://github.com/sportshead/elysia-poc\n\n### Patches\nPatched by 1.4.17 (https://github.com/elysiajs/elysia/pull/1564)\n\nReference commit:\n- https://github.com/elysiajs/elysia/pull/1564/commits/26935bf76ebc43b4a43d48b173fc853de43bb51e\n- https://github.com/elysiajs/elysia/pull/1564/commits/3af978663e437dccc6c1a2a3aff4b74e1574849e\n\n### Workarounds\nSanitize cookie-related env input\n\n```typescript\nconst overrideUnsafeQuote = (value: string) =\u003e\n\t// '`' + value + '`'\n\t'`' + value.replace(/'/g, '\\\\`').replace(/\\${/g, '$\\\\{') + '`'\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-09T17:12:05Z",
+    "Severity": "HIGH",
+    "Summary": "Elysia affected by arbitrary code injection through cookie config",
+    "UpdatedAt": "2025-12-09T17:12:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.18"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.18"
+    }
+  ]
+}
