@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-10T15:46:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xwiki.platform:xwiki-platform-rest-server"
+  },
+  "Advisory": {
+    "DatabaseId": 325639,
+    "Id": "GSA_kwCzR0hTQS1jYzg0LXEzdjMtbWhnZs4ABPgH",
+    "GhsaId": "GHSA-cc84-q3v3-mhgf",
+    "References": [
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/security/advisories/GHSA-cc84-q3v3-mhgf"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/e3c47745195fb445b054537be86f5c01ee69558b"
+      },
+      {
+        "Url": "https://jira.xwiki.org/browse/XWIKI-23355"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cc84-q3v3-mhgf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cc84-q3v3-mhgf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66473"
+      }
+    ],
+    "Description": "### Impact\nXWiki's REST API doesn't enforce any limits for the number of items that can be requested in a single request at the moment. Depending on the number of pages in the wiki and the memory configuration, this can lead to slowness and unavailability of the wiki. As an example, the `/rest/wikis/xwiki/spaces` resource returns all spaces on the wiki by default, which are basically all pages.\n\n### Patches\nXWiki 17.7.0RC1, 17.4.4 and 16.10.11 introduce a configurable limit, limiting responses to 1000 items by default. Requesting larger limits leads to an error now.\n\n### Workarounds\nWe're not aware of any workaround, except denying access to the affected REST resources in a proxy in front of XWiki.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-10T15:46:57Z",
+    "Severity": "HIGH",
+    "Summary": "XWiki's REST APIs don't enforce any limits, leading to unavailability and OOM in large wikis",
+    "UpdatedAt": "2025-12-10T15:46:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.7.0-rc-1"
+      },
+      "VulnerableVersionRange": "\u003e= 17.5.0-rc-1, \u003c 17.7.0-rc-1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.4.4"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0-rc-1, \u003c 17.4.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.10.11"
+      },
+      "VulnerableVersionRange": "\u003c 16.10.11"
+    }
+  ]
+}
