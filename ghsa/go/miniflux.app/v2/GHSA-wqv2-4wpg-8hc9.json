@@ -1,5 +1,5 @@
 {
-  "Severity": "LOW",
+  "Severity": "MODERATE",
   "UpdatedAt": "2025-12-10T17:18:39Z",
   "Package": {
     "Ecosystem": "GO",
@@ -15,6 +15,9 @@
       },
       {
         "Url": "https://github.com/miniflux/v2/commit/76df99f3a3db234cf6b312be5e771485213d03c7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-67713"
       },
       {
         "Url": "https://github.com/advisories/GHSA-wqv2-4wpg-8hc9"
@@ -33,13 +36,13 @@
     "Description": "### Summary\n`redirect_url` is treated as safe when `url.Parse(...).IsAbs()` is false. Protocol-relative URLs like `//ikotaslabs.com` have an empty scheme and pass that check, allowing post-login redirects to attacker-controlled sites.\n\n### Details\n- `url.Parse(\"//ikotaslabs.com\")` =\u003e empty Scheme, Host=\"ikotaslabs.com\".\n- `IsAbs()` returns false for `//ikotaslabs.com`, so the code treats it as allowed.\n- Browser resolves `//ikotaslabs.com` to current-origin scheme (e.g. `https://ikotaslabs.com`), enabling phishing flows after login.\n\n### PoC\n1. Send or visit: `http://localhost/login?redirect_url=//ikotaslabs.com`  \n2. Complete normal login flow.  \n3. After login the app redirects to `https://ikotaslabs.com` (or `http://` depending on origin).\n\n### Acknowledgements  \nThis vulnerability was discovered using the automated vulnerability analysis tools **VulScribe** and **PwnML**.  \nThe research and tool development were conducted with support from the **MITOU Advanced Program (未踏アドバンスト事業)**,  \nadministered by the **Information-technology Promotion Agency (IPA), Japan**.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2025-12-10T17:18:37Z",
-    "Severity": "LOW",
+    "Severity": "MODERATE",
     "Summary": "Miniflux has an Open Redirect via protocol-relative redirect_url",
-    "UpdatedAt": "2025-12-10T20:02:32Z",
+    "UpdatedAt": "2025-12-11T15:51:11Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
-      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:N"
+      "VectorString": ""
     }
   },
   "Versions": [
