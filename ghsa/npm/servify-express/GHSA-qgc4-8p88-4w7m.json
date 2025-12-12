@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-11T19:32:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "servify-express"
+  },
+  "Advisory": {
+    "DatabaseId": 325968,
+    "Id": "GSA_kwCzR0hTQS1xZ2M0LThwODgtNHc3bc4ABPlQ",
+    "GhsaId": "GHSA-qgc4-8p88-4w7m",
+    "References": [
+      {
+        "Url": "https://github.com/Aarondoran/servify-express/security/advisories/GHSA-qgc4-8p88-4w7m"
+      },
+      {
+        "Url": "https://github.com/Aarondoran/servify-express/commit/197d848e5450bf85b0dd19ef8c2aa4ba96192300"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qgc4-8p88-4w7m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qgc4-8p88-4w7m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-67731"
+      }
+    ],
+    "Description": "### Impact\nThe Express server uses `express.json()` without a size limit, which can allow attackers to send extremely large request bodies. This may lead to excessive memory usage, degraded performance, or process crashes, resulting in a Denial of Service (DoS). Any application using the JSON parser without limits and exposed to untrusted clients is affected.\n\n### Patches\nThis issue is not a flaw in Express itself but in configuration. Users should set a request-size limit when enabling the JSON body parser. For example:\n`app.use(express.json({ limit: \"100kb\" }));`\n\n### Workarounds\nUsers can mitigate the issue without upgrading by:\n- Adding a `limit` option to the JSON parser\n- Implementing rate limiting at the application or reverse-proxy level\n- Rejecting unusually large requests before parsing\n- Using a reverse proxy (such as NGINX) to enforce maximum request body sizes",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-11T18:36:54Z",
+    "Severity": "HIGH",
+    "Summary": "Servify-express rate limit issue",
+    "UpdatedAt": "2025-12-11T19:32:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1"
+    }
+  ]
+}
