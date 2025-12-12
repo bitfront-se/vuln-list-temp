@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2025-12-12T16:42:56Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pgadmin4"
+  },
+  "Advisory": {
+    "DatabaseId": 325969,
+    "Id": "GSA_kwCzR0hTQS1meG13LWpjZ3ItdzQ0ds4ABPlR",
+    "GhsaId": "GHSA-fxmw-jcgr-w44v",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-13780"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/issues/9368"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/pull/9426"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/commit/1d397395f75320ca1d4ed5e9ca721c603415e836"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/commit/d5a909f14cb9713d89b49481ad1929fad89f4576"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fxmw-jcgr-w44v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fxmw-jcgr-w44v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-13780"
+      }
+    ],
+    "Description": "The PLAIN restore meta-command filter introduced in pgAdmin as part of the fix for CVE-2025-12762 does not detect meta-commands when a SQL file begins with a UTF-8 Byte Order Mark (EF BB BF) or other special byte sequences. The implemented filter uses the function `has_meta_commands()`, which scans raw bytes using a regular expression. The regex does not treat the bytes as ignorable, so meta-commands such as `\\\\!` remain undetected. When pgAdmin invokes psql with --file, psql strips the bytes and executes the command. This can result in remote command execution during a restore operation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-11T21:31:28Z",
+    "Severity": "CRITICAL",
+    "Summary": "pgadmin4 has a Meta-Command Filter Command Execution",
+    "UpdatedAt": "2025-12-12T16:42:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.11"
+      },
+      "VulnerableVersionRange": "\u003c 9.11"
+    }
+  ]
+}
