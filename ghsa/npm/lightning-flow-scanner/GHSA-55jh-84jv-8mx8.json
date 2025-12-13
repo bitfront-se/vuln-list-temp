@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-12T20:20:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "lightning-flow-scanner"
+  },
+  "Advisory": {
+    "DatabaseId": 326250,
+    "Id": "GSA_kwCzR0hTQS01NWpoLTg0anYtOG14OM4ABPpq",
+    "GhsaId": "GHSA-55jh-84jv-8mx8",
+    "References": [
+      {
+        "Url": "https://github.com/Flow-Scanner/lightning-flow-scanner/security/advisories/GHSA-55jh-84jv-8mx8"
+      },
+      {
+        "Url": "https://github.com/Flow-Scanner/lightning-flow-scanner/commit/10f64a5eb193d8a777e453b25e910144e4540795"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-67750"
+      },
+      {
+        "Url": "https://github.com/Flow-Scanner/lightning-flow-scanner/releases/tag/core-v6.10.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-55jh-84jv-8mx8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-55jh-84jv-8mx8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-67750"
+      }
+    ],
+    "Description": "### Impact\nThe APIVersion rule uses `new Function()` to evaluate expression strings. A malicious crafted flow metadata file can cause arbitrary JavaScript execution during scanning. An attacker could execute arbitrary JavaScript during a scan by supplying a malicious expression within rule configuration or crafted flow metadata. This could compromise developer machines, CI runners, or editor environments.\n\n### Patches\nThe patch removes all uses of `new Function()` and replaces them with a safer parser. It now validates operators (`\u003e`, \u003e=`, `\u003c`, `\u003c=`, `==`) and performs numeric comparisons without evaluating untrusted JavaScript.\n**version:** core-v6.10.6,\n**version vsx:**: v2.4.4\n\n### Work around\n\n```\n// --- Handle APIVersion rule separately to avoid unsafe-eval in the core library ---\n      const apiVersionConfig = ruleConfig.rules.APIVersion;\n      if (apiVersionConfig) {\n        delete ruleConfig.rules.APIVersion;\n      }\n\n// Manually evaluate the APIVersion rule, if it was configured.\n      if (apiVersionConfig) {\n        const flowApiVer = this.currentFlow.apiVersion || this.currentFlow.xmlData?.apiVersion;\n        const apiVersionRuleDef = allRules.find(r =\u003e r.name === \"APIVersion\");\n\n        // Determine the required expression (e.g. \"\u003e=58\").\n        let requiredExpr;\n        if (apiVersionConfig.expression) {\n          requiredExpr = apiVersionConfig.expression;\n        } else if (apiVersionConfig.threshold != null) {\n          requiredExpr = `\u003e=${apiVersionConfig.threshold}`;\n        }\n\n        if (requiredExpr) {\n          const minVer = parseInt(requiredExpr.replace(/[^0-9]/g, \"\"), 10);\n          const operator = requiredExpr.replace(/[0-9]/g, \"\").trim();\n          const operators = {\n            \"\u003e=\": (a, b) =\u003e a \u003c b,\n            \"\u003c\": (a, b) =\u003e a \u003e= b,\n            \"\u003e\": (a, b) =\u003e a \u003c= b,\n            \"\u003c=\": (a, b) =\u003e a \u003e b,\n            \"==\": (a, b) =\u003e a !== b,\n            \"=\": (a, b) =\u003e a !== b\n          };\n          const violation = operators[operator] ? operators[operator](flowApiVer, minVer) : flowApiVer \u003c minVer;\n\n          if (violation) {\n            // Craft a result object that mimics the core scanner output so downstream logic remains unchanged.\n            const manualScanResult = [{\n              flow: parsedFlow,\n              ruleResults: [{\n                ruleName: \"APIVersion\",\n                ruleDefinition: {\n                  description: apiVersionRuleDef?.description || \"API Version check\",\n                  label: apiVersionRuleDef?.label || \"APIVersion\"\n                },\n                occurs: true,\n                severity: apiVersionConfig.severity,\n                details: [{\n                  name: String(flowApiVer),\n                  type: \"apiVersion\",\n                  expression: requiredExpr\n                }]\n              }]\n            }];\n            results.push(...this.processScanResults(manualScanResult));\n          }\n        }\n      }\n\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-12T20:20:34Z",
+    "Severity": "HIGH",
+    "Summary": "Lightning Flow Scanner Vulnerable to Code Injection via Unsafe Use of `new Function()` in APIVersion Rule",
+    "UpdatedAt": "2025-12-12T21:37:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.10.6"
+      },
+      "VulnerableVersionRange": "\u003c 6.10.6"
+    }
+  ]
+}
