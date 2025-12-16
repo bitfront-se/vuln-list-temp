@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-15T20:55:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "misskey-js"
+  },
+  "Advisory": {
+    "DatabaseId": 326558,
+    "Id": "GSA_kwCzR0hTQS00OTZnLW1tcHctajl4M84ABPue",
+    "GhsaId": "GHSA-496g-mmpw-j9x3",
+    "References": [
+      {
+        "Url": "https://github.com/misskey-dev/misskey/security/advisories/GHSA-496g-mmpw-j9x3"
+      },
+      {
+        "Url": "https://github.com/misskey-dev/misskey/commit/dc77d59f8712d3fe0b73cd4af2035133839cd57b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-496g-mmpw-j9x3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-496g-mmpw-j9x3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66402"
+      }
+    ],
+    "Description": "### Summary\n\nAfter adding private posts (followers, direct) that you do not have permission to view to your favorites or clips, you can export them to view the contents of the private posts.\n\n### PoC\n\n1. Create an account (X) for testing and an account (Y) for private posts on the same server.\n2. Send appropriate content from Y using \"Follow\"\n3. Send appropriate content to any user using \"Nominate\" from Y\n4. Obtain the URLs for the two posts above using Y's account.\n5. Query the URLs for the two posts using X and add them to your favorites or clips.\n6. Export your favorites or clips using X.\n7. Check the exported data.\n\nNote: Verified in v2025.11.1\n\n### Impact\n\nThis could allow an attacker to view the contents of private posts.\nIf you have pinned private posts, this could be a real problem, as the ID of the private post can be obtained by viewing the user page on the original server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-15T20:55:27Z",
+    "Severity": "HIGH",
+    "Summary": "misskey.js's export data contains private post data",
+    "UpdatedAt": "2025-12-15T20:55:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.12.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0-beta.16, \u003c 2025.12.0"
+    }
+  ]
+}
