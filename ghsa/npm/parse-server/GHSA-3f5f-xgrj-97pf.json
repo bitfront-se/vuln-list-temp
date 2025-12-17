@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-16T22:35:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 327009,
+    "Id": "GSA_kwCzR0hTQS0zZjVmLXhncmotOTdwZs4ABP1h",
+    "GhsaId": "GHSA-3f5f-xgrj-97pf",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-3f5f-xgrj-97pf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-68150"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/9988"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/9989"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3f5f-xgrj-97pf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3f5f-xgrj-97pf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68150"
+      }
+    ],
+    "Description": "## Impact\n\nThe Instagram authentication adapter allows clients to specify a custom API URL via the `apiURL` parameter in `authData`. This enables SSRF attacks and possibly authentication bypass if malicious endpoints return fake responses to validate unauthorized users.\n\n## Patches\n\nFixed by hardcoding the Instagram Graph API URL `https://graph.instagram.com` and ignoring client-provided `apiURL` values.\n\n## Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-16T22:35:40Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server is vulnerable to Server-Side Request Forgery (SSRF) via Instagram OAuth Adapter",
+    "UpdatedAt": "2025-12-16T22:35:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.2"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.1.alpha.1"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.1.1.alpha.1"
+    }
+  ]
+}
