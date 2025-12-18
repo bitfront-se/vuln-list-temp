@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2025-12-17T22:18:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow-providers-edge3"
+  },
+  "Advisory": {
+    "DatabaseId": 327051,
+    "Id": "GSA_kwCzR0hTQS02Nmg4LTNnNDgtNmh4OM4ABP2L",
+    "GhsaId": "GHSA-66h8-3g48-6hx8",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-67895"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/59143"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/hhnmmzkj5qx5gbk6pdkh8tcsx5oj1nqs"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2025/12/16/3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-66h8-3g48-6hx8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-66h8-3g48-6hx8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-67895"
+      }
+    ],
+    "Description": "Edge3 Worker RPC RCE on Airflow 2.\n\nThis issue affects Apache Airflow Providers Edge3: before 2.0.0 - and only if projects installed and configured it on Airflow 2.\n\nThe Edge3 provider support in Airflow 2 has been always development-only and not officially released, however if projects installed and configured Edge3 provider in Airflow 2, it implicitly enabled non-public (normally) API which was used to test Edge Provider in Airflow 2 during the development. This API allowed Dag author to perform Remote Code Execution in the webserver context, which Dag Author was not supposed to be able to do.\n\nIf projects installed and configured Edge3 provider for Airflow 2, they should uninstall it and migrate to Airflow 3. The new Edge3 provider versions (\u003e=2.0.0) has a minimum version of Airflow set to 3 and the RCE-prone Airflow 2 code is removed, so it should no longer be possible to use the Edge3 provider 2.0.0+ on Airflow 2.\n\nIf projects used Edge Provider in Airflow 3, you they are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-17T12:30:12Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache Airflow Providers Edge3 exposes internal API allowing RCE in web server context",
+    "UpdatedAt": "2025-12-17T22:18:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.0"
+    }
+  ]
+}

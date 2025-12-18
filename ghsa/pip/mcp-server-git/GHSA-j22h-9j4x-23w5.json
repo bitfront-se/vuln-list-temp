@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-17T22:50:39Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mcp-server-git"
+  },
+  "Advisory": {
+    "DatabaseId": 327139,
+    "Id": "GSA_kwCzR0hTQS1qMjJoLTlqNHgtMjN3Nc4ABP3j",
+    "GhsaId": "GHSA-j22h-9j4x-23w5",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-j22h-9j4x-23w5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j22h-9j4x-23w5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j22h-9j4x-23w5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68145"
+      }
+    ],
+    "Description": "In mcp-server-git versions prior to 2025.12.17, when the server is started with the --repository flag to restrict operations to a specific repository path, it did not validate that repo_path arguments in subsequent tool calls were actually within that configured path. This could allow tool calls to operate on other repositories accessible to the server process. The fix adds path validation that resolves both the configured repository and the requested path (following symlinks) and verifies the requested path is within the allowed repository before executing any git operations. Users are advised to upgrade to 2025.12.17 upon release to remediate this issue.\n\nThank you to https://hackerone.com/yardenporat for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-17T22:50:38Z",
+    "Severity": "MODERATE",
+    "Summary": "mcp-server-git has missing path validation when using --repository flag",
+    "UpdatedAt": "2025-12-17T22:50:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2025.11.25"
+    }
+  ]
+}
