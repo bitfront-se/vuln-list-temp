@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-18T22:03:09Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nbconvert"
+  },
+  "Advisory": {
+    "DatabaseId": 327557,
+    "Id": "GSA_kwCzR0hTQS14bTU5LXJxYzctaGh2Zs4ABP-F",
+    "GhsaId": "GHSA-xm59-rqc7-hhvf",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-53000"
+      },
+      {
+        "Url": "https://github.com/jupyter/nbconvert/blob/4f61702f5c7524d8a3c4ac0d5fc33a6ac2fa36a7/nbconvert/preprocessors/svg2pdf.py#L104"
+      },
+      {
+        "Url": "https://www.imperva.com/blog/code-execution-in-jupyter-notebook-exports"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xm59-rqc7-hhvf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xm59-rqc7-hhvf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-53000"
+      }
+    ],
+    "Description": "### Summary\n\nOn Windows, converting a notebook containing SVG output to a PDF results in unauthorized code execution. Specifically, a third party can create a `inkscape.bat` file that defines a [Windows batch script](https://en.wikipedia.org/wiki/Batch_file), capable of arbitrary code execution.\n\nWhen a user runs `jupyter nbconvert --to pdf` on a notebook containing SVG output to a PDF on a Windows platform from this directory, the `inkscape.bat` file is run unexpectedly.\n\n### Details\n_Give all details on the vulnerability. Pointing to the incriminated source code is very helpful for the maintainer._\n\n`nbconvert` searches for an `inkscape` executable when converting notebooks to PDFs here: https://github.com/jupyter/nbconvert/blob/4f61702f5c7524d8a3c4ac0d5fc33a6ac2fa36a7/nbconvert/preprocessors/svg2pdf.py#L104\n\nThe MITRE page on [CWE-427 (Uncontrolled Search Path Element)](https://cwe.mitre.org/data/definitions/427.html) summarizes the root cause succinctly:\n\n\u003e In Windows-based systems, when the `LoadLibrary` or `LoadLibraryEx` function is called with a DLL name that does not contain a fully qualified path, the function follows a search order that includes two path elements that might be uncontrolled:\n\u003e - the directory from which the program has been loaded\n\u003e - the current working directory\n\n### PoC\n\n_Complete instructions, including specific configuration details, to reproduce the vulnerability._\n\n1. Create a directory containing: \n\n    - A hidden bat file called `inkscape.bat` containing `msg * \"You've been hacked!\"`\n\n    - A dummy ipynb file called `Machine_Learning.ipynb`\n\n2. Run the command `jupyter nbconvert --to pdf Machine_Learning.ipynb`.\n\n3. Wait a few seconds, and you should see a popup showing the message \"You've been hacked!\" \n\n### Impact\n\nAll Windows users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-18T22:03:08Z",
+    "Severity": "HIGH",
+    "Summary": "nbconvert has an uncontrolled search path that leads to unauthorized code execution on Windows",
+    "UpdatedAt": "2025-12-18T22:03:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 7.16.6"
+    }
+  ]
+}
