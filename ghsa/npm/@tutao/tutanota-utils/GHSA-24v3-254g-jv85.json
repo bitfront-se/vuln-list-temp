@@ -1,0 +1,64 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2025-12-19T21:32:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tutao/tutanota-utils"
+  },
+  "Advisory": {
+    "DatabaseId": 327785,
+    "Id": "GSA_kwCzR0hTQS0yNHYzLTI1NGctanY4Nc4ABQBp",
+    "GhsaId": "GHSA-24v3-254g-jv85",
+    "References": [
+      {
+        "Url": "https://github.com/tutao/tutanota/security/advisories/GHSA-24v3-254g-jv85"
+      },
+      {
+        "Url": "https://github.com/tutao/tutanota/commit/e28345f5f78f628f9d5c04e785f79543f01dca8b"
+      },
+      {
+        "Url": "https://github.com/tutao/tutanota/blob/452700a96d490646550ad2a02229973590291faf/src/mail-app/contacts/view/ContactViewer.ts#L326"
+      },
+      {
+        "Url": "https://github.com/tutao/tutanota/blob/452700a96d490646550ad2a02229973590291faf/src/mail-app/contacts/view/ContactViewer.ts#L341"
+      },
+      {
+        "Url": "https://github.com/tutao/tutanota/blob/452700a96d490646550ad2a02229973590291faf/src/mail-app/contacts/view/ContactViewer.ts#L356"
+      },
+      {
+        "Url": "https://github.com/tutao/tutanota/blob/452700a96d490646550ad2a02229973590291faf/src/mail-app/contacts/view/ContactViewer.ts#L391"
+      },
+      {
+        "Url": "https://github.com/tutao/tutanota/blob/452700a96d490646550ad2a02229973590291faf/src/mail-app/contacts/view/ContactViewer.ts#L415"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-24v3-254g-jv85"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-24v3-254g-jv85"
+      }
+    ],
+    "Description": "### Impact\nUsers importing contacts from untrusted sources.\n\nSpecifically crafted contact data can lead to some of DOM modifications for the link button next to the field e.g. the link address can be overriden. CSS can be manipulated to give the button arbitrary look and change it's size so that any click on the screen would lead to the specified URL. Modifying event listeners does *not* seem to be possible so no JS can be executed (which would also be prevented by CSP).\n\n## Technical details\nThe data is included as part of the [mithril's hyperscript selector](https://mithril.js.org/hyperscript.html#css-selectors). It is possible to define a value like `][href=https://ddg.gg][style=position:fixed;width:150vw;height:200vh` which will be included in the selector passed to Mithril and will be interpreted as part of the code.\n\n### Patches\nhttps://github.com/tutao/tutanota/commit/e28345f5f78f628f9d5c04e785f79543f01dca8b\n\n### Workarounds\nDo not open contact viewer on unpatched versions. If the contact was opened, close the app or use keyboard shortcuts to switch to another part of the app.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-19T21:32:35Z",
+    "Severity": "LOW",
+    "Summary": "Tuta Mail has DOM attribute and CSS injection in its Contact Viewer feature",
+    "UpdatedAt": "2025-12-19T21:32:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "314.251111.0"
+      },
+      "VulnerableVersionRange": "\u003c 314.251111.0"
+    }
+  ]
+}

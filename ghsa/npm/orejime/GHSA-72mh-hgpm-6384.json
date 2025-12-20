@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2025-12-19T19:17:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orejime"
+  },
+  "Advisory": {
+    "DatabaseId": 327759,
+    "Id": "GSA_kwCzR0hTQS03Mm1oLWhncG0tNjM4NM4ABQBP",
+    "GhsaId": "GHSA-72mh-hgpm-6384",
+    "References": [
+      {
+        "Url": "https://github.com/boscop-fr/orejime/security/advisories/GHSA-72mh-hgpm-6384"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-68457"
+      },
+      {
+        "Url": "https://github.com/boscop-fr/orejime/issues/142"
+      },
+      {
+        "Url": "https://github.com/boscop-fr/orejime/pull/143"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72mh-hgpm-6384"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72mh-hgpm-6384"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68457"
+      }
+    ],
+    "Description": "### Impact\n\nOn HTML elements handled by Orejime, one could run malicious code by embedding `javascript:` code within data attributes.\nWhen consenting to the related purpose, Orejime would turn data attributes into unprefixed ones (i.e. `data-href` into `href`), thus executing the code.\n\nThis shouldn't have any impact on most setups, as elements handled by Orejime are generally hardcoded. The problem would only arise if somebody could inject HTML code within pages.\n\nSee https://github.com/boscop-fr/orejime/issues/142 for the original report.\n\n### Patches\n\nThe problem has been patched by https://github.com/boscop-fr/orejime/pull/143. It is available in version 2.3.2.\n\n### Workarounds\n\nThe problem can be fixed outside of Orejime by sanitizing attributes which could contain executable code.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-19T19:17:26Z",
+    "Severity": "LOW",
+    "Summary": "Orejime has executable code in HTML attributes",
+    "UpdatedAt": "2025-12-19T19:17:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.2"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-19T21:08:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "fastapi-sso"
+  },
+  "Advisory": {
+    "DatabaseId": 327611,
+    "Id": "GSA_kwCzR0hTQS1ocDZyLXI5dmMtcTh3eM4ABP-7",
+    "GhsaId": "GHSA-hp6r-r9vc-q8wx",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-14546"
+      },
+      {
+        "Url": "https://github.com/tomasvotava/fastapi-sso/issues/266"
+      },
+      {
+        "Url": "https://github.com/tomasvotava/fastapi-sso/commit/6117d1a5ad498ba57d671e8a059ebe20db5abe02"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-PYTHON-FASTAPISSO-14386403"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hp6r-r9vc-q8wx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hp6r-r9vc-q8wx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-14546"
+      }
+    ],
+    "Description": "Versions of the package fastapi-sso before 0.19.0 are vulnerable to Cross-site Request Forgery (CSRF) due to the improper validation of the OAuth state parameter during the authentication callback. While the get_login_url method allows for state generation, it does not persist the state or bind it to the user's session. Consequently, the verify_and_process method accepts the state received in the query parameters without verifying it against a trusted local value. This allows a remote attacker to trick a victim into visiting a malicious callback URL, which can result in the attacker's account being linked to the victim's internal account.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-19T06:30:27Z",
+    "Severity": "MODERATE",
+    "Summary": "FastAPI SSP is vulnerable to Cross-site Request Forgery (CSRF) through improper OAuth parameter validation",
+    "UpdatedAt": "2025-12-19T21:08:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.19.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.19.0"
+    }
+  ]
+}

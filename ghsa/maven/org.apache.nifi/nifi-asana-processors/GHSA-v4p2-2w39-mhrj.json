@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-19T21:45:13Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.nifi:nifi-asana-processors"
+  },
+  "Advisory": {
+    "DatabaseId": 327699,
+    "Id": "GSA_kwCzR0hTQS12NHAyLTJ3MzktbWhyas4ABQAT",
+    "GhsaId": "GHSA-v4p2-2w39-mhrj",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-66524"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/k9h004ydjg7opdvxr0nfywtzf33z60d7"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2025/12/18/2"
+      },
+      {
+        "Url": "https://github.com/apache/nifi/commit/1c081c15544b8459d69daaae2056f0f433cafce6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v4p2-2w39-mhrj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v4p2-2w39-mhrj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66524"
+      }
+    ],
+    "Description": "Apache NiFi 1.20.0 through 2.6.0 include the GetAsanaObject Processor, which requires integration with a configurable Distribute Map Cache Client Service for storing and retrieving state information. The GetAsanaObject Processor used generic Java Object serialization and deserialization without filtering. Unfiltered Java object deserialization does not provide protection against crafted state information stored in the cache server configured for GetAsanaObject. Exploitation requires an Apache NiFi system running with the GetAsanaObject Processor, and direct access to the configured cache server. Upgrading to Apache NiFi 2.7.0 is the recommended mitigation, which replaces Java Object serialization with JSON serialization. Removing the GetAsanaObject Processor located in the nifi-asana-processors-nar bundle also prevents exploitation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-19T12:31:24Z",
+    "Severity": "HIGH",
+    "Summary": "Apache NiFi GetAsanaObject Processor has Remote Code Execution via Unsafe Deserialization",
+    "UpdatedAt": "2025-12-19T21:45:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.20.0, \u003c 2.7.0"
+    }
+  ]
+}
