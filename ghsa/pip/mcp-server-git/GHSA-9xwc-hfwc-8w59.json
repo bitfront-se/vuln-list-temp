@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2025-12-17T22:50:30Z",
+  "UpdatedAt": "2025-12-20T05:17:55Z",
   "Package": {
     "Ecosystem": "PIP",
     "Name": "mcp-server-git"
@@ -12,6 +12,9 @@
     "References": [
       {
         "Url": "https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-9xwc-hfwc-8w59"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-68144"
       },
       {
         "Url": "https://github.com/advisories/GHSA-9xwc-hfwc-8w59"
@@ -27,12 +30,12 @@
         "Value": "CVE-2025-68144"
       }
     ],
-    "Description": "In mcp-server-git versions prior to 2025.12.17, the git_diff and git_checkout functions passed user-controlled arguments directly to git CLI commands without sanitization. Flag-like values (e.g., `--output=/path/to/file` for `git_diff`) would be interpreted as command-line options rather than git refs, enabling arbitrary file overwrites. The fix adds validation that rejects arguments starting with - and verifies the argument resolves to a valid git ref via rev_parse before execution. Users are advised to update to 2025.12.17 resolve this issue when it is released.\n\nThank you to https://hackerone.com/yardenporat for reporting.",
+    "Description": "In mcp-server-git versions prior to 2025.12.18, the git_diff and git_checkout functions passed user-controlled arguments directly to git CLI commands without sanitization. Flag-like values (e.g., `--output=/path/to/file` for `git_diff`) would be interpreted as command-line options rather than git refs, enabling arbitrary file overwrites. The fix adds validation that rejects arguments starting with - and verifies the argument resolves to a valid git ref via rev_parse before execution. Users are advised to update to 2025.12.18 resolve this issue.\n\nThank you to https://hackerone.com/yardenporat for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2025-12-17T22:50:29Z",
     "Severity": "MODERATE",
     "Summary": " mcp-server-git argument injection in git_diff and git_checkout functions allows overwriting local files",
-    "UpdatedAt": "2025-12-17T22:50:30Z",
+    "UpdatedAt": "2025-12-20T05:17:55Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -42,9 +45,9 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": ""
+        "Identifier": "2025.12.18"
       },
-      "VulnerableVersionRange": "\u003c= 2025.11.25"
+      "VulnerableVersionRange": "\u003c 2025.12.18"
     }
   ]
 }
