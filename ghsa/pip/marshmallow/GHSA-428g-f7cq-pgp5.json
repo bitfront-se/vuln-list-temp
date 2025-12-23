@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2025-12-22T20:20:09Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "marshmallow"
+  },
+  "Advisory": {
+    "DatabaseId": 327901,
+    "Id": "GSA_kwCzR0hTQS00MjhnLWY3Y3EtcGdwNc4ABQDd",
+    "GhsaId": "GHSA-428g-f7cq-pgp5",
+    "References": [
+      {
+        "Url": "https://github.com/marshmallow-code/marshmallow/security/advisories/GHSA-428g-f7cq-pgp5"
+      },
+      {
+        "Url": "https://github.com/marshmallow-code/marshmallow/commit/d24a0c9df061c4daa92f71cf85aca25b83eee508"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-428g-f7cq-pgp5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-428g-f7cq-pgp5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68480"
+      }
+    ],
+    "Description": "### Impact\n\n`Schema.load(data, many=True)` is vulnerable to denial of service attacks. A moderately sized request can consume a disproportionate amount of CPU time.\n\n### Patches\n\n4.1.2, 3.26.2\n\n### Workarounds\n\n```py\n# Fail fast\ndef load_many(schema, data, **kwargs):\n    if not isinstance(data, list):\n        raise ValidationError(['Invalid input type.'])\n    return [schema.load(item, **kwargs) for item in data]\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-22T20:20:07Z",
+    "Severity": "MODERATE",
+    "Summary": "Marshmallow has DoS in Schema.load(many)",
+    "UpdatedAt": "2025-12-22T20:20:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.1.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0rc1, \u003c 3.26.2"
+    }
+  ]
+}
