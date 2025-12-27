@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2025-12-26T18:18:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 328733,
+    "Id": "GSA_kwCzR0hTQS02MnI0LWh3MjMtY2M4ds4ABQQd",
+    "GhsaId": "GHSA-62r4-hw23-cc8v",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-62r4-hw23-cc8v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-62r4-hw23-cc8v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-62r4-hw23-cc8v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68668"
+      }
+    ],
+    "Description": "### Impact\nA sandbox bypass vulnerability exists in the Python Code Node that uses Pyodide.\n\nAn authenticated user with permission to create or modify workflows can exploit this vulnerability to execute arbitrary commands on the host system running n8n, using the same privileges as the n8n process.\n\n### Patches\nIn n8n version 1.111.0, a task-runner-based native Python implementation was introduced as an optional feature, providing a more secure isolation model.\n\nTo enable it, you need to configure the `N8N_RUNNERS_ENABLED` and `N8N_NATIVE_PYTHON_RUNNER` environment variables.\n\nThis implementation became the default starting with n8n version 2.0.0.\n\n### Workarounds\n- Disable the Code Node by setting the environment variable `NODES_EXCLUDE: \"[\\\"n8n-nodes-base.code\\\"]\"` ([Docs)](https://docs.n8n.io/hosting/securing/blocking-nodes/)\n- Disable Python support in the Code node by setting the environment variable `N8N_PYTHON_ENABLED=false`, which was introduced in n8n version 1.104.0.\n- Configure n8n to use the task runner based Python sandbox via the `N8N_RUNNERS_ENABLED` and `N8N_NATIVE_PYTHON_RUNNER` environment variables. ([Docs](https://docs.n8n.io/hosting/configuration/task-runners/))\n\n### Resources\n- n8n documentation: [Blocking access to nodes](https://docs.n8n.io/hosting/securing/blocking-nodes/)\n- n8n documentation: [Code Node (Python)](https://docs.n8n.io/code/code-node/#python-native)\n- n8n documentation: [Task Runners](https://docs.n8n.io/hosting/configuration/task-runners/)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-26T18:18:05Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n Vulnerable to Arbitrary Command Execution in Pyodide based Python Code Node ",
+    "UpdatedAt": "2025-12-26T18:18:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 2.0.0"
+    }
+  ]
+}
