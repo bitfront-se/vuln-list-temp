@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-29T15:24:36Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "picklescan"
+  },
+  "Advisory": {
+    "DatabaseId": 328841,
+    "Id": "GSA_kwCzR0hTQS12cW12LTQ3eGctOXdwcs4ABQSJ",
+    "GhsaId": "GHSA-vqmv-47xg-9wpr",
+    "References": [
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/security/advisories/GHSA-vqmv-47xg-9wpr"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/pull/53"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/commit/70c1c6c31beb6baaf52c8db1b6c3c0e84a6f9dab"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/releases/tag/v0.0.33"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vqmv-47xg-9wpr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vqmv-47xg-9wpr"
+      }
+    ],
+    "Description": "### Summary\nUsing pty.spawn, which is a built-in python library function to execute arbitrary commands on the host system.\n\n### Details\nThe attack payload executes in the following steps:\nFirst, the attacker craft the payload by calling to `pty.spawn` function in the `__reduce__` method. Then the victim attempts to use picklescan to scan the pickle file for issues and sees this -\n```\n----------- SCAN SUMMARY -----------\nScanned files: 1\nInfected files: 0\nDangerous globals: 0\n```\nThe victim proceeds to load the pickle file and execute attacker-injected arbitrary code.\n\n### PoC\n```\nclass PtyExploit:\n  def __reduce__(self):\n    return (pty.spawn, ([\"/bin/sh\", \"-c\", \"id; exit\"],))\n```\n\n### Impact\n**Who is impacted?** Any organization or individual relying on picklescan to detect malicious pickle files inside PyTorch models.\n**What is the impact?** Attackers can embed malicious code in pickle file that remains undetected but executes when the pickle file is loaded.\n**Supply Chain Attack**: Attackers can distribute infected pickle files across ML models, APIs, or saved Python objects.\n\n### Collaborators\nhttps://github.com/ajohnston9\nhttps://github.com/geo-lit",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-29T15:24:33Z",
+    "Severity": "HIGH",
+    "Summary": "Picklescan missing detection when calling pty.spawn",
+    "UpdatedAt": "2025-12-29T15:24:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.33"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.33"
+    }
+  ]
+}
