@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-02T15:54:14Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "feast"
+  },
+  "Advisory": {
+    "DatabaseId": 329657,
+    "Id": "GSA_kwCzR0hTQS0zNHdtLTRodzctcWZqds4ABQe5",
+    "GhsaId": "GHSA-34wm-4hw7-qfjv",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-11157"
+      },
+      {
+        "Url": "https://github.com/feast-dev/feast/commit/b2e37ff37953b68ae833f6874ab5bc510a4ca5fb"
+      },
+      {
+        "Url": "https://huntr.com/bounties/46d4d585-b968-4a76-80ce-872bc5525564"
+      },
+      {
+        "Url": "https://github.com/feast-dev/feast/pull/5643"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-34wm-4hw7-qfjv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-34wm-4hw7-qfjv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-11157"
+      }
+    ],
+    "Description": "A high-severity remote code execution vulnerability exists in feast-dev/feast version 0.53.0, specifically in the Kubernetes materializer job located at `feast/sdk/python/feast/infra/compute_engines/kubernetes/main.py`. The vulnerability arises from the use of `yaml.load(..., Loader=yaml.Loader)` to deserialize `/var/feast/feature_store.yaml` and `/var/feast/materialization_config.yaml`. This method allows for the instantiation of arbitrary Python objects, enabling an attacker with the ability to modify these YAML files to execute OS commands on the worker pod. This vulnerability can be exploited before the configuration is validated, potentially leading to cluster takeover, data poisoning, and supply-chain sabotage.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-01T09:30:14Z",
+    "Severity": "HIGH",
+    "Summary": "Feast vulnerable to Deserialization of Untrusted Data",
+    "UpdatedAt": "2026-01-02T15:54:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.54.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.54.0"
+    }
+  ]
+}
