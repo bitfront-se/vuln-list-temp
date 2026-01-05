@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-05T17:35:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jspdf"
+  },
+  "Advisory": {
+    "DatabaseId": 330514,
+    "Id": "GSA_kwCzR0hTQS1mOGNtLTY0NDcteDVoMs4ABQsS",
+    "GhsaId": "GHSA-f8cm-6447-x5h2",
+    "References": [
+      {
+        "Url": "https://github.com/parallax/jsPDF/security/advisories/GHSA-f8cm-6447-x5h2"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/commit/a688c8f479929b24a6543b1fa2d6364abb03066d"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/releases/tag/v4.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f8cm-6447-x5h2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f8cm-6447-x5h2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68428"
+      }
+    ],
+    "Description": "### Impact\nUser control of the first argument of the loadFile method in the node.js build allows local file inclusion/path traversal.\n\nIf given the possibility to pass unsanitized paths to the loadFile method, a user can retrieve file contents of arbitrary files in the local file system the node process is running in. The file contents are included verbatim in the generated PDFs.\n\nOther affected methods are: `addImage`, `html`, `addFont`.\n\nOnly the node.js builds of the library are affected, namely the `dist/jspdf.node.js` and `dist/jspdf.node.min.js` files.\n\nExample attack vector:\n\n```js\nimport { jsPDF } from \"./dist/jspdf.node.js\";\n\nconst doc = new jsPDF();\n\ndoc.addImage(\"./secret.txt\", \"JPEG\", 0, 0, 10, 10);\ndoc.save(\"test.pdf\"); // the generated PDF will contain the \"secret.txt\" file\n```\n\n### Patches\nThe vulnerability has been fixed in jsPDF@4.0.0. This version restricts file system access per default. This semver-major update does not introduce other breaking changes.\n\n### Workarounds\nWith recent node versions, jsPDF recommends using the `--permission` flag in production. The feature was introduced experimentally in v20.0.0 and is stable since v22.13.0/v23.5.0/v24.0.0. See the [node documentation](https://nodejs.org/api/permissions.html) for details.\n\nFor older node versions, sanitize user-provided paths before passing them to jsPDF.\n\n### Credits\nResearcher: kilkat (Kwangwoon Kim)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-05T17:35:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "jsPDF has Local File Inclusion/Path Traversal vulnerability",
+    "UpdatedAt": "2026-01-05T17:35:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.0.4"
+    }
+  ]
+}
