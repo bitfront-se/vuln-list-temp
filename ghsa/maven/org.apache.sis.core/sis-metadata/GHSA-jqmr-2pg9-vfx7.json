@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-05T23:14:58Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.sis.core:sis-metadata"
+  },
+  "Advisory": {
+    "DatabaseId": 330496,
+    "Id": "GSA_kwCzR0hTQS1qcW1yLTJwZzktdmZ4N84ABQsA",
+    "GhsaId": "GHSA-jqmr-2pg9-vfx7",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-68280"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/s4ggy3zbtrrn93glgo2vn52lgcxk4bp4"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/01/05/11"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/01/05/7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jqmr-2pg9-vfx7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jqmr-2pg9-vfx7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68280"
+      }
+    ],
+    "Description": "Improper Restriction of XML External Entity Reference vulnerability in Apache SIS.\n\n\n\nIt is possible to write XML files in such a way that, when parsed by Apache SIS, an XML file reveals to the attacker the content of a local file on the server running Apache SIS. This vulnerability impacts the following SIS services:\n\n\n\n\n  *  Reading of GeoTIFF files having the GEO_METADATA tag defined by the Defense Geospatial Information Working Group (DGIWG).\n\n  *  Parsing of ISO 19115 metadata in XML format.\n\n  *  Parsing of Coordinate Reference Systems defined in the GML format.\n\n  *  Parsing of files in GPS Exchange Format (GPX).\n\n\n\n\n\nThis issue affects Apache SIS from versions 0.4 through 1.5 inclusive. Users are recommended to upgrade to version 1.6, which will fix the issue. In the meantime, the security vulnerability can be avoided by launching Java with the javax.xml.accessExternalDTD system property sets to a comma-separated list of authorized protocols. For example:\n\n\n\njava -Djavax.xml.accessExternalDTD=\"\" ...",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-05T15:32:15Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache SIS has Improper Restriction of XML External Entity Reference vulnerability",
+    "UpdatedAt": "2026-01-05T23:14:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 0.4, \u003c 1.6"
+    }
+  ]
+}

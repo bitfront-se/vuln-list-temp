@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-05T23:13:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 330572,
+    "Id": "GSA_kwCzR0hTQS1nODR4LW1jcWoteDlxcc4ABQtM",
+    "GhsaId": "GHSA-g84x-mcqj-x9qq",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-g84x-mcqj-x9qq"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/4ed97a4e46eaf61bd0f05063245f613469700229"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/dc3170b56904bdf814228fae70a5501a42a6c712"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g84x-mcqj-x9qq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g84x-mcqj-x9qq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-69229"
+      }
+    ],
+    "Description": "### Summary\n\nHandling of chunked messages can result in excessive blocking CPU usage when receiving a large number of chunks.\n\n### Impact\n\nIf an application makes use of the `request.read()` method in an endpoint, it may be possible for an attacker to cause the server to spend a moderate amount of blocking CPU time (e.g. 1 second) while processing the request. This could potentially lead to DoS as the server would be unable to handle other requests during that time.\n\n-----\n\nPatch: https://github.com/aio-libs/aiohttp/commit/dc3170b56904bdf814228fae70a5501a42a6c712\nPatch: https://github.com/aio-libs/aiohttp/commit/4ed97a4e46eaf61bd0f05063245f613469700229",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-05T23:13:29Z",
+    "Severity": "MODERATE",
+    "Summary": "AIOHTTP vulnerable to DoS through chunked messages",
+    "UpdatedAt": "2026-01-05T23:13:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.13.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.13.2"
+    }
+  ]
+}

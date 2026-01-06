@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-05T22:55:16Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.spinnaker.clouddriver:clouddriver-artifacts"
+  },
+  "Advisory": {
+    "DatabaseId": 330563,
+    "Id": "GSA_kwCzR0hTQS12cmpjLXEyZmgtNng5aM4ABQtD",
+    "GhsaId": "GHSA-vrjc-q2fh-6x9h",
+    "References": [
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/security/advisories/GHSA-vrjc-q2fh-6x9h"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vrjc-q2fh-6x9h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vrjc-q2fh-6x9h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-61916"
+      }
+    ],
+    "Description": "### Impact\nThe primary impact is allowing users to fetch data from a remote URL.  This data can be then injected into Spinnaker pipelines via helm or other methods to extract things LIKE idmsv1 authentication data.  This ALSO includes calling INTERNAL Spinnaker API's via a get and similar endpoints.  Further, depending upon the artifact configuration, auth data may be exposed to arbitrary endpoints (e.g. GitHub auth headers) leading to credentials exposure.   \n\nTo trigger this, a Spinnaker installation MUST have:\n* An artifact enabled that allows user input.  This includes GitHub file artifacts, BitBucket, GitLab, HTTP artifacts and similar artifact providers.  JUST enabling the http artifact provider will add a \"no-auth\" http provider that could be used to extract link local data (e.g. AWS Metadata information).\n* A system that can consume the output of these artifacts.  E.g. Rosco helm can use this to fetch values data.  K8s account manifests if the API returns JSON can be used to inject that data into the pipeline itself though the pipeline would fail.\n\nTo note, due to the way the URLs are viable to be injected, CERTAIN systems can be used to provide DOS attacks on Spinnaker itself.  These would NOT compromise the system per se, given restarts and timeout configuration, but could lead to internal attacks by a Spinnaker user against Spinnaker services.  An example is that an artifact fetch reference could return an infinite response data feed or similar that can act as a DOS attack.  It's recommended to set strong limits on the various http limits AND artifact URLs to known valid URLs. \n\n### Patches\nFixed in clouddriver versiosn 2025.2.3, 2025.1.5, 2025.0.9.  Impacts all prior Spinnaker releases.\n\n### Workarounds\nDisable HTTP account types that allow user input of a given URL.  This is probably not feasible in MOST cases.  Git, Docker and other artifact account types with explicit URL configurations bypass this limitation and should be safe as they limit artifact URL loading.\n\nAlternatively using one of the various vendors which provide OPA policies to restrict pipelines from accessing or saving a pipeline with invalid URLs.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-05T22:55:12Z",
+    "Severity": "HIGH",
+    "Summary": "Spinnaker vulnerable to SSRF due to improper restrictions on http from user input",
+    "UpdatedAt": "2026-01-05T22:55:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.9,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.2.0, \u003c 2025.2.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.1.6"
+      },
+      "VulnerableVersionRange": "\u003c 2025.1.6"
+    }
+  ]
+}

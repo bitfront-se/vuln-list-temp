@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-05T19:57:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@openzeppelin/confidential-contracts"
+  },
+  "Advisory": {
+    "DatabaseId": 330544,
+    "Id": "GSA_kwCzR0hTQS1ocWY5LTh4djUteDh4d84ABQsw",
+    "GhsaId": "GHSA-hqf9-8xv5-x8xw",
+    "References": [
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/security/advisories/GHSA-hqf9-8xv5-x8xw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hqf9-8xv5-x8xw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hqf9-8xv5-x8xw"
+      }
+    ],
+    "Description": "### Impact\nThe `ERC7984` contract tracks total supply using a confidential `euint64` value. If a call to the internal `_mint` function would result in the total supply overflowing, the call fails silently. The `wrap` and `onTransferReceived` functions in `ERC7984ERC20Wrapper` assume that `_mint` won't fail silently and do not check the return value. If the mint function fails silently, users do not receive the confidential wrapped token but still send the underlying token, resulting in a loss of funds.\n\nBy default (without overriding `rate()`, the wrapper fills up after wrapping ~18.4 trillion tokens. There are very few tokens of value with sufficient total supply to result in the filling of the wrapper. That said, we recommend upgrading to `0.3.1` to remove this issue. \n\n### Patches\nThis issue has been patched in the `0.3.1` release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-05T19:57:46Z",
+    "Severity": "MODERATE",
+    "Summary": "ERC7984ERC20Wrapper: once a wrapper is filled, subsequent wrap requests do not revert and result in loss of funds.",
+    "UpdatedAt": "2026-01-05T19:57:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.3.0"
+    }
+  ]
+}

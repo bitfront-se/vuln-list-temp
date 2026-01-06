@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-05T19:48:51Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.vaadin:vaadin-spreadsheet-flow"
+  },
+  "Advisory": {
+    "DatabaseId": 330443,
+    "Id": "GSA_kwCzR0hTQS03d3d2LTc5eHctcnZ2Z84ABQrL",
+    "GhsaId": "GHSA-7wwv-79xw-rvvg",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-15022"
+      },
+      {
+        "Url": "https://github.com/vaadin/flow-components/pull/8285"
+      },
+      {
+        "Url": "https://vaadin.com/security/cve-2025-15022"
+      },
+      {
+        "Url": "https://github.com/vaadin/flow-components/commit/71046aa3dd08be0907bd03140c33131b94f6e99c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7wwv-79xw-rvvg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7wwv-79xw-rvvg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-15022"
+      }
+    ],
+    "Description": "Action captions in Vaadin accept HTML by default but were not sanitized, potentially allowing Cross-site Scripting (XSS) if caption content is derived from user input.\n\nIn Vaadin Framework 7 and 8, the Action class is a general-purpose class that may be used by multiple components. The fixed versions sanitize captions by default and provide an API to explicitly enable HTML content mode for backwards compatibility.\n\nIn Vaadin 23 and newer, the Action class is only used by the Spreadsheet component. The fixed versions sanitize HTML using Jsoup with a relaxed safelist.\n\nVaadin 14 is not affected as Spreadsheet component was not supported.\n\nUsers of affected versions should apply the following mitigation or upgrade. Releases that have fixed this issue include:\n\nProduct version\nVaadin 7.0.0 - 7.7.49\nVaadin 8.0.0 - 8.29.1\nVaadin 23.1.0 - 23.6.5\nVaadin 24.0.0 - 24.8.13\nVaadin 24.9.0 - 24.9.6\n\nMitigation\nUpgrade to 7.7.50\nUpgrade to 8.30.0\nUpgrade to 23.6.6\nUpgrade to 24.8.14 or 24.9.7\nUpgrade to 25.0.0 or newer\n\nArtifacts     Maven coordinatesVulnerable versionsFixed versioncom.vaadin:vaadin-server\n7.0.0 - 7.7.49\n≥7.7.50\ncom.vaadin:vaadin-server\n8.0.0 - 8.29.1\n≥8.30.0\ncom.vaadin:vaadin\n23.1.0 - 23.6.5\n≥23.6.6\ncom.vaadin:vaadin24.0.0 - 24.8.13\n≥24.8.14\ncom.vaadin:vaadin24.9.0 - 24.9.6\n≥24.9.7\ncom.vaadin:vaadin-spreadsheet-flow\n23.1.0 - 23.6.5\n≥23.6.6\ncom.vaadin:vaadin-spreadsheet-flow\n24.0.0 - 24.8.13\n≥24.8.14\ncom.vaadin:vaadin-spreadsheet-flow\n24.9.0 - 24.9.6\n≥24.9.7",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-05T09:30:19Z",
+    "Severity": "MODERATE",
+    "Summary": "Vaadin vulnerable to Cross-site Scripting",
+    "UpdatedAt": "2026-01-05T19:48:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "24.9.7"
+      },
+      "VulnerableVersionRange": "\u003e= 24.9.0, \u003c 24.9.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "24.8.14"
+      },
+      "VulnerableVersionRange": "\u003e= 24.0.0, \u003c 24.8.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "23.6.6"
+      },
+      "VulnerableVersionRange": "\u003e= 23.1.0, \u003c 23.6.6"
+    }
+  ]
+}
