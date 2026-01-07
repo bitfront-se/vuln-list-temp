@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-01-06T21:20:38Z",
+  "UpdatedAt": "2026-01-07T16:16:29Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "@modelcontextprotocol/sdk"
@@ -20,6 +20,15 @@
         "Url": "https://www.vulncheck.com/advisories/mcp-typescript-sdk-uritemplate-exploded-array-pattern-redos"
       },
       {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-cqwc-fm46-7fff"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/commit/b392f02ffcf37c088dbd114fedf25026ec3913d3"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/releases/tag/v1.25.2"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-8r9q-7v3j-jr4g"
       }
     ],
@@ -33,12 +42,12 @@
         "Value": "CVE-2026-0621"
       }
     ],
-    "Description": "Anthropic's MCP TypeScript SDK versions up to and including 1.25.1 contain a regular expression denial of service (ReDoS) vulnerability in the UriTemplate class when processing RFC 6570 exploded array patterns. The dynamically generated regular expression used during URI matching contains nested quantifiers that can trigger catastrophic backtracking on specially crafted inputs, resulting in excessive CPU consumption. An attacker can exploit this by supplying a malicious URI that causes the Node.js process to become unresponsive, leading to a denial of service.",
+    "Description": "### Impact\n\nA ReDoS vulnerability in the `UriTemplate` class allows attackers to cause denial of service. The `partToRegExp()` function generates a regex pattern with nested quantifiers (`([^/]+(?:,[^/]+)*)`) for exploded template variables (e.g., `{/id*}`, `{?tags*}`), causing catastrophic backtracking on malicious input.\n\n**Who is affected:** MCP servers that register resource templates with exploded array patterns and accept requests from untrusted clients.\n\n**Attack result:** An attacker sends a crafted URI via `resources/read` request, causing 100% CPU utilization, server hang/crash, and denial of service for all clients.\n\n### Affected Versions\n\nAll versions of `@modelcontextprotocol/sdk` prior to the patched release.\n\n### Patches\n\nv1.25.2 contains b392f02ffcf37c088dbd114fedf25026ec3913d3 the fix modifies the regex pattern to prevent backtracking.\n\n### Workarounds\n\n- Avoid using exploded patterns (`{/id*}`, `{?tags*}`) in resource templates\n- Implement request timeouts and rate limiting\n- Validate URIs before processing to reject suspicious patterns",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-01-05T21:30:33Z",
     "Severity": "HIGH",
     "Summary": "Anthropic's MCP TypeScript SDK has a ReDoS vulnerability",
-    "UpdatedAt": "2026-01-06T21:20:38Z",
+    "UpdatedAt": "2026-01-07T16:16:29Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -48,9 +57,9 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": ""
+        "Identifier": "1.25.2"
       },
-      "VulnerableVersionRange": "\u003c= 1.25.1"
+      "VulnerableVersionRange": "\u003c 1.25.2"
     }
   ]
 }
