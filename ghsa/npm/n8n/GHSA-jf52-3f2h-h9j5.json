@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-07T19:22:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 330996,
+    "Id": "GSA_kwCzR0hTQS1qZjUyLTNmMmgtaDlqNc4ABQz0",
+    "GhsaId": "GHSA-jf52-3f2h-h9j5",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-jf52-3f2h-h9j5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jf52-3f2h-h9j5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jf52-3f2h-h9j5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21894"
+      }
+    ],
+    "Description": "### Impact\nAn authentication bypass in the Stripe Trigger node allows unauthenticated parties to trigger workflows by sending forged Stripe webhook events.\n\nThe Stripe Trigger creates and stores a Stripe webhook signing secret when registering the webhook endpoint, but incoming webhook requests were not verified against this secret. As a result, any HTTP client that knows the webhook URL could send a POST request containing a matching event `type`, causing the workflow to execute as if a legitimate Stripe event had been received.\n\nThis issue affects n8n users who have active workflows using the Stripe Trigger node. An attacker could potentially fake payment or subscription events and influence downstream workflow behavior. The practical risk is reduced by the fact that the webhook URL contains a high-entropy UUID; however, authenticated n8n users with access to the workflow can view this webhook ID.\n\n### Patches\nThe issue has been fixed in n8n version 2.2.2. Users should upgrade to this version or later to ensure that Stripe webhook signatures are properly verified.\n\n### Workarounds\nThere is no complete workaround short of upgrading. As a temporary mitigation, users can deactivate affected workflows or restrict access to workflows containing Stripe Trigger nodes to trusted users only.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-07T19:22:54Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n's Missing Stripe-Signature Verification Allows Unauthenticated Forged Webhooks",
+    "UpdatedAt": "2026-01-07T19:22:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.150.0, \u003c 2.2.2"
+    }
+  ]
+}

