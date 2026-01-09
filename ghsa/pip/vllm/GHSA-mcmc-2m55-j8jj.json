@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-08T21:47:47Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 331253,
+    "Id": "GSA_kwCzR0hTQS1tY21jLTJtNTUtajhqas4ABQ31",
+    "GhsaId": "GHSA-mcmc-2m55-j8jj",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-mcmc-2m55-j8jj"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/30649"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mcmc-2m55-j8jj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mcmc-2m55-j8jj"
+      }
+    ],
+    "Description": "### Summary\nThe fix [here](https://github.com/vllm-project/vllm/pull/27204) for CVE-2025-62164 is not sufficient. The fix only disables prompt embeds by default rather than addressing the root cause, so the DoS vulnerability remains when the feature is enabled.\n\n### Details\nvLLM's pending change attempts to fix the root cause, which is the missing sparse tensor validation.  PyTorch (~v2.0) disables sparse tensor validation (specifically, sparse tensor invariants checks) by default for performance reasons.  vLLM is adding the sparse tensor validation to ensure indices are valid, non-negative, and within bounds.  These checks help catch malformed tensors.\n\n### PoC\nNA\n\n### Impact\nCurrent fix only added a flag to disable/enable prompt embeds, so by default, prompt embeds feature is disabled in vLLM, which stops DoS attacks through the embeddings.  However, It doesn’t address the problem when the flag is enabled and there is still potential for DoS attacks.\n\n### Changes\n\n* https://github.com/vllm-project/vllm/pull/30649",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-08T21:47:43Z",
+    "Severity": "HIGH",
+    "Summary": "vLLM introduced enhanced protection for CVE-2025-62164",
+    "UpdatedAt": "2026-01-08T21:47:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.13.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.10.2, \u003c 0.11.1"
+    }
+  ]
+}

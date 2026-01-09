@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-08T20:45:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@remix-run/node"
+  },
+  "Advisory": {
+    "DatabaseId": 331223,
+    "Id": "GSA_kwCzR0hTQS05NTgzLWg1aGMteDhjd84ABQ3X",
+    "GhsaId": "GHSA-9583-h5hc-x8cw",
+    "References": [
+      {
+        "Url": "https://github.com/remix-run/react-router/security/advisories/GHSA-9583-h5hc-x8cw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9583-h5hc-x8cw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9583-h5hc-x8cw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-61686"
+      }
+    ],
+    "Description": "If applications use `createFileSessionStorage()` from `@react-router/node` (or `@remix-run/node`/`@remix-run/deno` in Remix v2) with an [**unsigned cookie**](https://reactrouter.com/explanation/sessions-and-cookies#signing-cookies), it is possible for an attacker to cause the session to try to read/write from a location outside the specified session file directory. The success of the attack would depend on the permissions of the web server process to access those files. \n\nRead files cannot be returned directly to the attacker.  Session file reads would only succeed if the file matched the expected session file format. If the file matched the session file format, the data would be populated into the server side session but not directly returned to the attacker unless the application logic returned specific session information.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-08T20:45:07Z",
+    "Severity": "CRITICAL",
+    "Summary": "React Router has Path Traversal in File Session Storage",
+    "UpdatedAt": "2026-01-08T20:45:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2.17.1"
+    }
+  ]
+}

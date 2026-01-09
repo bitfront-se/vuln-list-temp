@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-08T21:13:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "shakapacker"
+  },
+  "Advisory": {
+    "DatabaseId": 331229,
+    "Id": "GSA_kwCzR0hTQS05NnF3LWgzMjktdjVyZ84ABQ3d",
+    "GhsaId": "GHSA-96qw-h329-v5rg",
+    "References": [
+      {
+        "Url": "https://github.com/shakacode/shakapacker/security/advisories/GHSA-96qw-h329-v5rg"
+      },
+      {
+        "Url": "https://github.com/shakacode/shakapacker/pull/857"
+      },
+      {
+        "Url": "https://github.com/shakacode/shakapacker/commit/3e06781b18383c5c2857ed3a722f7b91bdc1bc0e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-96qw-h329-v5rg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-96qw-h329-v5rg"
+      }
+    ],
+    "Description": "### Summary\n\nSince 2017, the default webpack plugins have passed the entire `process.env` to `EnvironmentPlugin`. This pattern exposed ALL build environment variables to client-side JavaScript bundles whenever application code (or any dependency) referenced `process.env.VARIABLE_NAME`.\n\nThis is not a regression - the vulnerable code has existed since the original Webpacker implementation. No recent code change in Shakapacker triggered this issue.\n\n### Impact\n\nAny environment variable in the build environment that is referenced in client-side code (including third-party dependencies) is embedded directly into the JavaScript bundle. This includes:\n\n- `DATABASE_URL` - Database credentials\n- `AWS_SECRET_ACCESS_KEY` - AWS credentials  \n- `RAILS_MASTER_KEY` - Rails encrypted credentials key\n- `STRIPE_SECRET_KEY`, `TWILIO_AUTH_TOKEN` - Third-party API keys\n- Any other secrets present in the build environment\n\n**Severity**: Critical - secrets are exposed in publicly accessible JavaScript files.\n\n### Root Cause\n\nThe original code used:\n```javascript\nnew webpack.EnvironmentPlugin(process.env)\n```\n\nThis makes every environment variable available for substitution. If any code references `process.env.SECRET_KEY`, that value is embedded in the bundle.\n\n### Patches\n\nUpgrade to version 9.5.0 or later, which uses an allowlist approach that only exposes `NODE_ENV`, `RAILS_ENV`, and `WEBPACK_SERVE` by default.\n\n### Workarounds\n\nIf developers cannot upgrade immediately:\n1. Audit client-side code and dependencies for any `process.env.X` references to sensitive variables\n2. Remove sensitive variables from the build environment\n3. Override the default plugins with a custom webpack/rspack config using an explicit allowlist\n\n### Migration\n\nAfter upgrading, if client-side code needs access to specific environment variables:\n\n**Option 1: Use the `SHAKAPACKER_PUBLIC_` prefix (recommended)**\n```bash\n# Variables with this prefix are automatically exposed\nexport SHAKAPACKER_PUBLIC_API_URL=\"https://api.example.com\"\n```\n\n**Option 2: Use `SHAKAPACKER_ENV_VARS`**\n```bash\nSHAKAPACKER_ENV_VARS=API_URL,FEATURE_FLAG bundle exec rails assets:precompile\n```\n\n### Action Required\n\nAfter upgrading, **rotate any secrets** that may have been exposed in previously compiled JavaScript bundles.\n\n### Resources\n\n- Fix PR: https://github.com/shakacode/shakapacker/pull/857",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-08T21:13:37Z",
+    "Severity": "HIGH",
+    "Summary": "Shakapacker has environment variable leak via EnvironmentPlugin that exposes secrets to client-side bundles",
+    "UpdatedAt": "2026-01-08T21:13:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0"
+      },
+      "VulnerableVersionRange": "\u003c 9.5.0"
+    }
+  ]
+}

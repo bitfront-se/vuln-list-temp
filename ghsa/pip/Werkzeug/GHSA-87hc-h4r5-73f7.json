@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-08T19:51:23Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Werkzeug"
+  },
+  "Advisory": {
+    "DatabaseId": 331213,
+    "Id": "GSA_kwCzR0hTQS04N2hjLWg0cjUtNzNmN84ABQ3N",
+    "GhsaId": "GHSA-87hc-h4r5-73f7",
+    "References": [
+      {
+        "Url": "https://github.com/pallets/werkzeug/security/advisories/GHSA-87hc-h4r5-73f7"
+      },
+      {
+        "Url": "https://github.com/pallets/werkzeug/commit/7ae1d254e04a0c33e241ac1cca4783ce6c875ca3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-21860"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-87hc-h4r5-73f7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-87hc-h4r5-73f7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21860"
+      }
+    ],
+    "Description": "Werkzeug's `safe_join` function allows path segments with Windows device names that have file extensions or trailing spaces. On Windows, there are special device names such as `CON`, `AUX`, etc that are implicitly present and readable in every directory. Windows still accepts them with any file extension, such as `CON.txt`, or trailing spaces such as `CON `.\n\nThis was previously reported as https://github.com/pallets/werkzeug/security/advisories/GHSA-hgf8-39gv-g3f2, but the fix failed to account for compound extensions such as `CON.txt.html` or trailing spaces. It also missed some additional special names.\n\n`send_from_directory` uses `safe_join` to safely serve files at user-specified paths under a directory. If the application is running on Windows, and the requested path ends with a special device name, the file will be opened successfully, but reading will hang indefinitely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-08T19:51:21Z",
+    "Severity": "MODERATE",
+    "Summary": " Werkzeug safe_join() allows Windows special device names with compound extensions",
+    "UpdatedAt": "2026-01-08T21:37:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.5"
+      },
+      "VulnerableVersionRange": "\u003c 3.1.5"
+    }
+  ]
+}
