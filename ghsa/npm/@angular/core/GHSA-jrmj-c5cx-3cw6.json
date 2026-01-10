@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-09T18:52:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/core"
+  },
+  "Advisory": {
+    "DatabaseId": 331405,
+    "Id": "GSA_kwCzR0hTQS1qcm1qLWM1Y3gtM2N3Ns4ABQ6N",
+    "GhsaId": "GHSA-jrmj-c5cx-3cw6",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-jrmj-c5cx-3cw6"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/66318"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jrmj-c5cx-3cw6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jrmj-c5cx-3cw6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22610"
+      }
+    ],
+    "Description": "A Cross-Site Scripting (XSS) vulnerability has been identified in the Angular Template Compiler. The vulnerability exists because Angular’s internal sanitization schema fails to recognize the `href` and `xlink:href` attributes of SVG `\u003cscript\u003e` elements as a **Resource URL** context.\n\nIn a standard security model, attributes that can load and execute code (like a script's source) should be strictly validated. However, because the compiler does not classify these specific SVG attributes correctly, it allows attackers to bypass Angular's built-in security protections.\n\nWhen template binding is used to assign user-controlled data to these attributes for example, `\u003cscript [attr.href]=\"userInput\"\u003e` the compiler treats the value as a standard string or a non-sensitive URL rather than a resource link. This enables an attacker to provide a malicious payload, such as a `data:text/javascript` URI or a link to an external malicious script.\n\n### Impact\nWhen successfully exploited, this vulnerability allows for **arbitrary JavaScript execution** within the context of the victim's browser session. This can lead to:\n- **Session Hijacking:** Stealing session cookies, localStorage data, or authentication tokens.\n- **Data Exfiltration:** Accessing and transmitting sensitive information displayed within the application.\n- **Unauthorized Actions:** Performing state-changing actions (like clicking buttons or submitting forms) on behalf of the authenticated user.\n\n### Attack Preconditions\n\n1. The victim application must explicitly use SVG `\u003cscript\u003e` elements within its templates.\n2. The application must use property or attribute binding (interpolation) for the `href` or `xlink:href` attributes of those SVG scripts.\n3. The data bound to these attributes must be derived from an untrusted source (e.g., URL parameters, user-submitted database entries, or unsanitized API responses).\n\n### Patches\n- 19.2.18\n- 20.3.16\n- 21.0.7\n- 21.1.0-rc.0\n\n### Workarounds\nUntil the patch is applied, developers should:\n\n- **Avoid Dynamic Bindings**: Do not use Angular template binding (e.g., `[attr.href]`) for SVG `\u003cscript\u003e` elements.\n- **Input Validation**: If dynamic values must be used, strictly validate the input against a strict allowlist of trusted URLs on the server side or before it reaches the template.\n\n### Resources\n\n- https://github.com/angular/angular/pull/66318",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-09T18:52:14Z",
+    "Severity": "HIGH",
+    "Summary": "Angular has XSS Vulnerability via Unsanitized SVG Script Attributes",
+    "UpdatedAt": "2026-01-09T18:52:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 18.2.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "19.2.18"
+      },
+      "VulnerableVersionRange": "\u003e= 19.0.0-next.0, \u003c 19.2.18"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.16"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.0.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.1.0-rc.0"
+      },
+      "VulnerableVersionRange": "\u003e= 21.1.0-next.0, \u003c 21.1.0-rc.0"
+    }
+  ]
+}

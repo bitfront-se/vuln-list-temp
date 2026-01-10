@@ -1,0 +1,55 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-01-09T19:49:00Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pypdf"
+  },
+  "Advisory": {
+    "DatabaseId": 331411,
+    "Id": "GSA_kwCzR0hTQS00ZjZnLTY4cGYtN3Zods4ABQ6T",
+    "GhsaId": "GHSA-4f6g-68pf-7vhv",
+    "References": [
+      {
+        "Url": "https://github.com/py-pdf/pypdf/security/advisories/GHSA-4f6g-68pf-7vhv"
+      },
+      {
+        "Url": "https://github.com/py-pdf/pypdf/pull/3594"
+      },
+      {
+        "Url": "https://github.com/py-pdf/pypdf/commit/294165726b646bb7799be1cc787f593f2fdbcf45"
+      },
+      {
+        "Url": "https://github.com/py-pdf/pypdf/releases/tag/6.6.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4f6g-68pf-7vhv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4f6g-68pf-7vhv"
+      }
+    ],
+    "Description": "### Impact\nAn attacker who exploits this vulnerability can craft a PDF which leads to possibly long runtimes for invalid `startxref` entries. When rebuilding the cross-reference table, PDF files with lots of whitespace characters become problematic. Only the non-strict reading mode is affected.\n\n### Patches\nThis has been fixed in [pypdf==6.6.0](https://github.com/py-pdf/pypdf/releases/tag/6.6.0).\n\n### Workarounds\n\n```python\nfrom pypdf import PdfReader, PdfWriter\n\n\n# Instead of\nreader = PdfReader(\"file.pdf\")\n# use the strict mode:\nreader = PdfReader(\"file.pdf\", strict=True)\n\n# Instead of\nwriter = PdfWriter(clone_from=\"file.pdf\")\n# use an explicit strict reader:\nwriter = PdfWriter(clone_from=PdfReader(\"file.pdf\", strict=True))\n```\n\n### Resources\nThis issue has been fixed in #3594.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-09T19:48:57Z",
+    "Severity": "LOW",
+    "Summary": "pypdf has possible long runtimes for malformed startxref",
+    "UpdatedAt": "2026-01-09T19:49:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.6.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.6.0"
+    }
+  ]
+}
