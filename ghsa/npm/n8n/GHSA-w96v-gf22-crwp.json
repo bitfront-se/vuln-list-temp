@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-13T14:57:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 331613,
+    "Id": "GSA_kwCzR0hTQS13OTZ2LWdmMjItY3J3cM4ABQ9d",
+    "GhsaId": "GHSA-w96v-gf22-crwp",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-w96v-gf22-crwp"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/issues/23399"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/pull/23399"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/11f8597d4ad69ea3b58941573997fdbc4de1fec5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w96v-gf22-crwp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w96v-gf22-crwp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68949"
+      }
+    ],
+    "Description": "## Impact\nThe Webhook node’s IP whitelist validation performed partial string matching instead of exact IP comparison. As a result, an incoming request could be accepted if the source IP address merely contained the configured whitelist entry as a substring.\n\nThis issue affected instances where workflow editors relied on IP-based access controls to restrict webhook access. Both IPv4 and IPv6 addresses were impacted. An attacker with a non-whitelisted IP could bypass restrictions if their IP shared a partial prefix with a trusted address, undermining the intended security boundary.\n\n## Patches\nThis issue has been patched in version 2.2.0.\n\nUsers are advised to upgrade to v2.2.0 or later, where IP whitelist validation uses strict IP comparison logic rather than partial string matching.\n\n## Workarounds\nUsers unable to upgrade immediately should avoid relying solely on IP whitelisting for webhook security. Recommended mitigations include:\n- Adding authentication mechanisms such as shared secrets, HMAC signatures, or API keys.\n- Avoiding short or prefix-based whitelist entries.\n- Enforcing IP filtering at the network layer (for example, via reverse proxies or firewalls).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T14:57:12Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Webhook Node IP Whitelist Bypass via Partial String Matching",
+    "UpdatedAt": "2026-01-13T14:57:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.36.0, \u003c 2.2.0"
+    }
+  ]
+}

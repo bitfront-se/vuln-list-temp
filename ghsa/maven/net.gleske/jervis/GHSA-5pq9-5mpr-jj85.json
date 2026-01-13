@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-13T14:56:05Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "net.gleske:jervis"
+  },
+  "Advisory": {
+    "DatabaseId": 331611,
+    "Id": "GSA_kwCzR0hTQS01cHE5LTVtcHItamo4Nc4ABQ9b",
+    "GhsaId": "GHSA-5pq9-5mpr-jj85",
+    "References": [
+      {
+        "Url": "https://github.com/samrocketman/jervis/security/advisories/GHSA-5pq9-5mpr-jj85"
+      },
+      {
+        "Url": "https://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L244-L249"
+      },
+      {
+        "Url": "http://github.com/samrocketman/jervis/commit/c3981ff71de7b0f767dfe7b37a2372cb2a51974a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5pq9-5mpr-jj85"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5pq9-5mpr-jj85"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68925"
+      }
+    ],
+    "Description": "### Vulnerability\n\nhttps://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L244-L249\n\nThe code doesn't validate that the JWT header specifies `\"alg\":\"RS256\"`.\n\n### Impact\n\nDepending on the broader system, this could allow JWT forgery.\n\nInternally this severity is low since JWT is only intended to interface with GitHub.  External users should consider severity moderate.\n\n### Patches\n\nJervis patch will explicitly verify the algorithm in the header matches expectations and further verify the JWT structure.\n\nUpgrade to Jervis 2.2.\n\n### Workarounds\n\nExternal users should consider using an alternate JWT library or upgrade.\n\n### References\n\n- [RFC 7518: JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T14:56:04Z",
+    "Severity": "MODERATE",
+    "Summary": "Jervis Has a JWT Algorithm Confusion Vulnerability",
+    "UpdatedAt": "2026-01-13T14:56:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.2"
+    }
+  ]
+}

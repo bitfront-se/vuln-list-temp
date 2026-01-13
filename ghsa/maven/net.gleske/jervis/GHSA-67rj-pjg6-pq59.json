@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-13T14:52:33Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "net.gleske:jervis"
+  },
+  "Advisory": {
+    "DatabaseId": 331608,
+    "Id": "GSA_kwCzR0hTQS02N3JqLXBqZzYtcHE1Oc4ABQ9Y",
+    "GhsaId": "GHSA-67rj-pjg6-pq59",
+    "References": [
+      {
+        "Url": "https://github.com/samrocketman/jervis/security/advisories/GHSA-67rj-pjg6-pq59"
+      },
+      {
+        "Url": "https://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L622-L626"
+      },
+      {
+        "Url": "http://github.com/samrocketman/jervis/commit/c3981ff71de7b0f767dfe7b37a2372cb2a51974a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-67rj-pjg6-pq59"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-67rj-pjg6-pq59"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68702"
+      }
+    ],
+    "Description": "### Vulnerability\n\nhttps://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L622-L626\n\n`padLeft(32, '0')` should be `padLeft(64, '0')`. SHA-256 produces 32 bytes = 64 hex characters.\n\n### Impact\n\n* Inconsistent hash lengths when leading bytes are zero\n* Comparison failures for hashes with leading zeros\n* Potential security issues in hash-based comparisons\n* Could cause subtle bugs in systems relying on consistent hash lengths\n\nSeverity is considered low for internal uses of this library but if there's any consumer using these methods directly then this is considered high.\n\n### Patches\n\nUpgrade to Jervis 2.2.\n\n### Workarounds\n\nUse an alternate SHA-256 hash function or upgrade.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T14:52:31Z",
+    "Severity": "HIGH",
+    "Summary": "Jervis Has a SHA-256 Hex String Padding Bug",
+    "UpdatedAt": "2026-01-13T14:52:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.2"
+    }
+  ]
+}

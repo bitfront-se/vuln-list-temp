@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-13T14:51:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "net.gleske:jervis"
+  },
+  "Advisory": {
+    "DatabaseId": 331607,
+    "Id": "GSA_kwCzR0hTQS1jcnhwLWNoaDQtOWdocM4ABQ9X",
+    "GhsaId": "GHSA-crxp-chh4-9ghp",
+    "References": [
+      {
+        "Url": "https://github.com/samrocketman/jervis/security/advisories/GHSA-crxp-chh4-9ghp"
+      },
+      {
+        "Url": "https://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L866-L874"
+      },
+      {
+        "Url": "https://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L891-L900"
+      },
+      {
+        "Url": "http://github.com/samrocketman/jervis/commit/c3981ff71de7b0f767dfe7b37a2372cb2a51974a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-crxp-chh4-9ghp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-crxp-chh4-9ghp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68701"
+      }
+    ],
+    "Description": "### Vulnerability\n\nhttps://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L866-L874\n\nhttps://github.com/samrocketman/jervis/blob/157d2b63ffa5c4bb1d8ee2254950fd2231de2b05/src/main/groovy/net/gleske/jervis/tools/SecurityIO.groovy#L891-L900\n\nSame passphrase + same plaintext = same ciphertext (IV reuse)\n\n### Impact\n\nSeverity is considered low for internal uses of this library but if there's any consumer using these methods directly then this is considered high.\n\nSignificant reduction in the security of the encryption scheme. Pattern analysis becomes possible.\n\n### Patches\n\nRandom IV will be generated and prepended to the ciphertext.\n\nUpgrade to Jervis 2.2.\n\n### Workarounds\n\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T14:51:58Z",
+    "Severity": "HIGH",
+    "Summary": "Jervis has Deterministic AES IV Derivation from Passphrase",
+    "UpdatedAt": "2026-01-13T14:51:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.2"
+    }
+  ]
+}
