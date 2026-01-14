@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-14T16:52:56Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "blacksheep"
+  },
+  "Advisory": {
+    "DatabaseId": 332168,
+    "Id": "GSA_kwCzR0hTQS02cHczLWg3eGYteDRncM4ABRGI",
+    "GhsaId": "GHSA-6pw3-h7xf-x4gp",
+    "References": [
+      {
+        "Url": "https://github.com/Neoteroi/BlackSheep/security/advisories/GHSA-6pw3-h7xf-x4gp"
+      },
+      {
+        "Url": "https://github.com/Neoteroi/BlackSheep/commit/bd4ecb9542b5d52442276b5a6907931b90f38d12"
+      },
+      {
+        "Url": "https://github.com/Neoteroi/BlackSheep/releases/tag/v2.4.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6pw3-h7xf-x4gp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6pw3-h7xf-x4gp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22779"
+      }
+    ],
+    "Description": "### Impact\nThe HTTP Client implementation in BlackSheep is vulnerable to CRLF injection. Missing headers validation makes it possible for an attacker to modify the HTTP requests (e.g. insert a new header) or even create a new HTTP request.\nExploitation requires developers to pass unsanitized user input directly into headers.\nThe server part is not affected because BlackSheep delegates to an underlying ASGI server handling of response headers.\n\n**Attack vector:** Applications using user input in HTTP client requests (method, URL, headers).\n\n### Patches\nUsers who use the HTTP Client in BlackSheep should upgrade to `2.4.6`.\n\n### Workarounds\nIf users handle headers from untrusted parties, they might reject values for header names and values that contain carriage returns.\n\n### References\nhttps://owasp.org/www-community/vulnerabilities/CRLF_Injection",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-14T16:52:53Z",
+    "Severity": "MODERATE",
+    "Summary": "BlackSheep's ClientSession is vulnerable to CRLF injection",
+    "UpdatedAt": "2026-01-14T16:52:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.6"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.6"
+    }
+  ]
+}
