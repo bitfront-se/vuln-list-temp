@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-13T18:45:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "virtualenv"
+  },
+  "Advisory": {
+    "DatabaseId": 331892,
+    "Id": "GSA_kwCzR0hTQS01OTdnLTNwaHctNjk4Ns4ABRB0",
+    "GhsaId": "GHSA-597g-3phw-6986",
+    "References": [
+      {
+        "Url": "https://github.com/pypa/virtualenv/security/advisories/GHSA-597g-3phw-6986"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-22702"
+      },
+      {
+        "Url": "https://github.com/pypa/virtualenv/pull/3013"
+      },
+      {
+        "Url": "https://github.com/pypa/virtualenv/commit/dec4cec5d16edaf83a00a658f32d1e032661cebc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-597g-3phw-6986"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-597g-3phw-6986"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22702"
+      }
+    ],
+    "Description": "## Impact\n\nTOCTOU (Time-of-Check-Time-of-Use) vulnerabilities in `virtualenv` allow local attackers to perform symlink-based attacks on directory creation operations. An attacker with local access can exploit a race condition between directory existence checks and creation to redirect virtualenv's app_data and lock file operations to attacker-controlled locations.\n\n**Affected versions:** All versions up to and including 20.36.1\n\n**Affected users:** Any user running `virtualenv` on multi-user systems where untrusted local users have filesystem access to shared temporary directories or where `VIRTUALENV_OVERRIDE_APP_DATA` points to a user-writable location.\n\n**Attack scenarios:**\n- Cache poisoning: Attacker corrupts wheels or Python metadata in the cache\n- Information disclosure: Attacker reads sensitive cached data or metadata\n- Lock bypass: Attacker controls lock file semantics to cause concurrent access violations\n- Denial of service: Lock starvation preventing virtualenv operations\n\n## Patches\n\nThe vulnerability has been patched by replacing check-then-act patterns with atomic `os.makedirs(..., exist_ok=True)` operations.\n\n**Fixed in:** PR #3013\n\n**Versions with the fix:** 20.36.2 and later\n\nUsers should upgrade to version 20.36.2 or later.\n\n## Workarounds\n\nIf you cannot upgrade immediately:\n\n1. Ensure `VIRTUALENV_OVERRIDE_APP_DATA` points to a directory owned by the current user with restricted permissions (mode 0700)\n2. Avoid running `virtualenv` in shared temporary directories where other users have write access\n3. Use separate user accounts for different projects to isolate app_data directories\n\n## References\n\n- GitHub PR: https://github.com/pypa/virtualenv/pull/3013\n- Vulnerability reported by: @tsigouris007\n- CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization (TOCTOU)\n- CWE-59: Improper Link Resolution Before File Access",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T18:45:57Z",
+    "Severity": "MODERATE",
+    "Summary": "virtualenv Has TOCTOU Vulnerabilities in Directory Creation",
+    "UpdatedAt": "2026-01-13T18:45:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.36.1"
+      },
+      "VulnerableVersionRange": "\u003c 20.36.1"
+    }
+  ]
+}

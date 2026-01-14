@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-13T21:53:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "outray"
+  },
+  "Advisory": {
+    "DatabaseId": 331961,
+    "Id": "GSA_kwCzR0hTQS00NWhqLTl4NzYtd3A5Z84ABRC5",
+    "GhsaId": "GHSA-45hj-9x76-wp9g",
+    "References": [
+      {
+        "Url": "https://github.com/akinloluwami/outray/security/advisories/GHSA-45hj-9x76-wp9g"
+      },
+      {
+        "Url": "https://github.com/outray-tunnel/outray/commit/08c61495761349e7fd2965229c3faa8d7b1c1581"
+      },
+      {
+        "Url": "https://github.com/outray-tunnel/outray/commit/73e8a09575754fb4c395438680454b2ec064d1d6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-45hj-9x76-wp9g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-45hj-9x76-wp9g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22819"
+      }
+    ],
+    "Description": "### Summary\nThis vulnerability allows a user i.e a free plan user to get more than the desired subdomains due to lack of db transaction lock mechanisms in `https://github.com/akinloluwami/outray/blob/main/apps/web/src/routes/api/%24orgSlug/subdomains/index.ts`\n\n### Details\n- The affected code-:\n\n```ts\n//Race condition\n        const [subscription] = await db\n          .select()\n          .from(subscriptions)\n          .where(eq(subscriptions.organizationId, organization.id));\n\n        const currentPlan = subscription?.plan || \"free\";\n        const planLimits = getPlanLimits(currentPlan as any);\n        const subdomainLimit = planLimits.maxSubdomains;\n\n        const existingSubdomains = await db\n          .select()\n          .from(subdomains)\n          .where(eq(subdomains.organizationId, organization.id));\n\n        if (existingSubdomains.length \u003e= subdomainLimit) {\n          return json(\n            {\n              error: `Subdomain limit reached. The ${currentPlan} plan allows ${subdomainLimit} subdomain${subdomainLimit \u003e 1 ? \"s\" : \"\"}.`,\n            },\n            { status: 403 },\n          );\n        }\n\n        const existing = await db\n          .select()\n          .from(subdomains)\n          .where(eq(subdomains.subdomain, subdomain))\n          .limit(1);\n\n        if (existing.length \u003e 0) {\n          return json({ error: \"Subdomain already taken\" }, { status: 409 });\n        }\n\n        const [newSubdomain] = await db\n          .insert(subdomains)\n          .values({\n            id: crypto.randomUUID(),\n            subdomain,\n            organizationId: organization.id,\n            userId: session.user.id,\n          })\n          .returning();\n```\n\n- The first part of the code checks the user plan and determine his/her existing_domains without locking the transaction and allowing it to run.\n```ts\nconst existingSubdomains = await db\n          .select()\n          .from(subdomains)\n          .where(eq(subdomains.organizationId, organization.id));\n```\n\n- The other part of the code checks if the desired domain is more than the limit.\n\n```ts\nif (existingSubdomains.length \u003e= subdomainLimit) {\n          return json(\n            {\n              error: `Subdomain limit reached. The ${currentPlan} plan allows ${subdomainLimit} subdomain${subdomainLimit \u003e 1 ? \"s\" : \"\"}.`,\n            },\n            { status: 403 },\n          );\n        }\n```\n\n- Finally, it inserts the subdomain also after the whole check without locking transactions.\n\n```ts\nconst [newSubdomain] = await db\n          .insert(subdomains)\n          .values({\n            id: crypto.randomUUID(),\n            subdomain,\n            organizationId: organization.id,\n            userId: session.user.id,\n          })\n          .returning();\n```\n- An attacker can exploit this by making parallel requests to the same endpoint and if the second request reads row `subdomains` before the `INSERT` statement  of request one is made.It allows the attacker to act on a not yet updated row which bypasses the checks and allow the attacker to get more subdomains.For example-:\n\n```\n  Parallel request 1                               Parallel  Request  2    \n     |                                                                     |\nchecks for                                                     Checks the not yet updated\navailable subdomain                                     row and bypasses the logic checks\nand determines if it is more than limit\n    |                                                                        |\nInserts subdomain and calls it a day           Also inserts the  subdomain\n```\n-  The attack focuses on exploiting the race window between reading and writing the db rows.\n\n### PoC\n\n- Intercept with Burp proxy,pass to `Repeater` and create multiple requests in a single batch with different subdomain names as seen below. Lastly, send the requests in `parallel`.\n\n\u003cimg width=\"1844\" height=\"855\" alt=\"image\" src=\"https://github.com/user-attachments/assets/f46d5993-31bd-4b96-902a-b2de5b0518bd\" /\u003e\n\n- Result-:\n\n\u003cimg width=\"1905\" height=\"977\" alt=\"image\" src=\"https://github.com/user-attachments/assets/4c877de2-4b55-46f4-9f1c-78590dfebefc\" /\u003e\n\n\n### Impact\nThe vulnerability provides an infiinite supply of domains to users bypassing the need for subscription",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T21:53:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Outray has a Race Condition in the cli's webapp",
+    "UpdatedAt": "2026-01-13T21:53:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.5"
+      },
+      "VulnerableVersionRange": "\u003c 0.1.5"
+    }
+  ]
+}

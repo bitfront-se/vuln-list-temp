@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-13T20:37:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@adonisjs/lucid"
+  },
+  "Advisory": {
+    "DatabaseId": 331910,
+    "Id": "GSA_kwCzR0hTQS1nNWdjLWg1aHAtNTU1Zs4ABRCG",
+    "GhsaId": "GHSA-g5gc-h5hp-555f",
+    "References": [
+      {
+        "Url": "https://github.com/adonisjs/lucid/security/advisories/GHSA-g5gc-h5hp-555f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-22814"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g5gc-h5hp-555f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g5gc-h5hp-555f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22814"
+      }
+    ],
+    "Description": "### Summary\n**Description**\nA Mass Assignment (CWE-915) vulnerability in AdonisJS Lucid may allow a remote attacker who can influence data that is passed into Lucid model assignments to overwrite the internal ORM state. This may lead to logic bypasses and unauthorized record modification within a table or model. This affects @adonisjs/lucid through version 21.8.1 and 22.x pre-release versions prior to 22.0.0-next.6. This has been patched in @adonisjs/lucid versions 21.8.2 and 22.0.0-next.6.\n\n### Details\nA vulnerability in the `BaseModelImpl` class of `@adonisjs/lucid` may allow an attacker to overwrite internal class properties (such as `$isPersisted`, `$attributes`, or `$isDeleted`) when passing plain objects to model assignment methods.\n\nThe library relies on a `this.hasOwnProperty(key)` check to validate assignment targets. However, because internal ORM state properties are initialized as instance properties, they pass this check. Consequently, if an attacker can influence specific keys (like `$isPersisted`) into the payload passed to `merge()` or `$consumeAdapterResult()`, they can hijack the ORM's internal logic.\n\nThe exposed internal properties include:\n- `$attributes`: The raw storage for model data.\n- `$isPersisted`: Controls whether `save()` performs an `INSERT` or an `UPDATE`.\n- `$original`: Stores the original state of the record used to calculate changes.\n- `$isDeleted`: Prevents operations on deleted models.\n\nThis issue propagates to the entire write surface of the library, including:\n- Instance methods `fill` and  `merge`.\n- Single record creation methods `create`, `createQuietly`, `firstOrNew`, and `firstOrCreate`.\n- Conditional updates via `updateOrCreate`.\n- Bulk operations `createMany`, `createManyQuietly`, `fetchOrNewUpMany`, `fetchOrCreateMany`, and `updateOrCreateMany`.\n\n### Impact\nApplications are vulnerable if they pass unvalidated data or validated data that retains unknown properties to the model. This occurs because internal keys exist as instance properties, causing them to pass the `hasOwnProperty` check and bypass Lucid's default rejection of unknown properties.\n\nApplications utilizing strict allow lists for input validation that discard unknown properties are not affected.\n\nFor example, if a developer passes `request.all()`, `request.except()` or a schema with `allowUnknownProperties` to `Model.create()`, the ORM's internal logic can be hijacked. Because the `Model.create()` \u003e `save()` decision is based on `$isPersisted`, and `merge()` can assign to the own-property `$isPersisted`, an attacker who can inject `\"$isPersisted\": true` into the payload can force `save()` to take the UPDATE branch rather than the INSERT branch, while setting `$attributes` can bypass validators or field restrictions.\n\n\n### Patches\nThis issue has been patched in @adonisjs/lucid version `21.8.2` and `22.0.0-next.6`. Please upgrade to this version or later.\n\nDevelopers can mitigate this issue by strictly validating model inputs with an allow list that drops unknown keys if possible.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-13T20:37:09Z",
+    "Severity": "HIGH",
+    "Summary": "Mass Assignment in AdonisJS Lucid Allows Overwriting Internal ORM State",
+    "UpdatedAt": "2026-01-13T21:41:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.0-next.6"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.0-next.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.8.2"
+      },
+      "VulnerableVersionRange": "\u003c= 21.8.1"
+    }
+  ]
+}
