@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-15T18:10:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@sveltejs/adapter-node"
+  },
+  "Advisory": {
+    "DatabaseId": 332272,
+    "Id": "GSA_kwCzR0hTQS1qNjJjLTR4NjItOXIzNc4ABRHw",
+    "GhsaId": "GHSA-j62c-4x62-9r35",
+    "References": [
+      {
+        "Url": "https://github.com/sveltejs/kit/security/advisories/GHSA-j62c-4x62-9r35"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/commit/d9ae9b00b14f5574d109f3fd548f960594346226"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/releases/tag/%40sveltejs%2Fadapter-node%405.5.1"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/releases/tag/%40sveltejs%2Fkit%402.49.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j62c-4x62-9r35"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j62c-4x62-9r35"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-67647"
+      }
+    ],
+    "Description": "### Summary\n\nVersions of SvelteKit are vulnerable to a server side request forgery (SSRF) and denial of service (DoS) under certain conditions.\n\n### Details\n\nAffected versions from 2.44.0 onwards are vulnerable to DoS if:\n\n- your app has at least one prerendered route (`export const prerender = true`)\n\nAffected versions from 2.19.0 onwards are vulnerable to DoS and SSRF if:\n\n- your app has at least one prerendered route (`export const prerender = true`)\n- AND you are using `adapter-node` without a configured `ORIGIN` environment variable, and you are not using a reverse proxy that implements Host header validation\n\n### Impact\n\nThe DoS causes the running server process to end.\n\nThe SSRF allows access to internal services that can be reached without authentication when fetched from SvelteKit's server runtime.\n\nIt is also possible to obtain an SXSS via cache poisoning, by forcing a potential CDN to cache an XSS returned by the attacker's server (the latter being able to specify the cache-control of their choice).\n\n### Credits\n- Allam Rachid ([zhero;](https://zhero-web-sec.github.io/research-and-things/))\n- Allam Yasser (inzo)\n- d-xuan ([wednesday](https://d-xuan.github.io/wednesday/))",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-15T18:09:59Z",
+    "Severity": "HIGH",
+    "Summary": "SvelteKit is vulnerable to denial of service and possible SSRF when using prerendering",
+    "UpdatedAt": "2026-01-15T18:10:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.4.1, \u003c= 5.5.0"
+    }
+  ]
+}

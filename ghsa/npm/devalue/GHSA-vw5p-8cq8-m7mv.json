@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-15T18:10:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "devalue"
+  },
+  "Advisory": {
+    "DatabaseId": 332273,
+    "Id": "GSA_kwCzR0hTQS12dzVwLThjcTgtbTdtds4ABRHx",
+    "GhsaId": "GHSA-vw5p-8cq8-m7mv",
+    "References": [
+      {
+        "Url": "https://github.com/sveltejs/devalue/security/advisories/GHSA-vw5p-8cq8-m7mv"
+      },
+      {
+        "Url": "https://github.com/sveltejs/devalue/commit/11755849fa0634ae294a15ec0aef2f43efcad7c4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vw5p-8cq8-m7mv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vw5p-8cq8-m7mv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22774"
+      }
+    ],
+    "Description": "## Summary\n\nCertain inputs can cause `devalue.parse` to consume excessive CPU time and/or memory, potentially leading to denial of service in systems that parse input from untrusted sources. This affects applications using `devalue.parse` on externally-supplied data. The root cause is the typed array hydration expecting an `ArrayBuffer` as input, but not checking the assumption before creating the typed array.\n\n## Details\n\nThe parser's typed array hydration logic does not properly validate input before processing. Specially crafted inputs can cause disproportionate memory allocation or CPU usage on the receiving system.\n\n## Impact\n\nThis is a denial of service vulnerability affecting systems that use `devalue.parse` to handle data from potentially untrusted sources.\n\nAffected systems should upgrade to patched versions immediately.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-15T18:10:15Z",
+    "Severity": "HIGH",
+    "Summary": "Devalue is vulnerable to denial of service due to memory exhaustion in devalue.parse",
+    "UpdatedAt": "2026-01-15T18:10:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.6.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.3.0, \u003c= 5.6.1"
+    }
+  ]
+}
