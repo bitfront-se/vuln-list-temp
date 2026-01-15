@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-01-14T21:06:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 332192,
+    "Id": "GSA_kwCzR0hTQS1nOW1mLWg3MmotNHJ3Oc4ABRGg",
+    "GhsaId": "GHSA-g9mf-h72j-4rw9",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-g9mf-h72j-4rw9"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/b04e3cbb569c1596f86c108e9b52c79d8475dcb3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-22036"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g9mf-h72j-4rw9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g9mf-h72j-4rw9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22036"
+      }
+    ],
+    "Description": "### Impact\n\nThe `fetch()` API supports chained HTTP encoding algorithms for response content according to RFC 9110 (e.g., Content-Encoding: gzip, br). This is also supported by the undici decompress interceptor.\n\nHowever, the number of links in the decompression chain is unbounded and the default maxHeaderSize allows a malicious server to insert thousands compression steps leading to high CPU usage and excessive memory allocation.\n\n### Patches\n\nUpgrade to 7.18.2 or 6.23.0.\n\n### Workarounds\n\nIt is possible to apply an undici interceptor and filter long `Content-Encoding` sequences manually.\n\n### References\n\n* https://hackerone.com/reports/3456148\n* https://github.com/advisories/GHSA-gm62-xv2j-4w53\n* https://curl.se/docs/CVE-2022-32206.html",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-14T21:06:08Z",
+    "Severity": "LOW",
+    "Summary": "Undici has an unbounded decompression chain in HTTP responses on Node.js Fetch API via Content-Encoding leads to resource exhaustion",
+    "UpdatedAt": "2026-01-14T22:33:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.23.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.23.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.18.2"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.18.2"
+    }
+  ]
+}
