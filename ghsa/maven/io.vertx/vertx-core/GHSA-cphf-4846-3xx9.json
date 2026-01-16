@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-15T22:51:29Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.vertx:vertx-core"
+  },
+  "Advisory": {
+    "DatabaseId": 332361,
+    "Id": "GSA_kwCzR0hTQS1jcGhmLTQ4NDYtM3h4Oc4ABRJJ",
+    "GhsaId": "GHSA-cphf-4846-3xx9",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1002"
+      },
+      {
+        "Url": "https://github.com/eclipse-vertx/vert.x/pull/5895"
+      },
+      {
+        "Url": "https://github.com/eclipse-vertx/vert.x/commit/d007e7b418543eb1567fe95cf20f5450a5c2d047"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cphf-4846-3xx9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cphf-4846-3xx9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1002"
+      }
+    ],
+    "Description": "The Vert.x Web static handler component cache can be manipulated to deny the access to static files served by the handler using specifically crafted request URI.\n\n\nThe issue comes from an improper implementation of the C. rule of section 5.2.4 of RFC3986 and is fixed in Vert.x Core component (used by Vert.x Web):  https://github.com/eclipse-vertx/vert.x/pull/5895 \n\n\n\nSteps to reproduce\nGiven a file served by the static handler, craft an URI that introduces a string like bar%2F..%2F after the last / char to deny the access to the URI with an HTTP 404 response. For example https://example.com/foo/index.html can be denied with https://example.com/foo/bar%2F..%2Findex.html\n\nMitgation\nDisabling Static Handler cache fixes the issue.\n\n\n\nStaticHandler staticHandler = StaticHandler.create().setCachingEnabled(false);",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-15T21:31:48Z",
+    "Severity": "MODERATE",
+    "Summary": "Vert.x Web static handler component cache can be manipulated to deny the access to static files",
+    "UpdatedAt": "2026-01-15T22:51:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.24"
+      },
+      "VulnerableVersionRange": "\u003c 4.5.24"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-15T21:14:56Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/treeverse/lakefs"
+  },
+  "Advisory": {
+    "DatabaseId": 332337,
+    "Id": "GSA_kwCzR0hTQS1mMnBoLWdjOW0tcTU1Zs4ABRIx",
+    "GhsaId": "GHSA-f2ph-gc9m-q55f",
+    "References": [
+      {
+        "Url": "https://github.com/treeverse/lakeFS/security/advisories/GHSA-f2ph-gc9m-q55f"
+      },
+      {
+        "Url": "https://github.com/treeverse/lakeFS/issues/9599"
+      },
+      {
+        "Url": "https://github.com/treeverse/lakeFS/pull/9710"
+      },
+      {
+        "Url": "https://github.com/treeverse/lakeFS/commit/92966ae611d7f1a2bbe7fd56f9568c975aab2bd8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f2ph-gc9m-q55f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f2ph-gc9m-q55f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-68671"
+      }
+    ],
+    "Description": "### Impact\nLakeFS's S3 gateway does not validate timestamps in authenticated requests, allowing replay attacks. An attacker who captures a valid signed request (e.g., through network interception, logs, or compromised systems) can replay that request until credentials are rotated, even after the request is intended to expire.\n\n### Patches\nThis issue affects all versions of lakeFS up to and including v1.74.4.\n\nThe vulnerability has been fixed in version v1.75.0.\n\nUsers should upgrade to version v1.75.0.\n\n### Workarounds\n\nUntil upgraded, implement these mitigations:\n\n- **Use short-lived credentials** - Rotate access keys frequently and **deactivate old keys**. For regular requests, captured requests only work until rotation. For presigned URLs, they remain valid until the credentials used to create them are deactivated.\n- **Network controls** - Restrict S3 gateway access to trusted networks/IPs to limit where replay attacks can originate.\n\nNote: These workarounds reduce risk but do not fully eliminate the vulnerability.\n\n### References\n- Original issue: https://github.com/treeverse/lakeFS/issues/9599\n- AWS Signature V4 Documentation: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\n- AWS Signature V4 S3 Requests: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html\n- AWS Signature V2 Documentation: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-15T21:14:55Z",
+    "Severity": "MODERATE",
+    "Summary": "lakeFS is Missing Timestamp Validation in S3 Gateway Authentication",
+    "UpdatedAt": "2026-01-15T21:14:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.75.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.75.0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-15T20:10:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "h3"
+  },
+  "Advisory": {
+    "DatabaseId": 332332,
+    "Id": "GSA_kwCzR0hTQS1tcDJnLTl2ZzktZjRjZ84ABRIs",
+    "GhsaId": "GHSA-mp2g-9vg9-f4cg",
+    "References": [
+      {
+        "Url": "https://github.com/h3js/h3/security/advisories/GHSA-mp2g-9vg9-f4cg"
+      },
+      {
+        "Url": "https://github.com/h3js/h3/releases/tag/v1.15.5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23527"
+      },
+      {
+        "Url": "https://github.com/h3js/h3/commit/618ccf4f37b8b6148bea7f36040471af45bfb097"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mp2g-9vg9-f4cg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mp2g-9vg9-f4cg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23527"
+      }
+    ],
+    "Description": "I was digging into h3 v1 (specifically v1.15.4) and found a critical HTTP Request Smuggling vulnerability.\n\nBasically, `readRawBody` is doing a strict case-sensitive check for the Transfer-Encoding header. It explicitly looks for \"chunked\", but per the RFC, this header should be case-insensitive.\n\n**The Bug**: If I send a request with Transfer-Encoding: ChuNked (mixed case), h3 misses it. Since it doesn't see \"chunked\" and there's no Content-Length, it assumes the body is empty and processes the request immediately.\n\nThis leaves the actual body sitting on the socket, which triggers a classic TE.TE Desync (Request Smuggling) if the app is running behind a Layer 4 proxy or anything that doesn't normalize headers (like AWS NLB or Node proxies).\n\n**Vulnerable Code** (`src/utils/body.ts`):\n\n```js\nif (\n    !Number.parseInt(event.node.req.headers[\"content-length\"] || \"\") \u0026\u0026\n    !String(event.node.req.headers[\"transfer-encoding\"] ?? \"\")\n      .split(\",\")\n      .map((e) =\u003e e.trim())\n      .filter(Boolean)\n      .includes(\"chunked\") // \u003c--- This is the issue. \"ChuNkEd\" returns false here.\n  ) {\n    return Promise.resolve(undefined);\n  }\n```\n\nI verified this locally:\n\n- Sent a `Transfer-Encoding: ChunKed` request without a closing 0 chunk.\n- Express hangs (correctly waiting for data).\n- h3 responds immediately (vulnerable, thinks body is length 0).\n\n**Impact**: Since H3/Nuxt/Nitro is often used in containerized setups behind TCP load balancers, an attacker can use this to smuggle requests past WAFs or desynchronize the socket to poison other users' connections.\n\n**Fix**: Just need to normalize the header value before checking: ` .map((e) =\u003e e.trim().toLowerCase())`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-15T20:10:51Z",
+    "Severity": "HIGH",
+    "Summary": "h3 v1 has Request Smuggling (TE.TE) issue",
+    "UpdatedAt": "2026-01-15T22:34:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.5"
+      },
+      "VulnerableVersionRange": "\u003c= 1.15.4"
+    }
+  ]
+}
