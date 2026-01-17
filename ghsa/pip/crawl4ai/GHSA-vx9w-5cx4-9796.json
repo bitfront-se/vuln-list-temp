@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-16T20:58:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "crawl4ai"
+  },
+  "Advisory": {
+    "DatabaseId": 332582,
+    "Id": "GSA_kwCzR0hTQS12eDl3LTVjeDQtOTc5Ns4ABRMm",
+    "GhsaId": "GHSA-vx9w-5cx4-9796",
+    "References": [
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/security/advisories/GHSA-vx9w-5cx4-9796"
+      },
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/blob/release/v0.8.0/docs/blog/release-v0.8.0.md"
+      },
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/blob/release/v0.8.0/docs/migration/v0.8.0-upgrade-guide.md"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vx9w-5cx4-9796"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vx9w-5cx4-9796"
+      }
+    ],
+    "Description": "A local file inclusion vulnerability exists in the Crawl4AI Docker API. The /execute_js, /screenshot, /pdf, and /html endpoints accept file:// URLs, allowing attackers to read arbitrary files from the server filesystem.\n\nAttack Vector:\n```json\nPOST /execute_js\n{\n    \"url\": \"file:///etc/passwd\",\n    \"scripts\": [\"document.body.innerText\"]\n}\n```\nImpact\n\nAn unauthenticated attacker can:\n- Read sensitive files (/etc/passwd, /etc/shadow, application configs)\n- Access environment variables via /proc/self/environ\n- Discover internal application structure\n- Potentially read credentials and API keys\n\nWorkarounds\n\n1. Disable the Docker API\n2. Add authentication to the API\n3. Use network-level filtering",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-16T20:58:51Z",
+    "Severity": "HIGH",
+    "Summary": "Crawl4AI Has Local File Inclusion in Docker API via file:// URLs",
+    "UpdatedAt": "2026-01-16T20:58:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.0"
+    }
+  ]
+}

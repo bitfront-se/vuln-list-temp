@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-16T21:02:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "svelte"
+  },
+  "Advisory": {
+    "DatabaseId": 332585,
+    "Id": "GSA_kwCzR0hTQS1ndzMyLTlybXctcXd3d84ABRMp",
+    "GhsaId": "GHSA-gw32-9rmw-qwww",
+    "References": [
+      {
+        "Url": "https://github.com/sveltejs/svelte/security/advisories/GHSA-gw32-9rmw-qwww"
+      },
+      {
+        "Url": "https://github.com/sveltejs/svelte/commit/a31dec5eb30978cff7ff4d77f4bf316841f711bc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gw32-9rmw-qwww"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gw32-9rmw-qwww"
+      }
+    ],
+    "Description": "### Summary\n\nA server-side rendered `\u003ctextarea\u003e` with two-way bound value does not have its value correctly escaped in the rendered HTML.\n\n### Details\n\nIn SSR, `\u003ctextarea bind:value={...}\u003e` does not have its value escaped when it is rendered into the HTML as `\u003ctextarea\u003e...\u003c/textarea\u003e`.\n\n### PoC\n\nPut this in a server-side-rendered Svelte component:\n\n```\n\u003cscript\u003e\n  let value = `test'\"\u003e\u003c/textarea\u003e\u003cscript` + `\u003ealert('BIM');\u003c/sc` + `ript\u003e`;\n\u003c/script\u003e\n\n\u003ctextarea bind:value /\u003e\n```\n\n### Impact\n\n- Only affects SSR\n- Needs a `\u003ctextarea bind:value\u003e` filled by user content via two-way binding",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-16T21:02:56Z",
+    "Severity": "HIGH",
+    "Summary": "svelte is vulnerable to XSS with textarea bind:value",
+    "UpdatedAt": "2026-01-16T21:02:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.59.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.59.2"
+    }
+  ]
+}

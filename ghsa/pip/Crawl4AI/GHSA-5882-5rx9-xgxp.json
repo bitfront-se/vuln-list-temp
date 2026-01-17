@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-16T20:59:17Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Crawl4AI"
+  },
+  "Advisory": {
+    "DatabaseId": 332583,
+    "Id": "GSA_kwCzR0hTQS01ODgyLTVyeDkteGd4cM4ABRMn",
+    "GhsaId": "GHSA-5882-5rx9-xgxp",
+    "References": [
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/security/advisories/GHSA-5882-5rx9-xgxp"
+      },
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/blob/release/v0.8.0/docs/blog/release-v0.8.0.md"
+      },
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/blob/release/v0.8.0/docs/migration/v0.8.0-upgrade-guide.md"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5882-5rx9-xgxp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5882-5rx9-xgxp"
+      }
+    ],
+    "Description": "A critical remote code execution vulnerability exists in the Crawl4AI Docker API deployment. The `/crawl` endpoint accepts a `hooks` parameter containing Python code that is executed using `exec()`. The `__import__` builtin was included in the allowed builtins, allowing attackers to import arbitrary modules and execute system commands.\n\n**Attack Vector:**\n```json\nPOST /crawl\n{\n  \"urls\": [\"https://example.com\"],\n  \"hooks\": {\n    \"code\": {\n      \"on_page_context_created\": \"async def hook(page, context, **kwargs):\\n    __import__('os').system('malicious_command')\\n    return page\"\n    }\n  }\n}\n```\n\n### Impact\n\nAn unauthenticated attacker can:\n- Execute arbitrary system commands\n- Read/write files on the server\n- Exfiltrate sensitive data (environment variables, API keys)\n- Pivot to internal network services\n- Completely compromise the server\n\n### Mitigation\n\n1. **Upgrade to v0.8.0** (recommended)\n2. If unable to upgrade immediately:\n   - Disable the Docker API\n   - Block `/crawl` endpoint at network level\n   - Add authentication to the API\n\n### Fix Details\n\n1. Removed `__import__` from `allowed_builtins` in `hook_manager.py`\n2. Hooks disabled by default (`CRAWL4AI_HOOKS_ENABLED=false`)\n3. Users must explicitly opt-in to enable hooks\n\n### Credits\n\nDiscovered by Neo by ProjectDiscovery (https://projectdiscovery.io)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-16T20:59:16Z",
+    "Severity": "CRITICAL",
+    "Summary": "Crawl4AI is Vulnerable to Remote Code Execution in Docker API via Hooks Parameter",
+    "UpdatedAt": "2026-01-16T20:59:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.0"
+    }
+  ]
+}
