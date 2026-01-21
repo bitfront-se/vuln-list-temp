@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-21T01:05:24Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Magick.NET-Q16-HDRI-OpenMP-arm64"
+  },
+  "Advisory": {
+    "DatabaseId": 333081,
+    "Id": "GSA_kwCzR0hTQS05dmo0LXdjN3ItcDg0NM4ABRUZ",
+    "GhsaId": "GHSA-9vj4-wc7r-p844",
+    "References": [
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-9vj4-wc7r-p844"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23874"
+      },
+      {
+        "Url": "https://github.com/dlemstra/Magick.NET/releases/tag/14.10.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9vj4-wc7r-p844"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9vj4-wc7r-p844"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23874"
+      }
+    ],
+    "Description": "## Summary\n\nStack overflow via infinite recursion in MSL (Magick Scripting Language) `\u003cwrite\u003e` command when writing to MSL format.\n\n## Version\n\n- ImageMagick 7.x (tested on current main branch)\n- Commit: HEAD\n- Requires: libxml2 support (for MSL parsing)\n\n## Steps to Reproduce\n\n### Method 1: Using ImageMagick directly\n\n```bash\nmagick MSL:recursive.msl out.png\n```\n\n### Method 2: Using OSS-Fuzz reproduce\n\n```bash\npython3 infra/helper.py build_fuzzers imagemagick\npython3 infra/helper.py reproduce imagemagick msl_fuzzer recursive.msl\n```\n\nOr run the fuzzer directly:\n```bash\n./msl_fuzzer recursive.msl\n```\n\n## Expected Behavior\n\nImageMagick should handle recursive MSL references gracefully by detecting the loop and returning an error.\n\n## Actual Behavior\n\nStack overflow causes process crash:\n\n```\nAddressSanitizer:DEADLYSIGNAL\n==PID==ERROR: AddressSanitizer: stack-overflow\n    #0 MSLStartElement /src/imagemagick/coders/msl.c:7045\n    #1 xmlParseStartTag /src/libxml2/parser.c\n    #2 xmlParseChunk /src/libxml2/parser.c:11273\n    #3 ProcessMSLScript /src/imagemagick/coders/msl.c:7405\n    #4 WriteMSLImage /src/imagemagick/coders/msl.c:7867\n    #5 WriteImage /src/imagemagick/MagickCore/constitute.c:1346\n    #6 MSLStartElement /src/imagemagick/coders/msl.c:7045\n    ... (infinite recursion, 287+ frames)\n```\n\n## Root Cause Analysis\n\nIn `coders/msl.c`, the `\u003cwrite\u003e` command handler in `MSLStartElement()` (line ~7045) calls `WriteImage()`. When the output filename specifies MSL format (`msl:filename`), `WriteMSLImage()` is called, which parses the MSL file again via `ProcessMSLScript()`.\n\nIf the MSL file references itself (directly or indirectly), this creates an infinite recursion loop:\n\n```\nMSLStartElement() → WriteImage() → WriteMSLImage() → ProcessMSLScript()\n    → xmlParseChunk() → MSLStartElement() → ... (infinite loop)\n```\n\n## Impact\n\n- **DoS**: Guaranteed crash via stack exhaustion\n- **Affected**: Any application using ImageMagick to process user-supplied MSL files\n\n## Additional Trigger Paths\n\nThe `\u003cread\u003e` command can also trigger recursion:\n\nIndirect recursion is also possible (a.msl → b.msl → a.msl).\n\n## Fuzzer\n\nThis issue was discovered using a custom MSL fuzzer:\n\n```cpp\n#include \u003ccstdint\u003e\n#include \u003cMagick++/Blob.h\u003e\n#include \u003cMagick++/Image.h\u003e\n#include \"utils.cc\"\n\nextern \"C\" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)\n{\n  if (IsInvalidSize(Size))\n    return(0);\n  try\n  {\n    const Magick::Blob blob(Data, Size);\n    Magick::Image image;\n    image.magick(\"MSL\");\n    image.fileName(\"MSL:\");\n    image.read(blob);\n  }\n  catch (Magick::Exception)\n  {\n  }\n  return(0);\n}\n```\n\nThis issue was found by Team FuzzingBrain @ Texas A\u0026M University",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-21T01:05:23Z",
+    "Severity": "MODERATE",
+    "Summary": "ImageMagick MSL: Stack overflow via infinite recursion in ProcessMSLScript",
+    "UpdatedAt": "2026-01-21T01:05:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.10.2"
+      },
+      "VulnerableVersionRange": "\u003c 14.10.2"
+    }
+  ]
+}

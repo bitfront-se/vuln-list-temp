@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-21T01:06:53Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Magick.NET-Q16-arm64"
+  },
+  "Advisory": {
+    "DatabaseId": 333084,
+    "Id": "GSA_kwCzR0hTQS01dngzLXd4NHEtNmNqOM4ABRUc",
+    "GhsaId": "GHSA-5vx3-wx4q-6cj8",
+    "References": [
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-5vx3-wx4q-6cj8"
+      },
+      {
+        "Url": "https://github.com/dlemstra/Magick.NET/releases/tag/14.10.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5vx3-wx4q-6cj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5vx3-wx4q-6cj8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23952"
+      }
+    ],
+    "Description": "## Summary\n\nNULL pointer dereference in MSL (Magick Scripting Language) parser when processing `\u003ccomment\u003e` tag before any image is loaded.\n\n## Version\n\n- ImageMagick 7.x (tested on current main branch)\n- Commit: HEAD\n\n## Steps to Reproduce\n\n### Method 1: Using ImageMagick directly\n\n```bash\nmagick MSL:poc.msl out.png\n```\n\n### Method 2: Using OSS-Fuzz reproduce\n\n```bash\npython3 infra/helper.py build_fuzzers imagemagick\npython3 infra/helper.py reproduce imagemagick msl_fuzzer poc.msl\n```\n\nOr run the fuzzer directly:\n```bash\n./msl_fuzzer poc.msl\n```\n\n## Expected Behavior\n\nImageMagick should handle the malformed MSL gracefully and return an error message.\n\n## Actual Behavior\n\n```\nconvert: MagickCore/property.c:297: MagickBooleanType DeleteImageProperty(Image *, const char *): Assertion `image != (Image *) NULL' failed.\nAborted\n```\n\n## Root Cause Analysis\n\nIn `coders/msl.c:7091`, `MSLEndElement()` calls `DeleteImageProperty()` on `msl_info-\u003eimage[n]` when handling the `\u003c/comment\u003e` end tag without checking if the image is NULL:\n\n```c\nif (LocaleCompare((const char *) tag,\"comment\") == 0 )\n  {\n    (void) DeleteImageProperty(msl_info-\u003eimage[n],\"comment\");  // No NULL check\n    ...\n  }\n```\n\nWhen `\u003ccomment\u003e` appears before any `\u003cread\u003e` operation, `msl_info-\u003eimage[n]` is NULL, causing the assertion failure in `DeleteImageProperty()` at `property.c:297`.\n\n## Impact\n\n- **DoS**: Crash via assertion failure (debug builds) or NULL pointer dereference (release builds)\n- **Affected**: Any application using ImageMagick to process user-supplied MSL files\n\n## Fuzzer\n\nThis issue was discovered using a custom MSL fuzzer:\n\n```cpp\n#include \u003ccstdint\u003e\n#include \u003cMagick++/Blob.h\u003e\n#include \u003cMagick++/Image.h\u003e\n#include \"utils.cc\"\n\nextern \"C\" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)\n{\n  if (IsInvalidSize(Size))\n    return(0);\n  try\n  {\n    const Magick::Blob blob(Data, Size);\n    Magick::Image image;\n    image.magick(\"MSL\");\n    image.fileName(\"MSL:\");\n    image.read(blob);\n  }\n  catch (Magick::Exception)\n  {\n  }\n  return(0);\n}\n```\n\nThis issue was found by Team FuzzingBrain @ Texas A\u0026M University",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-21T01:06:51Z",
+    "Severity": "MODERATE",
+    "Summary": "ImageMagick has a NULL pointer dereference in MSL parser via \u003ccomment\u003e tag before image load",
+    "UpdatedAt": "2026-01-21T01:06:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.10.2"
+      },
+      "VulnerableVersionRange": "\u003c 14.10.2"
+    }
+  ]
+}

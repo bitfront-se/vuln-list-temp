@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-21T01:03:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.linkis:linkis"
+  },
+  "Advisory": {
+    "DatabaseId": 332742,
+    "Id": "GSA_kwCzR0hTQS1jMzk5LXE0OWgtcXdjOM4ABRPG",
+    "GhsaId": "GHSA-c399-q49h-qwc8",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-29847"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/03l5rfkgdt022o75jp8x4tzpqxz8g057"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2025/09/19/2"
+      },
+      {
+        "Url": "https://lists.apache.org/list?dev@linkis.apache.org:2025-9:cve"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c399-q49h-qwc8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c399-q49h-qwc8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-29847"
+      }
+    ],
+    "Description": "A vulnerability in Apache Linkis.\n\nProblem Description\n\nWhen using the JDBC engine and data source functionality, if the URL parameter configured on the frontend has undergone multiple rounds of URL encoding, it may bypass the system's checks. This bypass can trigger a vulnerability that allows unauthorized access to system files via JDBC parameters.\n\nScope of Impact\n\n\nThis issue affects Apache Linkis: from 1.3.0 through 1.7.0.\n\nSeverity level\n\n\nmoderate\nSolution\nContinuously check if the connection information contains the \"%\" character; if it does, perform URL decoding.\n\nUsers are recommended to upgrade to version 1.8.0, which fixes the issue.\n\n\n\n\nMore questions about this vulnerability can be discussed here:  https://lists.apache.org/list?dev@linkis.apache.org:2025-9:cve",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-19T09:30:27Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Linkis: Arbitrary File Read via Double URL Encoding Bypass",
+    "UpdatedAt": "2026-01-21T01:03:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.3.0, \u003c 1.8.0"
+    }
+  ]
+}
