@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-21T16:57:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "seroval"
+  },
+  "Advisory": {
+    "DatabaseId": 333197,
+    "Id": "GSA_kwCzR0hTQS1oeDltLWpmNDMtOGZmcs4ABRWN",
+    "GhsaId": "GHSA-hx9m-jf43-8ffr",
+    "References": [
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/security/advisories/GHSA-hx9m-jf43-8ffr"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/commit/ce9408ebc87312fcad345a73c172212f2a798060"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hx9m-jf43-8ffr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hx9m-jf43-8ffr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23956"
+      }
+    ],
+    "Description": "Overriding RegExp serialization with extremely large patterns can **exhaust JavaScript runtime memory** during deserialization. Additionally, overriding RegExp serialization with patterns that trigger **catastrophic backtracking** can lead to ReDoS (Regular Expression Denial of Service).  \n\n**Mitigation**:  \n`Seroval` introduces `disabledFeatures` (a bitmask) in serialization/deserialization methods, with `Feature.RegExp` as a dedicated flag. **Users are recommended to configure `disabledFeatures` to disable RegExp serialization entirely.**",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-21T16:57:06Z",
+    "Severity": "HIGH",
+    "Summary": "seroval affected by Denial of Service via RegExp serialization",
+    "UpdatedAt": "2026-01-21T16:57:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}
