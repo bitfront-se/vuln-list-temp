@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-01-20T18:58:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@hotwired/turbo"
+  },
+  "Advisory": {
+    "DatabaseId": 332966,
+    "Id": "GSA_kwCzR0hTQS1xcHBtLWc1NmctZnB2cM4ABRSm",
+    "GhsaId": "GHSA-qppm-g56g-fpvp",
+    "References": [
+      {
+        "Url": "https://github.com/hotwired/turbo/security/advisories/GHSA-qppm-g56g-fpvp"
+      },
+      {
+        "Url": "https://github.com/hotwired/turbo/pull/1399"
+      },
+      {
+        "Url": "https://github.com/hotwired/turbo/commit/899df356e9f4b3303cca217cd14b3f846edda10d"
+      },
+      {
+        "Url": "https://github.com/hotwired/turbo/releases/tag/v8.0.21"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qppm-g56g-fpvp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qppm-g56g-fpvp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66803"
+      }
+    ],
+    "Description": "###  Summary\nA race condition in Turbo Frames allows delayed HTTP responses to restore stale session cookies after session-modifying operations.\n\n### Details\nBrowsers automatically process Set-Cookie headers from HTTP responses. When a Turbo Frame request is in-flight during a session-modifying action (such as logout), the delayed response may include a Set-Cookie header reflecting the session state at request time. This can result in stale session cookies being restored after the session was intentionally modified or invalidated.\n\nThis condition can occur naturally on slow networks. An active network attacker capable of delaying responses could potentially exploit this to restore previous session state.\n\n  ### Impact\n Applications using Turbo Frames with cookie-based session storage may experience:\n  - Session state reversion after logout\n  - Unintended restoration of previous authentication state\n\nThe impact is limited to applications using client-side cookie storage for sessions. Applications using server-side session stores (Redis, database, etc.) are not meaningfully affected, as the server-side session state remains authoritative.\n\n###  Patches\n  Upgrade to Turbo 8.0.21 or later. The fix cancels in-flight Turbo Frame requests when:\n  - The frame element is disconnected from the DOM\n  - The frame's disabled attribute is set\n  - The frame's src attribute is cleared\n\n###  Workarounds\n  - Use server-side session storage instead of a cookie store like Rails's cookie store\n  - Ensure logout flows remove or disable Turbo Frame elements before invalidating sessions\n\n###  References\n  - https://github.com/hotwired/turbo/pull/1399",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-20T18:58:15Z",
+    "Severity": "LOW",
+    "Summary": "Turbo Frame responses can restore stale session cookies",
+    "UpdatedAt": "2026-01-20T18:58:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.21"
+      },
+      "VulnerableVersionRange": "\u003c= 8.0.20"
+    }
+  ]
+}
