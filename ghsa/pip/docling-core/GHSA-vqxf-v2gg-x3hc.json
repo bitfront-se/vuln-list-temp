@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-22T18:02:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling-core"
+  },
+  "Advisory": {
+    "DatabaseId": 333328,
+    "Id": "GSA_kwCzR0hTQS12cXhmLXYyZ2cteDNoY84ABRYQ",
+    "GhsaId": "GHSA-vqxf-v2gg-x3hc",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling-core/security/advisories/GHSA-vqxf-v2gg-x3hc"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling-core/issues/482"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling-core/commit/3e8d628eeeae50f0f8f239c8c7fea773d065d80c"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling-core/releases/tag/v2.48.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vqxf-v2gg-x3hc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vqxf-v2gg-x3hc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24009"
+      }
+    ],
+    "Description": "### Impact\n\nA PyYAML-related Remote Code Execution (RCE) vulnerability, namely CVE-2020-14343, is exposed in `docling-core \u003e=2.21.0, \u003c2.48.4` and, specifically only if the application uses `pyyaml \u003c 5.4` and invokes `docling_core.types.doc.DoclingDocument.load_from_yaml()` passing it untrusted YAML data.\n\n### Patches\n\nThe vulnerability has been patched in `docling-core` version **2.48.4**.\nThe fix mitigates the issue by switching `PyYAML` deserialization from `yaml.FullLoader` to `yaml.SafeLoader`, ensuring that untrusted data cannot trigger code execution.\n\n### Workarounds\n\nUsers who cannot immediately upgrade `docling-core` can alternatively ensure that the installed version of `PyYAML` is **5.4 or greater**, which supposedly patches CVE-2020-14343.\n\n### References\n\n* GitHub Issue: #482\n* Upstream Advisory: CVE-2020-14343\n* Fix Release: [v2.48.4](https://github.com/docling-project/docling-core/releases/tag/v2.48.4)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-22T18:02:45Z",
+    "Severity": "HIGH",
+    "Summary": "docling-core vulnerable to Remote Code Execution via unsafe PyYAML usage",
+    "UpdatedAt": "2026-01-22T18:02:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.48.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.21.0, \u003c 2.48.4"
+    }
+  ]
+}

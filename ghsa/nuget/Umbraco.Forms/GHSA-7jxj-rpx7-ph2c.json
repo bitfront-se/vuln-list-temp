@@ -1,0 +1,58 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-01-22T18:06:02Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Umbraco.Forms"
+  },
+  "Advisory": {
+    "DatabaseId": 333331,
+    "Id": "GSA_kwCzR0hTQS03anhqLXJweDctcGgyY84ABRYT",
+    "GhsaId": "GHSA-7jxj-rpx7-ph2c",
+    "References": [
+      {
+        "Url": "https://github.com/umbraco/Umbraco.Forms.Issues/security/advisories/GHSA-7jxj-rpx7-ph2c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7jxj-rpx7-ph2c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7jxj-rpx7-ph2c"
+      }
+    ],
+    "Description": "### Impact\nProtected files uploaded through Umbraco Forms may be served to unauthenticated users when a CDN or caching layer is present and ImageSharp processes the request. ImageSharp sets aggressive cache headers by default, which can cause intermediary caches to store and serve files that should require authentication.\n\n### Patches\nThis issue affects all (supported) versions Umbraco Forms and is patched in 13.9.0, 16.4.0 and 17.1.0.\n\n### Workarounds\nAdd middleware to set cache headers for form uploads. Place the following code in your `Startup.cs` or `Program.cs` after `app.UseStaticFiles()` and any image processing middleware:\n\n```cs\napp.Use(async (context, next) =\u003e\n{\n    var path = context.Request.Path.Value;\n\n    if (!string.IsNullOrEmpty(path) \u0026\u0026 path.StartsWith(\"/media/forms/upload/\", StringComparison.OrdinalIgnoreCase))\n    {\n        context.Response.OnStarting(() =\u003e\n        {\n            context.Response.Headers[\"Cache-Control\"] = \"private, no-store, no-cache, must-revalidate\";\n            context.Response.Headers[\"Pragma\"] = \"no-cache\";\n            context.Response.Headers[\"Expires\"] = \"0\";\n            return Task.CompletedTask;\n        });\n    }\n\n    await next();\n});\n```\n\nAlternatively, configure your CDN to bypass caching for URLs matching `/media/forms/upload/*`.\n\n  Note: The vulnerability requires:\n  - A CDN in front of the website\n  - An authenticated user having previously requested the image\n  - Knowledge of the form GUID, entry GUID, and image filename\n\n  If no CDN is in use, this vulnerability does not apply.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-22T18:06:01Z",
+    "Severity": "LOW",
+    "Summary": "Umbraco.Forms CDN may cache sensitive form uploads when processed by ImageSharp",
+    "UpdatedAt": "2026-01-22T18:06:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0-rc1, \u003c 17.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 14.0.0-beta001, \u003c 16.4.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.9.0"
+      },
+      "VulnerableVersionRange": "\u003c 13.9.0"
+    }
+  ]
+}
