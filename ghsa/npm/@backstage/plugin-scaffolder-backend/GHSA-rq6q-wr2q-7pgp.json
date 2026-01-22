@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-21T22:36:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 333271,
+    "Id": "GSA_kwCzR0hTQS1ycTZxLXdyMnEtN3BncM4ABRXX",
+    "GhsaId": "GHSA-rq6q-wr2q-7pgp",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-rq6q-wr2q-7pgp"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/c641c147ab371a9a8a2f5f67fdb7cb9c97ef345d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rq6q-wr2q-7pgp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rq6q-wr2q-7pgp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24046"
+      }
+    ],
+    "Description": "### Impact\n\nMultiple Scaffolder actions and archive extraction utilities were vulnerable to symlink-based path traversal attacks. An attacker with access to create and execute Scaffolder templates could exploit symlinks to:\n\n1. **Read arbitrary files** via the `debug:log` action by creating a symlink pointing to sensitive files (e.g., `/etc/passwd`, configuration files, secrets)\n2. **Delete arbitrary files** via the `fs:delete` action by creating symlinks pointing outside the workspace\n3. **Write files outside the workspace** via archive extraction (tar/zip) containing malicious symlinks\n\nThis affects any Backstage deployment where users can create or execute Scaffolder templates.\n\n### Patches\n\nThis vulnerability is fixed in the following package versions:\n\n- `@backstage/backend-defaults` version 0.12.2, 0.13.2, 0.14.1, 0.15.0\n- `@backstage/plugin-scaffolder-backend` version 2.2.2, 3.0.2, 3.1.1\n- `@backstage/plugin-scaffolder-node` version 0.11.2, 0.12.3\n\nUsers should upgrade to these versions or later.\n\n### Workarounds\n\n- Follow the recommendation in the [Backstage Threat Model](https://backstage.io/docs/overview/threat-model#scaffolder) to limit access to creating and updating templates\n- Restrict who can create and execute Scaffolder templates using the permissions framework\n- Audit existing templates for symlink usage\n- Run Backstage in a containerized environment with limited filesystem access\n\n### References\n\n- [CWE-59: Improper Link Resolution Before File Access](https://cwe.mitre.org/data/definitions/59.html)\n- [OWASP Path Traversal](https://owasp.org/www-community/attacks/Path_Traversal)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-21T22:36:36Z",
+    "Severity": "HIGH",
+    "Summary": "Backstage has a Possible Symlink Path Traversal in Scaffolder Actions",
+    "UpdatedAt": "2026-01-21T22:36:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.0, \u003c 3.1.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.2.2"
+    }
+  ]
+}

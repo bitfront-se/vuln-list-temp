@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-21T22:57:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.solr:solr-core"
+  },
+  "Advisory": {
+    "DatabaseId": 333180,
+    "Id": "GSA_kwCzR0hTQS12YzJ3LTR2M3AtMm1xd84ABRV8",
+    "GhsaId": "GHSA-vc2w-4v3p-2mqw",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-22444"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/qkrb9dd4xrlqmmq73lrhkbfkttto2d1m"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/01/20/5"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/SOLR-18058"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vc2w-4v3p-2mqw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vc2w-4v3p-2mqw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22444"
+      }
+    ],
+    "Description": "The \"create core\" API of Apache Solr 8.6 through 9.10.0 lacks sufficient input validation on some API parameters, which can cause Solr to check the existence of and attempt to read file-system paths that should be disallowed by Solr's  \"allowPaths\" security setting https://https://solr.apache.org/guide/solr/latest/configuration-guide/configuring-solr-xml.html#the-solr-element .  These read-only accesses can allow users to create cores using unexpected configsets if any are accessible via the filesystem.  On Windows systems configured to allow UNC paths this can additionally cause disclosure of NTLM \"user\" hashes. \n\nSolr deployments are subject to this vulnerability if they meet the following criteria:\n  *  Solr is running in its \"standalone\" mode.\n  *  Solr's \"allowPath\" setting is being used to restrict file access to certain directories.\n  *  Solr's \"create core\" API is exposed and accessible to untrusted users.  This can happen if Solr's  RuleBasedAuthorizationPlugin https://solr.apache.org/guide/solr/latest/deployment-guide/rule-based-authorization-plugin.html  is disabled, or if it is enabled but the \"core-admin-edit\" predefined permission (or an equivalent custom permission) is given to low-trust (i.e. non-admin) user roles.\n\nUsers can mitigate this by enabling Solr's RuleBasedAuthorizationPlugin (if disabled) and configuring a permission-list that prevents untrusted users from creating new Solr cores.  Users should also upgrade to Apache Solr 9.10.1 or greater, which contain fixes for this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-21T15:31:16Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Solr: Insufficient file-access checking in standalone core-creation requests",
+    "UpdatedAt": "2026-01-21T22:57:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 8.6.0, \u003c 9.10.1"
+    }
+  ]
+}

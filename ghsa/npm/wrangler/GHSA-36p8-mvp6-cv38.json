@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-21T23:00:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "wrangler"
+  },
+  "Advisory": {
+    "DatabaseId": 333275,
+    "Id": "GSA_kwCzR0hTQS0zNnA4LW12cDYtY3YzOM4ABRXb",
+    "GhsaId": "GHSA-36p8-mvp6-cv38",
+    "References": [
+      {
+        "Url": "https://github.com/cloudflare/workers-sdk/security/advisories/GHSA-36p8-mvp6-cv38"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0933"
+      },
+      {
+        "Url": "https://github.com/cloudflare/workers-sdk/commit/99b1f328a9afe181b49f1114ed47f15f6d25f0be"
+      },
+      {
+        "Url": "https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%403.114.17"
+      },
+      {
+        "Url": "https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.59.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-36p8-mvp6-cv38"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-36p8-mvp6-cv38"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-0933"
+      }
+    ],
+    "Description": "**Summary**\n\nA command injection vulnerability (CWE-78) has been found to exist in the `wrangler pages deploy` command. The issue occurs because the `--commit-hash` parameter is passed directly to a shell command without proper validation or sanitization, allowing an attacker with control of `--commit-hash` to execute arbitrary commands on the system running Wrangler.\n\n**Root cause**\n\nThe `commitHash` variable, derived from user input via the `--commit-hash` CLI argument, is interpolated directly into a shell command using template literals (e.g., ``execSync(`git show -s --format=%B ${commitHash}`)``). Shell metacharacters are interpreted by the shell, enabling command execution.\n\n**Impact**\n\nThis vulnerability is generally hard to exploit, as it requires `--commit-hash` to be attacker controlled. The vulnerability primarily affects CI/CD environments where `wrangler pages deploy` is used in automated pipelines and the `--commit-hash` parameter is populated from external, potentially untrusted sources. An attacker could exploit this to:\n\n- Run any shell command.\n- Exfiltrate environment variables.\n- Compromise the CI runner to install backdoors or modify build artifacts.\n\n**Mitigation**\n\n- Wrangler v4 users are requested to upgrade to Wrangler v4.59.1 or higher. \n- Wrangler v3 users are requested to upgrade to Wrangler v3.114.17 or higher. \n- Users on Wrangler v2 (EOL) should upgrade to a supported major version.\n\n**Credits**\n\nDisclosed responsibly by kny4hacker.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-21T23:00:35Z",
+    "Severity": "HIGH",
+    "Summary": "Wrangler affected by OS Command Injection in `wrangler pages deploy`",
+    "UpdatedAt": "2026-01-21T23:00:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.59.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.59.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.114.17"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.15, \u003c 3.114.17"
+    }
+  ]
+}
