@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-22T18:41:27Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/sigstore/rekor"
+  },
+  "Advisory": {
+    "DatabaseId": 333668,
+    "Id": "GSA_kwCzR0hTQS00YzR4LWptMngtcGY5as4ABRdk",
+    "GhsaId": "GHSA-4c4x-jm2x-pf9j",
+    "References": [
+      {
+        "Url": "https://github.com/sigstore/rekor/security/advisories/GHSA-4c4x-jm2x-pf9j"
+      },
+      {
+        "Url": "https://github.com/sigstore/rekor/commit/60ef2bceba192c5bf9327d003bceea8bf1f8275f"
+      },
+      {
+        "Url": "https://github.com/sigstore/rekor/releases/tag/v1.5.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4c4x-jm2x-pf9j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4c4x-jm2x-pf9j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24117"
+      }
+    ],
+    "Description": "## Summary\n\n`/api/v1/index/retrieve` supports retrieving a public key via a user-provided URL, allowing attackers to trigger SSRF to arbitrary internal services.\n\nSince the SSRF only can trigger GET requests, the request cannot mutate state. The response from the GET request is not returned to the caller so data exfiltration is not possible. A malicious actor could attempt to probe an internal network through [Blind SSRF](https://portswigger.net/web-security/ssrf/blind).\n\n## Impact\n\n* SSRF to cloud metadata (169.254.169.254)\n* SSRF to internal Kubernetes APIs\n* SSRF to any service accessible from Fulcio's network\n\n## Patches\n\nUpgrade to v1.5.0. Note that this is a breaking change to the search API and fully disables lookups by URL. If you require this feature, please reach out and we can discuss alternatives.\n\n## Workarounds\n\nDisable the search endpoint with `--enable_retrieve_api=false`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-22T18:41:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Rekor affected by Server-Side Request Forgery (SSRF) via provided public key URL",
+    "UpdatedAt": "2026-01-22T18:41:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.3"
+    }
+  ]
+}

