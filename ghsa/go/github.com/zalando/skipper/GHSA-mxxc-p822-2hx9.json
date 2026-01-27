@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-26T23:26:58Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/zalando/skipper"
+  },
+  "Advisory": {
+    "DatabaseId": 334175,
+    "Id": "GSA_kwCzR0hTQS1teHhjLXA4MjItMmh4Oc4ABRlf",
+    "GhsaId": "GHSA-mxxc-p822-2hx9",
+    "References": [
+      {
+        "Url": "https://github.com/zalando/skipper/security/advisories/GHSA-mxxc-p822-2hx9"
+      },
+      {
+        "Url": "https://github.com/zalando/skipper/commit/a4c87ce029a58eb8e1c2c1f93049194a39cf6219"
+      },
+      {
+        "Url": "https://github.com/zalando/skipper/releases/tag/v0.24.0"
+      },
+      {
+        "Url": "https://kubernetes.io/docs/concepts/services-networking/service/#externalname"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mxxc-p822-2hx9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mxxc-p822-2hx9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24470"
+      }
+    ],
+    "Description": "### Impact\n\nWhen running Skipper as an Ingress controller, users with permissions to create an Ingress and a Service of type ExternalName can create routes that enable them to use Skipper's network access to reach internal services.\n\n### Patches\n\nhttps://github.com/zalando/skipper/releases/tag/v0.24.0 disables Kubernetes ExternalName by default.\n\n### Workarounds\n\nDevelopers can allow list targets of an ExternalName by using `-kubernetes-only-allowed-external-names=true` and allow list via regular expressions `-kubernetes-allowed-external-name '^[a-z][a-z0-9-.]+[.].allowed.example$'` \n\n### References\n\nhttps://kubernetes.io/docs/concepts/services-networking/service/#externalname",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-26T23:26:56Z",
+    "Severity": "HIGH",
+    "Summary": "Skipper Ingress Controller Allows Unauthorized Access to Internal Services via ExternalName",
+    "UpdatedAt": "2026-01-26T23:26:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.24.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.24.0"
+    }
+  ]
+}

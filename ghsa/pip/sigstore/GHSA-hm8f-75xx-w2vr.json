@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-01-26T21:34:53Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "sigstore"
+  },
+  "Advisory": {
+    "DatabaseId": 334174,
+    "Id": "GSA_kwCzR0hTQS1obThmLTc1eHgtdzJ2cs4ABRle",
+    "GhsaId": "GHSA-hm8f-75xx-w2vr",
+    "References": [
+      {
+        "Url": "https://github.com/sigstore/sigstore-python/security/advisories/GHSA-hm8f-75xx-w2vr"
+      },
+      {
+        "Url": "https://github.com/sigstore/sigstore-python/commit/5e77497fe8f0b202bdd118949074ec2f20da69aa"
+      },
+      {
+        "Url": "https://github.com/sigstore/sigstore-python/releases/tag/v4.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hm8f-75xx-w2vr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hm8f-75xx-w2vr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24408"
+      }
+    ],
+    "Description": "### Summary\n\nThe sigstore-python OAuth authentication flow is susceptible to Cross-Site Request Forgery.\n\n### Details\n\n`_OAuthSession` creates a unique \"state\" and sends it as a parameter in the authentication request but the \"state\" in the server response seems not not be cross-checked with this value. \n\nFix should be fairly trivial.\n\n### Impact\n\nThis should be low impact: A man-in-the middle attacker could trick a sigstore-python user into signing something with an identity controlled by the attacker (by returning the response to an authentication request they created). This would be quite confusing but not dangerous.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-26T21:34:50Z",
+    "Severity": "LOW",
+    "Summary": "sigstore CSRF possibility in OIDC authentication during signing",
+    "UpdatedAt": "2026-01-26T21:34:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.2.0"
+    }
+  ]
+}

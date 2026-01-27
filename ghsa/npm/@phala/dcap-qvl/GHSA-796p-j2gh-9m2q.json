@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-26T18:55:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@phala/dcap-qvl"
+  },
+  "Advisory": {
+    "DatabaseId": 334150,
+    "Id": "GSA_kwCzR0hTQS03OTZwLWoyZ2gtOW0ycc4ABRlG",
+    "GhsaId": "GHSA-796p-j2gh-9m2q",
+    "References": [
+      {
+        "Url": "https://github.com/Phala-Network/dcap-qvl/security/advisories/GHSA-796p-j2gh-9m2q"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-796p-j2gh-9m2q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-796p-j2gh-9m2q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22696"
+      }
+    ],
+    "Description": "## Impact\nThis vulnerability involves a critical gap in the cryptographic verification process within the dcap-qvl.\n\nThe library fetches QE Identity collateral (including qe_identity, qe_identity_signature, and qe_identity_issuer_chain) from the PCCS. However, it skips to verify the QE Identity signature against its certificate chain and does not enforce policy constraints on the QE Report.\n\n## Consequences\nAn attacker can forge the QE Identity data to whitelist a malicious or non-Intel Quoting Enclave. This allows the attacker to forge the QE and sign untrusted quotes that the verifier will accept as valid. Effectively, this bypasses the entire remote attestation security model, as the verifier can no longer trust the entity responsible for signing the quotes.\n\n## Who is impacted\nAll deployments utilizing the dcap-qvl library for SGX or TDX quote verification are affected.\n\n## Patches\nThe vulnerability has been patched in dcap-qvl version 0.3.9. The fix implements the missing cryptographic verification for the QE Identity signature and enforces the required checks for MRSIGNER, ISVPRODID, and ISVSVN against the QE Report.\n\nUsers of the `@phala/dcap-qvl-node` and `@phala/dcap-qvl-web` packages should switch to the pure JavaScript implementation, `@phala/dcap-qvl`.\n\n## Workarounds\nThere are no known workarounds for this vulnerability. Users must upgrade to the patched version to ensure that QE Identity collateral is properly verified.\n\n## Credit\nThis bug was reported by Rahul Saxena \u003csaxenism@bluethroatlabs.com\u003e.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-26T18:55:13Z",
+    "Severity": "CRITICAL",
+    "Summary": "dcap-qvl has Missing Verification for QE Identity",
+    "UpdatedAt": "2026-01-26T18:55:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.9"
+      },
+      "VulnerableVersionRange": "\u003c= 0.3.0"
+    }
+  ]
+}
