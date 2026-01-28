@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-28T16:10:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 334530,
+    "Id": "GSA_kwCzR0hTQS05cjU0LXE2Y3gteG1oNc4ABRrC",
+    "GhsaId": "GHSA-9r54-q6cx-xmh5",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-9r54-q6cx-xmh5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-24771"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/2cf60046d730df9fd0aba85178f3ecfe8212d990"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9r54-q6cx-xmh5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9r54-q6cx-xmh5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24771"
+      }
+    ],
+    "Description": "## Summary\n\nA Cross-Site Scripting (XSS) vulnerability exists in the `ErrorBoundary` component of the hono/jsx library. Under certain usage patterns, untrusted user-controlled strings may be rendered as raw HTML, allowing arbitrary script execution in the victim's browser.\n\n## Details\n\nThe issue is in the `ErrorBoundary` component (`src/jsx/components.ts`). `ErrorBoundary` previously forced certain rendered output paths to be treated as raw HTML, bypassing the library's default escaping behavior. This could result in unescaped rendering when developers pass user-controlled strings directly as children, or when fallbackRender returns user-controlled strings (for example, reflecting error messages that contain attacker input).\n\nThis vulnerability is only exploitable when an application renders untrusted user input within `ErrorBoundary` without appropriate escaping or sanitization.\n\n## Impact\n\nSuccessful exploitation may allow attackers to execute arbitrary JavaScript in the victim’s browser (reflected XSS). Depending on the application context, this can lead to actions such as session compromise, data exfiltration, or performing unauthorized actions as the victim.\n\n## Affected Components\n\n* hono/jsx: `ErrorBoundary` component",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-28T16:10:22Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono vulnerable to XSS through ErrorBoundary component ",
+    "UpdatedAt": "2026-01-28T16:10:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.11.7"
+      },
+      "VulnerableVersionRange": "\u003c 4.11.7"
+    }
+  ]
+}

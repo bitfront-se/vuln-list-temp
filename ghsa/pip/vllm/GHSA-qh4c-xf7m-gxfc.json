@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-01-28T16:14:29Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 334532,
+    "Id": "GSA_kwCzR0hTQS1xaDRjLXhmN20tZ3hmY84ABRrE",
+    "GhsaId": "GHSA-qh4c-xf7m-gxfc",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-qh4c-xf7m-gxfc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-24779"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/32746"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/f46d576c54fb8aeec5fc70560e850bed38ef17d7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qh4c-xf7m-gxfc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qh4c-xf7m-gxfc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24779"
+      }
+    ],
+    "Description": "### Summary\nA Server-Side Request Forgery (SSRF) vulnerability exists in the `MediaConnector` class within the vLLM project's multimodal feature set. The load_from_url and load_from_url_async methods obtain and process media from URLs provided by users, using different Python parsing libraries when restricting the target host. These two parsing libraries have different interpretations of backslashes, which allows the host name restriction to be bypassed. This allows an attacker to coerce the vLLM server into making arbitrary requests to internal network resources.\n\nThis vulnerability is particularly critical in containerized environments like `llm-d`, where a compromised vLLM pod could be used to scan the internal network, interact with other pods, and potentially cause Denial of Service or access sensitive data. For example, an attacker could make the vLLM pod send malicious requests to an internal `llm-d` management endpoint, leading to system instability by falsely reporting metrics like the KV cache state.\n\n### Details\nThe core of the vulnerability lies in the `MediaConnector.load_from_url` method and its asynchronous counterpart. These methods accept a URL string to fetch media content (images, audio, video).\n\n\u003e     def load_from_url(\n\u003e         self,\n\u003e         url: str,\n\u003e         media_io: MediaIO[_M],\n\u003e         *,\n\u003e         fetch_timeout: int | None = None,\n\u003e     ) -\u003e _M:  # type: ignore[type-var]\n\u003e         url_spec = urlparse(url)\n\u003e \n\u003e         if url_spec.scheme.startswith(\"http\"):\n\u003e             self._assert_url_in_allowed_media_domains(url_spec)\n\u003e \n\u003e             connection = self.connection\n\u003e             data = connection.get_bytes(\n\u003e                 url,\n\u003e                 timeout=fetch_timeout,\n\u003e                 allow_redirects=envs.VLLM_MEDIA_URL_ALLOW_REDIRECTS,\n\u003e             )\n\u003e \n\u003e             return media_io.load_bytes(data)\n\nThe URL validation uses the `urlparse` function from Python's `urllib` module, while the request is made using the `request` function from Python's `requests` module. The `requests` module's underlying URL parsing is implemented using the `parse_url` function from Python's `urllib3`. These two parsing functions follow different URL specifications; one is implemented according to the RFC 3986 specification, and the other is implemented according to the WHATWG Living Standard. There is a difference in how the two functions handle backslashes (`\\`) in URLs, which allows the hostname restriction to be bypassed.\n\n### Fix\n\n* https://github.com/vllm-project/vllm/pull/32746",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-28T16:14:28Z",
+    "Severity": "HIGH",
+    "Summary": "vLLM vulnerable to Server-Side Request Forgery (SSRF) through MediaConnector",
+    "UpdatedAt": "2026-01-28T16:14:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.14.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.14.1"
+    }
+  ]
+}

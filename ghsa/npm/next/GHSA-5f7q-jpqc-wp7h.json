@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-28T15:20:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 334509,
+    "Id": "GSA_kwCzR0hTQS01ZjdxLWpwcWMtd3A3aM4ABRqt",
+    "GhsaId": "GHSA-5f7q-jpqc-wp7h",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-5f7q-jpqc-wp7h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-59472"
+      },
+      {
+        "Url": "https://vercel.com/changelog/summaries-of-cve-2025-59471-and-cve-2025-59472"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5f7q-jpqc-wp7h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5f7q-jpqc-wp7h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-59472"
+      }
+    ],
+    "Description": "A denial of service vulnerability exists in Next.js versions with Partial Prerendering (PPR) enabled when running in minimal mode. The PPR resume endpoint accepts unauthenticated POST requests with the `Next-Resume: 1` header and processes attacker-controlled postponed state data. Two closely related vulnerabilities allow an attacker to crash the server process through memory exhaustion:\n\n1. **Unbounded request body buffering**: The server buffers the entire POST request body into memory using `Buffer.concat()` without enforcing any size limit, allowing arbitrarily large payloads to exhaust available memory.\n\n2. **Unbounded decompression (zipbomb)**: The resume data cache is decompressed using `inflateSync()` without limiting the decompressed output size. A small compressed payload can expand to hundreds of megabytes or gigabytes, causing memory exhaustion.\n\nBoth attack vectors result in a fatal V8 out-of-memory error (`FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`) causing the Node.js process to terminate. The zipbomb variant is particularly dangerous as it can bypass reverse proxy request size limits while still causing large memory allocation on the server.\n\nTo be affected, an application must run with `experimental.ppr: true` or `cacheComponents: true` configured along with the NEXT_PRIVATE_MINIMAL_MODE=1 environment variable.\n\nStrongly consider upgrading to 15.6.0-canary.61 or 16.1.5 to reduce risk and prevent availability issues in Next applications.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-28T15:20:55Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js has Unbounded Memory Consumption via PPR Resume Endpoint ",
+    "UpdatedAt": "2026-01-28T15:20:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0-beta.0, \u003c 16.1.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.6.0-canary.61"
+      },
+      "VulnerableVersionRange": "\u003e= 15.0.0-canary.0, \u003c 15.6.0-canary.61"
+    }
+  ]
+}
