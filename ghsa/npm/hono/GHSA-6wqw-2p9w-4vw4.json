@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-27T19:04:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 334373,
+    "Id": "GSA_kwCzR0hTQS02d3F3LTJwOXctNHZ3NM4ABRol",
+    "GhsaId": "GHSA-6wqw-2p9w-4vw4",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-6wqw-2p9w-4vw4"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/12c511745b3f1e7a3f863a23ce5f921c7fa805d1"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.11.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6wqw-2p9w-4vw4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6wqw-2p9w-4vw4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24472"
+      }
+    ],
+    "Description": "## Summary\n\nCache Middleware contains an information disclosure vulnerability caused by improper handling of HTTP cache control directives. The middleware does not respect standard cache control headers such as `Cache-Control: private` or `Cache-Control: no-store`, which may result in private or authenticated responses being cached and subsequently exposed to unauthorized users.\n\n## Details\n\nThe vulnerability exists in the cache decision logic of Cache Middleware. When determining whether a response should be cached, the middleware does not take HTTP cache control semantics into account and may cache responses that are explicitly marked as private by the application. While some runtimes, such as Cloudflare Workers, enforce cache control restrictions at the platform level, other runtimes including Deno, Bun, and Node.js rely on the middleware’s behavior. As a result, applications running on these runtimes may unintentionally cache sensitive responses.\n\n## Impact\n\nThis issue can lead to Web Cache Deception and information disclosure. If an authenticated user accesses an endpoint that returns user-specific or sensitive data and the response is cached despite being marked as private, subsequent unauthenticated requests may receive the cached response. This may result in the exposure of personally identifiable information or session-related data. The impact is limited to applications that use the hono/cache middleware and rely on it to correctly honor HTTP cache control directives.\n\n## Affected Components\n\n* Cache Middleware",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-27T19:04:17Z",
+    "Severity": "MODERATE",
+    "Summary": "hono cache middleware ignores \"Cache-Control: private\" leading to Web Cache Deception",
+    "UpdatedAt": "2026-01-27T19:04:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.11.7"
+      },
+      "VulnerableVersionRange": "\u003c 4.11.7"
+    }
+  ]
+}

