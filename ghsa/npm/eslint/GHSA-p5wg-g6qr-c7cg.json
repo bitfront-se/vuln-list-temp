@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-29T14:58:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "eslint"
+  },
+  "Advisory": {
+    "DatabaseId": 334133,
+    "Id": "GSA_kwCzR0hTQS1wNXdnLWc2cXItYzdjZ84ABRk1",
+    "GhsaId": "GHSA-p5wg-g6qr-c7cg",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-50537"
+      },
+      {
+        "Url": "https://github.com/eslint/eslint/issues/19646"
+      },
+      {
+        "Url": "https://gist.github.com/lyyffee/2ee1815e5c2da82c05e9838b9bfefbbc"
+      },
+      {
+        "Url": "https://github.com/eslint/eslint/commit/d683aebc8e0792e4f80bd1488c705c90f22c317e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p5wg-g6qr-c7cg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p5wg-g6qr-c7cg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-50537"
+      }
+    ],
+    "Description": "There is a Stack Overflow vulnerability in eslint before 9.26.0 when serializing objects with circular references in `eslint/lib/shared/serialization.js`. The exploit is triggered via the `RuleTester.run()` method, which validates test cases and checks for duplicates. During validation, the internal function `checkDuplicateTestCase()` is called, which in turn uses the `isSerializable()` function for serialization checks. When a circular reference object is passed in, `isSerializable()` enters infinite recursion, ultimately causing a Stack Overflow.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-26T18:31:29Z",
+    "Severity": "MODERATE",
+    "Summary": "eslint has a Stack Overflow when serializing objects with circular references",
+    "UpdatedAt": "2026-01-29T14:58:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.26.0"
+      },
+      "VulnerableVersionRange": "\u003c 9.26.0"
+    }
+  ]
+}
