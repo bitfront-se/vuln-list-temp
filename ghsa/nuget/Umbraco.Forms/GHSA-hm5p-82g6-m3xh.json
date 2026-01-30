@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-30T14:43:22Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Umbraco.Forms"
+  },
+  "Advisory": {
+    "DatabaseId": 334787,
+    "Id": "GSA_kwCzR0hTQS1obTVwLTgyZzYtbTN4aM4ABRvD",
+    "GhsaId": "GHSA-hm5p-82g6-m3xh",
+    "References": [
+      {
+        "Url": "https://github.com/umbraco/Umbraco.Forms.Issues/security/advisories/GHSA-hm5p-82g6-m3xh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-24687"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hm5p-82g6-m3xh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hm5p-82g6-m3xh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24687"
+      }
+    ],
+    "Description": "### Impact\nIt's possible for an authenticated backoffice-user to enumerate and traverse paths/files on the systems filesystem and read their contents, on Mac/Linux Umbraco installations using Forms. As Umbraco Cloud runs in a Windows environment, Cloud users aren't affected. \n\n### Patches\nThis issue affects versions 16 and 17 of Umbraco Forms and is patched in 16.4.1 and 17.1.1\n\n### Workarounds\nIf upgrading is not immediately possible, users can mitigate this vulnerability by:\n* Configuring a WAF or reverse proxy to block requests containing path traversal sequences (`../`, `..\\`) in the `fileName` parameter of the export endpoint\n* Restricting network access to the Umbraco backoffice to trusted IP ranges\n* Blocking the `/umbraco/forms/api/v1/export` endpoint entirely if the export feature is not required\n\nHowever, upgrading to the patched version is strongly recommended.\n\n### References\nCredit to Kevin Joensen from Baldur Security for finding this vulnerability",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-30T14:43:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Umbraco.Forms has Path Traversal and File Enumeration Vulnerabilities in Linux/Mac",
+    "UpdatedAt": "2026-01-30T14:43:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0, \u003c 17.1.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.4.1"
+    }
+  ]
+}
