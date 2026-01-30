@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-01-29T22:05:19Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/chainguard-dev/malcontent"
+  },
+  "Advisory": {
+    "DatabaseId": 334752,
+    "Id": "GSA_kwCzR0hTQS05MjNqLXZyY2ctaHh3aM4ABRug",
+    "GhsaId": "GHSA-923j-vrcg-hxwh",
+    "References": [
+      {
+        "Url": "https://github.com/chainguard-dev/malcontent/security/advisories/GHSA-923j-vrcg-hxwh"
+      },
+      {
+        "Url": "https://github.com/chainguard-dev/malcontent/commit/259fca5abc004f3ab238895463ef280a87f30e96"
+      },
+      {
+        "Url": "https://github.com/chainguard-dev/malcontent/commit/a7dd8a5328ddbaf235568437813efa7591e00017"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-923j-vrcg-hxwh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-923j-vrcg-hxwh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24846"
+      }
+    ],
+    "Description": "malcontent could be made to create symlinks outside the intended extraction directory when scanning a specially crafted tar or deb archive. The `handleSymlink` function received arguments in the wrong order, causing the symlink target to be used as the symlink location. Additionally, symlink targets were not validated to ensure they resolved within the extraction directory.\n\n**Fixes:**\n- [Swap handleSymlink arguments; validate symlink location](https://github.com/chainguard-dev/malcontent/commit/a7dd8a5328ddbaf235568437813efa7591e00017)\n- [Validate symlink targets resolve within extraction directory](https://github.com/chainguard-dev/malcontent/commit/259fca5abc004f3ab238895463ef280a87f30e96)\n\n**Acknowledgements**\n\nThank you to Oleh Konko from [1seal](https://1seal.org/) for discovering and reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-01-29T22:05:15Z",
+    "Severity": "MODERATE",
+    "Summary": "malcontent vulnerable to symlink Path Traversal via handleSymlink argument confusion in archive extraction",
+    "UpdatedAt": "2026-01-29T22:05:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.20.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.0, \u003c 1.20.3"
+    }
+  ]
+}
