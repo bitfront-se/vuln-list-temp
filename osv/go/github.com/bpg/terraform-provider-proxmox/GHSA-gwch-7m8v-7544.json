@@ -1,6 +1,6 @@
 {
   "id": "GHSA-gwch-7m8v-7544",
-  "modified": "2026-02-02T20:34:42.079898Z",
+  "modified": "2026-02-03T03:13:05.176915Z",
   "published": "2026-02-02T20:25:53Z",
   "summary": "terraform-provider-proxmox has insecure sudo recommendation in the documentation",
   "details": "\u003e Note: It is uncertain whether this constitutes a vulnerability or should be filed as an issue instead.\n\n### Summary\n\nIn the SSH configuration documentation, the sudoer line that was suggested can be escalated to edit any files in the system.\n\n### Details\n\nThe following line were suggested for addition in the sudoers file:\n\n```bash\nterraform ALL=(root) NOPASSWD: /usr/bin/tee /var/lib/vz/*\n```\n\nBut this is highly insecure as  the folder can be escaped using `../` and any files can be edited on the system.\n\n### PoC\n\nUsing a `terraform` user with the previously mentioned line in the `/etc/sudoers` file, a `/etc/sudoers.d/sudo` file can be added using this command:\n\n`echo \"ALL=(ALL) NOPASSWD:ALL\" | tee /var/lib/vz/../../../etc/sudoers.d/sudo`\n\nThis grants access to the full root of the node.\n\n### Impact\n\nThis breaches the access limits of the Terraform user.\n\n### Suggested workaround\n\nUse a strict regex on the command to allow only the names that should be pushed by this user.\n\nExample for cloudinit yaml files:\n\n```bash\nterraform ALL=(root) NOPASSWD: /usr/bin/tee /var/lib/vz/snippets/[A-Za-z0-9-]*\\\\.yaml\n```",
