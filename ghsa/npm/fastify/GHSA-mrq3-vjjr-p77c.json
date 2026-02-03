@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-02T22:25:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fastify"
+  },
+  "Advisory": {
+    "DatabaseId": 335097,
+    "Id": "GSA_kwCzR0hTQS1tcnEzLXZqanItcDc3Y84ABRz5",
+    "GhsaId": "GHSA-mrq3-vjjr-p77c",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fastify/security/advisories/GHSA-mrq3-vjjr-p77c"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/commit/eb11156396f6a5fedaceed0140aed2b7f026be37"
+      },
+      {
+        "Url": "https://hackerone.com/reports/3524779"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mrq3-vjjr-p77c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mrq3-vjjr-p77c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25224"
+      }
+    ],
+    "Description": "### Impact\nA Denial of Service vulnerability in Fastify’s Web Streams response handling can allow a remote client to exhaust server memory. Applications that return a `ReadableStream` (or `Response` with a Web Stream body) via `reply.send()` are impacted. A slow or non-reading client can trigger unbounded buffering when backpressure is ignored, leading to process crashes or severe degradation.\n\n### Patches\nThe issue is fixed in Fastify 5.7.3. Users should upgrade to 5.7.3 or later.\n\n### Workarounds\nAvoid sending Web Streams from Fastify responses (e.g., `ReadableStream` or `Response` bodies). Use Node.js streams (`stream.Readable`) or buffered payloads instead until the project can upgrade.\n\n### References\n- https://hackerone.com/reports/3524779",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-02T22:25:05Z",
+    "Severity": "LOW",
+    "Summary": "Fastify Vulnerable to DoS via Unbounded Memory Allocation in sendWebStream",
+    "UpdatedAt": "2026-02-02T22:25:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.7.3"
+      },
+      "VulnerableVersionRange": "\u003c= 5.7.2"
+    }
+  ]
+}

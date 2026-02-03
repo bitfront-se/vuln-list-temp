@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-02T20:50:32Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "picklescan"
+  },
+  "Advisory": {
+    "DatabaseId": 335089,
+    "Id": "GSA_kwCzR0hTQS1tN2o1LXIycDUtYzM5cs4ABRzx",
+    "GhsaId": "GHSA-m7j5-r2p5-c39r",
+    "References": [
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/security/advisories/GHSA-m7j5-r2p5-c39r"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/pull/60"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/commit/4d9bc9cd34bca8672dad3481cd4556d5ba747156"
+      },
+      {
+        "Url": "https://github.com/mmaitre314/picklescan/releases/tag/v1.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m7j5-r2p5-c39r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m7j5-r2p5-c39r"
+      }
+    ],
+    "Description": "### Summary\nUnsafe pickle deserialization allows unauthenticated attackers to perform Arbitrary File Creation. By chaining the logging.FileHandler class, an attacker can bypass RCE-focused blocklists to create empty files on the server. The vulnerability allows creating zero-byte files in arbitrary locations but does not permit overwriting or modifying existing files.\n\n### Details\nThe application deserializes untrusted pickle data. While RCE keywords may be blocked, the exploit abuses standard library features:\n\nlogging.FileHandler: The exploit instantiates this class using its default behavior (append mode).\n\nBehavior on Existing Files: If the target file already exists, the handler opens it without modifying its content, resulting in no impact to existing data.\n\nBehavior on Non-Existent Files: If the target file does not exist, the handler creates a new zero-byte file with the specified name.\n\n### PoC\n```python\nimport pickle\n\nclass WriteFile:\n    def __reduce__(self):\n        from logging import FileHandler\n        return (FileHandler, ('evil.log',))\n    \nwith open(\"bypass_write.pkl\", \"wb\") as f:\n    pickle.dump(WriteFile(), f)\n\nhandler = pickle.loads(pickle.dumps(WriteFile()))\n```\n\u003cimg width=\"1201\" height=\"140\" alt=\"313e1cfacbe700e27b6875e49808c52a\" src=\"https://github.com/user-attachments/assets/8873bb54-0f98-41aa-8e7c-a38a245ca428\" /\u003e\n\n\n### Impact\nThis primitive can be used for Filesystem Pollution or Logic Disruption. For example, an attacker could create specific \"lock files\" (e.g., maintenance.lock, .lock) that the application checks for, potentially triggering a Denial of Service (DoS) or preventing the application from starting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-02T20:50:30Z",
+    "Severity": "MODERATE",
+    "Summary": "picklescan vulnerable to arbitrary file create using logging.FileHandler",
+    "UpdatedAt": "2026-02-02T20:50:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.1"
+    }
+  ]
+}

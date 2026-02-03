@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-02T18:29:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jspdf"
+  },
+  "Advisory": {
+    "DatabaseId": 335055,
+    "Id": "GSA_kwCzR0hTQS05NWZ4LWpqcjUtZjM5Y84ABRzP",
+    "GhsaId": "GHSA-95fx-jjr5-f39c",
+    "References": [
+      {
+        "Url": "https://github.com/parallax/jsPDF/security/advisories/GHSA-95fx-jjr5-f39c"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/commit/ae4b93f76d8fc1baa5614bd5fdb5d174c3b85f0d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-95fx-jjr5-f39c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-95fx-jjr5-f39c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24133"
+      }
+    ],
+    "Description": "### Impact\n\nUser control of the first argument of the `addImage` method results in Denial of Service.\n\nIf given the possibility to pass unsanitized image data or URLs to the `addImage` method, a user can provide a harmful BMP file that results in out of memory errors and denial of service. Harmful BMP files have large width and/or height entries in their headers, wich lead to excessive memory allocation.\n\nOther affected methods are: `html`.\n\nExample attack vector:\n\n```js\nimport { jsPDF } from \"jspdf\" \n\n// malicious BMP image data with large width/height headers\nconst payload = ...\n\nconst doc = new jsPDF();\n\ndoc.addImage(payload, \"BMP\", 0, 0, 100, 100);\n```\n\n### Patches\n\nThe vulnerability has been fixed in jsPDF 4.1.0. Upgrade to jspdf@\u003e=4.1.0.\n\n### Workarounds\n\nSanitize image data or URLs before passing it to the addImage method or one of the other affected methods.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-02T18:29:13Z",
+    "Severity": "HIGH",
+    "Summary": "jsPDF Vulnerable to Denial of Service (DoS) via Unvalidated BMP Dimensions in BMPDecoder",
+    "UpdatedAt": "2026-02-02T18:29:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.0.0"
+    }
+  ]
+}
