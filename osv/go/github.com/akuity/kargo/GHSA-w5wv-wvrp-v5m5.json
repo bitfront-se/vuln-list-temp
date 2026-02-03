@@ -1,9 +1,10 @@
 {
   "id": "GHSA-w5wv-wvrp-v5m5",
-  "modified": "2026-01-29T03:52:48.550381Z",
+  "modified": "2026-02-02T22:25:53.845189Z",
   "published": "2026-01-27T22:15:28Z",
   "aliases": [
-    "CVE-2026-24748"
+    "CVE-2026-24748",
+    "GO-2026-4385"
   ],
   "summary": "Kargo's `GetConfig()` and `RefreshResource()` API endpoints allow unauthenticated access",
   "details": "### Impact\n\nA bug was found with authentication checks on the `GetConfig()` API endpoint. This allowed unauthenticated users to access this endpoint by specifying an `Authorization` header with any non-empty `Bearer` token value, regardless of validity.  This vulnerability did allow for exfiltration of configuration data such as endpoints for connected Argo CD clusters. This data could allow an attacker to enumerate cluster URLs and namespaces for use in subsequent attacks.\n\nAdditionally, the same bug affected the `RefreshResource` endpoint. This endpoint does not lead to any information disclosure, but could be used by an unauthenticated attacker to perform a denial-of-service style attack against the Kargo API. `RefreshResource` sets an annotation on specific Kubernetes resources to trigger reconciliations. If run on a constant loop, this could also slow down legitimate requests to the Kubernetes API server.\n\nThis vulnerability was identified by security researchers, and there are no known reports of exploitation in the wild.\n\n### Patches\n\nThis problem has been patched in the previous 3 versions of Kargo. Based on our information, almost all users are on one of these versions. If for some reason you cannot upgrade from an earlier version, please reach out to us.\n\n### Workarounds\n\nThere are no workarounds for this issue, so it is highly recommended to upgrade at the earliest possible\n\n### Additional details\n\nThis issue was caused by fallback logic in token authentication. The majority of Kargo endpoints are backed by Kubernetes objects, and for these endpoints, unrecognized token types are passed to the Kubernetes API for validation. However, the affected endpoints do not use Kubernetes or used an internal client not subject to authentication, so unrecognized tokens had no validation fallback. As a result, any request with a non-empty `Bearer` token in the `Authorization` header was incorrectly treated as authorized.",
