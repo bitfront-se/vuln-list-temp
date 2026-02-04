@@ -1,10 +1,13 @@
 {
   "id": "GO-2024-2682",
-  "modified": "2024-05-20T16:03:47Z",
+  "modified": "2026-02-04T02:49:59.898307Z",
   "published": "2024-04-05T16:53:41Z",
   "aliases": [
     "CVE-2024-22189",
     "GHSA-c33x-xqrf-c478"
+  ],
+  "related": [
+    "CGA-5cg8-j3ff-f9wv"
   ],
   "summary": "Denial of service via connection starvation in github.com/quic-go/quic-go",
   "details": "An attacker can cause its peer to run out of memory by sending a large number of NEW_CONNECTION_ID frames that retire old connection IDs. The receiver is supposed to respond to each retirement frame with a RETIRE_CONNECTION_ID frame. The attacker can prevent the receiver from sending out (the vast majority of) these RETIRE_CONNECTION_ID frames by collapsing the peers congestion window (by selectively acknowledging received packets) and by manipulating the peer's RTT estimate.",

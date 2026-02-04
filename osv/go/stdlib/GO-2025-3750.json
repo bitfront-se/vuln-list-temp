@@ -1,10 +1,13 @@
 {
   "id": "GO-2025-3750",
-  "modified": "2025-06-14T06:28:19.438040Z",
+  "modified": "2026-02-04T03:28:12.135241Z",
   "published": "2025-06-11T16:59:06Z",
   "aliases": [
     "BIT-golang-2025-0913",
     "CVE-2025-0913"
+  ],
+  "related": [
+    "CGA-455f-g86x-5phg"
   ],
   "summary": "Inconsistent handling of O_CREATE|O_EXCL on Unix and Windows in os in syscall",
   "details": "os.OpenFile(path, os.O_CREATE|O_EXCL) behaved differently on Unix and Windows systems when the target path was a dangling symlink. On Unix systems, OpenFile with O_CREATE and O_EXCL flags never follows symlinks. On Windows, when the target path was a symlink to a nonexistent location, OpenFile would create a file in that location. OpenFile now always returns an error when the O_CREATE and O_EXCL flags are both set and the target path is a symlink.",
