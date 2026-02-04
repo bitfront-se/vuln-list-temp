@@ -1,9 +1,10 @@
 {
   "id": "GHSA-4r5r-ccr6-q6f6",
-  "modified": "2026-02-03T03:10:40.648319Z",
+  "modified": "2026-02-03T22:40:57.331115Z",
   "published": "2026-01-20T20:55:14Z",
   "aliases": [
-    "CVE-2026-23517"
+    "CVE-2026-23517",
+    "GO-2026-4334"
   ],
   "summary": "Fleet has an Access Control vulnerability in debug/pprof endpoints",
   "details": "### Summary\n\nA broken access control issue in Fleet allowed authenticated users to access debug and profiling endpoints regardless of role. As a result, low-privilege users could view internal server diagnostics and trigger resource-intensive profiling operations.\n\n### Impact\n\nFleet’s debug/pprof endpoints are accessible to any authenticated user regardless of role, including the lowest-privilege “Observer” role. This allows low-privilege users to access sensitive server internals, including runtime profiling data and in-memory application state, and to trigger CPU-intensive profiling operations that could lead to denial of service.\n\n### Patches\n\n- 4.78.3\n- 4.77.1\n- 4.76.2\n- 4.75.2\n- 4.53.3\n\n### Workarounds\n\nIf an immediate upgrade is not possible, users should put the debug/pprof endpoints behind an IP allowlist. \n\n### For more information\n\nIf you have any questions or comments about this advisory:\n\nEmail us at [security@fleetdm.com](mailto:security@fleetdm.com)\nJoin #fleet in [osquery Slack](https://join.slack.com/t/osquery/shared_invite/zt-h29zm0gk-s2DBtGUTW4CFel0f0IjTEw)\n\n### Credits\n\nWe thank @secfox-ai for responsibly reporting this issue.",
