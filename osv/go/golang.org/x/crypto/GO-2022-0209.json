@@ -1,10 +1,13 @@
 {
   "id": "GO-2022-0209",
-  "modified": "2024-05-20T16:03:47Z",
+  "modified": "2026-02-04T04:34:27.332878Z",
   "published": "2022-07-01T20:15:25Z",
   "aliases": [
     "CVE-2019-11840",
     "GHSA-r5c5-pr8j-pfp7"
+  ],
+  "related": [
+    "CGA-w77q-hxpv-cjw3"
   ],
   "summary": "Insufficiently random values in golang.org/x/crypto/salsa20",
   "details": "XORKeyStream generates incorrect and insecure output for very large inputs.\n\nIf more than 256 GiB of keystream is generated, or if the counter otherwise grows greater than 32 bits, the amd64 implementation will first generate incorrect output, and then cycle back to previously generated keystream. Repeated keystream bytes can lead to loss of confidentiality in encryption applications, or to predictability in CSPRNG applications.\n\nThe issue might affect uses of golang.org/x/crypto/nacl with extremely large messages.\n\nArchitectures other than amd64 and uses that generate less than 256 GiB of keystream for a single salsa20.XORKeyStream invocation are unaffected.",
