@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-04T17:49:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 335599,
+    "Id": "GSA_kwCzR0hTQS03YzRoLXZoMm0tNzQzbc4ABR7v",
+    "GhsaId": "GHSA-7c4h-vh2m-743m",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-7c4h-vh2m-743m"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/ae0669a736cc496beeb296e115267862727ae838"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7c4h-vh2m-743m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7c4h-vh2m-743m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21893"
+      }
+    ],
+    "Description": "### Impact\nA Command Injection vulnerability was identified in n8n’s community package installation functionality. The issue allowed authenticated users with administrative permissions to execute arbitrary system commands on the n8n host under specific conditions.\n\n**Important context**\n\n- Exploitation requires _administrative_ access to the n8n instance.\n- The affected functionality is restricted to trusted users who are already permitted to install third-party community packages.\n- No unauthenticated or low-privilege exploitation is possible.\n- There is no evidence of exploitation in the wild.\n\nBecause administrative users can already extend n8n with custom or community code, the vulnerability does not meaningfully expand the threat model beyond existing administrator capabilities. However, it represents a violation of secure coding practices and has therefore been addressed.\n\n### Patches\nUsers are advised to upgrade to n8n version 1.120.3 or later, which fully resolves the issue.\n\nAs a general security best practice, n8n instance owners should ensure that:\n- Administrative access is limited to trusted users only.\n- Community packages are installed only from trusted sources.\n- Instances are kept up to date with the latest security releases.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T17:49:38Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n Vulnerable to Command Injection in Community Package Installation",
+    "UpdatedAt": "2026-02-04T17:49:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.120.3"
+      },
+      "VulnerableVersionRange": "\u003e= 0.187.0, \u003c 1.120.3"
+    }
+  ]
+}
