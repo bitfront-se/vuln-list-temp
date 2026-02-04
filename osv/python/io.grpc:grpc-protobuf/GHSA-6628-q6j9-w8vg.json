@@ -1,13 +1,12 @@
 {
   "id": "GHSA-6628-q6j9-w8vg",
-  "modified": "2025-08-13T15:20:21.397821Z",
+  "modified": "2026-02-04T04:40:16.870169Z",
   "published": "2023-07-06T21:15:08Z",
   "aliases": [
     "CVE-2023-1428"
   ],
   "related": [
-    "CGA-pm82-388j-gph8",
-    "CGA-w2q6-vjq6-xv28"
+    "CGA-7mrf-f5v6-gp6f"
   ],
   "summary": "gRPC Reachable Assertion issue",
   "details": "There exists an vulnerability causing an abort() to be called in gRPC. \nThe following headers cause gRPC's C++ implementation to abort() when called via http2:\n\nte: x (x != trailers)\n\n:scheme: x (x != http, https)\n\ngrpclb_client_stats: x (x == anything)\n\nOn top of sending one of those headers, a later header must be sent that gets the total header size past 8KB. We recommend upgrading past git commit 2485fa94bd8a723e5c977d55a3ce10b301b437f8 or v1.53 and above.",
