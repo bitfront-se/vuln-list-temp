@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-03T20:47:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@builder.io/qwik-city"
+  },
+  "Advisory": {
+    "DatabaseId": 335416,
+    "Id": "GSA_kwCzR0hTQS1tNmpxLWc3Z3EtNXczY84ABR44",
+    "GhsaId": "GHSA-m6jq-g7gq-5w3c",
+    "References": [
+      {
+        "Url": "https://github.com/QwikDev/qwik/security/advisories/GHSA-m6jq-g7gq-5w3c"
+      },
+      {
+        "Url": "https://github.com/QwikDev/qwik/commit/fe2d9232c0bcec99411d51a00dae29295871d094"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m6jq-g7gq-5w3c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m6jq-g7gq-5w3c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25148"
+      }
+    ],
+    "Description": "### Summary\n\n**Description**\nA Cross-site Scripting (CWE-79) vulnerability in Qwik.js' server-side rendering virtual attribute serialization allows a remote attacker to inject arbitrary web scripts into server-rendered pages via virtual attributes. Successful exploitation permits script execution in a victim's browser in the context of the affected origin. This affects qwik-city before version 1.19.0. This has been patched in qwik-city version 1.19.0.\n\n### Impact\nThis vulnerability impacts applications that dynamically populate Virtual Node attributes with keys/values that users can influence. Applications that hard-code these keys/values are unaffected.\n\nQwik doesn't use traditional hydration. Instead, it serializes application state into the HTML so the client can resume execution from the server-rendered output. To support this, Qwik v1 marks component boundaries with HTML comments. SSR builds comment content for Virtual components by concatenating structural attribute names and values without any escaping or quoting. An attacker-controlled key or value can prematurely close the HTML comment and inject arbitrary HTML/JS.\n\nSuccessful exploitation permits script execution in a victim’s browser in the context of the affected origin. Additionally, because Qwik uses these serialized comment markers for resumability, breaking comment structure can lead to resume/hydration desync and unexpected client-side behavior.\n\n### Patches\nThis has been patched in qwik-city version 1.19.0. Users are strongly encouraged to update to the latest available release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T20:47:55Z",
+    "Severity": "MODERATE",
+    "Summary": "Qwik SSR XSS via Unsafe Virtual Node Serialization",
+    "UpdatedAt": "2026-02-03T20:47:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.19.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.19.0"
+    }
+  ]
+}

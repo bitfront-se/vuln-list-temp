@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-03T23:58:38Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "chainguard.dev/apko"
+  },
+  "Advisory": {
+    "DatabaseId": 335461,
+    "Id": "GSA_kwCzR0hTQS02cDlwLXE2d2gtOWo4Oc4ABR5l",
+    "GhsaId": "GHSA-6p9p-q6wh-9j89",
+    "References": [
+      {
+        "Url": "https://github.com/chainguard-dev/apko/security/advisories/GHSA-6p9p-q6wh-9j89"
+      },
+      {
+        "Url": "https://github.com/chainguard-dev/apko/commit/2be3903fe194ad46351840f0569b35f5ac965f09"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6p9p-q6wh-9j89"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6p9p-q6wh-9j89"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25122"
+      }
+    ],
+    "Description": "`expandapk.Split` drains the first gzip stream of an APK archive via `io.Copy(io.Discard, gzi)` without explicit bounds. With an attacker-controlled input stream, this can force large gzip inflation work and lead to resource exhaustion (availability impact).                                                                                                                      \n                                                                                                                                                                                              \nThe `Split` function reads the first tar header, then drains the remainder of the gzip stream by reading from the gzip reader directly without any maximum uncompressed byte limit or inflate-ratio cap. A caller that parses attacker-controlled APK streams may be forced to spend excessive CPU time inflating gzip data, leading to timeouts or process slowdown.             \n                                                                                                                                                                                              \n**Fix:** Fixed with [2be3903](https://github.com/chainguard-dev/apko/commit/2be3903fe194ad46351840f0569b35f5ac965f09), Released in v1.1.0.                                                  \n                                                                                                                                                                                              \n**Acknowledgements**                                                                                                                                                                        \n                                                                                                                                                                                             \napko thanks Oleh Konko from [1seal](https://1seal.org/) for discovering and reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T23:58:37Z",
+    "Severity": "MODERATE",
+    "Summary": "apko affected by unbounded resource consumption in expandapk.Split on attacker-controlled .apk streams ",
+    "UpdatedAt": "2026-02-03T23:58:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.14.8, \u003c 1.1.0"
+    }
+  ]
+}

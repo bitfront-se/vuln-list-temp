@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-03T19:22:08Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "HtmlSanitizer"
+  },
+  "Advisory": {
+    "DatabaseId": 335412,
+    "Id": "GSA_kwCzR0hTQS1qOTJjLTd2N2ctZ2ozZs4ABR40",
+    "GhsaId": "GHSA-j92c-7v7g-gj3f",
+    "References": [
+      {
+        "Url": "https://github.com/mganss/HtmlSanitizer/security/advisories/GHSA-j92c-7v7g-gj3f"
+      },
+      {
+        "Url": "https://github.com/mganss/HtmlSanitizer/commit/0ac53dca30ddad963f2b243669a5066933d82b81"
+      },
+      {
+        "Url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template"
+      },
+      {
+        "Url": "https://github.com/mganss/HtmlSanitizer/releases/tag/v9.0.892"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j92c-7v7g-gj3f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j92c-7v7g-gj3f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25543"
+      }
+    ],
+    "Description": "### Impact\n\nIf the `template` tag is allowed, its contents are not sanitized. The `template` tag is a special tag that does not usually render its contents, unless the `shadowrootmode` attribute is set to `open` or `closed`. \n\nThe lack of sanitization of the template tag brings up two bypasses:\n\n1. it is still possible to forcibly render the contents of a `\u003ctemplate\u003e` tag through mutation XSS. The DOM parsers in browsers such as Chromium have a node depth limit of 512 and tags which are beyond that depth are flattened. This in turn allows elements within `\u003ctemplate\u003e` (which are not sanitized) to be effectively 'popped out'. An example would look like this: `\u003cdiv\u003e[...]\u003ctemplate\u003e\u003cscript\u003ealert('xss')\u003c/script\u003e` where `[...]` denotes at least another 509 opening `\u003cdiv\u003e` tags.\n2. If in addition to the template tag, the `shadowrootmode` attribute is allowed through `sanitizer.AllowedAttributes.Add(\"shadowrootmode\");`, the simple payload of `\u003cdiv\u003e\u003ctemplate shadowrootmode=\"open\"\u003e\u003cscript\u003ealert('xss')\u003c/script\u003e` would bypass the sanitizer. This is because such usage of `\u003ctemplate\u003e` attaches a shadow root to its parent: `\u003cdiv\u003e`, and its contents will be rendered. \n\nNote that the default configuration is not affected because the `template` tag is disallowed by default.\n\n### Patches\n\nThe problem has been patched in versions [9.0.892](https://www.nuget.org/packages/HtmlSanitizer/9.0.892) and [9.1.893-beta](https://www.nuget.org/packages/HtmlSanitizer/9.1.893-beta).\n\n### Workarounds\n\nDisallow the `template` tag. It is disallowed by default.\n\n### Resources\n\nhttps://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T19:22:06Z",
+    "Severity": "MODERATE",
+    "Summary": "HtmlSanitizer has a bypass via template tag",
+    "UpdatedAt": "2026-02-03T22:16:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.893-beta"
+      },
+      "VulnerableVersionRange": "\u003e= 9.1.878-beta, \u003c 9.1.893-beta"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.0.892"
+      },
+      "VulnerableVersionRange": "\u003c 9.0.892"
+    }
+  ]
+}

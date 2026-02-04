@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-03T18:42:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "agents"
+  },
+  "Advisory": {
+    "DatabaseId": 335406,
+    "Id": "GSA_kwCzR0hTQS1yN3g5LThwaDctdzhjZ84ABR4u",
+    "GhsaId": "GHSA-r7x9-8ph7-w8cg",
+    "References": [
+      {
+        "Url": "https://github.com/cloudflare/agents/security/advisories/GHSA-r7x9-8ph7-w8cg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1664"
+      },
+      {
+        "Url": "https://github.com/cloudflare/agents"
+      },
+      {
+        "Url": "https://github.com/cloudflare/agents/blob/main/docs/email.md"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r7x9-8ph7-w8cg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r7x9-8ph7-w8cg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1664"
+      }
+    ],
+    "Description": "### Summary\nAn Insecure Direct Object Reference (CWE-639) has been found to exist in createHeaderBasedEmailResolver() function within the Cloudflare Agents SDK. The issue occurs because the Message-ID and References headers are parsed to derive the target agentName and agentId without proper validation or origin checks, allowing an external attacker with control of these headers to route inbound mail to arbitrary Durable Object instances and namespaces.\n\n### Root cause\nThe createHeaderBasedEmailResolver() function lacks cryptographic verification or origin validation for the headers used in the routing logic, effectively allowing external input to dictate internal object routing.\n\n### Impact\nInsecure Direct Object Reference (IDOR) in email routing lets an attacker steer inbound mail to arbitrary Agent instances via spoofed Message-ID.\n\n\n\n### Patches\nAgents-sdk users should  upgrade to agents@0.3.7. \nPR: https://github.com/cloudflare/agents/pull/811\nThis [documentation](https://github.com/cloudflare/agents/blob/main/docs/email.md) provides the necessary architectural context for coding agents to mitigate the issue by refactoring the resolver to enforce strict identity boundaries.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T18:42:01Z",
+    "Severity": "MODERATE",
+    "Summary": "Cloudflare Agents SDK has Insecure Direct Object Reference (IDOR) via Header-Based Email Routing",
+    "UpdatedAt": "2026-02-03T18:42:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.7"
+      },
+      "VulnerableVersionRange": "\u003c 0.3.7"
+    }
+  ]
+}

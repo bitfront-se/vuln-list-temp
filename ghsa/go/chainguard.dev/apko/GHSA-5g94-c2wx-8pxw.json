@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-03T23:57:49Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "chainguard.dev/apko"
+  },
+  "Advisory": {
+    "DatabaseId": 335460,
+    "Id": "GSA_kwCzR0hTQS01Zzk0LWMyd3gtOHB4d84ABR5k",
+    "GhsaId": "GHSA-5g94-c2wx-8pxw",
+    "References": [
+      {
+        "Url": "https://github.com/chainguard-dev/apko/security/advisories/GHSA-5g94-c2wx-8pxw"
+      },
+      {
+        "Url": "https://github.com/chainguard-dev/apko/commit/d8b7887a968a527791b3c591ae83928cb49a9f14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5g94-c2wx-8pxw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5g94-c2wx-8pxw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25121"
+      }
+    ],
+    "Description": "A Path Traversal vulnerability was discovered in apko's dirFS filesystem abstraction. An attacker who can supply a malicious APK package (e.g., via a compromised or typosquatted repository) could create directories or symlinks outside the intended installation root. The MkdirAll, Mkdir, and Symlink methods in pkg/apk/fs/rwosfs.go use filepath.Join() without validating that the resulting path stays within the base directory.\n\n**Fix:** Fixed by [d8b7887](https://github.com/chainguard-dev/apko/commit/d8b7887a968a527791b3c591ae83928cb49a9f14). Merged into release. \n\n**Acknowledgements**                                                                                                                                                                        \n                                                                                                                                                                                              \napko thanks Oleh Konko from [1seal](https://1seal.org/) for discovering and reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T23:57:48Z",
+    "Severity": "HIGH",
+    "Summary": "apko has a path traversal in apko dirFS which allows filesystem writes outside base",
+    "UpdatedAt": "2026-02-03T23:57:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.14.8, \u003c 1.1.0"
+    }
+  ]
+}

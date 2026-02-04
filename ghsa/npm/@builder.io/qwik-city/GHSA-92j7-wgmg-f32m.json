@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-03T20:58:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@builder.io/qwik-city"
+  },
+  "Advisory": {
+    "DatabaseId": 335419,
+    "Id": "GSA_kwCzR0hTQS05Mmo3LXdnbWctZjMybc4ABR47",
+    "GhsaId": "GHSA-92j7-wgmg-f32m",
+    "References": [
+      {
+        "Url": "https://github.com/QwikDev/qwik/security/advisories/GHSA-92j7-wgmg-f32m"
+      },
+      {
+        "Url": "https://github.com/QwikDev/qwik/commit/9959eab30a3ad9cc03689eaa080fcfbc33df71ed"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92j7-wgmg-f32m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92j7-wgmg-f32m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25149"
+      }
+    ],
+    "Description": "### Summary\n\n**Description**\nAn Open Redirect (CWE-601) vulnerability in Qwik City's default request handler middleware allows a remote attacker to redirect users to arbitrary protocol-relative URLs. Successful exploitation permits attackers to craft convincing phishing links that appear to originate from the trusted domain but redirect the victim to an attacker-controlled site. This affects qwik-city before version 1.19.0. This has been patched in qwik-city version 1.19.0.\n\n### Impact\nQwik City automatically applies the `fixTrailingSlash` middleware to page routes to ensure URL consistency.  This vulnerability impacts all Qwik City applications deployed to runtimes that have a catch-all path to match arbitrary domains and that do not automatically normalize URL paths (e.g. Bun).\n\nExploitation allows an attacker to craft links that trigger a 301 redirect to arbitrary protocol-relative URLs. Browsers interpret this Location header as a protocol-relative URL, redirecting the user to attacker-controlled domains. This can enable phishing attacks and token theft among other common open redirect exploits.\n\n### Patches\nThis has been patched in qwik-city version 1.19.0. Users are strongly encouraged to update to the latest available release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T20:58:25Z",
+    "Severity": "LOW",
+    "Summary": "Qwik City Open Redirect via fixTrailingSlash",
+    "UpdatedAt": "2026-02-03T20:58:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.19.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.19.0"
+    }
+  ]
+}

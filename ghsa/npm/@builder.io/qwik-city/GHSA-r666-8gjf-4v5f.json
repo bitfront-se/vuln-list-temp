@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-03T20:50:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@builder.io/qwik-city"
+  },
+  "Advisory": {
+    "DatabaseId": 335418,
+    "Id": "GSA_kwCzR0hTQS1yNjY2LThnamYtNHY1Zs4ABR46",
+    "GhsaId": "GHSA-r666-8gjf-4v5f",
+    "References": [
+      {
+        "Url": "https://github.com/QwikDev/qwik/security/advisories/GHSA-r666-8gjf-4v5f"
+      },
+      {
+        "Url": "https://github.com/QwikDev/qwik/commit/eebf610e04cc3a690f11e10191d09ff0fca1c7ed"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r666-8gjf-4v5f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r666-8gjf-4v5f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25151"
+      }
+    ],
+    "Description": "### Summary\nQwik City’s server-side request handler inconsistently interprets HTTP request headers, which can be abused by a remote attacker to circumvent form submission CSRF protections using specially crafted or multi-valued Content-Type headers.\n\n### Impact\nA vulnerability in checkCSRF lets an attacker bypass Origin-based CSRF checks by using malformed or multi-valued Content-Type headers. Exploitation requires the CORS preflight to succeed (so it’s blocked if preflight is denied) and is possible when the application accepts cross-origin requests or via non-browser clients. Impact varies with server CORS and cookie policies and may enable unauthorized state changes.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-03T20:49:58Z",
+    "Severity": "MODERATE",
+    "Summary": "Qwik City has a CSRF Protection Bypass via Content-Type Header Validation",
+    "UpdatedAt": "2026-02-03T20:50:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.19.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.19.0"
+    }
+  ]
+}
