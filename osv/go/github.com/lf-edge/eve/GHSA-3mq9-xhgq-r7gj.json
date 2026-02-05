@@ -1,9 +1,10 @@
 {
   "id": "GHSA-3mq9-xhgq-r7gj",
-  "modified": "2026-02-04T21:06:20.841170Z",
+  "modified": "2026-02-05T03:56:11.098888Z",
   "published": "2026-02-04T20:46:16Z",
   "aliases": [
-    "CVE-2023-43631"
+    "CVE-2023-43631",
+    "GO-2026-4418"
   ],
   "summary": "EVE: SSH as Root Unlockable Without Triggering Measured Boot",
   "details": "### Impact\n\nOn boot, the Pillar container checks for /config/authorized_keys. If present with a valid public key, it enables SSH on port 22 with root login. The /config partition is not protected by measured boot, is mutable and unencrypted.\n\nThis enables an attacker with physical access to the device to take out the disk, modify the /config partition using a separate server, then insert it, without the inserted key being flagged as an integrity voilation my measured boot and remote attestation.\n\n### Patches\n\nPatched in 9.4.3-lts\n\n### Workarounds\n\nNone (apart from preventing physical access to the device)",

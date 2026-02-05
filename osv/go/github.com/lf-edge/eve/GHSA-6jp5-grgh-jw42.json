@@ -1,9 +1,10 @@
 {
   "id": "GHSA-6jp5-grgh-jw42",
-  "modified": "2026-02-04T21:03:58.601635Z",
+  "modified": "2026-02-05T03:56:07.902243Z",
   "published": "2026-02-04T20:47:37Z",
   "aliases": [
-    "CVE-2023-43632"
+    "CVE-2023-43632",
+    "GO-2026-4422"
   ],
   "summary": "EVE Freely Allocates Buffer on The Stack With Data From Socket",
   "details": "### Impact\n\nVTPM server listens on port 8877, exposing limited TPM functionality. The server reads 4 bytes as a uint32 size header, then allocates that amount on the stack for incoming data. This allows Denial of Service attacks against the vTPM service.\n\nAn workload (a container or VM) running on EVE-OS can use this to generate a DOS against the vTPM service.\n\n### Patches\n\nFixed in 9.4.3-lts and 10.1.0\n\n### Workarounds\n\nNone",
