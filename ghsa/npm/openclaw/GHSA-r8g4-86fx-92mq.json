@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-04T19:02:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 335699,
+    "Id": "GSA_kwCzR0hTQS1yOGc0LTg2ZngtOTJtcc4ABR9T",
+    "GhsaId": "GHSA-r8g4-86fx-92mq",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r8g4-86fx-92mq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25475"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r8g4-86fx-92mq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r8g4-86fx-92mq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25475"
+      }
+    ],
+    "Description": "### Summary\nThe `isValidMedia()` function in `src/media/parse.ts` allows arbitrary file paths including absolute paths, home directory paths, and directory traversal sequences. An agent can read any file on the system by outputting `MEDIA:/path/to/file`, exfiltrating sensitive data to the user/channel.\n\n### Details\n**Location:** `src/media/parse.ts:17-27`\n\nThe path validation accepts dangerous patterns:\n\n```typescript\nfunction isValidMedia(candidate: string, opts?: { allowSpaces?: boolean }) {\n  if (candidate.startsWith(\"/\")) return true;      // ALLOWS /etc/passwd\n  if (candidate.startsWith(\"./\")) return true;\n  if (candidate.startsWith(\"../\")) return true;    // ALLOWS ../../etc/passwd\n  if (candidate.startsWith(\"~\")) return true;      // ALLOWS ~/secrets\n  return false;\n}\n```\n\nNo validation ensures the path is within a safe directory or is actually a media file.\n\n### PoC\n\nAgent outputs any of:\n```\nMEDIA:/etc/passwd\nMEDIA:~/.ssh/id_rsa\nMEDIA:~/.aws/credentials\nMEDIA:../../../etc/passwd\n```\n\nThe file contents are rendered/sent to the requesting user or channel.\n\n### Impact\n- Read ANY file accessible to the agent user\n- Exfiltrate SSH keys (`~/.ssh/id_rsa`)\n- Steal cloud credentials (`~/.aws/credentials`)\n- Access API keys (`.env`, `config.json`)\n- Read system files (`/etc/passwd`, `/etc/shadow`)\n\n**Note:** PR #4930 contains a fix but is NOT MERGED - production is vulnerable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T19:02:51Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw Vulnerable to Local File Inclusion via MEDIA: Path Extraction",
+    "UpdatedAt": "2026-02-04T21:57:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.1.30"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.1.29"
+    }
+  ]
+}

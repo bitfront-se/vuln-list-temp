@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-04T20:47:38Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/lf-edge/eve"
+  },
+  "Advisory": {
+    "DatabaseId": 335716,
+    "Id": "GSA_kwCzR0hTQS02anA1LWdyZ2gtanc0Ms4ABR9k",
+    "GhsaId": "GHSA-6jp5-grgh-jw42",
+    "References": [
+      {
+        "Url": "https://github.com/lf-edge/eve/security/advisories/GHSA-6jp5-grgh-jw42"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2023-43632"
+      },
+      {
+        "Url": "https://asrg.io/security-advisories/cve-2023-43632"
+      },
+      {
+        "Url": "https://asrg.io/security-advisories/freely-allocate-buffer-on-the-stack-with-data-from-socket"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6jp5-grgh-jw42"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6jp5-grgh-jw42"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2023-43632"
+      }
+    ],
+    "Description": "### Impact\n\nVTPM server listens on port 8877, exposing limited TPM functionality. The server reads 4 bytes as a uint32 size header, then allocates that amount on the stack for incoming data. This allows Denial of Service attacks against the vTPM service.\n\nAn workload (a container or VM) running on EVE-OS can use this to generate a DOS against the vTPM service.\n\n### Patches\n\nFixed in 9.4.3-lts and 10.1.0\n\n### Workarounds\n\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T20:47:37Z",
+    "Severity": "MODERATE",
+    "Summary": "EVE Freely Allocates Buffer on The Stack With Data From Socket",
+    "UpdatedAt": "2026-02-04T20:47:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20230519072751-977f42b07fa9"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20230519072751-977f42b07fa9"
+    }
+  ]
+}

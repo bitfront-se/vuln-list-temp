@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-04T20:28:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.neo4j:neo4j"
+  },
+  "Advisory": {
+    "DatabaseId": 335578,
+    "Id": "GSA_kwCzR0hTQS00ajNnLXJ3d3EtNHA1NM4ABR7a",
+    "GhsaId": "GHSA-4j3g-rwwq-4p54",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1622"
+      },
+      {
+        "Url": "https://neo4j.com/security/CVE-2026-1622"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4j3g-rwwq-4p54"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4j3g-rwwq-4p54"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1622"
+      }
+    ],
+    "Description": "Neo4j Enterprise and Community editions versions prior to 2026.01.3 and 5.26.21 are vulnerable to a potential information disclosure by a user who has ability to access the local log files.\n\nThe \"obfuscate_literals\" option in the query logs does not redact error information, exposing unredacted data in the query log when a customer writes a query that fails. It can allow a user with legitimate access to the local log files to obtain information they are not authorised to see. If this user is also in a position to run queries and trigger errors, this vulnerability can potentially help them to infer information they are not authorised to see through their intended database access.\n\nNeo4j recommends upgrading to versions 2026.01.3 (or 5.26.21) where the issue is fixed, and reviewing query log files permissions to ensure restricted access. If a project's configuration had db.logs.query.obfuscate_literals enabled, and users wish for the obfuscation to cover the error messages as well, theyneed to enable the new configuration setting db.logs.query.obfuscate_errors once they have upgraded Neo4j.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T12:31:25Z",
+    "Severity": "MODERATE",
+    "Summary": "Neo4j Enterprise and Community vulnerable to a potential information disclosure",
+    "UpdatedAt": "2026-02-04T20:28:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.01.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.01.0, \u003c 2026.01.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.26.21"
+      },
+      "VulnerableVersionRange": "\u003c 5.26.21"
+    }
+  ]
+}

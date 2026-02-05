@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-04T23:21:27Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/lf-edge/eve"
+  },
+  "Advisory": {
+    "DatabaseId": 335740,
+    "Id": "GSA_kwCzR0hTQS1nN3ZwLWoyNWYtaDM0cM4ABR98",
+    "GhsaId": "GHSA-g7vp-j25f-h34p",
+    "References": [
+      {
+        "Url": "https://github.com/lf-edge/eve/security/advisories/GHSA-g7vp-j25f-h34p"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2023-43637"
+      },
+      {
+        "Url": "https://github.com/lf-edge/eve/commit/c0c966dc31e2ed9aafc155e6be646adb14756c01"
+      },
+      {
+        "Url": "https://asrg.io/security-advisories/cve-2023-43637"
+      },
+      {
+        "Url": "https://asrg.io/security-advisories/vault-key-partially-predetermined"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g7vp-j25f-h34p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g7vp-j25f-h34p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2023-43637"
+      }
+    ],
+    "Description": "### Impact\n\nThe deriveVaultKey function calls retrieveCloudKey which always returns \"foobarfoobarfoobarfoobarfoobarfo\". When merged with the randomly generated 32-byte key using mergeKeys (16 bytes from each), the last 16 bytes are always \"arfoobarfoobarfo\". This enables an attacker with physical access to the EVE-OS device to attempt to brute force the remaining 128 bits of key.\n\n### Patches\n\nFixed in 7.10 and  8.12.1-lts\n\n### Workarounds\n\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T23:21:25Z",
+    "Severity": "MODERATE",
+    "Summary": "EVE Has Partially Predetermined Vault Key",
+    "UpdatedAt": "2026-02-04T23:21:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.7,
+      "VectorString": "CVSS:3.1/AV:P/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20220310190112-c0c966dc31e2"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20220310190112-c0c966dc31e2"
+    }
+  ]
+}

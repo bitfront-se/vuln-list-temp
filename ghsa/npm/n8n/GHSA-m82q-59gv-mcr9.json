@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-04T19:36:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 335701,
+    "Id": "GSA_kwCzR0hTQS1tODJxLTU5Z3YtbWNyOc4ABR9V",
+    "GhsaId": "GHSA-m82q-59gv-mcr9",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-m82q-59gv-mcr9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25055"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/528ad6b982d0519ec170e172f57b7fdbbe175230"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/e0baf48c6a54808f6dbca8cb352bfa306092c223"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m82q-59gv-mcr9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m82q-59gv-mcr9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25055"
+      }
+    ],
+    "Description": "## Impact\nWhen workflows process uploaded files and transfer them to remote servers via the SSH node without validating their metadata the vulnerability can lead to files being written to unintended locations on those remote systems potentially leading to remote code execution on those systems.\n\nAs a prerequisites an unauthenticated attacker needs knowledge of such workflows existing and the endpoints for file uploads need to be unauthenticated.\n\n## Patches\nThe issue has been fixed in n8n version 2.4.0 and 1.123.12. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Disable or restrict access to workflows that accept file uploads via webhooks and transfer them via SSH.\n- Enable webhook authentication on all endpoints that handle file uploads.\n- Review usage of SSH credentials and consider rotating SSH credentials if in doubt.\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n## Resources\n- [n8n Documentation — Blocking nodes](https://docs.n8n.io/hosting/securing/blocking-nodes/) — how to globally disable specific nodes\n\n---\n\nn8n has adopted CVSS 4.0 as primary score for all security advisories. CVSS 3.1 vector strings are provided for backwards compatibility.\n\nCVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T19:36:29Z",
+    "Severity": "HIGH",
+    "Summary": "n8n Vulnerable to Arbitrary File Write on Remote Systems via SSH Node",
+    "UpdatedAt": "2026-02-04T19:36:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.12"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.12"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.4.0"
+    }
+  ]
+}

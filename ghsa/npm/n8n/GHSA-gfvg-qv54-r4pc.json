@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-04T18:25:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 335603,
+    "Id": "GSA_kwCzR0hTQS1nZnZnLXF2NTQtcjRwY84ABR7z",
+    "GhsaId": "GHSA-gfvg-qv54-r4pc",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-gfvg-qv54-r4pc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25052"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gfvg-qv54-r4pc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gfvg-qv54-r4pc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25052"
+      }
+    ],
+    "Description": "## Impact\n\nA vulnerability in the file access controls allows authenticated users with permission to create or modify workflows to read sensitive files from the n8n host system. This can be exploited to obtain critical configuration data and user credentials, leading to complete account takeover of any user on the instance.\n\n## Patches\n\nThe issue has been fixed in n8n version 1.123.18 and 2.5.0. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Restrict access to nodes that interact with the file system, particularly the \"Read/Write Files from Disk\" and \"Git\" nodes.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n## Resources\n\n- [n8n Documentation — Blocking nodes](https://docs.n8n.io/hosting/securing/blocking-nodes/) — how to globally disable specific nodes\n\n--- \nn8n has adopted CVSS 4.0 as primary score for all security advisories. CVSS 3.1 vector strings are provided for backward compatibility.\n\nCVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T18:25:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n's Improper File Access Controls Allow Arbitrary File Read by Authenticated Users",
+    "UpdatedAt": "2026-02-04T19:53:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.18"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.18"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.5.0"
+    }
+  ]
+}

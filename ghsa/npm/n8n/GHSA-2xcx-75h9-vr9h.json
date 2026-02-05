@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-04T20:33:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 335711,
+    "Id": "GSA_kwCzR0hTQS0yeGN4LTc1aDktdnI5aM4ABR9f",
+    "GhsaId": "GHSA-2xcx-75h9-vr9h",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-2xcx-75h9-vr9h"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2xcx-75h9-vr9h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2xcx-75h9-vr9h"
+      }
+    ],
+    "Description": "## Impact\n\nA vulnerability in the HTTP Request node's credential domain validation allowed an authenticated attacker to send requests with credentials to unintended domains, potentially leading to credential exfiltration.\n\nThis only might affect user who have credentials that use wildcard domain patterns (e.g., `*.example.com`) in the \"Allowed domains\" setting.\n\n## Patches\n\nThis issue is fixed in version 1.121.0 and later. All users are strongly encouraged to upgrade.\n\n## Workarounds\nUntil projects can upgrade:\n\n- Replace wildcard domain patterns with explicit domain listings in HTTP Request credentials\n- Review and restrict workflow creation/modification permissions to trusted users only\n- Audit existing workflows using HTTP Request nodes with domain-restricted credentials\n\n---\nn8n has adopted CVSS 4.0 as primary score for all security advisories. CVSS 3.1 vector strings are provided for backward compatibility.\n\nCVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T20:33:27Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n's domain allowlist bypass enables credential exfiltration",
+    "UpdatedAt": "2026-02-04T20:33:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.121.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.121.0"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-04T20:43:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/lf-edge/eve"
+  },
+  "Advisory": {
+    "DatabaseId": 335714,
+    "Id": "GSA_kwCzR0hTQS1waGNnLWg1OHItZ21jcc4ABR9i",
+    "GhsaId": "GHSA-phcg-h58r-gmcq",
+    "References": [
+      {
+        "Url": "https://github.com/lf-edge/eve/security/advisories/GHSA-phcg-h58r-gmcq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2023-43630"
+      },
+      {
+        "Url": "https://github.com/lf-edge/eve/commit/d9383a7ee4e1c39f5c8c6d4a63cb2ebd00695e8a"
+      },
+      {
+        "Url": "https://asrg.io/security-advisories/config-partition-not-measured-from-2-fronts"
+      },
+      {
+        "Url": "https://asrg.io/security-advisories/cve-2023-43630"
+      },
+      {
+        "Url": "https://help.zededa.com/hc/en-us/articles/43295940828827-TPM-PCR-Index-Security-Implications"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-phcg-h58r-gmcq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-phcg-h58r-gmcq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2023-43630"
+      }
+    ],
+    "Description": "### Impact\nPCR14 is not included in the list of PCRs that seal/unseal the vault key. Additionally, the vault key uses SHA1 PCRs instead of SHA256.\nThus an attacker with physical access can take out the disk, use a different computer to modify the files in the /config partition, and re-insert the disk and boot without the change being detected by measured boot and remote attestation.\n\n### Patches\n\nFixed in EVE version 9.4.3-lts\n\n### Workarounds\n\nNone (apart from preventing physical access to the device)\n\n### Resources\n\nhttps://help.zededa.com/hc/en-us/articles/43295940828827-TPM-PCR-Index-Security-Implications\nhttps://github.com/lf-edge/eve/commit/d9383a7ee4e1c39f5c8c6d4a63cb2ebd00695e8a",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T20:43:16Z",
+    "Severity": "MODERATE",
+    "Summary": "EVE Doesn't Measure Config Partition From 2 Fronts",
+    "UpdatedAt": "2026-02-04T20:43:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.2,
+      "VectorString": "CVSS:3.1/AV:P/AC:L/PR:L/UI:N/S:C/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20230126065759-d9383a7ee4e1"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20230126065759-d9383a7ee4e1"
+    }
+  ]
+}

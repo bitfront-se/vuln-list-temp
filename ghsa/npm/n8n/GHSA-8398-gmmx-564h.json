@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-04T19:42:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 335703,
+    "Id": "GSA_kwCzR0hTQS04Mzk4LWdtbXgtNTY0aM4ABR9X",
+    "GhsaId": "GHSA-8398-gmmx-564h",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-8398-gmmx-564h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25115"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/5c69970acc7d37049deae67da861f92d2aaa9b03"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8398-gmmx-564h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8398-gmmx-564h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25115"
+      }
+    ],
+    "Description": "## Impact\n\nA vulnerability in the Python Code node allows authenticated users to break out of the Python sandbox environment and execute code outside the intended security boundary. \n\nOnly authenticated users are able to execute code through Task Runners.\n\nThis issue affected any deployment in which the following conditions were met:\n\n- Task Runners were enabled using `N8N_RUNNERS_ENABLED=true` (default: false)\n- Python was enabled `N8N_PYTHON_ENABLED=true`\n- Code Node was enabled (default: true)\n\nIn case the `N8N_RUNNERS_MODE` is set to `external` (default: `internal`) the sandbox escape is limited to the sidecar container with lower risk for lateral movement. In that case a lower high severity is more appropriate.\n\n## Patches\n\nThis vulnerability is fixed in version 2.4.8 and later. \n\n## Workarounds\n\nIf an immediate upgrade cannot be applied, the following hardening steps are recommended:\n\n- Disable the Code Node by adding `n8n-nodes-base.code` to the `NODES_EXCLUDE` environment variable\n- Prefer external mode for isolation: run Task Runners in external mode so that untrusted task code executes in a separate sidecar container rather than within the main n8n process. This configuration significantly reduces the risk of in-process memory disclosure caused by unsafe buffer [allocations.In](http://allocations.in/) external mode, a launcher manages Task Runner processes in a dedicated sidecar environment, separate from the primary n8n instance. See the [[n8n documentation](https://docs.n8n.io/hosting/configuration/task-runners/)](https://docs.n8n.io/hosting/configuration/task-runners/) for configuration details and required environment variables.\n\n## Resources\n\n- [n8n Documentation — Task Runners](https://docs.n8n.io/hosting/configuration/task-runners/) — external mode, setup guide, and environment configuration details\n- [n8n Documentation — Blocking nodes](https://docs.n8n.io/hosting/securing/blocking-nodes/) — how to globally disable specific nodes\n\n---\nn8n has adopted CVSS 4.0 as primary score for all security advisories. CVSS 3.1 vector strings are provided for backward compatibility.\n\nCVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T19:42:03Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n has a Python sandbox escape",
+    "UpdatedAt": "2026-02-04T19:42:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.8"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.8"
+    }
+  ]
+}

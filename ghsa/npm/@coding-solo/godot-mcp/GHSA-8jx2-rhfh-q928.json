@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-04T20:02:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@coding-solo/godot-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 335705,
+    "Id": "GSA_kwCzR0hTQS04angyLXJoZmgtcTkyOM4ABR9Z",
+    "GhsaId": "GHSA-8jx2-rhfh-q928",
+    "References": [
+      {
+        "Url": "https://github.com/Coding-Solo/godot-mcp/security/advisories/GHSA-8jx2-rhfh-q928"
+      },
+      {
+        "Url": "https://github.com/Coding-Solo/godot-mcp/issues/64"
+      },
+      {
+        "Url": "https://github.com/Coding-Solo/godot-mcp/pull/67"
+      },
+      {
+        "Url": "https://github.com/Coding-Solo/godot-mcp/commit/21c785d923cfdb471ea60323c13807d62dfecc5a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8jx2-rhfh-q928"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8jx2-rhfh-q928"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25546"
+      }
+    ],
+    "Description": "### Impact \nA Command Injection vulnerability in godot-mcp allows remote code execution. The `executeOperation` function passed user-controlled input (e.g., `projectPath`) directly to `exec()`, which spawns a shell. An attacker could inject shell metacharacters like `$(command)` or `\u0026calc` to execute arbitrary commands with the privileges of the MCP server process. \n\nThis affects any tool that accepts `projectPath`, including `create_scene`, `add_node`, `load_sprite`, and others. \n\n### Patches \nFixed in version 0.1.1 by switching from `exec()` to `execFile()`, which does not invoke a shell. \n\n### Workarounds \nNone. Users should upgrade immediately. \n\n### Resources\n - https://github.com/Coding-Solo/godot-mcp/issues/64\n - https://github.com/Coding-Solo/godot-mcp/pull/67",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T20:02:32Z",
+    "Severity": "HIGH",
+    "Summary": "godot-mcp has Command Injection via unsanitized projectPath",
+    "UpdatedAt": "2026-02-04T20:02:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.1.1"
+    }
+  ]
+}
