@@ -1,34 +1,13 @@
 {
   "id": "GHSA-jjg7-2v4v-x38h",
-  "modified": "2025-11-05T20:30:45.121847Z",
+  "modified": "2026-02-04T03:49:45.087439Z",
   "published": "2024-04-11T21:32:40Z",
   "aliases": [
     "CVE-2024-3651",
     "PYSEC-2024-60"
   ],
   "related": [
-    "CGA-4vmg-xwqh-6xfw",
-    "CGA-4w25-8r45-gxwf",
-    "CGA-6445-8x27-cghw",
-    "CGA-7cvw-824f-57qj",
-    "CGA-7g59-ghmj-wj5g",
-    "CGA-7xfm-q24p-px8c",
-    "CGA-85gv-65g3-483h",
-    "CGA-9fj4-pj3g-gm6q",
-    "CGA-ccwr-5f2w-9q24",
-    "CGA-fgmr-v3f3-pxpw",
-    "CGA-hph5-hcwv-q9mm",
-    "CGA-j2h9-ggq8-886p",
-    "CGA-mcgj-mc29-crgj",
-    "CGA-mq4p-ggpx-5vxw",
-    "CGA-pr6x-8rxp-cx4f",
-    "CGA-q4wf-4rwg-334h",
-    "CGA-qvrw-4m3q-r8v7",
-    "CGA-rmvf-7794-q3gg",
-    "CGA-v584-967x-qgpm",
-    "CGA-v6qx-945c-jj8w",
-    "CGA-xpcj-g2x8-wcc9",
-    "CGA-xw8q-xp4x-825w"
+    "CGA-hp6r-9hv6-83rp"
   ],
   "summary": "Internationalized Domain Names in Applications (IDNA) vulnerable to denial of service from specially crafted inputs to idna.encode",
   "details": "### Impact\nA specially crafted argument to the `idna.encode()` function could consume significant resources. This may lead to a denial-of-service.\n\n### Patches\nThe function has been refined to reject such strings without the associated resource consumption in version 3.7.\n\n### Workarounds\nDomain names cannot exceed 253 characters in length, if this length limit is enforced prior to passing the domain to the `idna.encode()` function it should no longer consume significant resources. This is triggered by arbitrarily large inputs that would not occur in normal usage, but may be passed to the library assuming there is no preliminary input validation by the higher-level application.\n\n### References\n* https://huntr.com/bounties/93d78d07-d791-4b39-a845-cbfabc44aadb",

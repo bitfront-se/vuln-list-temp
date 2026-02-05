@@ -1,10 +1,13 @@
 {
   "id": "GO-2023-2379",
-  "modified": "2024-05-20T16:03:47Z",
+  "modified": "2026-02-04T02:20:17.017357Z",
   "published": "2023-12-11T15:08:59Z",
   "aliases": [
     "CVE-2023-49290",
     "GHSA-7f9x-gw85-8grf"
+  ],
+  "related": [
+    "CGA-h464-jmqf-3pxp"
   ],
   "summary": "Denial of service due to malicious parameters in github.com/lestrrat-go/jwx",
   "details": "The JWE key management algorithms based on PBKDF2 require a JOSE Header Parameter called p2c (PBES2 Count). This parameter dictates the number of PBKDF2 iterations needed to derive a CEK wrapping key. Its purpose is to intentionally slow down the key derivation function, making password brute-force and dictionary attacks more resource-intensive. However, if an attacker sets the p2c parameter in JWE to a very large number, it can cause excessive computational consumption.",

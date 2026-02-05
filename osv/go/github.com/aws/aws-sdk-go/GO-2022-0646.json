@@ -1,10 +1,13 @@
 {
   "id": "GO-2022-0646",
-  "modified": "2024-12-13T16:27:02.251334Z",
+  "modified": "2026-02-04T02:16:32.066930Z",
   "published": "2022-02-11T23:26:26Z",
   "aliases": [
     "CVE-2020-8911",
     "GHSA-f5pg-7wfw-84q9"
+  ],
+  "related": [
+    "CGA-wp54-c6q6-q47j"
   ],
   "summary": "CBC padding oracle issue in AWS S3 Crypto SDK for golang in github.com/aws/aws-sdk-go",
   "details": "A padding oracle vulnerability exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. The SDK allows users to encrypt files with AES-CBC without computing a Message Authentication Code (MAC), which then allows an attacker who has write access to the target's S3 bucket and can observe whether or not an endpoint with access to the key can decrypt a file, they can reconstruct the plaintext with (on average) 128*length (plaintext) queries to the endpoint, by exploiting CBC's ability to manipulate the bytes of the next block and PKCS5 padding errors. It is recommended to update your SDK to V2 or later, and re-encrypt your files.",
