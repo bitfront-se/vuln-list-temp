@@ -1,0 +1,62 @@
+{
+  "id": "GO-2026-4433",
+  "modified": "2026-02-05T04:05:01.482219Z",
+  "published": "2026-02-05T03:10:52Z",
+  "aliases": [
+    "CVE-2025-61732"
+  ],
+  "summary": "Potential code smuggling via doc comments in cmd/cgo",
+  "details": "A discrepancy between how Go and C/C++ comments were parsed allowed for code smuggling into the resulting cgo binary.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Go",
+        "name": "toolchain",
+        "purl": "pkg:golang/toolchain"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.24.13"
+            },
+            {
+              "introduced": "1.25.0-0"
+            },
+            {
+              "fixed": "1.25.7"
+            }
+          ]
+        }
+      ],
+      "ecosystem_specific": {
+        "imports": [
+          {
+            "path": "cmd/cgo"
+          }
+        ]
+      },
+      "database_specific": {
+        "source": "https://vuln.go.dev/ID/GO-2026-4433.json"
+      }
+    }
+  ],
+  "references": [
+    {
+      "type": "FIX",
+      "url": "https://go.dev/cl/734220"
+    },
+    {
+      "type": "REPORT",
+      "url": "https://go.dev/issue/76697"
+    },
+    {
+      "type": "WEB",
+      "url": "https://groups.google.com/g/golang-announce/c/K09ubi9FQFk"
+    }
+  ]
+}

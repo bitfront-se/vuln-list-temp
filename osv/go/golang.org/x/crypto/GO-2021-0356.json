@@ -1,10 +1,13 @@
 {
   "id": "GO-2021-0356",
-  "modified": "2024-05-20T16:03:47Z",
+  "modified": "2026-02-04T02:54:42.180263Z",
   "published": "2022-04-25T20:38:40Z",
   "aliases": [
     "CVE-2022-27191",
     "GHSA-8c26-wmh5-6g9v"
+  ],
+  "related": [
+    "CGA-cqvw-g26v-5q76"
   ],
   "summary": "Denial of service via crafted Signer in golang.org/x/crypto/ssh",
   "details": "Attackers can cause a crash in SSH servers when the server has been configured by passing a Signer to ServerConfig.AddHostKey such that\n1) the Signer passed to AddHostKey does not implement AlgorithmSigner, and\n2) the Signer passed to AddHostKey returns a key of type “ssh-rsa” from its PublicKey method.\n\nServers that only use Signer implementations provided by the ssh package are unaffected.",
