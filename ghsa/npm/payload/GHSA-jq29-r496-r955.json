@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-05T21:02:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "payload"
+  },
+  "Advisory": {
+    "DatabaseId": 335872,
+    "Id": "GSA_kwCzR0hTQS1qcTI5LXI0OTYtcjk1Nc4ABSAA",
+    "GhsaId": "GHSA-jq29-r496-r955",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-jq29-r496-r955"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jq29-r496-r955"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jq29-r496-r955"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25574"
+      }
+    ],
+    "Description": "### Impact\n\nA cross-collection Insecure Direct Object Reference (IDOR) vulnerability exists in the `payload-preferences` internal collection. In multi-auth collection environments using Postgres or SQLite with default serial/auto-increment IDs, authenticated users from one auth collection can read and delete preferences belonging to users in different auth collections when their numeric IDs collide.\n\n**Users are affected if ALL of these are true:**\n\n- Multiple auth collections configured (e.g., `admins` + `customers`)\n- Postgres or SQLite database adapter with serial/auto-increment IDs\n- Users in different auth collections with the same numeric ID\n\n**Not affected:**\n\n- `@payloadcms/db-mongodb` adapter\n- Single auth collection environments\n- Postgres/SQLite with `idType: 'uuid'`\n\n### Patches\n\nThis vulnerability has been patched in **v3.74.0**. Users should upgrade to v3.74.0 or later.\n\n### Workarounds\n\nThere is no workaround other than upgrading. Users with multiple auth collections using Postgres or SQLite with serial IDs should upgrade immediately.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T21:02:20Z",
+    "Severity": "MODERATE",
+    "Summary": "payload-preferences has Cross-Collection IDOR in Access Control (Multi-Auth Environments)",
+    "UpdatedAt": "2026-02-05T21:25:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.74.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.74.0"
+    }
+  ]
+}

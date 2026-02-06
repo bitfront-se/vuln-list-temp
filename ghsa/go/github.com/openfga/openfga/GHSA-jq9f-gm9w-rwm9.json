@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-05T21:46:42Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openfga/openfga"
+  },
+  "Advisory": {
+    "DatabaseId": 335911,
+    "Id": "GSA_kwCzR0hTQS1qcTlmLWdtOXctcndtOc4ABSAn",
+    "GhsaId": "GHSA-jq9f-gm9w-rwm9",
+    "References": [
+      {
+        "Url": "https://github.com/openfga/openfga/security/advisories/GHSA-jq9f-gm9w-rwm9"
+      },
+      {
+        "Url": "https://github.com/openfga/openfga/commit/1bb5eddf4a3d2fc718aab7914b8f9a1200d2f7ee"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jq9f-gm9w-rwm9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jq9f-gm9w-rwm9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24851"
+      }
+    ],
+    "Description": "### Impact\nOpenFGA v1.8.5 to v1.11.2 ( openfga-0.2.22 \u003c= Helm chart \u003c= openfga-0.2.51, v.1.8.5 \u003c= docker \u003c= v.1.11.2) are vulnerable to improper policy enforcement when certain Check calls are executed.\n\n\n### Affected Users\nUsers are affected by this vulnerability if all of the following preconditions are met:\n- OpenFGA v1.8.5 to v1.11.2 is being used\n- The model has a relation directly assignable by a [type bound public access](https://openfga.dev/docs/concepts#what-is-type-bound-public-access) and assignable by type bound non-public access\n- A tuple is assigned for the relation that is a type bound public access\n- A tuple is assigned for the same object with the same relation that is not type bound public access\n- A tuple is assigned for a different object that has an object ID lexicographically larger with the same user and relation which is not type bound public access\n\n\n### Fix\nUpgrade to v1.11.3. This upgrade is backwards compatible.\n\n### Workaround\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T21:46:41Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenFGA Improper Policy Enforcement",
+    "UpdatedAt": "2026-02-05T21:46:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.11.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.5, \u003c= 1.11.2"
+    }
+  ]
+}

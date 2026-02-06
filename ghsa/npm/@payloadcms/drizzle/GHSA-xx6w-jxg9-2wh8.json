@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-05T20:51:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/drizzle"
+  },
+  "Advisory": {
+    "DatabaseId": 335871,
+    "Id": "GSA_kwCzR0hTQS14eDZ3LWp4ZzktMndoOM4ABR__",
+    "GhsaId": "GHSA-xx6w-jxg9-2wh8",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-xx6w-jxg9-2wh8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xx6w-jxg9-2wh8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xx6w-jxg9-2wh8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25544"
+      }
+    ],
+    "Description": "### Impact\n\nWhen querying JSON or richText fields, user input was directly embedded into SQL without escaping, enabling blind SQL Injection attacks. An unauthenticated attacker could extract sensitive data (emails, password reset tokens) and achieve full account takeover without password cracking.\n\n**Users are affected if ALL of these are true:**\n\n1. Payload version \u003c v3.73.0\n2. Using a Drizzle-based database adapter (`@payloadcms/drizzle` as dependency):\n   - `@payloadcms/db-postgres`\n   - `@payloadcms/db-vercel-postgres`\n   - `@payloadcms/db-sqlite`\n   - `@payloadcms/db-d1-sqlite`\n3. At least one accessible collection that has a `type: 'json'` or `type: 'richText'` field where `access.read` returns anything other than `false` (`true` or `Where` constraint)\n\n**Users are NOT affected if:**\n\n- Using `@payloadcms/db-mongodb`\n- No JSON or richText fields exist in any collection\n- All JSON/richText fields have `access: { read: () =\u003e false }`\n\n### Patches\n\nUpgrade to Payload **v3.73.0** or later.\n\n### Workarounds\n\nIf a project cannot upgrade immediately, add `access: { read: () =\u003e false }` to all JSON and richText fields as a temporary mitigation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T20:51:38Z",
+    "Severity": "CRITICAL",
+    "Summary": "@payloadcms/drizzle has SQL Injection in JSON/RichText Queries on PostgreSQL/SQLite Adapters",
+    "UpdatedAt": "2026-02-05T20:51:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.73.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.73.0"
+    }
+  ]
+}

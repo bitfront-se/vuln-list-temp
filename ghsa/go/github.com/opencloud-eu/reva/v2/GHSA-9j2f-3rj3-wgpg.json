@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-05T20:32:54Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/opencloud-eu/reva/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 335869,
+    "Id": "GSA_kwCzR0hTQS05ajJmLTNyajMtd2dwZ84ABR_9",
+    "GhsaId": "GHSA-9j2f-3rj3-wgpg",
+    "References": [
+      {
+        "Url": "https://github.com/opencloud-eu/reva/security/advisories/GHSA-9j2f-3rj3-wgpg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9j2f-3rj3-wgpg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9j2f-3rj3-wgpg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23989"
+      }
+    ],
+    "Description": "### Impact\n\nA security issue was discovered in Reva based products that enables a malicious user to bypass the scope validation of a public link, allowing it to access resources outside the scope of a public link.\n\n### Details\n\nPublic link shares in OpenCloud are bound to a specific scope (usually a file or directory). Anonymous users accessing resources via this public link share are only allowed to access the share resource itself and, in case of a directory or space root, all child resources of it.\n\nDue to a bug in the GRPC authorization middleware of the \"Reva\" component of OpenCloud a malicious user is able to bypass the scope verification. By exploiting this via the the \"archiver\" service this can be leveraged to create an archive (zip or tar-file) containing all resources that this creator of the public link has access to.\n\nIt is not possible to bypass the public link scope via \"normal\" WebDAV requests so it is not possible to exploit this vulnerability via WebDAV.\n\n### Patches\n\nUpdate to OpenCloud Reva version \u003e= 2.40.3 for the 2.40.x versions.\\\nUpdate to OpenCloud Reva version \u003e= 2.42.3 for the 2.41.x versions\n\n### Workarounds\n\nThere is no workaround because one cannot run Reva standalone from this project. Please check the [OpenCloud Advisory](https://github.com/opencloud-eu/opencloud/security/advisories/GHSA-vf5j-r2hw-2hrw) how to mitigate the problem in an OpenCloud deployment via configuration.\n\n### For more information\n\nIf there are any questions or comments about this advisory:\n\n- Security Support: [security@opencloud.eu](mailto:security@opencloud.eu)\n- Technical Support: [support@opencloud.eu](mailto:support@opencloud.eu)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-05T20:32:53Z",
+    "Severity": "HIGH",
+    "Summary": "OpenCloud Reva has a Public Link Exploit",
+    "UpdatedAt": "2026-02-05T20:32:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.42.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.41.0, \u003c 2.42.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.40.3"
+      },
+      "VulnerableVersionRange": "\u003c= 2.40.1"
+    }
+  ]
+}
