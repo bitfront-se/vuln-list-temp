@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-06T18:10:06Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "gogs.io/gogs"
+  },
+  "Advisory": {
+    "DatabaseId": 336017,
+    "Id": "GSA_kwCzR0hTQS01cWh4LWd3ZmotNmpxcs4ABSCR",
+    "GhsaId": "GHSA-5qhx-gwfj-6jqr",
+    "References": [
+      {
+        "Url": "https://github.com/gogs/gogs/security/advisories/GHSA-5qhx-gwfj-6jqr"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/pull/8102/commits/b6afcdb2e8d291e2adaaf6a8b7f88d240606515d"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/releases/tag/v0.13.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5qhx-gwfj-6jqr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5qhx-gwfj-6jqr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23632"
+      }
+    ],
+    "Description": "## Vulnerability Description\n\nThe endpoint\n`PUT /repos/:owner/:repo/contents/*`\ndoes not require write permissions and allows access with **read permission only** via `repoAssignment()`.\n\nAfter passing the permission check, `PutContents()` invokes `UpdateRepoFile()`, which results in:\n\n* Commit creation\n* Execution of `git push`\n\nAs a result, a token with **read-only permission** can be used to modify repository contents.\n\n---\n\n## Attack Prerequisites\n\n* Possession of a valid access token\n* Read permission on the target repository\n  (public repository or collaborator with read access)\n\n---\n\n## Attack Scenario\n\n1. The attacker accesses the target repository with a read-only token\n2. The attacker sends a `PUT /contents` request to update an arbitrary file\n3. The server creates a commit and performs a git push on behalf of the attacker\n\n---\n\n## Potential Impact\n\n* Source code tampering\n* Injection of backdoors\n* Compromise of release artifacts and distributed packages",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-06T18:10:05Z",
+    "Severity": "MODERATE",
+    "Summary": " Gogs user can update repository content with read-only permission",
+    "UpdatedAt": "2026-02-06T18:10:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.13.4"
+      },
+      "VulnerableVersionRange": "\u003c= 0.13.3"
+    }
+  ]
+}
