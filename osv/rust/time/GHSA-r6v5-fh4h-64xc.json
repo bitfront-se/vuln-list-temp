@@ -1,9 +1,13 @@
 {
   "id": "GHSA-r6v5-fh4h-64xc",
-  "modified": "2026-02-05T21:41:17.503524Z",
+  "modified": "2026-02-06T13:13:43.561120Z",
   "published": "2026-02-05T17:57:55Z",
   "aliases": [
-    "CVE-2026-25727"
+    "CVE-2026-25727",
+    "RUSTSEC-2026-0009"
+  ],
+  "related": [
+    "CGA-cq26-69jv-qp5c"
   ],
   "summary": "time vulnerable to stack exhaustion Denial of Service attack",
   "details": "### Impact\n\nWhen user-provided input is provided to any type that parses with the RFC 2822 format, a Denial of Service attack via stack exhaustion is possible. The attack relies on formally deprecated and rarely-used features that are part of the RFC 2822 format used in a malicious manner. Ordinary, non-malicious input will never encounter this scenario.\n\n### Patches\n\nA limit to the depth of recursion was added in v0.3.47. From this version, an error will be returned rather than exhausting the stack.\n\n### Workarounds\n\nLimiting the length of user input is the simplest way to avoid stack exhaustion, as the amount of the stack consumed would be at most a factor of the length of the input.",
