@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-06T18:36:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sceditor"
+  },
+  "Advisory": {
+    "DatabaseId": 336046,
+    "Id": "GSA_kwCzR0hTQS0yNWZxLTZxZ2ctcXBqOM4ABSCu",
+    "GhsaId": "GHSA-25fq-6qgg-qpj8",
+    "References": [
+      {
+        "Url": "https://github.com/samclarke/SCEditor/security/advisories/GHSA-25fq-6qgg-qpj8"
+      },
+      {
+        "Url": "https://github.com/samclarke/SCEditor/commit/5733aed4f0e257cb78e1ba191715fc458cbd473d"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25581"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-25fq-6qgg-qpj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-25fq-6qgg-qpj8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25581"
+      }
+    ],
+    "Description": "If an attacker has the ability control configuration options passed to `sceditor.create()`, like `emoticons`, `charset`, etc. then it's possible for them to trigger an XSS attack due to lack of sanitisation of configuration options.\n\nProof of concept:\n\n```js\nsceditor.create(textarea, {\n  emoticons: {\n    dropdown: { ':)': { url: 'x\" onerror=\"window.__xss = true' } }\n  }\n});\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-06T18:34:30Z",
+    "Severity": "MODERATE",
+    "Summary": "SCEditor has DOM XSS via emoticon URL/HTML injection",
+    "UpdatedAt": "2026-02-06T21:43:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.1"
+      },
+      "VulnerableVersionRange": "\u003c= 3.2.0"
+    }
+  ]
+}

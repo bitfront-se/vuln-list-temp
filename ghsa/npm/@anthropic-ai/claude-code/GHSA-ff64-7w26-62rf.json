@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-06T19:14:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 336056,
+    "Id": "GSA_kwCzR0hTQS1mZjY0LTd3MjYtNjJyZs4ABSC4",
+    "GhsaId": "GHSA-ff64-7w26-62rf",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-ff64-7w26-62rf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25725"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ff64-7w26-62rf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ff64-7w26-62rf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25725"
+      }
+    ],
+    "Description": "Claude Code's bubblewrap sandboxing mechanism failed to properly protect the .claude/settings.json configuration file when it did not exist at startup. While the parent directory was mounted as writable and .claude/settings.local.json was explicitly protected with read-only constraints, settings.json was not protected if it was missing. This allowed malicious code running inside the sandbox to create this file and inject persistent hooks (such as SessionStart commands) that would execute with host privileges when Claude Code was restarted. \n\nUsers on standard Claude Code auto-update received this fix automatically. Users performing manual updates are advised to update to the latest version.\n\nClaude Code thanks hackerone.com/edbr for reporting this issue!",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-06T19:14:33Z",
+    "Severity": "HIGH",
+    "Summary": "Claude Code has Sandbox Escape via Persistent Configuration Injection in settings.json",
+    "UpdatedAt": "2026-02-06T19:14:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.2"
+    }
+  ]
+}

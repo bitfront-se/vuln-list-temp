@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-06T22:36:31Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "antrea.io/antrea"
+  },
+  "Advisory": {
+    "DatabaseId": 336079,
+    "Id": "GSA_kwCzR0hTQS04Nng0LXdwOWYtd3JyOc4ABSDP",
+    "GhsaId": "GHSA-86x4-wp9f-wrr9",
+    "References": [
+      {
+        "Url": "https://github.com/antrea-io/antrea/security/advisories/GHSA-86x4-wp9f-wrr9"
+      },
+      {
+        "Url": "https://github.com/antrea-io/antrea/pull/7496"
+      },
+      {
+        "Url": "https://gist.github.com/antoninbas/c429cc3e5bb8479ba7ff38fd6fde59d9"
+      },
+      {
+        "Url": "https://github.com/antrea-io/antrea/blob/main/docs/antrea-network-policy.md"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-86x4-wp9f-wrr9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-86x4-wp9f-wrr9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25804"
+      }
+    ],
+    "Description": "### Impact\n\nAntrea's network policy priority assignment system has a uint16 arithmetic overflow bug that causes incorrect OpenFlow priority calculations when handling a large numbers of policies with various priority values. This results in potentially incorrect traffic enforcement.\n\nIf a user creates a large number of Antrea NetworkPolicies (ANP or ACNP) with varying priorities, some rules with lower logical priorities (higher numerical priority values) may take precedence over rules with higher logical priorities (lower numerical priority values). Traffic that should be denied by the configured Antrea NetworkPolicies may end up being allowed, potentially letting an attacker access a sensitive service. Traffic that should be allowed by the configured Antrea NetworkPolicies may end up being denied, breaking applications and potentially opening the door for denial-of-service attacks.\n\nThe Antrea NetworkPolicy system comes with support for priority Tiers. Rules defined within a Tier cannot take precedence over rules defined in higher priority Tiers. Some users / roles may only be authorized to define within specific Tiers. This security vulnerability enables such users to intentionally \"escape\" their Tier and override rules in higher priority Tiers.\n\nAntrea deployments that *only* use upstream Kubernetes NetworkPolicies - and do not use Antrea NetworkPolicies - are not affected.\n\n### Patches\nhttps://github.com/antrea-io/antrea/pull/7496\nAntrea v2.5.0\nAntrea v2.4.3\nAntrea v2.3.2\n\n### Workarounds\n\nAntrea deployments that *only* use upstream Kubernetes NetworkPolicies - and do not use Antrea NetworkPolicies - are not affected.\n\nFor users leveraging Antrea NetworkPolicies, there is no way to fix or remediate the vulnerability without upgrading.\n\n### Resources\n\nhttps://gist.github.com/antoninbas/c429cc3e5bb8479ba7ff38fd6fde59d9\nhttps://github.com/antrea-io/antrea/pull/7496\nhttps://github.com/antrea-io/antrea/blob/main/docs/antrea-network-policy.md",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-06T22:36:29Z",
+    "Severity": "HIGH",
+    "Summary": "Antrea has invalid enforcement order for network policy rules caused by integer overflow",
+    "UpdatedAt": "2026-02-06T22:36:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.4.0, \u003c 2.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.2"
+    }
+  ]
+}
