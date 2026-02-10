@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-10T14:33:42Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.druid.extensions:druid-basic-security"
+  },
+  "Advisory": {
+    "DatabaseId": 336460,
+    "Id": "GSA_kwCzR0hTQS1xNjcyLWhmYzctZzgzM84ABSJM",
+    "GhsaId": "GHSA-q672-hfc7-g833",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23906"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/2x9rv3kv6t1p577lvq4z0rl0zlt9g4sr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q672-hfc7-g833"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q672-hfc7-g833"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23906"
+      }
+    ],
+    "Description": "Affected Products and Versions\n  *  Apache Druid\n  *  Affected Versions: 0.17.0 through 35.x (all versions prior to 36.0.0)\n  *  Prerequisites:  *  druid-basic-security extension enabled\n  *  LDAP authenticator configured\n  *  Underlying LDAP server permits anonymous bind                                                                                                                                                   \n\n\n\n\n\n\nVulnerability Description\n\nAn authentication bypass vulnerability exists in Apache Druid when using the druid-basic-security extension with LDAP authentication. If the underlying LDAP server is configured to allow anonymous\nbinds, an attacker can bypass authentication by providing an existing username with an empty password. This allows unauthorized access to otherwise restricted Druid resources without valid credentials.\n\nThe vulnerability stems from improper validation of LDAP authentication responses when anonymous binds are permitted, effectively treating anonymous bind success as valid user authentication. \n\nImpact\n\nA remote, unauthenticated attacker can:\n  *  Gain unauthorized access to the Apache Druid cluster\n  *  Access sensitive data stored in Druid datasources\n  *  Execute queries and potentially manipulate data\n  *  Access administrative interfaces if the bypassed account has elevated privileges\n  *  Completely compromise the confidentiality, integrity, and availability of the Druid deployment                                                                                                                                                                                    \n\n\nMitigation\n \nImmediate Mitigation (No Druid Upgrade Required):                                                                                                                                                    \n  *  Disable anonymous bind on your LDAP server. This prevents the vulnerability from being exploitable and is the recommended immediate action.\n\n\n\nResolution\n  *  Upgrade Apache Druid to version 36.0.0 or later, which includes fixes to properly reject anonymous LDAP bind attempts.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T12:30:28Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache Druid Vulnerable to Authentication Bypass",
+    "UpdatedAt": "2026-02-10T14:33:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "36.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.17.0, \u003c 36.0.0"
+    }
+  ]
+}
