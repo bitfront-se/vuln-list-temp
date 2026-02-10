@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-10T00:29:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fuxa-server"
+  },
+  "Advisory": {
+    "DatabaseId": 336376,
+    "Id": "GSA_kwCzR0hTQS02OG01LTV3MmgtaDgzN84ABSH4",
+    "GhsaId": "GHSA-68m5-5w2h-h837",
+    "References": [
+      {
+        "Url": "https://github.com/frangoteam/FUXA/security/advisories/GHSA-68m5-5w2h-h837"
+      },
+      {
+        "Url": "https://github.com/frangoteam/FUXA/pull/2177"
+      },
+      {
+        "Url": "https://github.com/frangoteam/FUXA/commit/3ecce46333ed33e3f66f378e38e317cde702b0ae"
+      },
+      {
+        "Url": "https://github.com/frangoteam/FUXA/releases/tag/v1.2.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-68m5-5w2h-h837"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-68m5-5w2h-h837"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25951"
+      }
+    ],
+    "Description": "### Summary\nA flaw in the path sanitization logic allows an authenticated attacker with administrative privileges to bypass directory traversal protections. By using nested traversal sequences (e.g., ....//), an attacker can write arbitrary files to the server filesystem, including sensitive directories like runtime/scripts. This leads to Remote Code Execution (RCE) when the server reloads the malicious scripts. It is a new vulnerability a patch bypass for the sanitization in the last release .\n\n\n### Details\nThis report describes a new, distinct vulnerability that differs from previous Path Traversal advisories (such as CVE-2023-31718) in several ways:\n\nPatch Bypass (Regression): The vulnerability circumvents the existing sanitization logic implemented to fix previous traversal issues. The current \"single-pass\" regex approach is insufficient against nested sequences.\nExpansion of Scope: Unlike previous reports that focused primarily on /api/download, this bypass affects multiple critical endpoints, including /api/upload, /api/resources/remove, and /api/logs.\nEscalation to RCE: By targeting the \nupload\n and remove functionalities, this vulnerability directly leads to Remote Code Execution, which is a higher impact than the information disclosure typically associated with previous traversal reports.\n\n\n### Impact\nRemote Code Execution (RCE): Transition from application admin to full system control.\nSCADA Operational Disruption: Potential for physical or operational sabotage by manipulating tags and alarms.\nData Integrity \u0026 Availability: Full access to projects, credentials, and historical logs.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T00:29:00Z",
+    "Severity": "HIGH",
+    "Summary": "FUXA Affected by a Path Traversal Sanitization Bypass",
+    "UpdatedAt": "2026-02-10T00:29:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.11"
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.10"
+    }
+  ]
+}

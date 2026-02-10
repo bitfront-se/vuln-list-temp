@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-10T00:27:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fuxa-server"
+  },
+  "Advisory": {
+    "DatabaseId": 336373,
+    "Id": "GSA_kwCzR0hTQS12NHA1LXc2cjMtMng0Zs4ABSH1",
+    "GhsaId": "GHSA-v4p5-w6r3-2x4f",
+    "References": [
+      {
+        "Url": "https://github.com/frangoteam/FUXA/security/advisories/GHSA-v4p5-w6r3-2x4f"
+      },
+      {
+        "Url": "https://github.com/frangoteam/FUXA/commit/5e7679b09718534e4501a146fdfe093da29af336"
+      },
+      {
+        "Url": "https://github.com/frangoteam/FUXA/releases/tag/v1.2.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v4p5-w6r3-2x4f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v4p5-w6r3-2x4f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25938"
+      }
+    ],
+    "Description": "### Summary\n\n**Description**\nAn authentication bypass vulnerability in FUXA allows an unauthenticated, remote attacker to execute arbitrary code on the server when the Node-RED plugin is enabled. This affects FUXA version 1.2.8 through version 1.2.10. This has been patched in FUXA version 1.2.11.\n\n### Impact\nThis affects all deployments with the Node-RED plugin enabled, including those with `runtime.settings.secureEnabled` set to true.\n\nExploitation allows an unauthenticated, remote attacker to send a specially crafted request to the `/nodered/flows` endpoint to bypass authentication checks, granting the attacker administrative access to the Node-RED deployment API. By submitting a malicious flow configuration, an attacker can execute arbitrary code in the context of the FUXA service. Depending on deployment configuration and permissions, this may lead to full system compromise and could further expose connected ICS/SCADA environments to follow-on actions.\n\n### Patches\nThis issue has been patched in FUXA version 1.2.11. Users are strongly encouraged to update to the latest available release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T00:27:31Z",
+    "Severity": "CRITICAL",
+    "Summary": "FUXA Unauthenticated Remote Code Execution in Node-RED Integration",
+    "UpdatedAt": "2026-02-10T00:27:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.11"
+      },
+      "VulnerableVersionRange": "\u003e= 1.2.8, \u003c 1.2.11"
+    }
+  ]
+}

