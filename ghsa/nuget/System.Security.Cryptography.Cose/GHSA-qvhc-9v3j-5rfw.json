@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-10T21:32:22Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "System.Security.Cryptography.Cose"
+  },
+  "Advisory": {
+    "DatabaseId": 336671,
+    "Id": "GSA_kwCzR0hTQS1xdmhjLTl2M2otNXJmd84ABSMf",
+    "GhsaId": "GHSA-qvhc-9v3j-5rfw",
+    "References": [
+      {
+        "Url": "https://github.com/dotnet/runtime/security/advisories/GHSA-qvhc-9v3j-5rfw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-21218"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21218"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qvhc-9v3j-5rfw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qvhc-9v3j-5rfw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21218"
+      }
+    ],
+    "Description": "# Microsoft Security Advisory CVE-2026-21218 | .NET Security Feature Bypass Vulnerability\n\n## \u003ca name=\"executive-summary\"\u003e\u003c/a\u003eExecutive summary\n\nMicrosoft is releasing this security advisory to provide information about a vulnerability in .NET 8.0, .NET 9.0, and .NET 10.0. This advisory also provides guidance on what developers can do to update their applications to remove this vulnerability.\n\nAn attacker could exploit this vulnerability by crafting a malicious payload that bypasses the security checks in the affected System.Security.Cryptography.Cose versions, potentially leading to unauthorized access or data manipulation.\n\n## Announcement\n\nAnnouncement for this issue can be found at https://github.com/dotnet/announcements/issues/380\n\n## \u003ca name=\"mitigation-factors\"\u003e\u003c/a\u003eMitigation factors\n\nIf your application does not use System.Security.Cryptography.Cose it is not affected. By default, no .NET applications reference this component.\n\n## \u003ca name=\"affected-packages\"\u003e\u003c/a\u003eAffected Packages\nThe vulnerability affects any Microsoft .NET project if it uses any of affected packages versions listed below\n\n### \u003ca name=\".NET 10\"\u003e\u003c/a\u003e.NET 10\nPackage name | Affected version | Patched version\n------------ | ---------------- | -------------------------\n[System.Security.Cryptography.Cose](https://www.nuget.org/packages/System.Security.Cryptography.Cose)               | \u003e= 10.0.0, \u003c 10.0.2 | 10.0.3\n\n### \u003ca name=\".NET 9\"\u003e\u003c/a\u003e.NET 9\nPackage name | Affected version | Patched version\n------------ | ---------------- | -------------------------\n[System.Security.Cryptography.Cose](https://www.nuget.org/packages/System.Security.Cryptography.Cose)               | \u003e= 9.0.0, \u003c 9.0.12 | 9.0.13\n\n### \u003ca name=\".NET 8\"\u003e\u003c/a\u003e.NET 8\nPackage name | Affected version | Patched version\n------------ | ---------------- | -------------------------\n[System.Security.Cryptography.Cose](https://www.nuget.org/packages/System.Security.Cryptography.Cose)               | \u003e= 8.0.0, \u003c 8.0.23 | 8.0.24\n\n## Advisory FAQ\n\n### \u003ca name=\"how-affected\"\u003e\u003c/a\u003eHow do I know if I am affected?\n\nIf an affected package listed in [affected software](#affected-software) or [affected packages](#affected-packages), you're exposed to the vulnerability.\n\n### \u003ca name=\"how-fix\"\u003e\u003c/a\u003eHow do I fix the issue?\n\nTo update the Using the System.Security.Cryptography.Cose NuGet package, use one of the following methods:\n\nNuGet Package Manager UI in Visual Studio:\n- Open your project in Visual Studio.\n- Right-click on your project in Solution Explorer and select \"Manage NuGet Packages...\" or navigate to \"Project \u003e Manage NuGet Packages\".\n- In the NuGet Package Manager window, select the \"Updates\" tab. This tab lists packages with available updates from your configured package sources.\n- Select the package(s) you wish to update. You can choose a specific version from the dropdown or update to the latest available version.\n- Click the \"Update\" button.\n\nUsing the NuGet Package Manager Console in Visual Studio:\n- Open your project in Visual Studio.\n- Navigate to \"Tools \u003e NuGet Package Manager \u003e Package Manager Console\".\n- To update a specific package to its latest version, use the following Update-Package command:\n\n```Update-Package -Id System.Security.Cryptography.Cose```\n\nUsing the .NET CLI (Command Line Interface):\n- Open a terminal or command prompt in your project's directory.\n- To update a specific package to its latest version, use the following add package command:\n\n```dotnet add package System.Security.Cryptography.Cose```\n\nOnce you have updated the nuget package reference you must recompile and deploy your application. Additionally we recommend you update your runtime and/or SDKs, but it is not necessary to patch the vulnerability.\n\n## Other Information\n\n### Reporting Security Issues\n\nIf you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue).\n\nSecurity reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty.\n\n### Support\n\nYou can ask questions about this issue on GitHub in the .NET GitHub organization. The main repos are located at https://github.com/dotnet/runtime. The Announcements repo (https://github.com/dotnet/Announcements) will contain this bulletin as an issue and will include a link to a discussion issue. You can ask questions in the linked discussion issue.\n\n### Disclaimer\n\nThe information provided in this advisory is provided \"as is\" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exclusion or limitation of liability for consequential or incidental damages so the foregoing limitation may not apply.\n\n### External Links\n\n[CVE-2026-21218](https://www.cve.org/CVERecord?id=CVE-2026-21218)\n\n### Acknowledgements\n\nvcsjones with GitHub\n\n### Revisions\n\nV1.0 (February 10, 2026): Advisory published.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T21:32:18Z",
+    "Severity": "LOW",
+    "Summary": "Microsoft Security Advisory CVE-2026-21218 | .NET Security Feature Bypass Vulnerability",
+    "UpdatedAt": "2026-02-10T21:32:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.3"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c= 10.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.0.13"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c= 9.0.12"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.24"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.0.23"
+    }
+  ]
+}

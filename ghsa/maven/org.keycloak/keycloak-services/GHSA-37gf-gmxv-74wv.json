@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-10T18:35:16Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.keycloak:keycloak-services"
+  },
+  "Advisory": {
+    "DatabaseId": 336363,
+    "Id": "GSA_kwCzR0hTQS0zN2dmLWdteHYtNzR3ds4ABSHr",
+    "GhsaId": "GHSA-37gf-gmxv-74wv",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1486"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-1486"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2433347"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:2365"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:2366"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/issues/46146"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/pull/46148"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/commit/176dc8902ce552056d3648c4601d519afc6fb043"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-37gf-gmxv-74wv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-37gf-gmxv-74wv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1486"
+      }
+    ],
+    "Description": "A flaw was found in Keycloak. A vulnerability exists in the jwt-authorization-grant flow where the server fails to verify if an Identity Provider (IdP) is enabled before issuing tokens. The issuer lookup mechanism (lookupIdentityProviderFromIssuer) retrieves the IdP configuration but does not filter for isEnabled=false. If an administrator disables an IdP (e.g., due to a compromise or offboarding), an entity possessing that IdP's signing key can still generate valid JWT assertions that Keycloak accepts, resulting in the issuance of valid access tokens.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-09T21:31:03Z",
+    "Severity": "HIGH",
+    "Summary": "Keycloak fails to verify if an Identity Provider (IdP) is enabled before issuing tokens",
+    "UpdatedAt": "2026-02-10T18:35:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.5.3"
+      },
+      "VulnerableVersionRange": "\u003c 26.5.3"
+    }
+  ]
+}

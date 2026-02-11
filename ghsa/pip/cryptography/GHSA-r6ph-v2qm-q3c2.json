@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-10T21:27:06Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "cryptography"
+  },
+  "Advisory": {
+    "DatabaseId": 336620,
+    "Id": "GSA_kwCzR0hTQS1yNnBoLXYycW0tcTNjMs4ABSLs",
+    "GhsaId": "GHSA-r6ph-v2qm-q3c2",
+    "References": [
+      {
+        "Url": "https://github.com/pyca/cryptography/security/advisories/GHSA-r6ph-v2qm-q3c2"
+      },
+      {
+        "Url": "https://github.com/pyca/cryptography/commit/0eebb9dbb6343d9bc1d91e5a2482ed4e054a6d8c"
+      },
+      {
+        "Url": "https://github.com/pyca/cryptography/releases/tag/46.0.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r6ph-v2qm-q3c2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r6ph-v2qm-q3c2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26007"
+      }
+    ],
+    "Description": "## Vulnerability Summary\n\nThe `public_key_from_numbers` (or `EllipticCurvePublicNumbers.public_key()`), `EllipticCurvePublicNumbers.public_key()`, `load_der_public_key()` and `load_pem_public_key()` functions do not verify that the point belongs to the expected prime-order subgroup of the curve.\n\nThis missing validation allows an attacker to provide a public key point `P` from a small-order subgroup.  This can lead to security issues in various situations, such as the most commonly used signature verification (ECDSA) and shared key negotiation (ECDH). When the victim computes the shared secret as `S = [victim_private_key]P` via ECDH,  this leaks information about `victim_private_key mod (small_subgroup_order)`. For curves with cofactor \u003e 1, this reveals the least significant bits of the private key.  When these weak public keys are used in ECDSA , it's easy to forge signatures on the small subgroup.\n\nOnly SECT curves are impacted by this.\n\n## Credit\n\nThis vulnerability was discovered by:\n- XlabAI Team of Tencent Xuanwu Lab\n- Atuin Automated Vulnerability Discovery Engine",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-10T21:27:06Z",
+    "Severity": "HIGH",
+    "Summary": "cryptography Vulnerable to a Subgroup Attack Due to Missing Subgroup Validation for SECT Curves",
+    "UpdatedAt": "2026-02-10T21:27:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "46.0.5"
+      },
+      "VulnerableVersionRange": "\u003c= 46.0.4"
+    }
+  ]
+}
