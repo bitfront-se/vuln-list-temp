@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-11T19:48:44Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.shiro:shiro-spring"
+  },
+  "Advisory": {
+    "DatabaseId": 336311,
+    "Id": "GSA_kwCzR0hTQS1jMjQ0LXA2bTUtdnFqNs4ABSG3",
+    "GhsaId": "GHSA-c244-p6m5-vqj6",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23903"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/5jjf0hnjcol58z2m5y255c7scz1lnp8k"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/02/08/1"
+      },
+      {
+        "Url": "https://github.com/apache/shiro/commit/3b9638b957495004599aeaf24ba8949e309f26e8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c244-p6m5-vqj6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c244-p6m5-vqj6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23903"
+      }
+    ],
+    "Description": "### Impact\n\n**Authentication Bypass:**\nA vulnerability exists in Apache Shiro that allows authentication bypass for static files when served from a case-insensitive filesystem (such as the default configuration on macOS or Windows).\n\nThe issue arises when Shiro's URL filters are configured with lower-case rules (a common default), but the underlying operating system treats mixed-case filenames as identical. An attacker can access protected static resources by varying the capitalization of the filename in the request (e.g., requesting `/SECRET.TXT` to bypass a rule for `/secret.txt`).\n\nThis issue specifically affects static file handling and does not impact dynamic resource paths that are case-sensitive.\n\n### Patches\nUsers should upgrade to Apache Shiro **2.1.0** or later.\n\n**Important Configuration Note:**\nVersion 2.1.0 introduces a new configuration parameter to handle case-insensitivity, which must be enabled manually to resolve the issue:\n\n* **shiro.ini:**\n    ```ini\n    filterChainResolver.caseInsensitive = true\n    ```\n* **Spring Boot (application.properties):**\n    ```properties\n    shiro.caseInsensitive=true\n    ```\n\n*Note: Apache Shiro 3.0.0 (upcoming) will enable this setting by default.*\n\n### Workarounds\n* Ensure that the filesystem hosting the application is case-sensitive (e.g., Linux/Unix).\n* Manually configure all Shiro filter chains to handle all possible case variations of protected filenames (not recommended due to complexity).\n\n### Resources\n* [CVE-2026-23903](https://nvd.nist.gov/vuln/detail/CVE-2026-23903)\n* [Mailing List Announcement](https://lists.apache.org/thread/5jjf0hnjcol58z2m5y255c7scz1lnp8k)\n* [OSS-Security List](http://www.openwall.com/lists/oss-security/2026/02/08/1)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-09T12:30:22Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Shiro has an Authentication Bypass",
+    "UpdatedAt": "2026-02-11T19:48:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.0.6"
+    }
+  ]
+}
