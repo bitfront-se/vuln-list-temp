@@ -1,9 +1,12 @@
 {
   "id": "GHSA-9f3f-wv7r-qc8r",
-  "modified": "2026-02-11T23:32:39.652224Z",
+  "modified": "2026-02-12T13:43:48.459678Z",
   "published": "2026-02-11T15:13:12Z",
   "aliases": [
     "CVE-2026-26014"
+  ],
+  "related": [
+    "CGA-4prg-p7v8-x9pj"
   ],
   "summary": "Pion DTLS's usage of random nonce generation with AES GCM ciphers risks leaking the authentication key",
   "details": "### Impact\nPion DTLS versions v1.0.0 through v3.1.0 use random nonce generation with AES GCM ciphers, which makes it easier for remote attackers to obtain the authentication key and spoof data by leveraging the reuse of a nonce in a session and a \"forbidden attack\". \n\n### Patches\nUpgrade to v3.1.0 or later. This version includes PR #796, which uses the 64-bit sequence number to populate the `nonce_explicit` part of the GCM nonce. This is according to best practice outlined in [RFC 9325 section 7.2.1](https://www.rfc-editor.org/rfc/rfc9325#section-7.2.1).\n\n### Workarounds\nThere are no workarounds without upgrading to version v3.1.0 or later.\n\n### References\nCommit fixing the bug: https://github.com/pion/dtls/commit/61762dee8217991882c5eb79856b9e7a73ee349f\nPull request: #796",
