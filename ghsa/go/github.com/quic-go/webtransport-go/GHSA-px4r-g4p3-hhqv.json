@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-12T15:29:02Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/quic-go/webtransport-go"
+  },
+  "Advisory": {
+    "DatabaseId": 337036,
+    "Id": "GSA_kwCzR0hTQS1weDRyLWc0cDMtaGhxds4ABSSM",
+    "GhsaId": "GHSA-px4r-g4p3-hhqv",
+    "References": [
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/security/advisories/GHSA-px4r-g4p3-hhqv"
+      },
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/releases/tag/v0.10.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-px4r-g4p3-hhqv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-px4r-g4p3-hhqv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21435"
+      }
+    ],
+    "Description": "## Summary\nAn attacker can cause a denial of service in webtransport-go by preventing or indefinitely delaying WebTransport session closure. A malicious peer can withhold QUIC flow control credit on the CONNECT stream, blocking transmission of the WT_CLOSE_SESSION capsule and causing the close operation to hang.\n\n## Details\nWebTransport over HTTP/3 signals session termination by sending a WT_CLOSE_SESSION capsule on the CONNECT stream. The capsule is only needed to transmit a reason phrase and an error code to the peer. After the capsule is sent, the CONNECT stream is closed.\nIn affected versions, the closure procedure blocked indefinitely while waiting for sufficient QUIC flow control credit from the peer. A malicious peer can withhold this credit, preventing the capsule from being sent.\n\n## The Fix\nwebtransport-go now attempts to send the WT_CLOSE_SESSION capsule with a short deadline. If the capsule cannot be sent within this deadline, the CONNECT stream is reset instead. This closes the WebTransport session promptly without transmitting the optional error details.\nThis prevents indefinite blocking on session closure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-12T15:29:01Z",
+    "Severity": "MODERATE",
+    "Summary": "webtransport-go: CloseWithError can block indefinitely",
+    "UpdatedAt": "2026-02-12T15:29:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.10.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.9.0"
+    }
+  ]
+}

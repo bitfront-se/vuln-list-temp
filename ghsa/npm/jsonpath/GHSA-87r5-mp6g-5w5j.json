@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-12T15:29:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jsonpath"
+  },
+  "Advisory": {
+    "DatabaseId": 336285,
+    "Id": "GSA_kwCzR0hTQS04N3I1LW1wNmctNXc1as4ABSGd",
+    "GhsaId": "GHSA-87r5-mp6g-5w5j",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1615"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-15141219"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-JS-JSONPATH-13645034"
+      },
+      {
+        "Url": "https://github.com/dchester/jsonpath/blob/c1dd8ec74034fb0375233abb5fdbec51ac317b4b/lib/handlers.js#L243"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-87r5-mp6g-5w5j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-87r5-mp6g-5w5j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1615"
+      }
+    ],
+    "Description": "### Impact\n\n**Arbitrary Code Injection (Remote Code Execution \u0026 XSS):**\n\nA critical security vulnerability affects **all versions** of the `jsonpath` package. The library relies on the `static-eval` module to evaluate JSON Path expressions but fails to properly sanitize or sandbox the input.\n\nThis allows an attacker to inject arbitrary JavaScript code into the JSON Path expression. When the library evaluates this expression, the malicious code is executed.\n\n* **Node.js Environments:** This leads to **Remote Code Execution (RCE)**, allowing an attacker to compromise the server.\n* **Browser Environments:** This leads to **Cross-Site Scripting (XSS)**, allowing an attacker to hijack user sessions or exfiltrate data.\n\n**Affected Methods:**\n\nThe vulnerability triggers when untrusted data is passed to any method that evaluates a path, including:\n\n* `jsonpath.query`\n* `jsonpath.nodes`\n* `jsonpath.paths`\n* `jsonpath.value`\n* `jsonpath.parent`\n* `jsonpath.apply`\n\n### Patches\n\n**No Patch Available:**\n\nCurrently, **all versions** of `jsonpath` are vulnerable. There is no known patched version of this package that resolves the issue while retaining the current architecture.\n\n**Recommendation:**\n\nDevelopers are strongly advised to **migrate to a secure alternative** (such as `jsonpath-plus` or similar libraries that do not use `eval`/`static-eval`) or strictly validate all JSON Path inputs against a known allowlist.\n\n### Workarounds\n\n* **Strict Input Validation:** Ensure that no user-supplied data is ever passed directly to `jsonpath` functions.\n* **Sanitization:** If user input is unavoidable, implement a strict parser to reject any JSON Path expressions containing executable JavaScript syntax (e.g., parentheses `()`, script expressions `script:`, or function calls).\n\n### Resources\n\n* [CVE-2026-1615](https://nvd.nist.gov/vuln/detail/CVE-2026-1615)\n* [Vulnerable Code in handlers.js](https://github.com/dchester/jsonpath/blob/c1dd8ec74034fb0375233abb5fdbec51ac317b4b/lib/handlers.js#L243)\n* [Snyk Advisory (Java/WebJars)](https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-15141219)\n* [Snyk Advisory (JS)](https://security.snyk.io/vuln/SNYK-JS-JSONPATH-13645034)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-09T06:30:28Z",
+    "Severity": "HIGH",
+    "Summary": "jsonpath has Arbitrary Code Injection via Unsafe Evaluation of JSON Path Expressions",
+    "UpdatedAt": "2026-02-12T15:29:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.2.1"
+    }
+  ]
+}

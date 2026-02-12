@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-12T15:29:13Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/quic-go/webtransport-go"
+  },
+  "Advisory": {
+    "DatabaseId": 337037,
+    "Id": "GSA_kwCzR0hTQS0yZjJ4LThtd3AtcDJnY84ABSSN",
+    "GhsaId": "GHSA-2f2x-8mwp-p2gc",
+    "References": [
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/security/advisories/GHSA-2f2x-8mwp-p2gc"
+      },
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/releases/tag/v0.10.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2f2x-8mwp-p2gc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2f2x-8mwp-p2gc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21438"
+      }
+    ],
+    "Description": "## Summary\nAn attacker can cause unbounded memory consumption repeatedly creating and closing many WebTransport streams. Closed streams were not removed from an internal session map, preventing garbage collection of their resources.\n\n## Details\nwebtransport-go maintains an internal map tracking WebTransport streams (both unidirectional and bidirectional) belonging to a session. In affected versions, entries for closed streams were not removed from this map, causing the map to grow indefinitely as streams were created and closed.\n\nA malicious peer can exploit this by opening large numbers of streams and closing them, leading to steady memory growth proportional to the number of closed streams.\n\n## The Fix\nwebtransport-go now removes closed streams from the internal map upon closure. This allows the associated resources to be garbage collected, bounding memory usage to active streams only.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-12T15:29:11Z",
+    "Severity": "MODERATE",
+    "Summary": "webtransport-go: Memory Exhaustion Attack due to Missing Cleanup of Streams Map",
+    "UpdatedAt": "2026-02-12T15:29:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.10.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.9.0"
+    }
+  ]
+}

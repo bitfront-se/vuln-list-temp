@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-12T15:54:21Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xwiki.platform:xwiki-platform-web"
+  },
+  "Advisory": {
+    "DatabaseId": 337055,
+    "Id": "GSA_kwCzR0hTQS03NHJoLWM1cmgtODh2Z84ABSSf",
+    "GhsaId": "GHSA-74rh-c5rh-88vg",
+    "References": [
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/security/advisories/GHSA-74rh-c5rh-88vg"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/pull/4645"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/29cb81f3a5387cf822d7e7534bdd63903275f86b"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/7b5a4f8c34d9b1da3d966e17f7dbccabac448e75"
+      },
+      {
+        "Url": "https://jira.xwiki.org/browse/XWIKI-23433"
+      },
+      {
+        "Url": "https://www.xwiki.org/xwiki/bin/view/ReleaseNotes/Data/XWiki/17.9.0RC1/Entry006"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-74rh-c5rh-88vg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-74rh-c5rh-88vg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26000"
+      }
+    ],
+    "Description": "### Impact\n\nIt's possible using comments to inject CSS that would transform the full wiki in a link area leading to a malicious page. All versions of XWiki are impacted by this kind of attack. \n\n### Patches\n\nThe problem has been patched not by preventing injecting CSS in comments, which is currently a feature of XWiki, but by requiring confirmation from users when driving them to untrusted domains after clicking on a link, thus preventing any click-jacking attack. \nThis security measure has been put in place in XWiki 17.9.0, 17.4.6, 16.10.13.\n\n### Workarounds\n\nThere's no out-of-the-box workaround, but it should be possible to partly reuse [the javascript code provided for the security measure](https://github.com/xwiki/xwiki-platform/blob/xwiki-platform-17.9.0/xwiki-platform-core/xwiki-platform-web/xwiki-platform-web-war/src/main/webapp/resources/uicomponents/link/link-protection.js) in a JSX object inside the wiki, to request the same kind of confirmation. \n\n### References\n  * JIRA ticket: https://jira.xwiki.org/browse/XWIKI-23433\n  * Documentation of the new security measure: https://www.xwiki.org/xwiki/bin/view/ReleaseNotes/Data/XWiki/17.9.0RC1/Entry006/\n  * Commit for the security fix: https://github.com/xwiki/xwiki-platform/commit/29cb81f3a5387cf822d7e7534bdd63903275f86b\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n* Open an issue in [Jira XWiki.org](https://jira.xwiki.org/)\n* Email us at [Security Mailing List](mailto:security@xwiki.org)\n\n### Attribution\n\nThanks Tomas Keech (Sentrium Security Ltd) for reporting this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-12T15:54:19Z",
+    "Severity": "MODERATE",
+    "Summary": "XWiki vulnerable to click-jacking through CSS injection in comments",
+    "UpdatedAt": "2026-02-12T15:54:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.10.13"
+      },
+      "VulnerableVersionRange": "\u003c 16.10.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.4.6"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0-rc-1, \u003c 17.4.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 17.5.0, \u003c 17.9.0"
+    }
+  ]
+}
