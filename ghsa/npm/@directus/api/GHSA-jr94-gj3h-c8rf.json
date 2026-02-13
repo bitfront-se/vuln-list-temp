@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-12T22:13:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@directus/api"
+  },
+  "Advisory": {
+    "DatabaseId": 337097,
+    "Id": "GSA_kwCzR0hTQS1qcjk0LWdqM2gtYzhyZs4ABSTJ",
+    "GhsaId": "GHSA-jr94-gj3h-c8rf",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-jr94-gj3h-c8rf"
+      },
+      {
+        "Url": "https://github.com/directus/directus/pull/26485"
+      },
+      {
+        "Url": "https://github.com/directus/directus/commit/e69aa7a5248c6e3e822cb1ac354dee295df90b2a"
+      },
+      {
+        "Url": "https://github.com/directus/directus/releases/tag/v11.14.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jr94-gj3h-c8rf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jr94-gj3h-c8rf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26185"
+      }
+    ],
+    "Description": "### Summary\n\nA timing-based user enumeration vulnerability exists in the password reset functionality. When an invalid reset_url parameter is provided, the response time differs by approximately 500ms between existing and non-existing users, enabling reliable user enumeration.\n\n### Details\n\nThe password reset endpoint implements a timing protection mechanism to prevent user enumeration; however, URL validation executes before the timing protection is applied. This allows an attacker to distinguish between valid and invalid user accounts based on response timing differences.\n\n### Impact\n\nThis vulnerability violates user privacy and may facilitate targeted phishing attacks by allowing attackers to confirm the existence of user accounts.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-12T22:13:04Z",
+    "Severity": "MODERATE",
+    "Summary": "Directus Vulnerable to User Enumeration via Password Reset Timing Attack",
+    "UpdatedAt": "2026-02-12T22:13:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "32.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 32.2.0"
+    }
+  ]
+}

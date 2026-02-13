@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "CRITICAL",
   "UpdatedAt": "2026-01-16T20:58:51Z",
   "Package": {
     "Ecosystem": "PIP",
@@ -20,6 +20,15 @@
         "Url": "https://github.com/unclecode/crawl4ai/blob/release/v0.8.0/docs/migration/v0.8.0-upgrade-guide.md"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-26217"
+      },
+      {
+        "Url": "https://github.com/unclecode/crawl4ai/blob/main/docs/blog/release-v0.8.0.md"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/crawl4ai-docker-api-local-file-inclusion-via-file-url-handling"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-vx9w-5cx4-9796"
       }
     ],
@@ -36,9 +45,9 @@
     "Description": "A local file inclusion vulnerability exists in the Crawl4AI Docker API. The /execute_js, /screenshot, /pdf, and /html endpoints accept file:// URLs, allowing attackers to read arbitrary files from the server filesystem.\n\nAttack Vector:\n```json\nPOST /execute_js\n{\n    \"url\": \"file:///etc/passwd\",\n    \"scripts\": [\"document.body.innerText\"]\n}\n```\nImpact\n\nAn unauthenticated attacker can:\n- Read sensitive files (/etc/passwd, /etc/shadow, application configs)\n- Access environment variables via /proc/self/environ\n- Discover internal application structure\n- Potentially read credentials and API keys\n\nWorkarounds\n\n1. Disable the Docker API\n2. Add authentication to the API\n3. Use network-level filtering",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-01-16T20:58:51Z",
-    "Severity": "HIGH",
+    "Severity": "CRITICAL",
     "Summary": "Crawl4AI Has Local File Inclusion in Docker API via file:// URLs",
-    "UpdatedAt": "2026-02-12T15:53:31Z",
+    "UpdatedAt": "2026-02-12T20:09:08Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 8.6,
