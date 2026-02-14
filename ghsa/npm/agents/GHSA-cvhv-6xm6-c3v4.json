@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-13T20:04:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "agents"
+  },
+  "Advisory": {
+    "DatabaseId": 337134,
+    "Id": "GSA_kwCzR0hTQS1jdmh2LTZ4bTYtYzN2NM4ABSTu",
+    "GhsaId": "GHSA-cvhv-6xm6-c3v4",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1721"
+      },
+      {
+        "Url": "https://github.com/cloudflare/agents/pull/841"
+      },
+      {
+        "Url": "https://github.com/cloudflare/agents/commit/3f490d045844e4884db741afbb66ca1fe65d4093"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cvhv-6xm6-c3v4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cvhv-6xm6-c3v4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1721"
+      }
+    ],
+    "Description": "Summary\n\nA Reflected Cross-Site Scripting (XSS) vulnerability was discovered in the AI Playground's OAuth callback handler. The `error_description` query parameter was directly interpolated into an HTML script tag without proper escaping, allowing attackers to execute arbitrary JavaScript in the context of the victim's session.\n\nRoot cause\n\nThe OAuth callback handler in `site/ai-playground/src/server.ts` directly interpolated the `authError` value, sourced from the `error_description` query parameter,  into an inline `\u003cscript\u003e` tag.\n\nImpact\n\nAn attacker could craft a malicious link that, when clicked by a victim, would:\n\n  *  Steal user chat message history - Access all LLM interactions stored in the user's session.\n\n\n  *  Access connected MCP Servers - Interact with any MCP servers connected to the victim's session (public or authenticated/private), potentially allowing the attacker to perform actions on the victim's behalf\n\n\nMitigation:\n\n  *  PR:  https://github.com/cloudflare/agents/pull/841 https://github.com/cloudflare/agents/pull/841 \n  *  Agents-sdk users should upgrade to agents@0.3.10\n  *  Developers using configureOAuthCallback with custom error handling in their own applications should ensure all user-controlled input is escaped before interpolation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-13T03:31:23Z",
+    "Severity": "MODERATE",
+    "Summary": "Cloudflare Agents is Vulnerable to Reflected Cross-Site Scripting in the AI Playground's OAuth callback handler",
+    "UpdatedAt": "2026-02-13T20:04:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.10"
+      },
+      "VulnerableVersionRange": "\u003c 0.3.10"
+    }
+  ]
+}
