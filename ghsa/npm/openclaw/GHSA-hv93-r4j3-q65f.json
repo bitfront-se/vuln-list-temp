@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T16:43:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337598,
+    "Id": "GSA_kwCzR0hTQS1odjkzLXI0ajMtcTY1Zs4ABSa-",
+    "GhsaId": "GHSA-hv93-r4j3-q65f",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-hv93-r4j3-q65f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/113ebfd6a23c4beb8a575d48f7482593254506ec"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hv93-r4j3-q65f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hv93-r4j3-q65f"
+      }
+    ],
+    "Description": "## Summary\nThe issue is not deterministic session keys by itself. The exploitable path was accepting externally supplied `sessionKey` values on authenticated hook ingress, allowing a hook token holder to route messages into chosen sessions.\n\n## Affected Behavior\n- `POST /hooks/agent` accepted payload `sessionKey` and used it directly for session routing.\n- Common session-key shapes (for example `agent:main:dm:\u003cpeerId\u003e`) were often derivable from known metadata, making targeted routing practical when request-level override was enabled.\n\n## Attack Preconditions\n- Attacker can call hook endpoints with a valid hook token.\n- Hook ingress allows request-selected `sessionKey` values.\n- Target session keys can be derived or guessed.\n\nWithout those preconditions, deterministic key formats alone do not provide access.\n\n## Impact\n- Integrity: targeted message/prompt injection into chosen sessions.\n- Persistence: poisoned context can affect subsequent turns when the same session key is reused.\n- Confidentiality impact is secondary and depends on additional weaknesses.\n\n## Affected Versions\n- `openclaw` `\u003e= 2.0.0-beta3` and `\u003c 2026.2.12`\n\n## Patched Versions\n- `openclaw` `\u003e= 2026.2.12`\n\n## Fix\nOpenClaw now uses secure defaults for hook session routing:\n- `POST /hooks/agent` rejects payload `sessionKey` unless `hooks.allowRequestSessionKey=true`.\n- Added `hooks.defaultSessionKey` for fixed ingress routing.\n- Added `hooks.allowedSessionKeyPrefixes` to constrain explicit routing keys.\n- Security audit warns on unsafe hook session-routing settings.\n\n## Recommended Configuration\n```json\n{\n  \"hooks\": {\n    \"enabled\": true,\n    \"token\": \"${OPENCLAW_HOOKS_TOKEN}\",\n    \"defaultSessionKey\": \"hook:ingress\",\n    \"allowRequestSessionKey\": false,\n    \"allowedSessionKeyPrefixes\": [\"hook:\"]\n  }\n}\n```\n\n## Credit\nThanks @alpernae for responsible reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T16:43:34Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw Hook Session Key Override Enables Targeted Cross-Session Routing",
+    "UpdatedAt": "2026-02-17T16:43:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.12"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-beta3, \u003c 2026.2.12"
+    }
+  ]
+}

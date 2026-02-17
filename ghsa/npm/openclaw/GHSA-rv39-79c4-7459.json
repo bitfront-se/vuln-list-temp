@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-17T16:37:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337596,
+    "Id": "GSA_kwCzR0hTQS1ydjM5LTc5YzQtNzQ1Oc4ABSa8",
+    "GhsaId": "GHSA-rv39-79c4-7459",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rv39-79c4-7459"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/fe81b1d7125a014b8280da461f34efbf5f761575"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rv39-79c4-7459"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rv39-79c4-7459"
+      }
+    ],
+    "Description": "### Summary\n\nThe gateway WebSocket `connect` handshake could allow skipping device identity checks when `auth.token` was present but not yet validated.\n\n### Details\n\nIn `src/gateway/server/ws-connection/message-handler.ts`, the device-identity requirement could be bypassed based on the *presence* of a non-empty `connectParams.auth.token` rather than a *validated* shared-secret authentication result.\n\n### Impact\n\nIn deployments where the gateway WebSocket is reachable and connections can be authorized via Tailscale without validating the shared secret, a client could connect without providing device identity/pairing. Depending on version and configuration, this could result in operator access.\n\n### Deployment Guidance\n\nPer OpenClaw security guidance, the gateway should only be reachable from a trusted network and by trusted users (for example, restrict Tailnet users/ACLs when using Tailscale Serve).\n\nIf the gateway WebSocket is only reachable by trusted users, there is typically no untrusted party with network access to exploit this issue.\n\n### Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.1`\n- Fixed: `\u003e= 2026.2.2`\n\n### Fix\n\nDevice-identity skipping now requires *validated* shared-secret authentication (token/password). Tailscale-authenticated connections without validated shared secret require device identity.\n\n### Fix Commit(s)\n\n- fe81b1d7125a014b8280da461f34efbf5f761575\n\nThanks @simecek for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T16:37:04Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenClaw's gateway connect could skip device identity checks when auth.token was present but not yet validated",
+    "UpdatedAt": "2026-02-17T16:37:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.2"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.2"
+    }
+  ]
+}

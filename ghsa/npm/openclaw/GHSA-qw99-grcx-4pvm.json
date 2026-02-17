@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-17T17:09:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337603,
+    "Id": "GSA_kwCzR0hTQS1xdzk5LWdyY3gtNHB2bc4ABSbD",
+    "GhsaId": "GHSA-qw99-grcx-4pvm",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qw99-grcx-4pvm"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8d75a496bf5aaab1755c56cf48502d967c75a1d0"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qw99-grcx-4pvm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qw99-grcx-4pvm"
+      }
+    ],
+    "Description": "## Summary\nThe Chrome extension relay (`ensureChromeExtensionRelayServer`) previously treated wildcard hosts (`0.0.0.0` / `::`) as loopback, which could make it bind the relay HTTP/WS server to all interfaces when a wildcard `cdpUrl` was passed.\n\n## Impact\nIf configured with a wildcard `cdpUrl`, relay HTTP endpoints could become reachable off-host, leaking service presence/port and enabling DoS/brute-force traffic against the relay token header.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003e= 2026.1.14-1 \u003c 2026.2.12`\n\n## Fixed Versions\n- Patched: `\u003e= 2026.2.12` (released 2026-02-13)\n\n## Fix Commit(s)\n- 8d75a496bf5aaab1755c56cf48502d967c75a1d0\n\n## Notes\n- Earlier hardening for `/json*` auth and `/cdp` token checks landed in:\n  - a1e89afcc19efd641c02b24d66d689f181ae2b5c\n\nThanks @qi-scape for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T17:09:43Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Chrome extension relay binds publicly due to wildcard treated as loopback",
+    "UpdatedAt": "2026-02-17T17:09:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.12"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.1.14-1, \u003c 2026.2.12"
+    }
+  ]
+}

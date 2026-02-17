@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T17:13:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337604,
+    "Id": "GSA_kwCzR0hTQS01NmYyLWh2d2ctNTc0M84ABSbE",
+    "GhsaId": "GHSA-56f2-hvwg-5743",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-56f2-hvwg-5743"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/81c68f582d4a9a20d9cca9f367d2da9edc5a65ae"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/9bd64c8a1f91dda602afc1d5246a2ff2be164647"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-56f2-hvwg-5743"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-56f2-hvwg-5743"
+      }
+    ],
+    "Description": "## Summary\n\nA server-side request forgery (SSRF) vulnerability in the Image tool allowed attackers to force OpenClaw to make HTTP requests to arbitrary internal or restricted network targets.\n\n## Affected Versions\n\n- npm: openclaw \u003c= 2026.2.1\n\n## Patched Versions\n\n- npm: openclaw 2026.2.2 and later\n\n## Fix Commits\n\n- 81c68f582d4a9a20d9cca9f367d2da9edc5a65ae (guard remote media fetches with SSRF checks)\n- 9bd64c8a1f91dda602afc1d5246a2ff2be164647 (expand SSRF guard coverage)\n\n## Details\n\nThe Image tool accepts file paths, file:// URLs, data: URLs, and http(s) URLs. In vulnerable versions, http(s) URLs were fetched without SSRF protections, enabling requests to localhost, RFC1918, link-local, and cloud metadata targets.\n\nThis was fixed by routing remote media fetching through the SSRF guard (private/internal IP + hostname blocking, redirect hardening, DNS pinning).\n\n## Exploitability Notes\n\n- Requires attacker-controlled invocation of the Image tool (direct tool access, or a gateway/channel surface that forwards untrusted `image` arguments into tool calls).\n- The image tool expects the fetched content to be an image. Many high-value SSRF targets return text/JSON (for example cloud metadata endpoints), which will typically fail media-type validation. In practice, the most direct confidentiality impact comes from internal endpoints that actually return images (screenshots/renderers, camera snapshots, chart exports, etc.).\n- Remote fetches are GET-only with no custom headers. Some metadata services require special headers or session tokens (for example GCP `Metadata-Flavor`, AWS IMDSv2 token), which can further reduce the likelihood of direct credential theft in some environments.\n- Despite the above constraints, SSRF remains a powerful primitive: it can enable internal network probing and access to unauthenticated/internal HTTP endpoints, and can chain with other weaknesses if present.\n\nThanks @p80n-sec for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T17:13:35Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw affected by SSRF in Image Tool Remote Fetch",
+    "UpdatedAt": "2026-02-17T17:13:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.2"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.2"
+    }
+  ]
+}

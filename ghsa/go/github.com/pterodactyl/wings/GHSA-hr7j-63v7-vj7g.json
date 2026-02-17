@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T17:15:19Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/pterodactyl/wings"
+  },
+  "Advisory": {
+    "DatabaseId": 337606,
+    "Id": "GSA_kwCzR0hTQS1ocjdqLTYzdjctdmo3Z84ABSbG",
+    "GhsaId": "GHSA-hr7j-63v7-vj7g",
+    "References": [
+      {
+        "Url": "https://github.com/pterodactyl/panel/security/advisories/GHSA-hr7j-63v7-vj7g"
+      },
+      {
+        "Url": "https://github.com/pterodactyl/panel/commit/0e74f3aadec89405751ec602c77fc1d030a417c0"
+      },
+      {
+        "Url": "https://github.com/pterodactyl/panel/releases/tag/v1.12.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hr7j-63v7-vj7g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hr7j-63v7-vj7g"
+      }
+    ],
+    "Description": "### Summary\nDeleting a user account with SFTP access or changing the user's password does not immediately terminate existing SFTP sessions, allowing continued filesystem access after credentials are revoked.\nThis can result in unintended and unauthorized access to server files even after administrators believe access has been fully invalidated.\n\n\n### Details\nWhen a user with SFTP access is deleted from the Pterodactyl Panel or when the user's password is changed while one or more SFTP connections are active, those existing connections remain fully functional.\n\nNeither account deletion nor password change invalidates the authentication state of already-established SFTP sessions. As a result, the active SFTP connection pool continues to allow read and write operations until the client disconnects or the session times out.\n\nThis behavior occurs even when the password is changed by an administrator through the panel, meaning credential rotation does not revoke active access.\n\nThis suggests that active SFTP sessions are not tracked or forcefully terminated on credential revocation events. This effectively prevents administrators from responding to credential compromise incidents in real time.\n\n\n### PoC\nScenario 1: Account deletion\n1. Create a user with SFTP access to a server.\n2. Connect to the server via SFTP using any SFTP client (e.g. sftp, FileZilla).\n3. Keep the SFTP session open and active.\n4. Delete the user account from the Pterodactyl Panel.\n5. Continue performing file operations through the already-established SFTP connection.\n\nResult:\nThe SFTP session remains active and usable despite the user account being deleted.\n\nScenario 2: Password change\n1. Create a user with SFTP access to a server.\n2. Establish an active SFTP connection.\n3. Change the user's password (including via administrator panel).\n4. Continue performing file operations using the existing SFTP connection.\n\nResult:\nThe SFTP session remains active and usable even after the password has been changed.\n\n\n### Impact\nThis issue prevents immediate revocation of compromised credentials. Vulnerability type: Access control / session invalidation issue\n\nImpacted parties:\n\n1. Server administrators\n2. Hosting providers using Pterodactyl Panel\n\nSecurity impact:\n\nDeleted users may retain filesystem access longer than intended, which can lead to:\n\n1. Unauthorized data access\n2. Data modification or deletion\n3. Compliance and security policy violations",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T17:15:18Z",
+    "Severity": "HIGH",
+    "Summary": "Pterodactyl Panel's SFTP sessions remain active after user account deletion or password change",
+    "UpdatedAt": "2026-02-17T17:15:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.12.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.12.1"
+    }
+  ]
+}

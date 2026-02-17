@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-17T17:14:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337605,
+    "Id": "GSA_kwCzR0hTQS14Yzd3LXY1eDYtY2M4N84ABSbF",
+    "GhsaId": "GHSA-xc7w-v5x6-cc87",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-xc7w-v5x6-cc87"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/743f4b28495cdeb0d5bf76f6ebf4af01f6a02e5a"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/f836c385ffc746cb954e8ee409f99d079bfdcd2f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xc7w-v5x6-cc87"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xc7w-v5x6-cc87"
+      }
+    ],
+    "Description": "## Summary\n\nThe BlueBubbles webhook handler previously treated any request whose socket `remoteAddress` was loopback (`127.0.0.1`, `::1`, `::ffff:127.0.0.1`) as authenticated. When OpenClaw Gateway is behind a reverse proxy (Tailscale Serve/Funnel, nginx, Cloudflare Tunnel, ngrok), the proxy typically connects to the gateway over loopback, allowing unauthenticated remote requests to bypass the configured webhook password.\n\nThis could allow an attacker who can reach the proxy endpoint to inject arbitrary inbound BlueBubbles message/reaction events.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.2.12`\n- Patched versions: `\u003e= 2026.2.12`\n\n## Exposure / Configuration\n\n- BlueBubbles is an optional channel plugin (intended to eventually replace the legacy iMessage plugin, which is also optional). It is not enabled by default and is not part of a standard OpenClaw configuration.\n- Only deployments with the BlueBubbles webhook endpoint exposed through a reverse proxy are impacted.\n\n## Details\n\nThe BlueBubbles webhook handler accepts inbound events via an HTTP POST endpoint under the configured BlueBubbles webhook path.\n\nIn vulnerable versions, the handler would accept requests as authenticated if `req.socket.remoteAddress` is loopback, without validating forwarding headers. With common reverse-proxy setups, the gateway sees the proxy as the direct client (loopback), even when the original request is remote.\n\n## Fix\n\n- Primary fix (released in `2026.2.12`): remove loopback-based authentication bypass and require the configured webhook secret.\n- Defense-in-depth follow-up (next release after commit below): treat requests with forwarding headers as proxied and never accept passwordless webhooks through a proxy.\n\n## Fix Commit(s)\n\n- [`f836c385ffc746cb954e8ee409f99d079bfdcd2f`](https://github.com/openclaw/openclaw/commit/f836c385ffc746cb954e8ee409f99d079bfdcd2f) (released in `2026.2.12`)\n- [`743f4b28495cdeb0d5bf76f6ebf4af01f6a02e5a`](https://github.com/openclaw/openclaw/commit/743f4b28495cdeb0d5bf76f6ebf4af01f6a02e5a) (defense-in-depth follow-up)\n\n## Mitigations\n\n- Ensure a BlueBubbles webhook password is configured.\n- Do not expose the gateway webhook endpoint publicly without authentication.\n\nThanks @simecek for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T17:14:00Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has a webhook auth bypass when gateway is behind a reverse proxy (loopback remoteAddress trust)",
+    "UpdatedAt": "2026-02-17T17:14:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.12"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.12"
+    }
+  ]
+}
