@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-17T18:40:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337622,
+    "Id": "GSA_kwCzR0hTQS03ODJwLTVmcjUtN2ZqOM4ABSbW",
+    "GhsaId": "GHSA-782p-5fr5-7fj8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-782p-5fr5-7fj8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/35eb40a7000b59085e9c638a80fd03917c7a095e"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-782p-5fr5-7fj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-782p-5fr5-7fj8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24764"
+      }
+    ],
+    "Description": "## Summary\nWhen the Slack integration is enabled, Slack channel metadata (topic/description) could be incorporated into the model's system prompt.\n\n## Impact\nPrompt injection is a documented risk for LLM-driven systems. This issue increased the injection surface by allowing untrusted Slack channel metadata to be treated as higher-trust system input.\n\nThis is relevant only for deployments that enable Slack. In deployments where tool execution is enabled, a successful injection could lead to unintended tool invocations and/or unintended data exposure.\n\n## Affected Packages / Versions\n- npm: `openclaw` \u003c 2026.2.3\n\n## Patched Versions\n- npm: `openclaw` \u003e= 2026.2.3\n\n## Mitigation\n- If you do not use Slack: no action required.\n- If you use Slack: upgrade to a patched version.\n\n## Fix Commit(s)\n- 35eb40a7000b59085e9c638a80fd03917c7a095e\n\nThanks @KonstantinMirin for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T18:40:11Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw Affected by Remote Code Execution via System Prompt Injection in Slack Channel Descriptions",
+    "UpdatedAt": "2026-02-17T18:40:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.3"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.3"
+    }
+  ]
+}

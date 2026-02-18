@@ -1,0 +1,55 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-17T22:56:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337705,
+    "Id": "GSA_kwCzR0hTQS1jaG0yLW0zdzItd2N4bc4ABScp",
+    "GhsaId": "GHSA-chm2-m3w2-wcxm",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-chm2-m3w2-wcxm"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/16243"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c8424bf29a921e25663b29f308640b3d91a49432"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-chm2-m3w2-wcxm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-chm2-m3w2-wcxm"
+      }
+    ],
+    "Description": "### Summary\nGoogle Chat allowlisting supports matching by sender email in addition to immutable sender resource name (`users/\u003cid\u003e`). This weakens identity binding if a deployment assumes allowlists are strictly keyed by immutable principals.\n\n### Affected Packages / Versions\n(As of 2026-02-14; based on latest published npm versions)\n- `openclaw` (npm): `\u003c= 2026.2.13`\n- `clawdbot` (npm): `\u003c= 2026.1.24-3`\n\n### Details\nAffected component:\n- `extensions/googlechat/src/monitor.ts`\n\nThe `allowFrom` checks accept:\n- Immutable sender id (`users/\u003cid\u003e`)\n- Raw email (`alice@example.com`) for usability\n\nHistorically, `users/\u003cemail\u003e` was also treated as an email allowlist entry. This is now deprecated because it looks like an immutable ID but is actually a mutable principal.\n\n### Security Triage (2026-02-14)\nSeverity: **Low**\n\nRationale:\n- Requests are authenticated as coming from Google Chat (token verification), so this is not a generic unauthenticated spoofing vector.\n- A realistic exploit generally requires **Google Workspace / IdP administrative control** over identity lifecycle (e.g. reassigning an email address to a different underlying account) to obtain the same email with a different `users/\u003cid\u003e`.\n- With that level of access, the attacker typically has broader compromise paths.\n\nWe still treat it as a valid defense-in-depth report because accepting mutable principals in authorization decisions can increase risk in chained-failure scenarios.\n\n### Remediation / Behavior Changes\nGoal: preserve usability while reducing footguns.\n- Raw email allowlists remain supported.\n- `users/\u003cemail\u003e` is deprecated and treated as a **user id**, not as an email allowlist.\n- Documentation recommends `users/\u003cid\u003e` when strict immutable binding is required.\n\n### Fix Commit(s)\n- `c8424bf29a921e25663b29f308640b3d91a49432` (PR #16243)\n\nThanks @vincentkoc for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T22:56:39Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw Google Chat spoofing access with allowlist authorized mutable email principal despite sender-ID mismatch",
+    "UpdatedAt": "2026-02-17T22:56:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

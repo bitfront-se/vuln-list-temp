@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-17T21:34:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337690,
+    "Id": "GSA_kwCzR0hTQS1ybXh3LWp4eHgtNGNwY84ABSca",
+    "GhsaId": "GHSA-rmxw-jxxx-4cpc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rmxw-jxxx-4cpc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8f3bfbd1c4fb967a2ddb5b4b9a05784920814bcf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rmxw-jxxx-4cpc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rmxw-jxxx-4cpc"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw Matrix DM allowlist matching could be bypassed in certain configurations.\n\nMatrix support ships as an optional plugin (not bundled with the core install), so this only affects deployments that have installed and enabled the Matrix plugin.\n\n### Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003e= 2026.1.14-1, \u003c 2026.2.2`\n- Patched: `\u003e= 2026.2.2`\n\n### Details\n\nIn affected versions, DM allowlist decisions could be made by exact-matching `channels.matrix.dm.allowFrom` entries against multiple sender-derived candidates, including:\n\n- The sender display name (attacker-controlled and non-unique)\n- The sender MXID localpart with the homeserver discarded, so `@alice:evil.example` and `@alice:trusted.example` both match `alice`\n\nIf an operator configured `channels.matrix.dm.allowFrom` with display names or bare localparts (for example, `\"Alice\"` or `\"alice\"`), a remote Matrix user may be able to impersonate an allowed identity for allowlist purposes and reach the routing/agent pipeline.\n\n### Impact\n\nMatrix DM allowlist identity confusion. The practical impact depends on your Matrix channel policies and what capabilities are enabled downstream.\n\n### Mitigation\n\n- Upgrade to `openclaw \u003e= 2026.2.2`.\n- Ensure Matrix allowlists contain only full Matrix user IDs (MXIDs) like `@user:server` (or `*`). Do not use display names or bare localparts.\n\n### Fix Commit(s)\n\n- `8f3bfbd1c4fb967a2ddb5b4b9a05784920814bcf`\n\n### Release Process Note\n\nThe patched version is already published to npm; the advisory can be published once you're ready.\n\nThanks @MegaManSec (https://joshua.hu) of [AISLE Research Team](https://aisle.com/) for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:34:17Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has a Matrix allowlist bypass via displayName and cross-homeserver localpart matching",
+    "UpdatedAt": "2026-02-17T21:34:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.1.14-1, \u003c 2026.2.2"
+    }
+  ]
+}

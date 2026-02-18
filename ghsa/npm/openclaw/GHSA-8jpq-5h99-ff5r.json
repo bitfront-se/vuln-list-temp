@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T21:41:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337700,
+    "Id": "GSA_kwCzR0hTQS04anBxLTVoOTktZmY1cs4ABSck",
+    "GhsaId": "GHSA-8jpq-5h99-ff5r",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-8jpq-5h99-ff5r"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5b4121d6011a48c71e747e3c18197f180b872c5d"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8jpq-5h99-ff5r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8jpq-5h99-ff5r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26321"
+      }
+    ],
+    "Description": "### Summary\nThe Feishu extension previously allowed `sendMediaFeishu` to treat attacker-controlled `mediaUrl` values as local filesystem paths and read them directly.\n\n### Affected versions\n- `\u003c 2026.2.14`\n\n### Patched versions\n- `\u003e= 2026.2.14`\n\n### Impact\nIf an attacker can influence tool calls (directly or via prompt injection), they may be able to exfiltrate local files by supplying paths such as `/etc/passwd` as `mediaUrl`.\n\n### Remediation\nUpgrade to OpenClaw `2026.2.14` or newer.\n\n### Notes\nThe fix removes direct local file reads from this path and routes media loading through hardened helpers that enforce local-root restrictions.\n\n---\n\nFix commit 5b4121d60 confirmed on main and in v2026.2.14. Upgrade to `openclaw \u003e= 2026.2.14`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:41:52Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has a local file disclosure via sendMediaFeishu in Feishu extension",
+    "UpdatedAt": "2026-02-17T21:41:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

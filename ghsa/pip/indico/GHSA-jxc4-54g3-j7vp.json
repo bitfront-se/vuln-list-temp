@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-17T18:54:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "indico"
+  },
+  "Advisory": {
+    "DatabaseId": 337631,
+    "Id": "GSA_kwCzR0hTQS1qeGM0LTU0ZzMtajd2cM4ABSbf",
+    "GhsaId": "GHSA-jxc4-54g3-j7vp",
+    "References": [
+      {
+        "Url": "https://github.com/indico/indico/security/advisories/GHSA-jxc4-54g3-j7vp"
+      },
+      {
+        "Url": "https://github.com/indico/indico/releases/tag/v3.3.10"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jxc4-54g3-j7vp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jxc4-54g3-j7vp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25739"
+      }
+    ],
+    "Description": "### Impact\nThere is a Cross-Site-Scripting vulnerability when uploading certain file types as materials.\n\n### Patches\nYou should to update to [Indico 3.3.10](https://github.com/indico/indico/releases/tag/v3.3.10) as soon as possible.\nSee [the docs](https://docs.getindico.io/en/stable/installation/upgrade/) for instructions on how to update.\n\nPlease be aware that to apply the fix itself updating is sufficient, but to benefit from the strict Content-Security-Policy we now apply by default for file downloads, you need to update your webserver config in case you use nginx with Indico's `STATIC_FILE_METHOD` set to `xaccelredirect` and add the following line to the `.xsf/indico/` location block (you can consult the Indico setup documentation for the full configuration snippet):\n\n```nginx\nadd_header Content-Security-Policy $upstream_http_content_security_policy;\n```\n\n### Workarounds\n- Use your webserver config to apply a strict CSP for material download endpoints.\n- Only let trustworthy users create content (including material uploads, which speakers can typically do as well) on Indico.\n\n### For more information\nIf you have any questions or comments about this advisory:\n\n- Open a thread in [our forum](https://talk.getindico.io/)\n- Email us privately at [indico-team@cern.ch](mailto:indico-team@cern.ch)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T18:54:31Z",
+    "Severity": "MODERATE",
+    "Summary": "Indico Affected by Cross-Site-Scripting via material uploads",
+    "UpdatedAt": "2026-02-17T18:54:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.10"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.10"
+    }
+  ]
+}

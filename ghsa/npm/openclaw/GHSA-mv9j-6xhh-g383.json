@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-17T21:32:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337641,
+    "Id": "GSA_kwCzR0hTQS1tdjlqLTZ4aGgtZzM4M84ABSbp",
+    "GhsaId": "GHSA-mv9j-6xhh-g383",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mv9j-6xhh-g383"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/647d929c9d0fd114249230d939a5cb3b36dc70e7"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mv9j-6xhh-g383"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mv9j-6xhh-g383"
+      }
+    ],
+    "Description": "## Summary\nThe OpenClaw Nostr channel plugin (optional, disabled by default, installed separately) exposes profile management HTTP endpoints under `/api/channels/nostr/:accountId/profile` (GET/PUT) and `/api/channels/nostr/:accountId/profile/import` (POST). In affected versions, these routes were dispatched via the gateway plugin HTTP layer without requiring gateway authentication, allowing unauthenticated remote callers to read or mutate the Nostr profile and persist changes to the gateway config. Profile updates are also published as a signed Nostr kind:0 event using the bot's private key.\n\nDeployments that do not have the Nostr plugin installed and enabled are not impacted.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.9`\n- Fixed versions: `\u003e= 2026.2.12`\n- Scope note: only affects deployments with the optional `@openclaw/nostr` plugin installed and enabled\n\n## Details\nThis is exploitable when the gateway HTTP port is reachable beyond localhost (for example: bound to `0.0.0.0`, exposed on a LAN, behind a reverse proxy, or via Tailscale Funnel/Serve).\n\nUnauthenticated callers could update the Nostr profile and persist the new profile in the gateway config.\n\n## Mitigation\nUpgrade to `openclaw` `2026.2.12` or later.\n\nAs a temporary mitigation, restrict gateway HTTP exposure (bind loopback-only and/or enforce network-layer access controls) until upgraded.\n\n## Fix\nGateway now requires gateway authentication for plugin HTTP requests under `/api/channels/*` before dispatching to plugin handlers.\n\nFix commit(s):\n- 647d929c9d0fd114249230d939a5cb3b36dc70e7\n\nThanks @simecek for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:31:17Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's unauthenticated Nostr profile HTTP endpoints allow remote profile/config tampering",
+    "UpdatedAt": "2026-02-17T21:32:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.12"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.12"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T21:40:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337698,
+    "Id": "GSA_kwCzR0hTQS00aGc4LTkyeDYtaDJmM84ABSci",
+    "GhsaId": "GHSA-4hg8-92x6-h2f3",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-4hg8-92x6-h2f3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/29b587e73cbdc941caec573facd16e87d52f007b"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/f47584fec86d6d73f2d483043a2ad0e7e3c50411"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4hg8-92x6-h2f3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4hg8-92x6-h2f3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26319"
+      }
+    ],
+    "Description": "## Summary\n\nIn affected versions, OpenClaw's optional `@openclaw/voice-call` plugin Telnyx webhook handler could accept unsigned inbound webhook requests when `telnyx.publicKey` was not configured, allowing unauthenticated callers to forge Telnyx events.\n\nThis only impacts deployments where the Voice Call plugin is installed, enabled, and the webhook endpoint is reachable from the attacker (for example, publicly exposed via a tunnel/proxy).\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.13`\n- Fixed: `\u003e= 2026.2.14` (planned)\n\n## Details\n\nTelnyx webhooks are expected to be authenticated via Ed25519 signature verification.\n\nIn affected versions, `TelnyxProvider.verifyWebhook()` could effectively fail open when no Telnyx public key was configured, allowing arbitrary HTTP POST requests to the voice-call webhook endpoint to be treated as legitimate Telnyx events.\n\n## Fix\n\nThe fix makes Telnyx webhook verification fail closed by default and requires `telnyx.publicKey` (or `TELNYX_PUBLIC_KEY`) to be configured.\n\nA signature verification bypass exists only for local development via `skipSignatureVerification: true`, which is off by default, emits a loud startup warning, and should not be used in production.\n\nThis requirement is documented in the Voice Call plugin docs.\n\n## Fix Commit(s)\n\n- `29b587e73cbdc941caec573facd16e87d52f007b`\n- `f47584fec` (centralized verification helper + stronger tests)\n\n## Workarounds\n\n- Configure `plugins.entries.voice-call.config.telnyx.publicKey` (or `TELNYX_PUBLIC_KEY`) to enable signature verification.\n- Only for local development: set `skipSignatureVerification: true`.\n\nThanks @p80n-sec for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:40:46Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw is Missing Webhook Authentication in Telnyx Provider Allows Unauthenticated Requests",
+    "UpdatedAt": "2026-02-17T21:40:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

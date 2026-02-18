@@ -1,0 +1,61 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-17T21:34:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337691,
+    "Id": "GSA_kwCzR0hTQS1maHZtLWo3NmYtcW1qds4ABScb",
+    "GhsaId": "GHSA-fhvm-j76f-qmjv",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-fhvm-j76f-qmjv"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3cbcba10cf30c2ffb898f0d8c7dfb929f15f8930"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5643a934799dc523ec2ef18c007e1aa2c386b670"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/633fe8b9c17f02fcc68ecdb5ec212a5ace932f09"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ca92597e1f9593236ad86810b66633144b69314d"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fhvm-j76f-qmjv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fhvm-j76f-qmjv"
+      }
+    ],
+    "Description": "## Summary\n\nWhen Telegram webhook mode is enabled without a configured webhook secret, OpenClaw may accept unauthenticated HTTP POST requests at the Telegram webhook endpoint and trust attacker-controlled update JSON. This can allow forged Telegram updates that spoof `message.from.id` / `chat.id`, potentially bypassing sender allowlists and executing privileged bot commands.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.1.30`\n- Patched: `\u003e= 2026.2.1`\n\n## Impact\n\nAn attacker who can reach the webhook endpoint can forge Telegram updates and impersonate allowlisted/paired senders by spoofing fields in the webhook payload (for example `message.from.id`). Impact depends on enabled commands/tools and the deployment’s network exposure.\n\n## Mitigations / Workarounds\n\n- Configure a strong `channels.telegram.webhookSecret` and ensure your reverse proxy forwards the `X-Telegram-Bot-Api-Secret-Token` header unchanged.\n\n## Fix Commit(s)\n\n- ca92597e1f9593236ad86810b66633144b69314d (config validation: `webhookUrl` requires `webhookSecret`)\n\nDefense-in-depth / supporting fixes:\n\n- 5643a934799dc523ec2ef18c007e1aa2c386b670 (default webhook listener bind host to loopback)\n- 3cbcba10cf30c2ffb898f0d8c7dfb929f15f8930 (bound webhook request body size/time)\n- 633fe8b9c17f02fcc68ecdb5ec212a5ace932f09 (runtime guard: reject webhook startup when secret is missing/empty)\n\n## Release Process Note\n\n`patched_versions` is set to the first fixed release (`2026.2.1`).\n\nThanks @yueyueL for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:34:36Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenClaw has a potential access-group authorization bypass if channel type lookup fails",
+    "UpdatedAt": "2026-02-17T21:34:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.1"
+    }
+  ]
+}

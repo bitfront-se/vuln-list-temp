@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T21:33:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@openclaw/bluebubbles"
+  },
+  "Advisory": {
+    "DatabaseId": 337689,
+    "Id": "GSA_kwCzR0hTQS1wY2hjLTg2ZjYtODc1OM4ABScZ",
+    "GhsaId": "GHSA-pchc-86f6-8758",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-pchc-86f6-8758"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/743f4b28495cdeb0d5bf76f6ebf4af01f6a02e5a"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/f836c385ffc746cb954e8ee409f99d079bfdcd2f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pchc-86f6-8758"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pchc-86f6-8758"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26316"
+      }
+    ],
+    "Description": "### Summary\n\nIn affected versions, the optional BlueBubbles iMessage channel plugin could accept webhook requests as authenticated based only on the TCP peer address being loopback (`127.0.0.1`, `::1`, `::ffff:127.0.0.1`) even when the configured webhook secret was missing or incorrect. This does not affect the default iMessage integration unless BlueBubbles is installed and enabled.\n\n### Affected Packages / Versions\n\n- npm: `openclaw` `\u003c 2026.2.13`\n- npm: `@openclaw/bluebubbles` `\u003c 2026.2.13`\n\n### Details\n\nIf a deployment exposes the BlueBubbles webhook endpoint through a same-host reverse proxy (or an attacker can reach loopback via SSRF), an unauthenticated party may be able to inject inbound webhook events into the agent pipeline.\n\n### Fix Commit(s)\n\n- f836c385ffc746cb954e8ee409f99d079bfdcd2f\n- 743f4b28495cdeb0d5bf76f6ebf4af01f6a02e5a (defense-in-depth)\n\n### Mitigations\n\n- Set a non-empty BlueBubbles webhook password.\n- Avoid deployments where a public-facing reverse proxy forwards to a loopback-bound Gateway without strong upstream authentication.\n\nThanks @MegaManSec (https://joshua.hu) of [AISLE Research Team](https://aisle.com/) for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:33:51Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw BlueBubbles webhook auth bypass via loopback proxy trust",
+    "UpdatedAt": "2026-02-17T21:33:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.13"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.13"
+    }
+  ]
+}

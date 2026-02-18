@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T21:42:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337701,
+    "Id": "GSA_kwCzR0hTQS1nNnE5LThmdnctZjdyZs4ABScl",
+    "GhsaId": "GHSA-g6q9-8fvw-f7rf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-g6q9-8fvw-f7rf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c5406e1d2434be2ef6eb4d26d8f1798d718713f4"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g6q9-8fvw-f7rf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g6q9-8fvw-f7rf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26322"
+      }
+    ],
+    "Description": "## Summary\nThe Gateway tool accepted a tool-supplied `gatewayUrl` without sufficient restrictions, which could cause the OpenClaw host to attempt outbound WebSocket connections to user-specified targets.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.13`\n- Patched versions: `\u003e= 2026.2.14` (planned)\n\n## What Is Needed To Trigger This\nThis requires the ability to invoke tools that accept `gatewayUrl` overrides (directly or indirectly). In typical setups this is limited to authenticated operators, trusted automation, or environments where tool calls are exposed to non-operators.\n\nIn other words, this is not a drive-by issue for arbitrary internet users unless a deployment explicitly allows untrusted users to trigger these tool calls.\n\n## Details\nSome tool call paths allowed `gatewayUrl` overrides to flow into the Gateway WebSocket client without validation or allowlisting. This meant the host could be instructed to attempt connections to non-gateway endpoints (for example, localhost services, private network addresses, or cloud metadata IPs).\n\n## Impact\nIn the common case, this results in an outbound connection attempt from the OpenClaw host (and corresponding errors/timeouts). In environments where the tool caller can observe the results, this can also be used for limited network reachability probing. If the target speaks WebSocket and is reachable, further interaction may be possible.\n\n## Fix\nTool-supplied `gatewayUrl` overrides are now restricted to loopback (on the configured gateway port) or the configured `gateway.remote.url`. Disallowed protocols, credentials, query/hash, and non-root paths are rejected.\n\n## Fix Commit(s)\n- c5406e1d2434be2ef6eb4d26d8f1798d718713f4\n\n## Release Process Note\n`patched_versions` is set to the planned next release. Once the npm release is published, the advisory can be published without further edits.\n\nThanks @p80n-sec for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:42:15Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw Gateway tool allowed unrestricted gatewayUrl override",
+    "UpdatedAt": "2026-02-17T21:42:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

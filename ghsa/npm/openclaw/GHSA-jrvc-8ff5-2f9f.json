@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-17T21:42:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337702,
+    "Id": "GSA_kwCzR0hTQS1qcnZjLThmZjUtMmY5Zs4ABScm",
+    "GhsaId": "GHSA-jrvc-8ff5-2f9f",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-jrvc-8ff5-2f9f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c0c0e0f9aecb913e738742f73e091f2f72d39a19"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jrvc-8ff5-2f9f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jrvc-8ff5-2f9f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26324"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw's SSRF protection could be bypassed using full-form IPv4-mapped IPv6 literals such as `0:0:0:0:0:ffff:7f00:1` (which is `127.0.0.1`). This could allow requests that should be blocked (loopback / private network / link-local metadata) to pass the SSRF guard.\n\n- Vulnerable component: SSRF guard (`src/infra/net/ssrf.ts`)\n- Issue type: SSRF protection bypass\n\n### Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Vulnerable: `\u003c= 2026.2.13`\n- Patched: `\u003e= 2026.2.14` (planned next release)\n\n### Details\n\nThe SSRF guard's IP classification did not consistently detect private IPv4 addresses when they were embedded in IPv6 using full-form IPv4-mapped IPv6 notation. As a result, inputs like `0:0:0:0:0:ffff:7f00:1` could bypass loopback/private network blocking.\n\n### Fix Commit(s)\n\n- `c0c0e0f9aecb913e738742f73e091f2f72d39a19`\n\n### Release Process Note\n\nThis advisory is kept in draft state with the patched version set to the planned next release. Once `openclaw@2026.2.14` is published to npm, the only remaining step should be to publish this advisory.\n\nThanks @yueyueL for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-17T21:42:40Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has a SSRF guard bypass via full-form IPv4-mapped IPv6 (loopback / metadata reachable)",
+    "UpdatedAt": "2026-02-17T21:42:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}
