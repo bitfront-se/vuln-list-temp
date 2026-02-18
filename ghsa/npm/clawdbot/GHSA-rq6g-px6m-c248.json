@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T00:55:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "clawdbot"
+  },
+  "Advisory": {
+    "DatabaseId": 337736,
+    "Id": "GSA_kwCzR0hTQS1ycTZnLXB4Nm0tYzI0OM4ABSdI",
+    "GhsaId": "GHSA-rq6g-px6m-c248",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rq6g-px6m-c248"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/61d59a802869177d9cef52204767cd83357ab79e"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rq6g-px6m-c248"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rq6g-px6m-c248"
+      }
+    ],
+    "Description": "## Summary\nWhen multiple Google Chat webhook targets are registered on the same HTTP path, and request verification succeeds for more than one target, inbound webhook events could be routed by first-match semantics. This can cause cross-account policy/context misrouting.\n\n## Affected Packages / Versions\n- npm: `openclaw` \u003c= 2026.2.13\n- npm: `clawdbot` \u003c= 2026.1.24-3\n\n## Details\nAffected component: `extensions/googlechat/src/monitor.ts`.\n\nBaseline behavior allowed multiple webhook targets per path and selected the first target that passed `verifyGoogleChatRequest(...)`. In shared-path deployments where multiple targets can verify successfully (for example, equivalent audience validation), inbound events could be processed under the wrong account context (wrong allowlist/session/policy).\n\n## Fix\n- Fix commit (merged to `main`): `61d59a802869177d9cef52204767cd83357ab79e`\n- `openclaw` will be patched in the next planned release: `2026.2.14`.\n\n`clawdbot` is a legacy/deprecated package name; no patched version is currently planned. Migrate to `openclaw` and upgrade to `openclaw \u003e= 2026.2.14`.\n\n## Workaround\nEnsure each Google Chat webhook target uses a unique webhook path so routing is never ambiguous.\n\n## Release Process Note\nThe advisory is pre-populated with the planned patched version. After the npm release is published, the remaining action should be to publish the advisory.\n\nThanks @vincentkoc for reporting.\n\n---\n\nFix commit 61d59a802869177d9cef52204767cd83357ab79e confirmed on main and in v2026.2.14. Upgrade to `openclaw \u003e= 2026.2.14`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:54:14Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw Google Chat shared-path webhook target ambiguity allowed cross-account policy-context misrouting",
+    "UpdatedAt": "2026-02-18T00:55:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2026.1.24-3"
+    }
+  ]
+}

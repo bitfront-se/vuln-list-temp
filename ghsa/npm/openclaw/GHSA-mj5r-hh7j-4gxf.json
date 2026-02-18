@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-18T00:55:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337733,
+    "Id": "GSA_kwCzR0hTQS1tajVyLWhoN2otNGd4Zs4ABSdF",
+    "GhsaId": "GHSA-mj5r-hh7j-4gxf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mj5r-hh7j-4gxf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/9e147f00b48e63e7be6964e0e2a97f2980854128"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/e3b432e481a96b8fd41b91273818e514074e05c3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mj5r-hh7j-4gxf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mj5r-hh7j-4gxf"
+      }
+    ],
+    "Description": "## Summary\nTelegram allowlist authorization could match on `@username` (mutable/recyclable) instead of immutable numeric sender IDs.\n\n## Impact\nOperators who treat Telegram allowlists as strict identity controls could unintentionally grant access if a username changes hands (identity rebinding/spoof risk). This can allow an unauthorized sender to interact with the bot in allowlist mode.\n\n## Affected Packages / Versions\n- npm `openclaw`: \u003c= 2026.2.13\n- npm `clawdbot`: \u003c= 2026.1.24-3\n\n## Fix\nTelegram allowlist authorization now requires numeric Telegram sender IDs only. `@username` allowlist principals are rejected.\n\nA security audit warning was added to flag legacy configs that still contain non-numeric Telegram allowlist entries.\n\n`openclaw doctor --fix` now attempts to resolve `@username` allowFrom entries to numeric IDs (best-effort; requires a Telegram bot token).\n\n## Fix Commit(s)\n- e3b432e481a96b8fd41b91273818e514074e05c3\n- 9e147f00b48e63e7be6964e0e2a97f2980854128\n\nThanks @vincentkoc for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:54:32Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw Telegram allowlist authorization accepted mutable usernames",
+    "UpdatedAt": "2026-02-18T00:55:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

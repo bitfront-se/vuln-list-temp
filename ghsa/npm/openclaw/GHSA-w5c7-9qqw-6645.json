@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T00:56:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337739,
+    "Id": "GSA_kwCzR0hTQS13NWM3LTlxcXctNjY0Nc4ABSdL",
+    "GhsaId": "GHSA-w5c7-9qqw-6645",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-w5c7-9qqw-6645"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/85409e401b6586f83954cb53552395d7aab04797"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w5c7-9qqw-6645"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w5c7-9qqw-6645"
+      }
+    ],
+    "Description": "## Summary\n\nInter-session messages sent via `sessions_send` could be interpreted as direct end-user instructions because they were persisted as `role: \"user\"` without provenance metadata.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.12` (i.e. `\u003c 2026.2.13`)\n- Fixed in: `2026.2.13` (patched versions `\u003e= 2026.2.13`)\n\n## Impact\n\nA delegated or internal session could inject instructions into another session that appeared equivalent to externally-originated user input.\n\nThis is an instruction-provenance confusion issue (confused-deputy style), which can lead to unintended privileged behavior in workflows that trust `role: \"user\"` as a sole authority signal.\n\n## Technical details\n\nBefore the fix, routed inter-session prompts were stored as regular user turns without a verifiable source marker.\n\nAs a result, downstream workers and transcript readers could not distinguish:\n- External user input\n- Internal inter-session routed input\n\n## Fix\n\nOpenClaw now carries explicit input provenance end-to-end for routed prompts.\n\nKey changes:\n- Added structured provenance model (`inputProvenance`) with `kind` values including `inter_session`.\n- `sessions_send` and agent-to-agent steps now set inter-session provenance when invoking target runs.\n- Provenance is persisted on user messages as `message.provenance.kind = \"inter_session\"` (role remains `user` for provider compatibility).\n- Transcript readers and memory helpers were updated to respect provenance and avoid treating inter-session prompts as external user-originated input.\n- Runtime context rebuilding now annotates inter-session turns with an explicit in-memory marker (`[Inter-session message]`) for clearer model-side disambiguation.\n- Regression tests were added for transcript parsing, session tools flow, runner sanitization, and memory hook behavior.\n\n## Fix Commit(s)\n\n- `85409e401b6586f83954cb53552395d7aab04797`\n\n## Workarounds\n\nIf immediate upgrade is not possible:\n- Disable or restrict `sessions_send` in affected environments.\n- Do not use role alone as an authority boundary; require provenance-aware checks in orchestration logic.\n\n## Credit\n\nReported by @anbecker.\n\nThanks @anbecker for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:56:51Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw inter-session prompts could be treated as direct user instructions",
+    "UpdatedAt": "2026-02-18T00:56:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.13"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.13"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-18T00:55:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337735,
+    "Id": "GSA_kwCzR0hTQS1wZzJ2LTh4d2gtcWhjY84ABSdH",
+    "GhsaId": "GHSA-pg2v-8xwh-qhcc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-pg2v-8xwh-qhcc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/bfa7d21e997baa8e3437657d59b1e296815cc1b1"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pg2v-8xwh-qhcc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pg2v-8xwh-qhcc"
+      }
+    ],
+    "Description": "## Summary\nThe optional Tlon (Urbit) extension previously accepted a user-provided base URL for authentication and used it to construct an outbound HTTP request, enabling server-side request forgery (SSRF) in affected deployments.\n\n## Impact\nThis only affects deployments that have installed and configured the Tlon (Urbit) extension, and where an attacker can influence the configured Urbit URL. Under those conditions, the gateway could be induced to make HTTP requests to attacker-chosen hosts (including internal addresses).\n\nDeployments that do not use the Tlon extension, or where untrusted users cannot change the Urbit URL, are not impacted.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.13`\n\n## Fixed Versions\n- `2026.2.14` (planned next release)\n\n## Fix Commit(s)\n- `bfa7d21e997baa8e3437657d59b1e296815cc1b1`\n\n## Details\nUrbit authentication now validates and normalizes the base URL and uses an SSRF guard that blocks private/internal hosts by default (opt-in: `channels.tlon.allowPrivateNetwork`).\n\n## Release Process Note\nThis advisory is pre-populated with the planned patched version (`2026.2.14`). After `openclaw@2026.2.14` is published to npm, publish this advisory without further edits.\n\nThanks @p80n-sec for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:55:00Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw affected by SSRF in optional Tlon (Urbit) extension authentication",
+    "UpdatedAt": "2026-02-18T00:55:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

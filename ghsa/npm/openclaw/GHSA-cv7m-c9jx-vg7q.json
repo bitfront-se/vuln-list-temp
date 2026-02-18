@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T00:46:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337724,
+    "Id": "GSA_kwCzR0hTQS1jdjdtLWM5angtdmc3cc4ABSc8",
+    "GhsaId": "GHSA-cv7m-c9jx-vg7q",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cv7m-c9jx-vg7q"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3aa94afcfd12104c683c9cad81faf434d0dadf87"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cv7m-c9jx-vg7q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cv7m-c9jx-vg7q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26329"
+      }
+    ],
+    "Description": "## Summary\n\nAuthenticated attackers can read arbitrary files from the Gateway host by supplying absolute paths or path traversal sequences to the browser tool's `upload` action. The server passed these paths to Playwright's `setInputFiles()` APIs without restricting them to a safe root.\n\nSeverity remains **High** due to the impact (arbitrary local file read on the Gateway host), even though exploitation requires authenticated access.\n\n## Exploitability / Preconditions\n\nThis is not a \"drive-by\" issue.\n\nAn attacker must:\n\n- Reach the Gateway HTTP surface (or otherwise invoke the same browser control hook endpoints).\n- Present valid Gateway auth (bearer token / password), as required by the Gateway configuration.\n  - In common default setups, the Gateway binds to loopback and the onboarding wizard generates a gateway token even for loopback.\n- Have the `browser` tool permitted by tool policy for the target session/context (and have browser support enabled).\n\nIf an operator exposes the Gateway beyond loopback (LAN/tailnet/custom bind, reverse proxy, tunnels, etc.), the impact increases accordingly.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Vulnerable: `\u003c 2026.2.14` (includes latest published `2026.2.13`)\n- Patched: `\u003e= 2026.2.14` (planned next release)\n\n## Details\n\n**Entry points**:\n\n- `POST /tools/invoke` with `{\"tool\":\"browser\",\"action\":\"upload\",...}`\n- `POST /hooks/file-chooser` (browser control hook)\n\nWhen the upload paths are not validated, Playwright reads the referenced files from the local filesystem and attaches them to a page-level `\u003cinput type=\"file\"\u003e`. Contents can then be exfiltrated by page JavaScript (e.g. via `FileReader`) or via agent/browser snapshots.\n\nImpact: arbitrary local file read on the Gateway host (confidentiality impact).\n\n## Fix\n\nUpload paths are now confined to OpenClaw's temp uploads root (`DEFAULT_UPLOAD_DIR`) and traversal/escape paths are rejected.\n\nThis fix was implemented internally; the reporter provided a clear reproduction and impact analysis.\n\nFix commit(s):\n\n- 3aa94afcfd12104c683c9cad81faf434d0dadf87\n\nThanks @p80n-sec for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:46:49Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has a path traversal in browser upload allows local file read",
+    "UpdatedAt": "2026-02-18T00:46:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

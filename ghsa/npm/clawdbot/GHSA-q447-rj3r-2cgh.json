@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T00:53:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "clawdbot"
+  },
+  "Advisory": {
+    "DatabaseId": 337731,
+    "Id": "GSA_kwCzR0hTQS1xNDQ3LXJqM3ItMmNnaM4ABSdD",
+    "GhsaId": "GHSA-q447-rj3r-2cgh",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-q447-rj3r-2cgh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q447-rj3r-2cgh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q447-rj3r-2cgh"
+      }
+    ],
+    "Description": "### Summary\nMultiple webhook handlers accepted and buffered request bodies without a strict unified byte/time limit. A remote unauthenticated attacker could send oversized payloads and cause memory pressure, degrading availability.\n\n### Details\nAffected packages:\n- `openclaw` (npm): `\u003c2026.2.12`\n- `clawdbot` (npm): `\u003c=2026.1.24-3`\n\nRoot cause:\n- Webhook code paths buffered request payloads without consistent `maxBytes` + `timeoutMs` enforcement.\n- Some SDK-backed handlers parse request bodies internally and needed stream-level guards.\n\nAttack shape:\n- Send very large JSON payloads or slow/incomplete uploads to webhook endpoints.\n- Observe elevated memory usage and request handler pressure.\n\n### Impact\nRemote unauthenticated availability impact (DoS) via request body amplification/memory pressure.\n\n### Patch details (implemented)\n- Added shared bounded request-body helper in `src/infra/http-body.ts`.\n- Exported helper in `src/plugin-sdk/index.ts` for extension reuse.\n- Migrated webhook body readers to shared helper for:\n  - LINE\n  - Nextcloud Talk\n  - Google Chat\n  - Zalo\n  - BlueBubbles\n  - Nostr profile HTTP\n  - Voice-call\n  - Gateway hooks\n- Added stream guards for SDK handlers that parse request bodies internally:\n  - Slack\n  - Telegram\n  - Feishu\n- Added explicit Express JSON body limit handling for MS Teams webhook path.\n- Standardized failure responses:\n  - `413 Payload Too Large`\n  - `408 Request Timeout`\n\n### Tests\n- Added regression tests:\n  - `src/infra/http-body.test.ts`\n  - `src/line/monitor.read-body.test.ts`\n  - `extensions/nextcloud-talk/src/monitor.read-body.test.ts`\n- Focused webhook/security test suite passes for patched paths.\n\n### Remediation\nUpgrade to the first release containing this patch.\n\n## Credits\nThanks @vincentkoc for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:53:07Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw affected by denial of service via unbounded webhook request body buffering",
+    "UpdatedAt": "2026-02-18T00:53:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2026.1.24-3"
+    }
+  ]
+}

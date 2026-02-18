@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-18T00:52:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337730,
+    "Id": "GSA_kwCzR0hTQS1oODl2LWozeDktOHdxas4ABSdC",
+    "GhsaId": "GHSA-h89v-j3x9-8wqj",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-h89v-j3x9-8wqj"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5f4b29145c236d124524c2c9af0f8acd048fbdea"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d3ee5deb87ee2ad0ab83c92c365611165423cb71"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h89v-j3x9-8wqj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h89v-j3x9-8wqj"
+      }
+    ],
+    "Description": "## Summary\nArchive extraction lacked strict resource budgets, allowing high-expansion ZIP/TAR archives to consume excessive CPU/memory/disk during install/update flows.\n\n## Affected Packages / Versions\n- openclaw (npm): \u003c= 2026.2.13\n- clawdbot (npm): \u003c= 2026.1.24-3\n\n## Details\nAffected component: `src/infra/archive.ts` (`extractArchive`).\n\nThe extractor now enforces resource budgets (entry count and extracted byte limits; ZIP also enforces a compressed archive size limit) and rejects over-budget archives.\n\n## Fix Commit(s)\n- openclaw/openclaw@d3ee5deb87ee2ad0ab83c92c365611165423cb71\n- openclaw/openclaw@5f4b29145c236d124524c2c9af0f8acd048fbdea\n\n## Release Process Note\nThis advisory will be updated with patched versions once the next npm release containing the fix is published.\n\n## Credits\nThanks @vincentkoc for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:52:54Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw affected by denial of service through unguarded archive extraction allowing high expansion/resource abuse (ZIP/TAR)",
+    "UpdatedAt": "2026-02-18T00:52:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

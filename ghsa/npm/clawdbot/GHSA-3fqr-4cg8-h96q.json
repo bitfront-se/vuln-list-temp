@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T00:54:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "clawdbot"
+  },
+  "Advisory": {
+    "DatabaseId": 337732,
+    "Id": "GSA_kwCzR0hTQS0zZnFyLTRjZzgtaDk2cc4ABSdE",
+    "GhsaId": "GHSA-3fqr-4cg8-h96q",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3fqr-4cg8-h96q"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/b566b09f81e2b704bf9398d8d97d5f7a90aa94c3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3fqr-4cg8-h96q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3fqr-4cg8-h96q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26317"
+      }
+    ],
+    "Description": "## Summary\nBrowser-facing localhost mutation routes accepted cross-origin browser requests without explicit Origin/Referer validation. Loopback binding reduces remote exposure but does not prevent browser-initiated requests from malicious origins.\n\n## Impact\nA malicious website can trigger unauthorized state changes against a victim's local OpenClaw browser control plane (for example opening tabs, starting/stopping the browser, mutating storage/cookies) if the browser control service is reachable on loopback in the victim's browser context.\n\n## Affected Packages / Versions\n- openclaw (npm): \u003c= 2026.2.13\n- clawdbot (npm): \u003c= 2026.1.24-3\n\n## Details\nThe browser control servers bind to loopback but exposed mutating HTTP endpoints without a CSRF-style guard. Browsers may send cross-origin requests to loopback addresses; without explicit validation, state-changing operations could be triggered from a non-loopback Origin/Referer.\n\n## Fix\nMutating HTTP methods (POST/PUT/PATCH/DELETE) are rejected when the request indicates a non-loopback Origin/Referer (or `Sec-Fetch-Site: cross-site`).\n\n## Fix Commit(s)\n- openclaw/openclaw: b566b09f81e2b704bf9398d8d97d5f7a90aa94c3\n\n## Workarounds / Mitigations\n- Enable browser control auth (token/password) and avoid running with auth disabled.\n- Upgrade to a release that includes the fix.\n\n## Credits\n- Reporter: @vincentkoc\n\n## Release Process Note\n`patched_versions` is set to the planned next release version. Once that npm release is published, the advisory should be ready to publish with no further edits.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:53:59Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw affected by cross-site request forgery (CSRF) through loopback browser mutation endpoints",
+    "UpdatedAt": "2026-02-18T00:54:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2026.1.24-3"
+    }
+  ]
+}

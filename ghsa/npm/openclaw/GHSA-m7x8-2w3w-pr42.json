@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T00:46:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337725,
+    "Id": "GSA_kwCzR0hTQS1tN3g4LTJ3M3ctcHI0Ms4ABSc9",
+    "GhsaId": "GHSA-m7x8-2w3w-pr42",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-m7x8-2w3w-pr42"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/a429380e337152746031d290432a4b93aa553d55"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m7x8-2w3w-pr42"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m7x8-2w3w-pr42"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26323"
+      }
+    ],
+    "Description": "### Summary\nCommand injection in the maintainer/dev script `scripts/update-clawtributors.ts`.\n\n### Impact\nAffects contributors/maintainers (or CI) who run `bun scripts/update-clawtributors.ts` in a source checkout that contains a malicious commit author email (e.g. crafted `@users.noreply.github.com` values).\n\nNormal CLI usage is not affected (`npm i -g openclaw`): this script is not part of the shipped CLI and is not executed during routine operation.\n\n### Affected Versions\n- Source checkouts: tags `v2026.1.8` through `v2026.2.13` (inclusive)\n- Version range (structured): `\u003e= 2026.1.8, \u003c 2026.2.14`\n\n### Details\nThe script derived a GitHub login from `git log` author metadata and interpolated it into a shell command (via `execSync`). A malicious commit record could inject shell metacharacters and execute arbitrary commands when the script is run.\n\n### Fix\n- Fix commit: `a429380e337152746031d290432a4b93aa553d55`\n- Planned patched version: `2026.2.14`\n\n### Credits\nThanks @scanleale and @MegaManSec (https://joshua.hu) of [AISLE Research Team](https://aisle.com/) for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T00:46:54Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has a command injection in maintainer clawtributors updater",
+    "UpdatedAt": "2026-02-18T00:46:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.1.8, \u003c 2026.2.14"
+    }
+  ]
+}
