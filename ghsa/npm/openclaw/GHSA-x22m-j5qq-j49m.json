@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T17:45:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337868,
+    "Id": "GSA_kwCzR0hTQS14MjJtLWo1cXEtajQ5bc4ABSfM",
+    "GhsaId": "GHSA-x22m-j5qq-j49m",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-x22m-j5qq-j49m"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/16285"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5b4121d6011a48c71e747e3c18197f180b872c5d"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x22m-j5qq-j49m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x22m-j5qq-j49m"
+      }
+    ],
+    "Description": "### Summary\nThe Feishu extension could fetch attacker-controlled remote URLs in two paths without SSRF protections:\n\n- `sendMediaFeishu(mediaUrl)`\n- Feishu DocX markdown image URLs (write/append -\u003e image processing)\n\n### Affected versions\n- `\u003c 2026.2.14`\n\n### Patched versions\n- `\u003e= 2026.2.14`\n\n### Impact\nIf an attacker can influence tool calls (directly or via prompt injection), they may be able to trigger requests to internal services and re-upload the response as Feishu media.\n\n### Remediation\nUpgrade to OpenClaw `2026.2.14` or newer.\n\n### Notes\nThe fix routes Feishu remote media fetching through hardened runtime helpers that enforce SSRF policies and size limits.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T17:45:12Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has two SSRF via sendMediaFeishu and markdown image fetching in Feishu extension",
+    "UpdatedAt": "2026-02-18T17:45:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

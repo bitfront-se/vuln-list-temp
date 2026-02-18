@@ -1,0 +1,61 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T17:39:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337864,
+    "Id": "GSA_kwCzR0hTQS00NTY0LXB2cjItcXE0aM4ABSfI",
+    "GhsaId": "GHSA-4564-pvr2-qq4h",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-4564-pvr2-qq4h"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/15924"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/66d7178f2d6f9d60abad35797f97f3e61389b70c"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/9dce3d8bf83f13c067bc3c32291643d2f1f10a06"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/b908388245764fb3586859f44d1dff5372b19caf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4564-pvr2-qq4h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4564-pvr2-qq4h"
+      }
+    ],
+    "Description": "## Summary\nOn macOS, the Claude CLI keychain credential refresh path constructed a shell command to write the updated JSON blob into Keychain via `security add-generic-password -w ...`. Because OAuth tokens are user-controlled data, this created an OS command injection risk.\n\nThe fix avoids invoking a shell by using `execFileSync(\"security\", argv)` and passing the updated keychain payload as a literal argument.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Platform: macOS only\n- Affected versions: `\u003c= 2026.2.13`\n\n## Fix\n- Patched version: `\u003e= 2026.2.14` (next release)\n- Fix PR: #15924\n- Fix commits (merged to `main`):\n  - `9dce3d8bf83f13c067bc3c32291643d2f1f10a06`\n  - `66d7178f2d6f9d60abad35797f97f3e61389b70c`\n  - `b908388245764fb3586859f44d1dff5372b19caf`\n\nThanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T17:39:00Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Prevent shell injection in macOS keychain credential write",
+    "UpdatedAt": "2026-02-18T17:39:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}
