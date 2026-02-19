@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-18T21:50:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ghost"
+  },
+  "Advisory": {
+    "DatabaseId": 337941,
+    "Id": "GSA_kwCzR0hTQS13NTJ2LXY3ODMtZ3c5N84ABSgV",
+    "GhsaId": "GHSA-w52v-v783-gw97",
+    "References": [
+      {
+        "Url": "https://github.com/TryGhost/Ghost/security/advisories/GHSA-w52v-v783-gw97"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/commit/30868d632b2252b638bc8a4c8ebf73964592ed91"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/releases/tag/v6.19.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w52v-v783-gw97"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w52v-v783-gw97"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26980"
+      }
+    ],
+    "Description": "### Impact\n\nA SQL injection vulnerability existed in Ghost's Content API that allowed unauthenticated attackers to read arbitrary data from the database. \n\n### Vulnerable Versions\n\nThis vulnerability is present in Ghost v3.24.0 to v6.19.0.\n\n### Patches\n\nv6.19.1 contains a fix for this issue.\n\n### Workarounds\n\nThere is no application-level workaround. The Content API key is public by design, so restricting key access does not mitigate this vulnerability.\n\nAs a temporary mitigation, a reverse proxy or WAF rule can be used to block Content API requests containing `slug%3A%5B` or `slug:[` in the query string filter parameter. Note that this may break legitimate slug filter functionality.\n\n### References\n\nWe thank Nicholas Carlini using Claude, Anthropic for disclosing this vulnerability responsibly. \n\n### For more information\nIf you have any questions or comments about this advisory, email us at [security@ghost.org](mailto:security@ghost.org).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T21:50:23Z",
+    "Severity": "CRITICAL",
+    "Summary": "Ghost has a SQL injection in Content API",
+    "UpdatedAt": "2026-02-18T21:50:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.19.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.24.0, \u003c 6.19.1"
+    }
+  ]
+}

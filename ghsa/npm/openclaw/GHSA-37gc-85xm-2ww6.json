@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-18T22:44:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337970,
+    "Id": "GSA_kwCzR0hTQS0zN2djLTg1eG0tMnd3Ns4ABSgy",
+    "GhsaId": "GHSA-37gc-85xm-2ww6",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-37gc-85xm-2ww6"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3b4096e02e7e335f99f5986ec1bd566e90b14a7e"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/adc818db4a4b3b8d663e7674ef20436947514e1b"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.15"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-37gc-85xm-2ww6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-37gc-85xm-2ww6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27009"
+      }
+    ],
+    "Description": "## Summary\nStored XSS in the OpenClaw Control UI when rendering assistant identity (name/avatar) into an inline `\u003cscript\u003e` tag without script-context-safe escaping. A crafted value containing `\u003c/script\u003e` could break out of the script tag and execute attacker-controlled JavaScript in the Control UI origin.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.14`\n- Fixed in: `\u003e= 2026.2.15` (next release; fix is already merged on `main`)\n\n## Details\nThe gateway Control UI HTML response previously injected `assistantName` and `assistantAvatar` directly into an inline `\u003cscript\u003e` block using `JSON.stringify(...)`. `JSON.stringify` does not prevent `\u003c/script\u003e` from terminating the script element, enabling stored XSS if an operator/admin sets the assistant identity to a malicious string.\n\nOpenClaw’s Control UI is intended for local use only (see `SECURITY.md`); this advisory’s CVSS reflects a loopback-only/local-access deployment assumption.\n\n## Impact\nAn attacker with the ability to set assistant identity values (config or agent identity) could cause JavaScript execution for Control UI visitors, enabling token/session theft and privileged actions in the UI.\n\n## Fix\n- Removed inline script injection and serve bootstrap config from a JSON endpoint.\n- Added a restrictive Content Security Policy for the Control UI (`script-src 'self'`, no inline scripts).\n\n## Fix Commit(s)\n- `adc818db4a4b3b8d663e7674ef20436947514e1b`\n- `3b4096e02e7e335f99f5986ec1bd566e90b14a7e`\n\n## Release Process Note\nThis advisory pre-sets the patched version to the planned next release (`2026.2.15`). Once that version is published to npm, this advisory can be published without further edits.\n\nThanks @Adam55A-code for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T22:44:33Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw affected by Stored XSS in Control UI via unsanitized assistant name/avatar in inline script injection",
+    "UpdatedAt": "2026-02-18T22:44:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.15"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.15"
+    }
+  ]
+}

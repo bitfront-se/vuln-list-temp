@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-18T22:33:19Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/refraction-networking/utls"
+  },
+  "Advisory": {
+    "DatabaseId": 337951,
+    "Id": "GSA_kwCzR0hTQS03bTI5LWY0aHctZzJ2eM4ABSgf",
+    "GhsaId": "GHSA-7m29-f4hw-g2vx",
+    "References": [
+      {
+        "Url": "https://github.com/refraction-networking/utls/security/advisories/GHSA-7m29-f4hw-g2vx"
+      },
+      {
+        "Url": "https://github.com/refraction-networking/utls/commit/24bd1e05a788c1add7f3037f4532ea552b2cee07"
+      },
+      {
+        "Url": "https://github.com/refraction-networking/utls/releases/tag/v1.8.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7m29-f4hw-g2vx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7m29-f4hw-g2vx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27017"
+      }
+    ],
+    "Description": "There is a fingerprint mismatch with Chrome when using GREASE ECH, having to do with ciphersuite selection. When Chrome selects the preferred ciphersuite in the outer ClientHello and the ciphersuite for ECH, it does so consistently based on hardware support. That means, for example, if it prefers AES for the outer ciphersuite, it would also use AES for ECH. The Chrome parrot in utls hardcodes AES preference for outer ciphersuites but selects the ECH ciphersuite randomly between AES and ChaCha20. So there is a 50% chance of selecting ChaCha20 for ECH while using AES for the outer ciphersuite, which is impossible in Chrome.\n\nThis is only a problem in GREASE ECH, since in real ECH Chrome selects the first valid ciphersuite when AES is preferred, which is the same in utls. So no change is done there.\n\nAffected symbols: `HelloChrome_120`, `HelloChrome_120_PQ`, `HelloChrome_131`, `HelloChrome_133`\n\nFix commit: 24bd1e05a788c1add7f3037f4532ea552b2cee07\n\nThanks to telegram @acgdaily for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T22:33:18Z",
+    "Severity": "LOW",
+    "Summary": "uTLS has a fingerprint vulnerability from GREASE ECH mismatch for Chrome parrots",
+    "UpdatedAt": "2026-02-18T22:33:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.6.0, \u003c 1.8.1"
+    }
+  ]
+}

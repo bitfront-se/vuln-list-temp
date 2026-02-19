@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-18T22:43:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 337967,
+    "Id": "GSA_kwCzR0hTQS02aGYzLW1oZ2MtY202Nc4ABSgv",
+    "GhsaId": "GHSA-6hf3-mhgc-cm65",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6hf3-mhgc-cm65"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c6c53437f7da033b94a01d492e904974e7bda74c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6hf3-mhgc-cm65"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6hf3-mhgc-cm65"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27004"
+      }
+    ],
+    "Description": "## Vulnerability\n\nIn some shared-agent deployments, OpenClaw session tools (`sessions_list`, `sessions_history`, `sessions_send`) allowed broader session targeting than some operators intended. This is primarily a configuration/visibility-scoping issue in multi-user environments where peers are not equally trusted.\n\nIn Telegram webhook mode, monitor startup also did not fall back to per-account `webhookSecret` when only the account-level secret was configured.\n\n## Typical Use Case Context\n\nMost regular OpenClaw deployments run a single agent, or run in trusted environments. In those setups, practical risk from this issue is generally low.\n\n## Impact\n\n- Shared-agent, multi-user, less-trusted environments: session-tool access could expose transcript content across peer sessions.\n- Single-agent or trusted environments: practical impact is limited.\n- Telegram webhook mode: account-level secret wiring could be missed unless an explicit monitor webhook secret override was provided.\n\n## Affected Packages / Versions\n\n- Package: npm `openclaw`\n- Affected versions: `\u003c= 2026.2.14`\n- Patched version: `2026.2.15` (planned next release)\n\n## Remediation\n\n- Add and enforce `tools.sessions.visibility` (`self | tree | agent | all`) across session tools, defaulting to `tree`.\n- Keep sandbox clamping behavior so sandboxed runs can be restricted to spawned/session-tree visibility.\n- Resolve Telegram webhook secret from account config fallback in monitor webhook startup.\n\n## Fix Commit(s)\n\n- `c6c53437f7da033b94a01d492e904974e7bda74c`\n\nThanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T22:43:53Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw session tool visibility hardening and Telegram webhook secret fallback",
+    "UpdatedAt": "2026-02-18T22:43:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.15"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.15"
+    }
+  ]
+}

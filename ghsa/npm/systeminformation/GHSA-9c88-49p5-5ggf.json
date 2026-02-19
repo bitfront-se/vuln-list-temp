@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T21:51:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "systeminformation"
+  },
+  "Advisory": {
+    "DatabaseId": 337942,
+    "Id": "GSA_kwCzR0hTQS05Yzg4LTQ5cDUtNWdnZs4ABSgW",
+    "GhsaId": "GHSA-9c88-49p5-5ggf",
+    "References": [
+      {
+        "Url": "https://github.com/sebhildebrandt/systeminformation/security/advisories/GHSA-9c88-49p5-5ggf"
+      },
+      {
+        "Url": "https://github.com/sebhildebrandt/systeminformation/commit/22242aa56188f2bffcbd7d265a11e1ebb808b460"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9c88-49p5-5ggf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9c88-49p5-5ggf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26280"
+      }
+    ],
+    "Description": "### Summary\nA command injection vulnerability in the `wifiNetworks()` function allows an attacker to execute arbitrary OS commands via an unsanitized network interface parameter in the retry code path.\n\n### Details\nIn `lib/wifi.js`, the `wifiNetworks()` function sanitizes the `iface` parameter on the initial call (line 437). However, when the initial scan returns empty results, a `setTimeout` retry (lines 440-441) calls `getWifiNetworkListIw(iface)` with the **original unsanitized** `iface` value, which is passed directly to `execSync('iwlist ${iface} scan')`.\n\n### PoC\n1. Install `systeminformation@5.30.7`\n2. Call `si.wifiNetworks('eth0; id')`\n3. The first call sanitizes input, but if results are empty, the retry executes: `iwlist eth0; id scan`\n\n### Impact\nRemote Code Execution (RCE). Any application passing user-controlled input to `si.wifiNetworks()` is vulnerable to arbitrary command execution with the privileges of the Node.js process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T21:51:26Z",
+    "Severity": "HIGH",
+    "Summary": "Systeminformation has a Command Injection via unsanitized interface parameter in wifi.js retry path",
+    "UpdatedAt": "2026-02-18T21:51:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.30.8"
+      },
+      "VulnerableVersionRange": "\u003c 5.30.8"
+    }
+  ]
+}

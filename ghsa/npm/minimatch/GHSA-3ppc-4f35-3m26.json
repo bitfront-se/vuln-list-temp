@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-18T22:38:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "minimatch"
+  },
+  "Advisory": {
+    "DatabaseId": 337958,
+    "Id": "GSA_kwCzR0hTQS0zcHBjLTRmMzUtM20yNs4ABSgm",
+    "GhsaId": "GHSA-3ppc-4f35-3m26",
+    "References": [
+      {
+        "Url": "https://github.com/isaacs/minimatch/security/advisories/GHSA-3ppc-4f35-3m26"
+      },
+      {
+        "Url": "https://github.com/isaacs/minimatch/commit/2e111f3a79abc00fa73110195de2c0f2351904f5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3ppc-4f35-3m26"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3ppc-4f35-3m26"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26996"
+      }
+    ],
+    "Description": "### Summary\n`minimatch` is vulnerable to Regular Expression Denial of Service (ReDoS) when a glob pattern contains many consecutive `*` wildcards followed by a literal character that doesn't appear in the test string. Each `*` compiles to a separate `[^/]*?` regex group, and when the match fails, V8's regex engine backtracks exponentially across all possible splits.\n\nThe time complexity is O(4^N) where N is the number of `*` characters. With N=15, a single `minimatch()` call takes ~2 seconds. With N=34, it hangs effectively forever.\n\n\n### Details\n_Give all details on the vulnerability. Pointing to the incriminated source code is very helpful for the maintainer._\n\n### PoC\nWhen minimatch compiles a glob pattern, each `*` becomes `[^/]*?` in the generated regex. For a pattern like `***************X***`:\n\n```\n/^(?!\\.)[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?[^/]*?X[^/]*?[^/]*?[^/]*?$/\n```\n\nWhen the test string doesn't contain `X`, the regex engine must try every possible way to distribute the characters across all the `[^/]*?` groups before concluding no match exists. With N groups and M characters, this is O(C(N+M, N)) — exponential.\n### Impact\nAny application that passes user-controlled strings to `minimatch()` as the pattern argument is vulnerable to DoS. This includes:\n- File search/filter UIs that accept glob patterns\n- `.gitignore`-style filtering with user-defined rules\n- Build tools that accept glob configuration\n- Any API that exposes glob matching to untrusted input",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T22:38:11Z",
+    "Severity": "HIGH",
+    "Summary": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+    "UpdatedAt": "2026-02-18T22:38:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 10.2.1"
+    }
+  ]
+}
