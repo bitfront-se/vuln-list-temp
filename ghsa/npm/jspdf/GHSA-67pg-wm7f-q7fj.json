@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-19T15:25:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jspdf"
+  },
+  "Advisory": {
+    "DatabaseId": 338028,
+    "Id": "GSA_kwCzR0hTQS02N3BnLXdtN2YtcTdmas4ABShs",
+    "GhsaId": "GHSA-67pg-wm7f-q7fj",
+    "References": [
+      {
+        "Url": "https://github.com/parallax/jsPDF/security/advisories/GHSA-67pg-wm7f-q7fj"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/commit/2e5e156e284d92c7d134bce97e6418756941d5e6"
+      },
+      {
+        "Url": "https://github.com/ZeroXJacks/CVEs/blob/main/2026/CVE-2026-25535.md"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/releases/tag/v4.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-67pg-wm7f-q7fj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-67pg-wm7f-q7fj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25535"
+      }
+    ],
+    "Description": "### Impact\n\nUser control of the first argument of the `addImage` method results in denial of service.\n\nIf given the possibility to pass unsanitized image data or URLs to the `addImage` method, a user can provide a harmful GIF file that results in out of memory errors and denial of service. Harmful GIF files have large width and/or height entries in their headers, wich lead to excessive memory allocation.\n\nOther affected methods are: `html`.\n\nExample attack vector:\n\n```js\nimport { jsPDF } from \"jspdf\" \n\n// malicious GIF image data with large width/height headers\nconst payload = ...\n\nconst doc = new jsPDF();\n\ndoc.addImage(payload, \"GIF\", 0, 0, 100, 100);\n```\n\n### Patches\n\nThe vulnerability has been fixed in jsPDF 4.1.1. Upgrade to jspdf@\u003e=4.2.0.\n\n### Workarounds\n\nSanitize image data or URLs before passing it to the addImage method or one of the other affected methods.\n### References\nhttps://github.com/ZeroXJacks/CVEs/blob/main/2026/CVE-2026-25535.md",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-19T15:25:48Z",
+    "Severity": "HIGH",
+    "Summary": "jsPDF Affected by Client-Side/Server-Side Denial of Service via Malicious GIF Dimensions",
+    "UpdatedAt": "2026-02-19T15:25:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.2.0"
+    }
+  ]
+}
