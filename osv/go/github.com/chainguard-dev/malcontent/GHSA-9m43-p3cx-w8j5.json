@@ -1,9 +1,10 @@
 {
   "id": "GHSA-9m43-p3cx-w8j5",
-  "modified": "2026-02-03T03:03:48.773345Z",
+  "modified": "2026-02-19T20:41:00.534391Z",
   "published": "2026-01-29T22:04:24Z",
   "aliases": [
-    "CVE-2026-24845"
+    "CVE-2026-24845",
+    "GO-2026-4392"
   ],
   "summary": "malcontent OCI image pull credential exfiltration via malicious registry token realm",
   "details": "Malcontent could be made to expose Docker registry credentials if it scanned a specially crafted OCI image reference. Malcontent uses [google/go-containerregistry](https://github.com/google/go-containerregistry) for OCI image pulls, which by default uses the Docker credential keychain. A malicious registry could return a `WWW-Authenticate` header redirecting token authentication to an attacker-controlled endpoint, causing credentials to be sent to that endpoint.\n\n**Fix:** [Default to anonymous auth for OCI pulls](https://github.com/chainguard-dev/malcontent/commit/538ed00cdc639d687a4bd1e843a2be0428a3b3e7)\n\n**Acknowledgements**\n\nThank you to Oleh Konko from [1seal](https://1seal.org/) for discovering and reporting this issue.",

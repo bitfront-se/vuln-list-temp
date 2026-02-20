@@ -1,9 +1,10 @@
 {
   "id": "GHSA-g7vp-j25f-h34p",
-  "modified": "2026-02-05T00:11:19.248132Z",
+  "modified": "2026-02-19T20:41:23.893760Z",
   "published": "2026-02-04T23:21:25Z",
   "aliases": [
-    "CVE-2023-43637"
+    "CVE-2023-43637",
+    "GO-2026-4436"
   ],
   "summary": "EVE Has Partially Predetermined Vault Key",
   "details": "### Impact\n\nThe deriveVaultKey function calls retrieveCloudKey which always returns \"foobarfoobarfoobarfoobarfoobarfo\". When merged with the randomly generated 32-byte key using mergeKeys (16 bytes from each), the last 16 bytes are always \"arfoobarfoobarfo\". This enables an attacker with physical access to the EVE-OS device to attempt to brute force the remaining 128 bits of key.\n\n### Patches\n\nFixed in 7.10 and  8.12.1-lts\n\n### Workarounds\n\nNone",
