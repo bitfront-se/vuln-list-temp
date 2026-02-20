@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-19T20:16:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 338334,
+    "Id": "GSA_kwCzR0hTQS1ncTNqLXh2eHAtOGhyZs4ABSme",
+    "GhsaId": "GHSA-gq3j-xvxp-8hrf",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-gq3j-xvxp-8hrf"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/91def7cab654bad5eecc9270e6620d577971ff5e"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.11.10"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gq3j-xvxp-8hrf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gq3j-xvxp-8hrf"
+      }
+    ],
+    "Description": "## Summary\n\nThe `basicAuth` and `bearerAuth` middlewares previously used a comparison that was not fully timing-safe.\n\nThe `timingSafeEqual` function used normal string equality (`===`) when comparing hash values. This comparison may stop early if values differ, which can theoretically cause small timing differences.\n\nThe implementation has been updated to use a safer comparison method.\n\n\n## Details\n\nThe issue was caused by the use of normal string equality (`===`) when comparing hash values inside the `timingSafeEqual` function.\n\nIn JavaScript, string comparison may stop as soon as a difference is found. This means the comparison time can slightly vary depending on how many characters match.\n\nUnder very specific and controlled conditions, this behavior could theoretically allow timing-based analysis.\n\nThe implementation has been updated to:\n\n- Avoid early termination during comparison\n- Use a constant-time-style comparison method\n\n## Impact\n\nThis issue is unlikely to be exploited in normal environments.\n\nIt may only be relevant in highly controlled situations where precise timing measurements are possible.\n\nThis change is considered a security hardening improvement. Users are encouraged to upgrade to the latest version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-19T20:15:59Z",
+    "Severity": "LOW",
+    "Summary": "Hono added timing comparison hardening in basicAuth and bearerAuth",
+    "UpdatedAt": "2026-02-19T20:16:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.11.10"
+      },
+      "VulnerableVersionRange": "\u003c 4.11.10"
+    }
+  ]
+}

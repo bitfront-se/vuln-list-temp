@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-19T19:40:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 338332,
+    "Id": "GSA_kwCzR0hTQS1wNTM2LXZ2cHAtOW1jOM4ABSmc",
+    "GhsaId": "GHSA-p536-vvpp-9mc8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-p536-vvpp-9mc8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/166cf6a3e04c7df42bea70a7ad5ce2b9df46d147"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.15"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p536-vvpp-9mc8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p536-vvpp-9mc8"
+      }
+    ],
+    "Description": "### Summary\nThe `web_fetch` tool could be used to crash the OpenClaw Gateway process (OOM / resource exhaustion) by fetching and attempting to parse attacker-controlled web pages with oversized response bodies or pathological HTML nesting.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.14`\n- Fixed versions: `\u003e= 2026.2.15`\n\n### Impact\nAn attacker can social-engineer a user (or any automation that uses `web_fetch`) into fetching a malicious URL that returns extremely large or deeply nested HTML. The Gateway may exhaust memory or become unresponsive, causing a denial of service.\n\n### Fix\nThe Gateway now caps the downloaded response body size before any HTML parsing and adds additional guards to avoid running Readability/DOM parsing on pathological HTML.\n\n### Fix Commit(s)\n- 166cf6a3e04c7df42bea70a7ad5ce2b9df46d147\n\n### Release Process Note\nThis advisory is prepared for the next npm release. Once `openclaw@2026.2.15` is published, publish this advisory without further edits.\n\nThanks @xuemian168 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-19T19:40:56Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has a Web Fetch DoS via unbounded response parsing",
+    "UpdatedAt": "2026-02-19T19:40:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.15"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.15"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-19T20:44:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "pannellum"
+  },
+  "Advisory": {
+    "DatabaseId": 338351,
+    "Id": "GSA_kwCzR0hTQS04NDIzLXc1d3gtaDJyNs4ABSmv",
+    "GhsaId": "GHSA-8423-w5wx-h2r6",
+    "References": [
+      {
+        "Url": "https://github.com/mpetroff/pannellum/security/advisories/GHSA-8423-w5wx-h2r6"
+      },
+      {
+        "Url": "https://github.com/mpetroff/pannellum/commit/9391ef8da6a6a98c6a9f8c97f101adb900523681"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8423-w5wx-h2r6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8423-w5wx-h2r6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27210"
+      }
+    ],
+    "Description": "### Impact\nThe hot spot `attributes` configuration property allowed any attribute to be set, including HTML event handler attributes, allowing for potential XSS attacks. This affects websites hosting the standalone viewer HTML file and any other use of untrusted JSON config files (bypassing the protections of the `escapeHTML` parameter). As certain events fire without any additional user interaction, visiting a standalone viewer URL that points to a malicious config file\u0026mdash;without additional user interaction\u0026mdash;is sufficient to trigger the vulnerability and execute arbitrary JavaScript code, which can, for example, replace the contents of the page with arbitrary content and make it appear to be hosted by the website hosting the standalone viewer HTML file.\n\n### Patches\nThis has been fixed both in v2.5.7 and in the current development branch.\n\n### Workarounds\nSetting the `Content-Security-Policy` header to `script-src-attr 'none'` will block execution of inline event handlers, mitigating this vulnerability. Don't host `pannellum.htm` on a domain that shares cookies with user authentication to mitigate XSS risk.\n\n### Acknowledgments\n\nReported both by luminary (@lumin9ry), Visvge (@Sicclord1 / @Visvge), and sutol (@0x5a6163 / @SUT0L) and by another researcher who wishes not to be named at this time.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-19T20:44:48Z",
+    "Severity": "MODERATE",
+    "Summary": "Pannellum has a XSS vulnerability in hot spot attributes",
+    "UpdatedAt": "2026-02-19T23:37:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.5.0, \u003c 2.5.7"
+    }
+  ]
+}

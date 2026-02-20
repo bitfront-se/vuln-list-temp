@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-02-19T22:06:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 338372,
+    "Id": "GSA_kwCzR0hTQS00Njg1LWM1Y3AtdnA5Nc4ABSnE",
+    "GhsaId": "GHSA-4685-c5cp-vp95",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-4685-c5cp-vp95"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/cfe8457a0f4aae5324daec261d3b0aad1461a4bc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4685-c5cp-vp95"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4685-c5cp-vp95"
+      }
+    ],
+    "Description": "## Summary\n`tools.exec.safeBins` could be bypassed for filesystem access when `sort` output flags (`-o` / `--output`) or recursive `grep` flags were allowed through safe-bin execution paths.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.17`\n- Patched versions: `\u003e= 2026.2.19`\n- Latest published version at triage time: `2026.2.17`\n\n## Impact\nIn deployments that enabled `tools.exec.safeBins`, an attacker with access to command execution flows could turn intended stdin-only safe-bin usage into file writes (`sort -o`) or recursive file reads (`grep -R`).\n\n## Fix Commit(s)\n- `cfe8457a0f4aae5324daec261d3b0aad1461a4bc`\n\nThanks @nedlir for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-19T22:06:00Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw safeBins stdin-only bypass via sort output and recursive grep flags",
+    "UpdatedAt": "2026-02-19T22:06:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.6,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.17"
+    }
+  ]
+}

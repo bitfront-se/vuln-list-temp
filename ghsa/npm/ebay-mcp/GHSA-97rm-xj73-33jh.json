@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-19T20:27:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ebay-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 338336,
+    "Id": "GSA_kwCzR0hTQS05N3JtLXhqNzMtMzNqaM4ABSmg",
+    "GhsaId": "GHSA-97rm-xj73-33jh",
+    "References": [
+      {
+        "Url": "https://github.com/YosefHayim/ebay-mcp/security/advisories/GHSA-97rm-xj73-33jh"
+      },
+      {
+        "Url": "https://github.com/YosefHayim/ebay-mcp/commit/aab0bda75ea9dd27aa37d0d8524d7cf41b3c4a9a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-97rm-xj73-33jh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-97rm-xj73-33jh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27203"
+      }
+    ],
+    "Description": "The `ebay_set_user_tokens` tool allows updating the `.env` file with new tokens. The `updateEnvFile` function in `src/auth/oauth.ts` blindly appends or replaces values without validating them for newlines or quotes. This allows an attacker to inject arbitrary environment variables into the configuration file.\n\n### Impact\nAn attacker can inject arbitrary environment variables into the `.env` file. This could lead to:\n- **Configuration Overwrites**: Attackers can overwrite critical settings like `EBAY_REDIRECT_URI` to hijack OAuth flows.\n- **Denial of Service**: Injecting invalid configuration can prevent the server from starting.\n- **Potential RCE**: In some environments, controlling environment variables (like `NODE_OPTIONS`) can lead to Remote Code Execution.\n\nFound with [MCPwner](https://github.com/Pigyon/MCPwner) 🕶",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-19T20:27:11Z",
+    "Severity": "HIGH",
+    "Summary": "eBay API MCP Server Affected by Environment Variable Injection ",
+    "UpdatedAt": "2026-02-19T20:27:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.7.2"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-19T20:27:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 337903,
+    "Id": "GSA_kwCzR0hTQS03cDk0LTc2NmMtaGdqcM4ABSfv",
+    "GhsaId": "GHSA-7p94-766c-hgjp",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-14009"
+      },
+      {
+        "Url": "https://huntr.com/bounties/49ecbc02-054e-4470-b2e0-b267936cc4e4"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3468"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/1056b323af6462455571302e766b67cf300aea18"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7p94-766c-hgjp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7p94-766c-hgjp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-14009"
+      }
+    ],
+    "Description": "A critical vulnerability exists in the NLTK downloader component of nltk/nltk, affecting all versions. The _unzip_iter function in nltk/downloader.py uses zipfile.extractall() without performing path validation or security checks. This allows attackers to craft malicious zip packages that, when downloaded and extracted by NLTK, can execute arbitrary code. The vulnerability arises because NLTK assumes all downloaded packages are trusted and extracts them without validation. If a malicious package contains Python files, such as __init__.py, these files are executed automatically upon import, leading to remote code execution. This issue can result in full system compromise, including file system access, network access, and potential persistence mechanisms.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-18T18:30:40Z",
+    "Severity": "CRITICAL",
+    "Summary": "NLTK has a Zip Slip Vulnerability",
+    "UpdatedAt": "2026-02-19T20:27:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.2"
+    }
+  ]
+}
