@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-20T21:05:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 338704,
+    "Id": "GSA_kwCzR0hTQS1yNmgyLTVncXEtdjV2Ns4ABSsQ",
+    "GhsaId": "GHSA-r6h2-5gqq-v5v6",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r6h2-5gqq-v5v6"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/20796"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c275932aa4230fb7a8212fe1b9d2a18424874b3f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ee1d6427b544ccadd73e02b1630ea5c29ba9a9f0"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.19"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r6h2-5gqq-v5v6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r6h2-5gqq-v5v6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27485"
+      }
+    ],
+    "Description": "## Vulnerability\n\n`skills/skill-creator/scripts/package_skill.py` (a local helper script used when authors package skills) previously followed symlinks while building `.skill` archives.\n\nIf an author runs this script on a crafted local skill directory containing symlinks to files outside the skill root, the resulting archive can include unintended file contents.\n\n## Severity and Exposure\n\n- **Severity: Low**\n- **Execution context:** local/manual workflow only (skill author packaging step)\n- **No remote trigger:** this is not reachable via normal OpenClaw gateway/chat runtime paths\n- **No extraction Zip Slip in this finding:** this issue is limited to packaging-time symlink following\n\n## Impact\n\n- Potential unintentional disclosure of local files from the packaging machine into a generated `.skill` artifact.\n- Requires local execution of the packaging script on attacker-controlled skill contents.\n\n## Affected Components\n\n- `skills/skill-creator/scripts/package_skill.py`\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Latest published version during triage: `2026.2.17`\n- Vulnerable version range: `\u003c= 2026.2.17`\n- Planned patched version (next release): `2026.2.18`\n\n## Remediation\n\n- Reject symlinks during skill packaging.\n- Add regression tests for symlink file and symlink directory cases.\n- Update packaging guidance to document the symlink restriction.\n\n## Fix Commit(s)\n\n- `c275932aa4230fb7a8212fe1b9d2a18424874b3f`\n- `ee1d6427b544ccadd73e02b1630ea5c29ba9a9f0`\n\n## Related PR\n\n- https://github.com/openclaw/openclaw/pull/20796\n\n## Release Process Note\n\n`patched_versions` is pre-set to the planned next release (`2026.2.18`). Once npm `openclaw@2026.2.18` is published, this advisory is ready to publish without additional edits.\n\nThanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-20T21:05:45Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Reject symlinks in local skill packaging script",
+    "UpdatedAt": "2026-02-20T21:05:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.18"
+    }
+  ]
+}

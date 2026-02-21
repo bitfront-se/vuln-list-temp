@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-20T21:52:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 338722,
+    "Id": "GSA_kwCzR0hTQS1jeHB3LTJnMjMtMnZnd84ABSsi",
+    "GhsaId": "GHSA-cxpw-2g23-2vgw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cxpw-2g23-2vgw"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/63e39d7f57ac4ad4a5e38d17e7394ae7c4dd0b9c"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8ae2d5110f6ceadef73822aa3db194fb60d2ba68"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ebcf19746f5c500a41817e03abecadea8655654a"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.19"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cxpw-2g23-2vgw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cxpw-2g23-2vgw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27576"
+      }
+    ],
+    "Description": "## Vulnerability\n\nThe ACP bridge accepted very large prompt text blocks and could assemble oversized prompt payloads before forwarding them to `chat.send`.\n\nBecause ACP runs over local stdio, this mainly affects local ACP clients (for example IDE integrations) that send unusually large inputs.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.17`\n- Patched version: `2026.2.18` (planned next release)\n\n## Impact\n\n- Local ACP sessions may become less responsive when very large prompts are submitted\n- Larger-than-expected model usage/cost when oversized text is forwarded\n- No privilege escalation and no direct remote attack path in the default ACP model\n\n## Affected Components\n\n- `src/acp/event-mapper.ts`\n- `src/acp/translator.ts`\n\n## Remediation\n\n- Enforce a 2 MiB prompt-text limit before concatenation\n- Count inter-block newline separator bytes during pre-concatenation size checks\n- Keep final outbound message-size validation before `chat.send`\n- Avoid stale active-run session state when oversized prompts are rejected\n- Add regression tests for oversize rejection and active-run cleanup\n\n## Fix Commit(s)\n\n- `732e53151e8fbdfc0501182ddb0e900878bdc1e3`\n- `ebcf19746f5c500a41817e03abecadea8655654a`\n- `63e39d7f57ac4ad4a5e38d17e7394ae7c4dd0b9c`\n\nThanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-20T21:52:44Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: ACP prompt-size checks missing in local stdio bridge could reduce responsiveness with very large inputs",
+    "UpdatedAt": "2026-02-20T21:52:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.17"
+    }
+  ]
+}
