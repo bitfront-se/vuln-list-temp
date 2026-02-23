@@ -1,9 +1,10 @@
 {
   "id": "GHSA-8h9c-r582-mggc",
-  "modified": "2024-10-07T21:25:09.736719Z",
+  "modified": "2026-02-22T22:56:04.328193Z",
   "published": "2023-03-07T20:41:36Z",
   "aliases": [
-    "CVE-2023-27476"
+    "CVE-2023-27476",
+    "PYSEC-2023-86"
   ],
   "summary": "OWSLib vulnerable to XML External Entity (XXE) Injection",
   "details": "### Impact\n\nOWSLib's XML parser (which supports both `lxml` and `xml.etree`) does not disable entity resolution for `lxml`, and could lead to arbitrary file reads from an attacker-controlled XML payload. This affects all XML parsing in the codebase.\n\n### Patches\n\n- Use only lxml for XML handling, adding `resolve_entities=False` to `lxml`'s parser: https://github.com/geopython/OWSLib/pull/863\n\n### Workarounds\n\n```python\npatch_well_known_namespaces(etree)\netree.set_default_parser(\n    parser=etree.XMLParser(resolve_entities=False)\n)\n```\n\n### References\n\n- [`GHSL-2022-131`](https://securitylab.github.com/advisories/GHSL-2022-131_OWSLib/)\n",
