@@ -1,7 +1,10 @@
 {
   "id": "GHSA-47qc-857f-7w7f",
-  "modified": "2026-02-22T23:31:47.832731Z",
+  "modified": "2026-02-23T07:26:19.729428Z",
   "published": "2026-02-19T20:25:46Z",
+  "aliases": [
+    "RUSTSEC-2026-0013"
+  ],
   "summary": "PyO3 has type confusion when accessing data from sublasses of subclasses of native types with `abi3` feature",
   "details": "PyO3 0.28.1 added support for `#[pyclass(extends=PyList)] struct NativeSub` (and other native types) when targeting Python 3.12 and up with the `abi3` feature.\n\nIt was discovered that subclasses of such classes would use the type of the subclass when attempting to access to data of `NativeSub` contained within Python objects, amounting to memory corruption.\n\nPyO3 0.28.2 fixed the issue by using the type of (e.g.) `NativeSub` correctly.",
   "affected": [
