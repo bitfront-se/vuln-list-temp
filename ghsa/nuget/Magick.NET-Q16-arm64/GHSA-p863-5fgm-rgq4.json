@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-24T15:36:10Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Magick.NET-Q16-arm64"
+  },
+  "Advisory": {
+    "DatabaseId": 339080,
+    "Id": "GSA_kwCzR0hTQS1wODYzLTVmZ20tcmdxNM4ABSyI",
+    "GhsaId": "GHSA-p863-5fgm-rgq4",
+    "References": [
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-p863-5fgm-rgq4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25798"
+      },
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/issues/8567"
+      },
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/commit/e046417675d5c26e5f48816851a406c121c77469"
+      },
+      {
+        "Url": "https://github.com/dlemstra/Magick.NET/releases/tag/14.10.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p863-5fgm-rgq4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p863-5fgm-rgq4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25798"
+      }
+    ],
+    "Description": "A NULL pointer dereference in ClonePixelCacheRepository allows a remote attacker to crash any application linked against ImageMagick by supplying a crafted image file, resulting in Denial of Service.\n\n```\nAddressSanitizer:DEADLYSIGNAL\n=================================================================\n==3704942==ERROR: AddressSanitizer: UNKNOWN SIGNAL on unknown address 0x000000000000 (pc 0x7f9d141239e0 bp 0x7ffd4c5711e0 sp 0x7ffd4c571148 T0)\n    #0 0x7f9d141239e0  (/lib/x86_64-linux-gnu/libc.so.6+0xc49e0)\n    #1 0x558a25e4f08d in ClonePixelCacheRepository._omp_fn.0 MagickCore/cache.c:784\n    #2 0x7f9d14c06a15 in GOMP_parallel (/lib/x86_64-linux-gnu/libgomp.so.1+0x14a15)\n    #3 0x558a25e43151 in ClonePixelCacheRepository MagickCore/cache.c:753\n    #4 0x558a25e49a96 in OpenPixelCache MagickCore/cache.c:3849\n    #5 0x558a25e45117 in GetImagePixelCache MagickCore/cache.c:1829\n    #6 0x558a25e4dde3 in SyncImagePixelCache MagickCore/cache.c:5647\n    #7 0x558a256ba57d in SetImageExtent MagickCore/image.c:2713\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-24T15:36:08Z",
+    "Severity": "MODERATE",
+    "Summary": "ImageMagick has NULL Pointer Dereference in ClonePixelCacheRepository via crafted image",
+    "UpdatedAt": "2026-02-24T15:36:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.10.3"
+      },
+      "VulnerableVersionRange": "\u003c 14.10.3"
+    }
+  ]
+}

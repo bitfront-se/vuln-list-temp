@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-24T15:40:08Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Magick.NET-Q16-x64"
+  },
+  "Advisory": {
+    "DatabaseId": 339084,
+    "Id": "GSA_kwCzR0hTQS04anZqLXAyOGgtOWdtN84ABSyM",
+    "GhsaId": "GHSA-8jvj-p28h-9gm7",
+    "References": [
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-8jvj-p28h-9gm7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25965"
+      },
+      {
+        "Url": "https://github.com/dlemstra/Magick.NET/releases/tag/14.10.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8jvj-p28h-9gm7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8jvj-p28h-9gm7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25965"
+      }
+    ],
+    "Description": "ImageMagick’s path security policy is enforced on the raw filename string before the filesystem resolves it. As a result, a policy rule such as /etc/* can be bypassed by a path traversal. The OS resolves the traversal and opens the sensitive file, but the policy matcher only sees the unnormalized path and therefore allows the read. This enables local file disclosure (LFI) even when policy-secure.xml is applied.\n\nActions to prevent reading from files have been taken. But it make sure writing is also not possible the following should be added to your policy:\n\n```\n\u003cpolicy domain=\"path\" rights=\"none\" pattern=\"*../*\"/\u003e\n```\n\nAnd this will also be included in the project's more secure policies by default.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-24T15:40:06Z",
+    "Severity": "HIGH",
+    "Summary": "ImageMagick: Policy bypass through path traversal allows reading restricted content despite secured policy",
+    "UpdatedAt": "2026-02-24T15:40:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.10.3"
+      },
+      "VulnerableVersionRange": "\u003c 14.10.3"
+    }
+  ]
+}

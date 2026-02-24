@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-24T16:04:58Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/nats-io/nats-server"
+  },
+  "Advisory": {
+    "DatabaseId": 339099,
+    "Id": "GSA_kwCzR0hTQS1xcnZxLTY4YzItN2dyd84ABSyb",
+    "GhsaId": "GHSA-qrvq-68c2-7grw",
+    "References": [
+      {
+        "Url": "https://github.com/nats-io/nats-server/security/advisories/GHSA-qrvq-68c2-7grw"
+      },
+      {
+        "Url": "https://github.com/nats-io/nats-server/commit/f77fb7c4535e6727cc1a2899cd8e6bbdd8ba2017"
+      },
+      {
+        "Url": "https://github.com/nats-io/nats-server/releases/tag/v2.11.12"
+      },
+      {
+        "Url": "https://github.com/nats-io/nats-server/releases/tag/v2.12.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qrvq-68c2-7grw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qrvq-68c2-7grw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27571"
+      }
+    ],
+    "Description": "### Impact\n\nThe WebSockets handling of NATS messages handles compressed messages via the WebSockets negotiated compression.  The implementation bound the memory size of a NATS message but did not independently bound the memory consumption of the memory stream when constructing a NATS message which might then fail validation for size reasons.\n\nAn attacker can use a compression bomb to cause excessive memory consumption, often resulting in the operating system terminating the server process.\n\nThe use of compression is negotiated before authentication, so this does not require valid NATS credentials to exploit.\n\nThe fix was to bounds the decompression to fail once the message was too large, instead of continuing on.\n\n### Patches\n\nThis was released in nats-server without being highlighted as a security issue.  It should have been, this was an oversight.  Per the NATS security policy, because this does not require a valid user, it is CVE-worthy.\n\nThis was fixed in the v2.11 series with v2.11.12 and in the v2.12 series with v2.12.3.\n\n### Workarounds\n\nThis only affects deployments which use WebSockets and which expose the network port to untrusted end-points.\n\n### References\n\nThis was reported to the NATS maintainers by Pavel Kohout of Aisle Research (www.aisle.com).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-24T16:04:53Z",
+    "Severity": "MODERATE",
+    "Summary": "nats-server websockets are vulnerable to pre-auth memory DoS",
+    "UpdatedAt": "2026-02-24T16:04:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.1"
+    }
+  ]
+}

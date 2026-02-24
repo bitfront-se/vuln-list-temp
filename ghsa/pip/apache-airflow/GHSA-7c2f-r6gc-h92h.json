@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-01-16T21:00:12Z",
+  "UpdatedAt": "2026-02-24T16:21:10Z",
   "Package": {
     "Ecosystem": "PIP",
     "Name": "apache-airflow"
@@ -36,12 +36,12 @@
         "Value": "CVE-2025-68675"
       }
     ],
-    "Description": "In Apache Airflow versions before 3.1.6, the proxies and proxy fields within a Connection may include proxy URLs containing embedded authentication information. These fields were not treated as sensitive by default and therefore were not automatically masked in log output. As a result, when such connections are rendered or printed to logs, proxy credentials embedded in these fields could be exposed.\n\nUsers are recommended to upgrade to 3.1.6 or later, which fixes this issue",
+    "Description": "In Apache Airflow versions before 3.1.6, and 2.11.1 the proxies and proxy fields within a Connection may include proxy URLs containing embedded authentication information. These fields were not treated as sensitive by default and therefore were not automatically masked in log output. As a result, when such connections are rendered or printed to logs, proxy credentials embedded in these fields could be exposed.\n\nUsers are recommended to upgrade to 3.1.6 or later for Airflow 3, and 2.11.1 or later for Airflow 2 which fixes this issue.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-01-16T12:30:25Z",
     "Severity": "HIGH",
     "Summary": "Apache Airflow proxy credentials for various providers might leak in task logs",
-    "UpdatedAt": "2026-02-03T17:22:49Z",
+    "UpdatedAt": "2026-02-24T16:21:10Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,
@@ -51,9 +51,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "2.11.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.11.1"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "3.1.6"
       },
-      "VulnerableVersionRange": "\u003c 3.1.6"
+      "VulnerableVersionRange": "\u003e= 3.0.0b1, \u003c 3.1.6"
     }
   ]
 }
