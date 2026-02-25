@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-25T15:43:00Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 338759,
+    "Id": "GSA_kwCzR0hTQS1nZnc3LTJ2NzMtNjl3Z84ABStH",
+    "GhsaId": "GHSA-gfw7-2v73-69wg",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-65995"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/58252"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/61883"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/1qzlrjo2wmlzs0rrgzgslj2pzkor0dr2"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2025/12/12/2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gfw7-2v73-69wg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gfw7-2v73-69wg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-65995"
+      }
+    ],
+    "Description": "When a DAG failed during parsing, Airflow’s error-reporting in the UI could include the full kwargs passed to the operators. If those kwargs contained sensitive values (such as secrets), they might be exposed in the UI tracebacks to authenticated users who had permission to view that DAG. \n\nThe issue has been fixed in Airflow 3.1.5rc1 and 2.11.1, and users are strongly advised to upgrade to prevent potential disclosure of sensitive information.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-21T03:31:39Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow error reporting may expose full kwargs",
+    "UpdatedAt": "2026-02-25T15:43:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.5rc1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0b1, \u003c 3.1.5rc1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.11.1"
+    }
+  ]
+}

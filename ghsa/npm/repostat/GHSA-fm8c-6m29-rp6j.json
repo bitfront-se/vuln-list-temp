@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-25T16:04:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "repostat"
+  },
+  "Advisory": {
+    "DatabaseId": 339227,
+    "Id": "GSA_kwCzR0hTQS1mbThjLTZtMjktcnA2as4ABS0b",
+    "GhsaId": "GHSA-fm8c-6m29-rp6j",
+    "References": [
+      {
+        "Url": "https://github.com/denpiligrim/repostat/security/advisories/GHSA-fm8c-6m29-rp6j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27612"
+      },
+      {
+        "Url": "https://github.com/denpiligrim/repostat/commit/715df5f73359d222fd7876e948d14290180e3c88"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fm8c-6m29-rp6j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fm8c-6m29-rp6j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27612"
+      }
+    ],
+    "Description": "### Impact\nThe `RepoCard` component is vulnerable to Reflected Cross-Site Scripting (XSS). The vulnerability occurs because the component uses React's `dangerouslySetInnerHTML` to render the repository name (`repo` prop) during the loading state without any sanitization. \n\nIf a developer using this package passes unvalidated user input directly into the `repo` prop (for example, reading it from a URL query parameter), an attacker can execute arbitrary JavaScript in the context of the user's browser.\n\n### Proof of Concept\n```jsx\nimport { RepoCard } from 'repostat';\n\nfunction App() {\n  const params = new URLSearchParams(window.location.search);\n  const maliciousRepo = params.get('repo') || 'facebook/react';\n\n  return \u003cRepoCard repo={maliciousRepo} token=\"YOUR_TOKEN\" /\u003e;\n}\n```\n\n### Remediation\nUpdate to version 1.0.1. The use of dangerouslySetInnerHTML has been removed, and the repo prop is now safely rendered using standard React JSX data binding, which automatically escapes HTML entities.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T16:04:41Z",
+    "Severity": "MODERATE",
+    "Summary": "repostat: Reflected Cross-Site Scripting (XSS) via repo prop in RepoCard",
+    "UpdatedAt": "2026-02-25T16:04:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.1"
+    }
+  ]
+}

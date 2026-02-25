@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T18:20:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.mchange:mchange-commons-java"
+  },
+  "Advisory": {
+    "DatabaseId": 339244,
+    "Id": "GSA_kwCzR0hTQS1tMmNtLTIyMmYtcXc0NM4ABS0s",
+    "GhsaId": "GHSA-m2cm-222f-qw44",
+    "References": [
+      {
+        "Url": "https://github.com/swaldman/mchange-commons-java/security/advisories/GHSA-m2cm-222f-qw44"
+      },
+      {
+        "Url": "https://mogwailabs.de/en/blog/2025/02/c3p0-you-little-rascal"
+      },
+      {
+        "Url": "https://www.mchange.com/projects/c3p0/#configuring_security"
+      },
+      {
+        "Url": "https://www.mchange.com/projects/c3p0/#security-note"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m2cm-222f-qw44"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m2cm-222f-qw44"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27727"
+      }
+    ],
+    "Description": "### Impact\nmchange-commons-java includes code that mirrors early implementations of JNDI functionality, including support for remote `factoryClassLocation` values, by which code can be downloaded and invoked within a running application. If an attacker can provoke an application to read a maliciously crafted `jaxax.naming.Reference` or serialized object, they can provoke the download and execution of malicious code.\n\nImplementations of this functionality within the JDK were disabled by default behind a System property that defaults to `false`, `com.sun.jndi.ldap.object.trustURLCodebase`. However, since mchange-commons-java includes an independent implementation of JNDI derefencing, libraries (such as c3p0) that resolve references via that implementation could be provoked to download and execute malicious code even after the JDK was hardened.\n\n### Patches\nMirroring the JDK patch, mchange-commons-java's JNDI functionality is now gated by configuration parameters that default to restrictive values. Those parameters are documented [here](https://www.mchange.com/projects/c3p0/#configuring_security).\n\n### Workarounds\nNo. Users should upgrade to mchange-commons-java \u003e= 0.4.0. Earlier versions should be avoided on application CLASSPATHs.\n\n### References\n\n[c3p0, you little rascal \u0026mdash; Hans-Martin Münch](https://mogwailabs.de/en/blog/2025/02/c3p0-you-little-rascal/)\n[c3p0 documentation, security note](https://www.mchange.com/projects/c3p0/#security-note)\n[c3p0 documentation, configuring security](https://www.mchange.com/projects/c3p0/#configuring_security)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T18:20:05Z",
+    "Severity": "HIGH",
+    "Summary": "mchange-commons-java: Remote Code Execution via JNDI Reference Resolution",
+    "UpdatedAt": "2026-02-25T18:20:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.4.0"
+    }
+  ]
+}

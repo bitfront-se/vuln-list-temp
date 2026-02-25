@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T17:36:45Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/BishopFox/sliver"
+  },
+  "Advisory": {
+    "DatabaseId": 339239,
+    "Id": "GSA_kwCzR0hTQS0ycGhnLXFnbW0tcjYzOM4ABS0n",
+    "GhsaId": "GHSA-2phg-qgmm-r638",
+    "References": [
+      {
+        "Url": "https://github.com/BishopFox/sliver/security/advisories/GHSA-2phg-qgmm-r638"
+      },
+      {
+        "Url": "https://github.com/BishopFox/sliver/commit/0cf5a47cfdf94b6ab481ec3ea0db09f31654c0f0"
+      },
+      {
+        "Url": "https://github.com/BishopFox/sliver/releases/tag/v1.7.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2phg-qgmm-r638"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2phg-qgmm-r638"
+      }
+    ],
+    "Description": "### Summary\n\nGzipEncoder does not limit output size when processing compressed data. This allows unauthenticated remote attackers to crash sliver server by sending a http request with highly compressed gzip data (aka zip bomb).\n\n### Details\n\nIn `util/encoders/gzip.go`, `Decode()` method decompresses given data by reading the entire gzip buffer at once without limiting output size.\n\n### PoC\n\n```python\ndata = gzip.compress(bytes(1024 * 1024 * 1024)) * 16\nrequests.post(f\"http://172.17.0.2/{nonce}\", data=data)\n```\n\n### Impact\n\nUnauthenticated remote attackers can exhaust memory and cpu resource of sliver server and crash it when they have GzipEncoderID, which can be easily retrived from implant's http traffic, or by brute-forcing.\n\nA fixed version is available at https://github.com/BishopFox/sliver/releases/tag/v1.7.2.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T17:36:44Z",
+    "Severity": "HIGH",
+    "Summary": "Sliver has Potential Zip Bomb Denial of Service in GzipEncoder",
+    "UpdatedAt": "2026-02-25T17:36:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.2"
+    }
+  ]
+}
