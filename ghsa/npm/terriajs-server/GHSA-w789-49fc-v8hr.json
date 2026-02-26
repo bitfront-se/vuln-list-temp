@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-26T15:22:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "terriajs-server"
+  },
+  "Advisory": {
+    "DatabaseId": 339381,
+    "Id": "GSA_kwCzR0hTQS13Nzg5LTQ5ZmMtdjhocs4ABS21",
+    "GhsaId": "GHSA-w789-49fc-v8hr",
+    "References": [
+      {
+        "Url": "https://github.com/TerriaJS/terriajs-server/security/advisories/GHSA-w789-49fc-v8hr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27818"
+      },
+      {
+        "Url": "https://github.com/TerriaJS/terriajs-server/commit/3aaa5d9717162b245ae4569232bbe7d8673c913f"
+      },
+      {
+        "Url": "https://github.com/TerriaJS/terriajs-server/releases/tag/4.0.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w789-49fc-v8hr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w789-49fc-v8hr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27818"
+      }
+    ],
+    "Description": "### Impact\nA validation bug allows an attacker to proxy domains not explicitly allowed in the `proxyableDomains` configuration.\n\nThe validation only checks if a hostname _ended_ with an allowed domain. This meant:\n\nIf `example.com` is allowed in `proxyableDomains`:\n\n- ✅ example.com is allowed (correct)\n- ✅ api.example.com is allowed (correct)\n- ⚠️ maliciousexample.com is allowed (incorrect)\n\nAn attacker could register maliciousexample.com and proxy content through `terriajs-server`, bypassing proxy restrictions.\n\n### Patches\nAll versions up to 4.0.2 are affected. Upgrade to 4.0.3 to address the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-26T15:22:11Z",
+    "Severity": "HIGH",
+    "Summary": "TerriaJS-Server has a domain validation bypass vulnerability in its proxy allowlist",
+    "UpdatedAt": "2026-02-26T15:22:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.3"
+      },
+      "VulnerableVersionRange": "\u003c 4.0.3"
+    }
+  ]
+}

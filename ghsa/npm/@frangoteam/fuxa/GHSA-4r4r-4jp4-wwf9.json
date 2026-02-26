@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-26T15:45:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@frangoteam/fuxa"
+  },
+  "Advisory": {
+    "DatabaseId": 339113,
+    "Id": "GSA_kwCzR0hTQS00cjRyLTRqcDQtd3dmOc4ABSyp",
+    "GhsaId": "GHSA-4r4r-4jp4-wwf9",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-69985"
+      },
+      {
+        "Url": "https://gist.github.com/lihy10/8cb2dd65ebf1385f12a7e00e25a50d40"
+      },
+      {
+        "Url": "https://github.com/frangoteam/FUXA/blob/master/server/api/jwt-helper.js"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4r4r-4jp4-wwf9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4r4r-4jp4-wwf9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-69985"
+      }
+    ],
+    "Description": "FUXA 1.2.8 and prior contains an Authentication Bypass vulnerability leading to Remote Code Execution (RCE). The vulnerability exists in the server/api/jwt-helper.js middleware, which improperly trusts the HTTP \"Referer\" header to validate internal requests. A remote unauthenticated attacker can bypass JWT authentication by spoofing the Referer header to match the server's host. Successful exploitation allows the attacker to access the protected /api/runscript endpoint and execute arbitrary Node.js code on the server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-24T18:31:02Z",
+    "Severity": "CRITICAL",
+    "Summary": "FUXA has JWT Authentication Bypass via HTTP Referer header spoofing",
+    "UpdatedAt": "2026-02-26T15:45:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.8"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-26T15:56:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 339390,
+    "Id": "GSA_kwCzR0hTQS1mM2YyLW1jeGMtcHdqeM4ABS2-",
+    "GhsaId": "GHSA-f3f2-mcxc-pwjx",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-f3f2-mcxc-pwjx"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/f73fae6fe7fc34907bba102648a9997186aa4385"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n%402.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f3f2-mcxc-pwjx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f3f2-mcxc-pwjx"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows and access to a database credential could unknowingly create a workflow that was vulnerable to SQL injection, even while expecting inputs to be handled safely through escaped parameters. By supplying specially crafted table or column names, an attacker could inject arbitrary SQL because the MySQL, PostgreSQL, and Microsoft SQL nodes did not escape identifier values when constructing queries, enabling injection through node configuration parameters.\n\n## Patches\nThe issue has been fixed in n8n version 2.4.0. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the MySQL, PostgreSQL, and Microsoft SQL nodes by adding `n8n-nodes-base.mySql`, `n8n-nodes-base.postgres`, and `n8n-nodes-base.microsoftSql` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n## Credit\n\nReporter: Pawel Bednarz from the NATO Cyber Security Centre (NCSC)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-26T15:56:31Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: SQL Injection in MySQL, PostgreSQL, and Microsoft SQL nodes",
+    "UpdatedAt": "2026-02-26T15:56:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.0"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-26T15:16:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "storybook"
+  },
+  "Advisory": {
+    "DatabaseId": 339377,
+    "Id": "GSA_kwCzR0hTQS1tamY1LTdnNG0tZ3g1d84ABS2x",
+    "GhsaId": "GHSA-mjf5-7g4m-gx5w",
+    "References": [
+      {
+        "Url": "https://github.com/storybookjs/storybook/security/advisories/GHSA-mjf5-7g4m-gx5w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27148"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/commit/0affdf928bd6fafbadfb1dfe22ce6104805e10e8"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/commit/54689a8add18ea75d628c540f4bc677592a1e685"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/commit/b8cfa77c73940c140acdcd8a06ab1ea913c44761"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/commit/d34085f39c647f5c23c3a3b2d197c18602fcf876"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/releases/tag/v10.2.10"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/releases/tag/v7.6.23"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/releases/tag/v8.6.17"
+      },
+      {
+        "Url": "https://github.com/storybookjs/storybook/releases/tag/v9.1.19"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mjf5-7g4m-gx5w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mjf5-7g4m-gx5w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27148"
+      }
+    ],
+    "Description": "### Summary\n\nThe WebSocket functionality in Storybook's dev server, used to create and update stories, is vulnerable to WebSocket hijacking. This vulnerability **only affects the Storybook dev server; production builds are not impacted**.\n\n### Details\n\nExploitation requires a developer to visit a malicious website while their local Storybook dev server is running. Because the WebSocket connection does not validate the origin of incoming connections, a malicious site can silently send WebSocket messages to the local instance without any further user interaction.\n\nIf a Storybook dev server is intentionally exposed publicly (e.g. for design reviews or stakeholder demos) the risk is higher, as no malicious site visit is required. Any unauthenticated attacker can send WebSocket messages to it directly.\n\nThe vulnerability affects the WebSocket message handlers for creating and saving stories, which can be exploited via unauthorized WebSocket connections to achieve persistent XSS or Remote Code Execution (RCE).\n\n_Note: recent versions of Chrome have some protections against this, but Firefox does not._\n\n### Impact\nThis vulnerability can lead to supply chain compromise. Key risks include:\n\n- **Remote Code Execution**: The vulnerability can allow attackers to execute malicious code, with the extent of impact depending on the configuration. Server-side RCE is possible in non-default configurations, such as when stories are executed via portable stories in JSDOM, potentially allowing attackers to exfiltrate credentials and environment variables, access source code and the filesystem, establish backdoors, or pivot to internal network resources.\n- **Persistent XSS**: Malicious payloads are written directly into story source files. If the malicious payload is committed to version control, it becomes part of the codebase and can propagate to deployed Storybook documentation sites, affecting developers and stakeholders who view them.\n- **Supply Chain Propagation**: If the modified source files are committed, injected code can spread to other team members via git, execute in CI/CD pipelines, and affect shared component libraries used across multiple projects.\n\n### Affected versions\n\n8.1 and above. While the exploitable functionality was introduced in 8.1, the patch has been applied to 7.x as a precautionary measure given the underlying WebSocket behaviour.\n\n### Recommended actions\nUpdate to one of the patched versions: `7.6.23`, `8.6.17`, `9.1.19`, `10.2.10`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-26T15:16:10Z",
+    "Severity": "HIGH",
+    "Summary": "Storybook Dev Server is Vulnerable to WebSocket Hijacking",
+    "UpdatedAt": "2026-02-26T15:16:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.2.10"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0-beta.0, \u003c 10.2.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.19"
+      },
+      "VulnerableVersionRange": "\u003e= 8.7.0-alpha.0, \u003c 9.1.19"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.17"
+      },
+      "VulnerableVersionRange": "\u003e= 8.1.0, \u003c 8.6.17"
+    }
+  ]
+}
