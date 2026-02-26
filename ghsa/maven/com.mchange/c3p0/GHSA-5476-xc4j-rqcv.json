@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T18:35:25Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.mchange:c3p0"
+  },
+  "Advisory": {
+    "DatabaseId": 339278,
+    "Id": "GSA_kwCzR0hTQS01NDc2LXhjNGotcnFjds4ABS1O",
+    "GhsaId": "GHSA-5476-xc4j-rqcv",
+    "References": [
+      {
+        "Url": "https://github.com/swaldman/c3p0/security/advisories/GHSA-5476-xc4j-rqcv"
+      },
+      {
+        "Url": "https://github.com/swaldman/c3p0/commit/e14cbd8166e423e2e9a9d6f08b2add3433492d6e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5476-xc4j-rqcv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5476-xc4j-rqcv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27830"
+      }
+    ],
+    "Description": "### Impact\n\nc3p0 is vulnerable to attack via maliciously crafted Java-serialized objects and `javax.naming.Reference` instances. Several c3p0 `ConnectionPoolDataSource` implementations have a property called `userOverridesAsString` which conceptually represents a `Map\u003cString,Map\u003cString,String\u003e\u003e`. Prior to v0.12.0, that property was maintained as a hex-encoded serialized object. Any attacker able to reset this property, on an existing `ConnectionPoolDataSource` or via maliciously crafted serialized objects or `javax.naming.Reference` instances could be tailored execute unexpected code on the application's `CLASSPATH`.\n\nThe danger of this vulnerability was strongly magnified by vulnerabilities in c3p0's main dependency, mchange-commons-java. This library includes code that mirrors early implementations of JNDI functionality, including ungated support for remote `factoryClassLocation` values. Attackers could set c3p0's `userOverridesAsString` hex-encoded serialized objects that include objects \"indirectly serialized\" via JNDI references. Deserialization of those objects and dereferencing of the embedded `javax.naming.Reference` objects could provoke download and execution of malicious code from a remote `factoryClassLocation`.\n\nAlthough hazard presented by c3p0's vulnerabilites are exarcerbated by vulnerabilities in mchange-commons-java, use of Java-serialized-object hex as the format for a writable Java-Bean property, of objects that may be exposed across JNDI interfaces, represents a serious independent fragility.\n\n### Patches\n\nThe `userOverridesAsString` property of c3p0 `ConnectionPoolDataSource` classes has been reimplemented to use a safe CSV-based format, rather than rely upon potentially dangerous Java object deserialization.\n\nc3p0-0.12.0+ and above depend upon mchange-commons-java 0.4.0+, which gates support for remote `factoryClassLocation` values by configuration parameters that default to restrictive values. Those parameters are documented [here](https://www.mchange.com/projects/c3p0/#configuring_security).\n\nc3p0 additionally enforces the new mchange-commons-java `com.mchange.v2.naming.nameGuardClassName` to prevent injection of unexpected, potentially remote JNDI names.\n\n### Workarounds\n\nUsers should upgrade to c3p0-0.12.0 or above. There is no supported workaround for earlier versions of c3p0.\n\n### References\n\n[c3p0, you little rascal \u0026mdash; Hans-Martin Münch](https://mogwailabs.de/en/blog/2025/02/c3p0-you-little-rascal/)\n[c3p0 documentation, security note](https://www.mchange.com/projects/c3p0/#security-note)\n[c3p0 documentation, configuring security](https://www.mchange.com/projects/c3p0/#configuring_security)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T18:35:23Z",
+    "Severity": "HIGH",
+    "Summary": "c3p0 vulnerable to Remote Code Execution via unsafe deserialization of userOverridesAsString property",
+    "UpdatedAt": "2026-02-25T18:35:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.12.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.12.0"
+    }
+  ]
+}

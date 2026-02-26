@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-25T21:23:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 339310,
+    "Id": "GSA_kwCzR0hTQS13eHg3LW1jZ2Ytajg2Oc4ABS1u",
+    "GhsaId": "GHSA-wxx7-mcgf-j869",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-wxx7-mcgf-j869"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.22"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.10.1"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.9.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wxx7-mcgf-j869"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wxx7-mcgf-j869"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27497"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could leverage the Merge node's SQL query mode to execute arbitrary code and write arbitrary files on the n8n server.\n\n## Patches\nThe issues have been fixed in n8n versions 2.10.1, 2.9.3, and 1.123.22. Users should upgrade to one of these versions or later to remediate all known vulnerabilities.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Merge node by adding `n8n-nodes-base.merge` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T21:23:30Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n has Potential Remote Code Execution via Merge Node",
+    "UpdatedAt": "2026-02-25T21:23:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.10.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.9.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.22"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.22"
+    }
+  ]
+}

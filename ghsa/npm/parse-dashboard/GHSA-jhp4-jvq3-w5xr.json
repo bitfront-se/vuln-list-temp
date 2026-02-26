@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T19:00:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-dashboard"
+  },
+  "Advisory": {
+    "DatabaseId": 339287,
+    "Id": "GSA_kwCzR0hTQS1qaHA0LWp2cTMtdzV4cs4ABS1X",
+    "GhsaId": "GHSA-jhp4-jvq3-w5xr",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-dashboard/security/advisories/GHSA-jhp4-jvq3-w5xr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27610"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-dashboard/commit/f92a9ef5246d57e51696bd881a15f3b133b2bb50"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-dashboard/releases/tag/9.0.0-alpha.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jhp4-jvq3-w5xr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jhp4-jvq3-w5xr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27610"
+      }
+    ],
+    "Description": "### Impact\n\nThe `ConfigKeyCache` uses the same cache key for both master key and read-only master key when resolving function-typed keys. Under specific timing conditions, a read-only user can receive the cached full master key, or a regular user can receive the cached read-only master key.\n\n### Patches\n\nThe fix uses distinct cache keys for master key and read-only master key.\n\n### Workarounds\n\nAvoid using function-typed master keys, or remove the `agent` configuration block from your dashboard configuration.\n\n### Resources\n\n- GitHub advisory: https://github.com/parse-community/parse-dashboard/security/advisories/GHSA-jhp4-jvq3-w5xr\n- Fixed in: https://github.com/parse-community/parse-dashboard/releases/tag/9.0.0-alpha.8",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T19:00:07Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Dashboard Has a Cache Key Collision that Leaks Master Key to Read-Only Sessions",
+    "UpdatedAt": "2026-02-25T19:00:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.0.0-alpha.8"
+      },
+      "VulnerableVersionRange": "\u003e= 7.3.0-alpha.42, \u003c 9.0.0-alpha.8"
+    }
+  ]
+}

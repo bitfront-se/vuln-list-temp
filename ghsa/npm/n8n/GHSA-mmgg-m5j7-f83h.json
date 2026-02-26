@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T21:22:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 339308,
+    "Id": "GSA_kwCzR0hTQS1tbWdnLW01ajctZjgzaM4ABS1s",
+    "GhsaId": "GHSA-mmgg-m5j7-f83h",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-mmgg-m5j7-f83h"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.22"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.10.1"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.9.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mmgg-m5j7-f83h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mmgg-m5j7-f83h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27494"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could use the Python Code node to escape the sandbox. The sandbox did not sufficiently restrict access to certain built-in Python objects, allowing an attacker to exfiltrate file contents or achieve RCE.\n\nOn instances using internal Task Runners (default runner mode), this could result in full compromise of the n8n host. On instances using external Task Runners, the attacker might gain access to or impact other task executed on the Task Runner.\n\n- Task Runners must be enabled using `N8N_RUNNERS_ENABLED=true`.\n\n## Patches\nThe issue has been fixed in n8n versions 2.10.1, 2.9.3, and 1.123.22. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Code node by adding `n8n-nodes-base.code` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T21:22:39Z",
+    "Severity": "HIGH",
+    "Summary": "n8n has Arbitrary File Read via Python Code Node Sandbox Escape",
+    "UpdatedAt": "2026-02-25T21:22:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.10.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.9.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.22"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.22"
+    }
+  ]
+}

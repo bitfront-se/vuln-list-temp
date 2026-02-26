@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-25T21:54:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 339328,
+    "Id": "GSA_kwCzR0hTQS14Mm13LTdqMzktOTN4cc4ABS2A",
+    "GhsaId": "GHSA-x2mw-7j39-93xq",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-x2mw-7j39-93xq"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/97365caf253978ba8e46d7bc53fa7ac3b6f67b32"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/e22acaab3dcb2004e5fe0bf9ef2db975bde61866"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.8"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x2mw-7j39-93xq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x2mw-7j39-93xq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27498"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could chain the Read/Write Files from Disk node with git operations to achieve remote code execution. By writing to specific configuration files and then triggering a git operation, the attacker could execute arbitrary shell commands on the n8n host.\n\n## Patches\nThe issue has been fixed in n8n versions 2.2.0 and 1.123.8. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Read/Write Files from Disk node by adding `n8n-nodes-base.readWriteFile` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T21:54:19Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n has Arbitrary Command Execution via File Write and Git Operations",
+    "UpdatedAt": "2026-02-25T21:54:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.8"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.8"
+    }
+  ]
+}

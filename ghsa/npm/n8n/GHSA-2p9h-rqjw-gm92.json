@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T22:29:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 339332,
+    "Id": "GSA_kwCzR0hTQS0ycDloLXJxanctZ205Ms4ABS2E",
+    "GhsaId": "GHSA-2p9h-rqjw-gm92",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-2p9h-rqjw-gm92"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/062644ef786b6af480afe4a0f12bc6d70040534a"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/1479aab2d32fe0ee087f82b9038b1035c98be2f6"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/9e5212ecbc5d2d4e6f340b636a5e84be6369882e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2p9h-rqjw-gm92"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2p9h-rqjw-gm92"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27578"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could inject arbitrary scripts into pages rendered by the n8n application using different techniques on various nodes (Form Trigger node, Chat Trigger node, Send \u0026 Wait node, Webhook Node, and Chat Node). Scripts injected by a malicious workflow execute in the browser of any user who visits the affected page, enabling session hijacking and account takeover.\n\n## Patches\nThe issues have been fixed in n8n versions 2.10.1, 2.9.3, and 1.123.22. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Webhook node by adding `n8n-nodes-base.webhook` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n## Credit\nReporters:\n- @ori-ron\n- @Aikido-Security\n- @nil340\n- Pawel Bednarz from the NATO Cyber Security Centre (NCSC)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T22:28:57Z",
+    "Severity": "HIGH",
+    "Summary": "n8n Vulnerable to Stored XSS via Various Nodes",
+    "UpdatedAt": "2026-02-25T22:29:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.10.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.9.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.22"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.22"
+    }
+  ]
+}

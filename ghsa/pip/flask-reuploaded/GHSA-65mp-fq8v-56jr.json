@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-25T19:06:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "flask-reuploaded"
+  },
+  "Advisory": {
+    "DatabaseId": 339288,
+    "Id": "GSA_kwCzR0hTQS02NW1wLWZxOHYtNTZqcs4ABS1Y",
+    "GhsaId": "GHSA-65mp-fq8v-56jr",
+    "References": [
+      {
+        "Url": "https://github.com/jugmac00/flask-reuploaded/security/advisories/GHSA-65mp-fq8v-56jr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27641"
+      },
+      {
+        "Url": "https://github.com/jugmac00/flask-reuploaded/pull/180"
+      },
+      {
+        "Url": "https://github.com/jugmac00/flask-reuploaded/commit/d64c6b2f71cb73734fc38baa0e3e156926361288"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-65mp-fq8v-56jr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-65mp-fq8v-56jr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27641"
+      }
+    ],
+    "Description": "### Impact\nA critical path traversal and extension bypass vulnerability in Flask-Reuploaded allows remote attackers to achieve arbitrary file write and remote code execution through Server-Side Template Injection (SSTI).\n\n### Patches\nFlask-Reuploaded has been patched in version 1.5.0\n\n### Workarounds\n\n1. **Do not pass user input to the `name` parameter**\n2. Use auto-generated filenames only\n3. Implement strict input validation if `name` must be used\n\n```python\nfrom werkzeug.utils import secure_filename\nimport os\n\n# Sanitize user input before passing to save()\nsafe_name = secure_filename(request.form.get('custom_name'))\n# Remove path separators\nsafe_name = os.path.basename(safe_name)\n# Validate extension matches policy\nif not photos.extension_allowed(photos.get_extension(safe_name)):\n    abort(400)\n    \nfilename = photos.save(file, name=safe_name)\n```\n\n### Resources\nThe fix is documented in the pull request, see https://github.com/jugmac00/flask-reuploaded/pull/180.\n\nA proper write-up was created by the reporter of the vulnerability, Jaron Cabral (https://www.linkedin.com/in/jaron-cabral-751994357/), but is not yet available as of time of this publication.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T19:06:50Z",
+    "Severity": "CRITICAL",
+    "Summary": "Flask-Reuploaded vulnerable to Remote Code Execution via Server-Side Template Injection",
+    "UpdatedAt": "2026-02-25T19:06:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.5.0"
+    }
+  ]
+}

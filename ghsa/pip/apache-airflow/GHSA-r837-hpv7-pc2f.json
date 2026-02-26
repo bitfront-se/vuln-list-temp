@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-25T19:20:57Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 338985,
+    "Id": "GSA_kwCzR0hTQS1yODM3LWhwdjctcGMyZs4ABSwp",
+    "GhsaId": "GHSA-r837-hpv7-pc2f",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2024-56373"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/61880"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/2vrmrhcht6g7cp5yjxpnrk2wtrncm6cy"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/02/23/3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r837-hpv7-pc2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r837-hpv7-pc2f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2024-56373"
+      }
+    ],
+    "Description": "DAG Author (who already has quite a lot of permissions) could manipulate database of Airflow 2 in the way to execute arbitrary code in the web-server context, which they should normally not be able to do, leading to potentially remote code execution in the context of web-server (server-side) as a result of a user viewing historical task information.\n\nThe functionality responsible for that (log template history) has been disabled by default in 2.11.1 and users should upgrade to Airflow 3 if they want to continue to use log template history. They can also manually modify historical log file names if they want to see historical logs that were generated before the last log template change.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-24T12:31:40Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Airflow vulnerable to Code Injection in the web-server context via LogTemplate table",
+    "UpdatedAt": "2026-02-25T19:20:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.11.1"
+    }
+  ]
+}

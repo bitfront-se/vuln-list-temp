@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-25T18:53:43Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "rucio-webui"
+  },
+  "Advisory": {
+    "DatabaseId": 339281,
+    "Id": "GSA_kwCzR0hTQS0zOHdxLTZxMnctaGNmOc4ABS1R",
+    "GhsaId": "GHSA-38wq-6q2w-hcf9",
+    "References": [
+      {
+        "Url": "https://github.com/rucio/rucio/security/advisories/GHSA-38wq-6q2w-hcf9"
+      },
+      {
+        "Url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/35.8.3"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/38.5.4"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/39.3.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-38wq-6q2w-hcf9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-38wq-6q2w-hcf9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25138"
+      }
+    ],
+    "Description": "### Summary\nThe WebUI login endpoint returns distinct error messages depending on whether a supplied username exists, allowing unauthenticated attackers to enumerate valid usernames.\n\n### Details\nWhen submitting invalid credentials to `/ui/login`, the WebUI responds with different error messages based on the existence of the provided username (identity). A non-existent username results in an error indicating that no account is associated with the identity, while an existing username with an incorrect password produces a different authentication-related error.\n\nThis behavioral difference allows an attacker to distinguish valid usernames from invalid ones by observing the response content.\n\n### Proof of Concept\n**Bogus Login (Non-existent Username \"15251087\")**  \nResponse contains:\n```\nCannot get find any account associated with 15251087 identity.\n```\n\n**Bogus Login (Existing Username \"root\", Wrong Password)**  \nResponse contains:\n```\nCannot get auth token. It is possible that the presented identity root is not mapped to any Rucio account root.\n```\n\nThe difference in error messages confirms whether a username exists.\n\n### Impact\nAn unauthenticated attacker can enumerate valid usernames, which may be leveraged for targeted password guessing, credential stuffing, or social engineering attacks.\n\n### Remediation / Mitigation\nReturn a generic authentication failure message for all login errors, regardless of whether the username exists. Avoid disclosing account or identity existence through error responses. Consider implementing rate limiting or additional login throttling to further reduce abuse.\n\n#### Reources:\n- OWASP Authentication Cheat Sheet -  Authentication and Error Messages: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T18:53:42Z",
+    "Severity": "MODERATE",
+    "Summary": "Rucio WebUI has Username Enumeration via Login Error Message",
+    "UpdatedAt": "2026-02-25T18:53:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.3.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0rc1, \u003c 39.3.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.5.4"
+      },
+      "VulnerableVersionRange": "\u003e= 36.0.0rc1, \u003c 38.5.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "35.8.3"
+      },
+      "VulnerableVersionRange": "\u003c 35.8.3"
+    }
+  ]
+}

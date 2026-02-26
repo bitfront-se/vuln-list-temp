@@ -1,0 +1,77 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-25T21:21:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 339307,
+    "Id": "GSA_kwCzR0hTQS03NWc4LXJ2N3YtMzJmN84ABS1r",
+    "GhsaId": "GHSA-75g8-rv7v-32f7",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-75g8-rv7v-32f7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/issues/19"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/562d867483e871b0f1e31776252e23bd721df75b"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.22"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.10.1"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.9.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-75g8-rv7v-32f7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-75g8-rv7v-32f7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27493"
+      }
+    ],
+    "Description": "## Impact\nA second-order expression injection vulnerability existed in n8n's Form nodes that could allow an unauthenticated attacker to inject and evaluate arbitrary n8n expressions by submitting crafted form data. When chained with an expression sandbox escape, this could escalate to remote code execution on the n8n host.\n\nThe vulnerability requires a specific workflow configuration to be exploitable:\n1. A form node with a field interpolating a value provided by an unauthenticated user, e.g. a form submitted value.\n2. The field value must begin with an `=` character, which caused n8n to treat it as an expression and triggered a double-evaluation of the field content.\nFor example, a workflow uses a multi-step Form where a downstream Form node renders user-provided input back in an HTML field and precedes it with an `=` sign:\n`=\u003ch2\u003eThank you, {{ $input.first().json[\\\"Name\\\"] }}!\u003c/h2\u003e`\n\nThere is no practical reason for a workflow designer to prefix a field with `=` intentionally — the character is not rendered in the output, so the result would not match the designer's expectations. If added accidentally, it would be noticeable and very unlikely to persist. An unauthenticated attacker would need to either know about this specific circumstance on a target instance or discover a matching form by chance.\n\nEven when the preconditions are met, the expression injection alone is limited to data accessible within the n8n expression context. Escalation to remote code execution requires chaining with a separate sandbox escape vulnerability.\n\nDue to these real-world constraints — the unlikely workflow configuration, the need for an additional sandbox escape, and the difficulty of discovery — we have assessed the severity as High rather than Critical, diverging from the base CVSS score to better reflect actual exploitability.\n\n## Patches\nThe issue has been fixed in n8n versions 2.10.1, 2.9.3, and 1.123.22. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Review usage of form nodes manually for above mentioned preconditions.\n- Disable the Form node by adding `n8n-nodes-base.form` to the `NODES_EXCLUDE` environment variable.\n- Disable the Form Trigger node by adding `n8n-nodes-base.formTrigger` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T21:21:36Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n has Unauthenticated Expression Evaluation via Form Node",
+    "UpdatedAt": "2026-02-25T21:21:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.10.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.9.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.22"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.22"
+    }
+  ]
+}

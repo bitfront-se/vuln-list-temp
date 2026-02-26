@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-02-25T23:00:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 339345,
+    "Id": "GSA_kwCzR0hTQS00cTNoLXZwNHItcHJ2Ms4ABS2R",
+    "GhsaId": "GHSA-4q3h-vp4r-prv2",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-4q3h-vp4r-prv2"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/9b94083accb7f3e72c6b8126c195c7a03dd2dfd7"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/9d5942d50e55c822924c27b05aa98f1393e7a330"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.3"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.3.1-alpha.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4q3h-vp4r-prv2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4q3h-vp4r-prv2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27804"
+      }
+    ],
+    "Description": "### Impact\n\nAn unauthenticated attacker can forge a Google authentication token with `alg: \"none\"` to log in as any user linked to a Google account, without knowing their credentials. All deployments with Google authentication enabled are affected.\n\n### Patches\n\nThe fix hardcodes the expected `RS256` algorithm instead of trusting the JWT header, and replaces the Google adapter's custom key fetcher with `jwks-rsa` which rejects unknown key IDs.\n\n### Workarounds\n\nDisable Google authentication until you can upgrade.\n\n### References\n\n- GitHub advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-4q3h-vp4r-prv2\n- Fixed in Parse Server 9.3.1-alpha.4: https://github.com/parse-community/parse-server/releases/tag/9.3.1-alpha.4\n- Fixed in Parse Server 8.6.3: https://github.com/parse-community/parse-server/releases/tag/8.6.3",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-25T23:00:49Z",
+    "Severity": "CRITICAL",
+    "Summary": "Parse Server: Account takeover via JWT algorithm confusion in Google auth adapter",
+    "UpdatedAt": "2026-02-25T23:00:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.3"
+      },
+      "VulnerableVersionRange": "\u003c= 8.6.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.3.1-alpha.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c= 9.3.1-alpha.3"
+    }
+  ]
+}
