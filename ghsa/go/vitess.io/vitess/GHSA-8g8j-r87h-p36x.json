@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-26T22:50:39Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "vitess.io/vitess"
+  },
+  "Advisory": {
+    "DatabaseId": 339451,
+    "Id": "GSA_kwCzR0hTQS04ZzhqLXI4N2gtcDM2eM4ABS37",
+    "GhsaId": "GHSA-8g8j-r87h-p36x",
+    "References": [
+      {
+        "Url": "https://github.com/vitessio/vitess/security/advisories/GHSA-8g8j-r87h-p36x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27965"
+      },
+      {
+        "Url": "https://github.com/vitessio/vitess/issues/19459"
+      },
+      {
+        "Url": "https://github.com/vitessio/vitess/pull/19460"
+      },
+      {
+        "Url": "https://github.com/vitessio/vitess/commit/4c0173293907af9cb942a6683c465c3f1e9fdb5c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8g8j-r87h-p36x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8g8j-r87h-p36x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27965"
+      }
+    ],
+    "Description": "### Impact\n\nAny user with read/write access to the backup storage location (e.g. an S3 bucket) can manipulate backup manifest files so that arbitrary code is later executed when that backup is restored. This can be used to provide that attacker with unintended/unauthorized access to the production deployment environment — allowing them to access information available in that environment as well as run any additional arbitrary commands there.\n\n### Patches\nFixes are expected to be released with versions v23.0.3 and v22.0.4\nSee fix commit at https://github.com/vitessio/vitess/commit/4c0173293907af9cb942a6683c465c3f1e9fdb5c\n\n### Workarounds\n\nIf maintainers *intended* to use an external decompressor then they can always specify that decompressor command in the `--external-decompressor` flag value for `vttablet` and `vtbackup`. That then overrides any value specified in the manifest file.\n\nIf maintainers did *not intend* to use an external decompressor, nor an internal one, then they can specify a value such as `cat` or `tee` in the `--external-decompressor` flag value for `vttablet` and `vtbackup` to ensure that a harmless command is always used. \n\n### References\n\nUsers can read more about the issue here: https://github.com/vitessio/vitess/issues/19459",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-26T22:50:37Z",
+    "Severity": "HIGH",
+    "Summary": "Vitess users with backup storage access can gain unauthorized access to production deployment environments",
+    "UpdatedAt": "2026-02-26T22:50:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.2"
+    }
+  ]
+}
