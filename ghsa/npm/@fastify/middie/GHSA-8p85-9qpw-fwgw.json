@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-28T02:47:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@fastify/middie"
+  },
+  "Advisory": {
+    "DatabaseId": 339650,
+    "Id": "GSA_kwCzR0hTQS04cDg1LTlxcHctZndnd84ABS7C",
+    "GhsaId": "GHSA-8p85-9qpw-fwgw",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/middie/security/advisories/GHSA-8p85-9qpw-fwgw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2880"
+      },
+      {
+        "Url": "https://github.com/fastify/middie/commit/140e0dd0359d890fec7e6ea1dcc5134d6bd554d4"
+      },
+      {
+        "Url": "https://fluidattacks.com/advisories/jimenez"
+      },
+      {
+        "Url": "https://fluidattacks.com/advisories/policy"
+      },
+      {
+        "Url": "https://github.com/fastify/middie/releases/tag/v9.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8p85-9qpw-fwgw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8p85-9qpw-fwgw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2880"
+      }
+    ],
+    "Description": "## Summary\nA path normalization inconsistency in `@fastify/middie` can result in authentication/authorization bypass when using path-scoped middleware (for example, `app.use('/secret', auth)`).\n\nWhen Fastify router normalization options are enabled (such as `ignoreDuplicateSlashes`, `useSemicolonDelimiter`, and related trailing-slash behavior), crafted request paths may bypass middleware checks while still being routed to protected handlers.\n\n## Impact\nAn unauthenticated remote attacker can access endpoints intended to be protected by middleware-based auth/authorization controls by sending specially crafted URL paths (for example, `//secret` or `/secret;foo=bar`), depending on router option configuration.\n\nThis may lead to unauthorized access to protected functionality and data exposure.\n\n## Affected versions\n- Confirmed affected: `@fastify/middie@9.1.0`\n- All versions prior to the patch are affected.\n\n## Patched versions\n- Fixed in: *9.2.0*\n\n## Details\nThe issue is caused by canonicalization drift between:\n1. `@fastify/middie` path matching for `app.use('/prefix', ...)`, and\n2. Fastify/find-my-way route lookup normalization.\n\nBecause middleware and router did not always evaluate the same normalized path, auth middleware could be skipped while route resolution still succeeded.\n\n## Workarounds\nUntil patched version is deployed:\n- Avoid relying solely on path-scoped middie guards for auth/authorization.\n- Enforce auth at route-level handlers/hooks after router normalization.\n- Disable risky normalization combinations only if operationally feasible.\n\n## Resources\n- Fluid Attacks Disclosure Policy: https://fluidattacks.com/advisories/policy\n- Fluid Attacks advisory URL: https://fluidattacks.com/advisories/jimenez\n\n## Credits\n- **Cristian Vargas** (Fluid Attacks Research Team) — discovery and report.\n- **Oscar Uribe** (Fluid Attacks) — coordination and disclosure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-28T02:47:17Z",
+    "Severity": "HIGH",
+    "Summary": "@fastify/middie has Improper Path Normalization when Using Path-Scoped Middleware",
+    "UpdatedAt": "2026-02-28T02:47:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 9.2.0"
+    }
+  ]
+}

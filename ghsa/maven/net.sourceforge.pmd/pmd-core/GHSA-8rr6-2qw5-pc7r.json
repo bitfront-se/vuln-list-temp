@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-28T02:49:34Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "net.sourceforge.pmd:pmd-core"
+  },
+  "Advisory": {
+    "DatabaseId": 339652,
+    "Id": "GSA_kwCzR0hTQS04cnI2LTJxdzUtcGM3cs4ABS7E",
+    "GhsaId": "GHSA-8rr6-2qw5-pc7r",
+    "References": [
+      {
+        "Url": "https://github.com/pmd/pmd/security/advisories/GHSA-8rr6-2qw5-pc7r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28338"
+      },
+      {
+        "Url": "https://github.com/pmd/pmd/pull/6475"
+      },
+      {
+        "Url": "https://github.com/pmd/pmd/commit/c140c0e1de5853a08efb84c9f91dfeb015882442"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8rr6-2qw5-pc7r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8rr6-2qw5-pc7r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28338"
+      }
+    ],
+    "Description": "### Summary\nPMD's `vbhtml` and `yahtml` report formats insert rule violation messages into HTML output without escaping. When PMD analyzes untrusted source code containing crafted string literals, the generated HTML report contains executable JavaScript that runs when opened in a browser.\n\nWhile the default `html` format is not affected via rule violation messages (it correctly uses `StringEscapeUtils.escapeHtml4()`), it has a similar problem when rendering suppressed violations. The user supplied message (the reason for the suppression) was not escaped.\n\n### Details\n`VBHTMLRenderer.java` line 71 appends `rv.getDescription()` directly into HTML:\n\n```java\nsb.append(\"\u003ctd\u003e\u003cfont class=body\u003e\").append(rv.getDescription()).append(\"\u003c/font\u003e\u003c/td\u003e\");\n```\n\n`YAHTMLRenderer.java` lines 196–203 does the same via `renderViolationRow()`:\n\n```java\nprivate String renderViolationRow(String name, String value) {\n    return \"\u003ctr\u003e\u003ctd\u003e\u003cb\u003e\" + name + \"\u003c/b\u003e\u003c/td\u003e\" + \"\u003ctd\u003e\" + value + \"\u003c/td\u003e\u003c/tr\u003e\";\n}\n```\n\nCalled at line 172:\n\n```java\nout.print(renderViolationRow(\"Description:\", violation.getDescription()));\n```\n\nThe violation message originates from `AvoidDuplicateLiteralsRule.java` line 91, which embeds raw string literal values via `first.toPrintableString()`. This calls `StringUtil.escapeJava()` (line 476–480), which is a Java source escaper — it passes `\u003c`, `\u003e`, and `\u0026` through unchanged because they are printable ASCII (0x20–0x7e).\n\nBy contrast, `HTMLRenderer.java` line 143 properly escapes:\n\n```java\nString d = StringEscapeUtils.escapeHtml4(rv.getDescription());\n```\n### PoC\n\n1. Create a Java file with 4+ duplicate string literals containing an HTML payload:\n\n```java\npublic class Exploit {\n    String a = \"\u003cimg src=x onerror=alert(document.domain)\u003e\";\n    String b = \"\u003cimg src=x onerror=alert(document.domain)\u003e\";\n    String c = \"\u003cimg src=x onerror=alert(document.domain)\u003e\";\n    String d = \"\u003cimg src=x onerror=alert(document.domain)\u003e\";\n}\n```\n\n2. Run PMD with the `vbhtml` format:\n\n```bash\npmd check -R category/java/errorprone.xml -f vbhtml -d Exploit.java -r report.html\n```\n\n3. Open `report.html` in a browser. A JavaScript alert executes showing `document.domain`.\n\nThe generated HTML contains the unescaped tag:\n\n```html\n\u003ctd\u003e\u003cfont class=body\u003eThe String literal \"\u003cimg src=x onerror=alert(document.domain)\u003e\" appears 4 times in this file\u003c/font\u003e\u003c/td\u003e\n```\n\nTested and confirmed on PMD 7.22.0-SNAPSHOT (commit bcc646c53d).\n\n### Impact\nStored cross-site scripting (XSS). Affects CI/CD pipelines that run PMD with `--format vbhtml` or `--format yahtml` on untrusted source code (e.g., pull requests from external contributors) and expose the HTML report as a build artifact. JavaScript executes in the browser context of anyone who opens the report.\n\nPractical impact is limited because `vbhtml` and `yahtml` are legacy formats rarely used in practice. The default `html` format has a similar issue with user messages from suppressed violations.\n\n### Fixes\n* See [#6475](https://github.com/pmd/pmd/issues/6475): \\[core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-28T02:49:29Z",
+    "Severity": "MODERATE",
+    "Summary": "PMD Designer has Stored XSS in VBHTMLRenderer and YAHTMLRenderer via unescaped violation messages",
+    "UpdatedAt": "2026-02-28T02:49:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.22.0"
+      },
+      "VulnerableVersionRange": "\u003c= 7.21.0"
+    }
+  ]
+}
