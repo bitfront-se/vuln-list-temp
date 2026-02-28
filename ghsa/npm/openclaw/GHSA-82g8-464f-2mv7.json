@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-02-27T21:36:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339636,
+    "Id": "GSA_kwCzR0hTQS04Mmc4LTQ2NGYtMm12N84ABS60",
+    "GhsaId": "GHSA-82g8-464f-2mv7",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-82g8-464f-2mv7"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8c9f35cdb51692b650ddf05b259ccdd75cc9a83c"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.21"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-82g8-464f-2mv7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-82g8-464f-2mv7"
+      }
+    ],
+    "Description": "### Summary\n`applySkillConfigEnvOverrides` previously copied `skills.entries.*.env` values into the host `process.env` without applying the host env safety policy.\n\n### Impact\nIn affected versions, dangerous process-level variables such as `NODE_OPTIONS` could be injected when unset, which can influence runtime/child-process behavior.\n\n### Required attacker capability\nAn attacker must be able to modify OpenClaw local state/config (for example `~/.openclaw/openclaw.json`) to set `skills.entries.\u003cskill\u003e.env` or related skill config values.\n\n### Severity rationale\nPer `SECURITY.md`, anyone who can modify `~/.openclaw` config is already a trusted operator, and mutually untrusted operators sharing one host/config are out of scope. Because exploitation requires trusted-config write access in the documented model, this is classified as a **medium** defense-in-depth issue rather than a cross-boundary critical break.\n\n### Remediation\nFixed in `2026.2.21` by sanitizing skill env overrides and blocking dangerous host env keys (including `NODE_OPTIONS`) before applying overrides, with regression tests covering blocked dangerous keys.\n\n## Fix Commit(s)\n- `8c9f35cdb51692b650ddf05b259ccdd75cc9a83c`\n\nFound using [MCPwner](https://github.com/Pigyon/MCPwner)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-02-27T21:36:17Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Skill env override host env injection via applySkillConfigEnvOverrides (defense-in-depth)",
+    "UpdatedAt": "2026-02-27T21:36:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.21"
+    }
+  ]
+}
