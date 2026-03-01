@@ -1,7 +1,10 @@
 {
   "id": "GHSA-j8cj-hw74-64jv",
-  "modified": "2026-02-28T06:46:58.940085Z",
+  "modified": "2026-03-01T06:11:19.337988Z",
   "published": "2026-02-28T02:48:45Z",
+  "aliases": [
+    "RUSTSEC-2026-0029"
+  ],
   "summary": "Hive has Double-free and Use After Free Vulnerabilities",
   "details": "`Drop` implementation for `Hive` did perform free, but so did `Hive::close`, which, at the end of the scope performed `Drop`, therefore triggering double-free.\n\nAdditionally, function `Hive::from_handle` was not marked as unsafe, making it, in combination with `as_handle` easy to clone and trigger double-free in safe code or triggering UB when using invalid pointer.",
   "affected": [
