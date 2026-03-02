@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T14:34:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nestjs/platform-fastify"
+  },
+  "Advisory": {
+    "DatabaseId": 339777,
+    "Id": "GSA_kwCzR0hTQS1yNHdtLXg4OTItdmpteM4ABS9B",
+    "GhsaId": "GHSA-r4wm-x892-vjmx",
+    "References": [
+      {
+        "Url": "https://github.com/nestjs/nest/security/advisories/GHSA-r4wm-x892-vjmx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2293"
+      },
+      {
+        "Url": "https://github.com/nestjs/nest/commit/fd8d073e0e048b185147209338ca7042e52c10ba"
+      },
+      {
+        "Url": "https://fluidattacks.com/advisories/neton"
+      },
+      {
+        "Url": "https://github.com/nestjs/nest/releases/tag/v11.1.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4wm-x892-vjmx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4wm-x892-vjmx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2293"
+      }
+    ],
+    "Description": "### Impact\n_What kind of vulnerability is it? Who is impacted?_\n\nA NestJS application using `@nestjs/platform-fastify` can allow bypass of any middleware when Fastify path-normalization options (e.g., `ignoreTrailingSlash`, `ignoreDuplicateSlashes`, `useSemicolonDelimiter`) are enabled. In affected route-scoped middleware setups, variant paths may skip middleware checks while still reaching the protected handler.\n\nThe bug is a path canonicalization mismatch between middleware matching and route matching in Nest’s Fastify adapter.\n\nNest passes Fastify routerOptions (such as `ignoreTrailingSlash`, `ignoreDuplicateSlashes`, `useSemicolonDelimiter`) to the Fastify router in packages/platform-fastify/adapters/fastify-adapter.ts:253.\n\nBut middleware execution is decided by a separate regex check over `req.originalUrl` in packages/platform-fastify/adapters/fastify-adapter.ts:706 and packages/platform-fastify/adapters/fastify-adapter.ts:713.\n\nIf that regex does not match, Nest does `next()` and skips the middleware (packages/platform-fastify/adapters/fastify-adapter.ts:714), while Fastify may still normalize the same path and route it to the protected handler. So the vulnerability exists because security checks (middleware) and request dispatch(router) use different URL interpretations.\n\nThis is a fail-open design issue (inconsistent normalization), not just a bad app config: non-default router options make the mismatch reachable.\n\n### Patches\n\nFixed in `@nestjs/platform-fastify@11.1.14`\n\n### References\n\nCredit goes to Fluidattacks ([Cristian Vargas](https://www.linkedin.com/in/cvmiracle/)) https://fluidattacks.com/advisories/neton",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T14:34:12Z",
+    "Severity": "HIGH",
+    "Summary": "Nest has a Fastify URL Encoding Middleware Bypass ",
+    "UpdatedAt": "2026-03-02T14:34:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.1.14"
+      },
+      "VulnerableVersionRange": "\u003c= 11.1.13"
+    }
+  ]
+}
