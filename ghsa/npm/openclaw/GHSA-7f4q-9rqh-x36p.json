@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T00:41:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339994,
+    "Id": "GSA_kwCzR0hTQS03ZjRxLTlycWgteDM2cM4ABTAa",
+    "GhsaId": "GHSA-7f4q-9rqh-x36p",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-7f4q-9rqh-x36p"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/dd41fadcaf58fd9deb963d6e163c56161e7b35dd"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7f4q-9rqh-x36p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7f4q-9rqh-x36p"
+      }
+    ],
+    "Description": "### Summary\nOn macOS node-host, optional exec-approval allowlist mode previously treated basename-only entries (for example `echo`) as trusted command matches.\nThis could allow a same-name local binary (for example `./echo`) to run without approval under `security=allowlist` + `ask=on-miss`.\n\n### Scope / Preconditions\n- macOS node-host path.\n- Optional exec approvals feature enabled with `security=allowlist`.\n- Basename-only allowlist entries configured.\n\nDefault install posture is not impacted: `security=deny` by default.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published npm version at triage time: `2026.2.21-2`\n- Vulnerable range: `\u003c=2026.2.21-2`\n- Planned patched version (next release): `\u003e= 2026.2.22`\n\n### Remediation\n- Enforced path-only allowlist matching on macOS node-host (basename fallback removed).\n- Added migration for legacy basename allowlist entries to last-resolved paths when available.\n- UI/store validation now rejects non-path allowlist patterns.\n\n### Fix Commit(s)\n- dd41fadcaf58fd9deb963d6e163c56161e7b35dd\n\n### Release Process Note\nPatched version is pre-set for the planned next release (`2026.2.22`). Once that npm release is out, advisory can be published without further field edits.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T00:41:20Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: macOS optional allowlist basename matching could bypass path-based policy",
+    "UpdatedAt": "2026-03-03T00:41:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

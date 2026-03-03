@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T00:39:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339991,
+    "Id": "GSA_kwCzR0hTQS02ZzI1LXBjODItdmZ3cM4ABTAX",
+    "GhsaId": "GHSA-6g25-pc82-vfwp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6g25-pc82-vfwp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8f3310000a8b0c11eced054c2cdb6fb27803511a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6g25-pc82-vfwp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6g25-pc82-vfwp"
+      }
+    ],
+    "Description": "### Summary\n\nThe affected surface is the OpenClaw macOS app onboarding flow, and the macOS app is currently in **beta**.\nIn that beta onboarding flow, Anthropic OAuth used the PKCE `code_verifier` value as OAuth `state`, exposing that secret in front-channel URL state.\n\n### Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.24` (latest published npm at triage time)\n- Affected surface: macOS app beta onboarding path (`apps/macos`)\n- Not affected: core CLI/gateway onboarding paths\n- Patched version : `2026.2.25`\n\n### Impact\n\nScope is limited to the macOS beta onboarding OAuth path. Exploitation required obtaining both OAuth authorization artifacts and exposed `state` values during that flow.\n\n### Remediation\n\nOpenClaw removed Anthropic OAuth sign-in from macOS onboarding and now supports setup-token-only Anthropic subscription auth in this path.\n\n### Fix Commit(s)\n\n- `8f3310000a8b0c11eced054c2cdb6fb27803511a`\n\n### Release Process Note\n\n`patched_versions` is pre-set to the release (`2026.2.25`).\nAdvisory published with npm release `2026.2.25`.2.25` is published, this advisory is published.\n\nOpenClaw thanks @zdi-disclosures for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T00:39:40Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: macOS beta onboarding exposed PKCE verifier via OAuth state",
+    "UpdatedAt": "2026-03-03T00:39:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T00:38:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339990,
+    "Id": "GSA_kwCzR0hTQS01ODQ3LXJtM2ctMjNtd84ABTAW",
+    "GhsaId": "GHSA-5847-rm3g-23mw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5847-rm3g-23mw"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3284d2eb227e7b6536d543bcf5c3e320bc9d13c5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5847-rm3g-23mw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5847-rm3g-23mw"
+      }
+    ],
+    "Description": "## Vulnerability\n\nThe hook authentication throttle keyed failed attempts by raw socket `remoteAddress` text.\n\nIPv4 and IPv4-mapped IPv6 forms of the same client (for example `1.2.3.4` and `::ffff:1.2.3.4`) were treated as different clients, allowing separate rate-limit buckets.\n\n## Impact\n\nAn attacker could split failed hook-auth attempts across both address forms and effectively double the brute-force budget from 20 to 40 attempts per 60-second window.\n\n## Affected Components\n\n- `src/gateway/server-http.ts`\n- `src/gateway/auth-rate-limit.ts`\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.21-2`\n- Patched version (planned next release): `2026.2.22`\n\n## Remediation\n\nCentralize and reuse canonical client-IP normalization for auth rate-limiting, and use that canonical key for hook auth throttling.\n\n## Fix Commit(s)\n\n- `3284d2eb227e7b6536d543bcf5c3e320bc9d13c5`\n\n## Release Process Note\n\n`patched_versions` is pre-set to the planned next release (`2026.2.22`) so once npm release `2026.2.22` is published, this advisory can be published directly.\n\nOpenClaw thanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T00:38:48Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has hook auth rate limiter bypass via IPv4-mapped IPv6 client key variants",
+    "UpdatedAt": "2026-03-03T00:38:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}
