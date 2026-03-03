@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T21:55:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339954,
+    "Id": "GSA_kwCzR0hTQS03eG1xLWc0NmctZjhwds4ABS_y",
+    "GhsaId": "GHSA-7xmq-g46g-f8pv",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-7xmq-g46g-f8pv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7xmq-g46g-f8pv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7xmq-g46g-f8pv"
+      }
+    ],
+    "Description": "### Summary\nSandbox media handling had a time-of-check/time-of-use gap: media paths could be validated first and read later through a separate path. A symlink retarget between those steps could cause reads outside `sandboxRoot`.\n\n### Impact\nAffected versions could permit host file reads outside the intended sandbox root in media attachment/image flows.\n\n### Fix\nMedia reads now use consolidated root-scoped, boundary-safe read paths at use time, removing check/use drift across call sites.\n\n### Affected and Patched Versions\n- Affected: `\u003c= 2026.2.26`\n- Patched: `2026.3.1`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T21:55:47Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Sandbox media TOCTOU could read files outside sandbox root",
+    "UpdatedAt": "2026-03-02T21:55:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.1"
+    }
+  ]
+}

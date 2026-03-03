@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T23:37:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339985,
+    "Id": "GSA_kwCzR0hTQS13dzZ2LXY3NDgteDdnOc4ABTAR",
+    "GhsaId": "GHSA-ww6v-v748-x7g9",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-ww6v-v748-x7g9"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/14b6eea6e"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5552f9073"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ww6v-v748-x7g9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ww6v-v748-x7g9"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw@2026.2.23`, sandbox network hardening blocks `network=host` but still allows `network=container:\u003cid\u003e`.\n\nThis can let a sandbox join another container's network namespace and reach services available in that namespace.\n\n### Preconditions and Trust Model Context\nThis issue requires a trusted-operator configuration path (for example setting `agents.defaults.sandbox.docker.network` in gateway config). It is not an unauthenticated remote exploit by itself.\n\n### Details\nCurrent validation blocks only `host`, while forwarding other values to Docker create args:\n\n- `validateNetworkMode(network)` only rejects values in `BLOCKED_NETWORK_MODES = {\"host\"}`.\n- `buildSandboxCreateArgs(...)` validates then forwards `cfg.network` into `--network`.\n- Browser sandbox helper also treats `container:` as an accepted mode in network preparation.\n\nEffective behavior:\n\n- `host` -\u003e blocked\n- `container:\u003cid\u003e` -\u003e accepted and forwarded\n\n### Impact\nType: sandbox network isolation hardening bypass.\n\nPractical impact depends on deployment:\n\n- Requires ability to influence trusted sandbox network config.\n- Higher impact when a target container exposes privileged/internal network reachability.\n\n### Remediation\nBlock namespace-join style network modes (including `container:\u003cid\u003e`) for sandbox containers, and keep strict allowlisting for safe network modes.\n\n\n### Patch Status\nFixed on `main` in commit `14b6eea6e`:\nhttps://github.com/openclaw/openclaw/commit/14b6eea6e\n\nFollow-up refactor/cleanup (no policy rollback):\nhttps://github.com/openclaw/openclaw/commit/5552f9073\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T23:37:46Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has a sandbox network isolation bypass via docker.network=container:\u003cid\u003e",
+    "UpdatedAt": "2026-03-02T23:37:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T22:15:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339962,
+    "Id": "GSA_kwCzR0hTQS01djZ4LXJmYzMtN3Fmcs4ABS_6",
+    "GhsaId": "GHSA-5v6x-rfc3-7qfr",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5v6x-rfc3-7qfr"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/6007941f04df1edcca679dd6c95949744fdbd4df"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5v6x-rfc3-7qfr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5v6x-rfc3-7qfr"
+      }
+    ],
+    "Description": "### Summary\nA Windows `system.run` approval-integrity mismatch in the `cmd.exe /c` path could allow trailing arguments to execute while approval/audit text reflected only a benign command string.\n\nThis requires an authenticated operator context using the approvals flow and a trusted Windows node.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published vulnerable version (as of 2026-02-21): `2026.2.19-2`\n- Vulnerable range: `\u003c=2026.2.19-2`\n- Patched version (planned next release): `2026.2.21`\n\n### Attack Scenario\n1. An authenticated operator approval is created for a benign command text (for example, `echo`).\n2. A `system.run` request uses `cmd.exe /c` with extra trailing arguments.\n3. Prior behavior could bind approval/audit text to the benign command while still executing the full argument tail on the node.\n\n### Impact\n- Local command execution on the trusted Windows node process account.\n- Approval/audit command text integrity mismatch.\n\n### Fix\n- Canonicalize the full command tail after `cmd.exe /c`.\n- Reuse one shared command canonicalization/validation path for validation, approval matching, and execution/audit text.\n- Add regression coverage for trailing-argument smuggling and approval binding.\n\n### Fix Commit(s)\n- `6007941f04df1edcca679dd6c95949744fdbd4df`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.21`). Once that npm release is live, this advisory can be published directly.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:15:53Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has Windows system.run approval mismatch on cmd.exe /c trailing arguments",
+    "UpdatedAt": "2026-03-02T22:15:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.21"
+    }
+  ]
+}

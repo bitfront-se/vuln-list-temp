@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-02T22:14:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339961,
+    "Id": "GSA_kwCzR0hTQS13bThyLXc4cGYtMnY2d84ABS_5",
+    "GhsaId": "GHSA-wm8r-w8pf-2v6w",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-wm8r-w8pf-2v6w"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/64de4b6d6ae81e269ceb4ca16f53cda99ced967a"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8bdda7a651c21e98faccdbbd73081e79cffe8be0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wm8r-w8pf-2v6w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wm8r-w8pf-2v6w"
+      }
+    ],
+    "Description": "### Summary\nIn OpenClaw `2026.2.25`, Signal group authorization under `groupPolicy=allowlist` could accept sender identities sourced from DM pairing-store approvals. This allowed DM pairing approvals to leak into group allowlist evaluation.\n\n### Impact\nThis is an authorization-boundary weakness between DM pairing and group allowlist controls. A sender approved for DM pairing could pass group checks without explicit group allowlisting.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version affected: `2026.2.25`\n- Vulnerable range: `\u003c= 2026.2.25`\n- Patched version (planned next release): `\u003e= 2026.2.26`\n\n### Fix\nOpenClaw now keeps DM pairing-store entries DM-only and enforces explicit group allowlist boundaries in shared DM/group policy resolution used by Signal and other channels.\n\n### Fix Commit(s)\n- `8bdda7a651c21e98faccdbbd73081e79cffe8be0`\n- `64de4b6d6ae81e269ceb4ca16f53cda99ced967a`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`). After npm publish of that version, this advisory is ready to publish without further content edits.\n\nThanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:14:56Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw has Signal group allowlist authorization bypass via DM pairing-store leakage",
+    "UpdatedAt": "2026-03-02T22:14:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.26"
+    }
+  ]
+}

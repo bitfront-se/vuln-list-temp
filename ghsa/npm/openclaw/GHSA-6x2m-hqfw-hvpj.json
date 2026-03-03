@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T22:29:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339968,
+    "Id": "GSA_kwCzR0hTQS02eDJtLWhxZnctaHZwas4ABTAA",
+    "GhsaId": "GHSA-6x2m-hqfw-hvpj",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6x2m-hqfw-hvpj"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4a3f8438e527ac371a67fe7ac68a287f0dbe6063"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6x2m-hqfw-hvpj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6x2m-hqfw-hvpj"
+      }
+    ],
+    "Description": "## Summary\n`exec.approval` requests for `host=node` were not explicitly bound to the target `nodeId`, so an approval intended for one node could be replayed for a different node under the same operator-controlled gateway fleet.\n\n## Impact\nAn operator approval for a `system.run` request could be reused across nodes if the request payload did not carry node identity through approval and execution checks.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.22-2`\n- Fixed: `2026.2.23` (released)\n\n## Mitigation\nUpgrade to `2026.2.23` or later once published.\n\n## Fix Details\nThe fix requires and persists `nodeId` for `host=node` approval requests and rejects execution when the approving node binding does not match the invoking node.\n\n## Fix Commit(s)\n- 4a3f8438e527ac371a67fe7ac68a287f0dbe6063\n\n## Release Process Note\n`patched_versions` is pre-set to the released version (`2026.2.23`). This advisory now reflects released fix version `2026.2.23`.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:29:45Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Node exec approvals could be replayed across nodes",
+    "UpdatedAt": "2026-03-02T22:29:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

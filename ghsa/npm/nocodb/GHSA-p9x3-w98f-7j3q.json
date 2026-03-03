@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T19:53:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 339870,
+    "Id": "GSA_kwCzR0hTQS1wOXgzLXc5OGYtN2ozcc4ABS-e",
+    "GhsaId": "GHSA-p9x3-w98f-7j3q",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-p9x3-w98f-7j3q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28361"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/0.301.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p9x3-w98f-7j3q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p9x3-w98f-7j3q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28361"
+      }
+    ],
+    "Description": "### Summary\nThe MCP token service did not validate token ownership, allowing a Creator within the same base to read, regenerate, or delete another user's MCP tokens if the token ID was known.\n\n### Details\n`McpTokenService.get()`, `regenerateToken()`, and `delete()` did not filter by `fk_user_id`. The analogous `ApiTokensService` correctly enforced ownership.\n\n### Impact\nLimited — requires Creator role and knowledge of target token ID. Primary risk is denial of service (invalidating tokens) and scoped token disclosure.\n\n### Credit\nThis issue was reported by [@bugbunny-research](https://github.com/bugbunny-research) (bugbunny.ai).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T19:53:41Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB Missing Ownership Validation in MCP Token Operations",
+    "UpdatedAt": "2026-03-02T19:53:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.301.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.2"
+    }
+  ]
+}

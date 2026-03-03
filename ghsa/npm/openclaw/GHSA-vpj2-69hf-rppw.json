@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T21:49:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339947,
+    "Id": "GSA_kwCzR0hTQS12cGoyLTY5aGYtcnBwd84ABS_r",
+    "GhsaId": "GHSA-vpj2-69hf-rppw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vpj2-69hf-rppw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vpj2-69hf-rppw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vpj2-69hf-rppw"
+      }
+    ],
+    "Description": "### Summary\nWhen browser control started without explicit auth credentials, OpenClaw attempted to bootstrap auth automatically. In affected versions, if that bootstrap step threw an error, startup could continue and expose browser-control routes without authentication.\n\n### Impact\nOn affected deployments, a local process (or a loopback-reachable SSRF path) could access browser-control routes, including evaluate-capable actions, without auth.\n\n### Fix\nStartup now fails closed: if bootstrap auth fails and no explicit token/password is configured, browser-control startup aborts.\n\n### Affected and Patched Versions\n- Affected: `\u003c= 2026.2.26`\n- Patched: `2026.3.1`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T21:49:14Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Browser control startup could continue unauthenticated after auth bootstrap failure",
+    "UpdatedAt": "2026-03-02T21:49:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.1"
+    }
+  ]
+}

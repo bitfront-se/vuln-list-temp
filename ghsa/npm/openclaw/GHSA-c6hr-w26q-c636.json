@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T22:17:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339964,
+    "Id": "GSA_kwCzR0hTQS1jNmhyLXcyNnEtYzYzNs4ABS_8",
+    "GhsaId": "GHSA-c6hr-w26q-c636",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-c6hr-w26q-c636"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/74268489137510b6f6349919d1e197b17290d92c"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7e67ab75cc2f0e93569d12fecd1411c2961fcc8c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c6hr-w26q-c636"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c6hr-w26q-c636"
+      }
+    ],
+    "Description": "## Summary\n\n`extensions/feishu/src/bot.ts` constructed `new RegExp()` directly from Feishu mention metadata (`mention.name`, `mention.key`) in `stripBotMention()` without escaping regex metacharacters.\n\n## Affected Packages / Versions\n\n- Package: npm `openclaw`\n- Affected versions: `\u003c= 2026.2.17`\n- First affected release: `2026.2.6`\n- Patched version: `2026.2.19`\n\n## Impact\n\n- ReDoS: crafted nested-quantifier patterns in mention metadata can trigger catastrophic backtracking and block message processing.\n- Regex injection: metacharacters in mention metadata can remove unintended message content before it is sent to the model.\n\n## Fix Commit(s)\n\n- `7e67ab75cc2f0e93569d12fecd1411c2961fcc8c`\n- `74268489137510b6f6349919d1e197b17290d92c`\n\nThanks @allsmog for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:17:30Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has ReDoS and regex injection via unescaped Feishu mention metadata in RegExp construction",
+    "UpdatedAt": "2026-03-02T22:17:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

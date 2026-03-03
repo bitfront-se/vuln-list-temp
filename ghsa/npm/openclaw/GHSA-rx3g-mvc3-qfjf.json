@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T00:20:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339986,
+    "Id": "GSA_kwCzR0hTQS1yeDNnLW12YzMtcWZqZs4ABTAS",
+    "GhsaId": "GHSA-rx3g-mvc3-qfjf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rx3g-mvc3-qfjf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3d0337504349954237d09e4d957df5cb844d5e77"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/6970c2c2db3ee069ef0fff0ade5cfbdd0134f9d2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rx3g-mvc3-qfjf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rx3g-mvc3-qfjf"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw avatar handling allowed a symlink traversal path that could expose local files outside an agent workspace through gateway avatar surfaces.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.21`, plus prereleases `2026.2.21-1` and `2026.2.21-2`\n- Latest published version at triage time (2026-02-22): `2026.2.21-2` (affected)\n- Planned patched version (pre-set for release workflow): `2026.2.22`\n\n### Details\nIn vulnerable builds, local avatar resolution could follow symlinks and return file bytes from outside the configured workspace boundary.\n\nThe issue was hardened in two paths:\n1. Gateway avatar metadata resolution now enforces canonical containment, `O_NOFOLLOW`, and fd/file-identity checks.\n2. Control UI avatar serving now rejects symlink paths and enforces fd/file-identity and size checks before reads.\n\n### Fix Commit(s)\n- `3d0337504349954237d09e4d957df5cb844d5e77`\n- `6970c2c2db3ee069ef0fff0ade5cfbdd0134f9d2`\n\n### Release Process Note\n`patched_versions` is pre-set to `\u003e= 2026.2.22` so after npm release, the remaining action is to publish this advisory.\n\n### Impact\nConfidentiality impact only: local files readable by the OpenClaw process could be disclosed via avatar response surfaces.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T00:20:18Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's avatar symlink traversal can expose out-of-workspace local files",
+    "UpdatedAt": "2026-03-03T00:20:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

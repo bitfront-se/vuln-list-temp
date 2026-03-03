@@ -1,0 +1,61 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T23:35:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339984,
+    "Id": "GSA_kwCzR0hTQS1mN3d3LTI3MjUtcXZ3Ms4ABTAQ",
+    "GhsaId": "GHSA-f7ww-2725-qvw2",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-f7ww-2725-qvw2"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4b4718c8dfce2e2c48404aa5088af7c013bed60b"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4e690e09c746408b5e27617a20cb3fdc5190dbda"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/78a7ff2d50fb3bcef351571cb5a0f21430a340c1"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d06632ba45a8482192792c55d5ff0b2e21abb0a7"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d82c042b09727a6148f3ca651b254c4a677aff26"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f7ww-2725-qvw2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f7ww-2725-qvw2"
+      }
+    ],
+    "Description": "## Summary\nFor `host=node` executions, approval context could be bypassed after approval-time by rebinding a writable parent symlink in `cwd` while preserving the visible `cwd` string.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.25`\n- Fixed: `\u003e= 2026.2.26` (planned next npm release)\n\n## Impact\nA command approved for one filesystem location could execute from a different location if a mutable parent symlink changed between approval and execution.\n\n## Fix\n- Added immutable approval-time plan preparation (`system.run.prepare`) and `systemRunPlanV2` canonical fields (`argv`, `cwd`, `agentId`, `sessionKey`).\n- Enforced canonical plan values through approval request storage and forwarding-time sanitization.\n- Rejected mutable parent-symlink path components during approval-plan building to block symlink rebind bypass.\n- Follow-up refactors centralized command catalogs and approval context/error handling to reduce future drift.\n\n## Fix Commit(s)\n- `78a7ff2d50fb3bcef351571cb5a0f21430a340c1`\n- `d82c042b09727a6148f3ca651b254c4a677aff26`\n- `d06632ba45a8482192792c55d5ff0b2e21abb0a7`\n- `4e690e09c746408b5e27617a20cb3fdc5190dbda`\n- `4b4718c8dfce2e2c48404aa5088af7c013bed60b`\n\n## Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`). Once npm `openclaw@2026.2.26` is published, publish this advisory directly without further version-field edits.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T23:35:56Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Node system.run approval bypass via parent-symlink cwd rebind",
+    "UpdatedAt": "2026-03-02T23:35:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

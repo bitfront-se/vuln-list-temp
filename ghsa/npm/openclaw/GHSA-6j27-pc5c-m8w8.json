@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T22:20:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339967,
+    "Id": "GSA_kwCzR0hTQS02ajI3LXBjNWMtbTh3OM4ABS__",
+    "GhsaId": "GHSA-6j27-pc5c-m8w8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6j27-pc5c-m8w8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/24c954d972400f508814532dea0e4dcb38418bb0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6j27-pc5c-m8w8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6j27-pc5c-m8w8"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw` npm releases up to and including `2026.2.21-2`, approving wrapped `system.run` commands with `allow-always` in `security=allowlist` mode could persist wrapper-level allowlist entries and enable later approval-bypass execution of different inner payloads.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.21-2`\n- Planned patched version: `2026.2.22`\n\n### Details\n`allow-always` persistence was based on wrapper-level resolution instead of stable inner executable intent. A benign approved wrapper invocation could therefore broaden future trust boundaries.\n\nAffected paths included gateway and node-host execution approval persistence flows. The fix now persists inner executable paths for known dispatch-wrapper chains (`env`, `nice`, `nohup`, `stdbuf`, `timeout`) and fails closed when safe unwrapping cannot be derived.\n\n### Impact\nAuthorization boundary bypass in allowlist mode, potentially leading to approval-free command execution (RCE class) on subsequent wrapped invocations.\n\n### Mitigation\nUpgrade to `2026.2.22` (planned next release) or run with stricter exec policy (`ask=always` / `security=deny`) until upgraded.\n\n### Fix Commit(s)\n- `24c954d972400f508814532dea0e4dcb38418bb0`\n\n### Release Process Note\n`patched_versions` is pre-set to `2026.2.22` so this advisory is publish-ready; publish after the npm release is live.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:20:22Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's allow-always wrapper persistence could bypass future approvals and enable command execution",
+    "UpdatedAt": "2026-03-02T22:20:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

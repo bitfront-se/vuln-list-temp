@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T22:40:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339975,
+    "Id": "GSA_kwCzR0hTQS1wMjVoLTlxNTQtZmZ2d84ABTAH",
+    "GhsaId": "GHSA-p25h-9q54-ffvw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-p25h-9q54-ffvw"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3aa94afcfd12104c683c9cad81faf434d0dadf87"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p25h-9q54-ffvw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p25h-9q54-ffvw"
+      }
+    ],
+    "Description": "## Summary\nOpenClaw versions before 2026.2.14 did not sufficiently validate TAR archive entry paths during extraction. A crafted archive could use path traversal sequences (for example `../../...`) to write files outside the intended destination directory (Zip Slip).\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c 2026.2.14`\n- Fixed: `\u003e= 2026.2.14`\n\n## Details\nThe affected code path is `extractArchive()` in `src/infra/archive.ts`. Prior to 2026.2.14, TAR extraction used `tar.x({ cwd: destDir })` without rejecting traversal and absolute entry paths.\n\nThis extraction is used by installation flows such as:\n- `openclaw plugins install …`\n- `openclaw hooks install …`\n\n## Impact\nIf a user installs an untrusted `.tar` / `.tgz` archive, an attacker can write files outside the extraction directory (within the permissions of the OpenClaw process). This can lead to configuration tampering and potentially code execution.\n\n## Mitigation\nUpgrade to `openclaw \u003e= 2026.2.14`. Avoid installing untrusted plugin/hook archives.\n\n## Fix Commit(s)\n- `3aa94afcfd12104c683c9cad81faf434d0dadf87`\n\nOpenClaw thanks @xuemian168 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:40:57Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has Zip Slip path traversal in tar archive extraction",
+    "UpdatedAt": "2026-03-02T22:40:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.14"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-02T22:19:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339966,
+    "Id": "GSA_kwCzR0hTQS01Z2hjLTk4d2gtZ3d3Zs4ABS_-",
+    "GhsaId": "GHSA-5ghc-98wh-gwwf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5ghc-98wh-gwwf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7c500ff6236fa087ec1ec88696ca9f6881e90dc5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5ghc-98wh-gwwf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5ghc-98wh-gwwf"
+      }
+    ],
+    "Description": "### Summary\nThe Control UI static file handler previously validated asset paths lexically and then served files with APIs that follow symbolic links. A symlink placed under the Control UI root could cause out-of-root file reads.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version observed: `2026.2.21-2`\n- Affected versions: `\u003c=2026.2.21-2`\n- Planned fixed release version: `2026.2.22`\n\n### Technical Details\nThe vulnerable flow was in `src/gateway/control-ui.ts`, where `path.join(...)` + string-prefix checks were followed by file reads that resolved symlinks. This allowed directory-confinement bypasses when symlinks existed inside the Control UI root.\n\nThe fix now enforces realpath containment and verifies file identity before serving Control UI assets and SPA fallback `index.html`.\n\n### Impact\n- Vulnerability type: path traversal / external file exposure via symlink following.\n- Primary impact: confidentiality (out-of-root file read).\n- Severity guidance: low in supported trusted-operator deployments; can be higher in unsupported shared-writable setups.\n\n### Fix Commit(s)\n- `7c500ff6236fa087ec1ec88696ca9f6881e90dc5`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.22`). After npm release is available, publish the advisory.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:19:03Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw's Control UI Static File Handler Follows Symlinks and Allows Out-of-Root File Read",
+    "UpdatedAt": "2026-03-02T22:19:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

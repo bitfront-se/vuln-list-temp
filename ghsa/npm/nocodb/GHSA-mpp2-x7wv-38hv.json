@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-02T19:52:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 339868,
+    "Id": "GSA_kwCzR0hTQS1tcHAyLXg3d3YtMzhods4ABS-c",
+    "GhsaId": "GHSA-mpp2-x7wv-38hv",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-mpp2-x7wv-38hv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28360"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/0.301.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mpp2-x7wv-38hv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mpp2-x7wv-38hv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28360"
+      }
+    ],
+    "Description": "### Summary\nShared view passwords were stored in plaintext in the database and compared using direct string equality.\n\n### Details\nThe `password` column in `nc_views` stored unhashed passwords. Verification used `!==` comparison across `public-datas.service.ts`, `public-metas.service.ts`, and `calendar-datas.service.ts`.\n\n### Impact\nIf the database is compromised, shared view passwords are immediately readable. Risk is limited to password reuse scenarios.\n\n### Credit\nThis issue was reported by [@Tulgaaaaaaaa](https://github.com/Tulgaaaaaaaa).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T19:52:57Z",
+    "Severity": "LOW",
+    "Summary": "NocoDB has Plaintext Storage of Shared View Passwords",
+    "UpdatedAt": "2026-03-02T19:52:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.301.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.2"
+    }
+  ]
+}

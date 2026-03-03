@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T22:03:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339957,
+    "Id": "GSA_kwCzR0hTQS1xMzk5LTIzcjMtaGZ4NM4ABS_1",
+    "GhsaId": "GHSA-q399-23r3-hfx4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-q399-23r3-hfx4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q399-23r3-hfx4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q399-23r3-hfx4"
+      }
+    ],
+    "Description": "### Summary\nFor `host=node` runs, approvals validated command context but did not pin executable identity for non-path-like `argv[0]` tokens (for example `tr`). If PATH resolution changed after approval, execution could run a different binary.\n\n### Impact\nA previously approved action could execute a different executable than the operator approved.\n\n### Fix\nNode `system.run` approvals now require immutable `systemRunPlan` data, and path-token commands are pinned to canonical executable identity (`realpath`) across approval and execution.\n\n### Affected and Patched Versions\n- Affected: `\u003c= 2026.2.26`\n- Patched: `2026.3.1`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:03:29Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: system.run approvals did not bind PATH-token executable identity, enabling post-approval executable rebind",
+    "UpdatedAt": "2026-03-02T22:03:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.1"
+    }
+  ]
+}

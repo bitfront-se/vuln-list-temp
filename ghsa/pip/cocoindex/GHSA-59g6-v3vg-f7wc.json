@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T20:27:50Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "cocoindex"
+  },
+  "Advisory": {
+    "DatabaseId": 339873,
+    "Id": "GSA_kwCzR0hTQS01OWc2LXYzdmctZjd3Y84ABS-h",
+    "GhsaId": "GHSA-59g6-v3vg-f7wc",
+    "References": [
+      {
+        "Url": "https://github.com/cocoindex-io/cocoindex/security/advisories/GHSA-59g6-v3vg-f7wc"
+      },
+      {
+        "Url": "https://github.com/cocoindex-io/cocoindex/commit/ba2fc4a89e22d35572c64bd2990737c7913b0729"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-59g6-v3vg-f7wc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-59g6-v3vg-f7wc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28438"
+      }
+    ],
+    "Description": "### Impact\nThe Doris target connector didn't verify the configured table name before creating some SQL statements (`ALTER TABLE`). So, in the application code, if the table name is provided by an untrusted upstream, it expose vulnerability to SQL injection when target schema change.\n\n### Patches\nYes, it's fixed in cocoindex 0.3.34: we start to validate table names passed to Doris target at entry point and error out immediately if it's not a valid identifier.\n\n### Workarounds\nUsers should make sure table names used to configure CocoIndex targets are valid, regardless of this fix. Which means\n\n- The table name comes from a trusted source (e.g. for most cases it's just a fixed string literal).\n- Even if it comes from an untrusted source (e.g. provided by end user), it should be validated before using it to configure the Doris target for CocoIndex.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T20:27:48Z",
+    "Severity": "HIGH",
+    "Summary": "CocoIndex Doris target connector didn't verify table name when constructing ALTER TABLE statements",
+    "UpdatedAt": "2026-03-02T21:58:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.34"
+      },
+      "VulnerableVersionRange": "\u003c 0.3.34"
+    }
+  ]
+}

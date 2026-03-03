@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T22:43:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339976,
+    "Id": "GSA_kwCzR0hTQS00N3E3LTk3eHAtbTI3Ms4ABTAI",
+    "GhsaId": "GHSA-47q7-97xp-m272",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-47q7-97xp-m272"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/113ebfd6a23c4beb8a575d48f7482593254506ec"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-47q7-97xp-m272"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-47q7-97xp-m272"
+      }
+    ],
+    "Description": "## Summary\n\nOpenClaw hooks previously compared the provided hook token using a regular string comparison. Because this comparison is not constant-time, an attacker with network access to the hooks endpoint could potentially use timing measurements across many requests to gradually infer the token.\n\nIn practice, this typically requires hooks to be exposed to an untrusted network and a large number of requests; real-world latency and jitter can make reliable measurement difficult.\n\n## Affected Packages / Versions\n\n- openclaw (npm): \u003c 2026.2.12\n\n## Patched Versions\n\n- openclaw (npm): \u003e= 2026.2.12\n\n## Mitigations\n\n- Upgrade to openclaw \u003e= 2026.2.12.\n- If users cannot upgrade immediately: restrict network access to the hooks endpoint and rotate the hooks token after updating.\n\n## Fix Commit(s)\n\n- 113ebfd6a23c4beb8a575d48f7482593254506ec\n\nOpenClaw thanks @akhmittra for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:43:10Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Config writes could persist resolved ${VAR} secrets to disk",
+    "UpdatedAt": "2026-03-02T22:43:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.13"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.13"
+    }
+  ]
+}

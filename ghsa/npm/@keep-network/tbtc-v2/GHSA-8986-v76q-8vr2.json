@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-02T22:09:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@keep-network/tbtc-v2"
+  },
+  "Advisory": {
+    "DatabaseId": 339960,
+    "Id": "GSA_kwCzR0hTQS04OTg2LXY3NnEtOHZyMs4ABS_4",
+    "GhsaId": "GHSA-8986-v76q-8vr2",
+    "References": [
+      {
+        "Url": "https://github.com/threshold-network/tbtc-v2/security/advisories/GHSA-8986-v76q-8vr2"
+      },
+      {
+        "Url": "https://bugs.immunefi.com/magnus/672/projects/502/bug-bounty/reports/55982"
+      },
+      {
+        "Url": "https://github.com/keep-network/bitcoin-spv/blob/856849612ef49114af18c0f407eaa74afc2ee4be/solidity/contracts/BTCUtils.sol#L610-L612"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8986-v76q-8vr2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8986-v76q-8vr2"
+      }
+    ],
+    "Description": "# Overview\n\nP2PKH has 20 bytes just like P2SH. We protect against revealing P2PKH deposits by manually assembling the expected P2SH script in the smart contract and comparing hashes. However, we missed the case when the attacker embeds a valid P2SH inside of P2PKH as an output script. bitcoin-spv library [extracts the P2SH from P2PKH](https://github.com/keep-network/bitcoin-spv/blob/856849612ef49114af18c0f407eaa74afc2ee4be/solidity/contracts/BTCUtils.sol#L610-L612) and we treat it as a valid P2SH output.\n\nThis does not lead to stealing funds but can lead to protocol insolvency.\n\nThe off-chain client handles this case correctly, but the problem is in the optimistic minting bot. The bot assumes that if the funding TX exists on Bitcoin with the right amount and it was successfully revealed, the transaction is valid.\n\nhttps://bugs.immunefi.com/magnus/672/projects/502/bug-bounty/reports/55982\n\n# Steps\n\nSince there is a 24-hour governance delay on upgrading the Bridge smart contract, we are going to pause optimistic minting.\n\n1. Pause optimistic minting.\n2. Deploy new Bridge implementation with Deposit library containing a fix, WITHOUT VERIFYING THE CODE on Etherscan.\n3. Schedule upgrade transaction.\n4. After 24 hours, finalize upgrade.\n5. Unpause optimistic minting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:09:19Z",
+    "Severity": "HIGH",
+    "Summary": "@keep-network/tbtc-v2 revealing P2PKH deposit with a wrapped P2SH script",
+    "UpdatedAt": "2026-03-02T22:09:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.1"
+    }
+  ]
+}

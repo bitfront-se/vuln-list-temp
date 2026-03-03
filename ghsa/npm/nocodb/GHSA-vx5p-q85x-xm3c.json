@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-02T19:36:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 339865,
+    "Id": "GSA_kwCzR0hTQS12eDVwLXE4NXgteG0zY84ABS-Z",
+    "GhsaId": "GHSA-vx5p-q85x-xm3c",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-vx5p-q85x-xm3c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28357"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/0.301.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vx5p-q85x-xm3c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vx5p-q85x-xm3c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28357"
+      }
+    ],
+    "Description": "### Summary\nA stored XSS vulnerability exists in the Formula virtual cell. Formula results containing `URI::()` patterns are rendered via `v-html` without sanitization, allowing injected HTML to execute.\n\n### Details\nThe `replaceUrlsWithLink()` function in `urlUtils.ts` converts `URI::(url)` patterns to `\u003ca\u003e` tags but passes all other HTML through unchanged. A user with Creator role (minimum role for formula field creation) can craft a formula like `CONCAT(\"URI::(https://example.com)\", \"\u003cimg src=x onerror=...\u003e\")` to inject arbitrary scripts rendered for all viewers.\n\n### Impact\nCredential theft via script execution in the context of users viewing the table.\n\n### Credit\nThis issue was reported by [@Akokonunes](https://github.com/Akokonunes).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T19:36:29Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB has Stored Cross-site Scripting via Formula Cell",
+    "UpdatedAt": "2026-03-02T19:36:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.301.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.2"
+    }
+  ]
+}

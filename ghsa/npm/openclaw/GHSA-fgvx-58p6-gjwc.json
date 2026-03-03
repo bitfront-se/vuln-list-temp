@@ -1,0 +1,49 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-02T22:40:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 339974,
+    "Id": "GSA_kwCzR0hTQS1mZ3Z4LTU4cDYtZ2p3Y84ABTAG",
+    "GhsaId": "GHSA-fgvx-58p6-gjwc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-fgvx-58p6-gjwc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/125f4071bcbc0de32e769940d07967db47f09d3d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fgvx-58p6-gjwc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fgvx-58p6-gjwc"
+      }
+    ],
+    "Description": "## Impact\n\nThe gateway `agents.files.get` and `agents.files.set` methods allowed symlink traversal for allowlisted workspace files. A symlinked allowlisted file (for example `AGENTS.md`) could resolve outside the agent workspace and be read/written by the gateway process.\n\nThis could enable arbitrary host file read/write within the gateway process permissions, and chained impact up to code execution depending on which files are overwritten.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.24`\n- Latest published vulnerable version at patch time: `2026.2.24`\n- Patched versions: `\u003e= 2026.2.25` \n\n## Remediation\n\n`agents.files` now resolves real workspace paths, enforces containment for resolved targets, rejects out-of-workspace symlink targets, and keeps in-workspace symlink targets supported. The patch also adds gateway regression tests for blocked escapes and valid in-workspace symlink behavior.\n\n## Fix Commit(s)\n\n- `125f4071bcbc0de32e769940d07967db47f09d3d`\n\n## Release Process Note\n\n`patched_versions` is intentionally pre-set to the release (`2026.2.25`). Advisory published with npm release `2026.2.25`.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-02T22:40:36Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenClaw gateway agents.files symlink escape allowed out-of-workspace file read/write",
+    "UpdatedAt": "2026-03-02T22:40:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.25"
+    }
+  ]
+}
