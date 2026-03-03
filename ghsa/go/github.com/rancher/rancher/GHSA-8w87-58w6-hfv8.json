@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-03T14:49:36Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/rancher/rancher"
+  },
+  "Advisory": {
+    "DatabaseId": 340104,
+    "Id": "GSA_kwCzR0hTQS04dzg3LTU4dzYtaGZ2OM4ABTCI",
+    "GhsaId": "GHSA-8w87-58w6-hfv8",
+    "References": [
+      {
+        "Url": "https://github.com/rancher/rancher/security/advisories/GHSA-8w87-58w6-hfv8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2021-36783"
+      },
+      {
+        "Url": "https://bugzilla.suse.com/show_bug.cgi?id=1193990"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8w87-58w6-hfv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8w87-58w6-hfv8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2021-36783"
+      }
+    ],
+    "Description": "### Impact\n\nIt was discovered that in Rancher versions up to and including 2.5.12 and 2.6.3 there is a failure to properly sanitize credentials in cluster template answers. This failure can lead to plaintext storage and exposure of credentials, passwords and API tokens.\n\nThe exposed credentials are visible in Rancher to authenticated `Cluster Owners`, `Cluster Members`, `Project Owners` and `Project Members` on the endpoints `/v1/management.cattle.io.clusters`, `/v3/clusters` and `/k8s/clusters/local/apis/management.cattle.io/v3/clusters`.\n\nSensitive fields are now stripped from `Clusters` objects before the object is stored. For objects that existed before this security fix, a one-time migration happens on startup.\n\n**Important:**\n- It is highly advised to review for potential leaked credentials in this scenario, and to change them if deemed necessary.\n- The final impact severity for confidentiality, integrity and availability is dependent on the permissions that the leaked credentials have on their own services.\n\n### Patches\nPatched versions include releases 2.5.13, 2.6.4 and later versions.\n\n### Workarounds\nLimit access in Rancher to trusted users. There is not a direct mitigation besides upgrading to the patched Rancher versions.\n\n**Important:** It is highly advised to review for potential leaked credentials in this scenario, and to change them if deemed necessary.\n\n### For more information\nIf you have any questions or comments about this advisory:\n* Reach out to [SUSE Rancher Security team](https://github.com/rancher/rancher/security/policy) for security related inquiries.\n* Open an issue in [Rancher](https://github.com/rancher/rancher/issues/new/choose) repository.\n* Verify our [support matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/) and [product support lifecycle](https://www.suse.com/lifecycle/).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T14:49:34Z",
+    "Severity": "CRITICAL",
+    "Summary": "Rancher doesn't properly sanitize credentials in cluster template answers",
+    "UpdatedAt": "2026-03-03T14:49:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.6.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.6.0, \u003c= 2.6.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.13"
+      },
+      "VulnerableVersionRange": "\u003e= 2.5.0, \u003c= 2.5.12"
+    }
+  ]
+}

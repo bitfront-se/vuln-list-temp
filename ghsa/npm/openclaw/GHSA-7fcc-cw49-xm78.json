@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T18:09:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340140,
+    "Id": "GSA_kwCzR0hTQS03ZmNjLWN3NDkteG03OM4ABTCs",
+    "GhsaId": "GHSA-7fcc-cw49-xm78",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-7fcc-cw49-xm78"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ba7be018da354ea9f803ed356d20464df0437916"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7fcc-cw49-xm78"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7fcc-cw49-xm78"
+      }
+    ],
+    "Description": "## Summary\n\nThe Lobster extension tool execution path used a Windows shell fallback (`shell: true`) after spawn failures (`EINVAL`/`ENOENT`). In that fallback path, shell metacharacters in command arguments can be interpreted by the shell, enabling command injection.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.17`\n- Latest confirmed affected published version: `2026.2.17`\n- Patched version: `2026.2.19`\n\n## Technical Details\n\nIn affected releases (including `v2026.2.17`), `extensions/lobster/src/lobster-tool.ts` retried subprocess launch with `shell: true` on Windows for `EINVAL`/`ENOENT` spawn errors. The fix removes shell fallback and resolves Windows wrappers to explicit executable/script argv execution.\n\n## Fix Commit(s)\n\n- `ba7be018da354ea9f803ed356d20464df0437916`\n\nOpenClaw thanks @allsmog for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T18:09:26Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has command injection via Windows shell fallback in Lobster tool execution",
+    "UpdatedAt": "2026-03-03T18:09:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T18:10:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340143,
+    "Id": "GSA_kwCzR0hTQS00M3g0LWcyMnAtM2hycc4ABTCv",
+    "GhsaId": "GHSA-43x4-g22p-3hrq",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-43x4-g22p-3hrq"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1835dec2004fe7a62c6a7ba46b8485f124ec6199"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/e7eba01efc4c3c400e9cfd3ce3d661cbc788a631"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-43x4-g22p-3hrq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-43x4-g22p-3hrq"
+      }
+    ],
+    "Description": "## Summary\nSandbox browser container launched Chromium with `--no-sandbox` by default, disabling Chromium's OS-level sandbox protections.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm ecosystem)\n- Latest published npm version at triage time (2026-02-21): `2026.2.19-2`\n- Affected range: `\u003c= 2026.2.19-2`\n- Planned patched version for next release: `2026.2.21`\n\n## Impact\nWhen `--no-sandbox` is enabled by default, renderer compromise no longer requires a separate sandbox escape. This weakens container browser isolation and increases impact from renderer-side bugs.\n\n## Resolution\n- Default `--no-sandbox` removed from sandbox browser entrypoint.\n- Explicit opt-in added via `OPENCLAW_BROWSER_NO_SANDBOX` / `CLAWDBOT_BROWSER_NO_SANDBOX`.\n- Browser container hash migration + security audit checks added so stale containers are surfaced and can be recreated safely.\n\n## Fix Commit(s)\n- e7eba01efc4c3c400e9cfd3ce3d661cbc788a631\n- 1835dec2004fe7a62c6a7ba46b8485f124ec6199\n\n## Release Process Note\nThe advisory `patched_versions` field is pre-set to the planned next release (`2026.2.21`). After npm release publication, only advisory publish action should remain.\n\nOpenClaw thanks @TerminalsandCoffee for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T18:10:34Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Chrome --no-sandbox disabled OS-level browser sandbox in sandbox browser container",
+    "UpdatedAt": "2026-03-03T18:10:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.21"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T17:57:22Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "wagtail"
+  },
+  "Advisory": {
+    "DatabaseId": 340136,
+    "Id": "GSA_kwCzR0hTQS1wNWNtLTI0NnctODRqbc4ABTCo",
+    "GhsaId": "GHSA-p5cm-246w-84jm",
+    "References": [
+      {
+        "Url": "https://github.com/wagtail/wagtail/security/advisories/GHSA-p5cm-246w-84jm"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/commit/0375094bb57ce6e527005c2bb2e871dd20bca04d"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/commit/4620423cb22c5253391a0f04178089c1162f6e2e"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/commit/575c0d7c18c7716ed73f7a3c2720ad75956f0a85"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/commit/605a5569686565e035313222e1bc2f9802fbc55b"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/releases/tag/v6.3.8"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/releases/tag/v7.0.6"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/releases/tag/v7.2.3"
+      },
+      {
+        "Url": "https://github.com/wagtail/wagtail/releases/tag/v7.3.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p5cm-246w-84jm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p5cm-246w-84jm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28222"
+      }
+    ],
+    "Description": "### Impact\nA stored Cross-site Scripting (XSS) vulnerability exists on rendering `TableBlock` blocks within a StreamField. A user with access to create or edit pages containing `TableBlock` StreamField blocks is able to set specially-crafted `class` attributes on the block which run arbitrary JavaScript code when the page is viewed. When viewed by a user with higher privileges, this could lead to performing actions with that user's credentials. The vulnerability is not exploitable by an ordinary site visitor without access to the Wagtail admin, and only affects sites using TableBlock.\n\n### Patches\nPatched versions have been released as Wagtail 6.3.8, 7.0.6, 7.2.3 and 7.3.1.\n\n### Workarounds\nSite owners who are unable to upgrade to the new versions can remediate the vulnerability by setting a `template` attribute on all TableBlock definitions, referencing a template that does not output `class` attributes. For example:\n\n```django\n\u003c!-- For use with TableBlock(template=\"path/to/table_block.html\") --\u003e\n\u003ctable\u003e\n    {% if table_caption %}\n        \u003ccaption\u003e{{ table_caption }}\u003c/caption\u003e\n    {% endif %}\n    {% if table_header %}\n        \u003cthead\u003e\n            \u003ctr\u003e\n                {% for cell in table_header %}\n                    \u003cth scope=\"col\"\u003e{{ cell }}\u003c/th\u003e\n                {% endfor %}\n            \u003c/tr\u003e\n        \u003c/thead\u003e\n    {% endif %}\n    \u003ctbody\u003e\n        {% for row in data %}\n            \u003ctr\u003e\n                {% for cell in row %}\n                    {% if first_col_is_header and forloop.first %}\n                        \u003cth scope=\"row\"\u003e{{ cell }}\u003c/th\u003e\n                    {% else %}\n                        \u003ctd\u003e{{ cell }}\u003c/td\u003e\n                    {% endif %}\n                {% endfor %}\n            \u003c/tr\u003e\n        {% endfor %}\n    \u003c/tbody\u003e\n\u003c/table\u003e\n```\n\n### Acknowledgements\n\nMany thanks to Guan Chenxian (@GCXWLP) for reporting this issue.\n\n### For more information\n\nIf there are any questions or comments about this advisory:\n\n- Visit Wagtail's [support channels](https://docs.wagtail.io/en/stable/support.html)\n- Email Wagtail at [security@wagtail.org](mailto:security@wagtail.org) (view the [security policy](https://github.com/wagtail/wagtail/security/policy) for more information).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T17:57:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Wagtail Vulnerable to Cross-site Scripting in TableBlock class attributes",
+    "UpdatedAt": "2026-03-03T17:57:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.3.1"
+      },
+      "VulnerableVersionRange": "\u003e= 7.3rc1, \u003c 7.3.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 7.1rc1, \u003c 7.2.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 6.4rc1, \u003c 7.0.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.3.8"
+      },
+      "VulnerableVersionRange": "\u003c 6.3.8"
+    }
+  ]
+}

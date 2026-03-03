@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T18:11:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340144,
+    "Id": "GSA_kwCzR0hTQS0zM2htLWNxOHItd2M0Oc4ABTCw",
+    "GhsaId": "GHSA-33hm-cq8r-wc49",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-33hm-cq8r-wc49"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/79a7b3d22ef92e36a4031093d80a0acb0d82f351"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d3da67c7a9b463edc1a9b1c1f7af107a34ca32f5"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/def993dbd843ff28f2b3bad5cc24603874ba9f1e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-33hm-cq8r-wc49"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-33hm-cq8r-wc49"
+      }
+    ],
+    "Description": "### Summary\nSandbox media local-path validation accepted absolute paths under host tmp, even when those paths were outside the active sandbox root.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version verified during triage: `2026.2.23`\n- Affected versions: `\u003c= 2026.2.23`\n- Patched versions (planned next release): `\u003e= 2026.2.24`\n\n### Details\nIn affected versions, sandbox media path resolution allowed absolute host tmp paths as trusted media inputs when they were under `os.tmpdir()`, without requiring that the path stay within the active `sandboxRoot`.\nBecause outbound attachment hydration consumed these paths as already validated, this enabled out-of-sandbox host tmp file reads and exfiltration through attachment delivery.\n\n### Impact\n- Confidentiality impact: high for deployments relying on `sandboxRoot` as a strict local filesystem boundary.\n- Practical impact: attacker-controlled media references could read and attach host tmp files outside the sandbox workspace boundary.\n\n### Remediation\n- Restrict sandbox tmp-path acceptance to OpenClaw-managed temp roots only.\n- Default SDK/extension temp helpers to OpenClaw-managed temp roots.\n- Add CI guardrails to prevent broad tmp-root regressions in messaging/channel code paths.\n\n### Fix Commit(s)\n- `d3da67c7a9b463edc1a9b1c1f7af107a34ca32f5`\n- `79a7b3d22ef92e36a4031093d80a0acb0d82f351`\n- `def993dbd843ff28f2b3bad5cc24603874ba9f1e`\n\n### Release Process Note\nThe advisory is pre-set with patched version `2026.2.24` so it is ready for publication once that npm release is available.\n\nOpenClaw thanks @tdjackey for reporting.\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T18:11:16Z",
+    "Severity": "MODERATE",
+    "Summary": "Temporary path handling could write outside OpenClaw temp boundary",
+    "UpdatedAt": "2026-03-03T18:11:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}
