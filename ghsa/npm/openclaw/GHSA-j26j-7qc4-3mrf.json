@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:36:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340277,
+    "Id": "GSA_kwCzR0hTQS1qMjZqLTdxYzQtM21yZs4ABTE1",
+    "GhsaId": "GHSA-j26j-7qc4-3mrf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j26j-7qc4-3mrf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/347f7b9550064f5f5b33c6e07f64e85b9657b6f1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j26j-7qc4-3mrf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j26j-7qc4-3mrf"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw` MS Teams file-consent flow, pending uploads were authorized by `uploadId` alone. `fileConsent/invoke` did not verify the invoke conversation against the conversation that created the pending upload.\n\n### Impact\nAn attacker who obtained a valid `uploadId` within TTL could trigger cross-conversation upload completion (accept path) or cancel a victim pending upload (decline path).\n\n### Technical Details\n- Pending uploads stored `conversationId`, but invoke handling consumed by `uploadId` only.\n- The invoke path did not enforce conversation binding before `uploadToConsentUrl(...)` and pending-upload removal.\n- Fix binds accept/decline handling to normalized conversation id match before consuming pending upload state.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published npm version (as of February 26, 2026): `2026.2.24`\n- Vulnerable range: `\u003c= 2026.2.24`\n- Patched in release: `2026.2.25`\n\n### Remediation\nUpgrade to `openclaw` `2026.2.25` (or later) once published.\n\n### Fix Commit(s)\n- `347f7b9550064f5f5b33c6e07f64e85b9657b6f1`\n\n### Release Process Note\n`patched_versions` is pre-set to the release (`2026.2.25`). Advisory published with npm release `2026.2.25`.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:36:49Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: MS Teams fileConsent/invoke missing conversation binding allowed cross-conversation pending-upload consumption",
+    "UpdatedAt": "2026-03-03T21:36:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

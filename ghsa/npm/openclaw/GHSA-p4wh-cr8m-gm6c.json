@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:36:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340275,
+    "Id": "GSA_kwCzR0hTQS1wNHdoLWNyOG0tZ202Y84ABTEz",
+    "GhsaId": "GHSA-p4wh-cr8m-gm6c",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-p4wh-cr8m-gm6c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p4wh-cr8m-gm6c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p4wh-cr8m-gm6c"
+      }
+    ],
+    "Description": "### Summary\n`shell-env` fallback trusted prefix-based executable paths for `$SHELL`, allowing execution of attacker-controlled binaries in local/runtime-env influence scenarios.\n\n### Details\nIn affected versions, shell selection accepted either:\n1. a shell listed in `/etc/shells`, or\n2. any executable under hardcoded trusted prefixes (`/bin`, `/usr/bin`, `/usr/local/bin`, `/opt/homebrew/bin`, `/run/current-system/sw/bin`).\n\nThe selected shell was then executed as a login shell (`-l -c 'env -0'`) for PATH/environment probing.\n\nOn systems where a trusted-prefix directory is writable (for example common Homebrew layouts under `/opt/homebrew/bin`) and runtime `$SHELL` can be influenced, this enabled attacker-controlled binary execution in OpenClaw process context.\n\nThe fix removes the trusted-prefix executable fallback and now trusts only shells explicitly registered in `/etc/shells`; otherwise it falls back to `/bin/sh`.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003e= 2026.2.22, \u003c= 2026.2.22-2`\n- Latest published vulnerable version: `2026.2.22-2`\n- Patched versions (released): `\u003e= 2026.2.23`\n\n### Fix Commit(s)\n- `ff10fe8b91670044a6bb0cd85deb736a0ec8fb55`\n\n### Release Process Note\nThis advisory sets `patched_versions` to the released version (`2026.2.23`).\nThis advisory now reflects released fix version `2026.2.23`.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:36:16Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: shell-env trusted-prefix fallback allowed attacker-controlled binary execution via $SHELL",
+    "UpdatedAt": "2026-03-03T21:36:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.2.22, \u003c 2026.2.23"
+    }
+  ]
+}

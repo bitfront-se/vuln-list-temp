@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:41:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340284,
+    "Id": "GSA_kwCzR0hTQS05cDM4LTk0amYtaGdqas4ABTE8",
+    "GhsaId": "GHSA-9p38-94jf-hgjj",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-9p38-94jf-hgjj"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/90a378ca3a9ecbf1634cd247f17a35f4612c6ca6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9p38-94jf-hgjj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9p38-94jf-hgjj"
+      }
+    ],
+    "Description": "### Summary\nIn OpenClaw's macOS node-host path, `system.run` allowlist parsing in `security=allowlist` mode failed to reject command substitution tokens when they appeared inside double-quoted shell text.\n\nBecause of that gap, payloads like `echo \"ok $(id)\"` could be treated as allowlist hits (first executable token `echo`) while still executing non-allowlisted subcommands through shell substitution.\n\n### Affected Packages / Versions\n- Package: npm `openclaw`\n- Latest published affected version: `2026.2.21-2`\n- Affected range: `\u003c= 2026.2.21-2`\n- Patched version (planned next release): `2026.2.22`\n\nNotes:\n- Default installs are not affected (`security=deny` by default).\n- The issue requires opting into `security=allowlist` on the macOS node-host path.\n\n### Impact\nApproval/authorization bypass in allowlist mode that can lead to unintended command execution on the node host.\n\n### Preconditions\n- Target uses macOS node-host / companion-app execution path.\n- Exec approvals set to `security=allowlist`.\n- Ask mode is `on-miss` or `off`.\n- Allowlist contains a benign executable used in a shell wrapper flow (for example `/bin/echo`).\n\n### Reproduction (example)\nUse a shell-wrapper command where the visible executable is allowlisted but the quoted payload contains substitution:\n\n- command argv: `/bin/sh -lc 'echo \"ok $(/usr/bin/id \u003e /tmp/openclaw-poc-rce)\"'`\n- allowlist pattern includes `/bin/echo`\n\nBefore the fix, allowlist analysis could resolve this as allowlisted while shell substitution still executed.\n\n### Remediation\n- Upgrade to `2026.2.22` (or newer) when released.\n- Temporary mitigation: set ask mode to `always` or set security mode to `deny`.\n\n### Fix Commit(s)\n- `90a378ca3a9ecbf1634cd247f17a35f4612c6ca6`\n\n### Release Process Note\n`patched_versions` is pre-set to planned next release `2026.2.22`. After npm release is out, advisory can be published directly.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:41:12Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has macOS `system.run` allowlist bypass via quoted command substitution",
+    "UpdatedAt": "2026-03-03T21:41:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

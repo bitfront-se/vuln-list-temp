@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T18:54:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340174,
+    "Id": "GSA_kwCzR0hTQS1td3h2LTM1d3ItNHZ2as4ABTDO",
+    "GhsaId": "GHSA-mwxv-35wr-4vvj",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mwxv-35wr-4vvj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mwxv-35wr-4vvj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mwxv-35wr-4vvj"
+      }
+    ],
+    "Description": "### Summary\nGateway plugin route auth protection for `/api/channels` could be bypassed using encoded dot-segment traversal (for example `..%2f`) in path variants that plugin handlers normalize.\n\n### Affected Packages / Versions\n- Package: npm `openclaw`\n- Latest published vulnerable version: `2026.2.25`\n- Vulnerable version range: `\u003c= 2026.2.25`\n- Patched version: `2026.2.26` (planned next release)\n\n### Impact\nUnder affected versions, crafted alternate paths could bypass gateway auth checks for protected plugin channel routes when plugin handlers decode/canonicalize the incoming path and then route to `/api/channels/...` handlers.\n\n### Fix Commit(s)\n- `258d615c45527ffda37cecd08cd268f97461bde0`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`). After npm publish, maintainers only need to publish the advisory.\n\nOpenClaw thanks @zpbrent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T18:54:35Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has gateway plugin auth bypass via encoded dot-segment traversal in protected /api/channels paths",
+    "UpdatedAt": "2026-03-03T18:54:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

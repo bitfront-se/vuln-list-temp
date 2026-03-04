@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T22:23:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340307,
+    "Id": "GSA_kwCzR0hTQS03OTZtLTI5NzMtd2M1cc4ABTFT",
+    "GhsaId": "GHSA-796m-2973-wc5q",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-796m-2973-wc5q"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/a1c4bf07c6baad3ef87a0e710fe9aef127b1f606"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-796m-2973-wc5q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-796m-2973-wc5q"
+      }
+    ],
+    "Description": "### Summary\n`tools.exec` allowlist/safe-bins evaluation could diverge from runtime execution for wrapper commands using GNU `env -S/--split-string` semantics. This allowed policy checks to treat a command as a benign safe-bin invocation while runtime executed a different payload.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.22-2` (latest currently published npm version)\n- Patched version (released): `2026.2.23`\n\n### Impact\nAn attacker able to influence tool command text (for example via untrusted prompt/content injection reaching an exec-capable flow) could bypass allowlist/safe-bins intent and execute unexpected commands.\n\n### Technical Details\nRoot cause was policy/runtime interpretation mismatch for dispatch wrappers:\n- analysis resolved an effective executable from wrapper-unwrapped argv,\n- execution could still run original wrapper argv semantics,\n- safe-bin short-flag handling also allowed unknown short options in clusters.\n\n### Remediation\nThe fix hardens exec approvals to fail closed and enforce analysis/runtime parity:\n- introduce wrapper execution planning with semantic-wrapper blocking,\n- carry planned `effectiveArgv` + `policyBlocked` metadata through resolution,\n- evaluate allowlist/safe-bins against planned argv,\n- enforce canonical rebuilt shell command from planned argv for allowlist auto-paths,\n- use planned argv for node-host/mac exec-host invocation paths,\n- reject unknown short safe-bin flags,\n- add regression tests for semantic `env` wrappers and parity fixtures.\n\n### Fix Commit(s)\n- `a1c4bf07c6baad3ef87a0e710fe9aef127b1f606`\n\n### Release Process Note\n`patched_versions` is pre-set to the released version (`2026.2.23`). Patched in `2026.2.23` and published.\n\nOpenClaw thanks @jiseoung for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:23:45Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has exec allowlist/safeBins policy-runtime mismatch via env -S wrapper interpretation",
+    "UpdatedAt": "2026-03-03T22:23:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

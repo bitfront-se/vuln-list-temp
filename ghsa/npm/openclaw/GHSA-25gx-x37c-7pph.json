@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T19:17:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340182,
+    "Id": "GSA_kwCzR0hTQS0yNWd4LXgzN2MtN3BwaM4ABTDW",
+    "GhsaId": "GHSA-25gx-x37c-7pph",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-25gx-x37c-7pph"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/621d8e1312482f122f18c43c72c67211b141da01"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8c1518f0f3e0533593cd2dec3a46c9b746753661"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-25gx-x37c-7pph"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-25gx-x37c-7pph"
+      }
+    ],
+    "Description": "The sandbox browser entrypoint launched `x11vnc` without authentication (`-nopw`) for noVNC observer sessions.\n\nOpenClaw-managed runtime flow publishes the noVNC port to host loopback only (`127.0.0.1`), so default exposure is local to the host unless operators explicitly expose the port more broadly (or run the image standalone with broad port publishing).\n\n## Affected Packages / Versions\n\n- Package: `docker/openclaw`\n- Affected: `\u003c= 2026.2.19-2`\n- Patched: `\u003e= 2026.2.21`\n\n## Technical details\n\n- `scripts/sandbox-browser-entrypoint.sh` used `x11vnc ... -nopw` for noVNC observer flow.\n- `websockify` exposed noVNC for the container listener.\n- OpenClaw runtime (`src/agents/sandbox/browser.ts`) already mapped host publish to loopback, but observer auth was missing.\n\n## Fix\n\n- Require VNC password auth in the sandbox browser entrypoint (`x11vnc -rfbauth`), replacing `-nopw`.\n- Generate per-container noVNC password in runtime and inject `OPENCLAW_BROWSER_NOVNC_PASSWORD`.\n- Emit short-lived noVNC observer token URLs instead of sharing raw noVNC passwords in shared URLs.\n- Keep loopback-only host port publish and bump sandbox browser security hash epoch.\n- Add security audit findings for sandbox browser containers that publish ports on non-loopback interfaces.\n\nOperational note: rebuild the sandbox browser image and recreate browser containers so existing containers pick up the fix.\n\n## Fix Commit(s)\n\n- `621d8e1312482f122f18c43c72c67211b141da01`\n- `8c1518f0f3e0533593cd2dec3a46c9b746753661`\n\n## Release Process Note\n\nPatched version is pre-set to the planned next release (`2026.2.21`). After npm release, this advisory can be published without further field edits.\n\nOpenClaw thanks @TerminalsandCoffee for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:17:48Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's andbox browser noVNC observer lacked VNC authentication",
+    "UpdatedAt": "2026-03-03T19:17:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.21"
+    }
+  ]
+}

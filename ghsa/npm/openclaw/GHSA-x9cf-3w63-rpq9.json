@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T19:58:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340191,
+    "Id": "GSA_kwCzR0hTQS14OWNmLTN3NjMtcnBxOc4ABTDf",
+    "GhsaId": "GHSA-x9cf-3w63-rpq9",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-x9cf-3w63-rpq9"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1316e5740382926e45a42097b4bfe0aef7d63e8e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x9cf-3w63-rpq9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x9cf-3w63-rpq9"
+      }
+    ],
+    "Description": "### Summary\nWhen iMessage remote attachment fetching is enabled (`channels.imessage.remoteHost`), `stageSandboxMedia` accepted arbitrary absolute paths and used SCP to copy them into local staging.\n\nIf a non-attachment path reaches this flow, files outside expected iMessage attachment directories on the remote host can be staged.\n\n### Affected Packages / Versions\n- Package: `openclaw`\n- Affected: up to and including `2026.2.17` (latest npm version as of February 19, 2026)\n- Fixed: pending next release with remote attachment path validation\n\n### Impact\nConfidentiality impact. An attacker who can influence inbound attachment path metadata may disclose files readable by the OpenClaw process on the configured remote host.\n\n### Attack Preconditions\n1. iMessage attachments enabled (`channels.imessage.includeAttachments=true`), and\n2. remote attachment mode active (`channels.imessage.remoteHost` configured or auto-detected), and\n3. attacker can inject/tamper with attachment path metadata.\n\nGiven these preconditions, this advisory is assessed as **medium** severity.\n\n\n## Fix Commit(s)\n- `1316e5740382926e45a42097b4bfe0aef7d63e8e`\n\n### Release Process Note\n`patched_versions` should be set to the next released npm version that includes remote attachment path validation, then the advisory can be published.\n\n### Mitigation\n- Upgrade to the first release that includes remote attachment path validation.\n- If remote attachments are not required, disable iMessage attachment ingestion.\n- Run OpenClaw under least privilege on the remote host.\n\nOpenClaw thanks @zpbrent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:58:32Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw vulnerable to sensitive file disclosure via stageSandboxMedia",
+    "UpdatedAt": "2026-03-03T19:58:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T18:30:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340145,
+    "Id": "GSA_kwCzR0hTQS0yd3c2LTg2OGctMmM1Ns4ABTCx",
+    "GhsaId": "GHSA-2ww6-868g-2c56",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2ww6-868g-2c56"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/24140"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/f3adf142c195000cbde31200626a1d8c8b716df9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2ww6-868g-2c56"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2ww6-868g-2c56"
+      }
+    ],
+    "Description": "## Summary\n\nThe HTML session exporter (`src/auto-reply/reply/export-html/template.js`) interpolates `img.mimeType` directly into `\u003cimg src=\"data:...\"\u003e` attributes without validation or escaping. A crafted `mimeType` value (e.g., `x\" onerror=\"alert(1)`) can break out of the attribute context and execute arbitrary JavaScript.\n\n## Impact\n\nAn attacker who can control image entries in session data (via crafted tool results or session manipulation) can achieve XSS when the exported HTML is opened. The precondition is tighter than the main XSS finding (requires image content blocks with a malicious mimeType), but exploitation is straightforward.\n\n## Affected components\n\n- `src/auto-reply/reply/export-html/template.js` — line 1032 (tool result images), line 1306 (user message images)\n\n## Reproduction\n\n1. Craft a session entry with an image content block where `mimeType` is set to `image/png\" onerror=\"alert(document.domain)`\n2. Export the session to HTML\n3. Open the exported HTML — the injected `onerror` fires\n\n## Remediation\n\n- Added `sanitizeImageMimeType()` helper that validates mimeType against a whitelist of known image MIME types\n- Falls back to `application/octet-stream` for unrecognized values, preventing attribute breakout\n\n## Fix\n\nhttps://github.com/openclaw/openclaw/pull/24140",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T18:30:39Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw Vulnerable to HTML injection via unvalidated image MIME type in data-URL interpolation",
+    "UpdatedAt": "2026-03-03T18:30:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:34:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340272,
+    "Id": "GSA_kwCzR0hTQS01Z2o3LWpmNzctcTJxMs4ABTEw",
+    "GhsaId": "GHSA-5gj7-jf77-q2q2",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5gj7-jf77-q2q2"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/b67e600bff696ff2ed9b470826590c0ce6b3bb0a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5gj7-jf77-q2q2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5gj7-jf77-q2q2"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw\u003c=2026.2.23`, safe-bin trust in allowlist mode relied on static default trusted directories that included package-manager paths (notably `/opt/homebrew/bin` and `/usr/local/bin`).\nWhen a same-name binary (for example `jq`) is placed in one of those trusted default directories, safe-bin evaluation can be satisfied and execute the attacker-controlled binary.\n\n### Impact\nThis is an exec allowlist `safeBins` policy bypass that can lead to command execution in the OpenClaw runtime context.\nSeverity is set to Medium given the required ability to write into trusted host binary directories.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.23`\n- Patched versions: `\u003e= 2026.2.24` (planned next npm release)\n- Latest published npm version at triage time (2026-02-24): `2026.2.23`\n\n### Root Cause\n- Default safe-bin trusted directories included package-manager/user-managed paths.\n- Trust decision was directory-membership only for resolved executable paths.\n\n### Remediation\n- Restrict default safe-bin trusted directories to immutable system paths: `/bin`, `/usr/bin`.\n- Require explicit operator opt-in for package-manager/user paths via `tools.exec.safeBinTrustedDirs`.\n\n### Fix Commit(s)\n- `b67e600bff696ff2ed9b470826590c0ce6b3bb0a`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.24`).\nOnce npm release `2026.2.24` is published, this advisory should be ready for publish without additional version edits.\n\nOpenClaw thanks @tdjackey for reporting.\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:34:45Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: safeBins static default trusted dirs allow writable-dir binary hijack (`jq`)",
+    "UpdatedAt": "2026-03-03T21:34:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

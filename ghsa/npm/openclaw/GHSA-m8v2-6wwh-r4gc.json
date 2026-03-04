@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T23:10:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340318,
+    "Id": "GSA_kwCzR0hTQS1tOHYyLTZ3d2gtcjRnY84ABTFe",
+    "GhsaId": "GHSA-m8v2-6wwh-r4gc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-m8v2-6wwh-r4gc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/b5787e4abba0dcc6baf09051099f6773c1679ec1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m8v2-6wwh-r4gc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m8v2-6wwh-r4gc"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw` up to and including **2026.2.23** (latest npm release as of **February 24, 2026**), sandbox bind-source validation could be bypassed when a bind source used a symlinked parent plus a non-existent leaf path.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.23`\n- Patched: `\u003e= 2026.2.24` (planned next release)\n\n### Root Cause\n`validateBindMounts` previously relied on full-path realpath only when the full source path already existed. For missing-leaf paths, parent symlink traversal was not fully canonicalized before allowed-root and blocked-path checks.\n\n### Security Impact\nA source path that looked inside an allowed root could resolve outside that root (including blocked runtime paths) once the missing leaf was created, weakening sandbox bind-source boundary enforcement.\n\n### Fix\nThe validation path now canonicalizes through the nearest existing ancestor, then always re-checks the canonical path against both:\n- allowed source roots\n- blocked runtime paths\n\n### Verification\n- `pnpm check`\n- `pnpm exec vitest run --config vitest.gateway.config.ts`\n- `pnpm test:fast`\n- Added regression tests for symlink-parent + missing-leaf bypass patterns.\n\n### Fix Commit(s)\n- `b5787e4abba0dcc6baf09051099f6773c1679ec1`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.24`) so after npm publish the advisory can be published without further field edits.\n\nOpenClaw thanks @tdjackey for reporting.\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:10:01Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's sandbox bind validation could bypass allowed-root and blocked-path checks via symlink-parent missing-leaf paths",
+    "UpdatedAt": "2026-03-03T23:10:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:39:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340282,
+    "Id": "GSA_kwCzR0hTQS1mZjk4LXc4aGotcXJ4Zs4ABTE6",
+    "GhsaId": "GHSA-ff98-w8hj-qrxf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-ff98-w8hj-qrxf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/2e421f32dfc589c02706265fd3c3137ffc06c4b1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ff98-w8hj-qrxf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ff98-w8hj-qrxf"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw plugins/extensions run in-process and are treated as trusted code. This advisory tracks trust-boundary clarification around plugin runtime command execution (`runtime.system.runCommandWithTimeout`).\n\n### Impact\nPlugins already execute with the same OS privileges as the OpenClaw process. Exposing runtime command helpers does not cross an additional sandbox boundary.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version reviewed: `2026.2.17`\n- Affected range for this advisory record: `\u003c= 2026.2.17`\n- Planned patched version metadata: `2026.2.19` (next release line)\n\n### Fix Commit(s)\n- `2e421f32dfc589c02706265fd3c3137ffc06c4b1`\n\n### Remediation\n- Install only trusted plugins.\n- Use `plugins.allow` to pin explicit trusted plugin IDs.\n- SECURITY.md now explicitly documents that plugin runtime helpers are convenience APIs, not a sandbox boundary.\n\nOpenClaw thanks @markmusson for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:39:26Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw plugin runtime command execution is part of trusted plugin boundary",
+    "UpdatedAt": "2026-03-03T21:39:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

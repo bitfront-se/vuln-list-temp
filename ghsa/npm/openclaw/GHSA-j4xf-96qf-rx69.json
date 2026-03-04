@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:41:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340285,
+    "Id": "GSA_kwCzR0hTQS1qNHhmLTk2cWYtcng2Oc4ABTE9",
+    "GhsaId": "GHSA-j4xf-96qf-rx69",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j4xf-96qf-rx69"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4ed87a667263ed2d422b9d5d5a5d326e099f92c7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j4xf-96qf-rx69"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j4xf-96qf-rx69"
+      }
+    ],
+    "Description": "### Summary\n\nFeishu allowlist authorization could be bypassed by display-name collision.\n\n### Details\n\n`channels.feishu.allowFrom` is documented as an ID-based allowlist (open_id list), but Feishu policy matching accepted mutable sender display names in the same namespace. An attacker could set a display name equal to an allowlisted ID string and pass authorization checks.\n\nThe fix enforces ID-only matching for Feishu allowlist checks, normalizes Feishu ID prefixes during comparison, and ignores mutable display names for authorization.\n\n### Impact\n\nDeployments using Feishu allowlist-based authorization could incorrectly authorize non-allowlisted senders when a colliding display name was used.\n\n### Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Latest published version at triage time: `2026.2.21-2`\n- Affected range: `\u003c= 2026.2.21-2`\n- Planned patched version: `\u003e= 2026.2.22`\n\n### Fix Commit(s)\n\n- `4ed87a667263ed2d422b9d5d5a5d326e099f92c7`\n\n### Release Process Note\n\n`patched_versions` is pre-set to the planned next release (`\u003e= 2026.2.22`) so the advisory is ready to publish once that npm release is available.\n\nOpenClaw thanks @jiseoung for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:41:38Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has a Feishu allowFrom authorization bypass via display-name collision",
+    "UpdatedAt": "2026-03-03T21:41:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

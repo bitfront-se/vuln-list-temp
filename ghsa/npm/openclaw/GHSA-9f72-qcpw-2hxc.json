@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T19:08:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340176,
+    "Id": "GSA_kwCzR0hTQS05ZjcyLXFjcHctMmh4Y84ABTDQ",
+    "GhsaId": "GHSA-9f72-qcpw-2hxc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-9f72-qcpw-2hxc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/370d115549c0dadace0902775eea0d5094aedfdc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9f72-qcpw-2hxc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9f72-qcpw-2hxc"
+      }
+    ],
+    "Description": "### Summary\nIn sandboxed runs, native prompt image auto-load did not honor `tools.fs.workspaceOnly=true`.\n\nThis optional hardening setting is **not enabled by default**. When operators enabled it, prompt text could still reference mounted out-of-workspace image paths (for example `/agent/secret.png`) and load those image bytes for vision-capable model input.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published npm version at triage time: `2026.2.23`\n- Vulnerable version range: `\u003c= 2026.2.23`\n- Patched version (planned next release): `2026.2.24`\n\n### Conditions Required\nThis issue required all of the following:\n- sandbox mode enabled,\n- `tools.fs.workspaceOnly=true` configured,\n- an out-of-workspace mount path reachable from the sandbox (for example `/agent`),\n- vision-capable model path active for native prompt image loading.\n\n### Technical Details\nNative prompt image ingestion (`detectAndLoadPromptImages` / `loadImageFromRef`) resolved and read sandbox paths but did not apply the same workspace-root assertion used by file tools when `tools.fs.workspaceOnly` was set.\n\n### Fix Commit(s)\n- `370d115549c0dadace0902775eea0d5094aedfdc`\n\n### Verification\n- `pnpm check`\n- `pnpm exec vitest run --config vitest.gateway.config.ts`\n- `pnpm test:fast`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.24`) so once npm release is available, this advisory only needs publish action.\n\nOpenClaw thanks @tdjackey for reporting.\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:08:08Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Native prompt image auto-load did not honor tools.fs.workspaceOnly in sandboxed runs",
+    "UpdatedAt": "2026-03-03T19:08:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

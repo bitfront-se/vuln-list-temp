@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T19:16:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340180,
+    "Id": "GSA_kwCzR0hTQS1jY2c4LTQ2cjYtOXFnas4ABTDU",
+    "GhsaId": "GHSA-ccg8-46r6-9qgj",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-ccg8-46r6-9qgj"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/57c9a18180c8b14885bbd95474cbb17ff2d03f0b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ccg8-46r6-9qgj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ccg8-46r6-9qgj"
+      }
+    ],
+    "Description": "### Summary\nA wrapper-depth parsing mismatch in `system.run` allowed nested transparent dispatch wrappers (for example repeated `/usr/bin/env`) to suppress shell-wrapper detection while still matching allowlist resolution. In `security=allowlist` + `ask=on-miss`, this could bypass the expected approval prompt for shell execution.\n\n### Severity / Trust Model\nOpenClaw’s documented model treats authenticated gateway callers as trusted operators and exec approvals as operator guardrails. This issue is still a real approval-boundary bypass and is triaged as **Medium** in that model.\n\n### Technical Details\n- Dispatch-wrapper unwrapping stopped at `MAX_DISPATCH_WRAPPER_DEPTH`.\n- Shell-wrapper extraction could return non-wrapper once depth was exhausted.\n- Allowlist resolution could still succeed on partially unwrapped argv beginning with `/usr/bin/env`.\n- Result: nested wrapper chains could execute `/bin/sh -c ...` without fresh approval in `allowlist` + `ask=on-miss`.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version at triage time: `2026.2.23`\n- Vulnerable versions: `\u003c= 2026.2.23`\n- Patched versions (planned next release): `\u003e= 2026.2.24`\n\n### Fix Commit(s)\n- `57c9a18180c8b14885bbd95474cbb17ff2d03f0b`\n\n### Verification\n- Added regression coverage for depth-overflow wrapper chains at resolution and `system.run` invocation layers.\n- Reproduced previous PoC behavior before fix, then confirmed denial after fix with `SYSTEM_RUN_DENIED: approval required`.\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.24`) so once npm publish is complete, advisory publication can proceed without additional version edits.\n\nOpenClaw thanks @tdjackey for reporting.\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:16:48Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's dispatch-wrapper depth-cap mismatch can bypass shell-wrapper approval gating in system.run allowlist mode",
+    "UpdatedAt": "2026-03-03T19:16:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

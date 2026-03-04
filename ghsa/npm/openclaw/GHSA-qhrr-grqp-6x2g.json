@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T19:50:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340186,
+    "Id": "GSA_kwCzR0hTQS1xaHJyLWdycXAtNngyZ84ABTDa",
+    "GhsaId": "GHSA-qhrr-grqp-6x2g",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qhrr-grqp-6x2g"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/64b273a71cf0b2f2419c974832cede1fc2158729"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qhrr-grqp-6x2g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qhrr-grqp-6x2g"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw` allowlist mode, `tools.exec.safeBins` trusted PATH-derived directories for safe-bin resolution. A same-name binary placed in a trusted PATH directory could satisfy safe-bin checks and execute.\n\n### Impact\nThis is an allowlist bypass in exec policy that can lead to command execution in the OpenClaw runtime context when allowlist mode relies on safe bins and an attacker can influence trusted binary locations.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.21-2`\n- Patched versions: `\u003e= 2026.2.22` (planned next release)\n- Latest published npm version at triage time (2026-02-22): `2026.2.21-2`\n\n### Root Cause\n- Safe-bin trust accepted PATH-derived directories instead of explicit trusted directories.\n- Safe-bin execution used shell command tokens that could resolve to shadowed binaries.\n\n### Remediation\n- Stop trusting PATH-derived directories for safe-bin trust.\n- Add explicit `tools.exec.safeBinTrustedDirs` for opt-in extra trusted paths.\n- Pin safe-bin shell execution to resolved absolute executable paths.\n\n### Fix Commit(s)\n- `64b273a71cf0b2f2419c974832cede1fc2158729`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.22`). After npm release, this advisory is ready for publish without additional field edits.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:50:45Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's tools.exec.safeBins trusted PATH directories allowed binary shadowing in allowlist mode",
+    "UpdatedAt": "2026-03-03T19:50:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

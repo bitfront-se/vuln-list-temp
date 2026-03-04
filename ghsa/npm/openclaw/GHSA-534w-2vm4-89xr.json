@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T23:18:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340323,
+    "Id": "GSA_kwCzR0hTQS01MzR3LTJ2bTQtODl4cs4ABTFj",
+    "GhsaId": "GHSA-534w-2vm4-89xr",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-534w-2vm4-89xr"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/b4010a0b627025c809c0e5dbdbd4770f3bc59ef8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-534w-2vm4-89xr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-534w-2vm4-89xr"
+      }
+    ],
+    "Description": "A missing group-sender authorization check in the Zalo plugin allowed unauthorized `GROUP` messages to enter agent dispatch paths in configurations intended to restrict group traffic.\n\n## Impact\nWhen Zalo group handling was configured with allowlist-style controls, a sender not present in the intended group allowlist could still trigger agent processing through the `GROUP` message path.\n\n## Root Cause\nGroup access checks were not consistently enforced before dispatch for Zalo `GROUP` messages. The fix adds explicit runtime group-policy evaluation (`groupPolicy`, `groupAllowFrom`, fallback to `allowFrom`) and fail-closed behavior for missing provider config.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published vulnerable version: `2026.2.23` (as of 2026-02-24)\n- Affected range: `\u003c= 2026.2.23`\n- Planned patched version: `2026.2.24`\n\n## Fix Commit(s)\n- `b4010a0b627025c809c0e5dbdbd4770f3bc59ef8`\n\nOpenClaw thanks @tdjackey for reporting.\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:18:26Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Zalo group sender allowlist bypass permits unauthorized GROUP dispatch",
+    "UpdatedAt": "2026-03-03T23:18:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

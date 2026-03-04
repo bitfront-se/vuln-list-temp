@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T22:08:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340296,
+    "Id": "GSA_kwCzR0hTQS1nNzV4LThxcW0tMnZ4cM4ABTFI",
+    "GhsaId": "GHSA-g75x-8qqm-2vxp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-g75x-8qqm-2vxp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/28bac46c92069dc728524fbf383024c1b64e5c23"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g75x-8qqm-2vxp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g75x-8qqm-2vxp"
+      }
+    ],
+    "Description": "## Summary\n\n`tools.exec.safeBins` allowlist checks could be bypassed by PATH-hijacked binaries, allowing execution of attacker-controlled trojan binaries under an allowlisted executable name.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Latest published version at triage time: `2026.2.17`\n- Affected range: `\u003e= 2026.1.21 \u003c 2026.2.18`\n- Patched version: `2026.2.19`\n\n## Impact\n\nIn allowlist mode, `safeBins` validation previously accepted a resolved executable path based on executable name and argument shape, without enforcing trusted executable directories. If an attacker could influence process PATH resolution before gateway startup (or otherwise control the gateway launch environment), a trojan binary with an allowlisted name (for example `jq`) could be executed.\n\n## Severity Rationale\n\nThis issue is rated `medium` because exploitation requires an additional precondition: influencing the gateway process PATH / launch environment. Request-scoped PATH injection is blocked for host execution.\n\n## Fix\n\n`safeBins` now requires the resolved executable path to come from trusted bin directories (system defaults plus gateway startup PATH), closing the bypass.\n\n## Fix Commit(s)\n\n- 28bac46c92069dc728524fbf383024c1b64e5c23\n\nOpenClaw thanks @jackhax for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:08:26Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's `tools.exec.safeBins` PATH-hijack allowed trojan binaries to bypass allowlist checks",
+    "UpdatedAt": "2026-03-03T22:08:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.1.21, \u003c 2026.2.19"
+    }
+  ]
+}

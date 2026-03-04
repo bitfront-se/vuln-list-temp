@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:50:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340292,
+    "Id": "GSA_kwCzR0hTQS1wajV4LTM4cnctNmZwaM4ABTFE",
+    "GhsaId": "GHSA-pj5x-38rw-6fph",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-pj5x-38rw-6fph"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/dafe52e8cf1a041d898cfb304a485fa05e5f58fb"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pj5x-38rw-6fph"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pj5x-38rw-6fph"
+      }
+    ],
+    "Description": "### Summary\nA command injection vulnerability existed in Windows Scheduled Task script generation for OpenClaw. Environment values were written into `gateway.cmd` using unquoted `set KEY=VALUE`, which allowed Windows shell metacharacters in config-provided environment variables to break out of assignment context.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.17`\n- Patched version: `\u003e= 2026.2.19`\n- Latest published vulnerable version at review time (2026-02-19): `2026.2.17`\n\n### Practical Risk Context\nFor a single-user, localhost-only setup on a personally controlled machine, practical risk is typically low.\n\nThis issue becomes materially relevant when configuration or environment values are sourced from less-trusted inputs, for example:\n- shared/team config templates,\n- copied config snippets,\n- setup scripts, automation, or repos that write config,\n- any workflow where another party can influence env values before `gateway install`/reinstall.\n\nIn those scenarios, it provides a reliable config-to-command-execution path when the scheduled task script is generated and run.\n\n### Details\nOn Windows, gateway service installation writes a helper batch script and then registers it via Scheduled Task (`schtasks`).\nBefore the fix, env lines were rendered as `set KEY=VALUE` in `src/daemon/schtasks.ts`, so values containing metacharacters (for example `\u0026`, `|`, `^`, `%`, `!`) could alter command behavior in `cmd.exe`.\n\nThe fix now renders quoted assignments (`set \"KEY=VALUE\"`) with explicit escaping for cmd metacharacters, updates parser compatibility for quoted assignments, and adds regression tests for metacharacter handling and round-trip parsing.\n\n### Fix Commit(s)\n- `dafe52e8cf1a041d898cfb304a485fa05e5f58fb`\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:50:05Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw has a Command Injection via unescaped environment assignments in Windows Scheduled Task script generation",
+    "UpdatedAt": "2026-03-03T21:50:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.17"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T23:32:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340327,
+    "Id": "GSA_kwCzR0hTQS1ncTgzLThxN3EtOWhmeM4ABTFn",
+    "GhsaId": "GHSA-gq83-8q7q-9hfx",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-gq83-8q7q-9hfx"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/cc29be8c9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gq83-8q7q-9hfx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gq83-8q7q-9hfx"
+      }
+    ],
+    "Description": "## Impact\n\nConcurrent `updateRegistry`/`removeRegistryEntry` operations for sandbox containers and browsers could lose updates or resurrect removed entries under race conditions.\n\nThe registry writes were read-modify-write in a window with no locking and permissive fallback parsing, so concurrent registry updates could produce stale snapshots and overwrite each other.\n\nThat desyncs sandbox state and can affect `sandbox list`, `sandbox prune`, and `sandbox recreate --all` behavior.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.17`\n- Patched versions: `2026.2.18`\n\n## Fix Commit(s)\n\n- `cc29be8c9`\n\nOpenClaw thanks @kexinoh for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:32:49Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's serialize sandbox registry writes to prevent races and delete-rollback corruption",
+    "UpdatedAt": "2026-03-03T23:32:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:18:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340215,
+    "Id": "GSA_kwCzR0hTQS14NHZwLTQyMzUtNjVoZ84ABTD3",
+    "GhsaId": "GHSA-x4vp-4235-65hg",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-x4vp-4235-65hg"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d3e8b17aa6432536806b4853edc7939d891d0f25"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x4vp-4235-65hg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x4vp-4235-65hg"
+      }
+    ],
+    "Description": "## Impact\n\nOpenClaw webhook handlers for BlueBubbles and Google Chat accepted and parsed request bodies before authentication and signature checks on vulnerable releases. This allowed unauthenticated clients to hold parser work open with slow/oversized request bodies and degrade availability (slow-request DoS).\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected releases: `\u003c= 2026.3.1`\n- Latest published vulnerable version at triage time: `2026.3.1` (npm)\n- Fixed release: `2026.3.2` (released)\n\n## Fix Commit(s)\n\n- `d3e8b17aa6432536806b4853edc7939d891d0f25`\n\n## Mitigation\n\nUpgrade to `2026.3.2` (or newer). The fix enforces auth-before-body for affected webhook paths, adds strict pre-auth body/time budgets, and introduces shared in-flight/request guardrails with regression coverage.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:18:39Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has pre-auth webhook body parsing that can enable unauthenticated slow-request DoS",
+    "UpdatedAt": "2026-03-03T21:18:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.1"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T23:11:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340319,
+    "Id": "GSA_kwCzR0hTQS03OTJxLXF3OTUtZjQ0Ns4ABTFf",
+    "GhsaId": "GHSA-792q-qw95-f446",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-792q-qw95-f446"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/2aa7842adeedef423be7ce283a9144b9f1a0a669"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-792q-qw95-f446"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-792q-qw95-f446"
+      }
+    ],
+    "Description": "### Summary\nIn a narrow Signal reaction-notification path, reaction-only inbound events could enqueue a status event before sender access checks were applied.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.24` (latest published at patch time)\n- Fixed: `2026.2.25` \n\n### Details\nIn the affected flow (`src/signal/monitor/event-handler.ts`), reaction-only handling could return after `enqueueSystemEvent(...)` before DM/group authorization checks were evaluated for that sender.\n\nThis behavior was limited to reaction-only inbound events with reaction notifications enabled. In that case, a sender not authorized for normal DM flow could still queue a Signal reaction status line for that session.\n\nThe fix applies shared DM/group access checks before reaction notification enqueue. Pairing behavior for normal DM messages is unchanged.\n\n### Impact\n- Limited to Signal reaction-only inbound events.\n- Could add an unauthorized reaction status line to agent context for affected sessions.\n- Did not directly enable normal DM delivery or direct host command execution.\n\n### Fix Commit(s)\n- `2aa7842adeedef423be7ce283a9144b9f1a0a669`\n\n### Release Process Note\n`patched_versions` is pre-set to `2026.2.25` so once npm release is out, advisory publish can proceed directly.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:11:47Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Signal reaction-only status events could, in limited cases, be enqueued before access checks",
+    "UpdatedAt": "2026-03-03T23:11:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

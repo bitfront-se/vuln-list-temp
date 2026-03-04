@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T22:12:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340302,
+    "Id": "GSA_kwCzR0hTQS14Z2YyLXZ4djItcnJtZ84ABTFO",
+    "GhsaId": "GHSA-xgf2-vxv2-rrmg",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-xgf2-vxv2-rrmg"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c2c7114ed39a547ab6276e1e933029b9530ee906"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xgf2-vxv2-rrmg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xgf2-vxv2-rrmg"
+      }
+    ],
+    "Description": "### Summary\n`system.run` environment sanitization allowed shell-startup env overrides (`HOME`, `ZDOTDIR`) that can execute attacker-controlled startup files before allowlist-evaluated command bodies.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.21-2` (latest published vulnerable version)\n- Planned patched version: `\u003e= 2026.2.22`\n\n### Technical Details\nIn affected versions:\n- Env sanitization blocked many dangerous keys, but not startup-sensitive override keys (`HOME`, `ZDOTDIR`) in host exec env paths.\n- Shell-wrapper analysis for allowlist mode models command bodies, but not shell startup side effects.\n- Runtime execution used sanitized env, so attacker-provided startup-key overrides could run hidden startup payloads first.\n\nObserved exploit vectors:\n- `HOME` + `bash -lc` + malicious `.bash_profile`\n- `ZDOTDIR` + `zsh -c` + malicious `.zshenv`\n\n### Fix Commit(s)\n- `c2c7114ed39a547ab6276e1e933029b9530ee906`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`\u003e= 2026.2.22`). After the npm release is published, this advisory can be published directly.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:12:51Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's shell startup env injection bypasses system.run allowlist intent (RCE class)",
+    "UpdatedAt": "2026-03-03T22:12:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

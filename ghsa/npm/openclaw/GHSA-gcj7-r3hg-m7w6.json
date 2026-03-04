@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-03T22:25:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340309,
+    "Id": "GSA_kwCzR0hTQS1nY2o3LXIzaGctbTd3Ns4ABTFV",
+    "GhsaId": "GHSA-gcj7-r3hg-m7w6",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-gcj7-r3hg-m7w6"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1aadf26f9acc399affabd859937a09468a9c5cb4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gcj7-r3hg-m7w6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gcj7-r3hg-m7w6"
+      }
+    ],
+    "Description": "### Summary\nThe voice-call Twilio webhook path accepted replay/dedupe identity from unsigned request metadata (`i-twilio-idempotency-token`), enabling replayed signed requests to bypass replay detection and manager dedupe by mutating only that header.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.25` (latest published npm version at triage time)\n- Fixed on `main`: commit `1aadf26f9acc399affabd859937a09468a9c5cb4`\n- Planned patched npm version: `2026.2.26`\n\n### Impact\nDeployments using the optional `voice-call` Twilio webhook path could accept replayed webhook events as fresh events when an attacker had one valid signed request and changed only the unsigned idempotency header.\n\n### Technical Details\nThe fix removes unsigned-header trust from Twilio replay/dedupe identity and binds replay/manager dedupe to authenticated request material. It also threads a verified request identity through provider parsing so dedupe uses verification-derived identity rather than mutable headers.\n\n### Fix Commit(s)\n- `1aadf26f9acc399affabd859937a09468a9c5cb4`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`). After the npm release is published, this advisory can be published without additional version-field edits.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:25:37Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw's voice-call Twilio replay dedupe now bound to authenticated webhook identity",
+    "UpdatedAt": "2026-03-03T22:25:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

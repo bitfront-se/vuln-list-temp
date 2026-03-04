@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-03T22:12:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340301,
+    "Id": "GSA_kwCzR0hTQS02MmY2LW1yY2otdjhoNc4ABTFN",
+    "GhsaId": "GHSA-62f6-mrcj-v8h5",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-62f6-mrcj-v8h5"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/fbb79d4013000552d6a2c23b9613d8b3cb92f6b6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-62f6-mrcj-v8h5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-62f6-mrcj-v8h5"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw accepted prototype-reserved keys in runtime `/debug set` override object values (`__proto__`, `constructor`, `prototype`).\n\n### Impact\n`/debug` is disabled by default, and exploitation requires an already authorized `/debug set` caller. No unauthenticated vector was identified.\n\nThis issue affects runtime in-memory overrides only (non-persistent and cleared on restart/reset). Given the required prior authorization boundary, this is treated as defense-in-depth hardening for command flag evaluation.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published vulnerable version confirmed: `2026.2.19-2`\n- Vulnerable range: `\u003c= 2026.2.19-2`\n- Patched in planned next release: `2026.2.21`\n\n### Technical Details\n- Runtime override merges now block reserved prototype keys during deep merge.\n- Runtime override writes now sanitize nested object values to remove reserved prototype keys before storing overrides.\n- Restricted command gates (`bash`, `config`, `debug`) now require own-property boolean flags, preventing inherited prototype values from enabling commands.\n\n### Fix Commit(s)\n- `fbb79d4013000552d6a2c23b9613d8b3cb92f6b6`\n\n### Release Process Note\n`patched_versions` is pre-set to `2026.2.21` so after the npm release is live, this advisory can be published immediately.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:12:20Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw's runtime /debug override path accepted prototype-reserved keys",
+    "UpdatedAt": "2026-03-03T22:12:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.21"
+    }
+  ]
+}

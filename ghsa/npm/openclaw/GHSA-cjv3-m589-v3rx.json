@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T23:17:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340322,
+    "Id": "GSA_kwCzR0hTQS1janYzLW01ODktdjNyeM4ABTFi",
+    "GhsaId": "GHSA-cjv3-m589-v3rx",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cjv3-m589-v3rx"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/08a7967936cfc0b2af6b27ec1f9272542648ad6c"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c45f3c5b004c8d63dc0e282e2176f8c9355d24f1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cjv3-m589-v3rx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cjv3-m589-v3rx"
+      }
+    ],
+    "Description": "## Summary\nThis advisory tracks a defense-in-depth hardening for canvas routes. In mixed-trust or network-visible deployments, prior canvas auth/fallback behavior could broaden access beyond intended boundaries.\n\n## Deployment Context\nOpenClaw’s default model is trusted host + loopback-first access. Some operators intentionally expose canvas routes on LAN/tailnet. This update is aimed at those broader deployment patterns.\n\n## What Changed\n- Require explicit token or session-capability authorization for canvas routes.\n- Remove shared-IP fallback paths for canvas access.\n- Tighten bind/fallback behavior to fail closed.\n\n## Impact\nRisk was highest in non-loopback or mixed-trust environments. In strict single-operator trusted-host setups, practical exposure is lower.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable: `\u003c= 2026.2.19-2`\n- Patched: `2026.2.21` (next release target)\n\n## Fix Commit(s)\n- `c45f3c5b004c8d63dc0e282e2176f8c9355d24f1`\n- `08a7967936cfc0b2af6b27ec1f9272542648ad6c`\n\nThanks @NucleiAv for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:17:06Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has Canvas route hardening for mixed-trust deployments",
+    "UpdatedAt": "2026-03-03T23:17:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.21"
+    }
+  ]
+}

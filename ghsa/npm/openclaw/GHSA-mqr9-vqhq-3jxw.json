@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:37:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340279,
+    "Id": "GSA_kwCzR0hTQS1tcXI5LXZxaHEtM2p4d84ABTE3",
+    "GhsaId": "GHSA-mqr9-vqhq-3jxw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mqr9-vqhq-3jxw"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/280c6b117b2f0e24f398e5219048cd4cc3b82396"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mqr9-vqhq-3jxw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mqr9-vqhq-3jxw"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw Windows Scheduled Task script generation allowed unsafe argument handling in generated `gateway.cmd` files. In vulnerable versions, cmd metacharacter-only values could be emitted without safe quoting/escaping, which could lead to unintended command execution when the scheduled task runs.\n\n### Details\nThe issue affected Windows daemon startup script generation in `src/daemon/schtasks.ts`.\n\nVulnerable behavior included:\n- Incomplete cmd argument quoting for metacharacter-only values.\n- Incomplete handling of cmd expansion-sensitive characters in script arguments.\n- Missing CR/LF guards for script-rendered fields.\n\nThe fix hardens Windows script generation by:\n- Separating schtasks argument quoting from batch script argument quoting.\n- Quoting cmd metacharacter arguments and escaping `%` / `!` expansion cases.\n- Rejecting CR/LF in command arguments, task descriptions, and rendered environment assignments.\n- Adding regression tests for metacharacter and line-break injection paths.\n\n### Impact\nThis issue is local to Windows deployments and requires control over values that feed service script generation (for example install-time/runtime arguments or environment-derived values). It can result in unintended command execution in the scheduled task context.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.17`\n- Patched version: `\u003e= 2026.2.19` (planned next npm release)\n- Latest published npm version at update time (2026-02-19): `2026.2.17`\n\n### Fix Commit(s)\n- `280c6b117b2f0e24f398e5219048cd4cc3b82396`\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:37:29Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw Windows Scheduled Task script generation allowed local command injection via unsafe cmd argument handling",
+    "UpdatedAt": "2026-03-03T21:37:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

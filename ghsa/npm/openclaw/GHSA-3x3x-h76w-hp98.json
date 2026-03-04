@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:48:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340288,
+    "Id": "GSA_kwCzR0hTQS0zeDN4LWg3NnctaHA5OM4ABTFA",
+    "GhsaId": "GHSA-3x3x-h76w-hp98",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3x3x-h76w-hp98"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/bafdbb6f112409a65decd3d4e7350fbd637c7754"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/cfe8457a0f4aae5324daec261d3b0aad1461a4bc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/fec48a5006eab37c6a5821726ccaeec886486b13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3x3x-h76w-hp98"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3x3x-h76w-hp98"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw `exec` allowlist/safeBins policy could be bypassed with attached short-option payloads (for example `sort -o/tmp/poc`), enabling file-write operations while still satisfying safeBins checks.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.17`\n- Latest published vulnerable version: `2026.2.17`\n- Patched in: `2026.2.19`\n\n### Impact\nWhen `tools.exec.security=allowlist` and `tools.exec.safeBins` included affected binaries, attached short-option payloads could bypass safeBins argument validation and permit file-write behavior that should have been denied.\n\n### Fix Commit(s)\n- cfe8457a0f4aae5324daec261d3b0aad1461a4bc\n- bafdbb6f112409a65decd3d4e7350fbd637c7754\n- fec48a5006eab37c6a5821726ccaeec886486b13\n\nOpenClaw thanks @FailButWin and @Redgrave961 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:48:29Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw exec allowlist safeBins short-option bypass could permit arbitrary file write",
+    "UpdatedAt": "2026-03-03T21:48:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:48:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340289,
+    "Id": "GSA_kwCzR0hTQS1oOTdmLTZwcWotcTQ1Ms4ABTFB",
+    "GhsaId": "GHSA-h97f-6pqj-q452",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-h97f-6pqj-q452"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/baf656bc6fd7f83b6033e6dbc2548ec75028641f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h97f-6pqj-q452"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h97f-6pqj-q452"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw's SSRF IP classifier did not treat IPv6 multicast literals (`ff00::/8`) as blocked/private-internal. This allowed literal multicast hosts to pass SSRF preflight checks.\n\n### Impact\nA bypass in address classification existed for IPv6 multicast literals. OpenClaw's network fetch/navigation paths are constrained to HTTP/HTTPS and this was triaged as low-severity defense-in-depth hardening.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.24`\n- Patched versions: `\u003e= 2026.2.25` \n\n### Technical Details\nThe IPv6 private/internal range set omitted `multicast`, so addresses like `ff02::1` and `ff05::1:3` were not classified as blocked by the shared SSRF classifier.\n\n### Fix Commit(s)\n- `baf656bc6fd7f83b6033e6dbc2548ec75028641f`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next npm release (`2026.2.25`). Once that release is published on npm, the advisory is published.\n\nOpenClaw thanks @zpbrent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:48:55Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has a IPv6 multicast SSRF classifier bypass",
+    "UpdatedAt": "2026-03-03T21:48:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

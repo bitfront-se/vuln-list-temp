@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T19:46:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340184,
+    "Id": "GSA_kwCzR0hTQS02cmNwLXZ4d2YtM21mcM4ABTDY",
+    "GhsaId": "GHSA-6rcp-vxwf-3mfp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6rcp-vxwf-3mfp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/0f0a680d3df81739ea5088a2f88e65f938b7936b"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/55cf92578d266987e390c4bf688196af98eac748"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6rcp-vxwf-3mfp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6rcp-vxwf-3mfp"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw` up to and including **2026.2.23** (latest npm release as of **February 25, 2026**), `system.run` shell-wrapper inputs could present misleading approval/display text while still carrying hidden positional argv payloads that execute at runtime.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.23`\n- Patched: `\u003e= 2026.2.24` (planned next release)\n\n### Root Cause\nFor shell-wrapper forms (for example `/bin/sh -c ...`), command-text binding could focus on inline shell payload text while runtime execution still used the full argv vector. Positional argv carriers after the inline payload could therefore be executed under incomplete display context.\n\n### Security Impact\nApproval/display context could omit executed argv carriers, enabling hidden command execution under misleading operator-visible text.\n\n### Fix\n- Detect shell-wrapper inline-command forms that carry trailing positional argv values.\n- Bind approval/display command text to full formatted argv for those carrier forms.\n- Reject payload-only `rawCommand` values when they do not match the execution-bound argv context for those forms.\n- Forward canonical command display text to the macOS companion exec host and validate `rawCommand`/argv consistency there for carrier wrappers and env-modifier shell preludes.\n\n### Verification\n- `pnpm check`\n- `pnpm exec vitest run --config vitest.gateway.config.ts`\n- `pnpm test:fast`\n- `pnpm vitest run src/infra/system-run-command.test.ts src/node-host/invoke-system-run.test.ts src/cli/nodes-cli.coverage.test.ts src/gateway/node-invoke-system-run-approval.test.ts`\n- `cd apps/macos \u0026\u0026 swift test --filter ExecSystemRunCommandValidatorTests`\n\n### Fix Commit(s)\n- `0f0a680d3df81739ea5088a2f88e65f938b7936b`\n- `55cf92578d266987e390c4bf688196af98eac748`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.24`) so after npm publish the advisory can be published without further field edits.\n\nOpenClaw thanks @tdjackey for reporting.\n\n\n### Publication Update (2026-02-25)\n`openclaw@2026.2.24` is published on npm and contains the fix commit(s) listed above. This advisory now marks `\u003e= 2026.2.24` as patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:46:42Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's system.run shell-wrapper positional argv carriers could execute hidden commands under misleading approval text",
+    "UpdatedAt": "2026-03-03T19:46:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.23"
+    }
+  ]
+}

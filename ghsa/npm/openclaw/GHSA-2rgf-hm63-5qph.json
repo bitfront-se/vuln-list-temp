@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T22:17:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340304,
+    "Id": "GSA_kwCzR0hTQS0ycmdmLWhtNjMtNXFwaM4ABTFQ",
+    "GhsaId": "GHSA-2rgf-hm63-5qph",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2rgf-hm63-5qph"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/07039dc089e51589a213ec0d16f8d6f2cd871fa1"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8877bfd11ec7760b115b2d0d7500a45da2749747"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2rgf-hm63-5qph"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2rgf-hm63-5qph"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw used left-most `X-Forwarded-For` values when requests came from configured trusted proxies. In proxy chains that append/preserve header values, this could let attacker-controlled header content influence security decisions tied to client IP.\n\n### Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.19-2`\n- Patched: `2026.2.21` (planned next release)\n\n### Impact\n\nPossible client-IP spoofing in security-sensitive paths (for example auth rate-limit identity and local/private classification) for deployments behind trusted proxies with non-recommended forwarding behavior.\n\n### Scope Note\n\nOpenClaw docs recommend reverse proxies overwrite (not append/preserve) inbound forwarding headers. This condition reduces severity.\n\n### Fix Commit(s)\n\n- `07039dc089e51589a213ec0d16f8d6f2cd871fa1`\n- `8877bfd11ec7760b115b2d0d7500a45da2749747`\n\n### Release Process Note\n\n`patched_versions` is pre-set to the planned next release (`2026.2.21`). After npm release is out, publish this advisory.\n\nOpenClaw thanks @AnthonyDiSanti for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:17:12Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw improperly parses X-Forwarded-For behind trusted proxies allows client IP spoofing in security decisions",
+    "UpdatedAt": "2026-03-03T22:17:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.21"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.19-2"
+    }
+  ]
+}

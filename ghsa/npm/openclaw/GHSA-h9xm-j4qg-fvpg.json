@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:37:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340278,
+    "Id": "GSA_kwCzR0hTQS1oOXhtLWo0cWctZnZwZ84ABTE2",
+    "GhsaId": "GHSA-h9xm-j4qg-fvpg",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-h9xm-j4qg-fvpg"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/6634030be31e1a1842967df046c2f2e47490e6bf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h9xm-j4qg-fvpg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h9xm-j4qg-fvpg"
+      }
+    ],
+    "Description": "### Summary\nIn some opt-in sandbox configurations, the **experimental** `apply_patch` tool did not consistently apply workspace-only checks to mounted paths (for example `/agent/...`).\n\n### Impact\nThis does **not** affect default installs.\n\nDefault posture:\n- `agents.defaults.sandbox.mode=off` (sandbox disabled by default)\n- `tools.exec.applyPatch.enabled=false` (experimental tool disabled by default)\n\nThis behavior applies only when all of the following are enabled/configured:\n- sandbox mode,\n- experimental `apply_patch`,\n- workspace-only expectations (`tools.fs.workspaceOnly=true` and/or `tools.exec.applyPatch.workspaceOnly=true`),\n- and writable mounts outside workspace.\n\nUnder that opt-in setup, `apply_patch` operations could target mounted paths outside the workspace root.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected published versions: `\u003c= 2026.2.22-2`\n- Fixed in code on `main`: commit `6634030be31e1a1842967df046c2f2e47490e6bf`\n- Patched release: `2026.2.23`\n\n### Technical Details\nIn the sandbox path flow, `apply_patch` used `sandbox.bridge.resolvePath(...)` without applying the same workspace-root assertion used by other filesystem tools. The fix makes `apply_patch` follow the same workspace-only enforcement for sandbox-resolved paths (unless explicitly disabled with `tools.exec.applyPatch.workspaceOnly=false`).\n\n### Fix Commit(s)\n- `6634030be31e1a1842967df046c2f2e47490e6bf`\n\n### Release Process Note\n`patched_versions` is pre-set to the released version (`2026.2.23`). Patched in `2026.2.23` and published.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:37:11Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Experimental apply_patch may bypass workspace-only checks in opt-in sandbox mounts (off by default)",
+    "UpdatedAt": "2026-03-03T21:37:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

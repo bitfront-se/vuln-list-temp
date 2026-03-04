@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T23:08:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340316,
+    "Id": "GSA_kwCzR0hTQS1yOXE1LWM3cWMtcDI2d84ABTFc",
+    "GhsaId": "GHSA-r9q5-c7qc-p26w",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r9q5-c7qc-p26w"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d512163d686ad6741783e7119ddb3437f493dbbc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r9q5-c7qc-p26w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r9q5-c7qc-p26w"
+      }
+    ],
+    "Description": "### Summary\nWhen Nextcloud Talk webhook signing was valid, replayed requests could be accepted without durable replay suppression, allowing duplicate inbound processing after replay-window expiry or process restart.\n\n### Details\nOpenClaw's Nextcloud Talk webhook path verified `HMAC(secret, random + body)` but previously lacked durable replay state tied to webhook events. This allowed replay of a previously valid signed request in some operational conditions.\n\nThe fix on `main` adds:\n- persistent per-account replay dedupe for Nextcloud Talk webhook events,\n- replay checks before webhook side effects (`onMessage`),\n- backend-origin validation against configured account base URL (when configured).\n\n### Impact\nA captured valid signed webhook request could be replayed to trigger duplicate inbound handling. This is an integrity/availability issue (duplicate actions/noise), scoped to deployments using Nextcloud Talk webhook integration.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.24`\n- Patched in release: `2026.2.25`\n\n### Fix Commit(s)\n- `d512163d686ad6741783e7119ddb3437f493dbbc`\n\n### Release Process Note\n`patched_versions` is pre-set to the release (`2026.2.25`) so once npm release `2026.2.25` is published, advisory is now published.\n\nOpenClaw thanks @aristorechina for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:08:55Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Nextcloud Talk webhook replay could trigger duplicate inbound processing",
+    "UpdatedAt": "2026-03-03T23:08:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

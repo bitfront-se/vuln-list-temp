@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:32:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340271,
+    "Id": "GSA_kwCzR0hTQS03N2hmLTdmcWYtZjIyN84ABTEv",
+    "GhsaId": "GHSA-77hf-7fqf-f227",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-77hf-7fqf-f227"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/0dbb92dd2bcf9a32379d11c0f11ed016669dae3e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-77hf-7fqf-f227"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-77hf-7fqf-f227"
+      }
+    ],
+    "Description": "### Summary\nThe `tar.bz2` installer path in `src/agents/skills-install-download.ts` used shell tar preflight/extract logic that did not share the same hardening guarantees as the centralized archive extractor.\n\nThis allowed crafted `.tar.bz2` archives to bypass special-entry blocking and extracted-size guardrails enforced on other archive paths, causing local availability impact during skill install.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published at triage time: `2026.3.1`\n- Affected range: `\u003c= 2026.3.1`\n- Patched in: `2026.3.2` (released)\n\n### Impact\nLocal DoS / availability impact when processing untrusted `.tar.bz2` skill archives.\n\n### Fix Commit(s)\n- `0dbb92dd2bcf9a32379d11c0f11ed016669dae3e`\n\n### Related advisories\n- Canonical overlap (closed): GHSA-3pj7-x8jr-jvj8\n- Duplicate variant (closed): GHSA-rgr7-g85h-6v82",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:32:35Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw skills-install-download: tar.bz2 extraction bypassed archive safety parity checks (local DoS)",
+    "UpdatedAt": "2026-03-03T21:32:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.1"
+    }
+  ]
+}

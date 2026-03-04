@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:20:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340220,
+    "Id": "GSA_kwCzR0hTQS1yNTRyLXdtbXEtbWg4NM4ABTD8",
+    "GhsaId": "GHSA-r54r-wmmq-mh84",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r54r-wmmq-mh84"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7dac9b05dd9d38dd3929637f26fa356fd8bdd107"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r54r-wmmq-mh84"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r54r-wmmq-mh84"
+      }
+    ],
+    "Description": "### Summary\nZIP extraction in OpenClaw could be raced into writing outside the intended destination directory via parent-directory symlink rebind between validation and write.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.3.1`\n- Latest published vulnerable version confirmed: `2026.3.1` (npm as of 2026-03-02)\n- Patched version: `2026.3.2` (released)\n\n### Technical Details\nIn `src/infra/archive.ts`, ZIP extraction previously validated output paths, then later opened/truncated the destination path in a separate step. A local race on parent-directory symlink state could redirect the final write outside the extraction root.\n\nThe fix hardens ZIP writes by binding writes to the opened file handle identity and avoiding the pre-write truncate race path, with shared fd realpath verification in `src/infra/fs-safe.ts` and regression coverage in `src/infra/archive.test.ts`.\n\n### Fix Commit(s)\n- `7dac9b05dd9d38dd3929637f26fa356fd8bdd107`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:20:14Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: ZIP extraction race could write outside destination via parent symlink rebind",
+    "UpdatedAt": "2026-03-03T21:20:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.1"
+    }
+  ]
+}

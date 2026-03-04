@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-03T22:21:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340306,
+    "Id": "GSA_kwCzR0hTQS03cWY2LWg4NGotOGZxNM4ABTFS",
+    "GhsaId": "GHSA-7qf6-h84j-8fq4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-7qf6-h84j-8fq4"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/57334cd7d85174d5f951de01114fd5801b063564"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7qf6-h84j-8fq4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7qf6-h84j-8fq4"
+      }
+    ],
+    "Description": "## Impact\nMicrosoft Teams media handling used mixed fetch paths for Graph metadata/content and attachment auth-retry flows. Some paths bypassed the shared SSRF guard model and created inconsistent host/DNS enforcement across redirect/fetch hops.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published vulnerable version: `2026.2.25`\n- Affected range: `\u003c= 2026.2.25`\n- Planned patched version for next release: `2026.2.26`\n\n## Technical Details\nThe Microsoft Teams attachment/media code previously relied on plugin-local fetch behavior in parts of the flow, instead of uniformly using shared guarded fetch logic with pinned DNS + policy checks. This could allow policy drift and SSRF boundary inconsistency between channel/plugin paths.\n\nThe fix unifies this path by:\n- routing Microsoft Teams Graph message/hosted-content/attachment fetches through shared SSRF-guarded fetch paths,\n- routing auth-scope fallback attachment downloads through the same guarded policy model,\n- centralizing hostname-suffix allowlist policy helpers in `plugin-sdk` so channel/plugins use the same allowlist normalization and policy construction behavior.\n\n## Fix Commit(s)\n- `57334cd7d85174d5f951de01114fd5801b063564`\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:21:59Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Microsoft Teams media fetch paths bypass shared SSRF guard model",
+    "UpdatedAt": "2026-03-03T22:21:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

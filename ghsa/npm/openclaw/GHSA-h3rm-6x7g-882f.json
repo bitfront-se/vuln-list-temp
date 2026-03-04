@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:19:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340217,
+    "Id": "GSA_kwCzR0hTQS1oM3JtLTZ4N2ctODgyZs4ABTD5",
+    "GhsaId": "GHSA-h3rm-6x7g-882f",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-h3rm-6x7g-882f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/dded569626b0d8e7bdab10b5e7528b6caf73a0f1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h3rm-6x7g-882f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h3rm-6x7g-882f"
+      }
+    ],
+    "Description": "### Summary\nIn `openclaw@2026.3.1`, node `system.run` approval-path hardening rewrote wrapper command argv in a way that changed execution semantics. A command shown/approved as a shell payload (for example `echo SAFE`) could execute a different local script when wrapper argv were rewritten.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `2026.3.1` (latest published npm version as of March 2, 2026)\n- Fixed release: `2026.3.2` (released)\n\n### Technical Details\nRoot cause was in node-host approval hardening for `system.run`:\n- `src/node-host/invoke-system-run-plan.ts` rewrote `argv[0]` to the resolved executable.\n- Wrapper resolution unwrapped dispatch wrappers, so input like `['env','sh','-c','echo SAFE']` resolved executable `sh`.\n- The approved plan could become `['/bin/sh','sh','-c','echo SAFE']` while approval text remained `echo SAFE`.\n\nThat rewrite changed runtime behavior: `/bin/sh` interprets the extra `sh` positional argument as a script path, enabling execution of a local `./sh` file from approved `cwd` instead of the approved payload text.\n\n### Impact\nApproval-integrity break in `host=node` execution flow: operator-visible command text and executed behavior could diverge.\n\nExploit preconditions:\n- attacker can influence wrapper argv and place a local file in approved working directory,\n- operator grants approval for the displayed command.\n\n### Fix Commit(s)\n- `dded569626b0d8e7bdab10b5e7528b6caf73a0f1`\n\n### Fixed Version\n- Patched in `openclaw@2026.3.2`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:19:08Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Node system.run approval hardening wrapper semantic drift can execute unintended local scripts",
+    "UpdatedAt": "2026-03-03T21:19:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "= 2026.3.1"
+    }
+  ]
+}

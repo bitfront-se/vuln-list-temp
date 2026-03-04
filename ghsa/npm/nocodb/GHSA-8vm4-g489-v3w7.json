@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T20:58:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 340204,
+    "Id": "GSA_kwCzR0hTQS04dm00LWc0ODktdjN3N84ABTDs",
+    "GhsaId": "GHSA-8vm4-g489-v3w7",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-8vm4-g489-v3w7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28398"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/0.301.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8vm4-g489-v3w7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8vm4-g489-v3w7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28398"
+      }
+    ],
+    "Description": "### Summary\nUser-controlled content in comments and rich text cells was rendered via `v-html` without sanitization, enabling stored XSS.\n\n### Details\nComments in `Comments.vue` and rich text in `TextArea.vue` were parsed by markdown-it with `html: true` and injected via `v-html`. The codebase had `vue-dompurify-html` available but these paths used raw `v-html`. Server-side, `Comment.insert()` used `extractProps()` instead of `extractPropsAndSanitize()`.\n\nCommenter role is sufficient for the comments vector; Editor role for rich text.\n\nThis issue was independently reported; see also GHSA-rcph-x7mj-54mm and GHSA-wwp2-x4rj-j8rm for the same root cause found by GitHub Security Lab.\n\n### Impact\nStored XSS — malicious scripts execute for any user viewing the comment or cell.\n\n### Credit\nThis issue was reported by [@bugbunny-research](https://github.com/bugbunny-research) (bugbunny.ai).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T20:58:44Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB Vulnerable to Stored Cross-Site Scripting via Comments and Rich Text Cells",
+    "UpdatedAt": "2026-03-03T20:58:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.301.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.2"
+    }
+  ]
+}

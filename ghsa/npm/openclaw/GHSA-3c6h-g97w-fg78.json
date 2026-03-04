@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:42:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340286,
+    "Id": "GSA_kwCzR0hTQS0zYzZoLWc5N3ctZmc3OM4ABTE-",
+    "GhsaId": "GHSA-3c6h-g97w-fg78",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3c6h-g97w-fg78"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3b8e33037ae2e12af7beb56fcf0346f1f8cbde6f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3c6h-g97w-fg78"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3c6h-g97w-fg78"
+      }
+    ],
+    "Description": "### Summary\nIn OpenClaw, `tools.exec.safeBins` validation for `sort` could be bypassed via GNU long-option abbreviations in allowlist mode, allowing approval-free execution paths that should require approval.\n\n### Affected Packages / Versions\n- Ecosystem: npm\n- Package: `openclaw`\n- Latest published version checked: `2026.2.22-2`\n- Affected range: `\u003c= 2026.2.22-2`\n- Fixed version: `2026.2.23`\n\n### Impact\nWhen all of the following are true:\n- `tools.exec.security=allowlist`\n- `tools.exec.ask=on-miss`\n- `tools.exec.safeBins` includes `sort`\n\nabbreviated GNU long options (for example `--compress-prog`) could bypass denied-flag checks and be treated as allowlist-satisfied safe-bin usage, skipping approval.\n\n### Root Cause\nLong-option handling matched denied flags by exact string and accepted unknown long options with inline values instead of failing closed.\n\n### Fix Commit(s)\n- `3b8e33037ae2e12af7beb56fcf0346f1f8cbde6f`\n\n### Release Process Note\n`patched_versions` is pre-set to the released version (`2026.2.23`). This advisory now reflects released fix version `2026.2.23`.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:41:59Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's tools.exec.safeBins sort long-option abbreviation bypass can skip exec approval in allowlist mode",
+    "UpdatedAt": "2026-03-03T21:42:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

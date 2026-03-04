@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:19:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340218,
+    "Id": "GSA_kwCzR0hTQS04bXZ4LXAycjktcjM3Nc4ABTD6",
+    "GhsaId": "GHSA-8mvx-p2r9-r375",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-8mvx-p2r9-r375"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8mvx-p2r9-r375"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8mvx-p2r9-r375"
+      }
+    ],
+    "Description": "### Summary\n`openclaw` web tools strict URL fetch paths could lose DNS pinning when environment proxy variables are configured (`HTTP_PROXY`/`HTTPS_PROXY`/`ALL_PROXY`, including lowercase variants).\n\nIn affected builds, strict URL checks (for example `web_fetch` and citation redirect resolution) validated one destination during SSRF guard checks, but runtime connection routing could proceed through an env-proxy dispatcher.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable version range: `\u003c= 2026.3.1`\n- Latest published npm version at triage time (2026-03-02): `2026.3.1`\n- Patched versions: `\u003e= 2026.3.2` (released)\n\n### Technical Details\nThe SSRF guard performed hostname resolution and policy checks, then selected a request dispatcher.\n\nWhen env proxy settings were present, strict web-tool flows could use `EnvHttpProxyAgent` instead of the DNS-pinned dispatcher. This created a destination-binding gap between check-time resolution and connect-time routing.\n\nThe fix keeps DNS pinning on strict/untrusted web-tool URL paths and limits env-proxy bypass behavior to trusted/operator-controlled endpoints via an explicit dangerous opt-in.\n\n### Impact\nIn deployments with env proxy variables configured, attacker-influenced URLs from web tools could be routed through proxy behavior instead of strict pinned-destination routing, which could allow access to internal/private targets reachable from that proxy environment.\n\n### Mitigations\nBefore upgrading, operators can reduce exposure by clearing proxy env vars for OpenClaw runtime processes or disabling `web_fetch` / `web_search` where untrusted URL input is possible.\n\n### Fix Commit(s)\n- `345abf0b2e0f43b0f229e96f252ebf56f1e5549e`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:19:47Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's web tools strict URL guard could lose DNS pinning when env proxy is configured",
+    "UpdatedAt": "2026-03-03T21:19:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.1"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T22:09:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340298,
+    "Id": "GSA_kwCzR0hTQS1yMjk0LTI4OTQtOTJqM84ABTFK",
+    "GhsaId": "GHSA-r294-2894-92j3",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r294-2894-92j3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/f8524ec77a3999d573e6c6b8a5055bf35c49a2e6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r294-2894-92j3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r294-2894-92j3"
+      }
+    ],
+    "Description": "## Summary\n\nThe exported session HTML viewer allowed stored XSS when untrusted session content included raw HTML markdown tokens or unescaped metadata fields.\n\n## Impact\n\nOpening a crafted exported HTML session could execute attacker-controlled JavaScript in the viewer context. This can expose session content in the page and enable phishing or UI spoofing in the trusted export view.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.22-2`\n- Patched version (released): `\u003e= 2026.2.23`\n\n## Technical Details\n\nThe exporter rendered markdown with `marked.parse(...)` and inserted HTML via `innerHTML`, but did not override the `html` renderer token path. Raw HTML (for example `\u003cimg ... onerror=...\u003e`) was passed through. Additional tree/header metadata fields were interpolated without escaping in the export template.\n\n## Reproduction\n\n1. Create a session containing content like `\u003cimg src=x onerror=alert(1)\u003e`.\n2. Export the session to HTML.\n3. Open the exported file.\n4. Observe script execution from injected content.\n\n## Remediation\n\n- Added a `marked` `html(token)` renderer override that escapes raw HTML tokens.\n- Escaped previously unescaped tree/header metadata fields in the export template.\n- Added image MIME sanitization for exported data-URL image rendering.\n- Added regression tests for markdown/token and metadata escaping paths.\n\n## Fix Commit(s)\n\n- `f8524ec77a3999d573e6c6b8a5055bf35c49a2e6`\n\n## Release Process Note\n\n`patched_versions` is pre-set to the released version (`\u003e= 2026.2.23`). This advisory now reflects released fix version `2026.2.23`.\n\nOpenClaw thanks @allsmog for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T22:09:26Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has stored XSS in exported session HTML viewer via markdown/raw-HTML rendering",
+    "UpdatedAt": "2026-03-03T22:09:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-03T21:52:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340294,
+    "Id": "GSA_kwCzR0hTQS12dmdwLTRjMjgtbTNqbc4ABTFG",
+    "GhsaId": "GHSA-vvgp-4c28-m3jm",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vvgp-4c28-m3jm"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ec45c317f5d0631a3d333b236da58c4749ede2a3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vvgp-4c28-m3jm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vvgp-4c28-m3jm"
+      }
+    ],
+    "Description": "## Summary\nA trusted-proxy Control UI pairing bypass accepted `client.id=control-ui` without device identity checks. The bypass did not require `operator` role, so an authenticated `node` role session could connect unpaired and reach node event methods.\n\n## Impact\nWith trusted-proxy authentication enabled, a `node` role websocket client could skip pairing by using `client.id=control-ui`. That created an authorization boundary bypass from a node-scoped connection into node event execution flows.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected range: `\u003c= 2026.2.24`\n- Latest published vulnerable version: `2026.2.24`\n- Patched in next release: `2026.2.25` (pre-set below so this advisory is ready to publish after npm release)\n\n## Fix\nThe trusted-proxy Control UI bypass now additionally requires `role === \"operator\"`.\n\n### Fix Commit(s)\n- `ec45c317f5d0631a3d333b236da58c4749ede2a3`\n\n## Release Process Note\n`patched_versions` is intentionally pre-set to the release (`2026.2.25`). Advisory published with npm release `2026.2.25`.2.25` is published, the remaining GHSA action is to publish this advisory.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:52:16Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw has a Trusted-proxy Control UI pairing bypass which allows unpaired node sessions",
+    "UpdatedAt": "2026-03-03T21:52:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

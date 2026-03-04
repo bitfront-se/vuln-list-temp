@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T19:57:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340190,
+    "Id": "GSA_kwCzR0hTQS01NnBjLTZodnAtNGd2NM4ABTDe",
+    "GhsaId": "GHSA-56pc-6hvp-4gv4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-56pc-6hvp-4gv4"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d1c00dbb7c64a39e205464dae7f2a068420e91c1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-56pc-6hvp-4gv4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-56pc-6hvp-4gv4"
+      }
+    ],
+    "Description": "## Vulnerability\n\nPath traversal in config `$include` resolution allowed arbitrary local file reads outside the config directory boundary (CWE-22).\n\n### Attack Vectors\n\n1. If an attacker can modify OpenClaw config, they can set `$include` to absolute paths (for example `/etc/passwd`) and read files accessible to the OpenClaw process.\n2. If an attacker can modify OpenClaw config, they can use traversal paths (for example `../../...`) to escape the config directory.\n3. If an attacker can create symlinks inside the config directory, they can point includes to external files unless real-path checks are enforced.\n4. Impact scope is bounded by the file permissions of the OpenClaw runtime user; this is not an unauthenticated remote-only vector by itself.\n\n## Impact\n\nA successful exploit can expose local secrets and credentials readable by the OpenClaw process user, including API keys and private config material.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c=2026.2.15`\n- Patched versions: `\u003e=2026.2.17`\n\n## Fix Commit(s)\n\n- `d1c00dbb7c64a39e205464dae7f2a068420e91c1`\n\n## Release Process Note\n\nPatched version is pre-set to `2026.2.17`. Once npm release `2026.2.17` is available, this advisory is ready to publish.\n\nOpenClaw thanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T19:57:23Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw vulnerable to arbitrary file read via $include directive",
+    "UpdatedAt": "2026-03-03T19:57:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.17"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.17"
+    }
+  ]
+}

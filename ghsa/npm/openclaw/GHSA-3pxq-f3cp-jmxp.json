@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:20:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340219,
+    "Id": "GSA_kwCzR0hTQS0zcHhxLWYzY3Atam14cM4ABTD7",
+    "GhsaId": "GHSA-3pxq-f3cp-jmxp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3pxq-f3cp-jmxp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/104d32bb64cdf19d5e77f70553a511a2ae90ad1c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3pxq-f3cp-jmxp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3pxq-f3cp-jmxp"
+      }
+    ],
+    "Description": "### Summary\nA path-confinement bypass in browser output handling allowed writes outside intended roots in `openclaw` versions up to and including `2026.3.1`.\n\nThe fix unifies root-bound, file-descriptor-verified write semantics and canonical path-boundary validation across browser output and related install/skills write paths.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published npm version at triage time: `2026.3.1`\n- Affected range: `\u003c= 2026.3.1`\n- Patched release: `2026.3.2` (released)\n\n### Fix Commit(s)\n- `104d32bb64cdf19d5e77f70553a511a2ae90ad1c`\n\n### Technical Notes\n- Browser output writes now use root-bound, fd/inode-verified commit flow.\n- Install + skills path checks now share canonical in-base validation to reduce drift and close equivalent escape surfaces.\n- Added regression coverage for symlink-rebind and root-bound source-path write behavior.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:20:01Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Unified root-bound write hardening for browser output and related path-boundary flows",
+    "UpdatedAt": "2026-03-03T21:20:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.1"
+    }
+  ]
+}

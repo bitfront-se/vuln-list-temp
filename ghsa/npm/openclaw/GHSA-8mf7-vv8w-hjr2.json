@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-03T23:05:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340315,
+    "Id": "GSA_kwCzR0hTQS04bWY3LXZ2OHctaGpyMs4ABTFb",
+    "GhsaId": "GHSA-8mf7-vv8w-hjr2",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-8mf7-vv8w-hjr2"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/47c3f742b6c488be26dd7b9636dbbb8676089154"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8mf7-vv8w-hjr2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8mf7-vv8w-hjr2"
+      }
+    ],
+    "Description": "### Summary\nWhen `tools.exec.safeBins` contained a binary without an explicit safe-bin profile, OpenClaw used a permissive generic fallback profile. In allowlist mode, that could let interpreter-style binaries (for example `python3`, `node`, `ruby`) execute inline payloads via flags like `-c`.\n\nThis requires explicit operator configuration to add such binaries to `safeBins`, so impact is limited to non-default/misconfigured deployments.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.21-2`\n- Patched in code: `\u003e= 2026.2.22` (planned next npm release)\n\n### Fix\n- Remove generic safe-bin fallback during allowlist evaluation.\n- Require explicit safe-bin profiles for `safeBins` entries.\n- Add configurable `tools.exec.safeBinProfiles` (global + per-agent) for safe custom binaries.\n- Update docs to clearly separate `safeBins` from command allowlist semantics.\n\n### Fix Commit(s)\n- `47c3f742b6c488be26dd7b9636dbbb8676089154`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`\u003e= 2026.2.22`) so once that npm release is published, the advisory can be published directly without further metadata edits.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T23:05:35Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw's tools.exec.safeBins generic fallback allowed interpreter-style inline payload execution in allowlist mode",
+    "UpdatedAt": "2026-03-03T23:05:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

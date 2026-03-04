@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:36:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340276,
+    "Id": "GSA_kwCzR0hTQS0yaG04LXJxcm0teGZqcc4ABTE0",
+    "GhsaId": "GHSA-2hm8-rqrm-xfjq",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2hm8-rqrm-xfjq"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/2777d8ad91ef1e8a7c6f5b4b18f8507be7d02914"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3d7ad1cfca4daaa84cd553e843e0e08fa6201349"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/a40c10d3e24568b1e2947c104484be74bf66b8d2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2hm8-rqrm-xfjq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2hm8-rqrm-xfjq"
+      }
+    ],
+    "Description": "## Summary\n\nIn authenticated non-owner DM sessions, a narrow tool-invocation path could reach broader-than-intended owner-only gateway actions.\n\n## Impact\n\nThis requires an authenticated non-owner sender in a DM session and a specific tool invocation path. No unauthenticated access is involved, and this does not provide direct code execution by itself.\n\n## Root Cause\n\n- Some gateway call paths were still using broader default scopes instead of method-level least-privilege scopes.\n- Owner-only enforcement depended on tool-name checks and was not consistently metadata-driven across all call paths.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.17` (latest published npm version as of February 19, 2026)\n- Patched: `2026.2.19`\n\n## Remediation\n\n- Refactored gateway method scope mapping to a data-driven table and added guard tests to ensure all exposed core gateway methods stay classified.\n- Centralized owner-only enforcement in tool policy wrappers and tool metadata.\n- Marked owner-only tools explicitly (`cron`, `gateway`, `whatsapp_login`) and removed duplicated per-tool owner checks.\n- Refactored gateway call path internals into smaller helpers while preserving behavior and coverage.\n\n## Fix Commit(s)\n\n- `a40c10d3e24568b1e2947c104484be74bf66b8d2`\n- `2777d8ad91ef1e8a7c6f5b4b18f8507be7d02914`\n- `3d7ad1cfca4daaa84cd553e843e0e08fa6201349`\n\nOpenClaw thanks @Adam55A-code for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:36:33Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's owner-only gateway tool access checks were incomplete in specific authenticated DM flows",
+    "UpdatedAt": "2026-03-03T21:36:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.19"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.19"
+    }
+  ]
+}

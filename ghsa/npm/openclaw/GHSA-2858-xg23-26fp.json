@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-03T21:18:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340216,
+    "Id": "GSA_kwCzR0hTQS0yODU4LXhnMjMtMjZmcM4ABTD4",
+    "GhsaId": "GHSA-2858-xg23-26fp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2858-xg23-26fp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3bf19d6f40a0aaa55818b96eede3d05130c02533"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2858-xg23-26fp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2858-xg23-26fp"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw accepted `camera.snap` / `camera.clip` node payload `url` fields and downloaded them on the gateway/agent host without binding downloads to the resolved node host.\n\nIn OpenClaw's documented trust model, paired nodes are in the same operator trust boundary, so this is scoped as medium-severity hardening. A malicious or compromised paired node could still steer gateway-host fetches during camera URL retrieval.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003e= 2026.2.13 \u003c= 2026.3.1`\n- Latest vulnerable published version at time of update: `2026.3.1`\n- Patched versions: `\u003e= 2026.3.2` (released)\n\n### Technical Details\nVulnerable flows accepted URL payloads and downloaded directly from the provided URL:\n- `src/cli/nodes-camera.ts` (`writeUrlToFile`) fetched URL payloads without node-host binding.\n- `src/cli/nodes-cli/register.camera.ts` passed `camera.snap` / `camera.clip` payload URLs into that downloader.\n- `src/agents/tools/nodes-tool.ts` did the same for `camera_snap` / `camera_clip` tool actions.\n\n### Impact\nA malicious/compromised paired node could cause gateway-host URL fetches to off-node destinations reachable from the host network. This could be used for internal network probing/fetch pivots in deployments where paired nodes are not fully trusted.\n\n### Remediation\nThe fix introduces fail-closed node-host binding and guarded fetch for camera URL payload downloads:\n- Require resolved node host metadata for URL payload downloads.\n- Enforce hostname match between payload URL and resolved node host.\n- Use SSRF-guarded fetch with redirect host/protocol checks.\n- Apply the same enforcement across CLI and agent tool camera paths.\n\n### Fix Commit(s)\n- `3bf19d6f40a0aaa55818b96eede3d05130c02533`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:18:56Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Node camera URL payload host-binding bypass allowed gateway fetch pivots",
+    "UpdatedAt": "2026-03-03T21:18:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.2.13, \u003c= 2026.3.1"
+    }
+  ]
+}

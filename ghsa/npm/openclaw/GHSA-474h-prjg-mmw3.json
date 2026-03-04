@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-03T21:31:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340269,
+    "Id": "GSA_kwCzR0hTQS00NzRoLXByamctbW13M84ABTEt",
+    "GhsaId": "GHSA-474h-prjg-mmw3",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-474h-prjg-mmw3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ac11f0af731d41743ba02d8595f4d0fe747336e3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c703aa0fe92df9fb71cf254fc46991e05fba2114"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-474h-prjg-mmw3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-474h-prjg-mmw3"
+      }
+    ],
+    "Description": "### Summary\nSandboxed `sessions_spawn(runtime=\"acp\")` could bypass sandbox inheritance and initialize host-side ACP runtime. The fix now fail-closes ACP spawn from sandboxed requester sessions and rejects `sandbox=\"require\"` for `runtime=\"acp\"`.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published npm version at triage time: `2026.3.1` (March 2, 2026)\n- Vulnerable range: `\u003c=2026.3.1`\n- Patched release: `2026.3.2` (released)\n\n### Technical Details\n- Root cause: `runtime=\"subagent\"` enforced sandbox inheritance, while `runtime=\"acp\"` did not enforce equivalent sandbox/runtime checks.\n- Security impact: sandbox-boundary bypass into host-side ACP initialization.\n- Fixed behavior:\n  - deny ACP spawn when requester runtime is sandboxed\n  - deny `sessions_spawn` with `runtime=\"acp\", sandbox=\"require\"`\n  - align sandboxed prompt guidance to avoid advertising blocked ACP paths\n\n### Fix Commit(s)\n- `ac11f0af731d41743ba02d8595f4d0fe747336e3`\n- `c703aa0fe92df9fb71cf254fc46991e05fba2114`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-03T21:31:57Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Sandboxed sessions_spawn(runtime=\"acp\") bypassed sandbox inheritance and allowed host ACP initialization",
+    "UpdatedAt": "2026-03-03T21:31:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.1"
+    }
+  ]
+}
