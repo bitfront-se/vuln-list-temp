@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-04T18:55:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340487,
+    "Id": "GSA_kwCzR0hTQS14MmZmLWo1YzItZ2dwcs4ABTIH",
+    "GhsaId": "GHSA-x2ff-j5c2-ggpr",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-x2ff-j5c2-ggpr"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ce8c67c314b93f570f53c2a9abc124e1e3a54715"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x2ff-j5c2-ggpr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x2ff-j5c2-ggpr"
+      }
+    ],
+    "Description": "## Impact\n\nIn shared Slack workspace deployments that rely on sender restrictions (`allowFrom`, DM policy, or channel user allowlists), some interactive callbacks (`block_action`, `view_submission`, `view_closed`) could be accepted before full sender authorization checks.\n\nIn that scenario, an unauthorized workspace member could enqueue system-event text into an active session. This issue did not provide unauthenticated access, cross-gateway isolation bypass, or host-level privilege escalation by itself.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.24`\n- Patched version: `2026.2.25` (planned next npm release)\n\n## Fix Commit(s)\n\n- `ce8c67c314b93f570f53c2a9abc124e1e3a54715`\n\n## Release Process Note\n\n`patched_versions` is pre-set to the release (`2026.2.25`). Advisory published with npm release `2026.2.25`.\n\n## Trust Model Scope Note\n\nOpenClaw does not support adversarial multi-user isolation on a single shared gateway instance. The supported model is one trust boundary per gateway (separate gateways/hosts for mutually untrusted users). See: https://docs.openclaw.ai/gateway/security\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T18:55:19Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Slack interactive callbacks could skip configured sender checks in some shared-workspace flows",
+    "UpdatedAt": "2026-03-04T18:55:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}

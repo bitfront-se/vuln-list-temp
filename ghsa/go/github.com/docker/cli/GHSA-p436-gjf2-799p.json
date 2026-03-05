@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-05T00:10:41Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/docker/cli"
+  },
+  "Advisory": {
+    "DatabaseId": 340557,
+    "Id": "GSA_kwCzR0hTQS1wNDM2LWdqZjItNzk5cM4ABTJN",
+    "GhsaId": "GHSA-p436-gjf2-799p",
+    "References": [
+      {
+        "Url": "https://github.com/docker/cli/security/advisories/GHSA-p436-gjf2-799p"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-15558"
+      },
+      {
+        "Url": "https://github.com/docker/cli/pull/6713"
+      },
+      {
+        "Url": "https://github.com/docker/compose/pull/12300"
+      },
+      {
+        "Url": "https://github.com/docker/cli/commit/13759330b1f7e7cb0d67047ea42c5482548ba7fa"
+      },
+      {
+        "Url": "https://docs.docker.com/desktop/release-notes"
+      },
+      {
+        "Url": "https://www.zerodayinitiative.com/advisories/ZDI-CAN-28304"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p436-gjf2-799p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p436-gjf2-799p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-15558"
+      }
+    ],
+    "Description": "This issue affects Docker CLI through 29.1.5\n\n### Impact\n\nDocker CLI for Windows searches for plugin binaries in `C:\\ProgramData\\Docker\\cli-plugins`, a directory that does not exist by default. A low-privileged attacker can create this directory and place malicious CLI plugin binaries (docker-compose.exe, docker-buildx.exe, etc.) that are executed when a victim user opens Docker Desktop or invokes Docker CLI plugin features, and allow privilege-escalation if the `docker` CLI is executed as a privileged user.\n\nThis issue affects Docker CLI through v29.1.5 (fixed in v29.2.0). It impacts Windows binaries acting as a CLI plugin manager via the [`github.com/docker/cli/cli-plugins/manager`](https://pkg.go.dev/github.com/docker/cli@v29.1.5+incompatible/cli-plugins/manager) package, which is consumed by downstream projects such as Docker Compose.\n\nDocker Compose became affected starting in v2.31.0, when it incorporated the relevant CLI plugin manager code (see https://github.com/docker/compose/pull/12300), and is fixed in v5.1.0.\n\nThis issue does not impact non-Windows binaries or projects that do not use the plugin manager code.\n\n### Patches\n\nFixed version starts with 29.2.0\n\nThis issue was fixed in https://github.com/docker/cli/commit/13759330b1f7e7cb0d67047ea42c5482548ba7fa (https://github.com/docker/cli/pull/6713), which removed `%PROGRAMDATA%\\Docker\\cli-plugins` from the list of paths used for plugin-discovery on Windows.\n\n### Workarounds\n\nNone\n\n### Resources\n\n- Pull request: \"cli-plugins/manager: remove legacy system-wide cli-plugin path\" (https://github.com/docker/cli/pull/6713)\n- Patch: https://github.com/docker/cli/commit/13759330b1f7e7cb0d67047ea42c5482548ba7fa.patch\n\n### Credits\n\nNitesh Surana (niteshsurana.com) of Trend Research of TrendAI",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T00:10:40Z",
+    "Severity": "HIGH",
+    "Summary": "Docker CLI Plugins: Uncontrolled Search Path Element Leads to Local Privilege Escalation on Windows",
+    "UpdatedAt": "2026-03-05T00:10:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "29.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 19.03.0, \u003c 29.2.0"
+    }
+  ]
+}

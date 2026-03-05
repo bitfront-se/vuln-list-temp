@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-04T19:03:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340491,
+    "Id": "GSA_kwCzR0hTQS05bXBoLTRmN3YtZm12aM4ABTIL",
+    "GhsaId": "GHSA-9mph-4f7v-fmvh",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-9mph-4f7v-fmvh"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3d0337504349954237d09e4d957df5cb844d5e77"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9mph-4f7v-fmvh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9mph-4f7v-fmvh"
+      }
+    ],
+    "Description": "## Summary\nA crafted local avatar path could follow a symlink outside the agent workspace and return arbitrary file contents as a base64 `data:` URL in gateway responses.\n\n## Impact\n- Confidentiality impact: local file read in the gateway process context.\n- Exfiltration path: `agents.list` can return the resulting `avatarUrl` payload.\n\n## Affected Components\n- `src/gateway/session-utils.ts` (`resolveIdentityAvatarUrl`)\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Introduced: `v2026.1.21`\n- Affected published versions: `\u003c= 2026.2.21-2`\n- Planned patched version: `2026.2.22`\n\n## Remediation\n- Resolve workspace and avatar paths with `realpath` and enforce realpath containment.\n- Open files with `O_NOFOLLOW` when available.\n- Compare pre-open and opened file identity (`dev`/`ino`) to block swap races.\n- Add regression tests for outside-workspace symlink rejection and in-workspace symlink allowance.\n\n## Fix Commit(s)\n- `3d0337504349954237d09e4d957df5cb844d5e77`\n\nOpenClaw thanks @aether-ai-agent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T19:02:59Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw has agent avatar symlink traversal in gateway session metadata",
+    "UpdatedAt": "2026-03-04T19:03:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.22"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-05T00:20:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/integration"
+  },
+  "Advisory": {
+    "DatabaseId": 340560,
+    "Id": "GSA_kwCzR0hTQS05NXY1LXBycDQtNWd2Nc4ABTJQ",
+    "GhsaId": "GHSA-95v5-prp4-5gv5",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-95v5-prp4-5gv5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-95v5-prp4-5gv5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-95v5-prp4-5gv5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29185"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in the SCM URL parsing used by Backstage integrations allowed path traversal sequences in encoded form to be included in file paths. When these URLs were processed by integration functions that construct API URLs, the traversal segments could redirect requests to unintended SCM provider API endpoints using the configured server-side integration credentials.\n\nThis affects instances that use any of the SCM integrations (GitHub, Bitbucket Server, Bitbucket Cloud) with the scaffolder or other features that accept user-provided SCM URLs.\n\n###  Patches\n\nThis is patched in `@backstage/integration` version 1.20.1.\n\n### Workarounds\n\nThere is no workaround for this vulnerability. Users should upgrade to the patched version.\n\n###  References \n\n  - Backstage SCM integration documentation: https://backstage.io/docs/integrations/",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T00:20:45Z",
+    "Severity": "LOW",
+    "Summary": "Backstage vulnerable to potential reading of SCM URLs using built in token",
+    "UpdatedAt": "2026-03-05T00:20:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.20.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.20.0"
+    }
+  ]
+}

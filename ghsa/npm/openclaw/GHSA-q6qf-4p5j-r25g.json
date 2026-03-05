@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-04T19:13:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340493,
+    "Id": "GSA_kwCzR0hTQS1xNnFmLTRwNWotcjI1Z84ABTIN",
+    "GhsaId": "GHSA-q6qf-4p5j-r25g",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-q6qf-4p5j-r25g"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/dd9d9c1c609dcb4579f9e57bd7b5c879d0146b53"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6qf-4p5j-r25g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6qf-4p5j-r25g"
+      }
+    ],
+    "Description": "### Summary\nIn OpenClaw, the sandboxed `image` tool did not honor `tools.fs.workspaceOnly=true` for mounted paths resolved by the sandbox FS bridge. This allowed reading out-of-workspace mounted images (for example `/agent/*`) and forwarding those bytes to vision model providers.\n\n### Impact\nSandbox boundary bypass with confidentiality impact. In affected versions, `read`/`write`/`edit` respected workspace-only guardrails, but `image` could still load mounted out-of-workspace files and exfiltrate them via model requests.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.22-2`\n- Patched versions: `\u003e= 2026.2.23` (released)\n- Latest published npm at triage time: `2026.2.22-2`\n\n### Technical Details\n`workspaceOnly` was enforced in sandbox file tools and `apply_patch`, but not propagated/enforced for `image` sandbox path resolution. The fix threads `workspaceOnly` into image-tool construction and asserts sandbox-root containment before loading media bytes.\n\n### Fix Commit(s)\n- `dd9d9c1c609dcb4579f9e57bd7b5c879d0146b53`\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T19:13:48Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's image tool bypasses tools.fs.workspaceOnly on sandbox mount paths and exfiltrates out-of-workspace images",
+    "UpdatedAt": "2026-03-04T19:13:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.2.23"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-05T00:23:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 340561,
+    "Id": "GSA_kwCzR0hTQS04cXA3LWZocjktZnc1M84ABTJR",
+    "GhsaId": "GHSA-8qp7-fhr9-fw53",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-8qp7-fhr9-fw53"
+      },
+      {
+        "Url": "https://backstage.io/docs/overview/threat-model"
+      },
+      {
+        "Url": "https://backstage.io/docs/permissions/plugin-authors/01-setup"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8qp7-fhr9-fw53"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8qp7-fhr9-fw53"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29184"
+      }
+    ],
+    "Description": "### Impact\n\nA malicious scaffolder template can bypass the log redaction mechanism to exfiltrate secrets provided run through task event logs.\n\nThe attack requires:\n  - The ability to register a template in the catalog\n  - A victim who executes the malicious template\n\n### Patches\n  Patched in `@backstage/plugin-scaffolder-backend` version 3.1.4\n\n### Workarounds\n  - Implement a custom permission policy that restricts scaffolder.task.read so users can only read their own task logs\n  - Restrict who can register templates in the catalog to trusted users only\n\n### Resources\n  - Backstage Scaffolder permissions documentation: https://backstage.io/docs/permissions/plugin-authors/01-setup/\n  - Backstage Threat Model: https://backstage.io/docs/overview/threat-model/",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T00:23:51Z",
+    "Severity": "LOW",
+    "Summary": "@backstage/plugin-scaffolder-backend Vulnerable to Potential Session Token Exfiltration via Log Redaction Bypass",
+    "UpdatedAt": "2026-03-05T00:23:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.3"
+    }
+  ]
+}

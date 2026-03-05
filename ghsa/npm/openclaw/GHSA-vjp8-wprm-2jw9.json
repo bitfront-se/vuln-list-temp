@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-04T18:56:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340489,
+    "Id": "GSA_kwCzR0hTQS12anA4LXdwcm0tMmp3Oc4ABTIJ",
+    "GhsaId": "GHSA-vjp8-wprm-2jw9",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vjp8-wprm-2jw9"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/a0c5e28f3bf0cc0cd9311f9e9ec2ca0352550dcf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/bce643a0bd145d3e9cb55400af33bd1b85baeb02"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vjp8-wprm-2jw9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vjp8-wprm-2jw9"
+      }
+    ],
+    "Description": "### Summary\nOpenClaw had account-scope gaps in pairing-store access for DM pairing policy, which could let a pairing approval from one account authorize the same sender on another account in multi-account setups.\n\n### Impact\nThis is an authorization-boundary weakness in multi-account channel deployments. A sender approved in one account could be accepted in another account before explicit approval there.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version affected: `2026.2.25`\n- Vulnerable range: `\u003c= 2026.2.25`\n- Patched version (planned next release): `\u003e= 2026.2.26`\n\n### Fix\nOpenClaw now enforces account-scoped pairing reads/writes consistently across core and extension message channels, with stricter runtime/SDK helpers and shared policy wiring to prevent cross-account pairing bleed.\n\n### Fix Commit(s)\n- `a0c5e28f3bf0cc0cd9311f9e9ec2ca0352550dcf`\n- `bce643a0bd145d3e9cb55400af33bd1b85baeb02`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`). After npm publish of that version, this advisory is ready to publish without further content edits.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T18:56:10Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw has cross-account DM pairing authorization bypass via unscoped pairing store access",
+    "UpdatedAt": "2026-03-04T18:56:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

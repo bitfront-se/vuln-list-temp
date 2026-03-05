@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-04T22:51:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/zitadel/zitadel/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 340554,
+    "Id": "GSA_kwCzR0hTQS0yNXJ3LWc2ZmYtZm1nOM4ABTJK",
+    "GhsaId": "GHSA-25rw-g6ff-fmg8",
+    "References": [
+      {
+        "Url": "https://github.com/zitadel/zitadel/security/advisories/GHSA-25rw-g6ff-fmg8"
+      },
+      {
+        "Url": "https://github.com/zitadel/zitadel/releases/tag/v4.12.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-25rw-g6ff-fmg8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-25rw-g6ff-fmg8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29193"
+      }
+    ],
+    "Description": "### Summary\n\nA vulnerability in Zitadel's login V2 UI allowed users to bypass login behavior and security policies and self-register new accounts or sign in using password even if corresponding options were disabled in their organizaton.\n\n### Impact\n\nZitadel enables administrators to configure their organization’s login behavior and security policies. As part of this functionality, they can disable user self-registration, enforce passwordless logins only, and more.\n\nDue to improper enforcement an attacker could send direct HTTP requests to the login UI and create accounts in organizations that have disabled user self-registration, and gain unauthorized access to the system.\nThe same attack vector could be used to authenticate for example using username and password even when this login method was disabled.\n\n### Affected Versions\n\nSystems running one of the following versions are affected:\n- **4.x**: `4.0.0` through `4.12.0` (including RC versions)\n\n### Patches\n\nThe vulnerability has been addressed in the latest releases. The patch resolves the issue by enforcing the policies on the logiin UI server.\n\n4.x: Upgrade to \u003e=[4.12.1](https://github.com/zitadel/zitadel/releases/tag/v4.12.1)\n\n### Workarounds\n\nThe recommended solution is to upgrade to a patched version.\n\n### Questions\n\nIf there are any questions or comments about this advisory, please send an email to [security@zitadel.com](mailto:security@zitadel.com)\n\n### Credits \n\nZITADEL extends thanks once again to Amit Laish from GE Vernova for finding and reporting the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T22:51:16Z",
+    "Severity": "HIGH",
+    "Summary": "ZITADEL: Login V2 UI Policy Bypass Allows Unauthorized Self-Registration and Authentication",
+    "UpdatedAt": "2026-03-04T22:51:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 4.12.0"
+    }
+  ]
+}

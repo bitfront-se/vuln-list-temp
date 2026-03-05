@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-04T20:05:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@hono/node-server"
+  },
+  "Advisory": {
+    "DatabaseId": 340501,
+    "Id": "GSA_kwCzR0hTQS13YzhjLXF3NnYtaDdmNs4ABTIV",
+    "GhsaId": "GHSA-wc8c-qw6v-h7f6",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/node-server/security/advisories/GHSA-wc8c-qw6v-h7f6"
+      },
+      {
+        "Url": "https://github.com/honojs/node-server/commit/455015be1697dd89974a68b70350ea7b2d126d2e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wc8c-qw6v-h7f6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wc8c-qw6v-h7f6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29087"
+      }
+    ],
+    "Description": "## Summary\n\nWhen using @hono/node-server's static file serving together with route-based middleware protections (e.g. protecting `/admin/*`), inconsistent URL decoding can allow protected static resources to be accessed without authorization.\n\nIn particular, paths containing encoded slashes (`%2F`) may be evaluated differently by routing/middleware matching versus static file path resolution, enabling a bypass where middleware does not run but the static file is still served.\n\n## Details\n\nThe routing layer and the node-server static handler normalize request paths differently. The router preserves `%2F` as a literal string when matching routes, while the static handler decodes `%2F` into `/` before resolving the filesystem path.\n\nExample request:\n\n- `/admin%2Fsecret.html`\n\nThis may:\n- fail to match middleware intended for `/admin/*`, but\n- still be resolved by the static handler as `/admin/secret.html` under the configured static root.\n\nThis does not allow access outside the configured static root and is not a path traversal vulnerability.\n\n## Impact\n\nAn unauthenticated attacker could bypass route-based authorization protections for protected static resources by supplying paths containing encoded slashes.\n\nApplications relying solely on route-based middleware to protect static subpaths under the same static root may have exposed those resources.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T20:05:49Z",
+    "Severity": "HIGH",
+    "Summary": "@hono/node-server has authorization bypass for protected static paths via encoded slashes in Serve Static Middleware",
+    "UpdatedAt": "2026-03-04T20:05:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.19.10"
+      },
+      "VulnerableVersionRange": "\u003c 1.19.10"
+    }
+  ]
+}

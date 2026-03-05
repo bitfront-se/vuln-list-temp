@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-04T19:21:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 340495,
+    "Id": "GSA_kwCzR0hTQS0zang0LXEybTctcjQ5Ns4ABTIP",
+    "GhsaId": "GHSA-3jx4-q2m7-r496",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3jx4-q2m7-r496"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/04d91d0319b82fd4de91ed05e9fc5219ff2ab64e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3jx4-q2m7-r496"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3jx4-q2m7-r496"
+      }
+    ],
+    "Description": "### Summary\nIn certain workspace-restricted configurations, OpenClaw could follow hardlink aliases inside the workspace that reference files outside the workspace boundary.\n\nBy default, `tools.fs.workspaceOnly` is off. This primarily affects deployments that intentionally enable workspace-only filesystem restrictions (and workspace-only `apply_patch` checks).\n\n### Impact\n- Confidentiality: out-of-workspace files could be read through in-workspace hardlink aliases.\n- Integrity: out-of-workspace files could be modified through in-workspace hardlink aliases.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version at triage time: `2026.2.24`\n- Affected range: `\u003c= 2026.2.24`\n- Planned patched version: `2026.2.25`\n\n### Fix Commit(s)\n- `04d91d0319b82fd4de91ed05e9fc5219ff2ab64e` (main)\n\n### Remediation\nOpenClaw now rejects hardlinked final-file aliases during workspace boundary validation for:\n- workspace-only path checks (`read` / `write` / `edit`)\n- workspace-only `apply_patch` read/write paths\n- sandbox mount-root path-safety checks\n\nRegression tests were added for `apply_patch`, workspace fs tools, and sandbox fs bridge hardlink alias escapes.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-04T19:21:04Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Hardlink alias checks could bypass workspace-only file boundaries in specific configurations",
+    "UpdatedAt": "2026-03-04T19:21:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.24"
+    }
+  ]
+}
