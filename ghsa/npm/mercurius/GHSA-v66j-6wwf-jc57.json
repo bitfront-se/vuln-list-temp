@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-05T18:18:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mercurius"
+  },
+  "Advisory": {
+    "DatabaseId": 340922,
+    "Id": "GSA_kwCzR0hTQS12NjZqLTZ3d2YtamM1N84ABTO6",
+    "GhsaId": "GHSA-v66j-6wwf-jc57",
+    "References": [
+      {
+        "Url": "https://github.com/mercurius-js/mercurius/security/advisories/GHSA-v66j-6wwf-jc57"
+      },
+      {
+        "Url": "https://github.com/mercurius-js/mercurius/pull/1187"
+      },
+      {
+        "Url": "https://github.com/mercurius-js/mercurius/commit/962d402ec7a92342f4a1b7f5f04af01776838c3c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v66j-6wwf-jc57"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v66j-6wwf-jc57"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-64166"
+      }
+    ],
+    "Description": "### Summary\n\nA Cross-Site Request Forgery (CSRF) vulnerability was identified in Mercurius versions 16. The issue arises from incorrect parsing of the `Content-Type` header in requests. Specifically, requests with `Content-Type` values such as `application/x-www-form-urlencoded`, `multipart/form-data`, or `text/plain` could be misinterpreted as `application/json`. This misinterpretation bypasses the preflight checks performed by the `fetch()` API, potentially allowing unauthorized actions to be performed on behalf of an authenticated user.\n\n---\n\n### Impact\n\nAn attacker could exploit this vulnerability by crafting a malicious request with a `Content-Type` that Fastify incorrectly parses as `application/json`. When such a request is made from a different origin, it bypasses the Cross-Origin Resource Sharing (CORS) protections, leading to a potential CSRF attack. This could result in unauthorized actions being performed on behalf of an authenticated user without their consent.\n\n---\n\n### Proof of Concept\n\n```javascript\n// Server-side Fastify setup\nconst Fastify = require('fastify');\nconst mercurius = require('mercurius');\n\nconst app = Fastify();\nconst schema = `\n  type Query {\n    hello(name: String): String\n  }\n`;\n\nconst resolvers = {\n  Query: {\n    hello: (_, { name }) =\u003e `Hello ${name || 'World'}!`\n  }\n};\n\napp.register(mercurius, { schema, resolvers });\n\napp.listen(3000, () =\u003e {\n  console.log('Server listening on http://localhost:3000');\n});\n```\n\n```javascript\n// Malicious client-side code\nfetch('http://localhost:3000/graphql', {\n  method: 'POST',\n  body: JSON.stringify({ query: '{ hello(name: \"attacker\") }' }),\n  headers: {\n    'Content-Type': 'application/x-www-form-urlencoded'\n  },\n  credentials: 'include'\n});\n```\n\nIn the above example, the malicious request is crafted to exploit the CSRF vulnerability by using a `Content-Type` that Fastify incorrectly parses as `application/json`.\n\n---\n\n### Mitigation\n\nTo address this vulnerability, CSRF protection has been implemented.\n\n## References\n\n* https://github.com/mercurius-js/mercurius/pull/1187",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T18:18:01Z",
+    "Severity": "MODERATE",
+    "Summary": "Mercurius: Incorrect Content-Type parsing can lead to CSRF attack",
+    "UpdatedAt": "2026-03-05T18:18:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.4.0"
+      },
+      "VulnerableVersionRange": "\u003c= 16.3.0"
+    }
+  ]
+}
