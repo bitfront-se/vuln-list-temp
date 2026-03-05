@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-05T00:33:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 340573,
+    "Id": "GSA_kwCzR0hTQS12Yzg5LTVnM3ItY21oaM4ABTJd",
+    "GhsaId": "GHSA-vc89-5g3r-cmhh",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-vc89-5g3r-cmhh"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.4"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.4.1-alpha.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vc89-5g3r-cmhh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vc89-5g3r-cmhh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29182"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server's `readOnlyMasterKey` option allows access with master-level read privileges but is documented to deny all write operations. However, some endpoints incorrectly accept the `readOnlyMasterKey` for mutating operations. This allows a caller who only holds the `readOnlyMasterKey` to create, modify, and delete Cloud Hooks and to start Cloud Jobs, which can be used for data exfiltration.\n\nAny Parse Server deployment that uses the `readOnlyMasterKey` option is affected. Note than an attacker needs to know the `readOnlyMasterKey` to exploit this vulnerability.\n\n### Patches\n\nThe fix adds authorization checks, rejecting mutating requests made with the `readOnlyMasterKey`.\n\n### Workarounds\n\nThere is no known workaround other than upgrading. If upgrading is not immediately possible, ensure the `readOnlyMasterKey` value is not shared with untrusted parties.\n\n### Resources\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-vc89-5g3r-cmhh\n- Fixed in Parse Server 9.4.1-alpha.3: https://github.com/parse-community/parse-server/releases/tag/9.4.1-alpha.3\n- Fixed in Parse Server 8.6.4: https://github.com/parse-community/parse-server/releases/tag/8.6.4",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T00:33:18Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server's Cloud Hooks and Cloud Jobs bypass `readOnlyMasterKey` write restriction",
+    "UpdatedAt": "2026-03-05T00:33:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.4"
+      },
+      "VulnerableVersionRange": "\u003c= 8.6.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.4.1-alpha.3"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c= 9.4.1-alpha.2"
+    }
+  ]
+}
