@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-05T21:43:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "plane"
+  },
+  "Advisory": {
+    "DatabaseId": 340990,
+    "Id": "GSA_kwCzR0hTQS1mcHg4LTczZ2YtN3g3M84ABTP-",
+    "GhsaId": "GHSA-fpx8-73gf-7x73",
+    "References": [
+      {
+        "Url": "https://github.com/makeplane/plane/security/advisories/GHSA-fpx8-73gf-7x73"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fpx8-73gf-7x73"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fpx8-73gf-7x73"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30242"
+      }
+    ],
+    "Description": "### Summary\nThe webhook URL validation in `plane/app/serializers/webhook.py` only checks `ip.is_loopback`, allowing attackers with workspace ADMIN role to create webhooks pointing to private/internal network addresses (`10.x.x.x`, `172.16.x.x`, `192.168.x.x`, `169.254.169.254`, etc.). When webhook events fire, the server makes requests to these internal addresses and stores the response — enabling SSRF with full response read-back.\n\n### Impact\n- **Cloud metadata exfiltration**: Access AWS/GCP/Azure instance metadata (IAM credentials, tokens)\n- **Internal service scanning**: Probe internal network services not exposed to the internet\n- **Data exfiltration via response logs**: Full response body from internal services is stored and returned to the attacker through the webhook logs API\n- Bypass vectors: `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`, `0.0.0.0`, `::ffff:` mapped addresses",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T21:43:15Z",
+    "Severity": "HIGH",
+    "Summary": "Plane has SSRF via Incomplete IP Validation in Webhook URL Serializer",
+    "UpdatedAt": "2026-03-05T21:43:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.3"
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.1"
+    }
+  ]
+}

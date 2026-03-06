@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-05T21:28:00Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.jetty:jetty-server"
+  },
+  "Advisory": {
+    "DatabaseId": 340961,
+    "Id": "GSA_kwCzR0hTQS14eGg3LWZjZjMtcmo3Zs4ABTPh",
+    "GhsaId": "GHSA-xxh7-fcf3-rj7f",
+    "References": [
+      {
+        "Url": "https://github.com/jetty/jetty.project/security/advisories/GHSA-xxh7-fcf3-rj7f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1605"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/issues/14260"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/issues/79"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xxh7-fcf3-rj7f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xxh7-fcf3-rj7f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1605"
+      }
+    ],
+    "Description": "### Description (as reported)\n\nThere is a memory leak when using `GzipHandler` in jetty-12.0.30 that can cause off-heap OOMs. This can be used for DoS attacks so I'm reporting this as a vulnerability.\n\nThe leak is created by requests where the request is inflated (`Content-Encoding: gzip`) and the response is not deflated (no `Accept-Encoding: gzip`). In these conditions, a new inflator will be created by `GzipRequest` and never released back into `GzipRequest.__inflaterPool` because `gzipRequest.destory()` is not called.\n\nIn heap dumps one can see thousands of `java.util.zip.Inflator` objects, which use both Java heaps and native memory. Leaking native memory causes of off-heap OOMs.\n\nCode path in `GzipHandler.handle()`:\n1. Line 601: `GzipRequest` is created when request inflation is needed.\n2. Lines 611-616: The callback is only wrapped in `GzipResponseAndCallback` when both inflation and deflation are needed.\n3. Lines 619-625: If the handler accepts the request (returns true), `gzipRequest.destroy()` is only called in the \"request not accepted\" path (returns false)\n\nWhen deflation is needed, `GzipResponseAndCallback` (lines 102 and 116) properly calls `gzipRequest.destroy()` in its `succeeded()` and `failed()` methods. But this wrapper is only created when deflation is needed.\n\nPossible fix:\nThe callback should be wrapped whenever a `GzipRequest` is created, not just when deflation is needed. This ensures `gzipRequest.destroy()` is always called when the request completes.\n\n\n### Impact\nThe leak causes the JVM to crash with OOME.\n\n### Patches\nNo patches yet.\n\n### Workarounds\nDisable `GzipHandler`.\n\n### References\nhttps://github.com/jetty/jetty.project/issues/14260\n\nhttps://gitlab.eclipse.org/security/cve-assignment/-/issues/79",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T21:27:59Z",
+    "Severity": "HIGH",
+    "Summary": "The Eclipse Jetty Server Artifact has a Gzip request memory leak ",
+    "UpdatedAt": "2026-03-05T21:28:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.0.32"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c= 12.0.31"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 12.1.0, \u003c= 12.1.5"
+    }
+  ]
+}

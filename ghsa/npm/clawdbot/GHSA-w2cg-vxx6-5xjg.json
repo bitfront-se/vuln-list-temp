@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-w2cg-vxx6-5xjg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29612"
       }
     ],
     "Description": "## Summary\n\nBase64-backed media inputs could be decoded into Buffers before enforcing decoded-size budgets. An attacker supplying oversized base64 payloads can force large allocations, causing memory pressure and denial of service.\n\n## Attack Scenario Notes\n\n- Recommended deployments bind the gateway to loopback by default and require gateway auth for HTTP endpoints. In that configuration, this is best modeled as a local/authorized DoS.\n- If an operator exposes the gateway to untrusted networks (or disables/weakens auth and rate limits), treat this as a higher-severity network DoS risk.\n\n## Affected Packages / Versions\n\n- openclaw (npm): \u003c= 2026.2.13\n- clawdbot (npm): \u003c= 2026.1.24-3\n\n## Fixed In\n\n- openclaw (npm): 2026.2.14 (planned)\n- clawdbot (npm): no patched release planned; migrate to openclaw\n\n## Fix Commit(s)\n\n- 31791233d60495725fa012745dde8d6ee69e9595\n\n## Credits\nThanks @vincentkoc for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-18T00:52:36Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: denial of service through large base64 media files allocating large buffers before limit checks",
-    "UpdatedAt": "2026-02-18T00:52:37Z",
+    "UpdatedAt": "2026-03-05T22:00:57Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.5,

@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-7rcp-mxpq-72pj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28477"
       }
     ],
     "Description": "## Summary\n\nThe manual Chutes OAuth login flow could accept attacker-controlled callback input in a way that bypassed OAuth CSRF state validation, potentially resulting in credential substitution.\n\n## Impact\n\nIf an attacker can convince a user to paste attacker-provided OAuth callback data during the manual login prompt, OpenClaw may exchange an attacker-obtained authorization code and persist tokens for the wrong Chutes account.\n\nThe automatic local callback flow is not affected (it validates state in the local HTTP callback handler).\n\n## Affected Packages / Versions\n\n- `openclaw` (npm): `\u003c= 2026.2.13` when using the manual Chutes OAuth login flow.\n\n## Fix\n\nThe manual flow now requires the full redirect URL (must include `code` and `state`), validates the returned `state` against the expected value, and rejects code-only pastes.\n\n## Fix Commit(s)\n\n- a99ad11a4107ba8eac58f54a3c1a8a0cf5686f47\n\nThanks @aether-ai-agent for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-18T17:41:00Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw Chutes manual OAuth state validation bypass can cause credential substitution",
-    "UpdatedAt": "2026-02-18T17:41:01Z",
+    "UpdatedAt": "2026-03-05T21:53:11Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

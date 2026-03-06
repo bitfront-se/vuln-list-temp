@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-gv46-4xfq-jv58"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28466"
       }
     ],
     "Description": "### Summary\n\nA remote code execution (RCE) vulnerability in the gateway-to-node invocation path allowed an authenticated gateway client to bypass node-host exec approvals by injecting internal control fields into `node.invoke` parameters.\n\n### Affected Component\n\n- Gateway method: `node.invoke` for node command `system.run`\n- Node host runner: exec approval gating for `system.run`\n\n### Impact\n\nIf an attacker can authenticate to a gateway (for example via a leaked/shared gateway token or a paired device token with `operator.write`), they could execute arbitrary commands on connected node hosts that support `system.run`. This can lead to full compromise of developer workstations, CI runners, and servers running the node host.\n\n### Technical Details\n\nThe gateway forwarded user-controlled `params` to node hosts without sanitizing internal approval fields. The node host treated `params.approved === true` and/or `params.approvalDecision` as sufficient to skip the approval workflow.\n\n### Fix\n\nPatched in **OpenClaw `2026.2.14`**.\n\n- Commits:\n  - `318379cdb8d045da0009b0051bd0e712e5c65e2d`\n  - `a7af646fdab124a7536998db6bd6ad567d2b06b0`\n  - `c1594627421f95b6bc4ad7c606657dc75b5ad0ce`\n  - `0af76f5f0e93540efbdf054895216c398692afcd`\n- Gateway strips untrusted approval control fields from `system.run` user input.\n- Gateway only re-attaches approval flags when `params.runId` references a valid `exec.approval.request` record and the request context matches. Approval IDs are bound to the requesting device identity (stable across reconnects), preventing replay by other clients.\n- Gateway forwards only an allowlisted set of `system.run` parameters, preventing future control-field smuggling.\n\n### Mitigations\n\n- Upgrade to `2026.2.14` or later.\n- Restrict access to the gateway (do not expose it to untrusted networks/users).\n- Rotate gateway credentials if you suspect token/password exposure.\n- Disable remote command execution on nodes by blocking `system.run` at the gateway (`gateway.nodes.denyCommands`) and/or by configuring node exec security to `deny`.\n\n### Credits\n\nOpenClaw thanks @222n5 for reporting this issue.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-03-02T23:24:54Z",
     "Severity": "CRITICAL",
     "Summary": "OpenClaw Vulnerable to Remote Code Execution via Node Invoke Approval Bypass in Gateway",
-    "UpdatedAt": "2026-03-02T23:24:55Z",
+    "UpdatedAt": "2026-03-05T21:49:15Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 10,

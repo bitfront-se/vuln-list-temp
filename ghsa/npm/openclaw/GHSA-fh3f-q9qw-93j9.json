@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-fh3f-q9qw-93j9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28479"
       }
     ],
     "Description": "## Affected Packages / Versions\n- npm package: `openclaw`\n- Affected versions: `\u003c= 2026.2.14`\n- Fixed version (pre-set): `2026.2.15`\n\n## Description\nThe sandbox identifier cache key for Docker/browser sandbox configuration used SHA-1 to hash normalized configuration payloads.\n\nSHA-1 is deprecated for cryptographic use and has known collision weaknesses. In this code path, deterministic IDs are used to decide whether an existing sandbox container can be reused safely. A collision in this hash could let one configuration be interpreted as another under the same sandbox cache identity, increasing the risk of cache poisoning and unsafe sandbox state reuse.\n\nThe implementation now uses SHA-256 for these deterministic hashes to restore collision resistance for this security-relevant identifier path.\n\n## Fix Commit(s)\n- `559c8d993`\n\n## Release Process Note\n`patched_versions` is pre-set to `2026.2.15` for the next release. After that release is published, mark this advisory ready for publication.\n\nThanks @kexinoh ( of Tencent zhuque Lab, by https://github.com/Tencent/AI-Infra-Guard) for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-19T19:41:07Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw replaced a deprecated sandbox hash algorithm",
-    "UpdatedAt": "2026-02-19T19:41:09Z",
+    "UpdatedAt": "2026-03-05T21:54:01Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.4,

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-05T21:54:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 340994,
+    "Id": "GSA_kwCzR0hTQS14Mmc1LWZ2YzItZ3F2cM4ABTQC",
+    "GhsaId": "GHSA-x2g5-fvc2-gqvp",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-x2g5-fvc2-gqvp"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/pull/5665"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x2g5-fvc2-gqvp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x2g5-fvc2-gqvp"
+      }
+    ],
+    "Description": "### Description\nThe default bcrypt salt rounds is set to 5, which is below the recommended minimum for security.\n\n### Affected Code\n```\nexport function getHash(value: string) {\n    const salt = bcrypt.genSaltSync(parseInt(process.env.PASSWORD_SALT_HASH_ROUNDS || '5'))\n    return bcrypt.hashSync(value, salt)\n}\n```\n\n### Evidence\nUsing 5 salt rounds provides 2^5 = 32 iterations, which is far below the OWASP recommendation of 10 (2^10 = 1024 iterations) for bcrypt. This makes password hashes vulnerable to brute-force attacks with modern hardware.\n\n### Impact\nFaster password cracking - in the event of database compromise, attackers can crack password hashes significantly faster than with proper salt rounds, potentially compromising all user accounts.\n\n### Recommendation\nIncrease default PASSWORD_SALT_HASH_ROUNDS to at least 10 (recommended by OWASP). Consider using 12 for better security-performance balance. Document that higher values increase login time but improve security.\n\n### Notes\nThe default bcrypt salt rounds is 5 (line 6), which provides only 2^5=32 iterations. OWASP recommends minimum 10 rounds (1024 iterations) for bcrypt. While configurable via PASSWORD_SALT_HASH_ROUNDS env var, the default matters because: (1) most deployments use defaults, (2) existing password hashes at 5 rounds remain vulnerable even if later increased. With modern GPUs, 5 rounds allows ~300,000 hashes/second vs ~10,000/second at 10 rounds - a 30x difference in cracking speed. In a database breach scenario, all user passwords could be cracked significantly faster. The same weak default is used in resetPassword (account.service.ts:568). This is a cryptographic weakness with real-world impact on password security.\n\n**Detection Method:** Kolega.dev Deep Code Scan\n\n| Attribute | Value |\n|---|---|\n| Severity | Medium |\n| CWE | CWE-916 (Use of Password Hash With Insufficient Computational Effort) |\n| Location | packages/server/src/enterprise/utils/encryption.util.ts:5-7 |\n| Practical Exploitability | Medium |\n| Developer Approver | faizan@kolega.ai |",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T21:54:31Z",
+    "Severity": "MODERATE",
+    "Summary": "Flowise has Insufficient Password Salt Rounds",
+    "UpdatedAt": "2026-03-05T21:54:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.1,
+      "VectorString": "CVSS:3.0/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.13"
+      },
+      "VulnerableVersionRange": "\u003c= 3.0.12"
+    }
+  ]
+}

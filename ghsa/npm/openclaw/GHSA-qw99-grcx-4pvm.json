@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-qw99-grcx-4pvm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28395"
       }
     ],
     "Description": "## Summary\nThe Chrome extension relay (`ensureChromeExtensionRelayServer`) previously treated wildcard hosts (`0.0.0.0` / `::`) as loopback, which could make it bind the relay HTTP/WS server to all interfaces when a wildcard `cdpUrl` was passed.\n\n## Impact\nIf configured with a wildcard `cdpUrl`, relay HTTP endpoints could become reachable off-host, leaking service presence/port and enabling DoS/brute-force traffic against the relay token header.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003e= 2026.1.14-1 \u003c 2026.2.12`\n\n## Fixed Versions\n- Patched: `\u003e= 2026.2.12` (released 2026-02-13)\n\n## Fix Commit(s)\n- 8d75a496bf5aaab1755c56cf48502d967c75a1d0\n\n## Notes\n- Earlier hardening for `/json*` auth and `/cdp` token checks landed in:\n  - a1e89afcc19efd641c02b24d66d689f181ae2b5c\n\nThanks @qi-scape for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-17T17:09:43Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw's Chrome extension relay binds publicly due to wildcard treated as loopback",
-    "UpdatedAt": "2026-02-17T17:09:45Z",
+    "UpdatedAt": "2026-03-05T21:42:44Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.5,

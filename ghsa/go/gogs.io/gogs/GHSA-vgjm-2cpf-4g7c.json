@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-05T20:16:23Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "gogs.io/gogs"
+  },
+  "Advisory": {
+    "DatabaseId": 340946,
+    "Id": "GSA_kwCzR0hTQS12Z2ptLTJjcGYtNGc3Y84ABTPS",
+    "GhsaId": "GHSA-vgjm-2cpf-4g7c",
+    "References": [
+      {
+        "Url": "https://github.com/gogs/gogs/security/advisories/GHSA-vgjm-2cpf-4g7c"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/pull/8178"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/commit/9001a68cdda7bd9c078ffd6d1c4622905ac11e5c"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/releases/tag/v0.14.2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-26276"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vgjm-2cpf-4g7c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vgjm-2cpf-4g7c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26276"
+      }
+    ],
+    "Description": "# Summary\n\nIt was confirmed in a test environment that an attacker can store an HTML/JavaScript payload in a repository’s **Milestone name**, and when another user selects that Milestone on the **New Issue** page (`/issues/new`), a **DOM-Based XSS** is triggered.\n\n# Impact\n\n* Theft of information accessible in the victim’s session.\n* Extraction of CSRF tokens and submission of state-changing requests with the victim’s privileges.\n* Repository operations performed with the victim’s privileges (Issue operations, settings changes, etc.).\n\n(The impact scope depends on the victim’s permission level.)\n\n# Remediation\n\nA fix is available at https://github.com/gogs/gogs/releases/tag/v0.14.2",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T20:16:20Z",
+    "Severity": "HIGH",
+    "Summary": "Gogs: DOM-based XSS via milestone selection",
+    "UpdatedAt": "2026-03-05T22:28:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.13.3"
+    }
+  ]
+}

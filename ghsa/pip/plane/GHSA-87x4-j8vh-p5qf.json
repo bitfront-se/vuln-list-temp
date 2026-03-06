@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-05T21:48:12Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "plane"
+  },
+  "Advisory": {
+    "DatabaseId": 340991,
+    "Id": "GSA_kwCzR0hTQS04N3g0LWo4dmgtcDVxZs4ABTP_",
+    "GhsaId": "GHSA-87x4-j8vh-p5qf",
+    "References": [
+      {
+        "Url": "https://github.com/makeplane/plane/security/advisories/GHSA-87x4-j8vh-p5qf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-87x4-j8vh-p5qf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-87x4-j8vh-p5qf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30244"
+      }
+    ],
+    "Description": "## Executive Summary\n\nA security vulnerability exists in the Plane project management platform that allows unauthenticated attackers to enumerate workspace members and extract sensitive information including email addresses, user roles, and internal identifiers. The vulnerability stems from Django REST Framework permission classes being incorrectly configured to allow anonymous access to protected endpoints.\n\nThis vulnerability enables attackers to:\n\n- Enumerate all members of any workspace without authentication\n- Extract user email addresses and personally identifiable information (PII)\n- Identify administrative accounts for targeted attacks\n- Map organizational structure and user roles\n- Conduct reconnaissance for social engineering attacks\n\n\n**Affected Endpoints:**\n\n```\nGET /api/public/workspaces/{workspace_slug}/members/\nGET /api/public/workspaces/{workspace_slug}/projects/{project_id}/members/\n```\nA fix is available at https://github.com/makeplane/plane/releases/tag/v1.2.3.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-05T21:48:11Z",
+    "Severity": "HIGH",
+    "Summary": "Plane is Vulnerable to Unauthenticated Workspace Member Information Disclosure",
+    "UpdatedAt": "2026-03-05T21:48:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c 0.2.1"
+    }
+  ]
+}

@@ -30,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-64qx-vpxx-mvqf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28459"
       }
     ],
     "Description": "## Summary\n\nIn OpenClaw versions prior to 2026.2.12, the gateway accepted an untrusted `sessionFile` path when resolving the session transcript file. This could allow an authenticated gateway client to create and append OpenClaw session transcript records at an arbitrary path on the gateway host.\n\n## Affected Versions\n\n- Affected: openclaw `\u003c 2026.2.12`\n- Patched: openclaw `\u003e= 2026.2.12` (recommended: `\u003e= 2026.2.13`)\n\n## Impact\n\nAn authenticated gateway client could influence where the gateway writes transcript data by supplying `sessionFile` outside of the sessions directory. Depending on deployment and filesystem permissions, this may enable arbitrary file creation and repeated appends, leading to configuration corruption and/or denial of service.\n\nThis issue does not, by itself, provide a proven remote code execution path.\n\n## Fix\n\nThe transcript path is now constrained to the sessions directory via `resolveSessionFilePath(...)` containment checks.\n\nFix commits:\n- 4199f9889f0c307b77096a229b9e085b8d856c26\n- (compat) 25950bcbb8ba4d8cde002557f6e27c219ae4deda\n\n## Credits\n\nThanks to @tubadeligoz for the report.",
@@ -37,7 +41,7 @@
     "PublishedAt": "2026-02-17T16:43:51Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw has an arbitrary transcript path file write via gateway sessionFile",
-    "UpdatedAt": "2026-02-17T16:43:52Z",
+    "UpdatedAt": "2026-03-05T21:47:30Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.1,

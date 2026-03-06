@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-c37p-4qqg-3p76"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29606"
       }
     ],
     "Description": "## Summary\n\nA Twilio webhook signature-verification bypass in the voice-call extension could allow unauthenticated webhook requests when a specific ngrok free-tier compatibility option is enabled.\n\n## Impact\n\nThis issue is limited to configurations that explicitly enable and expose the voice-call webhook endpoint.\n\nNot affected by default:\n- The voice-call extension is optional and disabled by default.\n- The bypass only applied when `tunnel.allowNgrokFreeTierLoopbackBypass` was explicitly enabled.\n- Exploitation required the webhook to be reachable (typically via a public ngrok URL during development).\n\nWorst case (when exposed and the option was enabled):\n- An external attacker could send forged requests to the publicly reachable webhook endpoint that would be accepted without a valid `X-Twilio-Signature`.\n- This could result in unauthorized webhook event handling (integrity) and request flooding (availability).\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.13` (latest published as of 2026-02-14)\n- Patched versions: `\u003e= 2026.2.14` (planned next release; pending publish)\n\n## Fix\n\n`allowNgrokFreeTierLoopbackBypass` no longer bypasses signature verification. It only enables trusting forwarded headers on loopback so the public ngrok URL can be reconstructed for correct signature validation.\n\nFix commit(s):\n- ff11d8793b90c52f8d84dae3fbb99307da51b5c9\n\nThanks @p80n-sec for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-18T00:54:48Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw Twilio voice-call webhook auth bypass when ngrok loopback compatibility is enabled",
-    "UpdatedAt": "2026-02-18T00:55:50Z",
+    "UpdatedAt": "2026-03-05T21:59:27Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.5,

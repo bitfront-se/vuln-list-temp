@@ -30,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mj5r-hh7j-4gxf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28480"
       }
     ],
     "Description": "## Summary\nTelegram allowlist authorization could match on `@username` (mutable/recyclable) instead of immutable numeric sender IDs.\n\n## Impact\nOperators who treat Telegram allowlists as strict identity controls could unintentionally grant access if a username changes hands (identity rebinding/spoof risk). This can allow an unauthorized sender to interact with the bot in allowlist mode.\n\n## Affected Packages / Versions\n- npm `openclaw`: \u003c= 2026.2.13\n- npm `clawdbot`: \u003c= 2026.1.24-3\n\n## Fix\nTelegram allowlist authorization now requires numeric Telegram sender IDs only. `@username` allowlist principals are rejected.\n\nA security audit warning was added to flag legacy configs that still contain non-numeric Telegram allowlist entries.\n\n`openclaw doctor --fix` now attempts to resolve `@username` allowFrom entries to numeric IDs (best-effort; requires a Telegram bot token).\n\n## Fix Commit(s)\n- e3b432e481a96b8fd41b91273818e514074e05c3\n- 9e147f00b48e63e7be6964e0e2a97f2980854128\n\nThanks @vincentkoc for reporting.",
@@ -37,7 +41,7 @@
     "PublishedAt": "2026-02-18T00:54:32Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw Telegram allowlist authorization accepted mutable usernames",
-    "UpdatedAt": "2026-02-18T00:55:50Z",
+    "UpdatedAt": "2026-03-05T21:54:23Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.9,

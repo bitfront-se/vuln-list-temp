@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-5xfq-5mr7-426q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28482"
       }
     ],
     "Description": "## Description\n\nOpenClaw versions **\u003c= 2026.2.9** construct transcript file paths using an unsanitized `sessionId` and also accept `sessionFile` paths without enforcing that they stay within the agent sessions directory.\n\nA crafted `sessionId` and/or `sessionFile` (example: `../../etc/passwd`) can cause path traversal when the gateway performs transcript file read/write operations.\n\n**Preconditions:** an attacker must be able to authenticate to the gateway (gateway token/password). By default the gateway binds to `loopback` (local-only); configurations that expose the gateway widen the attack surface.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.9`\n- Fixed: `\u003e= 2026.2.12`\n\n## Fix\n\nFixed by validating session IDs (rejecting path separators / traversal sequences) and enforcing sessions-directory containment for session transcript file operations.\n\n### Fix Commit(s)\n\n- `4199f9889f0c307b77096a229b9e085b8d856c26`\n\n### Additional Hardening\n\n- `cab0abf52ac91e12ea7a0cf04fff315cf0c94d64`\n\n## Mitigation\n\nUpgrade to `openclaw \u003e= 2026.2.12`.\n\nThanks @akhmittra for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-18T00:57:30Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw's unsanitized session ID enables path traversal in transcript file operations",
-    "UpdatedAt": "2026-02-18T00:57:31Z",
+    "UpdatedAt": "2026-03-05T21:55:04Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.5,
