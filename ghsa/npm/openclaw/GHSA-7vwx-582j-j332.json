@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-02-17T21:38:16Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -20,6 +20,12 @@
         "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.1"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28481"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-bearer-token-leakage-via-ms-teams-attachment-downloader-suffix-matching"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-7vwx-582j-j332"
       }
     ],
@@ -36,9 +42,9 @@
     "Description": "## Summary\n\nNOTE: This only affects deployments that enable the optional MS Teams extension (Teams channel). If you do not use MS Teams, you are not impacted.\n\nWhen OpenClaw downloads inbound MS Teams attachments / inline images, it may retry a URL with an `Authorization: Bearer \u003ctoken\u003e` header after receiving `401` or `403`.\n\nBecause the default download allowlist uses suffix matching (and includes some multi-tenant suffix domains), a message that references an untrusted but allowlisted host could cause that bearer token to be sent to the wrong place.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Vulnerable: `\u003c= 2026.1.30`\n- Patched: `\u003e= 2026.2.1`\n\n## Fix\n\n- Fix commit: `41cc5bcd4f1d434ad1bbdfa55b56f25025ecbf6b`\n- Upgrade to `openclaw \u003e= 2026.2.1`\n\n## Workarounds\n\n- If you do not need MS Teams, disable the MS Teams extension.\n- If you must stay on an older version, ensure the auth host allowlist is strict (only Microsoft-owned endpoints that require auth) and avoid wildcard or broad suffix entries.\n\n## Credits\n\nThanks @yueyueL for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-02-17T21:38:14Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "OpenClaw MS Teams inbound attachment downloader leaks bearer tokens to allowlisted suffix domains",
-    "UpdatedAt": "2026-03-05T21:54:43Z",
+    "UpdatedAt": "2026-03-06T01:02:04Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.4,
