@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-06T23:25:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341135,
+    "Id": "GSA_kwCzR0hTQS05Y3A3LTNxNXctajkyZ84ABTSP",
+    "GhsaId": "GHSA-9cp7-3q5w-j92g",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-9cp7-3q5w-j92g"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30835"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.7"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9cp7-3q5w-j92g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9cp7-3q5w-j92g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30835"
+      }
+    ],
+    "Description": "### Impact\n\nA malformed $regex query parameter (e.g. `[abc)` causes the database to return a structured error object that is passed unsanitized through the API response. This leaks database internals such as error messages, error codes, code names, cluster timestamps, and topology details. The vulnerability is exploitable by any client that can send query requests, depending on the deployment's permission configuration.\n\n### Patches\n\nThe fix sanitizes database error objects so that only a generic `\"An internal server error occurred\"` message is returned to clients, while the detailed error is logged server-side. The fix respects the `enableSanitizedErrorResponse` server option.\n\n### Workarounds\n\nThere is no workaround other than upgrading. The error leakage occurs in the query execution layer and cannot be mitigated through server configuration or client-side changes.\n\n### Resources\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-9cp7-3q5w-j92g\n- Fix in Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.6\n- Fix in Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.7",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-06T23:25:13Z",
+    "Severity": "MODERATE",
+    "Summary": "parse-server: Malformed `$regex` query leaks database error details in API response",
+    "UpdatedAt": "2026-03-06T23:25:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.7"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.6"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.5.0-alpha.6"
+    }
+  ]
+}

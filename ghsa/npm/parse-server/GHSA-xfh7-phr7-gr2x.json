@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-06T18:45:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341119,
+    "Id": "GSA_kwCzR0hTQS14Zmg3LXBocjctZ3IyeM4ABTR_",
+    "GhsaId": "GHSA-xfh7-phr7-gr2x",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-xfh7-phr7-gr2x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30228"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.5"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xfh7-phr7-gr2x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xfh7-phr7-gr2x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30228"
+      }
+    ],
+    "Description": "### Impact\n\nThe `readOnlyMasterKey` can be used to create and delete files via the Files API (`POST /files/:filename`, `DELETE /files/:filename`). This bypasses the read-only restriction which violates the access scope of the `readOnlyMasterKey`.\n\nAny Parse Server deployment that uses `readOnlyMasterKey` and exposes the Files API is affected. An attacker with access to the `readOnlyMasterKey` can upload arbitrary files or delete existing files.\n\n### Patches\n\nThe fix adds permission checks to both the file upload and file delete handlers.\n\n### Workarounds\n\nThere is no workaround other than not using `readOnlyMasterKey`, or restricting network access to the Files API endpoints.\n\n### References\n \n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-xfh7-phr7-gr2x\n- Fix for Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.3\n- Fix for Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.5",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-06T18:45:36Z",
+    "Severity": "MODERATE",
+    "Summary": "parse-server's file creation and deletion bypasses `readOnlyMasterKey` write restriction",
+    "UpdatedAt": "2026-03-06T22:52:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.5"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.3"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.5.0-alpha.3"
+    }
+  ]
+}

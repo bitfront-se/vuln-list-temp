@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-06T18:46:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341120,
+    "Id": "GSA_kwCzR0hTQS03OXdqLThycXYtanZwNc4ABTSA",
+    "GhsaId": "GHSA-79wj-8rqv-jvp5",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-79wj-8rqv-jvp5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30229"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.6"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-79wj-8rqv-jvp5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-79wj-8rqv-jvp5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30229"
+      }
+    ],
+    "Description": "### Impact\n\nThe `readOnlyMasterKey` can call `POST /loginAs` to obtain a valid session token for any user. This allows a read-only credential to impersonate arbitrary users with full read and write access to their data. Any Parse Server deployment that uses `readOnlyMasterKey` is affected.\n\n### Patches\n\nThe fix adds a check to the `/logInAs` handler.\n\n### Workarounds\n\nThere is no workaround other than not using `readOnlyMasterKey`.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-79wj-8rqv-jvp5\n- Fix for Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.4\n- Fix for Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.6",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-06T18:46:27Z",
+    "Severity": "HIGH",
+    "Summary": "parse-server's endpoint `/loginAs` allows `readOnlyMasterKey` to gain full read and write access as any user",
+    "UpdatedAt": "2026-03-06T22:53:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.5.0-alpha.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.6"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.6"
+    }
+  ]
+}

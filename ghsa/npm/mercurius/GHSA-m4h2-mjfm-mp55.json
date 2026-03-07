@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-06T18:47:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mercurius"
+  },
+  "Advisory": {
+    "DatabaseId": 341121,
+    "Id": "GSA_kwCzR0hTQS1tNGgyLW1qZm0tbXA1Nc4ABTSB",
+    "GhsaId": "GHSA-m4h2-mjfm-mp55",
+    "References": [
+      {
+        "Url": "https://github.com/mercurius-js/mercurius/security/advisories/GHSA-m4h2-mjfm-mp55"
+      },
+      {
+        "Url": "https://github.com/mercurius-js/mercurius/commit/5b56f60f4b0d60780b0ff499a479bd830bdd6986"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m4h2-mjfm-mp55"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m4h2-mjfm-mp55"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30241"
+      }
+    ],
+    "Description": "## Description\n\nMercurius fails to enforce the configured queryDepth limit on GraphQL subscription queries received over WebSocket connections. The depth check is correctly applied to HTTP queries and mutations, but subscription queries are parsed and executed without invoking the depth validation. This allows a remote client to submit arbitrarily deeply nested subscription queries over WebSocket, bypassing the intended depth restriction. On schemas with recursive types, this can lead to denial of service through exponential data resolution on each subscription event.\n\n## Workarounds\n\nDisable subscriptions and, in general, queries over the WebSocket.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-06T18:47:52Z",
+    "Severity": "LOW",
+    "Summary": "Mercurius's queryDepth limit bypassed for WebSocket subscriptions",
+    "UpdatedAt": "2026-03-06T18:47:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.8.0"
+      },
+      "VulnerableVersionRange": "\u003c 16.8.0"
+    }
+  ]
+}
