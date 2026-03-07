@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-07T02:23:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@powersync/service-core"
+  },
+  "Advisory": {
+    "DatabaseId": 341158,
+    "Id": "GSA_kwCzR0hTQS1xNndjLXh4NG0tOTJmas4ABTSm",
+    "GhsaId": "GHSA-q6wc-xx4m-92fj",
+    "References": [
+      {
+        "Url": "https://github.com/powersync-ja/powersync-service/security/advisories/GHSA-q6wc-xx4m-92fj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6wc-xx4m-92fj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6wc-xx4m-92fj"
+      }
+    ],
+    "Description": "### Impact\n\nIn version **1.20.0**, when using new sync streams with `config.edition: 3`, certain subquery filters were ignored when determining which data to sync to users.\n\nDepending on the sync stream configuration, this could result in authenticated users syncing data that should have been restricted.\n\nOnly queries that gate synchronization using subqueries without partitioning the result set are affected.\n\nNot affected:\n * Sync rules (bucket_definitions)\n * Sync streams using `config.edition: 2`\n * No data is exposed without authenticating\n\n### Patches\n\nThe issue is **fixed in 1.20.1**. Restarting the service with the new version is sufficient - no reprocessing of sync streams is required.\n\nAny data that users erroneously synced will be automatically removed from those devices when they connect again.\n\nPowerSync has updated all affected PowerSync Cloud instances to the fixed version, and is reaching out to affected customers.\n\nFor self-hosted PowerSync instances, update to the latest version and restart.\n\n### Affected queries\n\nSubqueries used only to determine whether or not a table should be synced (without partitioning the data itself) are affected. Examples:\n\n```sql\n-- Goal: Sync a table only to admin users\n-- 1.20.0: all authenticated users would sync this table\nSELECT * FROM sensitive_table WHERE auth.user_id() IN (SELECT user_id FROM admins)\nSELECT * FROM sensitive_table WHERE 1 IN (SELECT 1 FROM users WHERE id = auth.user_id() AND is_admin = TRUE)\n\n-- Goal: Sync a table only if authorized\n-- 1.20.0: all authenticated users would sync this table\nSELECT * FROM sensitive_table WHERE 'sensitive_table' IN (SELECT table_name FROM synced_table WHERE \"user\" = auth.user_id())\nSELECT * FROM sensitive_table WHERE 'sensitive_table' IN auth.parameter('allowed_tables')\n```\n\nQueries that partition data (for example `SELECT * FROM sensitive_table WHERE owner IN (SELECT id FROM users WHERE is_admin AND id = auth.user_id())`) are not affected by this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-07T02:23:24Z",
+    "Severity": "MODERATE",
+    "Summary": "PowerSync: Some sync filters ignored on 1.20.0 using `config.edition: 3`",
+    "UpdatedAt": "2026-03-07T02:23:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.20.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.20.0"
+    }
+  ]
+}
