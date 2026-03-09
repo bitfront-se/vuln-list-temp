@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T17:42:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341393,
+    "Id": "GSA_kwCzR0hTQS1od3g4LXE5Y2ctbXFtY84ABTWR",
+    "GhsaId": "GHSA-hwx8-q9cg-mqmc",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-hwx8-q9cg-mqmc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30850"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hwx8-q9cg-mqmc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hwx8-q9cg-mqmc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30850"
+      }
+    ],
+    "Description": "### Impact\n\nThe file metadata endpoint (GET `/files/:appId/metadata/:filename`) does not enforce `beforeFind` / `afterFind` file triggers. When these triggers are used as access-control gates, the metadata endpoint bypasses them entirely, allowing unauthorized access to file metadata.\n\nThis affects any deployment that relies on `Parse.Cloud.beforeFind(Parse.File, ...)` to restrict file access. Only file metadata (user-defined key-value pairs set via addMetadata) is exposed; file content remains protected.\n\n### Patches\n\nThe metadata handler now runs `beforeFind` and `afterFind` triggers and returns HTTP 403 when a trigger denies access.\n\n### Workarounds\n\nDisable the `metadata` endpoint by overriding the route with a middleware that rejects all requests:\n\n```js\n// Add before mounting Parse Server\napp.get('/parse/files/:appId/metadata/:filename', (req, res) =\u003e {\n  res.status(403).json({ error: 'Forbidden' });\n});\n```\n\nAdjust the path prefix (`/parse`) to match your mountPath.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-hwx8-q9cg-mqmc\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.9\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.9",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T17:42:03Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server: File metadata endpoint bypasses `beforeFind` / `afterFind` trigger authorization",
+    "UpdatedAt": "2026-03-09T17:42:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.9"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.0-alpha.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.9"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.9"
+    }
+  ]
+}

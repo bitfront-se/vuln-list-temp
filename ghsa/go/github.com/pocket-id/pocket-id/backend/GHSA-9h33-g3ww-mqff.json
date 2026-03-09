@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-09T17:24:27Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/pocket-id/pocket-id/backend"
+  },
+  "Advisory": {
+    "DatabaseId": 341385,
+    "Id": "GSA_kwCzR0hTQS05aDMzLWczd3ctbXFmZs4ABTWJ",
+    "GhsaId": "GHSA-9h33-g3ww-mqff",
+    "References": [
+      {
+        "Url": "https://github.com/pocket-id/pocket-id/security/advisories/GHSA-9h33-g3ww-mqff"
+      },
+      {
+        "Url": "https://github.com/pocket-id/pocket-id/commit/3a339e33191c31b68bf57db907f800d9de5ffbc8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9h33-g3ww-mqff"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9h33-g3ww-mqff"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28512"
+      }
+    ],
+    "Description": "### Impact\nA flaw in callback URL validation allowed crafted `redirect_uri` values containing URL userinfo (`@`) to bypass legitimate callback pattern checks. If an attacker can trick a user into opening a malicious authorization link, the authorization code may be redirected to an attacker-controlled host.\n\n### Patches\nFixed in `v2.3.1` (commit 3a339e33191c31b68bf57db907f800d9de5ffbc8).\nThe fix replaces delimiter-based callback matching with structured URL pattern matching and updates validation logic/tests.\n\n### Workarounds\n- Reject callback URLs containing userinfo (`@`) at reverse proxy / app policy level if feasible.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T17:24:27Z",
+    "Severity": "HIGH",
+    "Summary": "Pocket ID: OAuth redirect_uri validation bypass via userinfo/host confusion",
+    "UpdatedAt": "2026-03-09T17:24:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260228130835-3a339e33191c"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260228130835-3a339e33191c"
+    }
+  ]
+}

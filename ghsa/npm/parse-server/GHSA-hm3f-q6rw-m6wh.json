@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T17:41:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341392,
+    "Id": "GSA_kwCzR0hTQS1obTNmLXE2cnctbTZ3aM4ABTWQ",
+    "GhsaId": "GHSA-hm3f-q6rw-m6wh",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-hm3f-q6rw-m6wh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30848"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hm3f-q6rw-m6wh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hm3f-q6rw-m6wh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30848"
+      }
+    ],
+    "Description": "### Impact\n\nThe `PagesRouter` static file serving route is vulnerable to a path traversal attack that allows unauthenticated reading of files outside the configured `pagesPath` directory. The boundary check uses a string prefix comparison without enforcing a directory separator boundary. An attacker can use path traversal sequences to access files in sibling directories whose names share the same prefix as the pages directory (e.g. `pages-secret` starts with `pages`).\n\nThis affects any Parse Server deployment with the `pages` feature enabled (`pages.enableRouter: true`). Exploitation requires a sibling directory of `pagesPath` whose name begins with the same string as the pages directory name.\n\n### Patches\n\nThe fix enforces a path separator boundary in the check, ensuring resolved paths must be strictly inside the `pagesPath` directory.\n\n### Workarounds\n\nEnsure the `pagesPath` directory has no sibling directories whose names begin with the same prefix. For example, if `pagesPath` is `/srv/pages`, ensure no directory like `/srv/pages-backup` or `/srv/pages_old` exists alongside it.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-hm3f-q6rw-m6wh\n- Fix for Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.8\n- Fix for Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.8",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T17:41:55Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server: `PagesRouter` path traversal allows reading files outside configured pages directory",
+    "UpdatedAt": "2026-03-09T17:41:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.8"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.0-alpha.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.8"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.8"
+    }
+  ]
+}

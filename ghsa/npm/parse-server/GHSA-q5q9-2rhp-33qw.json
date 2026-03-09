@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T17:42:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341394,
+    "Id": "GSA_kwCzR0hTQS1xNXE5LTJyaHAtMzNxd84ABTWS",
+    "GhsaId": "GHSA-q5q9-2rhp-33qw",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-q5q9-2rhp-33qw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30854"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q5q9-2rhp-33qw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q5q9-2rhp-33qw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30854"
+      }
+    ],
+    "Description": "### Impact\n\nWhen `graphQLPublicIntrospection` is disabled, `__type` queries nested inside inline fragments (e.g. `... on Query { __type(name:\"User\") { name } })` bypass the introspection control, allowing unauthenticated users to perform type reconnaissance. `__schema` introspection is not affected.\n\n### Patches\n\nThe check was changed from a flat iteration over root-level selections to a recursive walk of all selection sets, detecting `__type` inside inline fragments at any depth.\n\n### Workarounds\n\nRequire master key authentication at the network layer (e.g. reverse proxy) for the GraphQL endpoint.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-q5q9-2rhp-33qw\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.10",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T17:42:17Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server: GraphQL `__type` introspection bypass via inline fragments when public introspection is disabled",
+    "UpdatedAt": "2026-03-09T17:42:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.10"
+      },
+      "VulnerableVersionRange": "\u003e= 9.3.1-alpha.3, \u003c 9.5.0-alpha.10"
+    }
+  ]
+}

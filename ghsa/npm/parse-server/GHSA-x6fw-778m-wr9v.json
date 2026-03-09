@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-09T17:42:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341395,
+    "Id": "GSA_kwCzR0hTQS14NmZ3LTc3OG0td3I5ds4ABTWT",
+    "GhsaId": "GHSA-x6fw-778m-wr9v",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-x6fw-778m-wr9v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30863"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x6fw-778m-wr9v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x6fw-778m-wr9v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30863"
+      }
+    ],
+    "Description": "### Impact\n\nThe Google, Apple, and Facebook authentication adapters use JWT verification to validate identity tokens. When the adapter's audience configuration option is not set (`clientId` for Google/Apple, `appIds` for Facebook), JWT verification silently skips audience claim validation. This allows an attacker to use a validly signed JWT issued for a different application to authenticate as any user on the target Parse Server.\n\n- For Google and Apple, the vulnerability is exploitable when the server does not configure `clientId`. The adapters accepted this as valid and simply skipped audience validation.\n- For Facebook Limited Login, the vulnerability exists regardless of configuration. The adapter validated `appIds` only for Standard Login (Graph API), but the Limited Login JWT path never passed `appIds` as the audience to JWT verification.\n\n### Patches\n\nThe fix enforces `clientId` (Google/Apple) and `appIds` (Facebook) as mandatory and passes them to JWT verification for audience validation. While this is technically a breaking change for servers that omit these options, it is not a breaking change as per documentation — all three options are documented as required configuration.\n\n### Workarounds\n\n- Google / Apple: Ensure `clientId` is set in the adapter configuration. When set, JWT verification correctly validates the audience claim even on unpatched versions.\n- Facebook Limited Login: There is no workaround. The unpatched adapter does not pass `appIds` to JWT audience validation, so the only mitigation is to upgrade.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-x6fw-778m-wr9v\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.11\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.10",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T17:42:22Z",
+    "Severity": "CRITICAL",
+    "Summary": "Parse Server: JWT audience validation bypass in Google, Apple, and Facebook authentication adapters",
+    "UpdatedAt": "2026-03-09T17:42:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.10"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.11"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.0-alpha.11"
+    }
+  ]
+}

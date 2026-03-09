@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-09T16:56:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@budibase/server"
+  },
+  "Advisory": {
+    "DatabaseId": 341384,
+    "Id": "GSA_kwCzR0hTQS03MjZnLTU5d3ItY2o0Y84ABTWI",
+    "GhsaId": "GHSA-726g-59wr-cj4c",
+    "References": [
+      {
+        "Url": "https://github.com/Budibase/budibase/security/advisories/GHSA-726g-59wr-cj4c"
+      },
+      {
+        "Url": "https://github.com/Budibase/budibase/commit/9fdbff32fb9e69650ba899a799e13f80d9b09e93"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-726g-59wr-cj4c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-726g-59wr-cj4c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25041"
+      }
+    ],
+    "Description": "**Location**: `packages/server/src/integrations/postgres.ts:529-531`  \n\n#### Description\nThe PostgreSQL integration constructs shell commands using user-controlled configuration values (database name, host, password, etc.) without proper sanitization. The password and other connection parameters are directly interpolated into a shell command.\n\n#### Code Reference\n```529:531:packages/server/src/integrations/postgres.ts\n    const dumpCommand = `PGPASSWORD=\"${\n      this.config.password\n    }\" pg_dump --schema-only \"${dumpCommandParts.join(\" \")}\"`\n```\n\n#### Attack Vector\nAn attacker who can control database configuration values (e.g., through compromised credentials or configuration injection) can inject shell commands. For example:\n- Password: `password\"; malicious-command; echo \"`\n- Database name: `db\"; rm -rf /; echo \"`\n\n#### Impact\n- Remote code execution\n- System compromise\n- Data exfiltration\n\n#### Recommendation\n1. Use environment variables for sensitive values instead of command-line arguments\n2. Validate and sanitize all configuration values\n3. Use proper escaping for shell arguments\n4. Consider using a PostgreSQL library's native dump functionality instead of shell commands\n\n#### Example Fix\n```typescript\nimport { execFile } from \"child_process\"\nimport { promisify } from \"util\"\nconst execFileAsync = promisify(execFile)\n\n// Use execFile with proper argument handling\nconst env = {\n  ...process.env,\n  PGPASSWORD: this.config.password\n}\n\nconst args = [\n  \"--schema-only\",\n  \"--host\", this.config.host,\n  \"--port\", this.config.port.toString(),\n  \"--username\", this.config.user,\n  \"--dbname\", this.config.database\n]\n\ntry {\n  const { stdout } = await execFileAsync(\"pg_dump\", args, { env })\n  return stdout\n} catch (error) {\n  // Handle error\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T16:56:26Z",
+    "Severity": "CRITICAL",
+    "Summary": "@budibase/server: Command Injection in PostgreSQL Dump Command",
+    "UpdatedAt": "2026-03-09T16:56:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.23.32"
+      },
+      "VulnerableVersionRange": "\u003c 3.23.32"
+    }
+  ]
+}
