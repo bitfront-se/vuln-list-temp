@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-10T00:57:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341445,
+    "Id": "GSA_kwCzR0hTQS1tZjNqLTg2cXgtY3E1as4ABTXF",
+    "GhsaId": "GHSA-mf3j-86qx-cq5j",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-mf3j-86qx-cq5j"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.11"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mf3j-86qx-cq5j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mf3j-86qx-cq5j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30925"
+      }
+    ],
+    "Description": "### Impact\n\nA malicious client can subscribe to a LiveQuery with a crafted `$regex` pattern that causes catastrophic backtracking, blocking the Node.js event loop. This makes the entire Parse Server unresponsive, affecting all clients. Any Parse Server deployment with LiveQuery enabled is affected. The attacker only needs the application ID and JavaScript key, both of which are public in client-side apps.\n\nThis only affects LiveQuery subscription matching, which evaluates regex in JavaScript on the Node.js event loop. Normal REST and GraphQL queries are not affected because their regex is evaluated by the database engine.\n\n### Patches\n\nRegex evaluation in LiveQuery subscription matching now runs in an isolated VM context with a configurable timeout via a new Parse Server option `liveQuery.regexTimeout, with defaults 100 ms. A regex that exceeds the timeout is treated as non-matching.\n\nThe protection adds approximately 50 microseconds of overhead per regex evaluation. For most applications this is negligible, but it can add up if there is a very large number of LiveQuery subscriptions that use `$regex` on the same class. For example, 10,000 concurrent regex subscriptions would add approximately 500ms of processing time per object save event on that class. Set `liveQuery.regexTimeout: 0` to disable the protection and use native regex evaluation without overhead.\n\n### Workarounds\n\nUse the `beforeSubscribe` Cloud Code hook to reject any LiveQuery subscription that contains a `$regex` operator. Note that this also blocks the LiveQuery `startsWith`, `endsWith`, and `contains` query methods, as they use `$regex` internally.\n\n```js\n// Repeat for each class that is used with LiveQuery\nParse.Cloud.beforeSubscribe('MyClass', request =\u003e {\n  const where = request.query._where || {};\n  for (const value of Object.values(where)) {\n    if (value?.$regex) {\n      throw new Parse.Error(Parse.Error.OPERATION_FORBIDDEN, '$regex not allowed in LiveQuery subscriptions');\n    }\n  }\n});\n```\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-mf3j-86qx-cq5j\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.0-alpha.14\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.11",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-10T00:57:18Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server has Regular Expression Denial of Service (ReDoS) via `$regex` query in LiveQuery",
+    "UpdatedAt": "2026-03-10T00:57:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.11"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.0-alpha.14"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.0-alpha.14"
+    }
+  ]
+}

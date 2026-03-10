@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-10T01:02:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@actual-app/sync-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341448,
+    "Id": "GSA_kwCzR0hTQS0yN3ZnLTMzZ2gtNGh3Z84ABTXI",
+    "GhsaId": "GHSA-27vg-33gh-4hwg",
+    "References": [
+      {
+        "Url": "https://github.com/actualbudget/actual/security/advisories/GHSA-27vg-33gh-4hwg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3089"
+      },
+      {
+        "Url": "https://github.com/actualbudget/actual/pull/7067"
+      },
+      {
+        "Url": "https://github.com/actualbudget/actual/commit/18072e1d8b5281db43ded8b21433ee177bae9dfa"
+      },
+      {
+        "Url": "https://fluidattacks.com/advisories/fugue"
+      },
+      {
+        "Url": "https://github.com/actualbudget/actual"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-27vg-33gh-4hwg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-27vg-33gh-4hwg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-3089"
+      }
+    ],
+    "Description": "# Description\n\nActual Sync Server allows authenticated users to upload files through `POST /sync/upload-user-file`. In versions prior to 26.3.0, improper validation of the user-controlled `x-actual-file-id` header means that traversal segments (`../`) can escape the intended directory and write files outside `userFiles`.\n\n## Mitigations\nThe vulnerability can be mitigated in prior versions by running the sync server in a filesystem sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-10T01:02:15Z",
+    "Severity": "MODERATE",
+    "Summary": "Actual Sync Server has an Authenticated Path Traversal",
+    "UpdatedAt": "2026-03-10T01:02:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 26.2.0"
+    }
+  ]
+}
