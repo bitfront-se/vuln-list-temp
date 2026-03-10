@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T19:53:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 341421,
+    "Id": "GSA_kwCzR0hTQS1qNDI1LXdoYzQtNGpnY84ABTWt",
+    "GhsaId": "GHSA-j425-whc4-4jgc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j425-whc4-4jgc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/e27bbe4982439da6864160fd1b66445058f74801"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j425-whc4-4jgc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j425-whc4-4jgc"
+      }
+    ],
+    "Description": "### Summary\n`system.run` env override sanitization allowed dangerous override-only helper-command pivots to reach subprocesses. A caller who could invoke `system.run` with `env` overrides could bypass allowlist/approval intent by steering an allowlisted tool through helper-command or config-loading environment variables such as `GIT_SSH_COMMAND`, editor/pager hooks, and `GIT_CONFIG_*` / `NPM_CONFIG_*`.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published vulnerable version: `2026.3.2`\n- Affected range: `\u003c= 2026.3.2`\n- Patched in: `2026.3.7`\n\n### Details\nBefore the fix, `src/infra/host-env-security.ts` blocked only a narrow set of override-only environment variables. Dangerous request-scoped overrides such as `GIT_SSH_COMMAND` and prefix families such as `GIT_CONFIG_*` and `NPM_CONFIG_*` could still survive `sanitizeSystemRunEnvOverrides(...)` / `sanitizeHostExecEnv(...)` and reach the spawned process.\n\nThat mattered for `system.run` allowlist and approval flows because approval evaluation was tied to the reviewed binary/argv, while the launched process could still inherit attacker-controlled env overrides that changed helper-command execution or config resolution. For allowlisted tools such as `git`, this allowed behavior outside the reviewed command semantics.\n\nThe fix extends the shared TypeScript and macOS policy to block dangerous override-only exact keys and prefixes while preserving trusted inherited base-environment behavior.\n\n### Impact\nThis is a real protection-bypass issue, but exploitation requires an already tool-enabled caller who can invoke `system.run` and supply `env` overrides. In affected deployments, that caller could bypass allowlist/approval intent and trigger helper-command execution or config-loading behavior that is not represented by the approved command line. Maintainer severity is set to medium because the bug still requires that existing execution capability; the vulnerability is the mismatch between reviewed command semantics and the actual spawned-process behavior.\n\n### Fix Commit(s)\n- `e27bbe4982439da6864160fd1b66445058f74801`\n\n### Release Process Note\nnpm `2026.3.7` was published on March 8, 2026. This advisory is fixed in the released package.\n\nThanks @tdjackey and @SnailSploit for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T19:52:59Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's `system.run` env override filtering allowed dangerous helper-command pivots",
+    "UpdatedAt": "2026-03-09T19:53:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.7"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.2"
+    }
+  ]
+}

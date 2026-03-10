@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T19:54:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 341423,
+    "Id": "GSA_kwCzR0hTQS1wanZ4LXJ4NjYtcjNmZ84ABTWv",
+    "GhsaId": "GHSA-pjvx-rx66-r3fg",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-pjvx-rx66-r3fg"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/70da80bcb5574a10925469048d2ebb2abf882e73"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pjvx-rx66-r3fg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pjvx-rx66-r3fg"
+      }
+    ],
+    "Description": "### Summary\n`/allowlist ... --store` resolved the selected channel `accountId` for reads, but store writes still dropped that `accountId` and wrote into the legacy unscoped pairing allowlist store.\n\nBecause default-account reads still merge legacy unscoped entries, a store entry intended for one account could silently authorize the same sender on the `default` account.\n\nThis is a real cross-account sender-authorization scoping bug. Severity is set to **medium** because exploitation requires an already-authorized user who can run `/allowlist` edits.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version checked: `2026.3.2`\n- Affected versions: `\u003c= 2026.3.2`\n- Fixed on `main`: March 7, 2026 in `70da80bcb5574a10925469048d2ebb2abf882e73`\n- Patched release: `2026.3.7`\n\n### Details\nThe affected path was:\n- `src/auto-reply/reply/commands-allowlist.ts:386-393` resolved `accountId` and read store state with it\n- `src/auto-reply/reply/commands-allowlist.ts:697-702` and `src/auto-reply/reply/commands-allowlist.ts:730-733` wrote store state without passing `accountId`\n- `src/pairing/pairing-store.ts:231-234` and `src/pairing/pairing-store.ts:534-554` still merged legacy unscoped allowlist entries into the `default` account\n\nThe fix scopes `/allowlist ... --store` writes to the resolved account and clears legacy default-account store entries on removal so legacy reads no longer create cross-account authorization bleed-through.\n\n### Impact\n- Vulnerability class: improper authorization scoping / incorrect authorization\n- Exploitation requires: an already-authorized sender who can run `/allowlist` edits\n- Security effect: unintended authorization expansion from one channel account into `default`\n\n### Fix Commit(s)\n- `70da80bcb5574a10925469048d2ebb2abf882e73` — scope `/allowlist ... --store` writes by account and clean up legacy default-account removals\n\n### Release Process Note\nnpm `2026.3.7` was published on March 8, 2026. This advisory is fixed in the released package.\n\nThanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T19:54:08Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Cross-account sender authorization expansion in `/allowlist ... --store` account scoping",
+    "UpdatedAt": "2026-03-09T19:54:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.7"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.2"
+    }
+  ]
+}

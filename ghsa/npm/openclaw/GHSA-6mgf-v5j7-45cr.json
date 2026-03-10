@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-09T19:54:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 341424,
+    "Id": "GSA_kwCzR0hTQS02bWdmLXY1ajctNDVjcs4ABTWw",
+    "GhsaId": "GHSA-6mgf-v5j7-45cr",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6mgf-v5j7-45cr"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/46715371b0612a6f9114dffd1466941ac476cef5"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6mgf-v5j7-45cr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6mgf-v5j7-45cr"
+      }
+    ],
+    "Description": "OpenClaw's `fetchWithSsrFGuard(...)` followed cross-origin redirects while preserving arbitrary caller-supplied headers except for a narrow denylist (`Authorization`, `Proxy-Authorization`, `Cookie`, `Cookie2`). This allowed custom authorization headers such as `X-Api-Key`, `Private-Token`, and similar sensitive headers to be forwarded to a different origin after a redirect.\n\nThe fix switches cross-origin redirect handling from a narrow sensitive-header denylist to a safe-header allowlist, so only benign headers such as content negotiation and cache validators survive an origin change.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.2`\n- Patched version: `2026.3.7`\n- Latest published npm version at patch time: `2026.3.2`\n\n## Impact\n\nA remote service that could trigger a redirect across origins could receive custom authorization credentials attached by OpenClaw callers. This can expose API keys, bearer-style custom headers, or private token headers intended only for the original destination.\n\n## Fix Commit(s)\n\n- `46715371b0612a6f9114dffd1466941ac476cef5`\n\n## Verification\n\n- `pnpm check` passed\n- `pnpm test:fast` passed\n- Focused redirect regression tests passed\n- `pnpm exec vitest run --config vitest.gateway.config.ts` still has unrelated current-`main` failures in `src/gateway/server-channels.test.ts` and `src/gateway/server-methods/agents-mutate.test.ts`\n\n## Release Process Note\n\nnpm `2026.3.7` was published on March 8, 2026. This advisory is fixed in the released package.\n\nThanks @Rickidevs for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T19:54:20Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: fetch-guard forwards custom authorization headers across cross-origin redirects",
+    "UpdatedAt": "2026-03-09T19:54:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.7"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.2"
+    }
+  ]
+}

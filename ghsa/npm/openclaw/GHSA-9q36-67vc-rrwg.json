@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T19:54:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 341428,
+    "Id": "GSA_kwCzR0hTQS05cTM2LTY3dmMtcnJ3Z84ABTW0",
+    "GhsaId": "GHSA-9q36-67vc-rrwg",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-9q36-67vc-rrwg"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/61000b8e4ded919ca1a825d4700db4cb3fdc56e3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9q36-67vc-rrwg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9q36-67vc-rrwg"
+      }
+    ],
+    "Description": "### Summary\nSandboxed requester sessions could reach host-side ACP session initialization through `/acp spawn`.\n\nOpenClaw already blocked `sessions_spawn({ runtime: \"acp\" })` from sandboxed sessions, but the slash-command path initialized ACP directly without applying the same host-runtime guard first.\n\n### Affected Packages / Versions\n- npm package: `openclaw`\n- Affected versions: `\u003c= 2026.3.2`\n- Patched version: `\u003e= 2026.3.7`\n\n### Details\nACP sessions run on the host, not inside the OpenClaw sandbox. The direct ACP spawn path in `src/agents/acp-spawn.ts` already denied sandboxed requesters, but `/acp spawn` in `src/auto-reply/reply/commands-acp/lifecycle.ts` called `initializeSession(...)` without first applying the same restriction.\n\nIn affected versions, an already authorized sender in a sandboxed session could use `/acp spawn` to cross from sandboxed chat context into host-side ACP runtime initialization when ACP was enabled and a backend was available.\n\n### Fix Commit(s)\n- `61000b8e4ded919ca1a825d4700db4cb3fdc56e3`\n\n### Fix Details\nThe fix introduced a shared ACP runtime-policy guard in `src/agents/acp-spawn.ts` and reused it from the `/acp spawn` handler in `src/auto-reply/reply/commands-acp/lifecycle.ts` before any ACP backend initialization. Regression coverage was added in `src/auto-reply/reply/commands-acp.test.ts` to prove sandboxed `/acp spawn` requests are rejected early, while existing ACP spawn behavior for non-sandboxed sessions remains unchanged.\n\n### Release Process Note\nPatched version is pre-set to `2026.3.7` so the advisory can be published once that npm release is available.\n\nThanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T19:54:54Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Sandboxed /acp spawn requests could initialize host ACP sessions",
+    "UpdatedAt": "2026-03-09T19:54:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.7"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.2"
+    }
+  ]
+}

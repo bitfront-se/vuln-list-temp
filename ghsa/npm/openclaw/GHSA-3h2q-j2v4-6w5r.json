@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-09T19:53:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 341422,
+    "Id": "GSA_kwCzR0hTQS0zaDJxLWoydjQtNnc1cs4ABTWu",
+    "GhsaId": "GHSA-3h2q-j2v4-6w5r",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3h2q-j2v4-6w5r"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1d1757b16f48f1a93cd16ab0ad7e2c3c63ce727d"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3h2q-j2v4-6w5r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3h2q-j2v4-6w5r"
+      }
+    ],
+    "Description": "OpenClaw's `system.run` shell-wrapper detection did not recognize PowerShell `-EncodedCommand` forms as inline-command wrappers.\n\nIn `allowlist` mode, a caller with access to `system.run` could invoke `pwsh` or `powershell` using `-EncodedCommand`, `-enc`, or `-e`, and the request would fall back to plain argv analysis instead of the normal shell-wrapper approval path. This could allow a PowerShell inline payload to execute without the approval step that equivalent `-Command` invocations would require.\n\nLatest published npm version: `2026.3.2`\n\nFixed on `main` on March 7, 2026 in `1d1757b16f48f1a93cd16ab0ad7e2c3c63ce727d` by recognizing PowerShell encoded-command aliases during shell-wrapper parsing, so allowlist mode continues to require approval for those payloads. Normal approved PowerShell wrapper flows continue to work.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.2`\n- Patched version: `\u003e= 2026.3.7`\n\n## Fix Commit(s)\n\n- `1d1757b16f48f1a93cd16ab0ad7e2c3c63ce727d`\n\n## Release Process Note\n\nnpm `2026.3.7` was published on March 8, 2026. This advisory is fixed in the released package.\n\nThanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-09T19:53:58Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's system.run allowlist approval parsing missed PowerShell encoded-command wrappers",
+    "UpdatedAt": "2026-03-09T19:53:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.7"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.2"
+    }
+  ]
+}
