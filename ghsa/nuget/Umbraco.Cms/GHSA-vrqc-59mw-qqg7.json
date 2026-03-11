@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-11T14:54:01Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Umbraco.Cms"
+  },
+  "Advisory": {
+    "DatabaseId": 341933,
+    "Id": "GSA_kwCzR0hTQS12cnFjLTU5bXctcXFnN84ABTet",
+    "GhsaId": "GHSA-vrqc-59mw-qqg7",
+    "References": [
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/security/advisories/GHSA-vrqc-59mw-qqg7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31833"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vrqc-59mw-qqg7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vrqc-59mw-qqg7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31833"
+      }
+    ],
+    "Description": "### Description\nAn authenticated backoffice user with access to Settings can inject malicious HTML into property type descriptions. Due to an overly permissive `attributeNameCheck` configuration (/.+/) in the UFM DOMPurify instance, event handler attributes such as onclick and onload, when used within Umbraco web components (`umb-*`, `uui-*`, `ufm-*`) were not filtered.\n\n### Impact\nAs property type descriptions support Markdown/HTML via the UFM rendering pipeline, injected event handlers are rendered in the backoffice interface, resulting in a stored XSS affecting other backoffice users.\n\n### Patches\nThe issue is patched in 16.5.1 and 17.2.2.\n\n### Workarounds\nThere is no workaround other than upgrading.\n\n### References\nhttps://docs.umbraco.com/umbraco-cms/reference/umbraco-flavored-markdown",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T14:54:00Z",
+    "Severity": "MODERATE",
+    "Summary": "Umbraco has Stored XSS in UFM Rendering Pipeline via Permissive DOMPurify Attribute Filtering",
+    "UpdatedAt": "2026-03-11T14:54:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0, \u003c 17.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 16.2.0, \u003c 16.5.1"
+    }
+  ]
+}

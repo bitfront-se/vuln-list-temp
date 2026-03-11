@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-11T18:13:49Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.pdfbox:pdfbox-examples"
+  },
+  "Advisory": {
+    "DatabaseId": 341500,
+    "Id": "GSA_kwCzR0hTQS1qandyLXhtdzYtZ2Y3OM4ABTX8",
+    "GhsaId": "GHSA-jjwr-xmw6-gf78",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23907"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/gyfq5tcrxfv7rx0z2yyx4hb3h53ndffw"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/03/10/1"
+      },
+      {
+        "Url": "https://github.com/apache/pdfbox/commit/b028eafdf101b58e4ee95430c3be25e3e3aa29d7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jjwr-xmw6-gf78"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jjwr-xmw6-gf78"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-23907"
+      }
+    ],
+    "Description": "This issue affects the ExtractEmbeddedFiles example in Apache PDFBox: from 2.0.24 through 2.0.35, from 3.0.0 through 3.0.6.\n\nThe ExtractEmbeddedFiles example contains a path traversal vulnerability (CWE-22) because the filename that is obtained from PDComplexFileSpecification.getFilename() is appended to the extraction path.\n\nUsers who have copied this example into their production code should review it to ensure that the extraction path is acceptable. The example has been changed accordingly, now the initial path and the extraction paths are converted into canonical paths and it is verified that extraction path contains the initial path. The documentation has also been adjusted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-10T18:31:19Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache PDFBox has Path Traversal through PDComplexFileSpecification.getFilename() function",
+    "UpdatedAt": "2026-03-11T18:13:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.24, \u003c 3.0.7"
+    }
+  ]
+}

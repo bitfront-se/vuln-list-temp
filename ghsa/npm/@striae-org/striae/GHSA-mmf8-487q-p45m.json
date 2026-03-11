@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T14:55:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@striae-org/striae"
+  },
+  "Advisory": {
+    "DatabaseId": 341935,
+    "Id": "GSA_kwCzR0hTQS1tbWY4LTQ4N3EtcDQ1bc4ABTev",
+    "GhsaId": "GHSA-mmf8-487q-p45m",
+    "References": [
+      {
+        "Url": "https://github.com/striae-org/striae/security/advisories/GHSA-mmf8-487q-p45m"
+      },
+      {
+        "Url": "https://github.com/striae-org/striae/releases/tag/v3.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mmf8-487q-p45m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mmf8-487q-p45m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31839"
+      }
+    ],
+    "Description": "## Summary\n\nA high-severity integrity bypass vulnerability existed in Striae's digital confirmation workflow prior to v3.0.0. Hash-only validation trusted manifest hash fields that could be modified together with package content, allowing tampered confirmation packages to pass integrity checks.\n\n## Impact\n\nConfirmation package integrity could be bypassed because both content and hash values were mutable in the same trust boundary. An attacker with access to an exported package could alter confirmation data and recompute hashes so hash-only checks still passed.\n\nThis affects users relying on digital confirmations as an immutability and forensic chain-of-custody control.\n\n## Patches\n\nPatched in **v3.0.0**.\n\nUpgrade to:\n- `v3.0.0` or later\n\nSecurity behavior added in v3.0.0:\n- Server-issued asymmetric signatures for forensic manifests\n- Canonical payload signature verification during import and manual hash verification\n- Fail-closed behavior when signature metadata is missing or invalid\n- Signature/key provenance support for audit-related workflows\n\n## Workarounds\n\nThere is no full cryptographic workaround equivalent to upgrading.\n\nTemporary mitigations:\n- Treat hash-only validation as a tamper indicator, not proof of immutability\n- Restrict package exchange to trusted authenticated internal channels\n- Require out-of-band reviewer attestation for sensitive confirmation workflows\n- Pause imports from untrusted sources until upgraded",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T14:55:49Z",
+    "Severity": "HIGH",
+    "Summary": "Striae has a hash validation utility vulnerability",
+    "UpdatedAt": "2026-03-11T14:55:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.9.22-0, \u003c 3.0.0"
+    }
+  ]
+}
