@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T00:21:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341764,
+    "Id": "GSA_kwCzR0hTQS1mcjg4LXczNWMtcjU5Ns4ABTcE",
+    "GhsaId": "GHSA-fr88-w35c-r596",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-fr88-w35c-r596"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30967"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.22"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fr88-w35c-r596"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fr88-w35c-r596"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30967"
+      }
+    ],
+    "Description": "### Impact\n\nThe OAuth2 authentication adapter, when configured without the `useridField` option, only verifies that a token is active via the provider's token introspection endpoint, but does not verify that the token belongs to the user identified by `authData.id`. An attacker with any valid OAuth2 token from the same provider can authenticate as any other user.\n\nThis affects any Parse Server deployment that uses the generic OAuth2 authentication adapter (configured with `oauth2: true`) without setting the `useridField` option.\n\n### Patches\n\nThe vulnerability is fixed by defaulting `useridField` to `sub`, which is the standard subject identifier field defined by [RFC 7662](https://datatracker.ietf.org/doc/html/rfc7662). The adapter now always validates the token's identity against the claimed user ID, even when `useridField` is not explicitly configured.\n\n### Workarounds\n\nSet the `useridField` option to the appropriate field name for your OAuth2 provider (e.g. `sub`) in the Parse Server authentication configuration.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-fr88-w35c-r596\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.9\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.22",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:21:37Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server OAuth2 authentication adapter account takeover via identity spoofing",
+    "UpdatedAt": "2026-03-11T00:21:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.22"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.22"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.2-alpha.9"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.2-alpha.9"
+    }
+  ]
+}

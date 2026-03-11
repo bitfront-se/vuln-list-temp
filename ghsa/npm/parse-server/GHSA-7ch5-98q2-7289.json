@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T00:17:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341757,
+    "Id": "GSA_kwCzR0hTQS03Y2g1LTk4cTItNzI4Oc4ABTb9",
+    "GhsaId": "GHSA-7ch5-98q2-7289",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-7ch5-98q2-7289"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30947"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.16"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7ch5-98q2-7289"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7ch5-98q2-7289"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30947"
+      }
+    ],
+    "Description": "### Impact\n\nClass-level permissions (CLP) are not enforced for LiveQuery subscriptions. An unauthenticated or unauthorized client can subscribe to any LiveQuery-enabled class and receive real-time events for all objects, regardless of CLP restrictions.\n\nAll Parse Server deployments that use LiveQuery with class-level permissions are affected. Data intended to be restricted by CLP is leaked to unauthorized subscribers in real time.\n\n### Patches\n\nThe fix enforces CLP before creating the subscription and during event delivery.\n\n### Workarounds\n\nDisable LiveQuery for classes that use CLP restrictions by removing them from the `liveQuery.classNames` server configuration.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-7ch5-98q2-7289\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.3\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.16",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:17:16Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server has a bypass of class-level permissions in LiveQuery",
+    "UpdatedAt": "2026-03-11T00:17:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.16"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.2-alpha.3"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.5.2-alpha.3"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-11T00:24:54Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Umbraco.Cms"
+  },
+  "Advisory": {
+    "DatabaseId": 341771,
+    "Id": "GSA_kwCzR0hTQS1mcHZmLWZ2cDUtOTk2cs4ABTcL",
+    "GhsaId": "GHSA-fpvf-fvp5-996r",
+    "References": [
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/security/advisories/GHSA-fpvf-fvp5-996r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fpvf-fvp5-996r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fpvf-fvp5-996r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31832"
+      }
+    ],
+    "Description": "### Description\nA broken object-level authorization vulnerability exists in a backoffice API endpoint that allows authenticated users to assign domain-related data to content nodes without proper authorization checks.\n\nThe issue is caused by insufficient authorization enforcement on the affected API endpoint, whereby via an API call, domains can be set on content nodes that the editor does not have permission to access (either via user group privileges or start nodes).\n\n### Impact\nAn attacker can modify domain configurations for content nodes they are not permitted to edit. This may result in malicious or unintended routing behaviour, service disruption, and potential disclosure of configuration-related information.\n\n### Patches\nThe issue is patched in 16.5.1 and 17.2.2.\n\n### Workarounds\nThere is no workaround other than upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:24:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Umbraco Backoffice API Allows Unauthorized Modification of Domain Data",
+    "UpdatedAt": "2026-03-11T00:24:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0, \u003c 17.2.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 14.0.0, \u003c 16.5.1"
+    }
+  ]
+}

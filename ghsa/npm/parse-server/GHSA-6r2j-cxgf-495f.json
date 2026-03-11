@@ -1,0 +1,65 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-11T00:20:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341762,
+    "Id": "GSA_kwCzR0hTQS02cjJqLWN4Z2YtNDk1Zs4ABTcC",
+    "GhsaId": "GHSA-6r2j-cxgf-495f",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-6r2j-cxgf-495f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30965"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.21"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6r2j-cxgf-495f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6r2j-cxgf-495f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30965"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in Parse Server's query handling allows an authenticated or unauthenticated attacker to exfiltrate session tokens of other users by exploiting the `redirectClassNameForKey` query parameter. Exfiltrated session tokens can be used to take over user accounts.\n\nThe vulnerability requires the attacker to be able to create or update an object with a new relation field, which depends on the Class-Level Permissions of at least one class.\n\n### Patches\n\nThe fix applies the same security checks that normally protect class access after the query redirect, ensuring that queries redirected via `redirectClassNameForKey` are subject to the same restrictions as direct queries to the target class.\n\n### Workarounds\n\nSet restrictive Class-Level Permissions to prevent clients from creating new fields on classes, specifically by disabling `addField` for public access and unauthenticated users. Note that this limits client functionality and does not fully eliminate the risk if a relation field pointing to a protected class already exists in the schema.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-6r2j-cxgf-495f\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.8\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.21",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:20:38Z",
+    "Severity": "CRITICAL",
+    "Summary": "Parse Server vulnerable to session token exfiltration via `redirectClassNameForKey` query parameter",
+    "UpdatedAt": "2026-03-11T00:20:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.21"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.21"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.2-alpha.8"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.2-alpha.8"
+    }
+  ]
+}

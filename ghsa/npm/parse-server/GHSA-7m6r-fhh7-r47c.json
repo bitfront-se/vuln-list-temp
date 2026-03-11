@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-11T00:23:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341768,
+    "Id": "GSA_kwCzR0hTQS03bTZyLWZoaDctcjQ3Y84ABTcI",
+    "GhsaId": "GHSA-7m6r-fhh7-r47c",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-7m6r-fhh7-r47c"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.26"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7m6r-fhh7-r47c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7m6r-fhh7-r47c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31828"
+      }
+    ],
+    "Description": "### Impact\n\nThe LDAP authentication adapter is vulnerable to LDAP injection. User-supplied input (`authData.id`) is interpolated directly into LDAP Distinguished Names (DN) and group search filters without escaping special characters. This allows an attacker with valid LDAP credentials to manipulate the bind DN structure and to bypass group membership checks. This enables privilege escalation from any authenticated LDAP user to a member of any restricted group.\n\nThe vulnerability affects Parse Server deployments that use the LDAP authentication adapter with group-based access control.\n\n### Patches\n\nThe vulnerability is fixed by escaping user input before interpolation into DN strings (per [RFC 4514](https://datatracker.ietf.org/doc/html/rfc4514#section-2.4)) and LDAP filter strings (per [RFC 4515](https://datatracker.ietf.org/doc/html/rfc4515#section-3)).\n\n### Workarounds\n\nThere is no known workaround.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-7m6r-fhh7-r47c\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.13\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.26",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:23:21Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server vulnerable to LDAP injection via unsanitized user input in DN and group filter construction",
+    "UpdatedAt": "2026-03-11T00:23:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.26"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.26"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.2-alpha.13"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.5.2-alpha.13"
+    }
+  ]
+}

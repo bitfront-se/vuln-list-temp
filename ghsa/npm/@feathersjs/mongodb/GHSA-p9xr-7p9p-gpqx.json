@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-10T21:03:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@feathersjs/mongodb"
+  },
+  "Advisory": {
+    "DatabaseId": 341671,
+    "Id": "GSA_kwCzR0hTQS1wOXhyLTdwOXAtZ3BxeM4ABTan",
+    "GhsaId": "GHSA-p9xr-7p9p-gpqx",
+    "References": [
+      {
+        "Url": "https://github.com/feathersjs/feathers/security/advisories/GHSA-p9xr-7p9p-gpqx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-29793"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p9xr-7p9p-gpqx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p9xr-7p9p-gpqx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29793"
+      }
+    ],
+    "Description": "Socket.IO clients can send arbitrary JavaScript objects as the id argument to any service method (get, patch, update, remove). The transport layer performs no type checking on this argument. When the service uses the MongoDB adapter, these objects pass through getObjectId() and land directly in the MongoDB query as operators. Sending {$ne: null} as the id matches every document in the collection.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-10T21:03:40Z",
+    "Severity": "CRITICAL",
+    "Summary": "Feathers has a NoSQL Injection via WebSocket id Parameter in MongoDB Adapter",
+    "UpdatedAt": "2026-03-10T22:55:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.42"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.0.41"
+    }
+  ]
+}

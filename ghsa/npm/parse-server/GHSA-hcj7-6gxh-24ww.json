@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T00:17:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341758,
+    "Id": "GSA_kwCzR0hTQS1oY2o3LTZneGgtMjR3d84ABTb-",
+    "GhsaId": "GHSA-hcj7-6gxh-24ww",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-hcj7-6gxh-24ww"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-30948"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.17"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hcj7-6gxh-24ww"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hcj7-6gxh-24ww"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30948"
+      }
+    ],
+    "Description": "### Impact\n\nA stored cross-site scripting (XSS) vulnerability allows any authenticated user to upload an SVG file containing JavaScript. The file is served inline with `Content-Type: image/svg+xml` and without protective headers, causing the browser to execute embedded scripts in the Parse Server origin. This can be exploited to steal session tokens from `localStorage` and achieve account takeover.\n\nThe default `fileExtensions` option blocks HTML file extensions but does not block SVG, which is a well-known XSS vector. All Parse Server deployments where file upload is enabled for authenticated users (the default) are affected.\n\n### Patches\n\nThe fix adds `svg` (case-insensitive) to the default file extension denylist. The default regex changes from `^(?![xXsS]?[hH][tT][mM][lL]?$)` to `^(?!([xXsS]?[hH][tT][mM][lL]?|[sS][vV][gG])$)`.\n\n### Workarounds\n\nConfigure the `fileExtensions` option to explicitly block SVG uploads:\n\n```js\n{\n  fileUpload: {\n    fileExtensions: ['^(?!([xXsS]?[hH][tT][mM][lL]?|[sS][vV][gG])$)']\n  }\n}\n```\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-hcj7-6gxh-24ww\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.5.2-alpha.4\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.17",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:17:35Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server vulnerable to stored cross-site scripting (XSS) via SVG file upload",
+    "UpdatedAt": "2026-03-11T00:17:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.17"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.17"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.5.2-alpha.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.5.2-alpha.4"
+    }
+  ]
+}
