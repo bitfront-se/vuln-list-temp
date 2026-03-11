@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T00:33:31Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/open-feature/flagd/flagd"
+  },
+  "Advisory": {
+    "DatabaseId": 341800,
+    "Id": "GSA_kwCzR0hTQS1ybXJmLWc5cjMtNzNwbc4ABTco",
+    "GhsaId": "GHSA-rmrf-g9r3-73pm",
+    "References": [
+      {
+        "Url": "https://github.com/open-feature/flagd/security/advisories/GHSA-rmrf-g9r3-73pm"
+      },
+      {
+        "Url": "https://github.com/open-feature/flagd/commit/25c5fd7e80c26eb2c00b20317b2456fe6f927ea3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rmrf-g9r3-73pm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rmrf-g9r3-73pm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31866"
+      }
+    ],
+    "Description": "## Details\n\nflagd exposes OFREP (`/ofrep/v1/evaluate/...`) and gRPC (`evaluation.v1`, `evaluation.v2`) endpoints for feature flag evaluation. These endpoints are designed to be publicly accessible by client applications.\n\nThe evaluation context included in request payloads is read into memory without any size restriction. An attacker can send a single HTTP request with an arbitrarily large body, causing flagd to allocate a corresponding amount of memory. This leads to immediate memory exhaustion and process termination (e.g., OOMKill in Kubernetes environments).\n\nflagd does not natively enforce authentication on its evaluation endpoints. While operators may deploy flagd behind an authenticating reverse proxy or similar infrastructure, the endpoints themselves impose no access control by default.\n\n## Impact\n\n- **Denial of Service:** A single crafted request can crash the flagd process.\n- **Service Disruption:** All applications relying on the affected flagd instance for feature flag evaluation will lose access to flag evaluations until the process restarts.\n- **Repeated Exploitation:** An attacker can continuously send oversized requests to prevent recovery.\n\n## Affected Endpoints\n\n- `/ofrep/v1/evaluate/flags/{flagKey}` (OFREP single flag evaluation)\n- `/ofrep/v1/evaluate/flags` (OFREP bulk evaluation)\n- `flagd.evaluation.v1.Service/ResolveBoolean` (gRPC/Connect)\n- `flagd.evaluation.v1.Service/ResolveString` (gRPC/Connect)\n- `flagd.evaluation.v1.Service/ResolveFloat` (gRPC/Connect)\n- `flagd.evaluation.v1.Service/ResolveInt` (gRPC/Connect)\n- `flagd.evaluation.v1.Service/ResolveObject` (gRPC/Connect)\n- `flagd.evaluation.v1.Service/ResolveAll` (gRPC/Connect)\n- `flagd.evaluation.v2.Service/ResolveBoolean` (gRPC/Connect)\n- `flagd.evaluation.v2.Service/ResolveString` (gRPC/Connect)\n- `flagd.evaluation.v2.Service/ResolveFloat` (gRPC/Connect)\n- `flagd.evaluation.v2.Service/ResolveInt` (gRPC/Connect)\n- `flagd.evaluation.v2.Service/ResolveObject` (gRPC/Connect)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:33:30Z",
+    "Severity": "HIGH",
+    "Summary": "flagd Vulnerable to Allocation of Resources Without Limits or Throttling",
+    "UpdatedAt": "2026-03-11T00:33:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.14.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.14.2"
+    }
+  ]
+}

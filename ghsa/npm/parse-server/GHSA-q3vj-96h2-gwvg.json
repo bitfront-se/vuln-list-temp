@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-11T00:26:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341774,
+    "Id": "GSA_kwCzR0hTQS1xM3ZqLTk2aDItZ3d2Z84ABTcO",
+    "GhsaId": "GHSA-q3vj-96h2-gwvg",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-q3vj-96h2-gwvg"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.29"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q3vj-96h2-gwvg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q3vj-96h2-gwvg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31856"
+      }
+    ],
+    "Description": "### Impact\n\nA SQL injection vulnerability exists in the PostgreSQL storage adapter when processing `Increment` operations on nested object fields using dot notation (e.g., `stats.counter`). The `amount` value is interpolated directly into the SQL query without parameterization or type validation. An attacker who can send write requests to the Parse Server REST API can inject arbitrary SQL subqueries to read any data from the database, bypassing CLPs and ACLs.\n\nMongoDB deployments are not affected.\n\n### Patches\n\nThe fix adds type validation to reject non-number values and parameterizes the value in the SQL query instead of interpolating it.\n\n### Workarounds\n\nThere is no known workaround.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-q3vj-96h2-gwvg\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.3\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.29",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:26:37Z",
+    "Severity": "CRITICAL",
+    "Summary": "Parse Server vulnerable to SQL injection via `Increment` operation on nested object field in PostgreSQL",
+    "UpdatedAt": "2026-03-11T00:26:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.29"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.29"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.3"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.6.0-alpha.3"
+    }
+  ]
+}

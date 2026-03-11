@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-11T00:31:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 341798,
+    "Id": "GSA_kwCzR0hTQS12OHc5LThteDYtZzIyM84ABTcm",
+    "GhsaId": "GHSA-v8w9-8mx6-g223",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-v8w9-8mx6-g223"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/ef902257e0beacbb83d2a9549b3b83e03514a6fe"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v8w9-8mx6-g223"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v8w9-8mx6-g223"
+      }
+    ],
+    "Description": "## Summary\n\nWhen using `parseBody({ dot: true })` in HonoRequest, specially crafted form field names such as `__proto__.x` could create objects containing a `__proto__` property.\n\nIf the parsed result is later merged into regular JavaScript objects using unsafe merge patterns, this may lead to prototype pollution in the target object.\n\n## Details\n\nThe `parseBody({ dot: true })` feature supports dot notation to construct nested objects from form field names.\n\nIn previous versions, the `__proto__` path segment was not filtered. As a result, specially crafted keys such as `__proto__.x` could produce objects containing `__proto__` properties.\n\nWhile this behavior does not directly modify `Object.prototype` within Hono itself, it may become exploitable if the parsed result is later merged into regular JavaScript objects using unsafe merge patterns.\n\n## Impact\n\nApplications that merge parsed form data into regular objects using unsafe patterns (for example recursive deep merge utilities) may become vulnerable to prototype pollution.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:31:47Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono vulnerable to Prototype Pollution possible through __proto__ key allowed in parseBody({ dot: true })",
+    "UpdatedAt": "2026-03-11T00:31:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.7"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.7"
+    }
+  ]
+}

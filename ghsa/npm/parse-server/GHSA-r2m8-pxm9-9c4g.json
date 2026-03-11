@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T00:35:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341803,
+    "Id": "GSA_kwCzR0hTQS1yMm04LXB4bTktOWM0Z84ABTcr",
+    "GhsaId": "GHSA-r2m8-pxm9-9c4g",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-r2m8-pxm9-9c4g"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.32"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r2m8-pxm9-9c4g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r2m8-pxm9-9c4g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31872"
+      }
+    ],
+    "Description": "### Impact\n\nThe `protectedFields` class-level permission (CLP) can be bypassed using dot-notation in query WHERE clauses and sort parameters. An attacker can use dot-notation to query or sort by sub-fields of a protected field, enabling a binary oracle attack to enumerate protected field values.\n\nThis affects both MongoDB and PostgreSQL deployments.\n\n### Patches\n\nThe fix ensures that query WHERE clause keys and sort keys are checked against protected fields by extracting the root field from dot-notation paths. For example, a query on `secretObj.apiKey` is now correctly blocked when `secretObj` is a protected field.\n\n### Workarounds\n\nNone.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-r2m8-pxm9-9c4g\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.6\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.32",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:34:59Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server has a protected fields bypass via dot-notation in query and sort",
+    "UpdatedAt": "2026-03-11T00:35:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.32"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.32"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.6"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.6.0-alpha.6"
+    }
+  ]
+}

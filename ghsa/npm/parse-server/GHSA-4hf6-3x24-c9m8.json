@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-11T00:35:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 341804,
+    "Id": "GSA_kwCzR0hTQS00aGY2LTN4MjQtYzltOM4ABTcs",
+    "GhsaId": "GHSA-4hf6-3x24-c9m8",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-4hf6-3x24-c9m8"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.33"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4hf6-3x24-c9m8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4hf6-3x24-c9m8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31875"
+      }
+    ],
+    "Description": "### Impact\n\nWhen multi-factor authentication (MFA) via TOTP is enabled for a user account, Parse Server generates two single-use recovery codes. These codes are intended as a fallback when the user cannot provide a TOTP token. However, recovery codes are not consumed after use, allowing the same recovery code to be used an unlimited number of times. This defeats the single-use design of recovery codes and weakens the security of MFA-protected accounts.\n\nAn attacker who obtains a single recovery code can repeatedly authenticate as the affected user without the code ever being invalidated.\n\n### Patches\n\nThe fix ensures that each recovery code is removed from the stored recovery code list after a successful login.\n\n### Workarounds\n\nThere is no known workaround.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-4hf6-3x24-c9m8\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.7\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.33",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:35:41Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server's MFA recovery codes not consumed after use",
+    "UpdatedAt": "2026-03-11T00:35:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.33"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.7"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0-alpha.1, \u003c 9.6.0-alpha.7"
+    }
+  ]
+}

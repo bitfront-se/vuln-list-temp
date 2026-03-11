@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-11T00:32:51Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/arslanbekov/terraform-provider-sendgrid"
+  },
+  "Advisory": {
+    "DatabaseId": 341799,
+    "Id": "GSA_kwCzR0hTQS1qNDQzLXdjcXEteHByaM4ABTcn",
+    "GhsaId": "GHSA-j443-wcqq-xprh",
+    "References": [
+      {
+        "Url": "https://github.com/arslanbekov/terraform-provider-sendgrid/security/advisories/GHSA-j443-wcqq-xprh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h355-32pf-p2xm"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-CHAINGUARDLATEST-TERRAFORMPROVIDERSENDGRID-15265295"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j443-wcqq-xprh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j443-wcqq-xprh"
+      }
+    ],
+    "Description": "### Summary\n\nA critical vulnerability has been identified at https://security.snyk.io/package/linux/chainguard:latest/terraform-provider-sendgrid, associated with the underlying Go version.\n\nIf the server's TLS configuration is mutated between connections — for example, a CA is removed from the trusted list via `Config.Clone()` combined with modification or `GetConfigForClient` — the resumed handshake still succeeds using the cached session. The certificate is not re-checked against the updated CA list.\n\nAs a result, a client whose CA was revoked or removed between the first and second connection could still establish a connection on the resumed session.\n\n### Details\n\nIf the server's TLS configuration is mutated between connections — for example, a CA is removed from the trusted list via `Config.Clone()` combined with modification or `GetConfigForClient` — the resumed handshake still succeeds using the cached session. The certificate is not re-checked against the updated CA list.\n\nConsequently, a client whose CA was revoked or removed between the first and second connection could still establish a connection on the resumed session.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T00:32:49Z",
+    "Severity": "CRITICAL",
+    "Summary": "Terraform Provider for SendGrid: TLS Session Resumption Bypasses Certificate Authority Trust Store Modifications in Go",
+    "UpdatedAt": "2026-03-11T00:32:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.3-0.20250606002314-b4a2dfeb7b0f"
+    }
+  ]
+}
