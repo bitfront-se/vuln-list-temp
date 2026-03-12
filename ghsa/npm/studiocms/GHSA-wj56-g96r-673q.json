@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:49:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "studiocms"
+  },
+  "Advisory": {
+    "DatabaseId": 342206,
+    "Id": "GSA_kwCzR0hTQS13ajU2LWc5NnItNjczcc4ABTi-",
+    "GhsaId": "GHSA-wj56-g96r-673q",
+    "References": [
+      {
+        "Url": "https://github.com/withstudiocms/studiocms/security/advisories/GHSA-wj56-g96r-673q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32106"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wj56-g96r-673q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wj56-g96r-673q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32106"
+      }
+    ],
+    "Description": "## Summary\n\nThe REST API `createUser` endpoint uses string-based rank checks that only block creating `owner` accounts, while the Dashboard API uses `indexOf`-based rank comparison that prevents creating users at or above your own rank. This inconsistency allows an admin to create additional admin accounts via the REST API, enabling privilege proliferation and persistence.\n\n## Details\n\nThe REST API handler in `packages/studiocms/frontend/pages/studiocms_api/_handlers/rest-api/v1/secure.ts:1365-1378`:\n\n```typescript\n// REST API — only blocks creating 'owner'\nif (newUserRank === 'owner' \u0026\u0026 rank !== 'owner') {\n    return yield* new RestAPIError({\n        error: 'Unauthorized to create user with owner rank',\n    });\n}\n\nif (rank === 'admin' \u0026\u0026 newUserRank === 'owner') {\n    return yield* new RestAPIError({\n        error: 'Unauthorized to create user with owner rank',\n    });\n}\n\n// Missing: no check preventing admin from creating admin\n// newUserRank='admin' passes all checks\n```\n\nThe Dashboard API handler in `_handlers/dashboard/create.ts` uses the correct approach:\n\n```typescript\n// Dashboard API — blocks creating users at or above own rank\nconst callerPerm = availablePermissionRanks.indexOf(userData.permissionLevel);\nconst targetPerm = availablePermissionRanks.indexOf(rank);\n\nif (targetPerm \u003e= callerPerm) {\n    return yield* new DashboardAPIError({\n        error: 'Unauthorized: insufficient permissions to assign target rank',\n    });\n}\n```\n\nWith `availablePermissionRanks = ['unknown', 'visitor', 'editor', 'admin', 'owner']`:\n- Admin (index 3) creating admin (index 3): `3 \u003e= 3` = blocked in Dashboard\n- In REST API: no such check — allowed\n\n## PoC\n\n```bash\n# 1. Use an admin-level API token\n\n# 2. Create a new admin user via REST API\ncurl -X POST 'http://localhost:4321/studiocms_api/rest/v1/secure/users' \\\n  -H 'Authorization: Bearer \u003cadmin-api-token\u003e' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"username\": \"rogue_admin\",\n    \"email\": \"rogue@attacker.com\",\n    \"displayname\": \"Rogue Admin\",\n    \"rank\": \"admin\",\n    \"password\": \"StrongP@ssw0rd123\"\n  }'\n\n# Expected: 403 Forbidden (admin should not create peer admin accounts)\n# Actual: 200 with new admin user created\n```\n\n## Impact\n\n- A compromised or rogue admin can create additional admin accounts as persistence mechanisms that survive password resets or token revocations\n- Inconsistent security model between Dashboard API and REST API creates confusion about intended authorization boundaries\n- Note: requires admin access (PR:H), which limits practical severity\n\n## Recommended Fix\n\nReplace string-based checks with `indexOf` comparison in `packages/studiocms/frontend/pages/studiocms_api/_handlers/rest-api/v1/secure.ts`:\n\n```typescript\n// Before:\nif (newUserRank === 'owner' \u0026\u0026 rank !== 'owner') { ... }\nif (rank === 'admin' \u0026\u0026 newUserRank === 'owner') { ... }\n\n// After:\nconst availablePermissionRanks = ['unknown', 'visitor', 'editor', 'admin', 'owner'];\nconst callerPerm = availablePermissionRanks.indexOf(rank);\nconst targetPerm = availablePermissionRanks.indexOf(newUserRank);\n\nif (targetPerm \u003e= callerPerm) {\n    return yield* new RestAPIError({\n        error: 'Unauthorized: insufficient permissions to assign target rank',\n    });\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:49:48Z",
+    "Severity": "MODERATE",
+    "Summary": "StudioCMS: REST API Missing Rank Check Allows Admin to Create Peer Admin Accounts",
+    "UpdatedAt": "2026-03-12T14:49:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.4.2"
+    }
+  ]
+}

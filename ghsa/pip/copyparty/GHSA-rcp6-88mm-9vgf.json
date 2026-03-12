@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-12T14:22:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "copyparty"
+  },
+  "Advisory": {
+    "DatabaseId": 342196,
+    "Id": "GSA_kwCzR0hTQS1yY3A2LTg4bW0tOXZnZs4ABTi0",
+    "GhsaId": "GHSA-rcp6-88mm-9vgf",
+    "References": [
+      {
+        "Url": "https://github.com/9001/copyparty/security/advisories/GHSA-rcp6-88mm-9vgf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32109"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rcp6-88mm-9vgf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rcp6-88mm-9vgf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32109"
+      }
+    ],
+    "Description": "If an attacker has been given both read- and write-permissions to the server, they can upload a malicious file with the filename `.prologue.html` and then craft a link to potentially execute arbitrary JavaScript in the victim's context.\n\nNote that it is intended behavior that the JavaScript would execute if the target clicks a link to the HTML file itself; \"https://example.com/foo/.prologue.html\". The vulnerability is that \"https://example.com/foo/?b\" would also evaluate the file, making the behavior unexpected.\n\nThere are existing preventative measures (strict SameSite cookies) which makes it harder to leverage this vulnerability in an attack; in order to gain control of the target's authenticated session, the link must be clicked from a page served by the server itself -- most likely by editing an existing resource, which would require additional access permissions.\n\nFinally, for this attack to be successful, the attacker's target must click the specific crafted link given by the attacker. This vulnerability is not activated by normally browsing the web-UI on the server.\n\n## Impact\n\nIf successful, the malicious JavaScript could move or delete existing files on the server, or upload new files, using the account of the person who opens the link.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:22:53Z",
+    "Severity": "LOW",
+    "Summary": "Copyparty has unexpected JavaScript execution via crafted URL to folder with `.prologue.html`",
+    "UpdatedAt": "2026-03-12T14:22:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.20.12"
+      },
+      "VulnerableVersionRange": "\u003c 1.20.12"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-12T17:29:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 342237,
+    "Id": "GSA_kwCzR0hTQS0yY2ptLTJnd3YtbTg5Ms4ABTjd",
+    "GhsaId": "GHSA-2cjm-2gwv-m892",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-2cjm-2gwv-m892"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.37"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2cjm-2gwv-m892"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2cjm-2gwv-m892"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32242"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server's built-in OAuth2 auth adapter exports a singleton instance that is reused directly across all OAuth2 provider configurations. Under concurrent authentication requests for different OAuth2 providers, one provider's token validation may execute using another provider's configuration, potentially allowing a token that should be rejected by one provider to be accepted because it is validated against a different provider's policy.\n\nDeployments that configure multiple OAuth2 providers via the `oauth2: true` flag are affected.\n\n### Patches\n\nThe fix ensures that a new adapter instance is created for each provider instead of reusing the singleton, so each provider's configuration is isolated.\n\n### Workarounds\n\nThere is no known workaround. If only a single OAuth2 provider is configured, the race condition cannot occur.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-2cjm-2gwv-m892\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.11\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.37",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T17:29:49Z",
+    "Severity": "CRITICAL",
+    "Summary": "Parse Server's OAuth2 adapter shares mutable state across providers via singleton instance",
+    "UpdatedAt": "2026-03-12T17:29:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.37"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.37"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.11"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.11"
+    }
+  ]
+}

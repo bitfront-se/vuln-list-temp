@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:22:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342194,
+    "Id": "GSA_kwCzR0hTQS04ajJ3LTZmbW0tbTU4N84ABTiy",
+    "GhsaId": "GHSA-8j2w-6fmm-m587",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-8j2w-6fmm-m587"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8j2w-6fmm-m587"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8j2w-6fmm-m587"
+      }
+    ],
+    "Description": "### Summary\nGateway auth for plugin channel endpoints can be bypassed when path canonicalization differs between the gateway guard and plugin handler routing.\n\n### Details\nOn affected versions, `server-http` only applies gateway auth when raw `requestPath` matches exactly:\n- `/api/channels`\n- `/api/channels/*`\n\nIf a plugin handler canonicalizes path input (for example `decodeURIComponent(pathname).toLowerCase()`), requests like:\n- `/API/channels/nostr/default/profile`\n- `/api/channels%2Fnostr%2Fdefault%2Fprofile`\ncan be interpreted as `/api/channels/*` by the plugin, while the gateway auth guard is skipped.\n\n### Impact\nAuthentication boundary bypass for plugin channel HTTP routes under canonicalization mismatch conditions. Unauthorized callers may access plugin channel APIs that are expected to require gateway auth.\n\nCWE: CWE-288 (Authentication Bypass Using an Alternate Path or Channel)\nCVSS: `CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N` (Base 5.3, Moderate)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:22:04Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: /api/channels gateway-auth boundary bypass via path canonicalization mismatch",
+    "UpdatedAt": "2026-03-12T14:22:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

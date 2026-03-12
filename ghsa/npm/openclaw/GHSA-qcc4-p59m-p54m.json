@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-12T14:21:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342192,
+    "Id": "GSA_kwCzR0hTQS1xY2M0LXA1OW0tcDU0bc4ABTiw",
+    "GhsaId": "GHSA-qcc4-p59m-p54m",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qcc4-p59m-p54m"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4fd29a35bb85a1898ebff518364c467058b50e14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qcc4-p59m-p54m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qcc4-p59m-p54m"
+      }
+    ],
+    "Description": "### Summary\nA sandbox boundary-validation gap in symlink alias handling allowed certain workspace-only write paths to be treated as in-boundary even when they could resolve outside the workspace/sandbox root.\n\n### Affected Packages / Versions\n- Package: npm `openclaw`\n- Affected versions: `\u003c= 2026.2.25`\n- Latest published npm version included in affected range: `2026.2.25` (checked on February 26, 2026)\n- Patched version (pre-set for release): `2026.2.26`\n\n### Technical Details\nIn affected versions, dangling symlink hops could be accepted during boundary checks under missing-target conditions. For workspace-only write flows (including `apply_patch`), this could allow writes to resolve outside the configured workspace/sandbox boundary.\n\nThe fix resolves symlink targets through existing ancestors and fails closed when canonical resolution escapes the configured boundary.\n\n### Impact\n- Boundary-confined write operations could be redirected outside the configured workspace/sandbox root.\n- Primary impact is integrity of host-side files reachable from that path resolution.\n\n### Fix Commit(s)\n- `4fd29a35bb85a1898ebff518364c467058b50e14`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`) so once npm `2026.2.26` is published, the advisory can be published without further field edits.\n\nThanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:21:54Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Sandbox dangling-symlink alias handling could bypass workspace-only write boundary",
+    "UpdatedAt": "2026-03-12T14:21:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.25"
+    }
+  ]
+}

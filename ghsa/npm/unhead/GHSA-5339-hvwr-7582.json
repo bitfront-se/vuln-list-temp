@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-12T14:19:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "unhead"
+  },
+  "Advisory": {
+    "DatabaseId": 342182,
+    "Id": "GSA_kwCzR0hTQS01MzM5LWh2d3ItNzU4Ms4ABTim",
+    "GhsaId": "GHSA-5339-hvwr-7582",
+    "References": [
+      {
+        "Url": "https://github.com/unjs/unhead/security/advisories/GHSA-5339-hvwr-7582"
+      },
+      {
+        "Url": "https://github.com/unjs/unhead/releases/tag/v2.1.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5339-hvwr-7582"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5339-hvwr-7582"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31873"
+      }
+    ],
+    "Description": "The `link.href` check in `makeTagSafe` (safe.ts, line 68-71) uses `String.includes()`, which is case-sensitive:\n\n```typescript\nif (key === 'href') {\n  if (val.includes('javascript:') || val.includes('data:')) {\n    return\n  }\n  next[key] = val\n}\n```\n\nBrowsers treat URI schemes case-insensitively. `DATA:text/css,...` is the same as `data:text/css,...` to the browser, but `'DATA:...'.includes('data:')` returns `false`.\n\n### PoC\n\n```javascript\nuseHeadSafe({\n  link: [{\n    rel: 'stylesheet',\n    href: 'DATA:text/css,body{display:none}'\n  }]\n})\n```\n\nSSR output:\n\n```html\n\u003clink rel=\"stylesheet\" href=\"DATA:text/css,body{display:none}\"\u003e\n```\n\nThe browser loads this as a CSS stylesheet. An attacker can inject arbitrary CSS for UI redressing or data exfiltration via CSS attribute selectors with background-image callbacks.\n\nAny case variation works: `DATA:`, `Data:`, `dAtA:`, `JAVASCRIPT:`, etc.\n\n## Suggested fix\n\n```typescript\nif (key === 'href') {\n  const lower = val.toLowerCase()\n  if (lower.includes('javascript:') || lower.includes('data:')) {\n    return\n  }\n  next[key] = val\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:19:25Z",
+    "Severity": "LOW",
+    "Summary": "Unhead Vulnerable to Bypass of URI Scheme Sanitization in makeTagSafe via Case-Sensitivity",
+    "UpdatedAt": "2026-03-12T14:19:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.11"
+      },
+      "VulnerableVersionRange": "\u003c= 2.1.10"
+    }
+  ]
+}

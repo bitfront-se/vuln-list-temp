@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-12T14:22:47Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "copyparty"
+  },
+  "Advisory": {
+    "DatabaseId": 342195,
+    "Id": "GSA_kwCzR0hTQS02N3J3LTJ4NjItbXFxbc4ABTiz",
+    "GhsaId": "GHSA-67rw-2x62-mqqm",
+    "References": [
+      {
+        "Url": "https://github.com/9001/copyparty/security/advisories/GHSA-67rw-2x62-mqqm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32108"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-67rw-2x62-mqqm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-67rw-2x62-mqqm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32108"
+      }
+    ],
+    "Description": "There was a missing permission-check in the shares feature (the `shr` global-option).\n\nThis vulnerability only applies in the following scenario:\n* The [shares](https://github.com/9001/copyparty/#shares) feature is used for the specific purpose of creating a share of just a single file inside a folder\n* Either the FTP or SFTP server is enabled, and also made publically accessible\n  * If a share is password-protected, then SFTP was not vulnerable unless the `sftp-pw` global-option was also enabled\n\nGiven these conditions, when a user is browsing a share through either FTP or SFTP (not http or https), they can gain read-access to the remaining files inside the shared folder by guessing/bruteforcing the filenames.\n\nIt was not possible to descend into subdirectories in this manner; only the sibling files were accessible.\n\nThis issue did not affect filekeys or dirkeys.\n\nThis vulnerability is [CVE-2025-58753](https://nvd.nist.gov/vuln/detail/CVE-2025-58753) which was previously fixed for HTTP and HTTPS, but not for FTP. The FTPS server did not yet exist at that time.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:22:46Z",
+    "Severity": "LOW",
+    "Summary": "Copyparty ftp/sftp: Sharing a single file did not fully restrict source-folder access",
+    "UpdatedAt": "2026-03-12T14:22:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.20.12"
+      },
+      "VulnerableVersionRange": "\u003c 1.20.12"
+    }
+  ]
+}

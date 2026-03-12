@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:47:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "uptime-kuma"
+  },
+  "Advisory": {
+    "DatabaseId": 342200,
+    "Id": "GSA_kwCzR0hTQS1jN2hmLWM1cDUtNWc2aM4ABTi4",
+    "GhsaId": "GHSA-c7hf-c5p5-5g6h",
+    "References": [
+      {
+        "Url": "https://github.com/louislam/uptime-kuma/security/advisories/GHSA-c7hf-c5p5-5g6h"
+      },
+      {
+        "Url": "https://github.com/louislam/uptime-kuma/issues/7038"
+      },
+      {
+        "Url": "https://github.com/louislam/uptime-kuma/issues/7135"
+      },
+      {
+        "Url": "https://github.com/louislam/uptime-kuma/commit/303a609c05d0b174a5045c90f53c2b557d4febae"
+      },
+      {
+        "Url": "https://github.com/louislam/uptime-kuma/releases/tag/2.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c7hf-c5p5-5g6h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c7hf-c5p5-5g6h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32230"
+      }
+    ],
+    "Description": "## Summary\n\nThe `GET /api/badge/:id/ping/:duration?` endpoint in `server/routers/api-router.js` does not verify that the requested monitor belongs to a public group. All other badge endpoints check `AND public = 1` in their SQL query before returning data. The ping endpoint skips this check entirely, allowing unauthenticated users to extract average ping/response time data for private monitors.\n\n## Affected Code\n\nFile: `server/routers/api-router.js`, approximately line 304\n\nThe ping badge endpoint directly calls `UptimeCalculator.getUptimeCalculator(requestedMonitorId)` without first checking if the monitor is public. Compare with the status badge endpoint (~line 148) which correctly queries:\n```sql\nSELECT monitor_group.monitor_id FROM monitor_group, `group`\nWHERE monitor_group.group_id = `group`.id\nAND monitor_group.monitor_id = ?\nAND public = 1\n```\n\n## Protected vs Vulnerable Endpoints\n\n| Endpoint | Has public=1 check? |\n|----------|-------------------|\n| /api/badge/:id/status | Yes |\n| /api/badge/:id/uptime/:duration? | Yes |\n| /api/badge/:id/avg-response/:duration? | Yes |\n| /api/badge/:id/cert-exp | Yes |\n| /api/badge/:id/response | Yes |\n| /api/badge/:id/ping/:duration? | **No — vulnerable** |\n\n## PoC\n\n1. Install Uptime Kuma (tested on latest v2 stable via Docker)\n2. Create an HTTP(s) monitor (e.g., monitoring http://localhost:3001)\n3. Do NOT add the monitor to any public status page or group\n4. Wait for heartbeats to accumulate (~5 minutes)\n5. Query unauthenticated:\n```bash\ncurl http://localhost:3001/api/badge/1/status   → returns N/A (correct, monitor is private)\ncurl http://localhost:3001/api/badge/1/ping/24  → returns \"Avg. Ping (24h): 10ms\" (LEAKED)\n```\n\n## Impact\n\nAn unauthenticated attacker can:\n- Enumerate private monitor IDs\n- Extract average response time data for private monitors\n- Infer existence and reachability of internal monitored services\n\n## Suggested Fix\n\nAdd the same public monitor check before the UptimeCalculator call:\n```javascript\nlet publicMonitor = await R.getRow(`\n    SELECT monitor_group.monitor_id FROM monitor_group, \\`group\\`\n    WHERE monitor_group.group_id = \\`group\\`.id\n    AND monitor_group.monitor_id = ?\n    AND public = 1\n`, [requestedMonitorId]);\n\nif (!publicMonitor) {\n    badgeValues.message = \"N/A\";\n    badgeValues.color = badgeConstants.naColor;\n}\n```\n\n\u003cimg width=\"1228\" height=\"710\" alt=\"Screenshot 2026-02-24 at 4 49 40 PM\" src=\"https://github.com/user-attachments/assets/80aeae2d-be08-449f-8b39-c50da7aaedba\" /\u003e\n\n\u003cimg width=\"1271\" height=\"770\" alt=\"File Alons til View He\" src=\"https://github.com/user-attachments/assets/d50c9a00-282a-4b79-b5e1-f77afde9223a\" /\u003e",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:47:39Z",
+    "Severity": "MODERATE",
+    "Summary": "Uptime Kuma is Missing Authorization Checks on Ping Badge Endpoint, Leaks Ping times of monitors without needing to be on a status page",
+    "UpdatedAt": "2026-03-12T14:47:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.1.3"
+    }
+  ]
+}

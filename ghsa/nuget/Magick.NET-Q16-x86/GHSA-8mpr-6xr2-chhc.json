@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:02:06Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Magick.NET-Q16-x86"
+  },
+  "Advisory": {
+    "DatabaseId": 342162,
+    "Id": "GSA_kwCzR0hTQS04bXByLTZ4cjItY2hoY84ABTiS",
+    "GhsaId": "GHSA-8mpr-6xr2-chhc",
+    "References": [
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-8mpr-6xr2-chhc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25971"
+      },
+      {
+        "Url": "https://github.com/dlemstra/Magick.NET/releases/tag/14.10.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8mpr-6xr2-chhc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8mpr-6xr2-chhc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25971"
+      }
+    ],
+    "Description": "### Summary\nMagick fails to check for circular references between two MSLs, leading to a stack overflow.\n\n### Details\nAfter reading a.msl using magick, the following is displayed:\n\n`MSLStartElement` -\u003e `ReadImage` -\u003e `ReadMSLImage` -\u003e `ProcessMSLScript` -\u003e `xmlParseChunk` -\u003e `xmlParseTryOrFinish` -\u003e `MSLStartElement`\n\n```bash\nAddressSanitizer:DEADLYSIGNAL\n=================================================================\n==114345==ERROR: AddressSanitizer: UNKNOWN SIGNAL on unknown address 0x000000000000 (pc 0x72509fc7d804 bp 0x7ffd6598b390 sp 0x7ffd6598ab20 T0)\n    #0 0x72509fc7d804 in strlen ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:388\n[...]\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:02:04Z",
+    "Severity": "MODERATE",
+    "Summary": "ImageMagick: MSL - Stack overflow in ProcessMSLScript",
+    "UpdatedAt": "2026-03-12T14:02:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.10.3"
+      },
+      "VulnerableVersionRange": "\u003c 14.10.3"
+    }
+  ]
+}

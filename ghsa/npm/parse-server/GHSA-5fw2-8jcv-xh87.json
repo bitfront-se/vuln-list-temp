@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-12T17:29:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 342238,
+    "Id": "GSA_kwCzR0hTQS01ZncyLThqY3YteGg4N84ABTje",
+    "GhsaId": "GHSA-5fw2-8jcv-xh87",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-5fw2-8jcv-xh87"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/8.6.38"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5fw2-8jcv-xh87"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5fw2-8jcv-xh87"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32248"
+      }
+    ],
+    "Description": "### Impact\n\nAn unauthenticated attacker can take over any user account that was created with an authentication provider that does not validate the format of the user identifier (e.g. anonymous authentication). By sending a crafted login request, the attacker can cause the server to perform a pattern-matching query instead of an exact-match lookup, allowing the attacker to match an existing user and obtain a valid session token for that user's account. Both MongoDB and PostgreSQL database backends are affected. Any Parse Server deployment that allows anonymous authentication (enabled by default) is vulnerable.\n\n### Patches\n\nThe fix enforces that the user identifier in authentication data is a string before using it in a database query. Non-string values are rejected with a validation error.\n\n### Workarounds\n\nThere is no known workaround.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-5fw2-8jcv-xh87\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/releases/tag/9.6.0-alpha.12\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/releases/tag/8.6.38",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T17:29:55Z",
+    "Severity": "CRITICAL",
+    "Summary": "Parse Server: Account takeover via operator injection in authentication data identifier",
+    "UpdatedAt": "2026-03-12T17:29:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.38"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.38"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.12"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.12"
+    }
+  ]
+}

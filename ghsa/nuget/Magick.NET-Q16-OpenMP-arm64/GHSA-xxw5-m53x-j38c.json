@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:11:34Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Magick.NET-Q16-OpenMP-arm64"
+  },
+  "Advisory": {
+    "DatabaseId": 342171,
+    "Id": "GSA_kwCzR0hTQS14eHc1LW01M3gtajM4Y84ABTib",
+    "GhsaId": "GHSA-xxw5-m53x-j38c",
+    "References": [
+      {
+        "Url": "https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-xxw5-m53x-j38c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28688"
+      },
+      {
+        "Url": "https://github.com/dlemstra/Magick.NET/releases/tag/14.10.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xxw5-m53x-j38c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xxw5-m53x-j38c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28688"
+      }
+    ],
+    "Description": "A heap-use-after-free vulnerability exists in the MSL encoder, where a cloned image is destroyed twice. The MSL coder does not support writing MSL so the write capability has been removed. \n\n```\nSUMMARY: AddressSanitizer: heap-use-after-free MagickCore/image.c:1195 in DestroyImage\nShadow bytes around the buggy address:\n  0x0a4e80007450: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd\n  0x0a4e80007460: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd\n  0x0a4e80007470: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd\n  0x0a4e80007480: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd\n  0x0a4e80007490: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd\n=\u003e0x0a4e800074a0: fd fd fd fd fd fd fd fd fd fd[fd]fd fd fd fd fd\n  0x0a4e800074b0: fd fd fd fd fd fd fd fd fd fa fa fa fa fa fa fa\n  0x0a4e800074c0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0a4e800074d0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0a4e800074e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0a4e800074f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:11:30Z",
+    "Severity": "MODERATE",
+    "Summary": "ImageMagick has heap use-after-free in the MSL encoder",
+    "UpdatedAt": "2026-03-12T14:11:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.10.4"
+      },
+      "VulnerableVersionRange": "\u003c 14.10.4"
+    }
+  ]
+}

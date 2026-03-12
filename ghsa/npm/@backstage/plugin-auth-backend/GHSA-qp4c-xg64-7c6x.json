@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-12T14:51:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-auth-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 342210,
+    "Id": "GSA_kwCzR0hTQS1xcDRjLXhnNjQtN2M2eM4ABTjC",
+    "GhsaId": "GHSA-qp4c-xg64-7c6x",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-qp4c-xg64-7c6x"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/17038abf2dfdb4abc08a59b1c95af39851de0e07"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qp4c-xg64-7c6x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qp4c-xg64-7c6x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32236"
+      }
+    ],
+    "Description": "### Impact                                                                                                                                                                         \n                                                           \n  A Server-Side Request Forgery (SSRF) vulnerability exists in `@backstage/plugin-auth-backend` when `auth.experimentalClientIdMetadataDocuments.enabled` is set to `true`. The CIMD \n  metadata fetch validates the initial `client_id` hostname against private IP ranges but does not apply the same validation after HTTP redirects.\n                          \n  The practical impact is limited. The attacker cannot read the response body from the internal request, cannot control request headers or method, and the feature must be explicitly\n   enabled via an experimental flag that is off by default. Deployments that restrict `allowedClientIdPatterns` to specific trusted domains are not affected.\n\n  ### Patches\n\n  Patched in `@backstage/plugin-auth-backend` version `0.27.1`. The fix disables HTTP redirect following when fetching CIMD metadata documents.\n\n  ### Workarounds\n\n  Disable the experimental CIMD feature by removing or setting `auth.experimentalClientIdMetadataDocuments.enabled` to `false` in your app-config. This is the default configuration.\n   Alternatively, restrict `allowedClientIdPatterns` to specific trusted domains rather than using the default wildcard pattern.\n\n  ### References\n\n  - [IETF Client ID Metadata Document draft](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)\n  - [MCP Authorization Specification - Client ID Metadata Documents](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:51:02Z",
+    "Severity": "LOW",
+    "Summary": "@backstage/plugin-auth-backend: SSRF in experimental CIMD metadata fetch",
+    "UpdatedAt": "2026-03-12T14:51:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.27.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.27.1"
+    }
+  ]
+}

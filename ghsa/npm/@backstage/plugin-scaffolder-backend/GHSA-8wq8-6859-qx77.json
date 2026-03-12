@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:51:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 342211,
+    "Id": "GSA_kwCzR0hTQS04d3E4LTY4NTktcXg3N84ABTjD",
+    "GhsaId": "GHSA-8wq8-6859-qx77",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-8wq8-6859-qx77"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/3b62dd2d6bf7623ebd23e4b5a6dceb209f98dfce"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8wq8-6859-qx77"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8wq8-6859-qx77"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32237"
+      }
+    ],
+    "Description": "### Impact                                                                                                                                                                         \n                                         \n  Authenticated users with permission to execute scaffolder dry-runs can gain access to server-configured environment secrets through the dry-run API response. Secrets are properly \n  redacted in log output but not in all parts of the response payload.\n                                                                                                                                                                                     \n  Deployments that have configured `scaffolder.defaultEnvironment.secrets` are affected.\n                          \n  ### Patches                            \n\n  This is patched in `@backstage/plugin-scaffolder-backend` version 3.1.5\n  ### Workarounds\n\n  Remove or empty the `scaffolder.defaultEnvironment.secrets` configuration from `app-config.yaml`. Alternatively, restrict access to the scaffolder dry-run functionality via the\n  permissions framework.\n\n  ### References\n\n  - [Backstage Scaffolder Backend documentation](https://backstage.io/docs/features/software-templates/)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:51:06Z",
+    "Severity": "MODERATE",
+    "Summary": "@backstage/plugin-scaffolder-backend: Possible exposure of defaultEnvironment secrets using dry-run endpoint",
+    "UpdatedAt": "2026-03-12T14:51:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.0, \u003c 3.1.5"
+    }
+  ]
+}

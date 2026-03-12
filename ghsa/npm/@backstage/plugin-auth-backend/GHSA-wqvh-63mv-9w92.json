@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T14:50:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-auth-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 342209,
+    "Id": "GSA_kwCzR0hTQS13cXZoLTYzbXYtOXc5Ms4ABTjB",
+    "GhsaId": "GHSA-wqvh-63mv-9w92",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-wqvh-63mv-9w92"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/6042dd0c7f0706e0f473dafa92799ecf19c825ec"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wqvh-63mv-9w92"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wqvh-63mv-9w92"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32235"
+      }
+    ],
+    "Description": "### Impact\n\nThe experimental OIDC provider in `@backstage/plugin-auth-backend` is vulnerable to a redirect URI allowlist bypass. Instances that have enabled experimental Dynamic Client Registration or Client ID Metadata Documents and configured `allowedRedirectUriPatterns` are affected.\n\nA specially crafted redirect URI can pass the allowlist validation while resolving to an attacker-controlled host. If a victim approves the resulting OAuth consent request, their authorization code is sent to the attacker, who can exchange it for a valid access token.\n\nThis requires victim interaction and that one of the experimental features is explicitly enabled, which is not the default.\n\n### Patches\n\nUpgrade to `@backstage/plugin-auth-backend` version 0.27.1 or later.\n\n### Workarounds\n\nDisable experimental Dynamic Client Registration and Client ID Metadata Documents features if they are not required.\n\n### References\n\n- [RFC 6749 Section 3.1.2 - Redirection Endpoint](https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.2)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T14:50:59Z",
+    "Severity": "MODERATE",
+    "Summary": "@backstage/plugin-auth-backend: OAuth redirect URI allowlist bypass",
+    "UpdatedAt": "2026-03-12T14:50:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.27.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.27.1"
+    }
+  ]
+}
