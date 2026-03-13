@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-13T15:48:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342362,
+    "Id": "GSA_kwCzR0hTQS1xdnI3LWc1N2MtbXJjN84ABTla",
+    "GhsaId": "GHSA-qvr7-g57c-mrc7",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qvr7-g57c-mrc7"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qvr7-g57c-mrc7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qvr7-g57c-mrc7"
+      }
+    ],
+    "Description": "## Summary\nIn affected versions of `openclaw`, local gateway helper credential resolution treated configured but unavailable `gateway.auth.token` and `gateway.auth.password` SecretRefs as if they were unset and could fall back to `gateway.remote.*` credentials in local mode.\n\n## Impact\nThis could cause local CLI and helper paths to select the wrong credential source instead of failing closed for configured local auth SecretRefs. We did not confirm a server-side gateway-authentication boundary bypass for this issue.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.8`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nThe local-mode fallback logic decided whether remote credential fallback was allowed based on resolved credential values rather than on whether the local auth input was actually configured. A configured-but-unavailable local SecretRef therefore looked \"absent\" to the helper layer.\n\n## Fix\nOpenClaw now tracks whether the local auth input is configured separately from whether it resolves successfully. In local mode, remote fallback is allowed only when the matching local auth input is truly unset. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T15:48:21Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Unavailable local auth SecretRefs could fall through to remote credentials in local mode",
+    "UpdatedAt": "2026-03-13T15:48:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.11"
+    }
+  ]
+}

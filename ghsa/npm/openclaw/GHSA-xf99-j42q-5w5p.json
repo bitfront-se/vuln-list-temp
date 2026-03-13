@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T15:47:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342356,
+    "Id": "GSA_kwCzR0hTQS14Zjk5LWo0MnEtNXc1cM4ABTlU",
+    "GhsaId": "GHSA-xf99-j42q-5w5p",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-xf99-j42q-5w5p"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xf99-j42q-5w5p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xf99-j42q-5w5p"
+      }
+    ],
+    "Description": "## Summary\nIn affected versions of `openclaw`, node-host `system.run` approvals could still execute rewritten local code for interpreter and runtime commands when OpenClaw could not bind exactly one concrete local file operand during approval planning.\n\n## Impact\nDeployments using node-host `system.run` approval mode could approve a benign local script and then execute different local code if that script changed before execution. This can lead to unintended local code execution as the OpenClaw runtime user.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.8`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nThe approval flow treated some interpreter and runtime forms as approval-backed even when it could not honestly bind a single direct local script file. That left residual approval-integrity gaps for runtime forms outside the directly bound file set.\n\n## Fix\nOpenClaw now fails closed for approval-backed interpreter and runtime commands unless it can bind exactly one concrete local file operand, and it extends best-effort direct-file binding for additional runtime forms. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T15:47:41Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Unbound interpreter and runtime commands could bypass node-host approval integrity",
+    "UpdatedAt": "2026-03-13T15:47:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.11"
+    }
+  ]
+}

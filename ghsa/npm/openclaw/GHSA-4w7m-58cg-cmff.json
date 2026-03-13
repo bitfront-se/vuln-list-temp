@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T15:47:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342355,
+    "Id": "GSA_kwCzR0hTQS00dzdtLTU4Y2ctY21mZs4ABTlT",
+    "GhsaId": "GHSA-4w7m-58cg-cmff",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-4w7m-58cg-cmff"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4w7m-58cg-cmff"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4w7m-58cg-cmff"
+      }
+    ],
+    "Description": "## Summary\nIn affected versions of `openclaw`, sandboxed leaf subagents could still access the `subagents` control surface and resolve against the parent requester scope instead of remaining confined to their own session tree.\n\n## Impact\nA low-privilege sandboxed leaf worker could steer or kill a sibling run owned by the same requester and cause that sibling to execute with its own broader tool policy. This is a sandbox and session-scope boundary bypass.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.8`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nLeaf subagents retained the `subagents` tool, and subagent control requests were authorized against the parent requester scope rather than the caller's own spawned descendants. The control path prevented only self-targeting, not cross-sibling steering.\n\n## Fix\nOpenClaw now removes `subagents` control access from leaf subagents by default, scopes subagent control to the caller's own descendants, and rejects `steer` and `kill` requests that target runs outside that descendant tree. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T15:47:34Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Leaf subagents could steer sibling sessions across sandbox boundaries",
+    "UpdatedAt": "2026-03-13T15:47:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.11"
+    }
+  ]
+}

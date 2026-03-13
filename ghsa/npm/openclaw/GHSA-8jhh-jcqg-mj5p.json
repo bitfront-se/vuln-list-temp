@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-13T15:48:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342358,
+    "Id": "GSA_kwCzR0hTQS04amhoLWpjcWctbWo1cM4ABTlW",
+    "GhsaId": "GHSA-8jhh-jcqg-mj5p",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-8jhh-jcqg-mj5p"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8jhh-jcqg-mj5p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8jhh-jcqg-mj5p"
+      }
+    ],
+    "Description": "## Summary\nIn affected versions of `openclaw`, channel-initiated config mutations were authorized against the originating account's `configWrites` policy but did not consistently re-check the targeted account scope. An authorized sender on one account could mutate protected sibling-account configuration when the target account had `configWrites: false`.\n\n## Impact\nThis is an account-scoped policy bypass inside a single gateway deployment. Channel commands such as `/config set channels.\u003cprovider\u003e.accounts.\u003cid\u003e...` and config-backed `/allowlist ... --config --account \u003cid\u003e` could modify protected sibling-account configuration.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.8`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nThe mutation path validated the origin account scope but did not consistently authorize every resolved target scope. Ambiguous collection and root writes under `channels` and `channels.\u003cprovider\u003e.accounts` could therefore reach protected account configuration from channel command surfaces.\n\n## Fix\nOpenClaw now authorizes config mutations against both the origin scope and each resolved target scope, and it rejects ambiguous root and collection writes from channel commands unless the caller is an internal gateway client with `operator.admin`. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T15:47:59Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Channel commands could bypass account-scoped `configWrites` restrictions",
+    "UpdatedAt": "2026-03-13T15:48:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.11"
+    }
+  ]
+}

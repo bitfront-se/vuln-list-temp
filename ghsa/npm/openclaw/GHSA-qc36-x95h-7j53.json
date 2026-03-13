@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T15:48:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342359,
+    "Id": "GSA_kwCzR0hTQS1xYzM2LXg5NWgtN2o1M84ABTlX",
+    "GhsaId": "GHSA-qc36-x95h-7j53",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qc36-x95h-7j53"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qc36-x95h-7j53"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qc36-x95h-7j53"
+      }
+    ],
+    "Description": "## Summary\nIn affected versions of `openclaw`, node-host `system.run` approvals did not bind a mutable file operand for some script runners, including forms such as `tsx` and `jiti`. An attacker could obtain approval for a benign script-runner command, rewrite the referenced script on disk, and have the modified code execute under the already approved run context.\n\n## Impact\nDeployments that rely on node-host `system.run` approvals for script integrity could execute rewritten local code after operator approval. This can lead to unintended local code execution as the OpenClaw runtime user.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.3.11`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nThe approval planner only tracked mutable script operands for a hardcoded set of interpreters and runtime forms. Commands such as `tsx ./run.ts` and `jiti ./run.ts` fell through without a bound file snapshot, so the final pre-execution revalidation step was skipped.\n\n## Fix\nOpenClaw now fails closed for approval-backed interpreter and runtime commands unless it can bind exactly one concrete local file operand, and it extends direct-file binding coverage for additional runtime forms. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T15:48:05Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Unrecognized script runners could bypass `system.run` approval integrity",
+    "UpdatedAt": "2026-03-13T15:48:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.11"
+    }
+  ]
+}

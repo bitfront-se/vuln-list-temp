@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T15:47:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342357,
+    "Id": "GSA_kwCzR0hTQS1ydzM5LTU4OTktOG14cM4ABTlV",
+    "GhsaId": "GHSA-rw39-5899-8mxp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rw39-5899-8mxp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rw39-5899-8mxp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rw39-5899-8mxp"
+      }
+    ],
+    "Description": "## Summary\nIn affected versions of `openclaw`, node-host `system.run` approvals could display only an extracted shell payload such as `jq --version` while execution still ran a different outer wrapper argv such as `./env sh -c 'jq --version'`.\n\n## Impact\nThis is an approval-integrity bug. An attacker who could place or select a local wrapper binary and induce a wrapper-shaped command could get local code executed after the operator approved misleading command text.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.3.8`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nWrapper resolution normalized executables by basename and extracted inner shell payload text for approval display, while execution still preserved the full wrapper argv. Approval storage and UI therefore showed text that did not match the exact command OpenClaw would execute.\n\n## Fix\nOpenClaw now binds approvals to the exact executed argv and keeps extracted shell payload text only as secondary preview data. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T15:47:46Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Node-host approvals could show misleading shell payloads instead of the executed argv",
+    "UpdatedAt": "2026-03-13T15:47:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.11"
+    }
+  ]
+}
