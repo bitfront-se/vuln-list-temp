@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-12T20:33:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ellanetworks/core"
+  },
+  "Advisory": {
+    "DatabaseId": 342307,
+    "Id": "GSA_kwCzR0hTQS1qNDc4LXA3dnEtMzM0N84ABTkj",
+    "GhsaId": "GHSA-j478-p7vq-3347",
+    "References": [
+      {
+        "Url": "https://github.com/ellanetworks/core/security/advisories/GHSA-j478-p7vq-3347"
+      },
+      {
+        "Url": "https://github.com/ellanetworks/core/releases/tag/v1.5.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j478-p7vq-3347"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j478-p7vq-3347"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32320"
+      }
+    ],
+    "Description": "## Summary\n\nElla Core panics when processing a PathSwitchRequest containing UE Security Capabilities with zero-length NR encryption or integrity protection algorithm bitstrings, resulting in a denial of service.\n\n## Impact\n\nAn attacker able to send crafted NGAP messages to Ella Core can crash the process, causing service disruption for all connected subscribers. No authentication is required.\n\n## Fix\n\nAdded length validation on NR algorithm bitstrings before accessing them in the PathSwitchRequest handler.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-12T20:33:28Z",
+    "Severity": "MODERATE",
+    "Summary": "Ella Core: AMF DoS via malformed PathSwitchRequest with empty NR security capability bitstrings",
+    "UpdatedAt": "2026-03-12T20:33:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.5.1"
+    }
+  ]
+}

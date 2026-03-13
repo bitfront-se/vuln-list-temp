@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-03-12T14:19:16Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -20,6 +20,9 @@
         "Url": "https://github.com/unjs/unhead/releases/tag/v2.1.11"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31860"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-g5xx-pwrp-g3fv"
       }
     ],
@@ -36,9 +39,9 @@
     "Description": "## Summary\n\n`useHeadSafe()` can be bypassed to inject arbitrary HTML attributes, including event handlers, into SSR-rendered `\u003chead\u003e` tags. This is the composable that Nuxt docs recommend for safely handling user-generated content.\n\n## Details\n\n**XSS via `data-*` attribute name injection**\n\nThe `acceptDataAttrs` function (safe.ts, line 16-20) allows any property key starting with `data-` through to the final HTML. It only checks the prefix, not whether the key contains spaces or other characters that break HTML attribute parsing.\n\n```typescript\nfunction acceptDataAttrs(value: Record\u003cstring, string\u003e) {\n  return Object.fromEntries(\n    Object.entries(value || {}).filter(([key]) =\u003e key === 'id' || key.startsWith('data-')),\n  )\n}\n```\n\nThis result gets merged into every tag's props at line 114:\n\n```typescript\ntag.props = { ...acceptDataAttrs(prev), ...next }\n```\n\nThen `propsToString` (propsToString.ts, line 26) interpolates property keys directly into the HTML string with no sanitization:\n\n```typescript\nattrs += value === true ? ` ${key}` : ` ${key}=\"${encodeAttribute(value)}\"`\n```\n\nA space in the key breaks out of the attribute name. Everything after the space becomes separate HTML attributes.\n\n### PoC\n\nThe most practical vector uses a `link` tag. `\u003clink rel=\"stylesheet\"\u003e` fires `onload` once the stylesheet loads, giving reliable script execution:\n\n```javascript\nuseHeadSafe({\n  link: [{\n    rel: 'stylesheet',\n    href: '/valid-stylesheet.css',\n    'data-x onload=alert(document.domain) y': 'z'\n  }]\n})\n```\n\nSSR output:\n\n```html\n\u003clink data-x onload=alert(document.domain) y=\"z\" rel=\"stylesheet\" href=\"/valid-stylesheet.css\"\u003e\n```\n\nThe browser parses `onload=alert(document.domain)` as its own attribute. Once the stylesheet loads, the handler fires.\n\nThe same injection works on any tag type since `acceptDataAttrs` is applied to all of them at line 114. Here's the same thing on a `meta` tag (the injected attributes render, though `onclick` doesn't fire on non-interactive `\u003cmeta\u003e` elements):\n\n```javascript\nuseHeadSafe({\n  meta: [{\n    name: 'description',\n    content: 'legitimate content',\n    'data-x onclick=alert(document.domain) y': 'z'\n  }]\n})\n```\n\n### Realistic scenario\n\nA Nuxt app accepts SEO metadata from a CMS or user profile. The developer uses `useHeadSafe()` as the docs recommend. An attacker puts a `data-*` key with spaces and an event handler into their input. The payload renders into the HTML on every page load.\n\n## Suggested fix\n\nFor vulnerability 1, validate that attribute names only contain characters legal in HTML attributes:\n\n```typescript\nconst SAFE_ATTR_RE = /^[a-zA-Z][a-zA-Z0-9\\-]*$/\n\nfunction acceptDataAttrs(value: Record\u003cstring, string\u003e) {\n  return Object.fromEntries(\n    Object.entries(value || {}).filter(\n      ([key]) =\u003e (key === 'id' || key.startsWith('data-')) \u0026\u0026 SAFE_ATTR_RE.test(key)\n    ),\n  )\n}\n```",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-12T14:19:15Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "Unhead has XSS bypass in `useHeadSafe` via attribute name injection and case-sensitive protocol check",
-    "UpdatedAt": "2026-03-12T14:19:16Z",
+    "UpdatedAt": "2026-03-12T19:14:27Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
