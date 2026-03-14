@@ -1,0 +1,55 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-13T20:55:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342404,
+    "Id": "GSA_kwCzR0hTQS1ycXBwLXJqajgtN3d2OM4ABTmE",
+    "GhsaId": "GHSA-rqpp-rjj8-7wv8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rqpp-rjj8-7wv8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/44306"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5e389d5e7c9233ec91026ab2fea299ebaf3249f6"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rqpp-rjj8-7wv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rqpp-rjj8-7wv8"
+      }
+    ],
+    "Description": "### Summary\n\nA logic flaw in the OpenClaw gateway WebSocket connect path allowed certain device-less shared-token or password-authenticated backend connections to keep client-declared scopes without server-side binding. A shared-authenticated client could present elevated scopes such as `operator.admin` even though those scopes were not tied to a device identity or an explicitly trusted Control UI path.\n\n### Impact\n\nThis crossed the intended authorization boundary and could let a shared-secret-authenticated backend client perform admin-only gateway operations.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.11`\n\n### Patch\n\nFixed in `openclaw` `2026.3.12`. The gateway now clears unbound scopes for non-Control-UI shared-auth connections, and regression tests cover the device-less shared-auth path.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:55:24Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenClaw: WebSocket shared-auth connections could self-declare elevated scopes",
+    "UpdatedAt": "2026-03-13T20:55:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.11"
+    }
+  ]
+}

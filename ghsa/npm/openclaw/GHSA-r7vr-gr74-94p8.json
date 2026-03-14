@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T20:55:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342401,
+    "Id": "GSA_kwCzR0hTQS1yN3ZyLWdyNzQtOTRwOM4ABTmB",
+    "GhsaId": "GHSA-r7vr-gr74-94p8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r7vr-gr74-94p8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/44305"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/08aa57a3de37d337b226ae861f573779f112ff2e"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r7vr-gr74-94p8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r7vr-gr74-94p8"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw documented `/config` and `/debug` as owner-only commands, but the command handlers checked only whether the sender was command-authorized. A lower-trust sender who was intentionally allowed to run commands could still reach privileged configuration and debugging surfaces.\n\n### Impact\n\nThis allowed a non-owner sender to read or change privileged configuration that should have remained restricted to owners.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.11`\n\n### Patch\n\nFixed in `openclaw` `2026.3.12`. Owner checks are now enforced for privileged command surfaces, and regression tests cover `/config` and `/debug` access control.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:55:09Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Command-authorized non-owners could reach owner-only `/config` and `/debug` surfaces",
+    "UpdatedAt": "2026-03-13T20:55:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.11"
+    }
+  ]
+}

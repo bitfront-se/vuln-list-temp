@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T20:41:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 342390,
+    "Id": "GSA_kwCzR0hTQS12cm02LTh2cHYtcXY4cc4ABTl2",
+    "GhsaId": "GHSA-vrm6-8vpv-qv8q",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-vrm6-8vpv-qv8q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1526"
+      },
+      {
+        "Url": "https://hackerone.com/reports/3481206"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://datatracker.ietf.org/doc/html/rfc7692"
+      },
+      {
+        "Url": "https://owasp.org/www-community/attacks/Denial_of_Service"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vrm6-8vpv-qv8q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vrm6-8vpv-qv8q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1526"
+      }
+    ],
+    "Description": "## Description\n\nThe undici WebSocket client is vulnerable to a denial-of-service attack via unbounded memory consumption during permessage-deflate decompression. When a WebSocket connection negotiates the permessage-deflate extension, the client decompresses incoming compressed frames without enforcing any limit on the decompressed data size. A malicious WebSocket server can send a small compressed frame (a \"decompression bomb\") that expands to an extremely large size in memory, causing the Node.js process to exhaust available memory and crash or become unresponsive.\n\nThe vulnerability exists in the `PerMessageDeflate.decompress()` method, which accumulates all decompressed chunks in memory and concatenates them into a single Buffer without checking whether the total size exceeds a safe threshold.\n\n## Impact\n\n- Remote denial of service against any Node.js application using undici's WebSocket client\n- A single compressed WebSocket frame of ~6 MB can decompress to ~1 GB or more\n- Memory exhaustion occurs in native/external memory, bypassing V8 heap limits\n- No application-level mitigation is possible as decompression occurs before message delivery\n\n### Patches\n\nUsers should upgrade to fixed versions.\n\n### Workarounds\n\nNo workaround are possible.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:41:56Z",
+    "Severity": "HIGH",
+    "Summary": "Undici has Unbounded Memory Consumption in WebSocket permessage-deflate Decompression",
+    "UpdatedAt": "2026-03-13T20:41:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.24.0"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.24.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.24.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.24.0"
+    }
+  ]
+}

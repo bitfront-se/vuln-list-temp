@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T20:55:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342406,
+    "Id": "GSA_kwCzR0hTQS1nMzUzLW1ndjMtOHBjas4ABTmG",
+    "GhsaId": "GHSA-g353-mgv3-8pcj",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-g353-mgv3-8pcj"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/44087"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7844bc89a1612800810617c823eb0c76ef945804"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g353-mgv3-8pcj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g353-mgv3-8pcj"
+      }
+    ],
+    "Description": "### Summary\n\nFeishu webhook mode allowed deployments that configured only `verificationToken` without `encryptKey`. In that state, forged inbound events could be accepted because the weaker configuration did not provide the required cryptographic verification boundary.\n\n### Impact\n\nAn unauthenticated network attacker who could reach the webhook endpoint could inject forged Feishu events, impersonate senders, and potentially trigger downstream tool execution subject to the local agent policy.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.11`\n\n### Patch\n\nFixed in `openclaw` `2026.3.12`. Feishu webhook mode now fails closed unless `encryptKey` is configured, and the webhook transport rejects missing or invalid signatures before dispatch. Update to `2026.3.12` or later and configure `encryptKey` for webhook deployments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:55:34Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Feishu webhook mode accepted forged events when only `verificationToken` was configured",
+    "UpdatedAt": "2026-03-13T20:55:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.11"
+    }
+  ]
+}

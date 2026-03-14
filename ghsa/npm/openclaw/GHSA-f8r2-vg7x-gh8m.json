@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-13T20:55:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342400,
+    "Id": "GSA_kwCzR0hTQS1mOHIyLXZnN3gtZ2g4bc4ABTmA",
+    "GhsaId": "GHSA-f8r2-vg7x-gh8m",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-f8r2-vg7x-gh8m"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f8r2-vg7x-gh8m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f8r2-vg7x-gh8m"
+      }
+    ],
+    "Description": "### Summary\n\n`matchesExecAllowlistPattern` normalized patterns and targets with lowercasing and compiled glob matching too broadly on POSIX. In addition, the `?` wildcard could match `/`, which allowed matches to cross path segments.\n\n### Impact\n\nThese matching rules could overmatch allowlist entries and permit commands or executable paths that an operator did not intend to approve.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.8`\n\n### Patch\n\nFixed in `openclaw` `2026.3.11` and included in later releases such as `2026.3.12`. Exec allowlist matching now respects the intended path semantics, and regression tests cover the POSIX case-folding and slash-crossing cases.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:55:03Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Exec approval allowlist patterns overmatched on POSIX paths",
+    "UpdatedAt": "2026-03-13T20:55:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.8"
+    }
+  ]
+}

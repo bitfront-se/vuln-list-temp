@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-13T18:56:54Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/forceu/gokapi"
+  },
+  "Advisory": {
+    "DatabaseId": 342369,
+    "Id": "GSA_kwCzR0hTQS00NXZoLXJwYzgtaHhwcM4ABTlh",
+    "GhsaId": "GHSA-45vh-rpc8-hxpp",
+    "References": [
+      {
+        "Url": "https://github.com/Forceu/Gokapi/security/advisories/GHSA-45vh-rpc8-hxpp"
+      },
+      {
+        "Url": "https://github.com/Forceu/Gokapi/releases/tag/v2.2.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-45vh-rpc8-hxpp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-45vh-rpc8-hxpp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30961"
+      }
+    ],
+    "Description": "### Summary\n\nThe chunked upload completion path for file requests does not validate the total file size against the per-request `MaxSize` limit. An attacker with a public file request link can split an oversized file into chunks each under `MaxSize` and upload them sequentially, bypassing the size restriction entirely. Files up to the server's global `MaxFileSizeMB` are accepted regardless of the file request's configured limit.\n\n### Impact\n\nAny guest with access to a shared file request link can upload files far larger than the administrator-configured size limit, up to the server's global `MaxFileSizeMB`. This allows unauthorized storage consumption, circumvention of administrative resource policies, and potential service disruption through storage exhaustion. No data exposure or privilege escalation occurs.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T18:56:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Gokapi's File Request MaxSize Limit Bypassed via Multi-Chunk Upload",
+    "UpdatedAt": "2026-03-13T18:56:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.4"
+      },
+      "VulnerableVersionRange": "\u003c= 2.2.3"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-13T18:56:16Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/drakkan/sftpgo/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 342366,
+    "Id": "GSA_kwCzR0hTQS1tODNxLTV3cjQtNGdmcM4ABTle",
+    "GhsaId": "GHSA-m83q-5wr4-4gfp",
+    "References": [
+      {
+        "Url": "https://github.com/drakkan/sftpgo/security/advisories/GHSA-m83q-5wr4-4gfp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m83q-5wr4-4gfp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m83q-5wr4-4gfp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30915"
+      }
+    ],
+    "Description": "### Impact\n\nSFTPGo versions before v2.7.1 contain an input validation issue in the handling of dynamic group paths, for example, home directories or key prefixes.\n\nWhen a group is configured with a dynamic home directory or key prefix using placeholders like `%username%`, the value replacing the placeholder is not strictly sanitized against relative path components. Consequently, if a user is created with a specially crafted username the resulting path may resolve to a parent directory instead of the intended sub-directory.\n\n### Patches\n\nThis issue is fixed in version v2.7.1",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T18:56:14Z",
+    "Severity": "MODERATE",
+    "Summary": "SFTPGo improperly sanitizes placeholders in group home directories/key prefixes",
+    "UpdatedAt": "2026-03-13T18:56:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.7.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.3.0, \u003c= 2.7.0"
+    }
+  ]
+}

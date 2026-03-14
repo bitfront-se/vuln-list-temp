@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-13T20:54:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342398,
+    "Id": "GSA_kwCzR0hTQS12bWhxLWNxbTktNnA3cc4ABTl-",
+    "GhsaId": "GHSA-vmhq-cqm9-6p7q",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vmhq-cqm9-6p7q"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vmhq-cqm9-6p7q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vmhq-cqm9-6p7q"
+      }
+    ],
+    "Description": "### Summary\n\nAn authorization mismatch in the gateway let an authenticated caller with only `operator.write` use `browser.request` to reach browser profile management routes that persist configuration to disk. In practice, this exposed an admin-only configuration write primitive through `/profiles/create`.\n\n### Impact\n\nA write-scoped operator could create or modify browser profiles and store attacker-chosen remote CDP endpoints without holding `operator.admin`.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.8`\n\n### Patch\n\nFixed in `openclaw` `2026.3.11` and included in later releases such as `2026.3.12`. Browser profile creation now requires the correct admin boundary, and regression tests cover the write-vs-admin authorization split.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:54:25Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: `browser.request` let `operator.write` persist admin-only browser profile changes",
+    "UpdatedAt": "2026-03-13T20:54:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.11"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.8"
+    }
+  ]
+}

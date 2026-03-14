@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-13T20:54:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342399,
+    "Id": "GSA_kwCzR0hTQS1tNjloLWptMmYtMnB2OM4ABTl_",
+    "GhsaId": "GHSA-m69h-jm2f-2pv8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-m69h-jm2f-2pv8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/44088"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3e730c0332eb0a3dc9e1e8c29a5f95e933317b41"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m69h-jm2f-2pv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m69h-jm2f-2pv8"
+      }
+    ],
+    "Description": "### Summary\n\nA Feishu reaction-originated synthetic event could misclassify a group conversation as `p2p` when the inbound reaction payload omitted `chat_type`. Authorization and mention-gating logic keyed off that incorrect chat type and evaluated the event as a direct message instead of a group message.\n\n### Impact\n\nThis could bypass `groupAllowFrom` and `requireMention` protections for reaction-derived events in Feishu group chats.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.11`\n\n### Patch\n\nFixed in `openclaw` `2026.3.12`. Reaction events now preserve the correct group context before authorization and mention-gate evaluation. Users should update to `2026.3.12` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T20:54:30Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Feishu reaction events could bypass group authorization and mention gating",
+    "UpdatedAt": "2026-03-13T20:54:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.11"
+    }
+  ]
+}
