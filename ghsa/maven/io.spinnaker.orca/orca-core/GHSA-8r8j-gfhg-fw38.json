@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-16T15:15:11Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.spinnaker.orca:orca-core"
+  },
+  "Advisory": {
+    "DatabaseId": 342657,
+    "Id": "GSA_kwCzR0hTQS04cjhqLWdmaGctZnczOM4ABTqB",
+    "GhsaId": "GHSA-8r8j-gfhg-fw38",
+    "References": [
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/security/advisories/GHSA-8r8j-gfhg-fw38"
+      },
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/security/advisories/GHSA-vrjc-q2fh-6x9h"
+      },
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/commit/7c4737906239a958a468e843239c6785b03d0eda"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8r8j-gfhg-fw38"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8r8j-gfhg-fw38"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25534"
+      }
+    ],
+    "Description": "### Impact\nSpinnaker updated URL Validation logic on user input to provide sanitation on user inputted URLs for clouddriver.  However, they missed that Java URL objects do not correctly handle underscores on parsing.  This led to a bypass of the previous CVE (CVE-2025-61916) through the use of carefully crafted URLs.  Note, Spinnaker found this not just in that CVE, but in the existing URL validations in Orca fromUrl expression handling.  This CVE impacts BOTH artifacts as a result.   \n\n### Patches\nThis has been merged and will be available in versions 2025.4.1, 2025.3.1, 2025.2.4 and 2026.0.0.  \n\n### Workarounds\nYou can disable the various artifacts on this system to work around these limits.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T15:15:10Z",
+    "Severity": "CRITICAL",
+    "Summary": "Spinnaker clouddriver and orca URL validation bypass via underscores in hostnames",
+    "UpdatedAt": "2026-03-16T15:24:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.4.0, \u003c 2025.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.3.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.3.0, \u003c 2025.3.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.2.4"
+      },
+      "VulnerableVersionRange": "\u003c 2025.2.4"
+    }
+  ]
+}
