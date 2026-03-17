@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-16T20:45:37Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ctfer-io/chall-manager/deploy"
+  },
+  "Advisory": {
+    "DatabaseId": 342971,
+    "Id": "GSA_kwCzR0hTQS1tdzI0LWYzeGgtajNxds4ABTu7",
+    "GhsaId": "GHSA-mw24-f3xh-j3qv",
+    "References": [
+      {
+        "Url": "https://github.com/ctfer-io/chall-manager/security/advisories/GHSA-mw24-f3xh-j3qv"
+      },
+      {
+        "Url": "https://github.com/ctfer-io/chall-manager/commit/dc5ef27dfed2befef7f506ab8ca14d062b0d79c5"
+      },
+      {
+        "Url": "https://github.com/ctfer-io/chall-manager/releases/tag/v0.6.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mw24-f3xh-j3qv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mw24-f3xh-j3qv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32768"
+      }
+    ],
+    "Description": "### Impact\n\nDue to a mis-written NetworkPolicy, a malicious actor can pivot from an instance to any Pod out of the origin namespace.\nThis breaks the security-by-default property expected as part of the deployment program, leading to a potential lateral movement.\nIn the specific case of `sdk/kubernetes.Kompose` it does not isolate the instances.\n\n### Patch\n\nRemoving the `inter-ns` NetworkPolicy patches the vulnerability. If updates are not possible in production environments, we recommend to manually delete it and update as soon as possible.\n\n### Workaround\n\nGiven your context, delete the failing network policy that should be prefixed by `inter-ns-` in the target namespace.\nYou can use the following to delete all matching network policy. If unsure of the outcome, please do it manually.\n\n```bash\nfor ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\\n' | grep '^cm-target-'); do\n  kubectl -n \"$ns\" get networkpolicy -o name \\\n  | grep '^networkpolicy.networking.k8s.io/inter-ns-' \\\n  | xargs -r kubectl -n \"$ns\" delete\ndone\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T20:45:34Z",
+    "Severity": "HIGH",
+    "Summary": "Chall-Manager's invalid NetworkPolicy enables a malicious actor to pivot into another namespace",
+    "UpdatedAt": "2026-03-16T21:55:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.5"
+      },
+      "VulnerableVersionRange": "\u003c 0.6.5"
+    }
+  ]
+}

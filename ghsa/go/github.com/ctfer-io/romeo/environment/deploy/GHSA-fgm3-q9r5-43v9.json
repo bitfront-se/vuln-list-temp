@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-16T20:46:02Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ctfer-io/romeo/environment/deploy"
+  },
+  "Advisory": {
+    "DatabaseId": 342972,
+    "Id": "GSA_kwCzR0hTQS1mZ20zLXE5cjUtNDN2Oc4ABTu8",
+    "GhsaId": "GHSA-fgm3-q9r5-43v9",
+    "References": [
+      {
+        "Url": "https://github.com/ctfer-io/romeo/security/advisories/GHSA-fgm3-q9r5-43v9"
+      },
+      {
+        "Url": "https://github.com/ctfer-io/romeo/commit/3bb5e9d9ce1199dfbb90fef8ad79ebdeb0bc5e78"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fgm3-q9r5-43v9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fgm3-q9r5-43v9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32737"
+      }
+    ],
+    "Description": "### Impact\n\nDue to a mis-written NetworkPolicy, a malicious actor can pivot from the \"hardened\" namespace to any Pod out of it.\nThis breaks the security-by-default property expected as part of the deployment program, leading to a potential lateral movement.\n\n### Patch\n\nRemoving the `inter-ns` NetworkPolicy patches the vulnerability. If updates are not possible in production environments, we recommend to manually delete it and update as soon as possible.\n\n### Workaround\n\nGiven your context, delete the failing network policy that should be prefixed by `inter-ns-` in the target namespace.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T20:45:59Z",
+    "Severity": "HIGH",
+    "Summary": "Romeo's invalid NetworkPolicy enables a malicious actor to pivot into another namespace ",
+    "UpdatedAt": "2026-03-16T20:46:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.1"
+    }
+  ]
+}

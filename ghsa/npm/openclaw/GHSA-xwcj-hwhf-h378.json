@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-16T20:40:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342961,
+    "Id": "GSA_kwCzR0hTQS14d2NqLWh3aGYtaDM3OM4ABTux",
+    "GhsaId": "GHSA-xwcj-hwhf-h378",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-xwcj-hwhf-h378"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7a53eb7ea8295b08be137e231c9a98c1a79b5cd5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xwcj-hwhf-h378"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xwcj-hwhf-h378"
+      }
+    ],
+    "Description": "### Summary\n`openclaw` versions `\u003c= 2026.3.12` could include raw Telegram bot tokens in media fetch error strings when inbound Telegram media downloads failed.\n\n### Affected Packages / Versions\n- Package: `openclaw` (`npm`)\n- Affected versions: `\u003c= 2026.3.12`\n- Fixed version: `2026.3.13`\n\n### Details\nThe vulnerable path was `fetchRemoteMedia()` in `src/media/fetch.ts`. In affected releases, fetch and HTTP error paths embedded the original Telegram file URL into `MediaFetchError` messages. For Telegram media, those URLs can include `/file/bot\u003cTOKEN\u003e/...`, so the resulting error strings could leak bot tokens into logs, console output, or any downstream error surface that rendered the exception text.\n\nThis issue is in scope under OpenClaw's trust model because the leaked secret is an OpenClaw-operated integration credential, not a user-supplied third-party secret.\n\n### Fix\n`openclaw@2026.3.13` redacts sensitive media URLs before constructing fetch error messages. Current code routes the source URL and follow-on error paths through `redactMediaUrl()` / `redactSensitiveText()`, so Telegram bot tokens are no longer emitted in those error strings.\n\nRegression coverage exists in `src/media/fetch.test.ts` (`redacts Telegram bot tokens from fetch failure messages` and `redacts Telegram bot tokens from HTTP error messages`).\n\n### Fix Commit(s)\n- `7a53eb7ea8295b08be137e231c9a98c1a79b5cd5`\n\nThanks @space08 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T20:40:13Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw Telegram media fetch errors exposed bot tokens in logged file URLs",
+    "UpdatedAt": "2026-03-16T20:40:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.13"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.12"
+    }
+  ]
+}

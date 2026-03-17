@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-16T20:41:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342964,
+    "Id": "GSA_kwCzR0hTQS1nMmY2LXB3dngtcjI3Nc4ABTu0",
+    "GhsaId": "GHSA-g2f6-pwvx-r275",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-g2f6-pwvx-r275"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/a54bf71b4c0cbe554a84340b773df37ee8e959de"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g2f6-pwvx-r275"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g2f6-pwvx-r275"
+      }
+    ],
+    "Description": "### Summary\n`openclaw` versions `\u003c= 2026.3.12` accepted unsanitized iMessage remote attachment paths when staging files over SCP, allowing shell metacharacters in the remote path operand.\n\n### Affected Packages / Versions\n- Package: `openclaw` (`npm`)\n- Affected versions: `\u003c= 2026.3.12`\n- Fixed version: `2026.3.13`\n\n### Details\nThe vulnerable path was the remote attachment staging flow in `src/auto-reply/reply/stage-sandbox-media.ts`. When `ctx.MediaRemoteHost` was set, OpenClaw staged the attachment by spawning `/usr/bin/scp` against `\u003cremoteHost\u003e:\u003cremotePath\u003e`. In affected releases, the remote host was normalized but the remote attachment path was not validated for shell metacharacters before being passed to the SCP remote operand. A sender-controlled iMessage attachment filename containing shell metacharacters could therefore trigger command execution on the configured remote host when remote attachment staging was enabled.\n\nThis issue is in scope under OpenClaw's trust model because it crosses an inbound content boundary into host command execution on a configured remote attachment host.\n\n### Fix\n`openclaw@2026.3.13` validates the SCP remote path before spawning `scp`. Current code calls `normalizeScpRemotePath(...)` and rejects paths containing shell metacharacters instead of passing them through to the remote shell.\n\nRegression coverage exists in `src/auto-reply/reply.stage-sandbox-media.scp-remote-path.test.ts` (`rejects remote attachment filenames with shell metacharacters before spawning scp`).\n\n### Fix Commit(s)\n- `a54bf71b4c0cbe554a84340b773df37ee8e959de`\n\nThanks @lintsinghua for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T20:41:12Z",
+    "Severity": "HIGH",
+    "Summary": "OpneClaw accepts unsanitized iMessage attachment paths which allowed SCP remote-path command injection",
+    "UpdatedAt": "2026-03-16T20:41:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.13"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.12"
+    }
+  ]
+}

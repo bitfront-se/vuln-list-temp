@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-16T20:41:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 342965,
+    "Id": "GSA_kwCzR0hTQS12cjdqLWc3anYtaDVtcM4ABTu1",
+    "GhsaId": "GHSA-vr7j-g7jv-h5mp",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vr7j-g7jv-h5mp"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/095d522099653367e1b76fa5bb09d4ddf7c8a57c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vr7j-g7jv-h5mp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vr7j-g7jv-h5mp"
+      }
+    ],
+    "Description": "`openclaw` created new session transcript JSONL files with overly broad default permissions in affected releases. On multi-user hosts, other local users or processes could read transcript contents, including secrets that might appear in tool output.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (`npm`)\n- Affected versions: `\u003c= 2026.2.15`\n- First fixed version: `2026.2.17`\n- Current latest npm release checked during verification: `2026.3.13` (not affected)\n\n## Impact\n\nSession transcript JSONL files are created under the local OpenClaw session store. In affected releases, newly created transcript files did not force user-only permissions, so transcript contents could be readable by other local users depending on the host environment and umask behavior.\n\n## Fix\n\nNew transcript files are now created with `0o600` permissions. Existing transcript permission drift is also remediated by the security audit fix flow.\n\nVerified in code:\n\n- `src/config/sessions/transcript.ts:82` writes new transcript files with `mode: 0o600`\n- `src/config/sessions/sessions.test.ts:303` includes regression coverage asserting `0o600`\n\n## Fix Commit(s)\n\n- `095d522099653367e1b76fa5bb09d4ddf7c8a57c`\n\n## Release Note\n\nThis fix first shipped in `2026.2.17` and is present in the current npm release `2026.3.13`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T20:41:51Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw session transcript files were created without forced user-only permissions",
+    "UpdatedAt": "2026-03-16T20:41:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.2.17"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.2.15"
+    }
+  ]
+}

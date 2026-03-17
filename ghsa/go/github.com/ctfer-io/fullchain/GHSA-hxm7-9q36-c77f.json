@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-16T20:47:17Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ctfer-io/fullchain"
+  },
+  "Advisory": {
+    "DatabaseId": 342975,
+    "Id": "GSA_kwCzR0hTQS1oeG03LTlxMzYtYzc3Zs4ABTu_",
+    "GhsaId": "GHSA-hxm7-9q36-c77f",
+    "References": [
+      {
+        "Url": "https://github.com/ctfer-io/fullchain/security/advisories/GHSA-hxm7-9q36-c77f"
+      },
+      {
+        "Url": "https://github.com/ctfer-io/fullchain/commit/dbcb90178bcb07a3f5a1efa4c6350f3a6ce34f51"
+      },
+      {
+        "Url": "https://github.com/ctfer-io/fullchain/releases/tag/v0.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hxm7-9q36-c77f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hxm7-9q36-c77f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32769"
+      }
+    ],
+    "Description": "### Impact\n\nDue to a mis-written NetworkPolicy, a malicious actor can pivot from a subverted application to any Pod out of the origin namespace.\nThis breaks the security-by-default property expected as part of the deployment program, leading to a potential lateral movement.\n\n### Patch\n\nRemoving the `inter-ns` NetworkPolicy patches the vulnerability. If updates are not possible in production environments, we recommend to manually delete it and update as soon as possible.\n\n### Workaround\n\nGiven your context, delete the failing network policy that should be prefixed by `inter-ns-` in the target namespace.\nYou can use the following to delete all matching network policy. If unsure of the outcome, please do it manually.\n\n```bash\nfor ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\\n' | grep '^ns-'); do\n  kubectl -n \"$ns\" get networkpolicy -o name \\\n  | grep '^networkpolicy.networking.k8s.io/inter-ns-' \\\n  | xargs -r kubectl -n \"$ns\" delete\ndone\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T20:47:15Z",
+    "Severity": "HIGH",
+    "Summary": "Fullchain's Invalid NetworkPolicy enables a malicious actor to pivot into another namespace",
+    "UpdatedAt": "2026-03-16T21:55:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.1.1"
+    }
+  ]
+}

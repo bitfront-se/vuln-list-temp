@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-16T18:44:56Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.livy:livy-server"
+  },
+  "Advisory": {
+    "DatabaseId": 342431,
+    "Id": "GSA_kwCzR0hTQS1obTh4LXJwZ2ctNzg1Nc4ABTmf",
+    "GhsaId": "GHSA-hm8x-rpgg-7855",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-60012"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/gpc85fwrgrbglpk9gm8tmcjzqnctx64w"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/03/12/1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hm8x-rpgg-7855"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hm8x-rpgg-7855"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-60012"
+      }
+    ],
+    "Description": "Malicious configuration can lead to unauthorized file access in Apache Livy.\n\nThis issue affects Apache Livy 0.7.0 and 0.8.0 when connecting to Apache Spark 3.1 or later.\n\nA request that includes a Spark configuration value supported from Apache Spark version 3.1 can lead to users gaining access to files they do not have permissions to.\n\nFor the vulnerability to be exploitable, the user needs to have access to Apache Livy's REST or JDBC interface and be able to send requests with arbitrary Spark configuration values.\n\nUsers are recommended to upgrade to version 0.9.0 or later, which fixes the issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-13T21:31:45Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Livy: Restrict file access ",
+    "UpdatedAt": "2026-03-16T18:44:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0-incubating"
+      },
+      "VulnerableVersionRange": "\u003e= 0.7.0-incubating, \u003c 0.9.0-incubating"
+    }
+  ]
+}
