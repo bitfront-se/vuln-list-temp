@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-17T17:08:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jspdf"
+  },
+  "Advisory": {
+    "DatabaseId": 343056,
+    "Id": "GSA_kwCzR0hTQS13ZnYyLXB3YzgtY3JnNc4ABTwQ",
+    "GhsaId": "GHSA-wfv2-pwc8-crg5",
+    "References": [
+      {
+        "Url": "https://github.com/parallax/jsPDF/security/advisories/GHSA-wfv2-pwc8-crg5"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/commit/87a40bbd07e6b30575196370670b41f264aa78d7"
+      },
+      {
+        "Url": "https://github.com/parallax/jsPDF/releases/tag/v4.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wfv2-pwc8-crg5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wfv2-pwc8-crg5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31938"
+      }
+    ],
+    "Description": "### Impact\n\nUser control of the `options` argument of the `output` function allows attackers to inject arbitrary HTML (such as scripts) into the browser context the created PDF is opened in. The affected overloads and options are:\n\n* `\"pdfobjectnewwindow\"`: the `pdfObjectUrl` option and the entire options object, which is JSON-serialized and included verbatim in the generated HTML-string.\n* `\"pdfjsnewwindow\"`: the `pdfJsUrl` and `filename` options\n* `\"dataurlnewwindow\"`: the `filename` option\n\nThe vulnerability can be exploited in the following scenario: the attacker provides values for the output options, for example via a web interface. These values are then passed unsanitized (automatically or semi-automatically) to the attack victim. The victim creates and opens a PDF with the attack vector using one of the vulnerable method overloads inside their browser. The attacker can thus inject scripts that run in the victims browser context and can extract or modify secrets from this context.\n\nExample attack vector:\n\n```js\nimport { jsPDF } from 'jspdf';\nconst doc = new jsPDF();\n\nconst payload =  'x\\\"\u003e\u003c/iframe\u003e\u003cscript\u003ewindow.__n=1\u003c/script\u003e\u003ciframe src=\"';\n\ndoc.output('pdfjsnewwindow', {\n  filename: payload,\n  pdfJsUrl: 'viewer.html'\n});\n```\n\n### Patches\nThe vulnerability has been fixed in jspdf@4.2.1.\n\n### Workarounds\nSanitize user input before passing it to the output method.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T17:07:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "jsPDF has HTML Injection in New Window paths",
+    "UpdatedAt": "2026-03-17T17:08:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.1"
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.0"
+    }
+  ]
+}

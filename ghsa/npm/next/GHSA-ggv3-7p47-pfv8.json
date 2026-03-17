@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-17T16:17:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 343050,
+    "Id": "GSA_kwCzR0hTQS1nZ3YzLTdwNDctcGZ2OM4ABTwK",
+    "GhsaId": "GHSA-ggv3-7p47-pfv8",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-ggv3-7p47-pfv8"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/dc98c04f376c6a1df76ec3e0a2d07edf4abdabd6"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.13"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.1.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ggv3-7p47-pfv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ggv3-7p47-pfv8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29057"
+      }
+    ],
+    "Description": "## Summary\nWhen Next.js rewrites proxy traffic to an external backend, a crafted `DELETE`/`OPTIONS` request using `Transfer-Encoding: chunked` could trigger request boundary disagreement between the proxy and backend. This could allow request smuggling through rewritten routes.\n\n## Impact\nAn attacker could smuggle a second request to unintended backend routes (for example, internal/admin endpoints), bypassing assumptions that only the configured rewrite destination/path is reachable. This does not impact applications hosted on providers that handle rewrites at the CDN level, such as Vercel. \n\n## Patches\nThe vulnerability originated in an upstream library vendored by Next.js. It is fixed by updating that dependency’s behavior so `content-length: 0` is added only when both `content-length` and `transfer-encoding` are absent, and `transfer-encoding` is no longer removed in that code path.\n\n## Workarounds\nIf upgrade is not immediately possible:\n- Block chunked `DELETE`/`OPTIONS` requests on rewritten routes at your edge/proxy.\n- Enforce authentication/authorization on backend routes per our [security guidance](https://nextjs.org/docs/app/guides/data-security).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T16:17:15Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js: HTTP request smuggling in rewrites",
+    "UpdatedAt": "2026-03-17T16:17:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.13"
+      },
+      "VulnerableVersionRange": "\u003e= 9.5.0, \u003c 15.5.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0-beta.0, \u003c 16.1.7"
+    }
+  ]
+}

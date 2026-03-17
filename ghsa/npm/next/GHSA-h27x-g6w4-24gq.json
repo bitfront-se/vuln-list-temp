@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-17T16:16:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 343048,
+    "Id": "GSA_kwCzR0hTQS1oMjd4LWc2dzQtMjRncc4ABTwI",
+    "GhsaId": "GHSA-h27x-g6w4-24gq",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-h27x-g6w4-24gq"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/c885d4825f800dd1e49ead37274dcd08cdd6f3f1"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.1.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h27x-g6w4-24gq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h27x-g6w4-24gq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27979"
+      }
+    ],
+    "Description": "## Summary\nA request containing the `next-resume: 1` header (corresponding with a PPR resume request) would buffer request bodies without consistently enforcing `maxPostponedStateSize` in certain setups. The previous mitigation protected minimal-mode deployments, but equivalent non-minimal deployments remained vulnerable to the same unbounded postponed resume-body buffering behavior.\n\n## Impact\nIn applications using the App Router with Partial Prerendering capability enabled (via `experimental.ppr` or `cacheComponents`), an attacker could send oversized `next-resume` POST payloads that were buffered without consistent size enforcement in non-minimal deployments, causing excessive memory usage and potential denial of service.\n\n## Patches\nFixed by enforcing size limits across all postponed-body buffering paths and erroring when limits are exceeded.  \n\n## Workarounds\nIf upgrade is not immediately possible:\n- Block requests containing the `next-resume` header, as this is never valid to be sent from an untrusted client.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T16:16:49Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js: Unbounded postponed resume buffering can lead to DoS",
+    "UpdatedAt": "2026-03-17T16:16:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.1, \u003c 16.1.7"
+    }
+  ]
+}

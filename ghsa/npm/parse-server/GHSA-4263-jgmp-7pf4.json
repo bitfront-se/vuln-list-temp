@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-17T17:58:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343063,
+    "Id": "GSA_kwCzR0hTQS00MjYzLWpnbXAtN3BmNM4ABTwX",
+    "GhsaId": "GHSA-4263-jgmp-7pf4",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-4263-jgmp-7pf4"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10210"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10211"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4263-jgmp-7pf4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4263-jgmp-7pf4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32886"
+      }
+    ],
+    "Description": "### Impact\n\nRemote clients can crash the Parse Server process by calling a cloud function endpoint with a crafted function name that traverses the JavaScript prototype chain of a registered cloud function handler, causing a stack overflow.\n\n### Patches\n\nThe fix restricts property lookups during cloud function name resolution to own properties only, preventing prototype chain traversal from stored function handlers.\n\n### Workarounds\n\nThere is no known workaround.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T17:58:08Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server's Cloud function dispatch crashes server via prototype chain traversal",
+    "UpdatedAt": "2026-03-17T17:58:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.47"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.47"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.24"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.24"
+    }
+  ]
+}

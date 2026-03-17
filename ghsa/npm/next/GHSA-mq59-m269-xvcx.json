@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-17T15:30:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 343041,
+    "Id": "GSA_kwCzR0hTQS1tcTU5LW0yNjkteHZjeM4ABTwB",
+    "GhsaId": "GHSA-mq59-m269-xvcx",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-mq59-m269-xvcx"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/a27a11d78e748a8c7ccfd14b7759ad2b9bf097d8"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.1.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mq59-m269-xvcx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mq59-m269-xvcx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27978"
+      }
+    ],
+    "Description": "## Summary\n`origin: null` was treated as a \"missing\" origin during Server Action CSRF validation. As a result, requests from opaque contexts (such as sandboxed iframes) could bypass origin verification instead of being validated as cross-origin requests.\n\n## Impact\nAn attacker could induce a victim browser to submit Server Actions from a sandboxed context, potentially executing state-changing actions with victim credentials (CSRF).\n\n## Patches\nFixed by treating `'null'` as an explicit origin value and enforcing host/origin checks unless `'null'` is explicitly allowlisted in `experimental.serverActions.allowedOrigins`.  \n\n## Workarounds\nIf upgrade is not immediately possible:\n- Add CSRF tokens for sensitive Server Actions.\n- Prefer `SameSite=Strict` on sensitive auth cookies.\n- Do not allow `'null'` in `serverActions.allowedOrigins` unless intentionally required and additionally protected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T15:30:14Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js: null origin can bypass Server Actions CSRF checks",
+    "UpdatedAt": "2026-03-17T15:30:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.1, \u003c 16.1.7"
+    }
+  ]
+}
