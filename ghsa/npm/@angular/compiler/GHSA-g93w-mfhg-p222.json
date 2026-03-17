@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-03-13T20:56:21Z",
+  "UpdatedAt": "2026-03-17T01:15:54Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "@angular/compiler"
@@ -48,12 +48,12 @@
         "Value": "CVE-2026-32635"
       }
     ],
-    "Description": "A Cross-Site Scripting (XSS) vulnerability has been identified in the Angular runtime and compiler. It occurs when the application uses a security-sensitive attribute (for example href on an anchor tag) together with Angular's ability to internationalize attributes. Enabling internationalization for the sensitive attribute by adding `i18n-\u003cattribute\u003e` name bypasses Angular's built-in sanitization mechanism, which when combined with a data binding to untrusted user-generated data can allow an attacker to inject a malicious script. \n\nThe following example illustrates the issue:\n```html\n\u003ca href=\"{{maliciousUrl}}\" i18n-href\u003eClick me\u003c/a\u003e\n```\n\nThe following attributes have been confirmed to be vulnerable:\n- `action`\n- `background`\n- `cite`\n- `codebase`\n- `data`\n- `formaction`\n- `href`\n- `itemtype`\n- `longdesc`\n- `poster`\n- `src`\n- `xlink:href`\n\n### Impact\nWhen exploited, this vulnerability allows an attacker to execute arbitrary code within the context of the vulnerable application's domain. This enables:\n- Session Hijacking: Stealing session cookies and authentication tokens.\n- Data Exfiltration: Capturing and transmitting sensitive user data.\n- Unauthorized Actions: Performing actions on behalf of the user.\n\n### Attack Preconditions\n1. The application must use a vulnerable version of Angular.\n2. The application must bind unsanitized user input to one of the attributes mentioned above.\n3. The bound value must be marked for internationalization via the presence of a `i18n-\u003cname\u003e` attribute on the same element.\n\n### Patches\n- 22.0.0-next.3\n- 21.2.4\n- 20.3.18\n- 19.2.20\n\n### Workarounds\nThe primary workaround is to ensure that any data bound to the vulnerable attributes is **never sourced from untrusted user input** (e.g., database, API response, URL parameters) until the patch is applied, or when it is, it shouldn't be marked for internationalization.\n\nAlternatively, users can explicitly sanitize their attributes by passing them through Angular's `DomSanitizer`:\n```ts\nimport {Component, inject, SecurityContext} from '@angular/core';\nimport {DomSanitizer} from '@angular/platform-browser';\n\n@Component({\n  template: `\n    \u003cform action=\"{{url}}\" i18n-action\u003e\n      \u003cbutton\u003eSubmit\u003c/button\u003e\n    \u003c/form\u003e\n  `,\n})\nexport class App {\n  url: string;\n\n  constructor() {\n    const dangerousUrl = 'javascript:alert(1)';\n    const sanitizer = inject(DomSanitizer);\n    this.url = sanitizer.sanitize(SecurityContext.URL, dangerousUrl) || '';\n  }\n}\n```",
+    "Description": "A Cross-Site Scripting (XSS) vulnerability has been identified in the Angular runtime and compiler. It occurs when the application uses a security-sensitive attribute (for example href on an anchor tag) together with Angular's ability to internationalize attributes. Enabling internationalization for the sensitive attribute by adding `i18n-\u003cattribute\u003e` name bypasses Angular's built-in sanitization mechanism, which when combined with a data binding to untrusted user-generated data can allow an attacker to inject a malicious script. \n\nThe following example illustrates the issue:\n```html\n\u003ca href=\"{{maliciousUrl}}\" i18n-href\u003eClick me\u003c/a\u003e\n```\n\nThe following attributes have been confirmed to be vulnerable:\n- `action`\n- `background`\n- `cite`\n- `codebase`\n- `data`\n- `formaction`\n- `href`\n- `itemtype`\n- `longdesc`\n- `poster`\n- `src`\n- `xlink:href`\n\n### Impact\nWhen exploited, this vulnerability allows an attacker to execute arbitrary code within the context of the vulnerable application's domain. This enables:\n- Session Hijacking: Stealing session cookies and authentication tokens.\n- Data Exfiltration: Capturing and transmitting sensitive user data.\n- Unauthorized Actions: Performing actions on behalf of the user.\n\n### Attack Preconditions\n1. The application must use a vulnerable version of Angular.\n2. The application must bind unsanitized user input to one of the attributes mentioned above.\n3. The bound value must be marked for internationalization via the presence of a `i18n-\u003cname\u003e` attribute on the same element.\n\n### Patches\n- 22.0.0-next.3\n- 21.2.4\n- 20.3.18\n- 19.2.20\n\n### Workarounds\nThe primary workaround is to ensure that any data bound to the vulnerable attributes is **never sourced from untrusted user input** (e.g., database, API response, URL parameters) until the patch is applied, or when it is, it shouldn't be marked for internationalization.\n\nAlternatively, users can explicitly sanitize their attributes by passing them through Angular's `DomSanitizer`:\n```ts\nimport {Component, inject, SecurityContext} from '@angular/core';\nimport {DomSanitizer} from '@angular/platform-browser';\n\n@Component({\n  template: `\n    \u003cform action=\"{{url}}\" i18n-action\u003e\n      \u003cbutton\u003eSubmit\u003c/button\u003e\n    \u003c/form\u003e\n  `,\n})\nexport class App {\n  url: string;\n\n  constructor() {\n    const dangerousUrl = 'javascript:alert(1)';\n    const sanitizer = inject(DomSanitizer);\n    this.url = sanitizer.sanitize(SecurityContext.URL, dangerousUrl) || '';\n  }\n}\n```\n\n### References\n- [Fix 1](https://github.com/angular/angular/pull/67541) \n- [Fix 2](https://github.com/angular/angular/pull/67561)",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-13T20:56:18Z",
     "Severity": "HIGH",
     "Summary": "Angular vulnerable to XSS in i18n attribute bindings",
-    "UpdatedAt": "2026-03-16T22:00:06Z",
+    "UpdatedAt": "2026-03-17T01:15:54Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -65,13 +65,13 @@
       "FirstPatchedVersion": {
         "Identifier": ""
       },
-      "VulnerableVersionRange": "\u003e= 17.0.0.next.0, \u003c= 18.2.14"
+      "VulnerableVersionRange": "\u003e= 17.0.0-next.0, \u003c= 18.2.14"
     },
     {
       "FirstPatchedVersion": {
         "Identifier": "19.2.20"
       },
-      "VulnerableVersionRange": "\u003e= 19.0.0.next.0, \u003c 19.2.20"
+      "VulnerableVersionRange": "\u003e= 19.0.0-next.0, \u003c 19.2.20"
     },
     {
       "FirstPatchedVersion": {
