@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T16:10:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sjcl"
+  },
+  "Advisory": {
+    "DatabaseId": 343019,
+    "Id": "GSA_kwCzR0hTQS0ydzh4LTIyNHgtNzg1bc4ABTvr",
+    "GhsaId": "GHSA-2w8x-224x-785m",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-4258"
+      },
+      {
+        "Url": "https://github.com/bitwiseshiftleft/sjcl/commit/ee307459972442a17beebc29dc331fffd8aff796"
+      },
+      {
+        "Url": "https://gist.github.com/Kr0emer/2560f98edb10b0b34f2438cd63913c47"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-JS-SJCL-15369617"
+      },
+      {
+        "Url": "https://github.com/bitwiseshiftleft/sjcl/blob/master/core/ecc.js#L454-L461"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2w8x-224x-785m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2w8x-224x-785m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-4258"
+      }
+    ],
+    "Description": "All versions of the package sjcl are vulnerable to Improper Verification of Cryptographic Signature due to missing point-on-curve validation in sjcl.ecc.basicKey.publicKey(). An attacker can recover a victim's ECDH private key by sending crafted off-curve public keys and observing ECDH outputs. The dhJavaEc() function directly returns the raw x-coordinate of the scalar multiplication result (no hashing), providing a plaintext oracle without requiring any decryption feedback.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T06:31:32Z",
+    "Severity": "HIGH",
+    "Summary": "sjcl is missing point-on-curve validation in sjcl.ecc.basicKey.publicKey",
+    "UpdatedAt": "2026-03-18T16:10:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.0.8"
+    }
+  ]
+}

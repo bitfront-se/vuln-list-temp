@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T14:25:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "frigate"
+  },
+  "Advisory": {
+    "DatabaseId": 343269,
+    "Id": "GSA_kwCzR0hTQS12ZzI4LTgzcnAtOHh4NM4ABTzl",
+    "GhsaId": "GHSA-vg28-83rp-8xx4",
+    "References": [
+      {
+        "Url": "https://github.com/blakeblackshear/frigate/security/advisories/GHSA-vg28-83rp-8xx4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vg28-83rp-8xx4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vg28-83rp-8xx4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33125"
+      }
+    ],
+    "Description": "### Summary\nUsers with the viewer role can delete admin and other users account. It this leads to denial of service and affects data integrity.\n\n### Details\nEndpoint `DELETE /api/users/admin` is enable to anonymous user.\n\n\u003cimg width=\"436\" height=\"100\" alt=\"obraz\" src=\"https://github.com/user-attachments/assets/817f9c47-7bd9-4247-a2f1-0f40778ab229\" /\u003e\n\n### PoC\nI deleted admin user on `demo.frigate.video`:\n\n\u003cimg width=\"1091\" height=\"222\" alt=\"obraz\" src=\"https://github.com/user-attachments/assets/34f50a13-3bb7-4aa8-99fa-bd815b3dc915\" /\u003e\n\n\n### Impact\nIt this leads to denial of service and affects data integrity.\n\n### Recommended Fixes\nRestrict access to the endpoint to authenticated admin users only:\nAdd `dependencies=[Depends(require_role([\"admin\"]))])` to this endpoint.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T14:25:15Z",
+    "Severity": "HIGH",
+    "Summary": "Frigte has broken access control viewer user can delete admin and other users account",
+    "UpdatedAt": "2026-03-18T14:25:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c 0.16.3"
+    }
+  ]
+}

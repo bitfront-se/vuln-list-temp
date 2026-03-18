@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T16:34:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "oneuptime"
+  },
+  "Advisory": {
+    "DatabaseId": 343286,
+    "Id": "GSA_kwCzR0hTQS1nY2czLWM1cDItY3FnZ84ABTz2",
+    "GhsaId": "GHSA-gcg3-c5p2-cqgg",
+    "References": [
+      {
+        "Url": "https://github.com/OneUptime/oneuptime/security/advisories/GHSA-gcg3-c5p2-cqgg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gcg3-c5p2-cqgg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gcg3-c5p2-cqgg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33142"
+      }
+    ],
+    "Description": "The fix for GHSA-p5g2-jm85-8g35 (ClickHouse SQL injection via aggregate query parameters) added column name validation to the `_aggregateBy` method but did not apply the same validation to three other query construction paths in `StatementGenerator`. The `toSortStatement`, `toSelectStatement`, and `toGroupByStatement` methods accept user-controlled object keys from API request bodies and interpolate them as ClickHouse `Identifier` parameters without verifying they correspond to actual model columns.\n\nClickHouse Identifier parameters are substituted directly into queries without escaping, so an attacker who can reach any analytics list or aggregate endpoint can inject arbitrary SQL through crafted `sort`, `select`, or `groupBy` keys.\n\n## Details\n\n### Root cause\n\n`StatementGenerator.ts` has four methods that iterate over user-provided object keys to build SQL:\n\n| Method | Validates keys? |\n|--------|----------------|\n| `toWhereStatement` (line 292) | Yes - calls `this.model.getTableColumn(key)` |\n| `toSortStatement` (line 467) | **No** |\n| `toSelectStatement` (line 483) | **No** |\n| `toGroupByStatement` (line 451) | **No** |\n\nIn `Statement.ts`, when a value passed to the `SQL` tagged template is a string, it receives the `Identifier` data type (line 40). Per [ClickHouse documentation](https://clickhouse.com/docs/en/sql-reference/syntax#defining-and-using-query-parameters), Identifier parameters are substituted directly into the query without quoting or escaping. This is correct for trusted column names but unsafe for user input.\n\n### Input flow\n\n`BaseAnalyticsAPI.ts` deserializes `sort`, `select`, and `groupBy` directly from `req.body` (lines 239-253) and passes them to the service layer without column validation:\n\n```typescript\nsort = JSONFunctions.deserialize(req.body[\"sort\"]) as Sort\u003cAnalyticsDataModel\u003e;\nselect = JSONFunctions.deserialize(req.body[\"select\"]) as Select\u003cAnalyticsDataModel\u003e;\ngroupBy = JSONFunctions.deserialize(req.body[\"groupBy\"]) as GroupBy\u003cAnalyticsDataModel\u003e;\n```\n\n### Affected endpoints\n\nAny endpoint backed by `BaseAnalyticsAPI.getList()` or `BaseAnalyticsAPI.getAggregate()` - this includes analytics queries for logs, metrics, spans, and exceptions.\n\n## Impact\n\nAn authenticated user can inject arbitrary ClickHouse SQL through crafted column names in sort, select, or groupBy request parameters. This allows reading, modifying, or deleting analytics data (logs, metrics, traces) stored in ClickHouse. PostgreSQL data is not affected (separate query path).\n\n## Suggested Fix\n\nAdd the same `getTableColumn()` validation already present in `toWhereStatement` to the three unvalidated methods:\n\n```typescript\n// toSortStatement, toSelectStatement, toGroupByStatement\nfor (const key in sort) {\n  if (!this.model.getTableColumn(key)) {\n    throw new BadDataException(`Unknown column: ${key}`);\n  }\n  // existing logic\n}\n```\n\nThis matches the pattern used in the GHSA-p5g2 fix for `_aggregateBy` and the existing `toWhereStatement` validation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T16:34:18Z",
+    "Severity": "HIGH",
+    "Summary": "OneUptime ClickHouse vulnerable to SQL Injection via unvalidated column identifiers in sort, select, and groupBy parameters",
+    "UpdatedAt": "2026-03-18T16:34:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.34"
+      },
+      "VulnerableVersionRange": "\u003c 10.0.34"
+    }
+  ]
+}

