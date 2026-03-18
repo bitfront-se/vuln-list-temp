@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-3pxq-f3cp-jmxp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22180"
       }
     ],
     "Description": "### Summary\nA path-confinement bypass in browser output handling allowed writes outside intended roots in `openclaw` versions up to and including `2026.3.1`.\n\nThe fix unifies root-bound, file-descriptor-verified write semantics and canonical path-boundary validation across browser output and related install/skills write paths.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published npm version at triage time: `2026.3.1`\n- Affected range: `\u003c= 2026.3.1`\n- Patched release: `2026.3.2` (released)\n\n### Fix Commit(s)\n- `104d32bb64cdf19d5e77f70553a511a2ae90ad1c`\n\n### Technical Notes\n- Browser output writes now use root-bound, fd/inode-verified commit flow.\n- Install + skills path checks now share canonical in-base validation to reduce drift and close equivalent escape surfaces.\n- Added regression coverage for symlink-rebind and root-bound source-path write behavior.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-03-03T21:20:01Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Unified root-bound write hardening for browser output and related path-boundary flows",
-    "UpdatedAt": "2026-03-03T21:20:02Z",
+    "UpdatedAt": "2026-03-18T01:31:52Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,
