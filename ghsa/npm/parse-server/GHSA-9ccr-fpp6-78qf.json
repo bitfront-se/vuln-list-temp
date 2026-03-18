@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-17T18:37:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343078,
+    "Id": "GSA_kwCzR0hTQS05Y2NyLWZwcDYtNzhxZs4ABTwm",
+    "GhsaId": "GHSA-9ccr-fpp6-78qf",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-9ccr-fpp6-78qf"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10200"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10201"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9ccr-fpp6-78qf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9ccr-fpp6-78qf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32878"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker can bypass the default request keyword denylist protection and the class-level permission for adding fields by sending a crafted request that exploits prototype pollution in the deep copy mechanism. This allows injecting fields into class schemas that have field addition locked down, and can cause permanent schema type conflicts that cannot be resolved even with the master key.\n\n### Patches\n\nThe vulnerable third-party deep copy library has been replaced with a built-in deep clone mechanism that handles prototype properties safely, allowing the existing denylist check to correctly detect and reject the prohibited keyword.\n\n### Workarounds\n\nNone.\n\n### Vulnerability Independence\n\nThis vulnerability is not caused by or dependent on a vulnerability in a third-party dependency.\n\nThe third-party `deepcopy` library that was replaced in the fix has no known CVE or security advisory regarding this. The library functions as designed. It is not vulnerable.\n\nThe vulnerability is in parse-server's own request processing logic. Parse-server's security-critical keyword denylist check runs after the deep copy step in the request pipeline. The deep copy step strips `__proto__` properties as a normal part of its cloning behavior, which means the denylist check never sees the prohibited key. This allows an attacker to bypass both the denylist protection and class-level permissions for adding fields, resulting in schema poisoning.\n\nThe root cause is parse-server's reliance on a cloning mechanism that alters the shape of the data before the security check can inspect it. This is a logic flaw in parse-server's security pipeline, not a vulnerability in a dependency. Replacing the cloning mechanism was the fix for parse-server's own bug.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T18:37:08Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server vulnerable to schema poisoning via prototype pollution in deep copy",
+    "UpdatedAt": "2026-03-17T18:37:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.44"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.44"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.20"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.20"
+    }
+  ]
+}

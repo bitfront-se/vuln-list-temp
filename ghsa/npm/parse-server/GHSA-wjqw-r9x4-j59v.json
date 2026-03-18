@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-17T19:50:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343091,
+    "Id": "GSA_kwCzR0hTQS13anF3LXI5eDQtajU5ds4ABTwz",
+    "GhsaId": "GHSA-wjqw-r9x4-j59v",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-wjqw-r9x4-j59v"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10219"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10220"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wjqw-r9x4-j59v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wjqw-r9x4-j59v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33042"
+      }
+    ],
+    "Description": "### Impact\n\nA user can sign up without providing credentials by sending an empty `authData` object, bypassing the username and password requirement. This allows the creation of authenticated sessions without proper credentials, even when anonymous users are disabled.\n\n### Patches\n\nThe fix ensures that empty or non-actionable `authData` is treated the same as absent `authData` for the purpose of credential validation on new user creation. Username and password are now required when no valid auth provider data is present.\n\n### Workarounds\n\nUse a Cloud Code `beforeSave` trigger on the `_User` class to reject signups where `authData` is empty and no username/password is provided.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T19:50:44Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server affected by empty authData bypassing credential requirement on signup",
+    "UpdatedAt": "2026-03-17T19:50:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.49"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.49"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.29"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.29"
+    }
+  ]
+}

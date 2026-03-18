@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-17T18:38:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nestjs/platform-fastify"
+  },
+  "Advisory": {
+    "DatabaseId": 343083,
+    "Id": "GSA_kwCzR0hTQS13ZjQyLTQyZmctZmc4NM4ABTwr",
+    "GhsaId": "GHSA-wf42-42fg-fg84",
+    "References": [
+      {
+        "Url": "https://github.com/nestjs/nest/security/advisories/GHSA-wf42-42fg-fg84"
+      },
+      {
+        "Url": "https://github.com/nestjs/nest/commit/cbdf737cd6e7cefa52d05ecea2ae4af95c464614"
+      },
+      {
+        "Url": "https://github.com/nestjs/nest/releases/tag/v11.1.17"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wf42-42fg-fg84"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wf42-42fg-fg84"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33011"
+      }
+    ],
+    "Description": "### Impact\n\nIn a NestJS application using `@nestjs/platform-fastify`, GET middleware can be bypassed because Fastify automatically redirects HEAD requests to the corresponding GET handlers (if they exist).\n\nAs a result:\n\n- Middleware will be completely skipped.\n- The HTTP response won't include a body (since the response is truncated when redirecting a HEAD request to a GET handler).\n- The actual handler will still be executed.\n\n### Patches\n\nFixed in `@nestjs/platform-fastify@11.1.16`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T18:38:38Z",
+    "Severity": "HIGH",
+    "Summary": "Nest Fastify HEAD Request Middleware Bypass",
+    "UpdatedAt": "2026-03-17T18:38:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.1.16"
+      },
+      "VulnerableVersionRange": "\u003c= 11.1.15"
+    }
+  ]
+}

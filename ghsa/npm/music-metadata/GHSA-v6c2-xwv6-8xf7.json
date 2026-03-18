@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-17T20:04:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "music-metadata"
+  },
+  "Advisory": {
+    "DatabaseId": 343093,
+    "Id": "GSA_kwCzR0hTQS12NmMyLXh3djYtOHhmN84ABTw1",
+    "GhsaId": "GHSA-v6c2-xwv6-8xf7",
+    "References": [
+      {
+        "Url": "https://github.com/Borewit/music-metadata/security/advisories/GHSA-v6c2-xwv6-8xf7"
+      },
+      {
+        "Url": "https://github.com/Borewit/music-metadata/releases/tag/v11.12.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v6c2-xwv6-8xf7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v6c2-xwv6-8xf7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32256"
+      }
+    ],
+    "Description": "# Summary\n\nmusic-metadata's ASF parser (`parseExtensionObject()` in `lib/asf/AsfParser.ts:112-158`) enters an infinite loop when a sub-object inside the ASF Header Extension Object has `objectSize = 0`.\n\n## Root Cause\n\nWhen objectSize is 0:\n1. `remaining = 0 - 24 = -24`\n2. `tokenizer.ignore(-24)` moves the read position backward by 24 bytes\n3. `extensionSize -= 0` (loop counter never decreases)\n4. `while (extensionSize \u003e 0)` never exits\n5. The same 24-byte header is re-read infinitely\n\nThis is the same pattern as CVE-2026-31808 (GHSA-5v7r-6r5c-r473) in file-type — strtok3's `AbstractTokenizer.ignore()` accepts negative values without validation.\n\n## Affected Methods\n- `parseFile()` — HANGS (FileTokenizer inherits vulnerable ignore())\n- `parseBuffer()` — HANGS (BufferTokenizer inherits vulnerable ignore())\n- `parseStream()` — NOT affected (ReadStreamTokenizer has own ignore() that throws RangeError)\n\n## Impact\nA 100-byte crafted .asf file permanently hangs any application using parseFile() or parseBuffer(). music-metadata has 2.2M weekly npm downloads.\n\n## Suggested Fix\nValidate `objectSize \u003e= minimumHeaderSize` before calculating the payload. Or fix strtok3's `AbstractTokenizer.ignore()` to reject negative values.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T20:04:48Z",
+    "Severity": "HIGH",
+    "Summary": "music-metadata has an infinite loop vulnerability in ASF parser",
+    "UpdatedAt": "2026-03-17T20:04:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.12.3"
+      },
+      "VulnerableVersionRange": "\u003c= 11.12.1"
+    }
+  ]
+}

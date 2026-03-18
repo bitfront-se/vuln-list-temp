@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-17T18:39:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.micronaut:micronaut-http-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343084,
+    "Id": "GSA_kwCzR0hTQS0yaGNwLWdqcmYtN2ZoY84ABTws",
+    "GhsaId": "GHSA-2hcp-gjrf-7fhc",
+    "References": [
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/security/advisories/GHSA-2hcp-gjrf-7fhc"
+      },
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/commit/1e2ba2c14386af3d47751732d02053a72b0b49b3"
+      },
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/releases/tag/v4.10.17"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2hcp-gjrf-7fhc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2hcp-gjrf-7fhc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33012"
+      }
+    ],
+    "Description": "`DefaultHtmlErrorResponseBodyProvider` in `io.micronaut:micronaut-http-server` since `4.7.0` and until `4.10.7` used an unbounded `ConcurrentHashMap` cache with no eviction policy. If the application throws an exception whose message may be influenced by an attacker, for example, including request query value parameters,  this could be used by remote attackers\nto cause a denial of service (unbounded heap growth and OutOfMemoryError). \n\nFixed via: https://github.com/micronaut-projects/micronaut-core/commit/1e2ba2c14386af3d47751732d02053a72b0b49b3",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T18:39:27Z",
+    "Severity": "HIGH",
+    "Summary": "Micronaut Framework vulnerable to a Denial of Service in HTML error response caching",
+    "UpdatedAt": "2026-03-17T18:39:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.10.17"
+      },
+      "VulnerableVersionRange": "\u003e= 4.7.0, \u003c 4.10.17"
+    }
+  ]
+}

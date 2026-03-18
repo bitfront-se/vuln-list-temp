@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-17T18:37:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343080,
+    "Id": "GSA_kwCzR0hTQS04MjdwLWc1eDUtaDg2Y84ABTwo",
+    "GhsaId": "GHSA-827p-g5x5-h86c",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-827p-g5x5-h86c"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10197"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10199"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-827p-g5x5-h86c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-827p-g5x5-h86c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32770"
+      }
+    ],
+    "Description": "### Impact\n\nA remote attacker can crash the Parse Server by subscribing to a LiveQuery with an invalid regular expression pattern. The server process terminates when the invalid pattern reaches the regex engine during subscription matching, causing denial of service for all connected clients.\n\n### Patches\n\nThe fix validates regular expression patterns at subscription time, rejecting invalid patterns before they are stored. Additionally, a defense-in-depth try-catch prevents any subscription matching error from crashing the server process.\n\n### Workarounds\n\nDisable LiveQuery if it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-17T18:37:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server LiveQuery subscription with invalid regular expression crashes server",
+    "UpdatedAt": "2026-03-17T18:37:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.43"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.43"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.19"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.19"
+    }
+  ]
+}
