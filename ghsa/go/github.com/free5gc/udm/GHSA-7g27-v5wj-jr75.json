@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T20:06:37Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/free5gc/udm"
+  },
+  "Advisory": {
+    "DatabaseId": 343364,
+    "Id": "GSA_kwCzR0hTQS03ZzI3LXY1d2otanI3Nc4ABT1E",
+    "GhsaId": "GHSA-7g27-v5wj-jr75",
+    "References": [
+      {
+        "Url": "https://github.com/free5gc/free5gc/security/advisories/GHSA-7g27-v5wj-jr75"
+      },
+      {
+        "Url": "https://github.com/free5gc/free5gc/issues/781"
+      },
+      {
+        "Url": "https://github.com/free5gc/udm/pull/78"
+      },
+      {
+        "Url": "https://github.com/free5gc/udm/commit/65d7070f4bfd016864cbbaefbd506bbc85d2fa92"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7g27-v5wj-jr75"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7g27-v5wj-jr75"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33064"
+      }
+    ],
+    "Description": "**Impact**  \nThis is a NULL Pointer Dereference vulnerability leading to Denial of Service.  \n- **Security Impact**: A remote attacker can cause the UDM service to panic and crash by sending a crafted POST request to the `/sdm-subscriptions` endpoint with a malformed URL path containing path traversal sequences (`../`) and a large JSON payload. The `DataChangeNotificationProcedure` function in `notifier.go` attempts to access a nil pointer without proper validation, causing a complete service crash with \"runtime error: invalid memory address or nil pointer dereference\".  \n- **Functional Impact**: The service crashes completely, requiring manual restart. All UDM functionality is disrupted until recovery.  \n- **Affected Parties**: All deployments of free5GC v4.0.1 using the UDM HTTP callback functionality.\n\n**Patches**  \nYes, the issue has been patched.  \nThe fix is implemented in PR free5gc/udm#78.  \nUsers should upgrade to the next release of free5GC that includes this commit.\n\n**Workarounds**  \nThere is no direct workaround at the application level. The recommendation is to apply the provided patch or implement API gateway-level filtering to block requests containing path traversal sequences.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T20:06:36Z",
+    "Severity": "HIGH",
+    "Summary": "free5GC UDM DataChangeNotification Procedure Panic Due to Nil Pointer Dereference",
+    "UpdatedAt": "2026-03-18T20:06:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.2"
+    }
+  ]
+}

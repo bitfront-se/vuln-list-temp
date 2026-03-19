@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-r3xq-68wh-gwvh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32943"
       }
     ],
     "Description": "### Impact\n\nThe password reset mechanism does not enforce single-use guarantees for reset tokens. When a user requests a password reset, the generated token can be consumed by multiple concurrent requests within a short time window. An attacker who has intercepted a password reset token can race the legitimate user's password reset request, causing both requests to succeed. This may result in the legitimate user believing their password was changed successfully while the attacker's password takes effect instead.\n\nAll Parse Server deployments that use the password reset feature are affected.\n\n### Patches\n\nThe password reset token is now atomically validated and consumed as part of the password update operation. The database query that updates the password includes the reset token as a condition, ensuring that only one concurrent request can successfully consume the token. Subsequent requests using the same token will fail because the token has already been cleared.\n\n### Workarounds\n\nThere is no known workaround other than upgrading.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-03-17T17:40:08Z",
     "Severity": "LOW",
     "Summary": "Parse Server has a password reset token single-use bypass via concurrent requests",
-    "UpdatedAt": "2026-03-17T17:40:10Z",
+    "UpdatedAt": "2026-03-18T21:44:33Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

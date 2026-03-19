@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T19:53:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.qameta.allure:allure-generator"
+  },
+  "Advisory": {
+    "DatabaseId": 343355,
+    "Id": "GSA_kwCzR0hTQS02NGhtLWdmd3EtanBwd84ABT07",
+    "GhsaId": "GHSA-64hm-gfwq-jppw",
+    "References": [
+      {
+        "Url": "https://github.com/allure-framework/allure2/security/advisories/GHSA-64hm-gfwq-jppw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-64hm-gfwq-jppw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-64hm-gfwq-jppw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33166"
+      }
+    ],
+    "Description": "### Summary\nThe Allure report generator is vulnerable to an arbitrary file read via path traversal when processing test results. An attacker can craft a malicious result file (-result.json, -container.json, or .plist) that points an attachment source to a sensitive file on the host system. During report generation, Allure will resolve these paths and include the sensitive files in the final report.\n\n### Details\nThe vulnerability exists in several plugins where attachment paths are resolved using unvalidated user input. The code uses Path.resolve() without normalizing the path or checking if the resulting file remains within the intended results directory.\n\nAffected Files and Lines:\n\nAllure2Plugin.java (Line 264): `final Path attachmentFile = source.resolve(attachment.getSource());`\n\nAllure1Plugin.java (Line 328): `final Path attachmentFile = source.resolve(attachment.getSource());`\n\nXcTestPlugin.java (Line 181): `attachments.resolve(String.format(\"Screenshot_%s.%s\", uuid, ext))`\n\nSince `resolve()` allows absolute paths or ../ sequences to escape the base directory, any file readable by the process can be exfiltrated.\n\n### PoC\n1) Create a directory named allure-results.\n\n2) Create a file malicious-result.json inside it:\n\n```\n{\n  \"uuid\": \"poc-traversal\",\n  \"name\": \"Path Traversal PoC\",\n  \"status\": \"passed\",\n  \"attachments\": [\n    {\n      \"name\": \"Sensitive Data\",\n      \"source\": \"../../../../../../../../../../../etc/passwd\",\n      \"type\": \"text/plain\"\n    }\n  ]\n}\n```\n3) run `allure generate allure-results -o allure-report`\n\n4) The content of `/etc/passwd` will now be present in `allure-report/data/attachments/`.\n\n\n### Impact\nThis is a High Severity vulnerability. In CI/CD environments (GitHub Actions, Jenkins), an attacker submitting a Pull Request can exfiltrate server secrets, cloud credentials, or environment configuration files stored on the runner disk. It also may affect custom Allure web services where users can upload results, allowing them to read arbitrary files from the server's filesystem. Allure TestOps is not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T19:53:59Z",
+    "Severity": "HIGH",
+    "Summary": "Allure Report has an Arbitrary File Read via Path Traversal in Attachment Processing (Allure 1, Allure 2, and XCTest Readers)",
+    "UpdatedAt": "2026-03-18T19:53:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.37.0"
+    }
+  ]
+}

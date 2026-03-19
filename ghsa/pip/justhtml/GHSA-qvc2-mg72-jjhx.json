@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-18T20:19:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "justhtml"
+  },
+  "Advisory": {
+    "DatabaseId": 343381,
+    "Id": "GSA_kwCzR0hTQS1xdmMyLW1nNzItampoeM4ABT1V",
+    "GhsaId": "GHSA-qvc2-mg72-jjhx",
+    "References": [
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/security/advisories/GHSA-qvc2-mg72-jjhx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qvc2-mg72-jjhx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qvc2-mg72-jjhx"
+      }
+    ],
+    "Description": "## Summary\n\nSanitized DOM trees can be unsafe to serialize when a custom policy allows raw-text elements such as `\u003cstyle\u003e` or `\u003cscript\u003e`.\n\nThe issue affects DOM trees that are constructed or modified programmatically and then passed through `sanitize_dom()` with a policy that keeps these elements. Text nodes inside `\u003cstyle\u003e` and `\u003cscript\u003e` are serialized literally, so attacker-controlled text containing the matching closing tag sequence can break out of the raw-text context and inject HTML into the serialized output.\n\nThe default sanitization policy is not affected because it drops the contents of `style` and `script`.\n\n## Details\n\nThe root cause is in HTML serialization of raw-text elements. In serialize.py, text children of `script` and `style` are emitted verbatim:\n\n```python\n_LITERAL_TEXT_SERIALIZATION_ELEMENTS = frozenset({\"script\", \"style\"})\n\ndef _serialize_text_for_parent(text: str | None, parent_name: str | None) -\u003e str:\n    if not text:\n        return \"\"\n    if parent_name in _LITERAL_TEXT_SERIALIZATION_ELEMENTS:\n        return text\n    return _escape_text(text)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T20:19:47Z",
+    "Severity": "MODERATE",
+    "Summary": "JustHTML Affected by Mutation XSS via Literal Text Serialization in Raw Text Elements (style/script)",
+    "UpdatedAt": "2026-03-18T20:19:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.12.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.11.0"
+    }
+  ]
+}

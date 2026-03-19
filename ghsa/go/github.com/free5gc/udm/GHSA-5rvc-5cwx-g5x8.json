@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-18T20:11:28Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/free5gc/udm"
+  },
+  "Advisory": {
+    "DatabaseId": 343374,
+    "Id": "GSA_kwCzR0hTQS01cnZjLTVjd3gtZzV4OM4ABT1O",
+    "GhsaId": "GHSA-5rvc-5cwx-g5x8",
+    "References": [
+      {
+        "Url": "https://github.com/free5gc/free5gc/security/advisories/GHSA-5rvc-5cwx-g5x8"
+      },
+      {
+        "Url": "https://github.com/free5gc/free5gc/issues/784"
+      },
+      {
+        "Url": "https://github.com/free5gc/udm/pull/79"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5rvc-5cwx-g5x8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5rvc-5cwx-g5x8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33192"
+      }
+    ],
+    "Description": "**Impact**  \nThis is an Improper Error Handling vulnerability with Information Exposure implications, combined with an HTTP Method Translation issue.  \n- **Security Impact**: The UDM incorrectly converts a downstream 400 Bad Request (from UDR) into a 500 Internal Server Error when handling PATCH requests with an empty `supi` path parameter. Additionally, the UDM incorrectly translates the PATCH method to PUT when forwarding to UDR, indicating a deeper architectural issue. This leaks internal error handling behavior and makes it difficult for clients to distinguish between client-side errors and server-side failures.  \n- **Functional Impact**: When a client sends a PATCH request with an empty `supi` (e.g., double slashes `//` in URL path), the UDM forwards a PUT request to UDR with the malformed path, which correctly returns 400. However, UDM propagates this as 500 SYSTEM_FAILURE instead of returning the appropriate 400 error to the client. This violates REST API best practices for PATCH operations and may indicate improper HTTP method handling.  \n- **Affected Parties**: All deployments of free5GC v4.0.1 using the UDM Nudm_SDM service with PATCH operations on sdm-subscriptions endpoint.\n\n**Patches**  \nYes, the issue has been patched.  \nThe fix is implemented in PR free5gc/udm#79.  \nUsers should upgrade to the next release of free5GC that includes this commit.\n\n**Workarounds**  \nThere is no direct workaround at the application level. The recommendation is to apply the provided patch or implement API gateway-level validation to reject PATCH requests with empty path parameters before they reach UDM.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T20:11:27Z",
+    "Severity": "HIGH",
+    "Summary": "free5GC UDM incorrectly returns 500 for empty supi path parameter in PATCH sdm-subscriptions reques",
+    "UpdatedAt": "2026-03-18T20:11:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.2"
+    }
+  ]
+}

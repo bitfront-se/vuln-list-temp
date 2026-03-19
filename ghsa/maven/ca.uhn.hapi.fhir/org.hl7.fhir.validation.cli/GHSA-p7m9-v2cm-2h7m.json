@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-18T20:07:50Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ca.uhn.hapi.fhir:org.hl7.fhir.validation.cli"
+  },
+  "Advisory": {
+    "DatabaseId": 343367,
+    "Id": "GSA_kwCzR0hTQS1wN205LXYyY20tMmg3bc4ABT1H",
+    "GhsaId": "GHSA-p7m9-v2cm-2h7m",
+    "References": [
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/security/advisories/GHSA-p7m9-v2cm-2h7m"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p7m9-v2cm-2h7m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p7m9-v2cm-2h7m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33180"
+      }
+    ],
+    "Description": "### Impact\nWhen setting headers in HTTP requests, the internal HTTP client sends headers first to the host in the initial URL but also, if asked to follow redirects and a 30X HTTP response code is returned, to the host mentioned in URL in the Location: response header value.\n\nSending the same set of headers to subsequent hosts is a problem as this header often contains privacy sensitive information or data that could allow others to impersonate the  client's request.\n\n### Patches\nThis issue has been patched in release 6.8.3 \n\n### Workarounds\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-18T20:07:49Z",
+    "Severity": "CRITICAL",
+    "Summary": "HAPI FHIR HTTP authentication leak in redirects",
+    "UpdatedAt": "2026-03-18T20:07:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.9.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.9.0"
+    }
+  ]
+}
