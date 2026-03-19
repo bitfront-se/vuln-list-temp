@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-19T12:42:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 343460,
+    "Id": "GSA_kwCzR0hTQS1tbWdwLXdjMmotcWN2N84ABT2k",
+    "GhsaId": "GHSA-mmgp-wc2j-qcv7",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-mmgp-wc2j-qcv7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mmgp-wc2j-qcv7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mmgp-wc2j-qcv7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33068"
+      }
+    ],
+    "Description": "Claude Code resolved the permission mode from settings files, including the repo-controlled `.claude/settings.json`, before determining whether to display the workspace trust confirmation dialog. A malicious repository could set `permissions.defaultMode` to `bypassPermissions` in its committed `.claude/settings.json`, causing the trust dialog to be silently skipped on first open. This allowed a user to be placed into a permissive mode without seeing the trust confirmation prompt, making it easier for an attacker-controlled repository to gain tool execution without explicit user consent.\n\nUsers on standard Claude Code auto-update have received this fix already. Users performing manual updates are advised to update to the latest version.\n\nThank you to hackerone.com/cantina_xyz for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-19T12:42:09Z",
+    "Severity": "HIGH",
+    "Summary": "Claude Code has a Workspace Trust Dialog Bypass via Repo-Controlled Settings File",
+    "UpdatedAt": "2026-03-19T12:42:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.53"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.53"
+    }
+  ]
+}

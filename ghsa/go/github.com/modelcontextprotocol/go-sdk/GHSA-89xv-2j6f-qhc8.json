@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-19T16:42:42Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/modelcontextprotocol/go-sdk"
+  },
+  "Advisory": {
+    "DatabaseId": 343499,
+    "Id": "GSA_kwCzR0hTQS04OXh2LTJqNmYtcWhjOM4ABT3L",
+    "GhsaId": "GHSA-89xv-2j6f-qhc8",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/go-sdk/security/advisories/GHSA-89xv-2j6f-qhc8"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/go-sdk/commit/a433a831d6e5d5ac3b9e625a8095aa8eaa040dfc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-89xv-2j6f-qhc8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-89xv-2j6f-qhc8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33252"
+      }
+    ],
+    "Description": "The Go SDK's Streamable HTTP transport accepted browser-generated cross-site `POST` requests without validating the `Origin` header and without requiring `Content-Type: application/json`. In deployments without Authorization, especially stateless or sessionless configurations, this allows an arbitrary website to send MCP requests to a local server and potentially trigger tool execution.\n\n#### Impact:\n\nA malicious website may have been able to send cross-site POST requests with `Content-Type: text/plain`, which due to CORS-safelisted properties would reach the MCP message handling without any CORS preflight barrier.\n\n#### Fix:\n\nThe SDK was modified to perform `Content-Type` header validation for POST requests and introduced a configurable protection for verifying the origin of the request in commit a433a83. Users are advised to update to v1.4.1 to use this additional protection.\n\nNote: v1.4.1 requires Go 1.25 or later.\n\n#### Credits:\n\nThank you to Lê Minh Quân for reporting the issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-19T16:42:40Z",
+    "Severity": "HIGH",
+    "Summary": "Cross-Site Tool Execution for HTTP Servers without Authorizatrion in github.com/modelcontextprotocol/go-sdk",
+    "UpdatedAt": "2026-03-19T16:42:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}

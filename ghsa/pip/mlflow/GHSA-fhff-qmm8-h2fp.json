@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-19T17:56:47Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mlflow"
+  },
+  "Advisory": {
+    "DatabaseId": 343392,
+    "Id": "GSA_kwCzR0hTQS1maGZmLXFtbTgtaDJmcM4ABT1g",
+    "GhsaId": "GHSA-fhff-qmm8-h2fp",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-15031"
+      },
+      {
+        "Url": "https://huntr.com/bounties/09856f77-f968-446f-a930-657d126efe4e"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/commit/3bf6d81ac4d38654c8ff012dbd0c3e9f17e7e346"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/blob/fe4d9be330426904283401f1d2ed914238b6fc37/mlflow/pyfunc/dbconnect_artifact_cache.py#L140"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fhff-qmm8-h2fp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fhff-qmm8-h2fp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-15031"
+      }
+    ],
+    "Description": "A vulnerability in MLflow's pyfunc extraction process allows for arbitrary file writes due to improper handling of tar archive entries. Specifically, the use of `tarfile.extractall` without path validation enables crafted tar.gz files containing `..` or absolute paths to escape the intended extraction directory. This issue affects the latest version of MLflow and poses a high/critical risk in scenarios involving multi-tenant environments or ingestion of untrusted artifacts, as it can lead to arbitrary file overwrites and potential remote code execution.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-19T00:30:20Z",
+    "Severity": "HIGH",
+    "Summary": "Arbitrary file write via tar traversal in mlflow",
+    "UpdatedAt": "2026-03-19T17:56:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.0/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.9.0rc0"
+      },
+      "VulnerableVersionRange": "\u003c 3.9.0rc0"
+    }
+  ]
+}
