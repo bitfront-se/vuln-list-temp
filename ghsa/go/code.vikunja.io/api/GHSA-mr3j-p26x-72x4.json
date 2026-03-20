@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-20T17:25:31Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "code.vikunja.io/api"
+  },
+  "Advisory": {
+    "DatabaseId": 343723,
+    "Id": "GSA_kwCzR0hTQS1tcjNqLXAyNngtNzJ4NM4ABT6r",
+    "GhsaId": "GHSA-mr3j-p26x-72x4",
+    "References": [
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/security/advisories/GHSA-mr3j-p26x-72x4"
+      },
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/commit/bc6d843ed4df82a6c89f10aa676a7a33d27bf2fd"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mr3j-p26x-72x4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mr3j-p26x-72x4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33313"
+      }
+    ],
+    "Description": "An authenticated user can read any task comment by ID, regardless of whether they have access to the task the comment belongs to, by substituting the task ID in the API URL with a task they do have access to.\n\n## Details\n\nThe `GET /api/v1/tasks/{taskID}/comments/{commentID}` endpoint performs an authorization check against the task ID provided in the URL path, then loads the comment by its own ID without verifying it belongs to that task.\n\n### Root Cause\n\nIn `pkg/models/task_comment_permissions.go`, `CanRead` constructs a `Task` using the `TaskID` from the URL and checks `Task.CanRead`:\n\n```go\nfunc (tc *TaskComment) CanRead(s *xorm.Session, a web.Auth) (bool, int, error) {\n    t := Task{ID: tc.TaskID}\n    return t.CanRead(s, a)\n}\n```\n\nIn `pkg/models/task_comments.go`, `getTaskCommentSimple` loads the comment by ID only, with `NoAutoCondition()` explicitly disabling XORM's implicit struct-field filtering:\n\n```go\nfunc getTaskCommentSimple(s *xorm.Session, tc *TaskComment) error {\n    exists, err := s.\n        Where(\"id = ?\", tc.ID).\n        NoAutoCondition().\n        Get(tc)\n    // ...\n}\n```\n\nThe generic web handler (`pkg/web/handler/read_one.go`) calls `CanRead` before `ReadOne`, so the permission check passes against the attacker-controlled task ID, and then `ReadOne` returns the comment from a completely different task.\n\n### Attack Scenario\n\n1. Attacker is authenticated and has read access to any task (task ID `A`) — e.g. their own task.\n2. Attacker guesses or enumerates a comment ID (`C`) belonging to a task in another user's private project.\n3. Attacker requests: `GET /api/v1/tasks/A/comments/C`\n4. Authorization passes because the attacker can read task `A`.\n5. The comment `C` is loaded by ID only and returned, leaking its contents and author.\n\n## Credit\n\nThis vulnerability was found using [GitHub Security Lab Taskflows](https://github.com/GitHubSecurityLab/seclab-taskflows).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T17:25:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Vikunja has an IDOR in Task Comments Allows Reading Arbitrary Comments",
+    "UpdatedAt": "2026-03-20T17:25:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.1.0"
+    }
+  ]
+}
