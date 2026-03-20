@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-jv6r-27ww-4gw4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32027"
       }
     ],
     "Description": "## Summary\nDM pairing-store identities were incorrectly eligible for group allowlist authorization checks, enabling cross-context authorization in group message paths.\n\n## Details\nIn affected versions, group allowlist evaluation could inherit identities from the DM pairing store. A sender approved via DM pairing could satisfy group sender allowlist checks without being explicitly present in `groupAllowFrom`.\n\nThis is an authorization-policy boundary issue between DM pairing and group allowlists.\n\n## Affected Packages / Versions\n- `openclaw` (npm): affected `\u003c= 2026.2.25` (latest published npm version at triage time)\n- `openclaw` (npm): patched `\u003e= 2026.2.26` (planned next release)\n\n## Fix Commit(s)\n- `openclaw/openclaw@8bdda7a651c21e98faccdbbd73081e79cffe8be0`\n- `openclaw/openclaw@051fdcc428129446e7c084260f837b7284279ce9`\n\n## Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`) so once npm release is published, maintainers can publish the advisory without additional metadata edits.\n\n## Maintainer Timeline Note\nMaintainers landed the initial fix before this report was filed; this report still provided useful independent confirmation of the issue class and exploit path.\n\nOpenClaw thanks @tdjackey for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-03-03T19:17:22Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw DM pairing-store identities could satisfy group allowlist authorization",
-    "UpdatedAt": "2026-03-03T19:17:24Z",
+    "UpdatedAt": "2026-03-19T22:26:08Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

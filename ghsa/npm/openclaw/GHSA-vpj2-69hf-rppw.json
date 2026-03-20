@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-vpj2-69hf-rppw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32041"
       }
     ],
     "Description": "### Summary\nWhen browser control started without explicit auth credentials, OpenClaw attempted to bootstrap auth automatically. In affected versions, if that bootstrap step threw an error, startup could continue and expose browser-control routes without authentication.\n\n### Impact\nOn affected deployments, a local process (or a loopback-reachable SSRF path) could access browser-control routes, including evaluate-capable actions, without auth.\n\n### Fix\nStartup now fails closed: if bootstrap auth fails and no explicit token/password is configured, browser-control startup aborts.\n\n### Affected and Patched Versions\n- Affected: `\u003c= 2026.2.26`\n- Patched: `2026.3.1`",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-03-02T21:49:14Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Browser control startup could continue unauthenticated after auth bootstrap failure",
-    "UpdatedAt": "2026-03-02T21:49:15Z",
+    "UpdatedAt": "2026-03-19T22:30:30Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

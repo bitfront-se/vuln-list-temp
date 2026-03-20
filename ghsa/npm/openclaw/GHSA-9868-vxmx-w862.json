@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/3f0b9dbb36c86e308267924c0d3d4a4e1fc4d1e9"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-28460"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-allowlist-bypass-via-shell-line-continuation-command-substitution-in-system-run"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-9868-vxmx-w862"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-9868-vxmx-w862"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-28460"
       }
     ],
     "Description": "### Summary\nIn OpenClaw `system.run` allowlist mode, shell-wrapper analysis could be bypassed by splitting command substitution as `$\\\\` + newline + `(` inside double quotes. Analysis treated the payload as allowlisted (for example `/bin/echo`), while shell runtime folded the line continuation into `$(...)` and executed non-allowlisted subcommands.\n\n### Affected Packages / Versions\n- Package: npm `openclaw`\n- Latest published affected version: `2026.2.21-2`\n- Affected range: `\u003c=2026.2.21-2`\n- Patched version (planned next release): `2026.2.22`\n\n### Impact\nIn deployments that opt into `tools.exec.security=allowlist` (with `ask=on-miss` or `off`), this can bypass approval boundaries and lead to unintended command execution.\n\n### Fix Commit(s)\n- `3f0b9dbb36c86e308267924c0d3d4a4e1fc4d1e9`\n\n### Remediation\n- Upgrade to `2026.2.22` (or newer) when published.\n- Temporary mitigation: set `tools.exec.ask=always` or `tools.exec.security=deny`.\n\n### Release Process Note\n`patched_versions` is pre-set to planned next release `2026.2.22`. After npm release is out, this advisory should be ready for direct publish without additional metadata edits.\n\nOpenClaw thanks @tdjackey for reporting.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-03T19:53:22Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw's system.run allowlist bypass via shell line-continuation command substitution",
-    "UpdatedAt": "2026-03-03T19:53:23Z",
+    "UpdatedAt": "2026-03-19T21:21:48Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

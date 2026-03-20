@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-w76h-8m22-hpgh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32037"
       }
     ],
     "Description": "## Summary\nIn OpenClaw MSTeams media download flows, redirect handling could bypass configured `mediaAllowHosts` checks in specific attachment paths. Redirect chains were not consistently constrained to allowlisted targets before accepting fetched content.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.2.21-2` (latest published at triage time)\n- Fixed in: `2026.2.22` (planned next release)\n\n## Impact\nAttackers able to supply or influence attachment URLs could force redirect chains to non-allowlisted targets, weakening SSRF boundary controls for MSTeams media ingestion.\n\n## Fix Commit(s)\n- `73d93dee64127a26f1acd09d0403b794cdeb4f5c`\n- `b34097f62df9d1960cc22600269cd3f3284e2124`\n\n## Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.22`). Once that npm release is published, this advisory can be published without further version-field edits.\n\nOpenClaw thanks @tdjackey for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-03-03T18:10:12Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw's MSTeams attachment redirect handling could bypass configured media host allowlists",
-    "UpdatedAt": "2026-03-03T18:10:13Z",
+    "UpdatedAt": "2026-03-19T22:29:16Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

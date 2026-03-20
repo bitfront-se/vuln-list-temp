@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-354r-7mfh-7rh2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32028"
       }
     ],
     "Description": "### Summary\nIn OpenClaw `\u003c= 2026.2.24`, Discord direct-message reaction notifications did not consistently apply the same DM authorization checks (`dmPolicy` / `allowFrom`) that are enforced for normal DM message ingress.\n\nIn restrictive DM setups, a non-allowlisted Discord user who can react to a bot-authored DM message could still enqueue a reaction-derived system event in the session.\n\nThis is a reaction-only ingress inconsistency. By itself it does not directly execute commands; practical impact depends on downstream automation/tool policy.\n\n### Details\nThe DM message path already enforces `dmPolicy`/`allowFrom` authorization, but the DM reaction-notification path previously allowed event enqueue under reaction mode checks without that same authorization gate.\n\nFix in `main` aligns reaction ingress with normal message preflight for Discord DM/group-DM/guild policy boundaries and applies equivalent DM reaction authorization hardening for Slack to keep channel behavior consistent.\n\n### Affected Packages / Versions\n- `npm` package: `openclaw`\n- Affected: `\u003c= 2026.2.24`\n- Patched: `\u003e= 2026.2.25` \n\n### Fix Commit(s)\n- `aedf62ac7e669a89c7b299201bf6537dc6b12e0e`\n\n### Release Process Note\n`patched_versions` is pre-set to the release (`2026.2.25`) so after npm release the advisory is published.\n\nThanks @tdjackey for reporting.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-03-03T21:25:34Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Discord DM reaction ingress missed dmPolicy/allowFrom checks in restricted setups",
-    "UpdatedAt": "2026-03-03T21:25:37Z",
+    "UpdatedAt": "2026-03-19T22:26:28Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

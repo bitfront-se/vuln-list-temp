@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-19T21:31:01Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "scriban"
+  },
+  "Advisory": {
+    "DatabaseId": 343578,
+    "Id": "GSA_kwCzR0hTQS1ncnI5LTc0N3YteHZjcM4ABT4a",
+    "GhsaId": "GHSA-grr9-747v-xvcp",
+    "References": [
+      {
+        "Url": "https://github.com/scriban/scriban/security/advisories/GHSA-grr9-747v-xvcp"
+      },
+      {
+        "Url": "https://github.com/scriban/scriban/commit/a6fe6074199e5c04f4d29dc8d8e652b24d33e3e4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-grr9-747v-xvcp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-grr9-747v-xvcp"
+      }
+    ],
+    "Description": "When Scriban renders an object that contains a circular reference, it traverses the object's members infinitely. Because the `ObjectRecursionLimit` property defaults to unlimited, this behavior exhausts the thread's stack space, triggering an uncatchable `StackOverflowException` that immediately terminates the hosting process.\n\nWhen rendering objects (e.g., `{{ obj }}`), the Scriban rendering engine recursively inspects and formats the object's properties. To prevent infinite loops caused by deeply nested or circular data structures, `TemplateContext` contains an `ObjectRecursionLimit` property. \n\nHowever, this property currently defaults to `0` (unlimited). If the data context pushed into the template contains a circular reference, the renderer will recurse indefinitely. This is especially dangerous for web applications that map user-controlled payloads (like JSON) directly to rendering contexts, or for applications that pass ORM objects (like Entity Framework models, which frequently contain circular navigation properties) into the template.\n\n#### Proof of Concept (PoC)\nThe following C# code demonstrates the vulnerability. Executing this will cause an immediate, fatal `StackOverflowException`, bypassing any standard error handling.\n\n```csharp\nusing Scriban;\nusing Scriban.Runtime;\n\nvar template = Template.Parse(\"{{ a }}\");\nvar context = new TemplateContext();\nvar a = new ScriptObject();\n\n// Introduce a cycle\na[\"self\"] = a;\ncontext.PushGlobal(new ScriptObject { { \"a\", a } });\n\ntry {\n  // This crashes the entire process immediately\n  template.Render(context);\n} catch (Exception ex) {\n  // This will never execute because StackOverflowException\n  Console.WriteLine(\"Caught exception: \" + ex.Message);\n}\n```\n\n#### Impact\nThis vulnerability allows a Denial of Service (DoS) attack. If a malicious user can manipulate the data structure passed to the renderer to include a cyclic reference, or if the application passes a complex object graph to an untrusted template, the entire .NET hosting process will crash.\n\n#### Suggested Remediation\nUpdate `TemplateContext.cs` to set `ObjectRecursionLimit` to a safe default, such as `20`.\n\n```csharp\npublic int ObjectRecursionLimit { get; set; } = 20;\n```\nBy implementing this default, circular references will gracefully result in a catchable `ScriptRuntimeException` rather than a fatal process crash.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-19T21:31:01Z",
+    "Severity": "HIGH",
+    "Summary": "Scriban has an Infinite Recursion during Object Rendering Leads to Stack Overflow and Process Crash (Denial of Service)",
+    "UpdatedAt": "2026-03-19T21:31:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.6.0"
+      },
+      "VulnerableVersionRange": "\u003c= 6.5.8"
+    }
+  ]
+}

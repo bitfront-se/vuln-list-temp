@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-19T21:32:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343580,
+    "Id": "GSA_kwCzR0hTQS1wZmo3LXd2N2MtMjJwcs4ABT4c",
+    "GhsaId": "GHSA-pfj7-wv7c-22pr",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-pfj7-wv7c-22pr"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10246"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10247"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pfj7-wv7c-22pr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pfj7-wv7c-22pr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33409"
+      }
+    ],
+    "Description": "### Impact\n\nAn authentication bypass vulnerability allows an attacker to log in as any user who has linked a third-party authentication provider, without knowing the user's credentials. The attacker only needs to know the user's provider ID to gain full access to their account, including a valid session token.\n\nThis affects Parse Server deployments where the server option `allowExpiredAuthDataToken` is set to `true`. The default value is `false`.\n\n### Patches\n\nAuth providers are now always validated on login, regardless of the `allowExpiredAuthDataToken` setting. The option `allowExpiredAuthDataToken` has been deprecated and will be removed in a future major version.\n\n### Workarounds\n\nSet `allowExpiredAuthDataToken` to `false` (the default) or remove the option from the server configuration.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-19T21:32:10Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server has an auth provider validation bypass on login via partial authData",
+    "UpdatedAt": "2026-03-19T21:32:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.52"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.52"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.41"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.41"
+    }
+  ]
+}
