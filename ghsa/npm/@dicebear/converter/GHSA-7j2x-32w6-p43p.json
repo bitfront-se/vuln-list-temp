@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-20T20:35:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@dicebear/converter"
+  },
+  "Advisory": {
+    "DatabaseId": 343761,
+    "Id": "GSA_kwCzR0hTQS03ajJ4LTMydzYtcDQzcM4ABT7R",
+    "GhsaId": "GHSA-7j2x-32w6-p43p",
+    "References": [
+      {
+        "Url": "https://github.com/dicebear/dicebear/security/advisories/GHSA-7j2x-32w6-p43p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7j2x-32w6-p43p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7j2x-32w6-p43p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33418"
+      }
+    ],
+    "Description": "## Summary\n\nThe `ensureSize()` function in `@dicebear/converter` used a regex-based approach to rewrite SVG `width`/`height` attributes, capping them at 2048px to prevent denial of service. This size capping could be bypassed by crafting SVG input that causes the regex to match a non-functional occurrence of `\u003csvg` before the actual SVG root element. When the SVG is subsequently rendered via `@resvg/resvg-js` on the Node.js code path, it renders at the attacker-specified dimensions, potentially causing out-of-memory crashes.\n\n## Details\n\nThe vulnerable function used `String.prototype.replace()` with a non-global regex to find and rewrite the first `\u003csvg` tag's dimensions. Since the regex does not distinguish between `\u003csvg` appearing inside non-element XML constructs and the actual SVG root element, a crafted input can cause the regex to match a decoy instead of the real element, leaving the actual SVG dimensions unclamped.\n\nIn the Node.js rendering path, `renderAsync` from `@resvg/resvg-js` was called without a `fitTo` constraint, so it would render at whatever dimensions the SVG element specified — potentially allocating gigabytes of memory.\n\nThe browser code path is **not** vulnerable because it uses the clamped `size` return value from `ensureSize()` to set `canvas.width` and `canvas.height` directly.\n\n## Impact\n\nAny application that passes untrusted or user-supplied SVG content through `@dicebear/converter`'s Node.js conversion functions (`toPng`, `toJpeg`, `toWebp`, `toAvif`) is vulnerable to denial of service via excessive memory allocation. Note that `@dicebear/converter` can be used independently of DiceBear's avatar generation — any SVG string can be passed to the conversion functions.\n\nThe impact is limited to availability — there is no data disclosure or integrity impact. The browser code path is not affected.\n\n## Fix\n\nThe regex-based approach has been replaced with XML-aware processing using `fast-xml-parser` to correctly identify and modify the SVG root element's attributes. Additionally, a `fitTo` constraint has been added to the `renderAsync` call as defense-in-depth, ensuring the rendered output is always bounded regardless of SVG content.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:35:40Z",
+    "Severity": "HIGH",
+    "Summary": "SVG Dimension Capping Bypass via XML Comment Injection in @dicebear/converter ensureSize()",
+    "UpdatedAt": "2026-03-20T20:35:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 9.4.1"
+    }
+  ]
+}

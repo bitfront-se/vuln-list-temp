@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-20T20:44:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343768,
+    "Id": "GSA_kwCzR0hTQS1mcGgyLXI0cWctOTU3Ns4ABT7Y",
+    "GhsaId": "GHSA-fph2-r4qg-9576",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-fph2-r4qg-9576"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10250"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10252"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fph2-r4qg-9576"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fph2-r4qg-9576"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33421"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server's LiveQuery WebSocket interface does not enforce Class-Level Permission (CLP) pointer permissions (`readUserFields` and `pointerFields`). Any authenticated user can subscribe to LiveQuery events and receive real-time updates for all objects in classes protected by pointer permissions, regardless of whether the pointer fields on those objects point to the subscribing user. This bypasses the intended read access control, allowing unauthorized access to potentially sensitive data that is correctly restricted via the REST API.\n\n### Patches\n\nThe LiveQuery server now enforces pointer permissions on each event. After the existing check passes (which defers pointer permissions by design), the fix checks whether any configured pointer field on the object points to the subscribing user. Events for objects that don't match are silently skipped, consistent with how ACL mismatches are handled.\n\n### Workarounds\n\nUse ACLs on individual objects to restrict read access instead of relying solely on CLP pointer permissions. ACLs are enforced by LiveQuery.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:44:36Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server's LiveQuery bypasses CLP pointer permission enforcement",
+    "UpdatedAt": "2026-03-20T20:44:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.53"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.53"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.42"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.42"
+    }
+  ]
+}

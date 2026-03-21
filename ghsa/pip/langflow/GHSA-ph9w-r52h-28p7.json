@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-20T20:56:17Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "langflow"
+  },
+  "Advisory": {
+    "DatabaseId": 343794,
+    "Id": "GSA_kwCzR0hTQS1waDl3LXI1MmgtMjhwN84ABT7y",
+    "GhsaId": "GHSA-ph9w-r52h-28p7",
+    "References": [
+      {
+        "Url": "https://github.com/langflow-ai/langflow/security/advisories/GHSA-ph9w-r52h-28p7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ph9w-r52h-28p7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ph9w-r52h-28p7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33497"
+      }
+    ],
+    "Description": "### Summary\nIn the download_profile_picture function of the /profile_pictures/{folder_name}/{file_name} endpoint, the folder_name and file_name parameters are not strictly filtered, which allows the secret_key to be read across directories.\n\n### Details\nsrc/backend/base/langflow/api/v1/files.py\n\n![image](https://github.com/user-attachments/assets/19bc387c-93d8-475b-bab0-2675669c1c36)\n\nstorage local get_file, directly concatenate flow_id and file_name\n![image](https://github.com/user-attachments/assets/daf47b73-6e1b-414e-bb8b-66b67cf5a9e9)\n\n### PoC\n```curl --path-as-is 'http://127.0.0.1:7860/api/v1/files/profile_pictures/../secret_key' ```\n```QNuonm***********```\n\n### Impact\nsecret_key is used for jwt authentication. Attackers can forge authentication tokens and log into the system.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:56:14Z",
+    "Severity": "HIGH",
+    "Summary": "langflow: /profile_pictures/{folder_name}/{file_name} endpoint file reading",
+    "UpdatedAt": "2026-03-20T20:56:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.1"
+    }
+  ]
+}

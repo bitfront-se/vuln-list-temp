@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-20T21:48:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343813,
+    "Id": "GSA_kwCzR0hTQS02cWg1LW02ZzMteGhxNs4ABT8F",
+    "GhsaId": "GHSA-6qh5-m6g3-xhq6",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-6qh5-m6g3-xhq6"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10259"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10260"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6qh5-m6g3-xhq6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6qh5-m6g3-xhq6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33508"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server's LiveQuery component does not enforce the `requestComplexity.queryDepth` configuration setting when processing WebSocket subscription requests. An attacker can send a subscription with deeply nested logical operators, causing excessive recursion and CPU consumption that degrades or disrupts service availability.\n\nDeployments are affected when the LiveQuery WebSocket endpoint is reachable by untrusted clients.\n\n### Patches\n\nThe fix adds query condition depth validation to the LiveQuery subscription handler, enforcing the same `requestComplexity.queryDepth` limit that already protects REST API queries.\n\n### Workarounds\n\nThere is no known workaround other than upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T21:48:17Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server LiveQuery subscription query depth bypass",
+    "UpdatedAt": "2026-03-20T21:48:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.56"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.56"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.45"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.45"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-20T20:56:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343795,
+    "Id": "GSA_kwCzR0hTQS05ZmpwLXEzYzQtNnczas4ABT7z",
+    "GhsaId": "GHSA-9fjp-q3c4-6w3j",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-9fjp-q3c4-6w3j"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10257"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10258"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9fjp-q3c4-6w3j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9fjp-q3c4-6w3j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33498"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker can send an unauthenticated HTTP request with a deeply nested query containing logical operators to permanently hang the Parse Server process. The server becomes completely unresponsive and must be manually restarted. This is a bypass of the fix for CVE-2026-32944.\n\n### Patches\n\nThe query condition nesting depth is now validated before the query enters the transformation pipeline, preventing deeply nested structures from being recursively processed before the existing depth guard can fire.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:56:22Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server has a query condition depth bypass via pre-validation transform pipeline",
+    "UpdatedAt": "2026-03-20T20:56:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.55"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.55"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.44"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.44"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-20T20:45:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 343772,
+    "Id": "GSA_kwCzR0hTQS1xcGMzLWZnNGotOGhnbc4ABT7c",
+    "GhsaId": "GHSA-qpc3-fg4j-8hgm",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-qpc3-fg4j-8hgm"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10253"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10254"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qpc3-fg4j-8hgm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qpc3-fg4j-8hgm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33429"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker can subscribe to LiveQuery with a `watch` parameter targeting a protected field. Although the protected field value is properly stripped from event payloads, the presence or absence of update events reveals whether the protected field changed, creating a binary oracle. For boolean protected fields, the timing of change events is equivalent to knowing the field value.\n\n### Patches\n\nThe `watch` parameter is now validated against protected fields at subscription time, mirroring the existing validation for the `where` clause. Subscriptions that include protected fields in `watch` are rejected with a permission error. Master key connections are exempt.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:45:40Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server has a protected field change detection oracle via LiveQuery watch parameter",
+    "UpdatedAt": "2026-03-20T20:45:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.54"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.54"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.43"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.43"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-20T20:51:08Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ory/oathkeeper"
+  },
+  "Advisory": {
+    "DatabaseId": 343789,
+    "Id": "GSA_kwCzR0hTQS00bXE3LXB2amcteHAycs4ABT7t",
+    "GhsaId": "GHSA-4mq7-pvjg-xp2r",
+    "References": [
+      {
+        "Url": "https://github.com/ory/oathkeeper/security/advisories/GHSA-4mq7-pvjg-xp2r"
+      },
+      {
+        "Url": "https://github.com/ory/oathkeeper/commit/198a2bc82a99e0a77bd0ffe290cbdd5285a1b17c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4mq7-pvjg-xp2r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4mq7-pvjg-xp2r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33496"
+      }
+    ],
+    "Description": "## Description\n\nOry Oathkeeper is vulnerable to authentication bypass due to cache key confusion. The `oauth2_introspection` authenticator cache does not distinguish tokens that were validated with different introspection URLs. An attacker can therefore legitimately use a token to prime the cache, and subsequently use the same token for rules that use a different introspection server.\n\n## Preconditions\n\nOry Oathkeeper has to be configured with multiple `oauth2_introspection` authenticator servers, each accepting different tokens. The authenticators also must be [configured to use caching](https://www.ory.com/docs/oathkeeper/pipeline/authn#oauth2_introspection-configuration). An attacker has to have a way to gain a valid token for one of the configured introspection servers.\n\n## Mitigation\n\nOry Oathkeeper now includes the introspection server URL in the cache key, preventing confusion of tokens.\n\nUpdate to the patched version of Ory Oathkeeper. If that is not immediately possible, disable caching for `oauth2_introspection` authenticators.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-20T20:51:07Z",
+    "Severity": "HIGH",
+    "Summary": "Ory Oathkeeper has an authentication bypass by cache key confusion",
+    "UpdatedAt": "2026-03-20T20:51:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.40.10-0.20260320084801-198a2bc82a99"
+      },
+      "VulnerableVersionRange": "\u003c 0.40.10-0.20260320084801-198a2bc82a99"
+    }
+  ]
+}

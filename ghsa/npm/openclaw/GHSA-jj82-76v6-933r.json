@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/2b63592be57782c8946e521bc81286933f0f99c7"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27566"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-allowlist-bypass-via-wrapper-binary-unwrapping-in-system-run"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-jj82-76v6-933r"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-jj82-76v6-933r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27566"
       }
     ],
     "Description": "### Summary\n`system.run` exec allowlist analysis treated wrapper binaries as the effective executable and did not fully unwrap `env`/shell-dispatch wrappers.\n\nThis allowed wrapper-smuggled payloads (for example `env bash -lc ...`) to satisfy an allowlist entry for the wrapper while executing non-allowlisted commands.\n\n### Impact\nOn affected versions, an actor who can trigger `system.run` requests under an allowlist policy could bypass intended allowlist restrictions by routing execution through wrapper binaries.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.21-2`\n- Patched in next release: `2026.2.22` (pre-set below so publish can happen immediately after npm release)\n\n### Fix Commit(s)\n- `2b63592be57782c8946e521bc81286933f0f99c7`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`\u003e= 2026.2.22`).\n\nAfter npm `2026.2.22` is published, this advisory can be published directly without further metadata edits.\n\nOpenClaw thanks @tdjackey for reporting.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-03T23:13:51Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw's exec allowlist wrapper analysis did not unwrap env/shell dispatch chains",
-    "UpdatedAt": "2026-03-03T23:13:54Z",
+    "UpdatedAt": "2026-03-20T21:36:00Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

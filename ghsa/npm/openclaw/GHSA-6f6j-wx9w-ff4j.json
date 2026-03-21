@@ -14,6 +14,12 @@
         "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6f6j-wx9w-ff4j"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31999"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-current-working-directory-injection-via-windows-wrapper-resolution-fallback"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-6f6j-wx9w-ff4j"
       }
     ],
@@ -21,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-6f6j-wx9w-ff4j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31999"
       }
     ],
     "Description": "### Summary\nOn Windows ACPX paths, wrapper resolution for `.cmd`/`.bat` could fall back to shell execution in ways that allowed `cwd` influence to alter execution behavior.\n\n### Impact\nIn affected Windows ACPX configurations, this could enable command execution integrity loss through cwd-influenced wrapper resolution.\n\n### Fix\nWrapper resolution now prefers explicit PATH/PATHEXT entrypoint resolution and unwrapped Node/EXE execution, with strict fail-closed handling enabled by default for unresolvable wrapper cases.\n\n### Affected and Patched Versions\n- Affected: `\u003e= 2026.2.26, \u003c 2026.3.1`\n- Patched: `2026.3.1`",
@@ -28,7 +38,7 @@
     "PublishedAt": "2026-03-02T21:55:05Z",
     "Severity": "CRITICAL",
     "Summary": "CpenClaw's ACPX Windows wrapper shell fallback allowed cwd injection in specific paths",
-    "UpdatedAt": "2026-03-02T21:55:05Z",
+    "UpdatedAt": "2026-03-20T21:36:40Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
