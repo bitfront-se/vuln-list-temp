@@ -1,10 +1,11 @@
 {
   "id": "RUSTSEC-2026-0048",
-  "modified": "2026-03-20T17:15:08.086245Z",
+  "modified": "2026-03-20T17:26:22.199786Z",
   "published": "2026-03-19T12:00:00Z",
   "aliases": [
     "CVE-2026-4428",
-    "GHSA-9f94-5g5w-gf6r"
+    "GHSA-9f94-5g5w-gf6r",
+    "RUSTSEC-2026-0042"
   ],
   "summary": "CRL Distribution Point Scope Check Logic Error in AWS-LC",
   "details": "A logic error in CRL distribution point matching in AWS-LC allows a revoked\ncertificate to bypass revocation checks during certificate validation, when\nthe application enables CRL checking and uses partitioned CRLs with Issuing\nDistribution Point (IDP) extensions.\n\nCustomers of AWS services do not need to take action. `aws-lc-sys` contains\ncode from AWS-LC. Applications using `aws-lc-sys` should upgrade to the most\nrecent release of `aws-lc-sys`.\n\n## Workarounds\n\nApplications can workaround this issue if they do not enable CRL checking\n(`X509_V_FLAG_CRL_CHECK`). Applications using complete (non-partitioned)\nCRLs without IDP extensions are also not affected.\n\nOtherwise, there is no workaround and applications using `aws-lc-sys` should\nupgrade to the most recent releases of `aws-lc-sys`.",

@@ -1,10 +1,12 @@
 {
   "id": "RUSTSEC-2026-0045",
-  "modified": "2026-03-20T17:15:08.073876Z",
+  "modified": "2026-03-20T17:26:02.057757Z",
   "published": "2026-03-02T12:00:00Z",
   "aliases": [
     "CVE-2026-3337",
-    "GHSA-65p9-r9h6-22vj"
+    "GHSA-65p9-r9h6-22vj",
+    "GHSA-frmv-5gcm-jwxh",
+    "RUSTSEC-2026-0043"
   ],
   "summary": "Timing Side-Channel in AES-CCM Tag Verification in AWS-LC",
   "details": "Observable timing discrepancy in AES-CCM decryption in AWS-LC allows an\nunauthenticated user to potentially determine authentication tag validity\nvia timing analysis.\n\nThe impacted implementations are through the EVP CIPHER API:\n`EVP_aes_128_ccm`, `EVP_aes_192_ccm`, and `EVP_aes_256_ccm`.\n\nCustomers of AWS services do not need to take action. `aws-lc-sys` contains\ncode from AWS-LC. Applications using `aws-lc-sys` should upgrade to the most\nrecent release of `aws-lc-sys`.\n\n## Workarounds\n\nIn the special cases of using AES-CCM with (M=4, L=2), (M=8, L=2), or\n(M=16, L=2), applications can workaround this issue by using AES-CCM through\nthe EVP AEAD API using implementations `EVP_aead_aes_128_ccm_bluetooth`,\n`EVP_aead_aes_128_ccm_bluetooth_8`, and `EVP_aead_aes_128_ccm_matter`\nrespectively.\n\nOtherwise, there is no workaround and applications using `aws-lc-sys` should\nupgrade to the most recent release.",
