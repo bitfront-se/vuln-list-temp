@@ -1,0 +1,56 @@
+{
+  "id": "PYSEC-2026-2",
+  "modified": "2026-03-24T16:15:08.809028Z",
+  "published": "2026-03-24T16:15:08.809028Z",
+  "summary": "Two litellm versions published containing credential harvesting malware",
+  "details": "After an API Token exposure from an exploited trivy dependency,\ntwo new releases of `litellm` were uploaded to PyPI containing automatically activated malware,\nharvesting sensitive credentials and files, and exfiltrating to a remote API.\n\nAnyone who has installed and run the project should assume\nany credentials available to litellm environment may have been exposed,\nand revoke/rotate thema ccordingly.\n",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "litellm",
+        "purl": "pkg:pypi/litellm"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "1.82.7"
+            },
+            {}
+          ]
+        }
+      ],
+      "versions": [
+        "1.82.7",
+        "1.82.8"
+      ],
+      "database_specific": {
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/litellm/PYSEC-2026-2.yaml"
+      }
+    }
+  ],
+  "references": [
+    {
+      "type": "EVIDENCE",
+      "url": "https://inspector.pypi.io/project/litellm/1.82.8/packages/f6/2c/731b614e6cee0bca1e010a36fd381fba69ee836fe3cb6753ba23ef2b9601/litellm-1.82.8.tar.gz/litellm-1.82.8/litellm_init.pth#line.1"
+    },
+    {
+      "type": "EVIDENCE",
+      "url": "https://inspector.pypi.io/project/litellm/1.82.7/packages/79/5f/b6998d42c6ccd32d36e12661f2734602e72a576d52a51f4245aef0b20b4d/litellm-1.82.7-py3-none-any.whl/litellm/proxy/proxy_server.py#line.130"
+    },
+    {
+      "type": "REPORT",
+      "url": "https://github.com/BerriAI/litellm/issues/24518"
+    },
+    {
+      "type": "ARTICLE",
+      "url": "https://futuresearch.ai/blog/litellm-pypi-supply-chain-attack/"
+    },
+    {
+      "type": "ARTICLE",
+      "url": "https://www.wiz.io/blog/teampcp-attack-kics-github-action"
+    }
+  ]
+}
