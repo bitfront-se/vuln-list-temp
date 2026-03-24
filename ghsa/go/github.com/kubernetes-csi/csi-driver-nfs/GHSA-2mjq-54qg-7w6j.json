@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-24T16:11:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/kubernetes-csi/csi-driver-nfs"
+  },
+  "Advisory": {
+    "DatabaseId": 343832,
+    "Id": "GSA_kwCzR0hTQS0ybWpxLTU0cWctN3c2as4ABT8Y",
+    "GhsaId": "GHSA-2mjq-54qg-7w6j",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3864"
+      },
+      {
+        "Url": "https://github.com/kubernetes/kubernetes/issues/137797"
+      },
+      {
+        "Url": "https://groups.google.com/g/kubernetes-security-announce/c/i4ZKN9VLcUE"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/03/17/1"
+      },
+      {
+        "Url": "https://github.com/kubernetes-csi/csi-driver-nfs/commit/316af2d86b913a595542dc17e8599cf81afd938f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2mjq-54qg-7w6j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2mjq-54qg-7w6j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-3864"
+      }
+    ],
+    "Description": "A vulnerability was discovered in the Kubernetes CSI Driver for NFS where the subDir parameter in volume identifiers was insufficiently validated. Attackers with the ability to create PersistentVolumes referencing the NFS CSI driver could craft volume identifiers containing path traversal sequences (../). During volume deletion or cleanup operations, the driver could operate on unintended directories outside the intended managed path within the NFS export. This may lead to deletion or modification of directories on the NFS server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-21T00:31:43Z",
+    "Severity": "MODERATE",
+    "Summary": "NFS CSI driver for Kubernetes is Vulnerable to Path Traversal through Volume Identifier Parameter",
+    "UpdatedAt": "2026-03-24T16:11:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260210055231-316af2d86b91"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260210055231-316af2d86b91"
+    }
+  ]
+}

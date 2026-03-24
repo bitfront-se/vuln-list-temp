@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-24T16:04:14Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.scala-sbt:sbt"
+  },
+  "Advisory": {
+    "DatabaseId": 344479,
+    "Id": "GSA_kwCzR0hTQS14NGZmLXE2aDgtdjdnd84ABUGf",
+    "GhsaId": "GHSA-x4ff-q6h8-v7gw",
+    "References": [
+      {
+        "Url": "https://github.com/sbt/sbt/security/advisories/GHSA-x4ff-q6h8-v7gw"
+      },
+      {
+        "Url": "https://github.com/sbt/sbt/commit/1ce945b6b79cbe3cef6c0fe9efbbd2904e0f479e"
+      },
+      {
+        "Url": "https://github.com/sbt/sbt/commit/3a474ab060df4dbfa825a7e7bc97e00056519800"
+      },
+      {
+        "Url": "https://github.com/sbt/sbt/releases/tag/v1.12.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x4ff-q6h8-v7gw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x4ff-q6h8-v7gw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32948"
+      }
+    ],
+    "Description": "### Summary\nOn Windows, sbt uses `Process(\"cmd\", \"/c\", ...)` to run VCS commands (git, hg, svn). The URI fragment (branch, tag, revision) is user-controlled via the build definition and passed to these commands without validation. Because `cmd /c` interprets `\u0026`, `|`, and `;` as command separators, a malicious fragment can execute arbitrary commands.\n\n### Details\n- [Resolvers.scala L84–95](https://github.com/sbt/sbt/blob/dc90f160dfb563f46fd1a7b97945c381d15e2a6c/main/src/main/scala/sbt/Resolvers.scala#L84-L95) — git resolver passes `uri.getFragment()` to `run()` without sanitization\n- [Resolvers.scala L137–145](https://github.com/sbt/sbt/blob/dc90f160dfb563f46fd1a7b97945c381d15e2a6c/main/src/main/scala/sbt/Resolvers.scala#L137-L145) — `run()` uses `Process(\"cmd\", \"/c\", ...)` on Windows, so `cmd` interprets `\u0026\u0026` as command separator\n\n### PoC\n```sh\n# build.properties\n# sbt.version=1.12.5  # Tested on those two versions of sbt\nsbt.version=2.0.0-RC9\n```\n\n```scala\n// build.sbt\n\nThisBuild / scalaVersion := \"2.12.19\"\n\nlazy val root = project\n  .in(file(\".\"))\n  .dependsOn(vulnerable)\n\nlazy val vulnerable = RootProject(\n  uri(\"https://github.com/sbt/io.git#develop%26%26calc.exe\")\n)\n```\n\n### Impact\n\nWindows users are impacted. An attacker can execute arbitrary Windows commands if they control the dependency URI.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T16:04:12Z",
+    "Severity": "MODERATE",
+    "Summary": "sbt: Source dependency feature (via crafted VCS URL) leads to arbitrary code execution on Windows",
+    "UpdatedAt": "2026-03-24T16:04:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.12.7"
+      },
+      "VulnerableVersionRange": "\u003e= 0.9.5, \u003c 1.12.7"
+    }
+  ]
+}
