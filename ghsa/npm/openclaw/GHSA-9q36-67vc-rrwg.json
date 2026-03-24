@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-9q36-67vc-rrwg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27646"
       }
     ],
     "Description": "### Summary\nSandboxed requester sessions could reach host-side ACP session initialization through `/acp spawn`.\n\nOpenClaw already blocked `sessions_spawn({ runtime: \"acp\" })` from sandboxed sessions, but the slash-command path initialized ACP directly without applying the same host-runtime guard first.\n\n### Affected Packages / Versions\n- npm package: `openclaw`\n- Affected versions: `\u003c= 2026.3.2`\n- Patched version: `\u003e= 2026.3.7`\n\n### Details\nACP sessions run on the host, not inside the OpenClaw sandbox. The direct ACP spawn path in `src/agents/acp-spawn.ts` already denied sandboxed requesters, but `/acp spawn` in `src/auto-reply/reply/commands-acp/lifecycle.ts` called `initializeSession(...)` without first applying the same restriction.\n\nIn affected versions, an already authorized sender in a sandboxed session could use `/acp spawn` to cross from sandboxed chat context into host-side ACP runtime initialization when ACP was enabled and a backend was available.\n\n### Fix Commit(s)\n- `61000b8e4ded919ca1a825d4700db4cb3fdc56e3`\n\n### Fix Details\nThe fix introduced a shared ACP runtime-policy guard in `src/agents/acp-spawn.ts` and reused it from the `/acp spawn` handler in `src/auto-reply/reply/commands-acp/lifecycle.ts` before any ACP backend initialization. Regression coverage was added in `src/auto-reply/reply/commands-acp.test.ts` to prove sandboxed `/acp spawn` requests are rejected early, while existing ACP spawn behavior for non-sandboxed sessions remains unchanged.\n\n### Release Process Note\nPatched version is pre-set to `2026.3.7` so the advisory can be published once that npm release is available.\n\nThanks @tdjackey for reporting.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-03-09T19:54:54Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Sandboxed /acp spawn requests could initialize host ACP sessions",
-    "UpdatedAt": "2026-03-09T19:54:54Z",
+    "UpdatedAt": "2026-03-23T21:49:25Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.9,
