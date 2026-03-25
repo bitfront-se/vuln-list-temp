@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T19:11:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 344497,
+    "Id": "GSA_kwCzR0hTQS1nNGNmLXhqMjktd3Fxcs4ABUGx",
+    "GhsaId": "GHSA-g4cf-xj29-wqqr",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-g4cf-xj29-wqqr"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10270"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10271"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g4cf-xj29-wqqr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g4cf-xj29-wqqr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33538"
+      }
+    ],
+    "Description": "### Impact\n\nAn unauthenticated attacker can cause Denial of Service by sending authentication requests with arbitrary, unconfigured provider names. The server executes a database query for each unconfigured provider before rejecting the request, and since no database index exists for unconfigured providers, each request triggers a full collection scan on the user database. This can be parallelized to saturate database resources.\n\n### Patches\n\nThe fix validates that an authentication provider is configured before executing any database query. Requests with unconfigured providers are now rejected immediately without querying the database.\n\n### Workarounds\n\nThere is no known workaround other than upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T19:11:40Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server: Denial of Service via unindexed database query for unconfigured auth providers",
+    "UpdatedAt": "2026-03-24T19:12:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.58"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.58"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.52"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.52"
+    }
+  ]
+}

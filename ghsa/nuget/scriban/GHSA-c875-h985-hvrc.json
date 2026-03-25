@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T22:13:09Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "scriban"
+  },
+  "Advisory": {
+    "DatabaseId": 344556,
+    "Id": "GSA_kwCzR0hTQS1jODc1LWg5ODUtaHZyY84ABUHs",
+    "GhsaId": "GHSA-c875-h985-hvrc",
+    "References": [
+      {
+        "Url": "https://github.com/scriban/scriban/security/advisories/GHSA-c875-h985-hvrc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c875-h985-hvrc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c875-h985-hvrc"
+      }
+    ],
+    "Description": "## Summary\n\nScriban's `LoopLimit` only applies to script loop statements, not to expensive iteration performed inside operators and builtins. An attacker can submit a single expression such as `{{ 1..1000000 | array.size }}` and force large amounts of CPU work even when `LoopLimit` is set to a very small value.\n\n## Details\n\nThe relevant code path is:\n\n- `ScriptBlockStatement.Evaluate()` calls `context.CheckAbort()` once per statement in `src/Scriban/Syntax/Statements/ScriptBlockStatement.cs` lines 41–46.\n- `LoopLimit` enforcement is tied to script loop execution via `TemplateContext.StepLoop()`, not to internal helper iteration.\n- `array.size` in `src/Scriban/Functions/ArrayFunctions.cs` lines 596–609 calls `list.Cast\u003cobject\u003e().Count()` for non-collection enumerables.\n- `1..N` creates a `ScriptRange` from `ScriptBinaryExpression.RangeInclude()` in `src/Scriban/Syntax/Expressions/ScriptBinaryExpression.cs` lines 745–748.\n- `ScriptRange` then yields every element one by one **without going through `StepLoop()`** in `src/Scriban/Runtime/ScriptRange.cs`.\n\nThis means a single statement can perform arbitrarily large iteration without being stopped by `LoopLimit`.\n\nThere is also a related memory-amplification path in `string * int`:\n\n- `ScriptBinaryExpression.CalculateToString()` appends in a plain `for` loop in `src/Scriban/Syntax/Expressions/ScriptBinaryExpression.cs` lines 301–334.\n\n---\n\n## Proof of Concept\n\n### Setup\n\n```bash\nmkdir scriban-poc3\ncd scriban-poc3\ndotnet new console --framework net8.0\ndotnet add package Scriban --version 6.6.0\n```\n\n### `Program.cs`\n\n```csharp\nusing Scriban;\n\nvar template = Template.Parse(\"{{ 1..1000000 | array.size }}\");\n\nvar context = new TemplateContext\n{\n    LoopLimit = 1\n};\n\nConsole.WriteLine(template.Render(context));\n```\n\n### Run\n\n```bash\ndotnet run\n```\n\n### Actual Output\n\n```\n1000000\n```\n\n### Expected Behavior\n\nA safety limit of `LoopLimit = 1` should prevent a template from performing one million iterations worth of work.\n\n### Optional Stronger Variant (Memory Amplification)\n\n```csharp\nusing Scriban;\n\nvar template = Template.Parse(\"{{ 'A' * 200000000 }}\");\nvar context = new TemplateContext\n{\n    LoopLimit = 1\n};\n\ntemplate.Render(context);\n```\n\nThis variant demonstrates that `LoopLimit` also does not constrain large internal allocation work.\n\n---\n\n## Impact\n\nThis is an uncontrolled resource consumption issue. Any application that accepts attacker-controlled templates and relies on `LoopLimit` as part of its safe-runtime configuration can still be forced into heavy CPU or memory work by a single expression.\n\nThe issue impacts:\n\n- Template-as-a-service systems\n- CMS or email rendering systems that accept user templates\n- Any multi-tenant use of Scriban with untrusted template content",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T22:13:08Z",
+    "Severity": "HIGH",
+    "Summary": "Scriban: Built-in operations bypass LoopLimit and delay cancellation, enabling Denial of Service",
+    "UpdatedAt": "2026-03-24T22:13:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.0"
+    }
+  ]
+}

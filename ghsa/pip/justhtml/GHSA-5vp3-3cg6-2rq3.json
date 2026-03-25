@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T19:22:21Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "justhtml"
+  },
+  "Advisory": {
+    "DatabaseId": 344501,
+    "Id": "GSA_kwCzR0hTQS01dnAzLTNjZzYtMnJxM84ABUG1",
+    "GhsaId": "GHSA-5vp3-3cg6-2rq3",
+    "References": [
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/security/advisories/GHSA-5vp3-3cg6-2rq3"
+      },
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/commit/f35f8f723c713bd8f912d86e9ec6881275ff5af9"
+      },
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/releases/tag/v1.13.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5vp3-3cg6-2rq3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5vp3-3cg6-2rq3"
+      }
+    ],
+    "Description": "## Summary\n\n`to_markdown()` is vulnerable when serializing attacker-controlled `\u003cpre\u003e` content. The `\u003cpre\u003e` handler emits a fixed three-backtick fenced code block, but writes decoded text content into that fence without choosing a delimiter longer than any backtick run inside the content.\n\nAn attacker can place backticks and HTML-like text inside a sanitized `\u003cpre\u003e` element so that the generated Markdown closes the fence early and leaves raw HTML outside the code block. When that Markdown is rendered by a CommonMark/GFM-style renderer that allows raw HTML, the HTML executes.\n\nThis is a bypass of the v1.12.0 Markdown hardening. That fix escaped HTML-significant characters for regular text nodes, but `\u003cpre\u003e` uses a separate serialization path and does not apply the same protection.\n\n## Details\n\nThe vulnerable `\u003cpre\u003e` Markdown path:\n\n- extracts decoded text from the `\u003cpre\u003e` subtree\n- opens a fenced block with a fixed delimiter of ``````\n- writes the decoded text directly into the output\n- closes with another fixed ``````\n\nBecause the fence length is fixed, attacker-controlled content containing a backtick run of length 3 or more can terminate the code block. If the content also contains decoded HTML-like text such as `\u0026lt;img ...\u0026gt;`, that text appears outside the fence in the resulting Markdown and is treated as raw HTML by downstream Markdown renderers.\n\nThe issue is not that HTML-like text appears inside code blocks. The issue is that the serializer allows attacker-controlled `\u003cpre\u003e` text to break out of the fixed fence.\n\n## Reproduction\n\n```python\nfrom justhtml import JustHTML\n\npayload = \"\u003cpre\u003e\u0026#96;\u0026#96;\u0026#96;\\n\u0026lt;img src=x onerror=alert(1)\u0026gt;\u003c/pre\u003e\"\ndoc = JustHTML(payload, fragment=True)  # default sanitize=True\n\nprint(doc.to_html(pretty=False))\n# \u003cpre\u003e```\n# \u0026lt;img src=x onerror=alert(1)\u0026gt;\u003c/pre\u003e\n\nprint(doc.to_markdown())\n# ```\n# ```\n# \u003cimg src=x onerror=alert(1)\u003e\n# ```\n\n```\n\nRendered as CommonMark/GFM-style Markdown, that output is interpreted as:\n\n1. Line 1 opens a fenced code block\n2. Line 2 closes it\n3. Line 3 is raw HTML outside the fence\n4. Line 4 opens a new fence\n\n## Impact\n\nApplications that treat `JustHTML(..., sanitize=True).to_markdown()` output as safe for direct rendering in Markdown contexts may be exposed to XSS, depending on the downstream Markdown renderer's raw-HTML handling.\n\n## Root Cause\n\nThe `\u003cpre\u003e` Markdown serializer uses a fixed fence instead of selecting a delimiter longer than the longest backtick run in the content.\n\n## Fix\n\nWhen serializing `\u003cpre\u003e` content to Markdown, choose a fence length longer than any backtick run present in the code block content, with a minimum length of 3.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T19:22:21Z",
+    "Severity": "HIGH",
+    "Summary": "JustHTML is vulnerable to XSS via code fence breakout in \u003cpre\u003e content",
+    "UpdatedAt": "2026-03-24T19:22:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.13.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.12.0"
+    }
+  ]
+}

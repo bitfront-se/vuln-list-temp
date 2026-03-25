@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T20:17:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 344510,
+    "Id": "GSA_kwCzR0hTQS0zN21qLWMyd2YtY3g5Ns4ABUG-",
+    "GhsaId": "GHSA-37mj-c2wf-cx96",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-37mj-c2wf-cx96"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10278"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10279"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-37mj-c2wf-cx96"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-37mj-c2wf-cx96"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33627"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated user calling `GET /users/me` receives unsanitized auth data, including sensitive credentials such as MFA TOTP secrets and recovery codes. The endpoint internally uses master-level authentication for the session query, and the master context leaks through to the user data, bypassing auth adapter sanitization. An attacker who obtains a user's session token can extract MFA secrets to generate valid TOTP codes indefinitely.\n\n### Patches\n\nThe `/users/me` endpoint now queries the session and user data separately, using the caller's authentication context for the user query so that all security layers apply correctly.\n\n### Workarounds\n\nThere is no known workaround.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T20:17:02Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server exposes auth data via /users/me endpoint",
+    "UpdatedAt": "2026-03-24T20:17:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.61"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.61"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.55"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.55"
+    }
+  ]
+}

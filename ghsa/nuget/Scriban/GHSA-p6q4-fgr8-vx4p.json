@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T22:06:24Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Scriban"
+  },
+  "Advisory": {
+    "DatabaseId": 344553,
+    "Id": "GSA_kwCzR0hTQS1wNnE0LWZncjgtdng0cM4ABUHp",
+    "GhsaId": "GHSA-p6q4-fgr8-vx4p",
+    "References": [
+      {
+        "Url": "https://github.com/scriban/scriban/security/advisories/GHSA-p6q4-fgr8-vx4p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wgh7-7m3c-fx25"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p6q4-fgr8-vx4p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p6q4-fgr8-vx4p"
+      }
+    ],
+    "Description": "### Summary\nStackOverflowException via nested array initializers bypasses ExpressionDepthLimit fix (GHSA-wgh7-7m3c-fx25)\n\n### Details\nThe recent fix for GHSA-wgh7-7m3c-fx25 (uncontrolled recursion in parser) added `ExpressionDepthLimit` defaulting to 250. However, deeply nested **array initializers** (`[[[[...`) recurse through `ParseArrayInitializer` → `ParseExpression` → `ParseArrayInitializer`, which is a **different recursion path** not covered by the expression depth counter.\n\nThis causes a `StackOverflowException` on current main (commit b5ac4bf - \"Add limits for default safety\").\n\n### PoC\n```\nusing Scriban;\n\n// ExpressionDepthLimit (default 250) does NOT prevent this crash\nstring nested = \"{{ \" + new string('[', 5000) + \"1\" + new string(']', 5000) + \" }}\";\nTemplate.Parse(nested); // StackOverflowException - process terminates\n```\n\n### Impact\nSame as GHSA-wgh7-7m3c-fx25: High severity. StackOverflowException cannot be caught with try/catch in .NET - the process terminates immediately. Any application calling Template.Parse with untrusted input is vulnerable, even with the new default ExpressionDepthLimit enabled.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T22:06:24Z",
+    "Severity": "HIGH",
+    "Summary": "Scriban has a Stack Overflow via Nested Array Initializers That Bypass the ExpressionDepthLimit Fix",
+    "UpdatedAt": "2026-03-24T22:06:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.0"
+    }
+  ]
+}

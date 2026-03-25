@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-24T19:48:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 344509,
+    "Id": "GSA_kwCzR0hTQS0yMjk5LWdoanItNnZqcM4ABUG9",
+    "GhsaId": "GHSA-2299-ghjr-6vjp",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-2299-ghjr-6vjp"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10275"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10276"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2299-ghjr-6vjp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2299-ghjr-6vjp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33624"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker who obtains a user's password and a single MFA recovery code can reuse that recovery code an unlimited number of times by sending concurrent login requests. This defeats the single-use design of recovery codes. The attack requires the user's password, a valid recovery code, and the ability to send concurrent requests within milliseconds.\n\n### Patches\n\nThe login handler now uses optimistic locking when updating auth data that contains consumed single-use tokens. If a concurrent request has already modified the recovery array, the update fails and the login is rejected.\n\n### Workarounds\n\nThere are no known workarounds.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T19:48:24Z",
+    "Severity": "LOW",
+    "Summary": "Parse Server: MFA recovery code single-use bypass via concurrent requests",
+    "UpdatedAt": "2026-03-24T19:48:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.60"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.60"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.54"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.54"
+    }
+  ]
+}

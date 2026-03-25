@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T22:09:54Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "scriban"
+  },
+  "Advisory": {
+    "DatabaseId": 344554,
+    "Id": "GSA_kwCzR0hTQS14Nm05LTM4dm0tMnhoZs4ABUHq",
+    "GhsaId": "GHSA-x6m9-38vm-2xhf",
+    "References": [
+      {
+        "Url": "https://github.com/scriban/scriban/security/advisories/GHSA-x6m9-38vm-2xhf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x6m9-38vm-2xhf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x6m9-38vm-2xhf"
+      }
+    ],
+    "Description": "## Summary\n\n`TemplateContext.Reset()` claims that a `TemplateContext` can be reused safely on the same thread, but it does not clear `CachedTemplates`. If an application pools `TemplateContext` objects and uses an `ITemplateLoader` that resolves content per request, tenant, or user, a previously authorized include can be served to later renders without calling `TemplateLoader.Load()` again.\n\n## Details\n\nThe relevant code path is:\n\n- `TemplateContext.Reset()` only clears output, globals, cultures, and source files in `src/Scriban/TemplateContext.cs` lines 877–902.\n- `CachedTemplates` is initialized once and kept on the context in `src/Scriban/TemplateContext.cs` line 197.\n- `include` resolves templates through `IncludeFunction.Invoke()` in `src/Scriban/Functions/IncludeFunction.cs` lines 29–43.\n- `IncludeFunction.Invoke()` calls `TemplateContext.GetOrCreateTemplate()` in `src/Scriban/TemplateContext.cs` lines 1249–1256.\n- If a template path is already present in `CachedTemplates`, Scriban returns the cached compiled template and does **not** call `TemplateLoader.Load()` again.\n\nThis becomes a security issue when `ITemplateLoader.Load()` returns request-dependent content. A first render can prime the cache with an admin-only or tenant-specific template, and later renders on the same reused `TemplateContext` will receive that stale template even after `Reset()`.\n\n---\n\n## Proof of Concept\n\n### Setup\n\n```bash\nmkdir scriban-poc1\ncd scriban-poc1\ndotnet new console --framework net8.0\ndotnet add package Scriban --version 6.6.0\n```\n\n### `Program.cs`\n\n```csharp\nusing Scriban;\nusing Scriban.Parsing;\nusing Scriban.Runtime;\n\nvar loader = new SwitchingLoader();\nvar context = new TemplateContext\n{\n    TemplateLoader = loader,\n};\n\nvar template = Template.Parse(\"{{ include 'profile' }}\");\n\nloader.Content = \"admin-only\";\nConsole.WriteLine(\"first=\" + template.Render(context));\n\ncontext.Reset();\n\nloader.Content = \"guest-view\";\nConsole.WriteLine(\"second=\" + template.Render(context));\n\nsealed class SwitchingLoader : ITemplateLoader\n{\n    public string Content { get; set; } = string.Empty;\n\n    public string GetPath(TemplateContext context, SourceSpan callerSpan, string templateName) =\u003e templateName;\n\n    public string Load(TemplateContext context, SourceSpan callerSpan, string templatePath) =\u003e Content;\n\n    public ValueTask\u003cstring\u003e LoadAsync(TemplateContext context, SourceSpan callerSpan, string templatePath)\n        =\u003e new(Content);\n}\n```\n\n### Run\n\n```bash\ndotnet run\n```\n\n### Actual Output\n\n```\nfirst=admin-only\nsecond=admin-only\n```\n\n### Expected Output\n\n```\nfirst=admin-only\nsecond=guest-view\n```\n\nThe second render should reload the template after `Reset()`, but it instead reuses the cached compiled template from the previous render.\n\n---\n\n## Impact\n\nThis is a cross-render data isolation issue. Any application that reuses `TemplateContext` objects and uses a request-dependent `ITemplateLoader` can leak previously authorized template content across requests, users, or tenants.\n\nThe issue impacts applications that:\n\n- Pool or reuse `TemplateContext`\n- Call `Reset()` between requests\n- Use `include`\n- Resolve include content based on request-specific state",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T22:09:49Z",
+    "Severity": "HIGH",
+    "Summary": "Scriban has an authorization bypass due to stale include cache surviving TemplateContext.Reset() ",
+    "UpdatedAt": "2026-03-24T22:09:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.0"
+    }
+  ]
+}

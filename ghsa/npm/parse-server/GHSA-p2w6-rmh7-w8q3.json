@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T19:12:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 344498,
+    "Id": "GSA_kwCzR0hTQS1wMnc2LXJtaDctdzhxM84ABUGy",
+    "GhsaId": "GHSA-p2w6-rmh7-w8q3",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-p2w6-rmh7-w8q3"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10272"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10273"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p2w6-rmh7-w8q3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p2w6-rmh7-w8q3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33539"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker with master key access can execute arbitrary SQL statements on the PostgreSQL database by injecting SQL metacharacters into field name parameters of the aggregate `$group` pipeline stage or the `distinct` operation. This allows privilege escalation from Parse Server application-level administrator to PostgreSQL database-level access.\n\nOnly Parse Server deployments using PostgreSQL are affected. MongoDB deployments are not affected.\n\n### Patches\n\nField names in the aggregate `$group._id` object values and `distinct` dot-notation parameters are now validated to only contain alphanumeric characters and underscores, preventing SQL injection via the `:raw` interpolation used in the PostgreSQL storage adapter.\n\n### Workarounds\n\nNo workaround. Upgrade to a patched version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T19:12:06Z",
+    "Severity": "HIGH",
+    "Summary": "Parse Server has SQL Injection through aggregate and distinct field names in PostgreSQL adapter",
+    "UpdatedAt": "2026-03-24T19:12:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.59"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.59"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0-alpha.53"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.6.0-alpha.53"
+    }
+  ]
+}

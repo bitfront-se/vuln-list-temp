@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-24T21:51:11Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/nats-io/nats-server/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 344552,
+    "Id": "GSA_kwCzR0hTQS0zZjI0LXBjdm0tNWpxY84ABUHo",
+    "GhsaId": "GHSA-3f24-pcvm-5jqc",
+    "References": [
+      {
+        "Url": "https://github.com/nats-io/nats-server/security/advisories/GHSA-3f24-pcvm-5jqc"
+      },
+      {
+        "Url": "https://advisories.nats.io/CVE/secnote-2026-13.txt"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3f24-pcvm-5jqc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3f24-pcvm-5jqc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33248"
+      }
+    ],
+    "Description": "### Background\n\nNATS.io is a high performance open source pub-sub distributed communication technology, built for the cloud, on-premise, IoT, and edge computing.\n\nOne authentication model supported is mTLS, deriving the NATS client identity from properties of the TLS Client Certificate.\n\n### Problem Description\n\nWhen using mTLS for client identity, with `verify_and_map` to derive a NATS identity from the client certificate's Subject DN, certain patterns of RDN would not be correctly enforced, allowing for authentication bypass.\n\nThis does require a valid certificate from a CA already trusted for client certificates, and `DN` naming patterns which the NATS maintainers consider highly unlikely.\n\nSo this is an unlikely attack. Nonetheless, administrators who have been very sophisticated in their `DN` construction patterns might conceivably be impacted.\n\n### Affected Versions\n\nFixed in nats-server 2.12.6 \u0026 2.11.15\n\n### Workarounds\n\nDevelopers should review their CA issuing practices.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T21:51:08Z",
+    "Severity": "MODERATE",
+    "Summary": "NATS has mTLS verify_and_map authentication bypass via incorrect Subject DN matching",
+    "UpdatedAt": "2026-03-24T21:51:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.12.0-RC.1, \u003c 2.12.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.15"
+      },
+      "VulnerableVersionRange": "\u003c 2.11.15"
+    }
+  ]
+}

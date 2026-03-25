@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-24T22:15:45Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Scriban"
+  },
+  "Advisory": {
+    "DatabaseId": 344559,
+    "Id": "GSA_kwCzR0hTQS1tMnAzLWh3djUteHBxd84ABUHv",
+    "GhsaId": "GHSA-m2p3-hwv5-xpqw",
+    "References": [
+      {
+        "Url": "https://github.com/scriban/scriban/security/advisories/GHSA-m2p3-hwv5-xpqw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m2p3-hwv5-xpqw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m2p3-hwv5-xpqw"
+      }
+    ],
+    "Description": "## Summary\n\nThe `LimitToString` safety limit (default 1MB since commit `b5ac4bf`) can be bypassed to allocate approximately 1GB of memory by exploiting the per-call reset of `_currentToStringLength` in `ObjectToString`. Each template expression rendered through `TemplateContext.Write(SourceSpan, object)` triggers a separate top-level `ObjectToString` call that resets the length counter to zero, and the underlying `StringBuilderOutput` has no cumulative output size limit. An attacker who can supply a template can cause an out-of-memory condition in the host application.\n\n## Details\n\nThe root cause is in `TemplateContext.Helpers.cs`, in the `ObjectToString` method:\n\n```csharp\n// src/Scriban/TemplateContext.Helpers.cs:89-111\npublic virtual string ObjectToString(object value, bool nested = false)\n{\n    if (_objectToStringLevel == 0)\n    {\n        _currentToStringLength = 0;  // \u003c-- resets on every top-level call\n    }\n    try\n    {\n        _objectToStringLevel++;\n        // ...\n        var result = ObjectToStringImpl(value, nested);\n        if (LimitToString \u003e 0 \u0026\u0026 _objectToStringLevel == 1 \u0026\u0026 result != null \u0026\u0026 result.Length \u003e= LimitToString)\n        {\n            return result + \"...\";\n        }\n        return result;\n    }\n    // ...\n}\n```\n\nEach time a template expression is rendered, `TemplateContext.Write(SourceSpan, object)` calls `ObjectToString`:\n\n```csharp\n// src/Scriban/TemplateContext.cs:693-701\npublic virtual TemplateContext Write(SourceSpan span, object textAsObject)\n{\n    if (textAsObject != null)\n    {\n        var text = ObjectToString(textAsObject);  // fresh _currentToStringLength = 0\n        Write(text);\n    }\n    return this;\n}\n```\n\nThe `StringBuilderOutput.Write` method appends unconditionally with no size check:\n\n```csharp\n// src/Scriban/Runtime/StringBuilderOutput.cs:47-50\npublic void Write(string text, int offset, int count)\n{\n    Builder.Append(text, offset, count);  // no cumulative limit\n}\n```\n\n**Execution flow:**\n1. Template creates a string of length 1,048,575 (one byte under the 1MB `LimitToString` default)\n2. A `for` loop iterates up to `LoopLimit` (default 1000) times\n3. Each iteration renders the string via `Write(span, x)` → `ObjectToString(x)`\n4. `ObjectToString` resets `_currentToStringLength = 0` since `_objectToStringLevel == 0`\n5. The string passes the `LimitToString` check (1,048,575 \u003c 1,048,576)\n6. Full string is appended to `StringBuilder` — no cumulative tracking\n7. After 1000 iterations: ~1GB allocated in-memory\n\n## PoC\n\n```csharp\nusing Scriban;\n\n// Uses only default TemplateContext settings (LoopLimit=1000, LimitToString=1048576)\nvar template = Template.Parse(\"{{ x = \\\"\\\" | string.pad_left 1048575 }}{{ for i in 1..1000 }}{{ x }}{{ end }}\");\n// This will allocate ~1GB in the StringBuilder, likely causing OOM\nvar result = template.Render();\n```\n\nEquivalent Scriban template:\n```scriban\n{{ x = \"\" | string.pad_left 1048575 }}{{ for i in 1..1000 }}{{ x }}{{ end }}\n```\n\nEach of the 1000 loop iterations outputs a 1,048,575-character string. Each passes the per-call `LimitToString` check independently. Total output: ~1,000,000,000 characters (~1GB) allocated in the `StringBuilder`.\n\n## Impact\n\n- **Denial of Service:** An attacker who can supply Scriban templates (common in CMS, email templating, report generation) can crash the host application via out-of-memory\n- **Process-level impact:** OOM kills the entire .NET process, not just the template rendering — affects all concurrent users\n- **Bypass of safety mechanism:** The `LimitToString` limit was specifically introduced to prevent resource exhaustion, but the per-call reset makes it ineffective against cumulative abuse\n- **Low complexity:** The exploit template is trivial — a single line\n\n## Recommended Fix\n\nAdd a cumulative output size counter to `TemplateContext` that tracks total bytes written across all `Write` calls, independent of the per-object `LimitToString`:\n\n```csharp\n// In TemplateContext.cs — add new property and field\nprivate long _totalOutputLength;\n\n/// \u003csummary\u003e\n/// Gets or sets the maximum total output length in characters. Default is 10485760 (10 MB). 0 means no limit.\n/// \u003c/summary\u003e\npublic int OutputLimit { get; set; } = 10485760;\n\n// In TemplateContext.Write(string, int, int) — add check before writing\npublic TemplateContext Write(string text, int startIndex, int count)\n{\n    if (text != null)\n    {\n        if (OutputLimit \u003e 0)\n        {\n            _totalOutputLength += count;\n            if (_totalOutputLength \u003e OutputLimit)\n            {\n                throw new ScriptRuntimeException(CurrentSpan, \n                    $\"The output limit of {OutputLimit} characters was reached.\");\n            }\n        }\n        // ... existing indent/write logic\n    }\n    return this;\n}\n```\n\nThis provides defense-in-depth: `LimitToString` caps individual object serialization, while `OutputLimit` caps total template output.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T22:15:43Z",
+    "Severity": "MODERATE",
+    "Summary": "Scriban: Denial of Service via Unbounded Cumulative Template Output Bypassing LimitToString",
+    "UpdatedAt": "2026-03-24T22:15:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.0"
+    }
+  ]
+}

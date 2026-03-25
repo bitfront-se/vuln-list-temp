@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-24T22:15:15Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Scriban"
+  },
+  "Advisory": {
+    "DatabaseId": 344558,
+    "Id": "GSA_kwCzR0hTQS14Y3g2LXZwMzgtOGhyNc4ABUHu",
+    "GhsaId": "GHSA-xcx6-vp38-8hr5",
+    "References": [
+      {
+        "Url": "https://github.com/scriban/scriban/security/advisories/GHSA-xcx6-vp38-8hr5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xcx6-vp38-8hr5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xcx6-vp38-8hr5"
+      }
+    ],
+    "Description": "## Summary\n\nThe `object.to_json` builtin function in Scriban performs recursive JSON serialization via an internal `WriteValue()` static local function that has no depth limit, no circular reference detection, and no stack overflow guard. A Scriban template containing a self-referencing object passed to `object.to_json` triggers unbounded recursion, causing a `StackOverflowException` that terminates the hosting .NET process. This is a fatal, unrecoverable crash — `StackOverflowException` cannot be caught by user code in .NET.\n\n## Details\n\nThe vulnerable code is the `WriteValue()` static local function at `src/Scriban/Functions/ObjectFunctions.cs:494`:\n\n```csharp\nstatic void WriteValue(TemplateContext context, Utf8JsonWriter writer, object value)\n{\n    var type = value?.GetType() ?? typeof(object);\n    if (value is null || value is string || value is bool ||\n        type.IsPrimitiveOrDecimal() || value is IFormattable)\n    {\n        JsonSerializer.Serialize(writer, value, type);\n    }\n    else if (value is IList || type.IsArray) {\n        writer.WriteStartArray();\n        foreach (var x in context.ToList(context.CurrentSpan, value))\n        {\n            WriteValue(context, writer, x);  // recursive, no depth check\n        }\n        writer.WriteEndArray();\n    }\n    else {\n        writer.WriteStartObject();\n        var accessor = context.GetMemberAccessor(value);\n        foreach (var member in accessor.GetMembers(context, context.CurrentSpan, value))\n        {\n            if (accessor.TryGetValue(context, context.CurrentSpan, value, member, out var memberValue))\n            {\n                writer.WritePropertyName(member);\n                WriteValue(context, writer, memberValue);  // recursive, no depth check\n            }\n        }\n        writer.WriteEndObject();\n    }\n}\n```\n\nThis function has **none** of the safety mechanisms present in other recursive paths:\n\n- `ObjectToString()` at `TemplateContext.Helpers.cs:98` checks `ObjectRecursionLimit` (default 20)\n- `EnterRecursive()` at `TemplateContext.cs:957` calls `RuntimeHelpers.EnsureSufficientExecutionStack()`\n- `CheckAbort()` at `TemplateContext.cs:464` also calls `EnsureSufficientExecutionStack()`\n\nThe `WriteValue()` function bypasses all of these because it is a static local function that only takes the `TemplateContext` for member access — it never calls `EnterRecursive()`, never checks `ObjectRecursionLimit`, and never calls `EnsureSufficientExecutionStack()`.\n\n**Execution flow:**\n\n1. Template creates a ScriptObject: `{{ x = {} }}`\n2. Sets a self-reference: `x.self = x` — stores a reference in `ScriptObject.Store` dictionary\n3. Pipes to `object.to_json`: `x | object.to_json` → calls `ToJson()` at line 477\n4. `ToJson()` calls `WriteValue(context, writer, value)` at line 488\n5. `WriteValue` enters the `else` branch (line 515), gets members via accessor, finds \"self\"\n6. `TryGetValue` returns `x` itself, `WriteValue` recurses with the same object — infinite loop\n7. `StackOverflowException` is thrown — **fatal, cannot be caught, process terminates**\n\n## PoC\n\n```scriban\n{{ x = {}; x.self = x; x | object.to_json }}\n```\n\nIn a hosting application:\n\n```csharp\nusing Scriban;\n\n// This will crash the entire process with StackOverflowException\nvar template = Template.Parse(\"{{ x = {}; x.self = x; x | object.to_json }}\");\nvar result = template.Render(); // FATAL: process terminates here\n```\n\nEven without circular references, deeply nested objects can exhaust the stack since no depth limit is enforced:\n\n```scriban\n{{ a = {}\n   b = {inner: a}\n   c = {inner: b}\n   d = {inner: c}\n   # ... continue nesting ...\n   result = deepest | object.to_json }}\n```\n\n## Impact\n\n- **Process crash DoS**: Any application embedding Scriban for user-provided templates (CMS platforms, email template engines, report generators, static site generators) can be crashed by a single malicious template. The crash is unrecoverable — `StackOverflowException` terminates the .NET process.\n- **No try/catch protection possible**: Unlike most exceptions, `StackOverflowException` cannot be caught by application code. The hosting application cannot wrap `template.Render()` in a try/catch to survive this.\n- **No authentication required**: `object.to_json` is a default builtin function (registered in `BuiltinFunctions.cs`), available in all Scriban templates unless explicitly removed.\n- **Trivial to exploit**: The PoC is a single line of template code.\n\n## Recommended Fix\n\nAdd a depth counter parameter to `WriteValue()` and check it against `ObjectRecursionLimit`, consistent with how `ObjectToString` is protected. Also add `EnsureSufficientExecutionStack()` as a safety net:\n\n```csharp\nstatic void WriteValue(TemplateContext context, Utf8JsonWriter writer, object value, int depth = 0)\n{\n    if (context.ObjectRecursionLimit != 0 \u0026\u0026 depth \u003e context.ObjectRecursionLimit)\n    {\n        throw new ScriptRuntimeException(context.CurrentSpan,\n            $\"Exceeding object recursion limit `{context.ObjectRecursionLimit}` in object.to_json\");\n    }\n\n    try\n    {\n        RuntimeHelpers.EnsureSufficientExecutionStack();\n    }\n    catch (InsufficientExecutionStackException)\n    {\n        throw new ScriptRuntimeException(context.CurrentSpan,\n            \"Exceeding recursive depth limit in object.to_json, near to stack overflow\");\n    }\n\n    var type = value?.GetType() ?? typeof(object);\n    if (value is null || value is string || value is bool ||\n        type.IsPrimitiveOrDecimal() || value is IFormattable)\n    {\n        JsonSerializer.Serialize(writer, value, type);\n    }\n    else if (value is IList || type.IsArray) {\n        writer.WriteStartArray();\n        foreach (var x in context.ToList(context.CurrentSpan, value))\n        {\n            WriteValue(context, writer, x, depth + 1);\n        }\n        writer.WriteEndArray();\n    }\n    else {\n        writer.WriteStartObject();\n        var accessor = context.GetMemberAccessor(value);\n        foreach (var member in accessor.GetMembers(context, context.CurrentSpan, value))\n        {\n            if (accessor.TryGetValue(context, context.CurrentSpan, value, member, out var memberValue))\n            {\n                writer.WritePropertyName(member);\n                WriteValue(context, writer, memberValue, depth + 1);\n            }\n        }\n        writer.WriteEndObject();\n    }\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T22:15:13Z",
+    "Severity": "HIGH",
+    "Summary": "Scriban has Uncontrolled Recursion in `object.to_json` Causing Unrecoverable Process Crash via StackOverflowException",
+    "UpdatedAt": "2026-03-24T22:15:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.0"
+    }
+  ]
+}

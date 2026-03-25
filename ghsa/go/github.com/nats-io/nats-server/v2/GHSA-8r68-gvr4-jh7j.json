@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-24T21:46:32Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/nats-io/nats-server/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 344548,
+    "Id": "GSA_kwCzR0hTQS04cjY4LWd2cjQtamg3as4ABUHk",
+    "GhsaId": "GHSA-8r68-gvr4-jh7j",
+    "References": [
+      {
+        "Url": "https://github.com/nats-io/nats-server/security/advisories/GHSA-8r68-gvr4-jh7j"
+      },
+      {
+        "Url": "https://advisories.nats.io/CVE/secnote-2026-02.txt"
+      },
+      {
+        "Url": "https://advisories.nats.io/CVE/secnote-2026-11.txt"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qrvq-68c2-7grw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8r68-gvr4-jh7j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8r68-gvr4-jh7j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33219"
+      }
+    ],
+    "Description": "### Background\n\nNATS.io is a high performance open source pub-sub distributed communication technology, built for the cloud, on-premise, IoT, and edge computing.\n\nThe nats-server offers a WebSockets client service, used in deployments where browsers are the NATS clients.\n\n### Problem Description\n\nA malicious client which can connect to the WebSockets port can cause unbounded memory use in the nats-server before authentication; this requires sending a corresponding amount of data.\n\nThis is a milder variant of [NATS-advisory-ID 2026-02](https://advisories.nats.io/CVE/secnote-2026-02.txt) (aka CVE-2026-27571; GHSA-qrvq-68c2-7grw).\nThat earlier issue was a compression bomb, this vulnerability is not. Attacks against this new issue thus require significant client bandwidth.\n\n### Affected Versions\n\nAny version before v2.12.6 or v2.11.15\n\n### Workarounds\n\nDisable websockets if not required for project deployment.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-24T21:46:31Z",
+    "Severity": "MODERATE",
+    "Summary": "NATS  is vulnerable to pre-auth DoS through WebSockets client service",
+    "UpdatedAt": "2026-03-24T21:46:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.12.0-RC.1, \u003c 2.12.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.15"
+      },
+      "VulnerableVersionRange": "\u003c 2.11.15"
+    }
+  ]
+}
