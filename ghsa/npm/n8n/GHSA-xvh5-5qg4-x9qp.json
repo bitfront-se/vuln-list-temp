@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-25T17:00:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 344838,
+    "Id": "GSA_kwCzR0hTQS14dmg1LTVxZzQteDlxcM4ABUMG",
+    "GhsaId": "GHSA-xvh5-5qg4-x9qp",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-xvh5-5qg4-x9qp"
+      },
+      {
+        "Url": "https://docs.n8n.io/hosting/configuration/task-runners"
+      },
+      {
+        "Url": "https://docs.n8n.io/hosting/securing/blocking-nodes"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xvh5-5qg4-x9qp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xvh5-5qg4-x9qp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27496"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could use the JavaScript Task Runner to allocate uninitialized memory buffers. Uninitialized buffers may contain residual data from the same Node.js process — including data from prior requests, tasks, secrets, or tokens — resulting in information disclosure of sensitive in-process data.\n- Task Runners must be enabled using `N8N_RUNNERS_ENABLED=true`.\n- In external runner mode, the impact is limited to data within the external runner process.\n\n## Patches\nThe issue has been fixed in n8n versions \u003e= 1.123.22, \u003e= 2.10.1 , and \u003e= 2.9.3. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Use external runner mode (`N8N_RUNNERS_MODE=external`) to isolate the runner process.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:00:25Z",
+    "Severity": "HIGH",
+    "Summary": "n8n has In-Process Memory Disclosure in its Task Runner",
+    "UpdatedAt": "2026-03-25T17:00:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.9.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.10.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.22"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.22"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-25T16:56:29Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "requests"
+  },
+  "Advisory": {
+    "DatabaseId": 344837,
+    "Id": "GSA_kwCzR0hTQS1nYzV2LW05eDQtcjZ4Ms4ABUMF",
+    "GhsaId": "GHSA-gc5v-m9x4-r6x2",
+    "References": [
+      {
+        "Url": "https://github.com/psf/requests/security/advisories/GHSA-gc5v-m9x4-r6x2"
+      },
+      {
+        "Url": "https://github.com/psf/requests/commit/66d21cb07bd6255b1280291c4fafb71803cdb3b7"
+      },
+      {
+        "Url": "https://github.com/psf/requests/releases/tag/v2.33.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gc5v-m9x4-r6x2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gc5v-m9x4-r6x2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25645"
+      }
+    ],
+    "Description": "### Impact\nThe `requests.utils.extract_zipped_paths()` utility function uses a predictable filename when extracting files from zip archives into the system temporary directory. If the target file already exists, it is reused without validation. A local attacker with write access to the temp directory could pre-create a malicious file that would be loaded in place of the legitimate one.\n\n### Affected usages\n**Standard usage of the Requests library is not affected by this vulnerability.** Only applications that call `extract_zipped_paths()` directly are impacted.\n\n### Remediation\nUpgrade to at least Requests 2.33.0, where the library now extracts files to a non-deterministic location.\n\nIf developers are unable to upgrade, they can set `TMPDIR` in their environment to a directory with restricted write access.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T16:56:28Z",
+    "Severity": "MODERATE",
+    "Summary": "Requests has Insecure Temp File Reuse in its extract_zipped_paths() utility function",
+    "UpdatedAt": "2026-03-25T16:56:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.33.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.33.0"
+    }
+  ]
+}

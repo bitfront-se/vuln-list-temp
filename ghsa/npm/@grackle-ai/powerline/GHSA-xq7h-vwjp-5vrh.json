@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-25T17:30:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grackle-ai/powerline"
+  },
+  "Advisory": {
+    "DatabaseId": 344844,
+    "Id": "GSA_kwCzR0hTQS14cTdoLXZ3anAtNXZyaM4ABUMM",
+    "GhsaId": "GHSA-xq7h-vwjp-5vrh",
+    "References": [
+      {
+        "Url": "https://github.com/nick-pape/grackle/security/advisories/GHSA-xq7h-vwjp-5vrh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xq7h-vwjp-5vrh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xq7h-vwjp-5vrh"
+      }
+    ],
+    "Description": "### Impact\n\nWhen `--token` is not provided and `GRACKLE_POWERLINE_TOKEN` is not set, the PowerLine gRPC server runs with **zero authentication**. A warning is logged (`\"NO AUTH (development only)\"`) but nothing prevents deployment in this state. Any client that can reach the PowerLine port can spawn agent sessions, access credential tokens, and execute code.\n\nThe default binding is `127.0.0.1` (loopback only), which limits exposure to the local machine. However, if PowerLine is accidentally exposed on a network (e.g., in a container or via port forwarding), the impact is critical.\n\n**Affected code:**\n- `packages/powerline/src/index.ts:46` — token defaults to empty string\n- `packages/powerline/src/index.ts:63-76` — auth interceptor is only added when token is truthy\n\n### Patches\n\n0.70.1\n\n**Fix:** Require an explicit `--no-auth` flag to run without authentication, rather than defaulting to no auth when the token is empty. Throw an error if starting without a token and without `--no-auth`.\n\n### Workarounds\n\nAlways provide `--token` or set `GRACKLE_POWERLINE_TOKEN` when starting PowerLine. The Grackle server does this automatically when managing PowerLine lifecycle.\n\n### Resources\n\n- CWE-306: Missing Authentication for Critical Function\n- File: `packages/powerline/src/index.ts`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:30:46Z",
+    "Severity": "MODERATE",
+    "Summary": "@grackle-ai/powerline Runs Without Authentication by Default",
+    "UpdatedAt": "2026-03-25T17:30:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.70.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.70.0"
+    }
+  ]
+}

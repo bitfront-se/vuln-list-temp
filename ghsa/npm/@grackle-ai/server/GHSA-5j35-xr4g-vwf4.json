@@ -1,0 +1,46 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-25T17:32:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grackle-ai/server"
+  },
+  "Advisory": {
+    "DatabaseId": 344846,
+    "Id": "GSA_kwCzR0hTQS01ajM1LXhyNGctdndmNM4ABUMO",
+    "GhsaId": "GHSA-5j35-xr4g-vwf4",
+    "References": [
+      {
+        "Url": "https://github.com/nick-pape/grackle/security/advisories/GHSA-5j35-xr4g-vwf4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5j35-xr4g-vwf4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5j35-xr4g-vwf4"
+      }
+    ],
+    "Description": "### Impact\n\nThe session cookie is set with `HttpOnly; SameSite=Lax; Path=/` but does not include the `Secure` flag. This means the cookie will be sent over plain HTTP connections.\n\nSince the server binds to `127.0.0.1` by default and uses HTTP (not HTTPS), this is acceptable for localhost use. However, when `--allow-network` is used to bind to `0.0.0.0`, cookies could be transmitted over insecure network connections and intercepted by an attacker.\n\n**Affected code:**\n- `packages/server/src/session.ts:76` — cookie string lacks `; Secure` attribute\n\n### Patches\n\n0.70.5\n\n**Fix:** Conditionally add `; Secure` when served over HTTPS or when `--allow-network` is enabled:\n```typescript\nconst securePart = isHttps ? \"; Secure\" : \"\";\nreturn `${SESSION_COOKIE_NAME}=${cookieValue}; HttpOnly; SameSite=Lax; Path=/${securePart}; Max-Age=${maxAge}`;\n```\n\n### Workarounds\n\nDo not use `--allow-network` over untrusted networks without a TLS-terminating reverse proxy.\n\n### Resources\n\n- OWASP: Secure Cookie Attribute\n- File: `packages/server/src/session.ts`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:32:39Z",
+    "Severity": "LOW",
+    "Summary": "@grackle-ai/server has a Missing Secure Flag on Session Cookie",
+    "UpdatedAt": "2026-03-25T17:32:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.70.5"
+      },
+      "VulnerableVersionRange": "\u003c= 0.70.4"
+    }
+  ]
+}

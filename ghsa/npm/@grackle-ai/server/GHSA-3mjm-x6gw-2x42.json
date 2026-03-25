@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-25T17:32:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grackle-ai/server"
+  },
+  "Advisory": {
+    "DatabaseId": 344845,
+    "Id": "GSA_kwCzR0hTQS0zbWptLXg2Z3ctMng0Ms4ABUMN",
+    "GhsaId": "GHSA-3mjm-x6gw-2x42",
+    "References": [
+      {
+        "Url": "https://github.com/nick-pape/grackle/security/advisories/GHSA-3mjm-x6gw-2x42"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3mjm-x6gw-2x42"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3mjm-x6gw-2x42"
+      }
+    ],
+    "Description": "### Impact\n\nThe HTTP server does not set `Content-Security-Policy`, `X-Frame-Options`, or `X-Content-Type-Options` headers on any response. This reduces defense-in-depth against XSS, clickjacking, and MIME-sniffing attacks.\n\nWhile the current XSS attack surface is small (React-markdown is configured safely, no `dangerouslySetInnerHTML`, Vite does not generate source maps), the absence of these headers means any future XSS vulnerability would have no secondary defense layer.\n\n**Affected code:**\n- `packages/server/src/index.ts` — all `res.writeHead()` calls only set `Content-Type`, with no security headers\n\n### Patches\n\n0.70.4\n\n**Fix:** Add security headers to all HTML/API responses:\n```typescript\nres.writeHead(200, {\n  \"Content-Type\": contentType,\n  \"Content-Security-Policy\": \"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:\",\n  \"X-Frame-Options\": \"DENY\",\n  \"X-Content-Type-Options\": \"nosniff\"\n});\n```\n\n### Workarounds\n\nUse a reverse proxy (nginx, Caddy) in front of the Grackle server to inject security headers.\n\n### References\n\n- CWE-693: Protection Mechanism Failure\n- OWASP: HTTP Security Response Headers\n- File: `packages/server/src/index.ts`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:32:04Z",
+    "Severity": "MODERATE",
+    "Summary": "@grackle-ai/server has Missing Content-Security-Policy and X-Frame-Options Headers",
+    "UpdatedAt": "2026-03-25T17:32:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.70.4"
+      },
+      "VulnerableVersionRange": "\u003c= 0.70.3"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-25T17:33:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grackle-ai/server"
+  },
+  "Advisory": {
+    "DatabaseId": 344847,
+    "Id": "GSA_kwCzR0hTQS04ZzI5LTh4d3ItcW1ocs4ABUMP",
+    "GhsaId": "GHSA-8g29-8xwr-qmhr",
+    "References": [
+      {
+        "Url": "https://github.com/nick-pape/grackle/security/advisories/GHSA-8g29-8xwr-qmhr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8g29-8xwr-qmhr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8g29-8xwr-qmhr"
+      }
+    ],
+    "Description": "### Impact\n\n`JSON.parse(env.adapterConfig)` is called without error handling in three locations within the gRPC service. While the data originates from the server's own SQLite database and should always be valid JSON, database corruption, migration errors, or unexpected state could cause an unhandled exception that crashes the gRPC handler.\n\nAdditionally, the parsed result is cast as `Record\u003cstring, unknown\u003e` and passed to adapter methods without property validation, creating a theoretical prototype pollution surface if the database is compromised.\n\n**Affected code:**\n- `packages/server/src/grpc-service.ts:415` — `reconnectOrProvision` handler\n- `packages/server/src/grpc-service.ts:482` — `stopEnvironment` handler\n- `packages/server/src/grpc-service.ts:498` — `destroyEnvironment` handler\n\n### Patches\n\n**Fix:** Wrap in try-catch and return a meaningful gRPC error:\n```typescript\nlet config: Record\u003cstring, unknown\u003e;\ntry {\n  config = JSON.parse(env.adapterConfig) as Record\u003cstring, unknown\u003e;\n} catch {\n  throw new ConnectError(\"Invalid adapter configuration\", Code.Internal);\n}\n```\n\n### Workarounds\n\nEnsure database integrity. Back up the SQLite database regularly.\n\n### Resources\n\n- CWE-754: Improper Check for Unusual or Exceptional Conditions\n- File: `packages/server/src/grpc-service.ts`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:33:01Z",
+    "Severity": "LOW",
+    "Summary": "@grackle-ai/server JSON.parse lacks try-catch logic in its gRPC Service AdapterConfig Handling",
+    "UpdatedAt": "2026-03-25T17:33:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.70.6"
+      },
+      "VulnerableVersionRange": "\u003c= 0.70.5"
+    }
+  ]
+}

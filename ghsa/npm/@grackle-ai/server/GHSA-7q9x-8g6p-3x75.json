@@ -1,0 +1,46 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-25T17:15:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grackle-ai/server"
+  },
+  "Advisory": {
+    "DatabaseId": 344841,
+    "Id": "GSA_kwCzR0hTQS03cTl4LThnNnAtM3g3Nc4ABUMJ",
+    "GhsaId": "GHSA-7q9x-8g6p-3x75",
+    "References": [
+      {
+        "Url": "https://github.com/nick-pape/grackle/security/advisories/GHSA-7q9x-8g6p-3x75"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7q9x-8g6p-3x75"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7q9x-8g6p-3x75"
+      }
+    ],
+    "Description": "### Impact\n\nThe `renderPairingPage()` function embeds the `error` parameter directly into HTML without escaping:\n```typescript\nconst errorHtml = error ? `\u003cp style=\"color:#e74c3c\"\u003e${error}\u003c/p\u003e` : \"\";\n```\n\nAll current call sites pass hardcoded strings, so this is **not exploitable today**. However, the function is architecturally fragile — if a future code change passes user-controlled or dynamic content into the error parameter, it would create an XSS vulnerability.\n\nThe `renderAuthorizePage()` function in the same file correctly uses `escapeHtml()` for dynamic content, making this an inconsistency.\n\n**Affected code:**\n- `packages/server/src/index.ts:64-89` — `renderPairingPage()` with unescaped error interpolation\n- Compare: `packages/server/src/index.ts:130` — `renderAuthorizePage()` correctly uses `escapeHtml()`\n\n### Patches\n\nv0.70.1\n\n**Fix:** Apply `escapeHtml()` to the error parameter:\n```typescript\nconst errorHtml = error ? `\u003cp style=\"color:#e74c3c\"\u003e${escapeHtml(error)}\u003c/p\u003e` : \"\";\n```\n\n### Workarounds\n\nNo workaround needed — all current callers pass hardcoded strings.\n\n### Resources\n\n- CWE-79: Improper Neutralization of Input During Web Page Generation\n- File: `packages/server/src/index.ts`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:15:40Z",
+    "Severity": "LOW",
+    "Summary": "@grackle-ai/server: Unescaped Error String in renderPairingPage() HTML Template",
+    "UpdatedAt": "2026-03-25T17:15:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.70.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.70.0"
+    }
+  ]
+}

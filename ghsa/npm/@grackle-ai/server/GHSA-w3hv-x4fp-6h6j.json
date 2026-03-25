@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-25T17:27:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grackle-ai/server"
+  },
+  "Advisory": {
+    "DatabaseId": 344843,
+    "Id": "GSA_kwCzR0hTQS13M2h2LXg0ZnAtNmg2as4ABUML",
+    "GhsaId": "GHSA-w3hv-x4fp-6h6j",
+    "References": [
+      {
+        "Url": "https://github.com/nick-pape/grackle/security/advisories/GHSA-w3hv-x4fp-6h6j"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w3hv-x4fp-6h6j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w3hv-x4fp-6h6j"
+      }
+    ],
+    "Description": "### Impact\n\nThe WebSocket upgrade handler in the server validates authentication (API key token or session cookie) but does not check the `Origin` header. A malicious webpage on a different origin could initiate a WebSocket connection to `ws://localhost:3000/ws` if it can leverage the user's session cookie (which is `SameSite=Lax`, allowing top-level navigations).\n\nThis enables **cross-origin WebSocket hijacking** — if a user visits a malicious site while a Grackle session is active, the attacker's page could open a WebSocket and subscribe to real-time events (session output, task updates, environment state).\n\n**Affected code:**\n- `packages/server/src/ws-bridge.ts:80-91` — connection handler accepts WebSocket upgrades without checking `req.headers.origin`\n\n### Patches\n\n**Fix:** Validate `req.headers.origin` against an allowlist before accepting connections:\n```typescript\nconst origin = req.headers.origin || \"\";\nif (origin \u0026\u0026 !origin.includes(\"localhost\") \u0026\u0026 !origin.includes(\"127.0.0.1\")) {\n  ws.close(4003, \"Invalid origin\");\n  return;\n}\n```\n\n### Workarounds\n\nEnsure the Grackle server is only accessible on `127.0.0.1` (the default). Do not use `--allow-network` in untrusted network environments.\n\n### Resources\n\n- CWE-346: Origin Validation Error\n- File: `packages/server/src/ws-bridge.ts`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T17:27:48Z",
+    "Severity": "HIGH",
+    "Summary": "@grackle-ai/server has Missing WebSocket Origin Header Validation",
+    "UpdatedAt": "2026-03-25T17:28:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.70.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.70.2"
+    }
+  ]
+}
