@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-26T18:27:50Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/moby/buildkit"
+  },
+  "Advisory": {
+    "DatabaseId": 345400,
+    "Id": "GSA_kwCzR0hTQS00dnJxLTN2cnEtZzZnZ84ABUU4",
+    "GhsaId": "GHSA-4vrq-3vrq-g6gg",
+    "References": [
+      {
+        "Url": "https://github.com/moby/buildkit/security/advisories/GHSA-4vrq-3vrq-g6gg"
+      },
+      {
+        "Url": "https://docs.docker.com/build/concepts/context/#url-fragments"
+      },
+      {
+        "Url": "https://github.com/moby/buildkit/releases/tag/v0.28.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4vrq-3vrq-g6gg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4vrq-3vrq-g6gg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33748"
+      }
+    ],
+    "Description": "### Impact\nInsufficient validation of Git URL fragment subdir components (`\u003curl\u003e#\u003cref\u003e:\u003csubdir\u003e`, [docs](https://docs.docker.com/build/concepts/context/#url-fragments)) may allow access to files outside the checked-out Git repository root. Possible access is limited to files on the same mounted filesystem.\n\n### Patches\nThe issue has been fixed in version v0.28.1\n\n### Workarounds\nThe issue affects only builds that use Git URLs with a subpath component. Avoid building Dockerfiles from untrusted sources or using the subdir component from an untrusted Git repository where the subdir component could point to a symlink.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T18:27:49Z",
+    "Severity": "HIGH",
+    "Summary": "BuildKit Git URL subdir component can cause access to restricted files",
+    "UpdatedAt": "2026-03-26T18:27:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.28.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.28.1"
+    }
+  ]
+}

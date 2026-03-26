@@ -1,0 +1,49 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-26T17:22:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.splunk:splunk-otel-javaagent"
+  },
+  "Advisory": {
+    "DatabaseId": 345383,
+    "Id": "GSA_kwCzR0hTQS1oOHcyLXJ2NTctdmM2Zs4ABUUn",
+    "GhsaId": "GHSA-h8w2-rv57-vc6f",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/security/advisories/GHSA-xw7x-h9fj-p2c7"
+      },
+      {
+        "Url": "https://github.com/signalfx/splunk-otel-java/security/advisories/GHSA-h8w2-rv57-vc6f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h8w2-rv57-vc6f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h8w2-rv57-vc6f"
+      }
+    ],
+    "Description": "In versions prior to 2.26.1, the RMI instrumentation registered a custom endpoint that deserialized incoming data without applying serialization filters. An attacker with network access to a JMX or RMI port on an instrumented JVM could exploit this to potentially achieve remote code execution. All three of the following conditions must be true to exploit this vulnerability:\n1. Splunk Distribution of OpenTelemetry Java is attached as a Java agent (`-javaagent`)\n2. An RMI endpoint is network-reachable (e.g. JMX remote port, an RMI registry, or any application-exported RMI service)\n3. A gadget-chain-compatible library is present on the classpath\n\n### Impact\nArbitrary remote code execution with the privileges of the user running the instrumented JVM.\n\n### Recommendation\nUpgrade to version 2.26.1 or later.\n\n### Workarounds\nSet the following system property to disable the RMI integration:\n\n```\n-Dotel.instrumentation.rmi.enabled=false\n```\n\n### References\n[Advisory in OpenTelemetry Instrumentation for Java](https://github.com/open-telemetry/opentelemetry-java-instrumentation/security/advisories/GHSA-xw7x-h9fj-p2c7)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T17:22:53Z",
+    "Severity": "CRITICAL",
+    "Summary": "splunk-otel-javaagent: Unsafe deserialization in RMI instrumentation may lead to Remote Code Execution",
+    "UpdatedAt": "2026-03-26T17:22:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.26.1"
+    }
+  ]
+}
