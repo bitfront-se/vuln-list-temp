@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-25T21:09:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 345179,
+    "Id": "GSA_kwCzR0hTQS1jNTQ1LXgycmgtODJmY84ABURb",
+    "GhsaId": "GHSA-c545-x2rh-82fc",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-c545-x2rh-82fc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33665"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c545-x2rh-82fc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c545-x2rh-82fc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33665"
+      }
+    ],
+    "Description": "## Impact\nWhen LDAP authentication is enabled, n8n automatically linked an LDAP identity to an existing local account if the LDAP email attribute matched the local account's email. An authenticated LDAP user who could control their own LDAP email attribute could set it to match another user's email — including an administrator's — and upon login gain full access to that account. The account linkage persisted even if the LDAP email was later reverted, resulting in a permanent account takeover.\n\n- LDAP authentication must be configured and active (non-default).\n\n## Patches\nThe issue has been fixed in n8n versions 2.4.0 and 1.121.0. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Disable LDAP authentication until the instance can be upgraded.\n- Restrict LDAP directory permissions so that users cannot modify their own email attributes.\n- Audit existing LDAP-linked accounts for unexpected account associations.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-25T21:09:13Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: LDAP Email-Based Account Linking Allows Privilege Escalation and Account Takeover",
+    "UpdatedAt": "2026-03-25T21:09:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.121.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.121.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.4.0"
+    }
+  ]
+}
