@@ -1,7 +1,10 @@
 {
   "id": "GHSA-pv9v-5j35-xwcr",
-  "modified": "2026-03-26T18:17:46.083992Z",
+  "modified": "2026-03-27T06:11:21.406889Z",
   "published": "2026-03-26T18:00:05Z",
+  "aliases": [
+    "RUSTSEC-2026-0073"
+  ],
   "summary": "libcrux Panics During Standalone MAC Operations",
   "details": "An incorrect constant for the key length in libcrux-poly1305 caused the standalone MAC function `libcrux_poly1305::mac` to always panic with an out-of-bounds memory access.\n\n## Impact\nApplications wishing to use libcrux-poly1305 as a standalone MAC would experience panics. The use of libcrux-poly1305 in libcrux-chacha20poly1305 is unaffected.\n\n## Mitigation\nStarting from version `0.0.5`, the correct value is used for the key length constant.",
   "affected": [
