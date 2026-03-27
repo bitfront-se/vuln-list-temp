@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T18:28:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 345401,
+    "Id": "GSA_kwCzR0hTQS1xZmMzLWhtNGotN3E3N84ABUU5",
+    "GhsaId": "GHSA-qfc3-hm4j-7q77",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-qfc3-hm4j-7q77"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33749"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qfc3-hm4j-7q77"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qfc3-hm4j-7q77"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33749"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could craft a workflow that produces an HTML binary data object without a filename. The `/rest/binary-data` endpoint served such responses inline on the n8n origin without `Content-Disposition` or `Content-Security-Policy` headers, allowing the HTML to render in the browser with full same-origin JavaScript access.\n\nBy sending the resulting URL to a higher-privileged user, an attacker could execute JavaScript in the victim's authenticated session, enabling exfiltration of workflows and credentials, modification of workflows, or privilege escalation to admin.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.27, 2.13.3, and 2.14.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Restrict network access to the n8n instance to prevent untrusted users from accessing binary data URLs.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T18:28:44Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n Vulnerable to XSS via Binary Data Inline HTML Rendering",
+    "UpdatedAt": "2026-03-26T18:28:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.13.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.13.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.14.1"
+      },
+      "VulnerableVersionRange": "= 2.14.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.27"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.27"
+    }
+  ]
+}

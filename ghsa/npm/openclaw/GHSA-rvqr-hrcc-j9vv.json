@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T19:50:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345439,
+    "Id": "GSA_kwCzR0hTQS1ydnFyLWhyY2Mtajl2ds4ABUVf",
+    "GhsaId": "GHSA-rvqr-hrcc-j9vv",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rvqr-hrcc-j9vv"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/deecf68b59a9b7eea978e40fd3c2fe543087b569"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rvqr-hrcc-j9vv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rvqr-hrcc-j9vv"
+      }
+    ],
+    "Description": "## Summary\nBonjour and DNS-SD TXT metadata could still steer CLI routing even when actual service resolution failed, allowing unresolved hints to influence the chosen target.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `deecf68b59a9b7eea978e40fd3c2fe543087b569`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- src/infra/bonjour-discovery.ts now resolves and returns only concrete endpoints instead of falling back to unresolved TXT host and port hints.\n- src/cli/gateway-cli/discover.ts consumes only the fail-closed resolved endpoint path.\n\nOpenClaw thanks @nexrin for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T19:50:24Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Bonjour/DNS-SD TXT metadata steers CLI routing after failed service resolution",
+    "UpdatedAt": "2026-03-26T19:50:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

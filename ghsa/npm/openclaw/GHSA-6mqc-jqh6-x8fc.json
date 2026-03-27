@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T18:59:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345423,
+    "Id": "GSA_kwCzR0hTQS02bXFjLWpxaDYteDhmY84ABUVP",
+    "GhsaId": "GHSA-6mqc-jqh6-x8fc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6mqc-jqh6-x8fc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d5dc6b6573ae489bc7e5651090f4767b93537c9e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6mqc-jqh6-x8fc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6mqc-jqh6-x8fc"
+      }
+    ],
+    "Description": "## Summary\nBefore `v2026.3.23`, Canvas and A2UI loopback requests could bypass Canvas bearer-or-capability authentication because `authorizeCanvasRequest(...)` treated `isLocalDirectRequest(...)` as an unconditional allow path.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c 2026.3.23`\n- Fixed: `\u003e= 2026.3.23`\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Root Cause\nThe vulnerable logic lived in `src/gateway/server/http-auth.ts`. `authorizeCanvasRequest(...)` returned `{ ok: true }` for local-direct requests before checking bearer authentication or an active node canvas capability, which meant unauthenticated loopback Canvas HTTP and WebSocket requests could succeed.\n\n## Fix Commit(s)\n- `d5dc6b6573ae489bc7e5651090f4767b93537c9e` — `fix(gateway): require auth for canvas routes`\n\n## Release Status\nThe fix commit is contained in released tags `v2026.3.23` and `v2026.3.23-2`. The latest shipped tag and npm release both include the fix.\n\n## Code-Level Confirmation\n- `src/gateway/server/http-auth.ts` no longer contains the local-direct early return in `authorizeCanvasRequest(...)`.\n- `src/gateway/server.canvas-auth.test.ts` adds the regression test `denies canvas HTTP/WS on loopback without bearer or capability by default`.\n\nOpenClaw thanks @smaeljaish771 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T18:59:00Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Gateway Canvas local-direct requests bypass Canvas HTTP and WebSocket authentication",
+    "UpdatedAt": "2026-03-26T18:59:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.23"
+    }
+  ]
+}

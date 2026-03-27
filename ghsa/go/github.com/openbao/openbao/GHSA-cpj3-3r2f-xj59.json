@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-26T18:37:10Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openbao/openbao"
+  },
+  "Advisory": {
+    "DatabaseId": 345415,
+    "Id": "GSA_kwCzR0hTQS1jcGozLTNyMmYteGo1Oc4ABUVH",
+    "GhsaId": "GHSA-cpj3-3r2f-xj59",
+    "References": [
+      {
+        "Url": "https://github.com/openbao/openbao/security/advisories/GHSA-cpj3-3r2f-xj59"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/pull/2709"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/commit/6e2b2dd84f0e47cebc90d6e79609dd5274732662"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/releases/tag/v2.5.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cpj3-3r2f-xj59"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cpj3-3r2f-xj59"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33758"
+      }
+    ],
+    "Description": "### Impact\n\nOpenBao installations that have an OIDC/JWT authentication method enabled and a role with `callback_mode=direct` configured are vulnerable to XSS via the  `error_description` parameter on the page for a failed authentication.\n\nThis allows an attacker access to the token used in the Web UI by a victim.\n\n### Patches\nThe `error_description` parameter has been replaced with a static error message in v2.5.2\n\n### Workarounds\nThe vulnerability can be mitigated by removing any roles with `callback_mode` set to `direct`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T18:37:09Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenBao has Reflected XSS in its OIDC authentication error message",
+    "UpdatedAt": "2026-03-26T18:37:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260325133417-6e2b2dd84f0e"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260325133417-6e2b2dd84f0e"
+    }
+  ]
+}

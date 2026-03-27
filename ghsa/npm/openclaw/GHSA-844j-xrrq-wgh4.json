@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T21:42:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345485,
+    "Id": "GSA_kwCzR0hTQS04NDRqLXhycnEtd2doNM4ABUWN",
+    "GhsaId": "GHSA-844j-xrrq-wgh4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-844j-xrrq-wgh4"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/fc2d29ea926f47c428c556e92ec981441228d2a4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-844j-xrrq-wgh4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-844j-xrrq-wgh4"
+      }
+    ],
+    "Description": "## Summary\nWhen gateway.trustedProxies was configured, spoofed loopback hops in forwarding headers could be accepted as the client origin and weaken downstream auth and rate-limit decisions.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `fc2d29ea926f47c428c556e92ec981441228d2a4`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- src/gateway/net.ts now ignores loopback forwarded hops before trusted-proxy client resolution.\n- That shipped origin fix is the one consumed by canvas auth and gateway auth-rate-limit paths that rely on resolved client identity.\n\nOpenClaw thanks @lintsinghua for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T21:42:30Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Forwarding header spoofing bypasses gateway.trustedProxies origin detection",
+    "UpdatedAt": "2026-03-26T21:42:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

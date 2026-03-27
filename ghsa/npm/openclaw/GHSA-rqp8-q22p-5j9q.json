@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T21:45:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345487,
+    "Id": "GSA_kwCzR0hTQS1ycXA4LXEyMnAtNWo5cc4ABUWP",
+    "GhsaId": "GHSA-rqp8-q22p-5j9q",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rqp8-q22p-5j9q"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/980940aa58f862da4e19372597bbc2a9f268d70b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rqp8-q22p-5j9q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rqp8-q22p-5j9q"
+      }
+    ],
+    "Description": "## Summary\nSynology Chat multi-account configuration could collapse onto a shared webhook path, replacing route ownership and bypassing per-account DM policy separation.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `980940aa58f862da4e19372597bbc2a9f268d70b`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- extensions/synology-chat/src/accounts.ts now distinguishes inherited base webhook paths from explicit per-account paths.\n- extensions/synology-chat/src/gateway-runtime.ts now fails closed on inherited or duplicate webhook paths and registers routes without replacement.\n\nOpenClaw thanks @tdjackey for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T21:45:35Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw Bypasses DM Policy Separation via Synology Chat Webhook Path Collision ",
+    "UpdatedAt": "2026-03-26T21:45:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

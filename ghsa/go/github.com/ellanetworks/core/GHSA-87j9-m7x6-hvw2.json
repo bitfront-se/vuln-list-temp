@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-26T22:14:54Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ellanetworks/core"
+  },
+  "Advisory": {
+    "DatabaseId": 345501,
+    "Id": "GSA_kwCzR0hTQS04N2o5LW03eDYtaHZ3Ms4ABUWd",
+    "GhsaId": "GHSA-87j9-m7x6-hvw2",
+    "References": [
+      {
+        "Url": "https://github.com/ellanetworks/core/security/advisories/GHSA-87j9-m7x6-hvw2"
+      },
+      {
+        "Url": "https://github.com/ellanetworks/core/commit/1e4768288a6519fcb63ec83f851584ecebb8a972"
+      },
+      {
+        "Url": "https://github.com/ellanetworks/core/releases/tag/v1.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-87j9-m7x6-hvw2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-87j9-m7x6-hvw2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33906"
+      }
+    ],
+    "Description": "## Summary\n\nThe NetworkManager role was granted backup and restore permission. The restore endpoint accepted any valid SQLite file without verifying its contents.\n\n## Impact\n\nA NetworkManager could replace the production database with a tampered copy to escalate to Admin, gaining access to user management, audit logs, debug endpoints, and operator identity configuration that the role was explicitly denied.\n\n## Fix \n\nBackup and restore permissions have been removed from the NetworkManager role.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T22:14:54Z",
+    "Severity": "HIGH",
+    "Summary": "Ella Core has Privilege Escalation via Database Restore by NetworkManager role",
+    "UpdatedAt": "2026-03-26T22:14:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.0"
+    }
+  ]
+}

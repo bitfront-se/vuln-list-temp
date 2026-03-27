@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-26T18:55:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "convict"
+  },
+  "Advisory": {
+    "DatabaseId": 345421,
+    "Id": "GSA_kwCzR0hTQS00NGZjLThmbTUtcTYyaM4ABUVN",
+    "GhsaId": "GHSA-44fc-8fm5-q62h",
+    "References": [
+      {
+        "Url": "https://github.com/mozilla/node-convict/security/advisories/GHSA-44fc-8fm5-q62h"
+      },
+      {
+        "Url": "https://github.com/mozilla/node-convict/blob/master/packages/convict/src/main.js"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-44fc-8fm5-q62h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-44fc-8fm5-q62h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33864"
+      }
+    ],
+    "Description": "### Summary\nA prototype pollution vulnerability exists in the latest version of the convict npm package (6.2.4). Despite a previous fix that attempted to mitigate prototype pollution by checking whether user input started with a forbidden key, it is still possible to pollute `Object.prototype` via a crafted input using `String.prototype`. \n\n### Details\nThe vulnerability resides in line 564 of https://github.com/mozilla/node-convict/blob/master/packages/convict/src/main.js where `startsWith()` function is used to check whether user provided input contain forbidden strings. \n\n### PoC\n#### Steps to reproduce\n1. Install latest version of convict using `npm install` or cloning from git\n2. Run the following code snippet:\n\n```javascript\nString.prototype.startsWith = () =\u003e false; \nconst convict = require('convict');\nlet obj = {};\nconst config = convict(obj);\nconsole.log({}.polluted);\nconfig.set('constructor.prototype.polluted', 'yes');\nconsole.log({}.polluted);    // prints yes -\u003e the patch is bypassed and prototype pollution occurred\n```\n\n#### Expected behavior\nPrototype pollution should be prevented and {} should not gain new properties.\nThis should be printed on the console:\n```\nundefined\nundefined OR throw an Error\n```\n\n#### Actual behavior\n`Object.prototype` is polluted \nThis is printed on the console:\n```\nundefined \nyes\n```\n\n### Impact\nThis is a prototype pollution vulnerability, which can have severe security implications depending on how convict is used by downstream applications. Any application that processes attacker-controlled input using `convict.set`  may be affected.\nIt could potentially lead to the following problems:\n\n1. Authentication bypass\n2. Denial of service\n3. Remote code execution (if polluted property is passed to sinks like eval or child_process)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T18:55:41Z",
+    "Severity": "CRITICAL",
+    "Summary": "Convict has Prototype Pollution via startsWith() function",
+    "UpdatedAt": "2026-03-26T18:55:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.2.5"
+      },
+      "VulnerableVersionRange": "\u003c= 6.2.4"
+    }
+  ]
+}

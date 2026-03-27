@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-26T18:32:55Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openbao/openbao"
+  },
+  "Advisory": {
+    "DatabaseId": 345414,
+    "Id": "GSA_kwCzR0hTQS03cTdnLXg2dmcteHBjM84ABUVG",
+    "GhsaId": "GHSA-7q7g-x6vg-xpc3",
+    "References": [
+      {
+        "Url": "https://github.com/openbao/openbao/security/advisories/GHSA-7q7g-x6vg-xpc3"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/commit/e32103951925723e9787e33886ab6b6ec20f4964"
+      },
+      {
+        "Url": "https://datatracker.ietf.org/doc/html/rfc8628#section-5.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7q7g-x6vg-xpc3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7q7g-x6vg-xpc3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33757"
+      }
+    ],
+    "Description": "### Impact\n\nOpenBao does not prompt for user confirmation when logging in via JWT/OIDC and a role with `callback_mode` set to `direct`.\n\nThis allows an attacker to start an authentication request and perform \"remote phishing\" by having the victim visit the URL and automatically log-in to the session of the attacker. Despite being based on the authorization code flow, the  `direct` mode calls back directly to the API and allows an attacker to poll for an OpenBao token until it is issued.\n\n### Patches\nVersion 2.5.2 includes an additional confirmation screen for `direct` type logins that requires manual user interaction in order to finish the authentication.\n\n### Workarounds\nThis issue can be worked around either by removing any roles with `callback_mode=direct` or enforcing confirmation for every session on the token issuer side for the Client ID used by OpenBao.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T18:32:54Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenBao lacks user confirmation for OIDC direct callback mode",
+    "UpdatedAt": "2026-03-26T18:32:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260325142553-e32103951925"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260325142553-e32103951925"
+    }
+  ]
+}

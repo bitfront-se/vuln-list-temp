@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-26T19:50:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345438,
+    "Id": "GSA_kwCzR0hTQS00cXdjLWM3ZzktNHhjd84ABUVe",
+    "GhsaId": "GHSA-4qwc-c7g9-4xcw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-4qwc-c7g9-4xcw"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/81445a901091a5d27ef0b56fceedbe4724566438"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4qwc-c7g9-4xcw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4qwc-c7g9-4xcw"
+      }
+    ],
+    "Description": "## Summary\nRemote media HTTP error bodies were read without a hard size cap before failure handling, allowing unbounded allocation on error responses.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `81445a901091a5d27ef0b56fceedbe4724566438`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- src/media/fetch.ts now routes non-2xx failures through bounded prefix reads instead of buffering the whole error body.\n- src/media/read-response-with-limit.ts enforces capped reads and truncates oversized snippets before surfacing failure text.\n\nOpenClaw thanks @YLChen-007 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T19:50:06Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Remote media error responses could trigger unbounded memory allocation before failure",
+    "UpdatedAt": "2026-03-26T19:50:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

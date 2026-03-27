@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-26T19:08:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345434,
+    "Id": "GSA_kwCzR0hTQS1xbTl4LXY3Y3gtN3JxNM4ABUVa",
+    "GhsaId": "GHSA-qm9x-v7cx-7rq4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qm9x-v7cx-7rq4"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/39409b6a6dd4239deea682e626bac9ba547bfb14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qm9x-v7cx-7rq4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qm9x-v7cx-7rq4"
+      }
+    ],
+    "Description": "## Summary\nAllow-always exec approvals did not unwrap /usr/bin/time, so an unregistered time wrapper could bypass executable binding and reuse approval state for the inner command.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `39409b6a6dd4239deea682e626bac9ba547bfb14`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- src/infra/dispatch-wrapper-resolution.ts now unwraps /usr/bin/time and binds approvals to the real inner executable.\n- src/infra/exec-approvals-allow-always.test.ts ships regression coverage for time-wrapper allow-always approval bypasses.\n\nOpenClaw thanks @YLChen-007 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T19:08:45Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's system.run allowlist can be bypassed through an unregistered time dispatch wrapper",
+    "UpdatedAt": "2026-03-26T19:08:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

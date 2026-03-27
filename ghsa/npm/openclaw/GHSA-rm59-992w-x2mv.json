@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T19:50:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345440,
+    "Id": "GSA_kwCzR0hTQS1ybTU5LTk5MncteDJtds4ABUVg",
+    "GhsaId": "GHSA-rm59-992w-x2mv",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rm59-992w-x2mv"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/651dc7450b68a5396a009db78ef9382633707ead"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rm59-992w-x2mv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rm59-992w-x2mv"
+      }
+    ],
+    "Description": "## Summary\nVoice Call webhook handling buffered request bodies before provider signature checks, enabling bounded unauthenticated resource exhaustion.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `651dc7450b68a5396a009db78ef9382633707ead`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- extensions/voice-call/src/webhook.ts now enforces header gating and shared pre-auth body caps before reading attacker-controlled request bodies.\n- extensions/voice-call/src/webhook.test.ts ships regression coverage for missing-signature, oversize, and timeout pre-auth webhook cases.\n\nOpenClaw thanks @SEORY0 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T19:50:41Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw is vulnerable to unauthenticated resource exhaustion through its voice call webhook handling",
+    "UpdatedAt": "2026-03-26T19:50:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

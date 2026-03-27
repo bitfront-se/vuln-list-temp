@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-26T19:51:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345441,
+    "Id": "GSA_kwCzR0hTQS00OHZ3LW0zcWMtd3I5Oc4ABUVh",
+    "GhsaId": "GHSA-48vw-m3qc-wr99",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-48vw-m3qc-wr99"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ccf16cd8892402022439346ae1d23352e3707e9e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-48vw-m3qc-wr99"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-48vw-m3qc-wr99"
+      }
+    ],
+    "Description": "## Summary\nTrusted-proxy Control UI sessions without device identity could retain self-declared privileged scopes on the device-less allow path.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `ccf16cd8892402022439346ae1d23352e3707e9e`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- src/gateway/server/ws-connection/message-handler.ts now strips unbound self-declared scopes on the trusted-proxy no-device path.\n- src/gateway/server/ws-connection/connect-policy.ts remains the allow path, but the shipped scope scrub prevents privilege retention without device identity.\n\nOpenClaw thanks @nexrin for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T19:50:59Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's Trusted-proxy Control UI sessions retain privileged scopes without device identity on device-less allow paths",
+    "UpdatedAt": "2026-03-26T19:51:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-26T22:20:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "handlebars"
+  },
+  "Advisory": {
+    "DatabaseId": 345504,
+    "Id": "GSA_kwCzR0hTQS0ycXZxLXJqd2otZ3Z3Oc4ABUWg",
+    "GhsaId": "GHSA-2qvq-rjwj-gvw9",
+    "References": [
+      {
+        "Url": "https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23369"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23383"
+      },
+      {
+        "Url": "https://github.com/handlebars-lang/handlebars.js/commit/68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2"
+      },
+      {
+        "Url": "https://github.com/handlebars-lang/handlebars.js/releases/tag/v4.7.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2qvq-rjwj-gvw9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2qvq-rjwj-gvw9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33916"
+      }
+    ],
+    "Description": "## Summary\n\n`resolvePartial()` in the Handlebars runtime resolves partial names via a plain property lookup on `options.partials` without guarding against prototype-chain traversal. When `Object.prototype` has been polluted with a string value whose key matches a partial reference in a template, the polluted string is used as the partial body and rendered **without HTML escaping**, resulting in reflected or stored XSS.\n\n## Description\n\nThe root cause is in `lib/handlebars/runtime.js` inside `resolvePartial()` and `invokePartial()`:\n\n```javascript\n// Vulnerable: plain bracket access traverses Object.prototype\npartial = options.partials[options.name];\n```\n\n`hasOwnProperty` is never checked, so if `Object.prototype` has been seeded with a key whose name matches a partial reference in the template (e.g. `widget`), the lookup succeeds and the polluted string is returned. The runtime emits a prototype-access warning, but the partial is still resolved and its content is inserted into the rendered output unescaped. This contradicts the documented security model and is distinct from CVE-2021-23369 and CVE-2021-23383, which addressed data property access rather than partial template resolution.\n\n**Prerequisites for exploitation:**\n1. The target application must be vulnerable to prototype pollution (e.g. via `qs`, `minimist`, or\n   any querystring/JSON merge sink).\n2. The attacker must know or guess the name of a partial reference used in a template.\n\n## Proof of Concept\n\n```javascript\nconst Handlebars = require('handlebars');\n\n// Step 1: Prototype pollution (via qs, minimist, or another vector)\nObject.prototype.widget = '\u003cimg src=x onerror=\"alert(document.domain)\"\u003e';\n\n// Step 2: Normal template that references a partial\nconst template = Handlebars.compile('\u003cdiv\u003eWelcome! {{\u003e widget}}\u003c/div\u003e');\n\n// Step 3: Render — XSS payload injected unescaped\nconst output = template({});\n// Output: \u003cdiv\u003eWelcome! \u003cimg src=x onerror=\"alert(document.domain)\"\u003e\u003c/div\u003e\n```\n\n\u003e The runtime prints a prototype access warning claiming \"access has been denied,\" but the partial still resolves and returns the polluted value.\n\n## Workarounds\n\n- Apply `Object.freeze(Object.prototype)` early in application startup to prevent prototype  pollution. Note: this may break other libraries.\n- Use the Handlebars runtime-only build (`handlebars/runtime`), which does not compile templates  and reduces the attack surface.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-26T22:20:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Handlebars.js has Prototype Pollution Leading to XSS through Partial Template Injection",
+    "UpdatedAt": "2026-03-26T22:20:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.7.9"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.7.9"
+    }
+  ]
+}
