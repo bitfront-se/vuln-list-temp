@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-27T17:56:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "express-xss-sanitizer"
+  },
+  "Advisory": {
+    "DatabaseId": 345629,
+    "Id": "GSA_kwCzR0hTQS0zODQzLXJyNGctbThqcc4ABUYd",
+    "GhsaId": "GHSA-3843-rr4g-m8jq",
+    "References": [
+      {
+        "Url": "https://github.com/AhmedAdelFahim/express-xss-sanitizer/security/advisories/GHSA-3843-rr4g-m8jq"
+      },
+      {
+        "Url": "https://github.com/AhmedAdelFahim/express-xss-sanitizer/commit/5623009ef11dcf095c163a38dea07b9cc22ad19f"
+      },
+      {
+        "Url": "https://github.com/AhmedAdelFahim/express-xss-sanitizer/releases/tag/v2.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3843-rr4g-m8jq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3843-rr4g-m8jq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33979"
+      }
+    ],
+    "Description": "## Description\nA vulnerability has been identified in express-xss-sanitizer (\u003c= 2.0.1) where restrictive sanitization configurations are silently ignored.\n\nWhen a developer explicitly sets:\n\n  allowedTags: []\n  allowedAttributes: {}\n\nthe library incorrectly treats these values as \"not provided\" due to length/emptiness checks, and falls back to sanitize-html's default configuration.\n\nAs a result, instead of stripping all HTML tags and attributes, the sanitizer allows a permissive set of tags ``` (e.g., \u003ca\u003e, \u003cp\u003e, \u003cdiv\u003e, etc.) and attributes (e.g., href on \u003ca\u003e)```.\n\nThis behavior violates the expected API contract and may lead to security issues such as content injection or XSS, depending on how the sanitized output is used.\n\n##  Impact\n\nDevelopers intending to fully strip HTML content by providing empty allowedTags or allowedAttributes configurations may unknowingly allow a wide range of HTML elements and attributes.\n\nThis can result in:\n- Injection of unintended HTML content ```(e.g., \u003cdiv\u003e, \u003ctable\u003e, headings)```\n- Injection of links via``` \u003ca href=\"...\"\u003e```\n- Potential XSS vectors depending on downstream usage\n\nThe impact depends on how the sanitized output is rendered or consumed, but the root issue is a mismatch between developer intent and actual behavior.\n\n## Proof of Concept\n\n```javascript\nconst { sanitize } = require('express-xss-sanitizer');\nconst sanitizeHtml = require('sanitize-html');\n\nconst input = '\u003ca href=\"http://evil.com\"\u003eclick\u003c/a\u003e\u003cp\u003ephish\u003c/p\u003e';\n\n// Using express-xss-sanitizer (v2.0.1)\nsanitize(input, { allowedTags: [], allowedAttributes: {} });\n// =\u003e '\u003ca href=\"http://evil.com\"\u003eclick\u003c/a\u003e\u003cp\u003ephish\u003c/p\u003e'\n\n// Expected behavior (sanitize-html directly)\nsanitizeHtml(input, { allowedTags: [], allowedAttributes: {} });\n// =\u003e 'clickphish'\n```\n\n## Root Cause\nThe issue was caused by validation logic that checked for non-empty arrays/objects:\n\n- allowedTags required length \u003e 0\n- allowedAttributes required Object.keys(...).length \u003e 0\n\nThis caused empty configurations ([]) and ({}) to be ignored, resulting in fallback to default permissive settings.\n\n## Fix\nThe validation logic has been updated to respect explicitly provided empty configurations.\n\nNow, if allowedTags or allowedAttributes are provided (even if empty), they are passed directly to sanitize-html without being overridden.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T17:56:45Z",
+    "Severity": "HIGH",
+    "Summary": "Express XSS Sanitizer: allowedTags/allowedAttributes bypass leads to permissive sanitization (XSS risk)",
+    "UpdatedAt": "2026-03-27T17:56:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.2"
+    }
+  ]
+}

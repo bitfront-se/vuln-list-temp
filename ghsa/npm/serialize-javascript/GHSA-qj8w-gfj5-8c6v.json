@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-27T18:18:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "serialize-javascript"
+  },
+  "Advisory": {
+    "DatabaseId": 345640,
+    "Id": "GSA_kwCzR0hTQS1xajh3LWdmajUtOGM2ds4ABUYo",
+    "GhsaId": "GHSA-qj8w-gfj5-8c6v",
+    "References": [
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-qj8w-gfj5-8c6v"
+      },
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/commit/f147e90269b58bb6e539cfdf3d0e20d6ad14204b"
+      },
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/releases/tag/v7.0.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qj8w-gfj5-8c6v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qj8w-gfj5-8c6v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34043"
+      }
+    ],
+    "Description": "### Impact\n\n**What kind of vulnerability is it?**\n\nIt is a **Denial of Service (DoS)** vulnerability caused by CPU exhaustion. When serializing a specially crafted \"array-like\" object (an object that inherits from `Array.prototype` but has a very large `length` property), the process enters an intensive loop that consumes 100% CPU and hangs indefinitely.\n\n**Who is impacted?**\n\nApplications that use `serialize-javascript` to serialize untrusted or user-controlled objects are at risk. While direct exploitation is difficult, it becomes a high-priority threat if the application is also vulnerable to **Prototype Pollution** or handles untrusted data via **YAML Deserialization**, as these could be used to inject the malicious object.\n\n### Patches\n\n**Has the problem been patched?**\n\nYes, the issue has been patched by replacing `instanceof Array` checks with `Array.isArray()` and using `Object.keys()` for sparse array detection.\n\n**What versions should users upgrade to?**\n\nUsers should upgrade to **`v7.0.5`** or later.\n\n### Workarounds\n\n**Is there a way for users to fix or remediate the vulnerability without upgrading?**\n\nThere is no direct code-level workaround within the library itself. However, users can mitigate the risk by:\n\n* Validating and sanitizing all input before passing it to the `serialize()` function.\n* Ensuring the environment is protected against Prototype Pollution.\n* Upgrading to **`v7.0.5`** as soon as possible.\n\n### Acknowledgements\n\nSerialize JavaScript thanks **Tomer Aberbach** (@TomerAberbach) for discovering and privately disclosing this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T18:18:54Z",
+    "Severity": "MODERATE",
+    "Summary": "Serialize JavaScript has CPU Exhaustion Denial of Service via crafted array-like objects",
+    "UpdatedAt": "2026-03-27T18:18:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.5"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.5"
+    }
+  ]
+}

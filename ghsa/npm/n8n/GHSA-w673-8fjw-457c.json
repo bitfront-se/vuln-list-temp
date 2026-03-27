@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-27T18:06:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 345635,
+    "Id": "GSA_kwCzR0hTQS13NjczLThmanctNDU3Y84ABUYj",
+    "GhsaId": "GHSA-w673-8fjw-457c",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-w673-8fjw-457c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w673-8fjw-457c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w673-8fjw-457c"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could configure a Form Node with an unsanitized HTML description field or exploit an overly permissive iframe sandbox policy to perform stored cross-site scripting or redirect end users visiting the form to an arbitrary external URL. The vulnerability could be used to facilitate phishing attacks.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.24, 2.10.4 and 2.12.0. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Form node by adding `n8n-nodes-base.form` to the `NODES_EXCLUDE` environment variable.\n- Disable the Form Trigger node by adding `n8n-nodes-base.formTrigger` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T18:06:28Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Authenticated XSS and Open Redirect via Form Node",
+    "UpdatedAt": "2026-03-27T18:06:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.24"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.24"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.10.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.11.0, \u003c 2.12.0"
+    }
+  ]
+}

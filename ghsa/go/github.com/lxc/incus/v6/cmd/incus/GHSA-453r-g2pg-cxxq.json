@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-27T17:21:35Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/lxc/incus/v6/cmd/incus"
+  },
+  "Advisory": {
+    "DatabaseId": 345624,
+    "Id": "GSA_kwCzR0hTQS00NTNyLWcycGctY3h4cc4ABUYY",
+    "GhsaId": "GHSA-453r-g2pg-cxxq",
+    "References": [
+      {
+        "Url": "https://github.com/lxc/incus/security/advisories/GHSA-453r-g2pg-cxxq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33898"
+      },
+      {
+        "Url": "https://github.com/lxc/incus/commit/d81d49e746e15dad35de39dc0ace0cedfba7d2f7"
+      },
+      {
+        "Url": "https://github.com/lxc/incus/releases/tag/v6.23.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-453r-g2pg-cxxq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-453r-g2pg-cxxq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33898"
+      }
+    ],
+    "Description": "### Summary\nThe web server spawned by `incus webui` incorrectly validates the authentication token such that an invalid value will be accepted.\n\n### Details\n`incus webui` runs a local web server on a random localhost port. For authentication, it provides the user with a URL containing an authentication token. When accessed with that token, Incus creates a cookie persisting that token without needing to include it in subsequent HTTP requests.\n\nWhile the Incus client correctly validates the value of the cookie, it does not correctly validate the token when passed int the URL.\nThis allows for an attacker able to locate and talk to the temporary web server on localhost to have as much access to Incus as the user who ran `incus webui`.\n\nThis can lead to privilege escalation by another local user or an access to the user's Incus instances and possibly system resources by a remote attack able to trick the local user into interacting with the Incus UI web server.\n\n### Credit\nThis issue was discovered and reported by the team at [7asecurity](https://7asecurity.com/)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T17:21:31Z",
+    "Severity": "HIGH",
+    "Summary": "Local Incus UI web server vulnerable to nuthentication bypass",
+    "UpdatedAt": "2026-03-27T17:21:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.23.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.23.0"
+    }
+  ]
+}
