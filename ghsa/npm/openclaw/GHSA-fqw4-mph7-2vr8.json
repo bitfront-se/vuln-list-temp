@@ -1,0 +1,49 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-27T22:29:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345724,
+    "Id": "GSA_kwCzR0hTQS1mcXc0LW1waDctMnZyOM4ABUZ8",
+    "GhsaId": "GHSA-fqw4-mph7-2vr8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-fqw4-mph7-2vr8"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/81ebc7e0344fd19c85778e883bad45e2da972229"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fqw4-mph7-2vr8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fqw4-mph7-2vr8"
+      }
+    ],
+    "Description": "## Summary\n\nGateway local shared-auth reconnect silently widens paired device scope from operator.read to operator.admin and reach node RCE\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Affected versions: `\u003c= 2026.3.24`\n- First patched version: `2026.3.25`\n- Latest published npm version at verification time: `2026.3.24`\n\n## Details\n\nSilent local shared-auth reconnects could previously auto-approve `scope-upgrade` requests and widen a paired device from `operator.read` to `operator.admin`. Commit `81ebc7e0344fd19c85778e883bad45e2da972229` blocks silent reconnect scope upgrades so widened scopes require an explicit pairing approval instead of an implicit local reconnect path.\n\nVerified vulnerable on tag `v2026.3.24` and fixed on `main` by commit `81ebc7e0344fd19c85778e883bad45e2da972229`.\n\n## Fix Commit(s)\n\n- `81ebc7e0344fd19c85778e883bad45e2da972229`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T22:29:47Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenClaw: Silent privilege escalation via gateway shared-auth reconnect",
+    "UpdatedAt": "2026-03-27T22:29:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

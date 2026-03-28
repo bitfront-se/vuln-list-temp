@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-27T19:58:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@clerk/express"
+  },
+  "Advisory": {
+    "DatabaseId": 345695,
+    "Id": "GSA_kwCzR0hTQS1nanh4LTkydzktOHY4Zs4ABUZf",
+    "GhsaId": "GHSA-gjxx-92w9-8v8f",
+    "References": [
+      {
+        "Url": "https://github.com/clerk/javascript/security/advisories/GHSA-gjxx-92w9-8v8f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gjxx-92w9-8v8f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gjxx-92w9-8v8f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34076"
+      }
+    ],
+    "Description": "## Summary\n\nThe `clerkFrontendApiProxy` function in `@clerk/backend` is vulnerable to Server-Side Request Forgery (SSRF). An unauthenticated attacker can craft a request path that causes the proxy to send the application's `Clerk-Secret-Key` to an attacker-controlled server.\n\n## Affected packages\n\nOnly applications that have opted into the `frontendApiProxy` feature are affected. This feature is not enabled by default. **Users of `@clerk/nextjs` are not affected** due to how the framework handles repeated `/` in request paths.\n\n| Package | Affected versions | Fixed version |\n|---|---|---|\n| `@clerk/backend` | `\u003e= 3.0.0, \u003c= 3.2.2` | `3.2.3` |\n| `@clerk/express` | `\u003e= 2.0.0, \u003c= 2.0.6` | `2.0.7` |\n| `@clerk/hono` | `\u003e= 0.1.0, \u003c= 0.1.4` | `0.1.5` |\n| `@clerk/fastify` | `\u003e= 3.1.0, \u003c= 3.1.4` | `3.1.5` |\n\nSearch your codebase for the `frontendApiProxy` option. If none of the patterns below appear in your code, you are not affected.\n\n**@clerk/express**\n```ts\napp.use(clerkMiddleware({ frontendApiProxy: { enabled: true } }));\n```\n\n**@clerk/hono**\n```ts\napp.use('*', clerkMiddleware({ frontendApiProxy: { enabled: true } }));\n```\n\n**@clerk/fastify**\n```ts\nfastify.register(clerkPlugin, { frontendApiProxy: { enabled: true } });\n```\n\n**@clerk/backend**\n```ts\nimport { clerkFrontendApiProxy } from '@clerk/backend/proxy';\n```\n\nA quick way to check across your entire project:\n\n```sh\ngrep -r \"frontendApiProxy\\|clerkFrontendApiProxy\" .\n```\n\nIf there are no matches, you are not using this feature.\n\n\n## Recommended actions\n\nClerk's internal logs show no evidence of users utilizing the built-in proxy with the impacted versions. Despite that, if you are on an impacted version and use the built-in proxy we recommend upgrading and rotating your Clerk Secret Key immediately.\n\n1. **Upgrade** to the patched version of `@clerk/backend` (and `@clerk/express`, `@clerk/hono`, etc.)\n2. **Rotate your Clerk Secret Key** after upgrading - if an attacker exploited this vulnerability, they may have captured your key. Rotate it in the [Clerk Dashboard](https://dashboard.clerk.com) under **API Keys**.  You should deploy your application with the updated key before revoking the existing key.\n3. **Audit access logs** for requests to your proxy endpoint (`/__clerk/` by default) containing double slashes in the path.\n\n\n\n## Credit\n\nDiscovered during an internal code audit.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T19:58:19Z",
+    "Severity": "HIGH",
+    "Summary": "Clerk: SSRF in the opt-in clerkFrontendApiProxy feature may leak secret keys to unintended host",
+    "UpdatedAt": "2026-03-27T19:58:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.0.6"
+    }
+  ]
+}

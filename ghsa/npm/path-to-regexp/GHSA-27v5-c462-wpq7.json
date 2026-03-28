@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-27T22:23:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "path-to-regexp"
+  },
+  "Advisory": {
+    "DatabaseId": 345720,
+    "Id": "GSA_kwCzR0hTQS0yN3Y1LWM0NjItd3BxN84ABUZ4",
+    "GhsaId": "GHSA-27v5-c462-wpq7",
+    "References": [
+      {
+        "Url": "https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-27v5-c462-wpq7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-4923"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://makenowjust-labs.github.io/recheck/playground"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-27v5-c462-wpq7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-27v5-c462-wpq7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-4923"
+      }
+    ],
+    "Description": "### Impact\n\nWhen using multiple wildcards, combined with at least one parameter, a regular expression can be generated that is vulnerable to ReDoS. This backtracking vulnerability requires the second wildcard to be somewhere other than the end of the path.\n\n**Unsafe examples:**\n\n```\n/*foo-*bar-:baz\n/*a-:b-*c-:d\n/x/*a-:b/*c/y\n```\n\n**Safe examples:**\n\n```\n/*foo-:bar\n/*foo-:bar-*baz\n```\n\n### Patches\n\nUpgrade to version `8.4.0`.\n\n### Workarounds\n\nIf developers are using multiple wildcard parameters, they can check the regex output with a tool such as https://makenowjust-labs.github.io/recheck/playground/ to confirm whether a path is vulnerable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T22:23:52Z",
+    "Severity": "MODERATE",
+    "Summary": "path-to-regexp vulnerable to Regular Expression Denial of Service via multiple wildcards",
+    "UpdatedAt": "2026-03-27T22:23:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.4.0"
+    }
+  ]
+}

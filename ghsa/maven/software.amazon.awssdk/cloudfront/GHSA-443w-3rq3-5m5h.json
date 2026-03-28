@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-27T20:43:17Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "software.amazon.awssdk:cloudfront"
+  },
+  "Advisory": {
+    "DatabaseId": 345703,
+    "Id": "GSA_kwCzR0hTQS00NDN3LTNycTMtNW01aM4ABUZn",
+    "GhsaId": "GHSA-443w-3rq3-5m5h",
+    "References": [
+      {
+        "Url": "https://github.com/aws/aws-sdk-java-v2/security/advisories/GHSA-443w-3rq3-5m5h"
+      },
+      {
+        "Url": "https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/security.html"
+      },
+      {
+        "Url": "https://github.com/aws/aws-sdk-java-v2/blob/master/services/cloudfront/src/main/java/software/amazon/awssdk/services/cloudfront/CloudFrontUtilities.java"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-443w-3rq3-5m5h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-443w-3rq3-5m5h"
+      }
+    ],
+    "Description": "### Summary\nThis notification is related to the [CloudFront signing utilities](https://github.com/aws/aws-sdk-java-v2/blob/master/services/cloudfront/src/main/java/software/amazon/awssdk/services/cloudfront/CloudFrontUtilities.java) in the AWS SDK for Java v2, which are used to generate Amazon CloudFront signed URLs and signed cookies. A defense-in-depth enhancement has been implemented to improve handling of special characters, such as double quotes and backslashes, in input values.\n### Impact\nThe CloudFront signing utilities build policy documents that define access restrictions for signed URLs and cookies. If an application passes unsanitized input containing special characters to these utilities, the resulting policy document may not reflect the application's intended access restrictions. While the SDK was functioning safely within the requirements of the shared responsibility model, additional safeguards have been added to support secure customer implementations. Applications that already follow AWS security best practices for input validation are not impacted.\n### Impacted versions: \n2.18.33 - 2.41.29\n### Patches\nOn 2026.02.16, an enhancement was made to AWS SDK for Java v2 version 2.41.30. The enhancement ensures that special characters in input values are correctly handled. We recommend upgrading to the latest version.\n### Workarounds\nNo workarounds are needed, but customers should ensure that your application is following security best practices:\n\n* Implement proper input validation in your application code before passing values to CloudFront signing utilities\n* Update to the latest AWS SDK release on a regular basis\n* Follow [AWS security best practices for SDK configuration](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/security.html)\n\n### Resources\nIf there are any questions or comments about this advisory, contact [AWS/Amazon] Security via our vulnerability reporting page or directly via email to [aws-security@amazon.com](mailto:aws-security@amazon.com). Please do not create a public GitHub issue.\n### Acknowledgement\nAWS SDK for Java 2.0 thanks the Amazon Inspector Security Research team for identifying this issue and working with us through the coordinated process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T20:43:16Z",
+    "Severity": "HIGH",
+    "Summary": "AWS SDK for Java 2.0: Improper Handling of Special Characters in CloudFront Signing Utilities",
+    "UpdatedAt": "2026-03-27T20:43:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.41.30"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.33, \u003c= 2.41.29"
+    }
+  ]
+}

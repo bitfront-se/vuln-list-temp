@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-27T19:35:17Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/nektos/act"
+  },
+  "Advisory": {
+    "DatabaseId": 345689,
+    "Id": "GSA_kwCzR0hTQS14MzRoLTU0Y3ctOTgyNc4ABUZZ",
+    "GhsaId": "GHSA-x34h-54cw-9825",
+    "References": [
+      {
+        "Url": "https://github.com/nektos/act/security/advisories/GHSA-x34h-54cw-9825"
+      },
+      {
+        "Url": "https://github.com/nektos/act/commit/c28c27e141e8b54f9853de82f421ee09846751f7"
+      },
+      {
+        "Url": "https://code.forgejo.org/forgejo/runner/issues/294"
+      },
+      {
+        "Url": "https://github.com/nektos/act/releases/tag/v0.2.86"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x34h-54cw-9825"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x34h-54cw-9825"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34042"
+      }
+    ],
+    "Description": "act's built-in actions/cache server listens to connections on all interfaces and allows anyone who can connect to it — including someone anywhere on the internet — to create caches with arbitrary keys and retrieve all existing caches. If one can predict which cache keys will be used by local actions, one can create malicious caches containing whatever files one pleases, most likely allowing arbitrary remote code execution within the Docker container.\n\n## Discovery\n\nDiscovered while discussing [forgejo/runner#294](https://code.forgejo.org/forgejo/runner/issues/294).\n\n## Proposed Mitigation\n\nIt was discussed to append a secret to `ACTIONS_CACHE_URL` to retain compatibility with GitHub's cache action and still allow authorization. Forgejo is considering also encoding which repo is currently being run in CI into the secret in the URL to prevent unrelated repos using the same (probably global) runner from seeing each other's caches.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T19:35:16Z",
+    "Severity": "HIGH",
+    "Summary": "act: actions/cache server allows malicious cache injection",
+    "UpdatedAt": "2026-03-27T19:35:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.86"
+      },
+      "VulnerableVersionRange": "\u003c= 0.2.85"
+    }
+  ]
+}

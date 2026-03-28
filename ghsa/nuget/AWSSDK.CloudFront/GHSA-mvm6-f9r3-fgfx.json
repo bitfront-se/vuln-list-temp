@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-27T22:22:29Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "AWSSDK.CloudFront"
+  },
+  "Advisory": {
+    "DatabaseId": 345718,
+    "Id": "GSA_kwCzR0hTQS1tdm02LWY5cjMtZmdmeM4ABUZ2",
+    "GhsaId": "GHSA-mvm6-f9r3-fgfx",
+    "References": [
+      {
+        "Url": "https://github.com/aws/aws-sdk-net/security/advisories/GHSA-mvm6-f9r3-fgfx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mvm6-f9r3-fgfx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mvm6-f9r3-fgfx"
+      }
+    ],
+    "Description": "### Summary \nThis notification is related to the CloudFront signing utilities in the AWS SDK for .NET, which are used to generate Amazon CloudFront signed URLs and signed cookies. A defense-in-depth enhancement has been implemented to improve handling of special characters, such as double quotes and backslashes, in input values. \n\n### Impact \nThe CloudFront signing utilities build policy documents that define access restrictions for signed URLs and cookies. If an application passes unsanitized input containing special characters to these utilities, the resulting policy document may not reflect the application's intended access restrictions. While the SDK was functioning safely within the requirements of the shared responsibility model, additional safeguards have been added to support secure customer implementations. Applications that already follow AWS security best practices for input validation are not impacted. \n\n### Impacted versions: \n- AWS SDK for .NET V3 (`AWSSDK.CloudFront`): \u003c 3.7.510.7\n- AWS SDK for .NET V4 (`AWSSDK.Extensions.CloudFront.Signers`): 4.0.0.0 - 4.0.0.25 \n\n### Patches \nOn February 25th, 2026, an enhancement was made to the AWS SDK for .NET CloudFront signing utilities. The enhancement ensures that special characters in input values are correctly handled. We recommend upgrading to the latest version. \n\n### Workarounds \nNo workarounds are needed, but customers should ensure that your application is following security best practices: \n- Implement proper input validation in your application code before passing values to CloudFront signing utilities \n- Update to the latest AWS SDK release on a regular basis \n- Follow AWS security best practices for SDK configuration\n\n### References \nIf there are any questions or comments about this advisory, contact AWS Security via our [vulnerability reporting page](https://aws.amazon.com/security/vulnerability-reporting) or directly via email to [aws-security@amazon.com](mailto:aws-security@amazon.com). Please do not create a public GitHub issue.\n\n### Acknowledgement\nAWS SDK for .NET thanks the Amazon Inspector Security Research team for identifying this issue and working through the coordinated process together.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-27T22:22:28Z",
+    "Severity": "HIGH",
+    "Summary": "AWS SDK for .NET: Improper escaping of special characters in CloudFront policy document construction",
+    "UpdatedAt": "2026-03-27T22:22:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.7.510.7"
+      },
+      "VulnerableVersionRange": "\u003c 3.7.510.7"
+    }
+  ]
+}
