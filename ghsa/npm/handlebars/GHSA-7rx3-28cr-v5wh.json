@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-29T15:17:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "handlebars"
+  },
+  "Advisory": {
+    "DatabaseId": 345817,
+    "Id": "GSA_kwCzR0hTQS03cngzLTI4Y3ItdjV3aM4ABUbZ",
+    "GhsaId": "GHSA-7rx3-28cr-v5wh",
+    "References": [
+      {
+        "Url": "https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-7rx3-28cr-v5wh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-765h-qjxv-5f44"
+      },
+      {
+        "Url": "https://github.com/handlebars-lang/handlebars.js/releases/tag/v4.7.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7rx3-28cr-v5wh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7rx3-28cr-v5wh"
+      }
+    ],
+    "Description": "## Summary\n\nThe prototype method blocklist in `lib/handlebars/internal/proto-access.js` blocks `constructor`, `__defineGetter__`, `__defineSetter__`, and `__lookupGetter__`, but omits the symmetric `__lookupSetter__`. This omission is only exploitable when the non-default runtime option `allowProtoMethodsByDefault: true` is explicitly set — in that configuration `__lookupSetter__` becomes accessible while its counterparts remain blocked, creating an inconsistent security boundary.\n\n`4.6.0` is the version that introduced `protoAccessControl` and the `allowProtoMethodsByDefault` runtime option.\n\n## Description\n\nIn `lib/handlebars/internal/proto-access.js`:\n\n```javascript\nconst methodWhiteList = Object.create(null);\nmethodWhiteList['constructor']      = false;\nmethodWhiteList['__defineGetter__'] = false;\nmethodWhiteList['__defineSetter__'] = false;\nmethodWhiteList['__lookupGetter__'] = false;\n// __lookupSetter__ intentionally blocked in CVE-2021-23383,\n// but omitted here — creating an asymmetric blocklist\n```\n\nAll four legacy accessor helpers (`__defineGetter__`, `__defineSetter__`, `__lookupGetter__`, `__lookupSetter__`) were involved in the exploit chain addressed by CVE-2021-23383. Three of the four were explicitly blocked; `__lookupSetter__` was left out.\n\nWhen `allowProtoMethodsByDefault: true` is set, any prototype method **not present** in `methodWhiteList` is permitted by default. Because `__lookupSetter__` is absent from the list, it passes the `checkWhiteList` check and is accessible in templates, while `__lookupGetter__` (its sibling) is correctly denied.\n\n## Workarounds\n\n- Do **not** set `allowProtoMethodsByDefault: true`. The default configuration is not affected.\n- If `allowProtoMethodsByDefault` must be enabled, ensure templates do not reference  `__lookupSetter__` through untrusted input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:17:15Z",
+    "Severity": "MODERATE",
+    "Summary": "Handlebars.js has a Prototype Method Access Control Gap via Missing __lookupSetter__ Blocklist Entry",
+    "UpdatedAt": "2026-03-29T15:17:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.7.9"
+      },
+      "VulnerableVersionRange": "\u003e= 4.6.0, \u003c= 4.7.8"
+    }
+  ]
+}

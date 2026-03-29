@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-29T15:10:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mppx"
+  },
+  "Advisory": {
+    "DatabaseId": 345811,
+    "Id": "GSA_kwCzR0hTQS1tdjlqLThqdmctajhtcs4ABUbT",
+    "GhsaId": "GHSA-mv9j-8jvg-j8mr",
+    "References": [
+      {
+        "Url": "https://github.com/wevm/mppx/security/advisories/GHSA-mv9j-8jvg-j8mr"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/commit/94088246ee18f21b5d6be40d9e7a464f5a280bfb"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/releases/tag/mppx@0.4.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mv9j-8jvg-j8mr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mv9j-8jvg-j8mr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34209"
+      }
+    ],
+    "Description": "### Impact\n\nThe `tempo/session` cooperative close handler validated the close voucher amount using `\u003c` instead of `\u003c=` against the on-chain settled amount. An attacker could submit a close voucher exactly equal to the settled amount, which would be accepted without committing any new funds, effectively closing or griefing the channel for free.\n\n### Patches\n\nFixed in 0.4.11.\n\n### Workarounds\n\nThere are no workarounds available for this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:10:03Z",
+    "Severity": "HIGH",
+    "Summary": "mppx: Tempo has a session close voucher bypass vulnerability due to settled amount equality",
+    "UpdatedAt": "2026-03-29T15:10:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.11"
+      },
+      "VulnerableVersionRange": "\u003c 0.4.11"
+    }
+  ]
+}

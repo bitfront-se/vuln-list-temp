@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-29T15:13:31Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.trino:trino-iceberg"
+  },
+  "Advisory": {
+    "DatabaseId": 345813,
+    "Id": "GSA_kwCzR0hTQS14MjdwLTVmNjgtbTY0NM4ABUbV",
+    "GhsaId": "GHSA-x27p-5f68-m644",
+    "References": [
+      {
+        "Url": "https://github.com/trinodb/trino/security/advisories/GHSA-x27p-5f68-m644"
+      },
+      {
+        "Url": "https://github.com/trinodb/trino/releases/tag/480"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x27p-5f68-m644"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x27p-5f68-m644"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34214"
+      }
+    ],
+    "Description": "### Summary\n\nIceberg connector REST catalog static credentials (access key) or vended credentials (temporary access key) are accessible to users that have write privilege on SQL level.\n\n### Details\n\nIceberg REST catalog typically needs access to object storage. This access can be configured in multiple different ways. When storage access is achieved by static credentials (e.g. AWS S3 access key) or vended credentials (temporary access key).\n\nQuery JSON is a query visualization and performance troubleshooting facility. It includes serialized query plan and handles for table writes or  execution of table procedures. A user that submitted a query has access to query JSON for their query. Query JSON is available from Trino UI or via `/ui/api/query/«query_id»` and `/v1/query/«query_id»` endpoints.\n\nThe storage credentials are stored in those handles when performing write operations, or table maintenance operations. They are serialized in query JSON. A user with write access to data in Iceberg connector configured to use REST Catalog with static or vended credentials can retrieve those credentials.\n\n### Impact\n\nAnyone using Iceberg REST catalog with static or vended credentials is impacted.\nThe credentials should be considered compromised. \nVended credentials are temporary in nature so they do not need to be rotated. However, underlying data could have been exposed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:13:30Z",
+    "Severity": "HIGH",
+    "Summary": "Trino: Iceberg REST catalog static and vended credentials are accessible via query JSON",
+    "UpdatedAt": "2026-03-29T15:13:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "480"
+      },
+      "VulnerableVersionRange": "\u003e= 439, \u003c 480"
+    }
+  ]
+}

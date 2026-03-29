@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-29T15:46:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345855,
+    "Id": "GSA_kwCzR0hTQS01anZqLWh4bWgtNmg2as4ABUb_",
+    "GhsaId": "GHSA-5jvj-hxmh-6h6j",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5jvj-hxmh-6h6j"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1c45123231516fa50f8cf8522ba5ff2fb2ca7aea"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5jvj-hxmh-6h6j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5jvj-hxmh-6h6j"
+      }
+    ],
+    "Description": "## Summary\n\nGateway HTTP Session History Route Bypasses Operator Read Scope\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Affected versions: `\u003c= 2026.3.24`\n- First patched version: `2026.3.25`\n- Latest published npm version at verification time: `2026.3.24`\n\n## Details\n\nThe HTTP `/sessions/:sessionKey/history` route previously authenticated bearer tokens but skipped the same `operator.read` check used by `chat.history` over WebSocket. Commit `1c45123231516fa50f8cf8522ba5ff2fb2ca7aea` makes HTTP callers declare operator scopes and rejects history reads that do not include `operator.read`.\n\nVerified vulnerable on tag `v2026.3.24` and fixed on `main` by commit `1c45123231516fa50f8cf8522ba5ff2fb2ca7aea`.\n\n## Fix Commit(s)\n\n- `1c45123231516fa50f8cf8522ba5ff2fb2ca7aea`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:46:40Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Gateway HTTP Session History Route Bypasses Operator Read Scope",
+    "UpdatedAt": "2026-03-29T15:46:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

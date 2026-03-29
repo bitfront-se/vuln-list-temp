@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-29T15:44:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@mikro-orm/core"
+  },
+  "Advisory": {
+    "DatabaseId": 345853,
+    "Id": "GSA_kwCzR0hTQS1nd2h2LWo5NzQtNmZ4bc4ABUb9",
+    "GhsaId": "GHSA-gwhv-j974-6fxm",
+    "References": [
+      {
+        "Url": "https://github.com/mikro-orm/mikro-orm/security/advisories/GHSA-gwhv-j974-6fxm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gwhv-j974-6fxm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gwhv-j974-6fxm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34220"
+      }
+    ],
+    "Description": "## Summary\n\nMikroORM versions \u003c= 6.6.9 and \u003c= 7.0.5 are vulnerable to SQL injection when specially crafted objects are interpreted as raw SQL query fragments.\n\n## Impact\n\nIf user-controlled input is passed directly to MikroORM query construction APIs, an attacker may inject raw SQL fragments. This can lead to SQL injection depending on the database and query being executed.\n\n## Affected usage\n\nThe issue occurs when untrusted objects are passed to ORM write APIs such as:\n\n- `wrap(entity).assign(userInput)` followed by `em.flush()`\n- `em.nativeUpdate()`\n- `em.nativeInsert()`\n- `em.create()` followed by `em.flush()`\n\nApplications that validate input types or enforce strict schema validation before passing data to MikroORM are not affected.\n\n## Fix\n\nThe vulnerability was caused by duck-typed detection of internal ORM marker properties.\n\nThe fix replaces these checks with symbol-based markers that cannot be reproduced by user input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:44:04Z",
+    "Severity": "CRITICAL",
+    "Summary": "MikroORM is vulnerable to SQL Injection via specially crafted object",
+    "UpdatedAt": "2026-03-29T15:44:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0-dev.0, \u003c 7.0.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.6.10"
+      },
+      "VulnerableVersionRange": "\u003c 6.6.10"
+    }
+  ]
+}

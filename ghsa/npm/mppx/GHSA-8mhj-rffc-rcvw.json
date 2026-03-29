@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-29T15:11:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mppx"
+  },
+  "Advisory": {
+    "DatabaseId": 345812,
+    "Id": "GSA_kwCzR0hTQS04bWhqLXJmZmMtcmN2d84ABUbU",
+    "GhsaId": "GHSA-8mhj-rffc-rcvw",
+    "References": [
+      {
+        "Url": "https://github.com/wevm/mppx/security/advisories/GHSA-8mhj-rffc-rcvw"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/commit/b2b1a0b60506fc71aa80b8a025084949dca1a994"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/releases/tag/mppx%400.4.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8mhj-rffc-rcvw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8mhj-rffc-rcvw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34210"
+      }
+    ],
+    "Description": "### Impact\n\nThe `stripe/charge` payment method did not check Stripe's `Idempotent-Replayed` response header when creating PaymentIntents. An attacker could replay a valid credential containing the same `spt` token against a new challenge, and the server would accept the replayed Stripe PaymentIntent as a new successful payment without actually charging the customer again. This allowed an attacker to pay once and consume unlimited resources by replaying the credential.\n\n### Patches\n\nFixed in 0.4.11. The server now checks the `Idempotent-Replayed` header and rejects replayed PaymentIntents.\n\n### Workarounds\n\nThere are no workarounds available for this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:11:30Z",
+    "Severity": "MODERATE",
+    "Summary": "mppx has Stripe charge credential replay via missing idempotency check",
+    "UpdatedAt": "2026-03-29T15:11:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.11"
+      },
+      "VulnerableVersionRange": "\u003c 0.4.11"
+    }
+  ]
+}

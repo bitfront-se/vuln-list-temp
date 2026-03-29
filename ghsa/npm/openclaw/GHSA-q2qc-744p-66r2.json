@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-29T15:47:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345856,
+    "Id": "GSA_kwCzR0hTQS1xMnFjLTc0NHAtNjZyMs4ABUcA",
+    "GhsaId": "GHSA-q2qc-744p-66r2",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-q2qc-744p-66r2"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d9810811b6c3c9266d7580f00574e5e02f7663de"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q2qc-744p-66r2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q2qc-744p-66r2"
+      }
+    ],
+    "Description": "## Summary\n\n`session_status` sessionId resolution bypasses sandboxed session-tree visibility\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Affected versions: `\u003e= 2026.3.11, \u003c= 2026.3.24`\n- First patched version: `2026.3.25`\n- Latest published npm version at verification time: `2026.3.24`\n\n## Details\n\n`session_status` previously resolved a `sessionId` to a canonical session key after early visibility checks, letting sandboxed children reach parent or sibling sessions that were blocked by explicit `sessionKey`. Commit `d9810811b6c3c9266d7580f00574e5e02f7663de` enforces visibility after `sessionId` resolution so sandboxed callers cannot escape their session tree.\n\nVerified vulnerable on tag `v2026.3.24` and fixed on `main` by commit `d9810811b6c3c9266d7580f00574e5e02f7663de`.\n\n## Fix Commit(s)\n\n- `d9810811b6c3c9266d7580f00574e5e02f7663de`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:47:50Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: `session_status` sessionId resolution bypasses sandboxed session-tree visibility",
+    "UpdatedAt": "2026-03-29T15:47:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.3.11, \u003c= 2026.3.24"
+    }
+  ]
+}

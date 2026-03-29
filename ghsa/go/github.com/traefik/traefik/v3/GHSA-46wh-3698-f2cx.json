@@ -1,0 +1,67 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-29T15:37:30Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/traefik/traefik/v3"
+  },
+  "Advisory": {
+    "DatabaseId": 345848,
+    "Id": "GSA_kwCzR0hTQS00NndoLTM2OTgtZjJjeM4ABUb4",
+    "GhsaId": "GHSA-46wh-3698-f2cx",
+    "References": [
+      {
+        "Url": "https://github.com/traefik/traefik/security/advisories/GHSA-46wh-3698-f2cx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p77j-4mvh-x3m3"
+      },
+      {
+        "Url": "https://github.com/traefik/traefik/blob/67c64ed9b25fbb90f1086977a62827133a7aa01b/go.mod#L108"
+      },
+      {
+        "Url": "https://github.com/traefik/traefik/releases/tag/v2.11.42"
+      },
+      {
+        "Url": "https://github.com/traefik/traefik/releases/tag/v3.6.12"
+      },
+      {
+        "Url": "https://github.com/traefik/traefik/releases/tag/v3.7.0-ea.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-46wh-3698-f2cx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-46wh-3698-f2cx"
+      }
+    ],
+    "Description": "## Summary\n\nThere is a potential vulnerability in Traefik due to its dependency on an affected version of gRPC-Go (CVE-2026-33186).\n\nA remote, unauthenticated attacker can send gRPC requests with a malformed HTTP/2 `:path` pseudo-header omitting the mandatory leading slash (e.g., `Service/Method` instead of `/Service/Method`). While the server routes such requests correctly, path-based authorization interceptors evaluate the raw non-canonical path and fail to match \"deny\" rules, allowing the request to bypass the policy entirely if a fallback \"allow\" rule is present.\n\n## Patches\n\n- https://github.com/traefik/traefik/releases/tag/v2.11.42\n- https://github.com/traefik/traefik/releases/tag/v3.6.12\n- https://github.com/traefik/traefik/releases/tag/v3.7.0-ea.3\n\n## For more information\n\nIf there are any questions or comments about this advisory, please [open an issue](https://github.com/traefik/traefik/issues).\n\n\u003cdetails\u003e\n\u003csummary\u003eOriginal Description\u003c/summary\u003e\n\n### Summary\nThis CVE hits traefik until Version 3.6.11 and 2.11.41.\ngRPC-Go has an authorization bypass via missing leading slash in :path\n### Details\nAs described in https://github.com/advisories/GHSA-p77j-4mvh-x3m3\n### PoC\nUpdate library version in \nhttps://github.com/traefik/traefik/blob/67c64ed9b25fbb90f1086977a62827133a7aa01b/go.mod#L108\n### Impact\nIs described in https://github.com/advisories/GHSA-p77j-4mvh-x3m3\n\n\u003c/details\u003e\n\n\n----------",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:37:28Z",
+    "Severity": "HIGH",
+    "Summary": "Traefik: Deny Rule Bypass via Unauthenticated Malicious gRPC Requests in gRPC-Go Dependency (CVE-2026-33186)",
+    "UpdatedAt": "2026-03-29T15:37:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.7.0-ea.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.7.0-ea.1, \u003c 3.7.0-ea.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.12"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0-beta3, \u003c 3.6.12"
+    }
+  ]
+}

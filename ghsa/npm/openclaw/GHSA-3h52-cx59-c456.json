@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-29T15:49:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 345859,
+    "Id": "GSA_kwCzR0hTQS0zaDUyLWN4NTktYzQ1Ns4ABUcD",
+    "GhsaId": "GHSA-3h52-cx59-c456",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3h52-cx59-c456"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5e8cb22176e9235e224be0bc530699261eb60e53"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3h52-cx59-c456"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3h52-cx59-c456"
+      }
+    ],
+    "Description": "## Summary\n\nFeishu webhook reads and parses unauthenticated request bodies before signature validation\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Affected versions: `\u003c= 2026.3.24`\n- First patched version: `2026.3.25`\n- Latest published npm version at verification time: `2026.3.24`\n\n## Details\n\nFeishu webhook handling previously parsed JSON before signature validation, which let unauthenticated callers force full JSON parsing work before rejection. Commit `5e8cb22176e9235e224be0bc530699261eb60e53` reads the raw request body, validates the signature first, and only then parses JSON.\n\nVerified vulnerable on tag `v2026.3.24` and fixed on `main` by commit `5e8cb22176e9235e224be0bc530699261eb60e53`.\n\n## Fix Commit(s)\n\n- `5e8cb22176e9235e224be0bc530699261eb60e53`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-29T15:48:58Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Feishu webhook reads and parses unauthenticated request bodies before signature validation",
+    "UpdatedAt": "2026-03-29T15:49:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}
