@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-30T17:26:45Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.modelcontextprotocol.sdk:mcp-core"
+  },
+  "Advisory": {
+    "DatabaseId": 345945,
+    "Id": "GSA_kwCzR0hTQS1odjJ3LThtamotancyMs4ABUdZ",
+    "GhsaId": "GHSA-hv2w-8mjj-jw22",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/java-sdk/security/advisories/GHSA-hv2w-8mjj-jw22"
+      },
+      {
+        "Url": "https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#access-control-allow-origin"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/java-sdk/blob/main/mcp-core/src/main/java/io/modelcontextprotocol/server/transport/HttpServletSseServerTransportProvider.java#L289"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/java-sdk/blob/main/mcp-core/src/main/java/io/modelcontextprotocol/server/transport/HttpServletStreamableServerTransportProvider.java#L525"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hv2w-8mjj-jw22"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hv2w-8mjj-jw22"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34237"
+      }
+    ],
+    "Description": "### Summary\n\n**Hardcoded Wildcard CORS (Access-Control-Allow-Origin: * )**\n\n- https://github.com/modelcontextprotocol/java-sdk/blob/main/mcp-core/src/main/java/io/modelcontextprotocol/server/transport/HttpServletSseServerTransportProvider.java#L289\n- https://github.com/modelcontextprotocol/java-sdk/blob/main/mcp-core/src/main/java/io/modelcontextprotocol/server/transport/HttpServletStreamableServerTransportProvider.java#L525\n\n### Attack Scenario\nAn attacker-controlled web page instructs the victim's browser to open GET https://internal-mcp-server/sse. Because Access-Control-Allow-Origin: * allows cross-origin SSE reads, the attacker's page receives the endpoint event — which contains the session ID. The attacker can then POST to that endpoint from their page using the victim's browser as a relay.\n\n### Comparison with python-sdk\nNo Access-Control-Allow-Origin header is emitted by either Python transport. The browser's default same-origin policy remains in full effect.\nhttps://github.com/modelcontextprotocol/python-sdk/blob/main/src/mcp/server/sse.py\nhttps://github.com/modelcontextprotocol/python-sdk/blob/main/src/mcp/server/streamable_http.py\n\n### Recommendation\nIn the SDK, the transport layer should not own CORS policy. Server implementors who need cross-origin access can add a CORS filter at the servlet filter or Spring Security layer.\n\n### Resources\n\n- https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#access-control-allow-origin",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T17:26:44Z",
+    "Severity": "MODERATE",
+    "Summary": "MCP Java SDK has a Hardcoded Wildcard CORS (Access-Control-Allow-Origin: *)",
+    "UpdatedAt": "2026-03-30T17:26:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.1"
+      },
+      "VulnerableVersionRange": "= 1.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.0"
+    }
+  ]
+}

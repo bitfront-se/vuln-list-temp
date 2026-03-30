@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-30T17:41:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 345947,
+    "Id": "GSA_kwCzR0hTQS1tOTgzLXYyZmYtd3E2Nc4ABUdb",
+    "GhsaId": "GHSA-m983-v2ff-wq65",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-m983-v2ff-wq65"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10330"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10331"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/5834e29234593addaa0251a85f572ad4f376320b"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/776c71c3078e77d38c94937f463741793609d055"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m983-v2ff-wq65"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m983-v2ff-wq65"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34363"
+      }
+    ],
+    "Description": "### Impact\n\nWhen multiple clients subscribe to the same class via LiveQuery, the event handlers process each subscriber concurrently using shared mutable objects. The sensitive data filter modifies these shared objects in-place, so when one subscriber's filter removes a protected field, subsequent subscribers may receive the already-filtered object. This can cause protected fields and authentication data to leak to clients that should not see them, or cause clients that should see the data to receive an incomplete object.\n\nAdditionally, when an afterEvent Cloud Code trigger is registered, one subscriber's trigger modifications can leak to other subscribers through the same shared mutable state.\n\nAny Parse Server deployment using LiveQuery with protected fields or afterEvent triggers is affected when multiple clients subscribe to the same class.\n\n### Patches\n\nThe fix deep-clones the shared objects at the start of each subscriber's processing callback, ensuring each subscriber works on an independent copy. Additionally, a bug was fixed where master key LiveQuery clients could not receive events on classes with protected fields due to an incorrect type passed to the sensitive data filter.\n\n### Workarounds\n\nThere is no known workaround.\n\n### Resources\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-m983-v2ff-wq65\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/pull/10330\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/pull/10331",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T17:40:59Z",
+    "Severity": "HIGH",
+    "Summary": "LiveQuery protected field leak via shared mutable state across concurrent subscribers",
+    "UpdatedAt": "2026-03-30T17:41:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.65"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.65"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.7.0-alpha.9"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.7.0-alpha.9"
+    }
+  ]
+}

@@ -20,6 +20,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/46eba86b45e9db05b7b792e914c4fe0de1b40a23"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32055"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-workspace-path-boundary-bypass-via-non-existent-symlink"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-mgrq-9f93-wpp5"
       }
     ],
@@ -27,6 +33,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mgrq-9f93-wpp5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32055"
       }
     ],
     "Description": "### Summary\n`openclaw` had a workspace boundary bypass in workspace-only path validation: when an in-workspace symlink pointed outside the workspace to a non-existent leaf, the first write could pass validation and create the file outside the workspace.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.25`\n- Patched versions: `\u003e= 2026.2.26` (pre-set for next planned release)\n- Latest published npm version at update time: `2026.2.25`\n\n### Details\nThe boundary check path resolved aliases in a way that allowed a non-existent out-of-root symlink target to pass the initial validation window. A first write through the guarded workspace path could therefore escape the workspace boundary.\n\nThe fix hardens canonical boundary resolution so missing-leaf alias paths are evaluated against canonical containment, while preserving valid in-root aliases. This closes the first-write escape condition without regressing valid in-root alias usage.\n\n### Fix Commit(s)\n- `46eba86b45e9db05b7b792e914c4fe0de1b40a23`\n- `1aef45bc060b28a0af45a67dc66acd36aef763c9`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.26`). Once npm release `2026.2.26` is published, this advisory can be published directly.\n\nThanks @tdjackey for reporting.",
@@ -34,7 +44,7 @@
     "PublishedAt": "2026-03-12T14:21:49Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: workspace path guard bypass on non-existent out-of-root symlink leaf",
-    "UpdatedAt": "2026-03-12T14:21:50Z",
+    "UpdatedAt": "2026-03-30T13:37:33Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.6,

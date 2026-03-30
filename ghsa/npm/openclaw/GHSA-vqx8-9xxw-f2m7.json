@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/1d28da55a5d0ff409e34999e0961157e9db0a2ab"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32053"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-twilio-webhook-replay-bypass-via-randomized-event-id-normalization"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-vqx8-9xxw-f2m7"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-vqx8-9xxw-f2m7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32053"
       }
     ],
     "Description": "## Impact\nTwilio webhook replay events could bypass voice-call manager dedupe because normalized event IDs were randomized per parse. A replayed event could be treated as new and trigger duplicate or stale call-state transitions.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Vulnerable versions: `\u003c= 2026.2.22-2`\n- Patched version (released): `\u003e= 2026.2.23`\n\n## Remediation\nThe fix preserves provider event IDs through normalization, adds bounded replay dedupe in webhook security validation, and enforces per-call turn-token checks on call-state transitions.\n\n## Fix Commit(s)\n- 1d28da55a5d0ff409e34999e0961157e9db0a2ab\n\n## Release Process Note\n`patched_versions` is pre-set to the released version (`2026.2.23`) This advisory now reflects released fix version `2026.2.23`.2.23`.\n\nOpenClaw thanks @jiseoung for reporting.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-03T19:16:09Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw's voice-call Twilio webhook replay could bypass manager dedupe because normalized event IDs were randomized per parse",
-    "UpdatedAt": "2026-03-03T19:16:11Z",
+    "UpdatedAt": "2026-03-30T13:37:04Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

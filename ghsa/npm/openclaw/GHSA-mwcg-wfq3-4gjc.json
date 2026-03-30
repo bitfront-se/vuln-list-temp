@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-03-03T19:18:09Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/f789f880c934caa8be25b38832f27f90f37903db"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32043"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-time-of-check-time-of-use-via-mutable-symlink-in-system-run-cwd-parameter"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-mwcg-wfq3-4gjc"
       }
     ],
@@ -24,14 +30,18 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mwcg-wfq3-4gjc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32043"
       }
     ],
     "Description": "### Summary\nIn `openclaw@2026.2.24`, approval-bound `system.run` on node hosts could be influenced by mutable symlink `cwd` targets between approval and execution.\n\n### Details\nApproval matching on the gateway validated command/argv and binding fields, including `cwd`, as provided text. Node execution later used runtime `cwd` resolution. A symlinked `cwd` could therefore be retargeted after approval and before spawn.\n\nOpenClaw's trust model does not treat one shared gateway as a multi-tenant adversarial boundary, but approval integrity is still a security boundary for operator-reviewed command execution.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.24`\n- Patched: `\u003e= 2026.2.25` \n\n### Fix Commit(s)\n- `f789f880c934caa8be25b38832f27f90f37903db`\n\n### Remediation\nThe fix adds defense-in-depth hardening for approval-bound node execution:\n- reject symlink `cwd` paths for approval-bound `system.run`\n- canonicalize path-like executable argv before spawn\n- bind CLI approval requests to exact `commandArgv`\n\n### Release Process Note\nPatched version is pre-set to the release (`2026.2.25`). Advisory published with npm release `2026.2.25`.\n\nOpenClaw thanks @tdjackey for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-03T19:18:06Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "OpenClaw's system.run approval TOCTOU via mutable symlink cwd target on node host",
-    "UpdatedAt": "2026-03-03T19:18:09Z",
+    "UpdatedAt": "2026-03-30T13:34:52Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

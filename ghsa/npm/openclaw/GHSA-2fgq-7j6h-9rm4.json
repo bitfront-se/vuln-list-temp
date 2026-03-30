@@ -1,5 +1,5 @@
 {
-  "Severity": "MODERATE",
+  "Severity": "HIGH",
   "UpdatedAt": "2026-03-03T00:40:58Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -15,6 +15,12 @@
       },
       {
         "Url": "https://github.com/openclaw/openclaw/commit/e80c803fa887f9699ad87a9e906ab5c1ff85bd9a"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32003"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-remote-code-execution-via-shellopts-ps4-environment-injection-in-system-run"
       },
       {
         "Url": "https://github.com/advisories/GHSA-2fgq-7j6h-9rm4"
@@ -33,9 +39,9 @@
     "Description": "### Summary\n`system.run` allowed `SHELLOPTS` + `PS4` environment injection to trigger command substitution during `bash -lc` xtrace expansion before the allowlisted command body executed.\n\n### Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c= 2026.2.21-2` (includes latest published npm version at triage time)\n- Patched (planned next release): `2026.2.22`\n\n### Impact\nIn `allowlist` mode, an attacker who can invoke `system.run` with request-scoped `env` could execute additional shell commands outside the intended allowlisted command body.\n\n### Root Cause\nHost exec env sanitization blocked startup-file vectors (`BASH_ENV`, `ENV`, etc.) but did not block `SHELLOPTS`/`PS4`. For shell wrappers (`bash|sh|zsh ... -c/-lc`), request env overrides were passed through and `bash` evaluated `PS4` under `xtrace`, enabling command substitution.\n\n### Fix\n- Block `SHELLOPTS` and `PS4` in host exec env sanitizers (Node + macOS).\n- For shell wrappers (`bash|sh|zsh ... -c/-lc`), reduce request-scoped env overrides to an explicit allowlist (`TERM`, `LANG`, `LC_*`, `COLORTERM`, `NO_COLOR`, `FORCE_COLOR`).\n- Add regression tests for TS and macOS paths.\n\n### Fix Commit(s)\n- `e80c803fa887f9699ad87a9e906ab5c1ff85bd9a`\n\n### Release Process Note\n`patched_versions` is pre-set to the planned next release (`2026.2.22`). Once npm release `2026.2.22` is published, advisory publication is a final state action only.\n\n### Severity Rationale\nThis advisory is rated **medium** because exploitation requires a caller that can already invoke `system.run` with request-scoped `env`.\n\nUnder OpenClaw's documented trust model (`SECURITY.md`), authenticated Gateway callers are treated as trusted operators, and adversarial multi-operator / prompt-injection scenarios are out of scope.\n\nThe bug remains a real allowlist-intent bypass, but it does not cross a separate trust boundary in the documented deployment assumptions.\n\nOpenClaw thanks @tdjackey for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-03T00:40:56Z",
-    "Severity": "MODERATE",
+    "Severity": "HIGH",
     "Summary": "OpenClaw has system.run shell-wrapper env injection via SHELLOPTS/PS4 can bypass allowlist intent (RCE)",
-    "UpdatedAt": "2026-03-19T22:17:16Z",
+    "UpdatedAt": "2026-03-30T13:19:17Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.6,

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-30T17:08:28Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/docker/model-runner"
+  },
+  "Advisory": {
+    "DatabaseId": 345938,
+    "Id": "GSA_kwCzR0hTQS14MmY1LTMzMmotOXh3cc4ABUdS",
+    "GhsaId": "GHSA-x2f5-332j-9xwq",
+    "References": [
+      {
+        "Url": "https://github.com/docker/model-runner/security/advisories/GHSA-x2f5-332j-9xwq"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x2f5-332j-9xwq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x2f5-332j-9xwq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33990"
+      }
+    ],
+    "Description": "## Summary\nDocker Model Runner contains an SSRF vulnerability in its OCI registry token exchange flow. When pulling a model, Model Runner follows the realm URL from the registry's `WWW-Authenticate` header without validating the scheme, hostname, or IP range. A malicious OCI registry can set the realm to an internal URL (e.g., `http://127.0.0.1:3000/`), causing Model Runner running on the host to make arbitrary GET requests to internal services and reflect the full response body back to the caller. Additionally, the token exchange mechanism can relay data from internal services back to the attacker-controlled registry via the `Authorization: Bearer` header.\n\n## Patches\nFixed in Docker Model Runner v1.1.25\nDocker Desktop users should update to 4.67.0 or later, which includes the fixed Model Runner.\n\n## Workarounds\nFor Docker Desktop users, enabling Enhanced Container Isolation (ECI) blocks container access to Model Runner, preventing exploitation. However, if the Docker Model Runner is exposed to localhost over TCP in specific configurations, the vulnerability is still exploitable.\n\n## Impact\nAn unprivileged container or a malicious OCI registry that the user performed a pull from might issue GET requests to host-local services (localhost, internal network)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T17:08:25Z",
+    "Severity": "MODERATE",
+    "Summary": "Docker Model Runner OCI Registry Client Vulnerable to Server-Side Request Forgery (SSRF)",
+    "UpdatedAt": "2026-03-30T17:08:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.25"
+      },
+      "VulnerableVersionRange": "\u003c 1.1.25"
+    }
+  ]
+}

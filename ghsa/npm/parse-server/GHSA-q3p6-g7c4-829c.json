@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-30T18:05:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 345952,
+    "Id": "GSA_kwCzR0hTQS1xM3A2LWc3YzQtODI5Y84ABUdg",
+    "GhsaId": "GHSA-q3p6-g7c4-829c",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-q3p6-g7c4-829c"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10334"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10335"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/0347641507891d0013ec57f7c10f012064f41263"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/4dd0d3d8be1c39664c74ad10bb0abaa76bc41203"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q3p6-g7c4-829c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q3p6-g7c4-829c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34373"
+      }
+    ],
+    "Description": "### Impact\n\nThe GraphQL API endpoint does not respect the `allowOrigin` server option and unconditionally allows cross-origin requests from any website. This bypasses origin restrictions that operators configure to control which websites can interact with the Parse Server API. The REST API correctly enforces the configured `allowOrigin` restriction.\n\n### Patches\n\nThe GraphQL API endpoint now uses the same CORS middleware as the REST API, ensuring the `allowOrigin` and `allowHeaders` server options are consistently enforced across all endpoints.\n\n### Workarounds\n\nThere is no known workaround other than upgrading.\n\n### Resources\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-q3p6-g7c4-829c\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/pull/10334\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/pull/10335",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T18:05:47Z",
+    "Severity": "MODERATE",
+    "Summary": "GraphQL API endpoint ignores CORS origin restriction",
+    "UpdatedAt": "2026-03-30T18:05:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.66"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0, \u003c 8.6.66"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.7.0-alpha.10"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.7.0-alpha.10"
+    }
+  ]
+}

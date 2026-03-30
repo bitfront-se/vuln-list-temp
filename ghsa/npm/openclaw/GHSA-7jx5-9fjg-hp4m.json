@@ -23,6 +23,12 @@
         "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.23"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32898"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-acp-permission-auto-approval-bypass-via-untrusted-tool-metadata"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-7jx5-9fjg-hp4m"
       }
     ],
@@ -30,6 +36,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-7jx5-9fjg-hp4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32898"
       }
     ],
     "Description": "## Vulnerability Summary\n\nThe OpenClaw ACP client could auto-approve tool calls based on untrusted metadata and permissive name heuristics. A malicious or compromised ACP tool invocation could bypass expected interactive approval prompts for read-class operations.\n\n## Affected Packages / Versions\n\n- Package: npm `openclaw`\n- Affected published versions: `\u003c= 2026.2.22-2` (latest published as of February 24, 2026 is `2026.2.22-2`)\n- Patched in code on `main`: `2026.2.23` (released)\n\n## Technical Details\n\n- Permission classification trusted incoming `toolCall.kind` and heuristic name matching.\n- Non-core read-like names and spoofed kind metadata could reach auto-approve paths.\n- `read` operations were not scoped strongly enough to cwd in all metadata/title forms.\n\n## Fix\n\n- Require trusted core tool IDs for auto-approval and ignore untrusted `toolCall.kind` as an authorization source.\n- Scope `read` auto-approval to cwd-resolved paths.\n- Add stricter tool-name validation and regression coverage for spoofed kind and non-core read-like names.\n\n## Affected Functions\n\n- `resolvePermissionRequest`\n- `resolveToolNameForPermission`\n- `shouldAutoApproveToolCall`\n\n## Fix Commit(s)\n\n- `12cc754332f9a7c92e158ce7644aa22df79c0904`\n- `63dcd28ae0be2de1c75af09cc81841cebeec068f`\n\nFound using [MCPwner](https://github.com/Pigyon/MCPwner)\n\n\nThanks @nedlir for reporting.",
@@ -37,11 +47,11 @@
     "PublishedAt": "2026-02-27T22:08:36Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw ACP client has permission auto-approval bypass via untrusted tool metadata",
-    "UpdatedAt": "2026-02-27T22:08:37Z",
+    "UpdatedAt": "2026-03-30T13:44:49Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
     }
   },
   "Versions": [

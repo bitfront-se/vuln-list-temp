@@ -1,0 +1,50 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-30T17:05:28Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/go-git/go-git/v5"
+  },
+  "Advisory": {
+    "DatabaseId": 345936,
+    "Id": "GSA_kwCzR0hTQS1nbTJ4LTJnOWgtY2NtOM4ABUdQ",
+    "GhsaId": "GHSA-gm2x-2g9h-ccm8",
+    "References": [
+      {
+        "Url": "https://github.com/go-git/go-git/security/advisories/GHSA-gm2x-2g9h-ccm8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gm2x-2g9h-ccm8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gm2x-2g9h-ccm8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33762"
+      }
+    ],
+    "Description": "### Impact\n\n`go-git`’s index decoder for format version 4 fails to validate the path name prefix length before applying it to the previously decoded path name. A maliciously crafted index file can trigger an out-of-bounds slice operation, resulting in a runtime panic during normal index parsing.\n\nThis issue only affects Git index format version 4. Earlier formats (`go-git` supports only `v2` and `v3`) are not vulnerable to this issue.\n\nAn attacker able to supply a crafted `.git/index` file can cause applications using go-git to panic while reading the index. If the application does not recover from panics, this results in process termination, leading to a denial-of-service (DoS) condition.\n\nExploitation requires the ability to modify or inject a Git index file within the local repository in disk. This typically implies write access to the `.git` directory.\n\n### Patches\n\nUsers should upgrade to `v5.17.1`, or the latest `v6` [pseudo-version](https://go.dev/ref/mod#pseudo-versions), in order to mitigate this vulnerability.\n\n### Credit\n\ngo-git maintainers thank @kq5y for finding and reporting this issue privately to the `go-git` project.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T17:05:23Z",
+    "Severity": "LOW",
+    "Summary": "go-git missing validation decoding Index v4 files leads to panic",
+    "UpdatedAt": "2026-03-30T17:05:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.17.1"
+      },
+      "VulnerableVersionRange": "\u003c= 5.17.0"
+    }
+  ]
+}
