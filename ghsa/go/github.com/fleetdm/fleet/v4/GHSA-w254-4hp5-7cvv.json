@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-30T19:22:40Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/fleetdm/fleet/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 345995,
+    "Id": "GSA_kwCzR0hTQS13MjU0LTRocDUtN2N2ds4ABUeL",
+    "GhsaId": "GHSA-w254-4hp5-7cvv",
+    "References": [
+      {
+        "Url": "https://github.com/fleetdm/fleet/security/advisories/GHSA-w254-4hp5-7cvv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34388"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w254-4hp5-7cvv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w254-4hp5-7cvv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34388"
+      }
+    ],
+    "Description": "### Summary\n\nA Denial of Service vulnerability in Fleet's gRPC Launcher endpoint allows an authenticated host to crash the entire Fleet server process by sending an unexpected log type value. The server terminates immediately, disrupting all connected hosts, MDM enrollments, and API consumers.\n\n### Impact\n\nAn attacker with access to a valid Launcher node key can send a specially crafted gRPC request to the Fleet server that triggers an unrecoverable server crash. The gRPC server lacks appropriate error recovery handling, meaning the entire Fleet process terminates rather than gracefully rejecting the malformed input.\n\nBecause the crash is instant and repeatable, an attacker could script repeated requests to prevent the server from recovering, resulting in a persistent denial of service until a patched version is deployed.\n\n### Workarounds\n\nThere is no workaround for this issue other than upgrading to a patched version.\n\n### For more information\n\nIf there are any questions or comments about this advisory:\n\nSend an email to  [security@fleetdm.com](mailto:security@fleetdm.com)\n\nJoin #fleet in [osquery Slack](https://join.slack.com/t/osquery/shared_invite/zt-h29zm0gk-s2DBtGUTW4CFel0f0IjTEw)\n\n### Credits\n\nFleet thanks @fuzzztf for responsibly reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-30T19:22:39Z",
+    "Severity": "MODERATE",
+    "Summary": "Fleet vulnerable to Denial of Service via unhandled gRPC log type in launcher endpoint",
+    "UpdatedAt": "2026-03-30T19:22:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.81.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.81.0"
+    }
+  ]
+}
