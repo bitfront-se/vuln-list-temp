@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:50:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346202,
+    "Id": "GSA_kwCzR0hTQS1oYzVoLXBtcjMtMzQ5N84ABUha",
+    "GhsaId": "GHSA-hc5h-pmr3-3497",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-hc5h-pmr3-3497"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4ee4960de2330b5322127f925f3687dc6f105be1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hc5h-pmr3-3497"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hc5h-pmr3-3497"
+      }
+    ],
+    "Description": "## Summary\n\nThe `/pair approve` command path called device approval without forwarding caller scopes into the core approval check.\n\n## Impact\n\nA caller that held pairing privileges but not admin privileges could approve a pending device request asking for broader scopes, including admin access.\n\n## Affected Component\n\n`extensions/device-pair/index.ts, src/infra/device-pairing.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `4ee4960de2` (`Pairing: forward caller scopes during approval`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:50:22Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: /pair approve command path omitted caller scope subsetting and reopened device pairing escalation",
+    "UpdatedAt": "2026-03-31T23:50:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-31T23:26:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt-og-image"
+  },
+  "Advisory": {
+    "DatabaseId": 346185,
+    "Id": "GSA_kwCzR0hTQS1wcWhyLW1wM2YtaHJwcM4ABUhJ",
+    "GhsaId": "GHSA-pqhr-mp3f-hrpp",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt-modules/og-image/security/advisories/GHSA-pqhr-mp3f-hrpp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pqhr-mp3f-hrpp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pqhr-mp3f-hrpp"
+      }
+    ],
+    "Description": "**Product:** Nuxt OG Image\n**Version:** \u003c 6.2.5\n**CWE-ID:** [CWE-918](https://cwe.mitre.org/data/definitions/918.html): Server-Side Request Forgery\n\n## Description\n\nThe image generation endpoint (`/_og/d/`) accepts user-controlled parameters that are passed to the server-side renderer without proper validation or filtering. An attacker can trigger server-side requests to internal network addresses through multiple vectors.\n\n## Impact\n\n- Scanning internal ports and services inaccessible from the outside\n- Reading sensitive data from cloud infrastructure metadata services (tokens, credentials) when verbose error output is enabled\n\n## Attack Vectors\n\nThree distinct vectors were identified, all exploiting the same underlying lack of URL validation:\n\n### Vector 1: CSS `background-image` injection via `style` parameter\n\n```\nGET /_og/d/og.png?style=background-image:+url('http://127.0.0.1:8888/secret')\n```\n\n### Vector 2: `\u003cimg src\u003e` injection via `html` parameter\n\n```\nGET /_og/d/og.png?html=\u003cimg src=\"http://127.0.0.1:8888/secret\"\u003e\n```\n\nWhen verbose errors are enabled, the response content is leaked in base64-encoded error messages.\n\n### Vector 3: SVG `\u003cimage href\u003e` injection via `html` parameter\n\n```\nGET /_og/d/og.png?html=\u003csvg\u003e\u003cimage href=\"http://127.0.0.1:8888/secret\"\u003e\u003c/svg\u003e\n```\n\n## Mitigation\n\nFixed in v6.2.5. The image source plugin now blocks requests to private IP ranges (IPv4/IPv6), loopback addresses, link-local addresses, and cloud metadata endpoints. Decimal/hexadecimal IP encoding bypasses are also handled.\n\n## Credits\n\nResearcher: Dmitry Prokhorov (Positive Technologies)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:26:29Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt OG Image vulnerable to Server-Side Request Forgery via user-controlled parameters",
+    "UpdatedAt": "2026-03-31T23:26:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.2.5"
+      },
+      "VulnerableVersionRange": "\u003c 6.2.5"
+    }
+  ]
+}

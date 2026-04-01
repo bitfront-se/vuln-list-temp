@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T00:19:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@xmldom/xmldom"
+  },
+  "Advisory": {
+    "DatabaseId": 346233,
+    "Id": "GSA_kwCzR0hTQS13aDRjLWozcjUtbWpocM4ABUh5",
+    "GhsaId": "GHSA-wh4c-j3r5-mjhp",
+    "References": [
+      {
+        "Url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-wh4c-j3r5-mjhp"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/2b852e836ab86dbbd6cbaf0537f584dd0b5ac184"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.8.12"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.9.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wh4c-j3r5-mjhp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wh4c-j3r5-mjhp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34601"
+      }
+    ],
+    "Description": "## Summary\n\n`@xmldom/xmldom` allows attacker-controlled strings containing the CDATA terminator `]]\u003e` to be inserted into a `CDATASection` node. During serialization, `XMLSerializer` emitted the CDATA content verbatim without rejecting or safely splitting the terminator. As a result, data intended to remain text-only became **active XML markup** in the serialized output, enabling XML structure\ninjection and downstream business-logic manipulation.\n\nThe sequence `]]\u003e` is not allowed inside CDATA content and must be rejected or safely handled during serialization. ([MDN Web Docs](https://developer.mozilla.org/))\n\n### Attack surface\n\n`Document.createCDATASection(data)` is the most direct entry point, but it is not the only one. The WHATWG DOM spec intentionally does not validate `]]\u003e` in mutation methods — only `createCDATASection` carries that guard. The following paths therefore also allow `]]\u003e` to enter a CDATASection node and reach the serializer:\n\n- `CharacterData.appendData()`\n- `CharacterData.replaceData()`\n- `CharacterData.insertData()`\n- Direct assignment to `.data`\n- Direct assignment to `.textContent`\n\n(Note: assigning to `.nodeValue` does **not** update `.data` in this implementation — the serializer reads `.data` directly — so `.nodeValue` is not an exploitable path.)\n\n### Parse path\n\nParsing XML that contains a CDATA section is **not** affected. The SAX parser's non-greedy `CDSect` regex stops at the first `]]\u003e`, so parsed CDATA data never contains the terminator.\n\n---\n\n## Impact\n\nIf an application uses `xmldom` to generate \"trusted\" XML documents that embed **untrusted user input** inside CDATA (a common pattern in exports, feeds, SOAP/XML integrations, etc.), an attacker can inject additional XML elements/attributes into the generated document.\n\nThis can lead to:\n\n- Integrity violation of generated XML documents.\n- Business-logic injection in downstream consumers (e.g., injecting `\u003capproved\u003etrue\u003c/approved\u003e`,  `\u003crole\u003eadmin\u003c/role\u003e`, workflow flags, or other security-relevant elements).\n- Unexpected privilege/workflow decisions if downstream logic assumes injected nodes cannot appear.\n\nThis issue does **not** require malformed parsers or browser behavior; it is caused by serialization producing attacker-influenced XML markup.\n\n---\n\n## Root Cause (with file + line numbers)\n\n**File:** `lib/dom.js`\n\n### 1. No validation in `createCDATASection`\n\n`createCDATASection: function (data)` accepts any string and appends it directly.\n\n- **Lines 2216–2221** (0.9.8)\n\n### 2. Unsafe CDATA serialization\n\nSerializer prints CDATA sections as:\n\n```\n\u003c![CDATA[ + node.data + ]]\u003e\n```\n\nwithout handling `]]\u003e` in the data.\n\n- **Lines 2919–2920** (0.9.8)\n\nBecause CDATA content is emitted verbatim, an embedded `]]\u003e` closes the CDATA section early and the remainder of the attacker-controlled payload is interpreted as markup in the serialized XML.\n\n---\n\n## Proof of Concept — Fix A: `createCDATASection` now throws\n\nOn patched versions, passing `]]\u003e` directly to `createCDATASection` throws `InvalidCharacterError` instead of silently accepting the payload:\n\n```js\nconst { DOMImplementation } = require('./lib');\n\nconst doc = new DOMImplementation().createDocument(null, 'root', null);\ntry {\n  doc.createCDATASection('SAFE]]\u003e\u003cinjected attr=\"pwn\"/\u003e');\n  console.log('VULNERABLE — no error thrown');\n} catch (e) {\n  console.log('FIXED — threw:', e.name); // InvalidCharacterError\n}\n```\n\nExpected output on patched versions:\n\n```\nFIXED — threw: InvalidCharacterError\n```\n\n---\n\n## Proof of Concept — Fix B: mutation vector now safe\n\nOn patched versions, injecting `]]\u003e` via a mutation method (`appendData`, `replaceData`, `.data =`, `.textContent =`) no longer produces injectable output. The serializer splits the terminator so the result round-trips as safe text:\n\n```js\nconst { DOMImplementation, XMLSerializer } = require('./lib');\nconst { DOMParser } = require('./lib');\n\nconst doc = new DOMImplementation().createDocument(null, 'root', null);\n\n// Start with safe data, then mutate to include the terminator\nconst cdata = doc.createCDATASection('safe');\ndoc.documentElement.appendChild(cdata);\ncdata.appendData(']]\u003e\u003cinjected attr=\"pwn\"/\u003e\u003cmore\u003eTEXT\u003c/more\u003e\u003c![CDATA[');\n\nconst out = new XMLSerializer().serializeToString(doc);\nconsole.log('Serialized:', out);\n\nconst reparsed = new DOMParser().parseFromString(out, 'text/xml');\nconst injected = reparsed.getElementsByTagName('injected').length \u003e 0;\nconsole.log('Injected element found in reparsed doc:', injected);\n// VULNERABLE: true  |  FIXED: false\n```\n\nExpected output on patched versions:\n\n```\nSerialized: \u003croot\u003e\u003c![CDATA[safe]]]]\u003e\u003c![CDATA[\u003e\u003cinjected attr=\"pwn\"/\u003e\u003cmore\u003eTEXT\u003c/more\u003e\u003c![CDATA[]]\u003e\u003c/root\u003e\nInjected element found in reparsed doc: false\n```\n\n---\n\n## Fix Applied\n\nBoth mitigations were implemented:\n\n### Option A — Strict/spec-aligned: reject `]]\u003e` in `createCDATASection()`\n\n`Document.createCDATASection(data)` now throws `InvalidCharacterError` (per the [WHATWG DOM spec](https://dom.spec.whatwg.org/#dom-document-createcdatasection)) when `data` contains `]]\u003e`. This closes the direct entry point.\n\nCode that previously passed a string containing `]]\u003e` to `createCDATASection` and relied on the silent/unsafe behaviour will now receive `InvalidCharacterError`. Use a mutation method such as `appendData` if you intentionally need `]]\u003e` in a CDATASection node's data (the serializer split in Option B will keep the output safe).\n\n### Option B — Defensive serialization: split the terminator during serialization\n\n`XMLSerializer` now replaces every occurrence of `]]\u003e` in CDATA section data with the split sequence `]]]]\u003e\u003c![CDATA[\u003e` before emitting. This closes all mutation-vector paths that Option A alone cannot guard, and means the serialized output is always well-formed XML regardless of how `]]\u003e` entered the node.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T00:19:06Z",
+    "Severity": "HIGH",
+    "Summary": "xmldom: XML injection via unsafe CDATA serialization allows attacker-controlled markup insertion",
+    "UpdatedAt": "2026-04-01T00:19:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.9"
+      },
+      "VulnerableVersionRange": "\u003e= 0.9.0, \u003c 0.9.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.12"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.12"
+    }
+  ]
+}

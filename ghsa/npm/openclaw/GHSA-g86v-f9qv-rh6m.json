@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-03-31T23:58:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346215,
+    "Id": "GSA_kwCzR0hTQS1nODZ2LWY5cXYtcmg2bc4ABUhn",
+    "GhsaId": "GHSA-g86v-f9qv-rh6m",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-g86v-f9qv-rh6m"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/d61f8e56723e03573b847422468d99c44c26e34f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g86v-f9qv-rh6m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g86v-f9qv-rh6m"
+      }
+    ],
+    "Description": "## Summary\n\nThe SSRF/IP classifier treated several IPv6 special-use ranges as public and allowed fetches to proceed.\n\n## Impact\n\nAn attacker who controlled a fetched URL could target internal or non-routable IPv6 addresses that should have been blocked by the SSRF guard.\n\n## Affected Component\n\n`src/shared/net/ip.ts, src/infra/net/ssrf.*`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `d61f8e5672` (`Net: block missing IPv6 special-use ranges`).\n\nOpenClaw thanks @nicky-cc  of Tencent zhuque Lab [https://github.com/Tencent/AI-Infra-Guard](https://github.com/Tencent/AI-Infra-Guard) for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:58:43Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw SSRF guard misses four IPv6 special-use ranges",
+    "UpdatedAt": "2026-03-31T23:58:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-31T23:25:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt-og-image"
+  },
+  "Advisory": {
+    "DatabaseId": 346184,
+    "Id": "GSA_kwCzR0hTQS1jN3hwLXE2cTgtaGc3Ns4ABUhI",
+    "GhsaId": "GHSA-c7xp-q6q8-hg76",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt-modules/og-image/security/advisories/GHSA-c7xp-q6q8-hg76"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c7xp-q6q8-hg76"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c7xp-q6q8-hg76"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34404"
+      }
+    ],
+    "Description": "**Product:** Nuxt OG Image \n**Version:** 6.1.2\n**CWE-ID:** [CWE-404](https://cwe.mitre.org/data/definitions/404.html): Improper Resource Shutdown or Release\n**Description:** Failure to limit the length and width of the generated image results in a denial of service.\n**Impact:** Denial of service\n**Exploitation condition:** An external user\n**Mitigation:** Implement a limitation on the width and length of the generated image.\n**Researcher:** Dmitry Prokhorov (Positive Technologies)\n\n## Research \nDuring the analysis of the nuxt-og-image package, which is shipped with the nuxt-seo package, a zero‑day vulnerability was discovered.\nThis research revealed that the image‑generation component by the URI: `/_og/d/` (and, in older versions, `/og-image/`) contains a Denial of Service (DoS) vulnerability. The issue arises because there is no restriction on the width and height parameters of the generated image. The vulnerability was reproduced using the standard configuration and the default templates.\n\n_Listing 1. The content of the configuration file `nuxt.config.ts`_ \n```\nexport default defineNuxtConfig({\n  modules: ['nuxt-og-image'],\n  devServer: {\n    host: 'web-test.local',\n    port: 3000\n  },\n  site: {\n    url: 'http://web-test.local:3000',\n  },\n  ogImage: {\n    fonts: [\n      'Inter:400', \n      'Inter:700'\n    ],\n  }\n})\n```\n\n## Vulnerability reproduction\nTo demonstrate the proof‑of‑concept, a request should be sent with the increased `width` and `height` parameters. This will cause a delay and exhaust the server’s resources during image generation.\n\n_Listing 2. HTTP-request example_\n```\nGET /_og/d/og.png?width=20000\u0026height=20000 HTTP/1.1\nHost: web-test.local:3000\n```\n\n_Figure 1. HTTP-response: denial-of-service error_\n\u003cimg width=\"974\" height=\"663\" alt=\"image\" src=\"https://github.com/user-attachments/assets/ff625249-2e0d-4a03-a734-3a77fd0cbb81\" /\u003e\n\nAfter sending a HTTP-request, the test server's memory was exhausted.\n\n_Figure 2. Video memory exhausted error_\n\u003cimg width=\"863\" height=\"1033\" alt=\"image\" src=\"https://github.com/user-attachments/assets/66b5919a-f039-468e-812e-1f709c468287\" /\u003e\n\n\n## Credits\nResearcher: Dmitry Prokhorov (Positive Technologies)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:25:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt OG Image is vulnerable to Denial of Service via unbounded image dimensions",
+    "UpdatedAt": "2026-03-31T23:25:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.2.5"
+      },
+      "VulnerableVersionRange": "\u003c 6.2.5"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:23:21Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "alerta-server"
+  },
+  "Advisory": {
+    "DatabaseId": 346183,
+    "Id": "GSA_kwCzR0hTQS04cHJyLTI4NnAtNHc3as4ABUhH",
+    "GhsaId": "GHSA-8prr-286p-4w7j",
+    "References": [
+      {
+        "Url": "https://github.com/alerta/alerta/security/advisories/GHSA-8prr-286p-4w7j"
+      },
+      {
+        "Url": "https://github.com/alerta/alerta/pull/2040"
+      },
+      {
+        "Url": "https://github.com/alerta/alerta/pull/712"
+      },
+      {
+        "Url": "https://github.com/alerta/alerta/commit/aeba85a37a09e5769a7a2da56481aa979ff99a00"
+      },
+      {
+        "Url": "https://github.com/alerta/alerta/commit/fdd52cd1abad8d02d1dfb8ecdcdbb43b6af3b883"
+      },
+      {
+        "Url": "https://github.com/alerta/alerta/releases/tag/v9.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8prr-286p-4w7j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8prr-286p-4w7j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34400"
+      }
+    ],
+    "Description": "### Impact\nThe Query string search API (q=) was vulnerable to SQL injection via the Postgres query parser, which built WHERE clauses by interpolating user-supplied search terms directly into SQL strings via f-strings.\n\n### Patches\nFixed in v9.1.0. The Postgres query parser now uses parameterized queries with %(name)s placeholders passed to psycopg2's cursor.execute(), preventing SQL injection through the ?q= parameter. The MongoDB backend was not affected.\n\n### Workarounds\nUpgrade to v9.1.0 or later. If unable to upgrade, deploy a proxy in front of the Alerta API to sanitize the q= parameter.\n\n### Resources\nhttps://github.com/alerta/alerta/pull/712/files\nhttps://owasp.org/www-community/attacks/SQL_Injection",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:23:21Z",
+    "Severity": "HIGH",
+    "Summary": "alerta-server has potential SQL Injection vulnerability in Query String Syntax (q=) API",
+    "UpdatedAt": "2026-03-31T23:23:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 9.1.0"
+    }
+  ]
+}

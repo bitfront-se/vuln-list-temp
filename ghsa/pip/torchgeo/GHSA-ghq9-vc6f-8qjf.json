@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T00:03:57Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "torchgeo"
+  },
+  "Advisory": {
+    "DatabaseId": 346226,
+    "Id": "GSA_kwCzR0hTQS1naHE5LXZjNmYtOHFqZs4ABUhy",
+    "GhsaId": "GHSA-ghq9-vc6f-8qjf",
+    "References": [
+      {
+        "Url": "https://github.com/torchgeo/torchgeo/security/advisories/GHSA-ghq9-vc6f-8qjf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2024-49048"
+      },
+      {
+        "Url": "https://github.com/torchgeo/torchgeo/pull/2323"
+      },
+      {
+        "Url": "https://github.com/torchgeo/torchgeo/pull/917"
+      },
+      {
+        "Url": "https://github.com/torchgeo/torchgeo/commit/1a980788cb7089a1115f3b786c7daa9dd47d7d7a"
+      },
+      {
+        "Url": "https://github.com/microsoft/torchgeo/releases/tag/v0.6.1"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/torchgeo/PYSEC-2024-204.yaml"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-49048"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ghq9-vc6f-8qjf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ghq9-vc6f-8qjf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2024-49048"
+      }
+    ],
+    "Description": "### Impact\n\nTorchGeo 0.4–0.6.0 used an [`eval`](https://docs.python.org/3/library/functions.html#eval) statement in its model weight API that could allow an unauthenticated, remote attacker to execute arbitrary commands. All platforms that expose [`torchgeo.models.get_weight()`](https://torchgeo.readthedocs.io/en/v0.6.0/api/models.html#torchgeo.models.get_weight) or [`torchgeo.trainers`](https://torchgeo.readthedocs.io/en/v0.6.0/api/trainers.html) as an external API could be affected.\n\n### Patches\n\nThe `eval` statement was replaced with a fixed enum lookup, preventing arbitrary code injection. All users are encouraged to upgrade to TorchGeo 0.6.1 or newer.\n\n### Workarounds\n\nIn unpatched versions, input validation and sanitization can be used to avoid this vulnerability.\n\n### References\n\n#### Bug history\n\n* Introduced: https://github.com/torchgeo/torchgeo/pull/917\n* Patched: https://github.com/torchgeo/torchgeo/pull/2323\n* Released: [v0.6.1](https://github.com/microsoft/torchgeo/releases/tag/v0.6.1)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T00:03:56Z",
+    "Severity": "HIGH",
+    "Summary": "TorchGeo Remote Code Execution Vulnerability",
+    "UpdatedAt": "2026-04-01T00:03:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.4, \u003c= 0.6.0"
+    }
+  ]
+}

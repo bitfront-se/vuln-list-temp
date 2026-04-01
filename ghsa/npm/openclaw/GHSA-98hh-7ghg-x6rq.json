@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:52:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346206,
+    "Id": "GSA_kwCzR0hTQS05OGhoLTdnaGcteDZycc4ABUhe",
+    "GhsaId": "GHSA-98hh-7ghg-x6rq",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-98hh-7ghg-x6rq"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/355abe5eba28012e6a95b9923a32831fcf870344"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-98hh-7ghg-x6rq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-98hh-7ghg-x6rq"
+      }
+    ],
+    "Description": "## Summary\n\nDiscord text approval commands resolved pending exec approvals without honoring the configured approver allowlist.\n\n## Impact\n\nA Discord user who was allowed to send commands but was not in the approver list could still approve pending host execution.\n\n## Affected Component\n\n`extensions/discord/src/exec-approvals.ts, src/auto-reply/reply/commands-approve.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `355abe5eba` (`Discord: enforce approver checks for text approvals`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:52:38Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Discord text `/approve` bypasses `channels.discord.execApprovals.approvers` and allows non-approvers to resolve pending exec approvals",
+    "UpdatedAt": "2026-03-31T23:52:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

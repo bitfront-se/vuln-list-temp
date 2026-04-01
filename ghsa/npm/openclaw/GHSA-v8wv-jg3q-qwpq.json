@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:54:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346209,
+    "Id": "GSA_kwCzR0hTQS12OHd2LWpnM3EtcXdwcc4ABUhh",
+    "GhsaId": "GHSA-v8wv-jg3q-qwpq",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-v8wv-jg3q-qwpq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33581"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1d7cb6fc03552bbba00e7cffb3aa9741f5556416"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-arbitrary-file-read-via-mediaurl-and-fileurl-parameters"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v8wv-jg3q-qwpq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v8wv-jg3q-qwpq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33581"
+      }
+    ],
+    "Description": "## Summary\n\nThe message tool accepted `mediaUrl` and `fileUrl` aliases without applying the same sandbox localRoots validation as the canonical media path handling.\n\n## Impact\n\nA caller constrained to sandbox media roots could read arbitrary local files by routing them through the alias parameters.\n\n## Affected Component\n\n`src/infra/outbound/message-action-params.ts, src/infra/outbound/message-action-runner.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c 2026.3.24`\n- Patched: `\u003e= 2026.3.24`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `1d7cb6fc03` (`fix: close sandbox media root bypass for mediaUrl/fileUrl aliases`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:54:28Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's message tool media parameter bypasses tool policy filesystem isolation",
+    "UpdatedAt": "2026-03-31T23:54:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.24"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.24"
+    }
+  ]
+}

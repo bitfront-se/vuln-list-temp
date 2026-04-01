@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-31T23:50:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346203,
+    "Id": "GSA_kwCzR0hTQS12MnYyLWY3ODMtMzU4as4ABUhb",
+    "GhsaId": "GHSA-v2v2-f783-358j",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-v2v2-f783-358j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33576"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/68ceaf7a5f64a23e78b95eff055e4b497218312a"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-unauthorized-media-download-via-zalo-channel"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v2v2-f783-358j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v2v2-f783-358j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33576"
+      }
+    ],
+    "Description": "## Summary\n\nThe Zalo image path fetched and stored inbound media before the DM/pairing authorization checks ran.\n\n## Impact\n\nUnauthorized senders could force network fetches and disk writes in the inbound media store even when the message itself was rejected.\n\n## Affected Component\n\n`extensions/zalo/src/monitor.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `68ceaf7a5f` (`zalo: gate image downloads before DM auth`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:50:44Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Zalo channel downloads media before sender authorization",
+    "UpdatedAt": "2026-03-31T23:50:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

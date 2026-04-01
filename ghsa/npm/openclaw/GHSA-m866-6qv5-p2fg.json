@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-31T23:57:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346211,
+    "Id": "GSA_kwCzR0hTQS1tODY2LTZxdjUtcDJmZ84ABUhj",
+    "GhsaId": "GHSA-m866-6qv5-p2fg",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-m866-6qv5-p2fg"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/6eb82fba3cbfd0e50b179c1fada92e1e22dce7fa"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m866-6qv5-p2fg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m866-6qv5-p2fg"
+      }
+    ],
+    "Description": "## Summary\n\nHost execution env sanitization did not block `GIT_TEMPLATE_DIR` or `AWS_CONFIG_FILE`, even though both can redirect trusted tooling to attacker-controlled content.\n\n## Impact\n\nAn approved exec request could redirect git or AWS CLI behavior through attacker-controlled configuration and execute untrusted code or load attacker-selected credentials.\n\n## Affected Component\n\n`src/infra/host-env-security-policy.json, src/infra/host-env-security.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `6eb82fba3c` (`Infra: block additional host exec env keys`).\n\nOpenClaw thanks @nicky-cc of Tencent zhuque Lab [https://github.com/Tencent/AI-Infra-Guard](https://github.com/Tencent/AI-Infra-Guard) for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:57:00Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw host-env blocklist missing `GIT_TEMPLATE_DIR` and `AWS_CONFIG_FILE` allows code execution via env override",
+    "UpdatedAt": "2026-03-31T23:57:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

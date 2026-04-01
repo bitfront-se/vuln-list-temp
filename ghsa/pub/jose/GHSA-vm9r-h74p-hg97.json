@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:09:20Z",
+  "Package": {
+    "Ecosystem": "PUB",
+    "Name": "jose"
+  },
+  "Advisory": {
+    "DatabaseId": 346174,
+    "Id": "GSA_kwCzR0hTQS12bTlyLWg3NHAtaGc5N84ABUg-",
+    "GhsaId": "GHSA-vm9r-h74p-hg97",
+    "References": [
+      {
+        "Url": "https://github.com/appsup-dart/jose/security/advisories/GHSA-vm9r-h74p-hg97"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34240"
+      },
+      {
+        "Url": "https://github.com/appsup-dart/jose/commit/b07799aac1f56a9a21483feac026272aab30cc5d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vm9r-h74p-hg97"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vm9r-h74p-hg97"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34240"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in `jose` versions up to and including `0.3.5` could allow an unauthenticated, remote attacker to forge valid JWS/JWT tokens by using a key embedded in the JOSE header (`jwk`).  \n\nThe vulnerability exists because key selection could treat header-provided `jwk` as a verification candidate even when that key was not present in the trusted key store. Since JOSE headers are untrusted input, an attacker could exploit this by creating a token payload, embedding an attacker-controlled public key in the header, and signing with the matching private key.  \n\nApplications using affected versions for token verification are impacted.\n\n### Patches\n\nUpgrade to `0.3.5+1` or later.\n\n### Workarounds\n\nReject tokens where header `jwk` is present unless that `jwk` matches a key already present in the application's trusted key store.\n\n### Resources\n\nFix commit: [fix: improved key resolution in JsonWebKeyStore](https://github.com/appsup-dart/jose/commit/b07799aac1f56a9a21483feac026272aab30cc5d)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:09:16Z",
+    "Severity": "HIGH",
+    "Summary": "jose vulnerable to untrusted JWK header key acceptance during signature verification",
+    "UpdatedAt": "2026-03-31T23:09:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.5+1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.3.5"
+    }
+  ]
+}

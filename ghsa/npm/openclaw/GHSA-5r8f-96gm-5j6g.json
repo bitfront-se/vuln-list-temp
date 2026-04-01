@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T00:00:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346220,
+    "Id": "GSA_kwCzR0hTQS01cjhmLTk2Z20tNWo2Z84ABUhs",
+    "GhsaId": "GHSA-5r8f-96gm-5j6g",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5r8f-96gm-5j6g"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/be00fcfccba108f88dc3d4380146c6e058770b03"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.28"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5r8f-96gm-5j6g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5r8f-96gm-5j6g"
+      }
+    ],
+    "Description": "## Summary\n\nThe `chat.send` path reused command authorization to trigger `/reset` session rotation even though direct session reset is an admin-only control-plane operation.\n\n## Impact\n\nA write-scoped gateway caller could rotate a target session, archive the prior transcript state, and force a new session id without admin scope.\n\n## Affected Component\n\n`src/gateway/server-methods/chat.ts, src/auto-reply/reply/session.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `be00fcfccb` (`Gateway: align chat.send reset scope checks`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T00:00:34Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw Gateway `operator.write` can reach admin-only session reset via `chat.send` `/reset`",
+    "UpdatedAt": "2026-04-01T00:00:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

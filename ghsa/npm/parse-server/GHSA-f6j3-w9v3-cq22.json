@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T00:03:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 346225,
+    "Id": "GSA_kwCzR0hTQS1mNmozLXc5djMtY3EyMs4ABUhx",
+    "GhsaId": "GHSA-f6j3-w9v3-cq22",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-f6j3-w9v3-cq22"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34574"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10347"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10348"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/90802969fc713b7bc9733d7255c7519a6ed75d21"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/ebccd7fe2708007e62f705ee1c820a6766178777"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f6j3-w9v3-cq22"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f6j3-w9v3-cq22"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34574"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated user can bypass the immutability guard on session fields (`expiresAt`, `createdWith`) by sending a null value in a PUT request to the session update endpoint. This allows nullifying the session expiry, making the session valid indefinitely and bypassing configured session length policies.\n\n### Patches\n\nThe truthiness-based guard checks were replaced with key-presence checks that reject any value for protected session fields, including null.\n\n### Workarounds\n\nThere is no known workaround. A `beforeSave` trigger on `_Session` could be used to reject null values for `expiresAt` and `createdWith`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T00:03:19Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server has a session field immutability bypass via falsy-value guard",
+    "UpdatedAt": "2026-04-01T00:03:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.69"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.69"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.7.0-alpha.14"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.7.0-alpha.14"
+    }
+  ]
+}

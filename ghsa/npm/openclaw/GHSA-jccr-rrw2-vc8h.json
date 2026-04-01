@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:56:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346210,
+    "Id": "GSA_kwCzR0hTQS1qY2NyLXJydzItdmM4aM4ABUhi",
+    "GhsaId": "GHSA-jccr-rrw2-vc8h",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-jccr-rrw2-vc8h"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/78e2f3d66d74e5c7e6f45c54162e63986e39771b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jccr-rrw2-vc8h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jccr-rrw2-vc8h"
+      }
+    ],
+    "Description": "## Summary\n\nThe jq safe-bin policy blocked explicit `env` usage but still allowed jq programs that accessed environment data through `$ENV`.\n\n## Impact\n\nAn operator-approved safe-bin jq command could disclose environment variables that the safe-bin policy was supposed to keep out of scope.\n\n## Affected Component\n\n`src/infra/exec-safe-bin-semantics.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `78e2f3d66d` (`Exec: tighten jq safe-bin env checks`).\n\nOpenClaw thanks @nicky-cc  of Tencent zhuque Lab [https://github.com/Tencent/AI-Infra-Guard](https://github.com/Tencent/AI-Infra-Guard) for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:56:13Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw safeBins jq `$ENV` filter bypass allows environment variable disclosure",
+    "UpdatedAt": "2026-03-31T23:56:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-03-31T23:59:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346217,
+    "Id": "GSA_kwCzR0hTQS1qN3AyLXFjd20tOTR2NM4ABUhp",
+    "GhsaId": "GHSA-j7p2-qcwm-94v4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j7p2-qcwm-94v4"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7abfff756d6c68d17e21d1657bbacbaec86de232"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.22"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j7p2-qcwm-94v4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j7p2-qcwm-94v4"
+      }
+    ],
+    "Description": "## Summary\n\nHost exec env override sanitization did not fail closed for several package-manager and related redirect variables that can steer dependency fetches or startup behavior.\n\n## Impact\n\nAn approved exec request could silently redirect package resolution or runtime bootstrap to attacker-controlled infrastructure and execute trojanized content.\n\n## Affected Component\n\n`src/infra/host-env-security-policy.json, src/infra/host-env-security.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c 2026.3.22`\n- Patched: `\u003e= 2026.3.22`\n\n## Fix\n\nFixed by commit `7abfff756d` (`Exec: harden host env override handling across gateway and node`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:59:36Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenClaw's incomplete host env sanitization blocklist allows supply-chain redirection via package-manager env overrides",
+    "UpdatedAt": "2026-03-31T23:59:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.22"
+    }
+  ]
+}

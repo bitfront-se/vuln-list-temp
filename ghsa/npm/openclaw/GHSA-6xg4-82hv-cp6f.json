@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-03-31T23:57:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 346213,
+    "Id": "GSA_kwCzR0hTQS02eGc0LTgyaHYtY3A2Zs4ABUhl",
+    "GhsaId": "GHSA-6xg4-82hv-cp6f",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6xg4-82hv-cp6f"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4b9542716c26ac77652bcaa0f562043b298b409f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6xg4-82hv-cp6f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6xg4-82hv-cp6f"
+      }
+    ],
+    "Description": "## Summary\n\nACP-only provenance fields in `chat.send` were gated by self-declared client metadata from the WebSocket handshake rather than verified authorization state.\n\n## Impact\n\nA normal authenticated operator client could spoof ACP identity labels and inject reserved provenance fields intended only for the ACP bridge.\n\n## Affected Component\n\n`src/gateway/server-methods/chat.ts, src/gateway/server/ws-connection/message-handler.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `4b9542716c` (`Gateway: require verified scope for chat provenance`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T23:57:51Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Gateway chat.send ACP-only provenance guard could be bypassed by client identity spoofing",
+    "UpdatedAt": "2026-03-31T23:57:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.28"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.3.24"
+    }
+  ]
+}

@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32918"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-session-sandbox-escape-via-session-status-tool"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-wcxr-59v9-rxr8"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-wcxr-59v9-rxr8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32918"
       }
     ],
     "Description": "### Summary\n\nThe built-in `session_status` tool did not enforce the intended session-visibility boundary. A sandboxed subagent could supply another session's `sessionKey` and inspect or modify state outside its own sandbox scope.\n\n### Impact\n\nThis allowed a sandboxed child session to read parent or sibling session data and, in affected releases, update the target session's persisted model override.\n\n### Affected versions\n\n`openclaw` `\u003c= 2026.3.8`\n\n### Patch\n\nFixed in `openclaw` `2026.3.11` and included in later releases such as `2026.3.12`. Session visibility checks now enforce the sandbox boundary before reading or mutating session state.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-13T20:55:19Z",
     "Severity": "HIGH",
     "Summary": "`OpenClaw: session_status` let sandboxed subagents access parent or sibling session state",
-    "UpdatedAt": "2026-03-13T20:55:20Z",
+    "UpdatedAt": "2026-04-01T00:06:28Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 8.4,

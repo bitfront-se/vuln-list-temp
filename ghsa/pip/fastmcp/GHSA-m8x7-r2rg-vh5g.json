@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-03-31T22:24:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "fastmcp"
+  },
+  "Advisory": {
+    "DatabaseId": 346155,
+    "Id": "GSA_kwCzR0hTQS1tOHg3LXIycmctdmg1Z84ABUgr",
+    "GhsaId": "GHSA-m8x7-r2rg-vh5g",
+    "References": [
+      {
+        "Url": "https://github.com/PrefectHQ/fastmcp/security/advisories/GHSA-m8x7-r2rg-vh5g"
+      },
+      {
+        "Url": "https://github.com/jlowin/fastmcp/security/advisories/GHSA-m8x7-r2rg-vh5g"
+      },
+      {
+        "Url": "https://github.com/PrefectHQ/fastmcp/pull/3522"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m8x7-r2rg-vh5g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m8x7-r2rg-vh5g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-64340"
+      }
+    ],
+    "Description": "Server names containing shell metacharacters (e.g., `\u0026`) can cause command injection on Windows when passed to `fastmcp install claude-code` or `fastmcp install gemini-cli`. These install paths use `subprocess.run()` with a list argument, but on Windows the target CLIs often resolve to `.cmd` wrappers that are executed through `cmd.exe`, which interprets metacharacters in the flattened command string.\n\nPoC:\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(name=\"test\u0026calc\")\n\n@mcp.tool\ndef roll_dice(n_dice: int) -\u003e list[int]:\n    \"\"\"Roll `n_dice` 6-sided dice and return the results.\"\"\"\n    return [random.randint(1, 6) for _ in range(n_dice)]\n```\n\n```\nfastmcp install claude-code server.py   # or: fastmcp install gemini-cli server.py\n```\n\nOn Windows, this opens Calculator via the `\u0026calc` in the server name.\n\nImpact:\nArbitrary command execution with the privileges of the user running `fastmcp install`. Affects Windows hosts where the target CLI (one of claude, gemini) is installed as a `.cmd` wrapper. Does not affect macOS/Linux, and does not affect config-file-based install targets (cursor, goose, mcp-json).\n\nPatched in #3522 by validating server names to reject shell metacharacters.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T22:24:15Z",
+    "Severity": "MODERATE",
+    "Summary": "FastMCP has a Command Injection vulnerability - Gemini CLI",
+    "UpdatedAt": "2026-03-31T22:24:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.0"
+    }
+  ]
+}
