@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T23:09:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 346497,
+    "Id": "GSA_kwCzR0hTQS1ocG04LTlxeDYtanZ3ds4ABUmB",
+    "GhsaId": "GHSA-hpm8-9qx6-jvwv",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-hpm8-9qx6-jvwv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34784"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10361"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10362"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/053109b3ee71815bc39ed84116c108ff9edbf337"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/commit/a0b0c69fc44f87f80d793d257344e7dcbf676e22"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hpm8-9qx6-jvwv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hpm8-9qx6-jvwv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34784"
+      }
+    ],
+    "Description": "### Impact\n\nFile downloads via HTTP Range requests bypass the `afterFind(Parse.File)` trigger and its validators on storage adapters that support streaming (e.g. the default GridFS adapter). This allows access to files that should be protected by `afterFind` trigger authorization logic or built-in validators such as `requireUser`.\n\n### Patches\n\nThe streaming file download path now executes the `afterFind(Parse.File)` trigger before sending any data. Authentication is resolved from the session token header so that trigger validators can distinguish authenticated from unauthenticated requests.\n\n### Workarounds\n\nUse `beforeFind(Parse.File)` instead of `afterFind(Parse.File)` for file access authorization. The `beforeFind` trigger runs on all download paths including streaming.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T23:09:14Z",
+    "Severity": "HIGH",
+    "Summary": "Parser Server's streaming file download bypasses afterFind file trigger authorization",
+    "UpdatedAt": "2026-04-01T23:09:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.71"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.71"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.7.1-alpha.1"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.7.1-alpha.1"
+    }
+  ]
+}

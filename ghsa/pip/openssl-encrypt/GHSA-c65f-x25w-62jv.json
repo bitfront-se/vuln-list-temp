@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:12:38Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openssl-encrypt"
+  },
+  "Advisory": {
+    "DatabaseId": 346427,
+    "Id": "GSA_kwCzR0hTQS1jNjVmLXgyNXctNjJqds4ABUk7",
+    "GhsaId": "GHSA-c65f-x25w-62jv",
+    "References": [
+      {
+        "Url": "https://github.com/jahlives/openssl_encrypt/security/advisories/GHSA-c65f-x25w-62jv"
+      },
+      {
+        "Url": "https://github.com/jahlives/openssl_encrypt/commit/809416b74d2749cdcffb484cd65b057e1685cc13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c65f-x25w-62jv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c65f-x25w-62jv"
+      }
+    ],
+    "Description": "### Summary\n\nBoth standalone servers configure CORS with `allow_origins=[\"*\"]`, `allow_credentials=True`, `allow_methods=[\"*\"]`, and `allow_headers=[\"*\"]`.\n\n### Affected Code\n\n```python\n# server/key-server/app/main.py:86-92\n# server/telemetry-server/app/main.py:23-29\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=settings.cors_origins,  # defaults to [\"*\"]\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n```\n\nThe docker-compose file (`openssl_encrypt_server/docker-compose.yml:75`) also defaults `CORS_ORIGINS` to `*`, and `.env.example` ships with `CORS_ORIGINS=*`.\n\n### Impact\n\nThis is the most permissive CORS configuration possible, allowing any website to make fully credentialed cross-origin requests to the API. An attacker's website could make authenticated API calls on behalf of any user who visits it.\n\n### Recommended Fix\n\n- Remove wildcard defaults — require explicit origin configuration\n- Never combine `allow_origins=[\"*\"]` with `allow_credentials=True`\n- Update `.env.example` with placeholder domains instead of `*`\n\n### Fix\n\nFixed in commit `809416b` on branch `releases/1.4.x` — changed CORS default from [\"*\"] to [] in both key-server and telemetry-server; added validation rejecting wildcard when debug=False.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:12:37Z",
+    "Severity": "MODERATE",
+    "Summary": "openssl-encrypt has CORS wildcard with allow_credentials=True in standalone servers",
+    "UpdatedAt": "2026-04-01T21:12:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:44:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/storage-r2"
+  },
+  "Advisory": {
+    "DatabaseId": 346464,
+    "Id": "GSA_kwCzR0hTQS1mcnE5LTdqNmctdjc0eM4ABUlg",
+    "GhsaId": "GHSA-frq9-7j6g-v74x",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-frq9-7j6g-v74x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34750"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-frq9-7j6g-v74x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-frq9-7j6g-v74x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34750"
+      }
+    ],
+    "Description": "### Impact\n\nThe client-upload signed-URL endpoints for S3, GCS, Azure, and R2 did not properly sanitize filenames. An attacker could craft filenames to escape the intended storage location.\n\nConsumers are affected if ALL of these are true:\n\n- Payload version **\u003c v3.78.0**\n- Using client-upload signed-URL endpoints for any supported storage adapter\n\n  ## Patches\n\nThis vulnerability has been patched in **v3.78.0**. Filename validation has been hardened for client uploads.\n\nConsumers should upgrade to **v3.78.0** or later.\n\n## Workarounds\n\nConsumers can upgrade:\n\n- Limit access to client-upload signed-URL endpoints to trusted users only.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:44:09Z",
+    "Severity": "MODERATE",
+    "Summary": "Payload has Insufficient Filename Validation in Client-Upload Signed-URL Endpoints",
+    "UpdatedAt": "2026-04-01T21:44:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.78.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.78.0"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:11:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openssl-encrypt"
+  },
+  "Advisory": {
+    "DatabaseId": 346425,
+    "Id": "GSA_kwCzR0hTQS0ydmh3LXE3dmgtN3h2Ms4ABUk5",
+    "GhsaId": "GHSA-2vhw-q7vh-7xv2",
+    "References": [
+      {
+        "Url": "https://github.com/jahlives/openssl_encrypt/security/advisories/GHSA-2vhw-q7vh-7xv2"
+      },
+      {
+        "Url": "https://github.com/jahlives/openssl_encrypt/commit/7aa8787f4de2e9a23f58fca067bb16c4c69d28bb"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2vhw-q7vh-7xv2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2vhw-q7vh-7xv2"
+      }
+    ],
+    "Description": "### Summary\n\nThe `/ready` endpoint in `openssl_encrypt_server/server.py` at **lines 159-175** catches database errors and returns the full exception string in the response.\n\n### Affected Code\n\n```python\nexcept Exception as e:\n    return {\"status\": \"not_ready\", \"reason\": str(e)}\n```\n\n### Impact\n\nDatabase exception messages can leak:\n- Database hostnames and IP addresses\n- Connection parameters and port numbers\n- Driver version information\n- Potentially database credentials if included in connection string errors\n\nThis information is available to unauthenticated callers.\n\n### Recommended Fix\n\n- Return a generic error message: `{\"status\": \"not_ready\", \"reason\": \"database unavailable\"}`\n- Log the full exception server-side for debugging\n\n### Fix\n\nFixed in commit `7aa8787` on branch `releases/1.4.x` — replaced str(e) with generic \"database check failed\" message; full exception logged server-side at WARNING level.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:11:59Z",
+    "Severity": "MODERATE",
+    "Summary": "openssl-encrypt's readiness endpoint leaks database error details to unauthenticated callers",
+    "UpdatedAt": "2026-04-01T21:11:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.0"
+    }
+  ]
+}

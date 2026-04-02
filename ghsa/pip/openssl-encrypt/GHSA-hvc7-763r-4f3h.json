@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:11:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openssl-encrypt"
+  },
+  "Advisory": {
+    "DatabaseId": 346424,
+    "Id": "GSA_kwCzR0hTQS1odmM3LTc2M3ItNGYzaM4ABUk4",
+    "GhsaId": "GHSA-hvc7-763r-4f3h",
+    "References": [
+      {
+        "Url": "https://github.com/jahlives/openssl_encrypt/security/advisories/GHSA-hvc7-763r-4f3h"
+      },
+      {
+        "Url": "https://github.com/jahlives/openssl_encrypt/commit/05e45f393886b5bf7e924d2dd42099a9dd37f91d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hvc7-763r-4f3h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hvc7-763r-4f3h"
+      }
+    ],
+    "Description": "### Summary\n\nThe `revoke_key` method in `openssl_encrypt_server/modules/keyserver/service.py` at **lines 195-270** accepts a `client_id` parameter but never verifies that the requesting client is the same as `key.owner_client_id`.\n\n### Impact\n\nAny authenticated client can revoke any other client's key, as long as they provide a valid revocation signature. While the signature requirement mitigates this somewhat (you need the private key to sign), the lack of ownership check is a defense-in-depth gap.\n\n### Recommended Fix\n\n- Add an ownership check: verify `client_id == key.owner_client_id` before allowing revocation\n- Return 403 Forbidden if the requesting client does not own the key\n\n### Fix\n\nFixed in commit `05e45f3` on branch `releases/1.4.x` — added documentation that ML-DSA signature verification IS the cryptographic ownership check; added info-level logging on successful verification.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:11:32Z",
+    "Severity": "MODERATE",
+    "Summary": "openssl-encrypt has no owner verification on key revocation — any client can revoke any key",
+    "UpdatedAt": "2026-04-01T21:11:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-01T22:59:53Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ellanetworks/core"
+  },
+  "Advisory": {
+    "DatabaseId": 346495,
+    "Id": "GSA_kwCzR0hTQS14dzQ1LWNjMzItNDQyZs4ABUl_",
+    "GhsaId": "GHSA-xw45-cc32-442f",
+    "References": [
+      {
+        "Url": "https://github.com/ellanetworks/core/security/advisories/GHSA-xw45-cc32-442f"
+      },
+      {
+        "Url": "https://github.com/ellanetworks/core/commit/7f64b7a7c7a22cb9c05ac2c1c3a0cf0eaefac3e5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xw45-cc32-442f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xw45-cc32-442f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34762"
+      }
+    ],
+    "Description": "## Summary\n\nThe `PUT /api/v1/subscriber/{imsi}` API accepts an IMSI identifier from both the URL path and the JSON request body but never verifies they match. This allows an authenticated NetworkManager to modify any subscriber's policy while the audit trail records a fabricated or unrelated subscriber IMSI.\n\n## Impact\n\nA NetworkManager or Admin can modify any subscriber's QoS policy (potentially degrading service or altering traffic routing) while the audit log attributes the change to a non-existent or unrelated subscriber. Post-incident forensic searches for the affected subscriber's IMSI would find no matching audit entries.\n\n## Fix\n\nRemove the IMSI as a body param and use the path param as a single source of truth.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T22:59:50Z",
+    "Severity": "LOW",
+    "Summary": "Ella Core Has Audit Log Falsification via Path/Body IMSI Mismatch in UpdateSubscriber",
+    "UpdatedAt": "2026-04-01T22:59:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.7.0"
+    }
+  ]
+}

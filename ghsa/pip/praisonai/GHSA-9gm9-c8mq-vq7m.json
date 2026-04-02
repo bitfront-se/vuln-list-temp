@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-01T23:20:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonai"
+  },
+  "Advisory": {
+    "DatabaseId": 346500,
+    "Id": "GSA_kwCzR0hTQS05Z205LWM4bXEtdnE3bc4ABUmE",
+    "GhsaId": "GHSA-9gm9-c8mq-vq7m",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-9gm9-c8mq-vq7m"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/commit/47bff65413beaa3c21bf633c1fae4e684348368c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9gm9-c8mq-vq7m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9gm9-c8mq-vq7m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34935"
+      }
+    ],
+    "Description": "### Summary\n\nThe `--mcp` CLI argument is passed directly to `shlex.split()` and forwarded through the call chain to `anyio.open_process()` with no validation, allowlist check, or sanitization at any hop, allowing arbitrary OS command execution as the process user.\n\n### Details\n\n`cli/features/mcp.py:61` (source) -\u003e `praisonaiagents/mcp/mcp.py:345` (hop) -\u003e `mcp/client/stdio/__init__.py:253` (sink)\n```python\n# source\nparts = shlex.split(command)\n\n# hop\ncmd, args, env = self.parse_mcp_command(command, env_vars)\nself.server_params = StdioServerParameters(command=cmd, args=arguments)\n\n# sink\nprocess = await anyio.open_process([command, *args])\n\n```\n\nFixed in commit `47bff65413beaa3c21bf633c1fae4e684348368c` (v4.5.69) by introducing a command allowlist:\n```python\nALLOWED_COMMANDS = {\"npx\", \"uvx\", \"node\", \"python\"}\nif cmd not in ALLOWED_COMMANDS:\n    raise ValueError(f\"Disallowed command: {cmd}\")\n```\n\n### PoC\n```python\n# tested on: praisonai==4.5.48\n# install: pip install praisonai==4.5.48\n# run: praisonai --mcp \"bash -c 'id \u003e /tmp/pwned'\"\n# verify: cat /tmp/pwned\n# expected output: uid=1000(...) gid=1000(...) groups=1000(...)\n```\n\n### Impact\n\nAny deployment where the `--mcp` argument is influenced by untrusted input is exposed to full OS command execution as the process user. No authentication is required.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T23:20:00Z",
+    "Severity": "CRITICAL",
+    "Summary": "PraisonAI: OS Command Injection in MCPHandler.parse_mcp_command()",
+    "UpdatedAt": "2026-04-01T23:20:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.69"
+      },
+      "VulnerableVersionRange": "\u003e= 4.5.15, \u003c= 4.5.68"
+    }
+  ]
+}

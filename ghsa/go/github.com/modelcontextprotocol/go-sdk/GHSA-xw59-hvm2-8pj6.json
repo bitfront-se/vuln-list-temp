@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T21:09:10Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/modelcontextprotocol/go-sdk"
+  },
+  "Advisory": {
+    "DatabaseId": 346421,
+    "Id": "GSA_kwCzR0hTQS14dzU5LWh2bTItOHBqNs4ABUk1",
+    "GhsaId": "GHSA-xw59-hvm2-8pj6",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/go-sdk/security/advisories/GHSA-xw59-hvm2-8pj6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xw59-hvm2-8pj6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xw59-hvm2-8pj6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34742"
+      }
+    ],
+    "Description": "The Model Context Protocol (MCP) Go SDK does not enable DNS rebinding protection by default for HTTP-based servers. When an HTTP-based MCP server is run on localhost without authentication with `StreamableHTTPHandler` or `SSEHandler`, a malicious website could exploit DNS rebinding to bypass same-origin policy restrictions and send requests to the local MCP server. This could allow an attacker to invoke tools or access resources exposed by the MCP server on behalf of the user in those limited circumstances.\n\nNote that running HTTP-based MCP servers locally without authentication is not recommended per MCP security best practices. This issue does not affect servers using stdio transport.\n\nServers created via `StreamableHTTPHandler` or `SSEHandler` now have this protection enabled by default when binding to `localhost`. Users are advised to update to version `1.4.0` to receive this automatic protection.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:09:09Z",
+    "Severity": "HIGH",
+    "Summary": "DNS Rebinding Protection Disabled by Default in Model Context Protocol Go SDK for Servers Running on Localhost",
+    "UpdatedAt": "2026-04-01T21:09:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.0"
+    }
+  ]
+}

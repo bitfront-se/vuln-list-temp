@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-01T21:47:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 346465,
+    "Id": "GSA_kwCzR0hTQS0zd3E3LXJxcTctd3g2as4ABUlh",
+    "GhsaId": "GHSA-3wq7-rqq7-wx6j",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-3wq7-rqq7-wx6j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34517"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/cbb774f38330563422ca0c413a71021d7b944145"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.13.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3wq7-rqq7-wx6j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3wq7-rqq7-wx6j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34517"
+      }
+    ],
+    "Description": "### Summary\n\nFor some multipart form fields, aiohttp read the entire field into memory before checking client_max_size.\n\n### Impact\n\nIf an application uses `Request.post()` an attacker can send a specially crafted multipart request to force significant temporary memory allocation even when the request is ultimately rejected.\n\n-----\n\nPatch: https://github.com/aio-libs/aiohttp/commit/cbb774f38330563422ca0c413a71021d7b944145",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:47:07Z",
+    "Severity": "LOW",
+    "Summary": "AIOHTTP has late size enforcement for non-file multipart fields causes memory DoS",
+    "UpdatedAt": "2026-04-01T21:47:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.13.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.13.3"
+    }
+  ]
+}

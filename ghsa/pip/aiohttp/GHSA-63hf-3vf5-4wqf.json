@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-01T21:49:11Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 346468,
+    "Id": "GSA_kwCzR0hTQS02M2hmLTN2ZjUtNHdxZs4ABUlk",
+    "GhsaId": "GHSA-63hf-3vf5-4wqf",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-63hf-3vf5-4wqf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34520"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/9370b9714a7a56003cacd31a9b4ae16eab109ba4"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.13.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-63hf-3vf5-4wqf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-63hf-3vf5-4wqf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34520"
+      }
+    ],
+    "Description": "### Summary\n\nThe C parser (the default for most installs) accepted null bytes and control characters is response headers.\n\n### Impact\n\nAn attacker could send header values that are interpreted differently than expected due to the presence of control characters. For example, `request.url.origin()` may return a different value than the raw Host header, or what a reverse proxy interpreted it as., potentially resulting in some kind of security bypass.\n\n-----\n\nPatch: https://github.com/aio-libs/aiohttp/commit/9370b9714a7a56003cacd31a9b4ae16eab109ba4",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:49:06Z",
+    "Severity": "LOW",
+    "Summary": "AIOHTTP's C parser (llhttp) accepts null bytes and control characters in response header values - header injection/security bypass",
+    "UpdatedAt": "2026-04-01T21:49:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.13.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.13.3"
+    }
+  ]
+}

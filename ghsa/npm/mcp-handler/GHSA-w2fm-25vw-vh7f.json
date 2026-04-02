@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T23:58:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mcp-handler"
+  },
+  "Advisory": {
+    "DatabaseId": 346520,
+    "Id": "GSA_kwCzR0hTQS13MmZtLTI1dnctdmg3Zs4ABUmY",
+    "GhsaId": "GHSA-w2fm-25vw-vh7f",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/mcp-handler/security/advisories/GHSA-w2fm-25vw-vh7f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25536"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-345p-7cg4-v4c7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w2fm-25vw-vh7f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w2fm-25vw-vh7f"
+      }
+    ],
+    "Description": "`mcp-handler` versions prior to 1.1.0 accepted `@modelcontextprotocol/sdk` \u003c 1.26.0 as a peer dependency. That SDK version contains a vulnerability [[CVE-2026-25536](https://nvd.nist.gov/vuln/detail/CVE-2026-25536)] that causes concurrent requests from different clients to share server-side state including authentication context and tool execution results when a `StreamableHTTPServerTransport` instance is reused across requests.\n\n**Note:** This is _not_ a vulnerability in `mcp-handler` itself. The root cause is in the peer dependency `@modelcontextprotocol/sdk`. \n\n### Impact\n\nA low-privileged attacker making concurrent requests to an `mcp-handler` endpoint can read another client's session data, including authentication information and tool execution state. This is a confidentiality breach with potential for limited integrity impact.\n\n**Root Cause:** [CVE-2026-25536](https://nvd.nist.gov/vuln/detail/CVE-2026-25536) in `@modelcontextprotocol/sdk` \u003c 1.26.0. The SDK did not prevent reuse of stateless transports across client connections.\n\n### Patches\n\nUpgrade to `mcp-handler@1.1.0`. This release raises the minimum peer dependency to `@modelcontextprotocol/sdk@\u003e=1.26.0`, which contains the fix for CVE-2026-25536. \n\n### Workarounds\n\n- Upgrade `@modelcontextprotocol/sdk` to `\u003e=1.26.0` (note: the SDK will throw on transport reuse, which will break `mcp-handler` \u003c 1.1.0 which effectively forces the upgrade)\n- Alternatively, manually create fresh `McpServer` and transport instances per request in your handler code",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T23:58:50Z",
+    "Severity": "HIGH",
+    "Summary": "mcp-handler has a tool response leak across concurrent client sessions ('Race Condition')",
+    "UpdatedAt": "2026-04-01T23:58:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.1.0"
+    }
+  ]
+}

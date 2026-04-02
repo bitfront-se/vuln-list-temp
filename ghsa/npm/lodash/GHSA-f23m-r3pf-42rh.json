@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T23:50:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "lodash"
+  },
+  "Advisory": {
+    "DatabaseId": 346517,
+    "Id": "GSA_kwCzR0hTQS1mMjNtLXIzcGYtNDJyaM4ABUmV",
+    "GhsaId": "GHSA-f23m-r3pf-42rh",
+    "References": [
+      {
+        "Url": "https://github.com/lodash/lodash/security/advisories/GHSA-f23m-r3pf-42rh"
+      },
+      {
+        "Url": "https://github.com/lodash/lodash/security/advisories/GHSA-xxjr-mmjv-4gpg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2950"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f23m-r3pf-42rh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f23m-r3pf-42rh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2950"
+      }
+    ],
+    "Description": "### Impact\n\nLodash versions 4.17.23 and earlier are vulnerable to prototype pollution in the `_.unset` and `_.omit` functions. The fix for [CVE-2025-13465](https://github.com/lodash/lodash/security/advisories/GHSA-xxjr-mmjv-4gpg) only guards against string key members, so an attacker can bypass the check by passing array-wrapped path segments. This allows deletion of properties from built-in prototypes such as `Object.prototype`, `Number.prototype`, and `String.prototype`.\n\nThe issue permits deletion of prototype properties but does not allow overwriting their original behavior.\n\n### Patches\n\nThis issue is patched in 4.18.0.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T23:50:27Z",
+    "Severity": "MODERATE",
+    "Summary": "lodash vulnerable to Prototype Pollution via array path bypass in `_.unset` and `_.omit`",
+    "UpdatedAt": "2026-04-01T23:50:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.17.23"
+    }
+  ]
+}

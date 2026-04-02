@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:15:31Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "anthropic"
+  },
+  "Advisory": {
+    "DatabaseId": 346430,
+    "Id": "GSA_kwCzR0hTQS1xNWY1LTNnam0tN21mbc4ABUk-",
+    "GhsaId": "GHSA-q5f5-3gjm-7mfm",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/anthropic-sdk-python/security/advisories/GHSA-q5f5-3gjm-7mfm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34450"
+      },
+      {
+        "Url": "https://github.com/anthropics/anthropic-sdk-python/commit/715030ceb4d6dd8d3546e999c680e29532bf1255"
+      },
+      {
+        "Url": "https://github.com/anthropics/anthropic-sdk-python/releases/tag/v0.87.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q5f5-3gjm-7mfm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q5f5-3gjm-7mfm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34450"
+      }
+    ],
+    "Description": "The local filesystem memory tool in the Anthropic Python SDK created memory files with mode 0o666, leaving them world-readable on systems with a standard umask and world-writable in environments with a permissive umask such as many Docker base images. A local attacker on a shared host could read persisted agent state, and in containerized deployments could modify memory files to influence subsequent model behavior. Both the synchronous and asynchronous memory tool implementations were affected.\n\nUsers on the affected versions are advised to update to the latest version.\n\nClaude SDK for Python thanks [`lucasfutures`](https://hackerone.com/lucasfutures) on HackerOne for the report.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:15:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Claude SDK for Python has Insecure Default File Permissions in Local Filesystem Memory Tool",
+    "UpdatedAt": "2026-04-01T21:15:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.87.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.86.0, \u003c 0.87.0"
+    }
+  ]
+}

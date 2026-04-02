@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T21:10:53Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "onnx"
+  },
+  "Advisory": {
+    "DatabaseId": 346422,
+    "Id": "GSA_kwCzR0hTQS01MzhjLTU1anYtYzVnOc4ABUk2",
+    "GhsaId": "GHSA-538c-55jv-c5g9",
+    "References": [
+      {
+        "Url": "https://github.com/onnx/onnx/security/advisories/GHSA-538c-55jv-c5g9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34445"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/pull/7751"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/commit/e30c6935d67cc3eca2fa284e37248e7c0036c46b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-538c-55jv-c5g9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-538c-55jv-c5g9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34445"
+      }
+    ],
+    "Description": "### Summary\nThe ExternalDataInfo class in ONNX was using Python’s setattr() function to load metadata (like file paths or data lengths) directly from an ONNX model file. The problem? It didn’t check if the \"keys\" in the file were valid. Because it blindly trusted the file, an attacker could craft a malicious model that overwrites internal object properties.\n\n### Why its Dangerous\n**Instant Crash DoS**: An attacker can set the length property to a massive number like 9 petabytes. When the system tries to load the model, it attempts to allocate all that RAM at once, causing the server to crash or freeze Out of Memory.\n\n**Access Bypass**: By setting a negative offset -1, an attacker can trick the system into reading parts of a file it wasn't supposed to touch.\n\n**Object Corruption**: Attackers can even inject \"dunder\" attributes like __class__ to change the object's type entirely, which could lead to more complex exploits.\n\n**Fixed**: https://github.com/onnx/onnx/pull/7751 object state corruption and DoS via ExternalDataInfo attribute injection",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:10:52Z",
+    "Severity": "HIGH",
+    "Summary": "ONNX: Malicious ONNX models can crash servers by exploiting unprotected object settings.",
+    "UpdatedAt": "2026-04-01T21:10:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.21.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.20.1"
+    }
+  ]
+}

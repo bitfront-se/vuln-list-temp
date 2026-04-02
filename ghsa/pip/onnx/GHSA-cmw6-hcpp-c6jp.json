@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:13:39Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "onnx"
+  },
+  "Advisory": {
+    "DatabaseId": 346428,
+    "Id": "GSA_kwCzR0hTQS1jbXc2LWhjcHAtYzZqcM4ABUk8",
+    "GhsaId": "GHSA-cmw6-hcpp-c6jp",
+    "References": [
+      {
+        "Url": "https://github.com/onnx/onnx/security/advisories/GHSA-cmw6-hcpp-c6jp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34446"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/commit/4755f8053928dce18a61db8fec71b69c74f786cb"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cmw6-hcpp-c6jp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cmw6-hcpp-c6jp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34446"
+      }
+    ],
+    "Description": "### Summary\nThe issue is in `onnx.load` — the code checks for symlinks to prevent path traversal, but completely misses hardlinks, which is the problem, since a hardlink looks exactly like a regular file on the filesystem.\n\n### The Real Problem\nThe validator in `onnx/checker.cc` only calls `is_symlink()` and never checks the inode or `st_nlink`, so a hardlink walks right through every security check without any issues.\n\n### Impact\nEspecially dangerous in AI supply chain scenarios like HuggingFace — a single malicious model is enough to silently steal secrets from the victim's machine without them noticing anything.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:13:37Z",
+    "Severity": "MODERATE",
+    "Summary": "ONNX: Arbitrary File Read via ExternalData Hardlink Bypass in ONNX load",
+    "UpdatedAt": "2026-04-01T21:13:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.21.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.20.1"
+    }
+  ]
+}

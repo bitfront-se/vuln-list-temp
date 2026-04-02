@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-01T21:41:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sillytavern"
+  },
+  "Advisory": {
+    "DatabaseId": 346461,
+    "Id": "GSA_kwCzR0hTQS12cHJyLXE4NXAtNzltZs4ABUld",
+    "GhsaId": "GHSA-vprr-q85p-79mf",
+    "References": [
+      {
+        "Url": "https://github.com/SillyTavern/SillyTavern/security/advisories/GHSA-vprr-q85p-79mf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vprr-q85p-79mf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vprr-q85p-79mf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34524"
+      }
+    ],
+    "Description": "## Summary\nA Path Traversal vulnerability in chat endpoints allows an authenticated attacker to read and delete arbitrary files under their user data root (for example `secrets.json` and `settings.json`) by supplying `avatar_url=\"..\"`.\n\n### Details\nThe input validator used by `avatar_url` blocks only `/` and NUL bytes, but does not block traversal segments like `..`.\n\nEvidence:\n- Weak validator regex (does not reject `..`):  \n  \u003chttps://github.com/SillyTavern/SillyTavern/blob/b7bb8be35a5c779b4db12a4a5b94d7e49096071c/src/middleware/validateFileName.js#L24-L27\u003e\n- Vulnerable delete path construction:  \n  \u003chttps://github.com/SillyTavern/SillyTavern/blob/b7bb8be35a5c779b4db12a4a5b94d7e49096071c/src/endpoints/chats.js#L575-L577\u003e\n- Vulnerable export path construction:  \n  \u003chttps://github.com/SillyTavern/SillyTavern/blob/b7bb8be35a5c779b4db12a4a5b94d7e49096071c/src/endpoints/chats.js#L595-L598\u003e\n- Endpoint auth context (authenticated user access):  \n  \u003chttps://github.com/SillyTavern/SillyTavern/blob/b7bb8be35a5c779b4db12a4a5b94d7e49096071c/src/server-main.js#L239\u003e\n\nBecause `avatar_url=\"..\"` is accepted, `path.join(\u003cuser\u003e/chats, \"..\")` resolves to `\u003cuser\u003e/`, enabling direct access to files outside the chats directory.\n\n### PoC\nPrerequisites:\n- Valid authenticated session cookie (`cookie.txt`)\n- Valid CSRF token (`$TOKEN`)\n\nRead sensitive file (`secrets.json`):\n\n```bash\ncurl -b cookie.txt -H \"x-csrf-token: $TOKEN\" -H \"content-type: application/json\" \\\n  -d '{\"avatar_url\":\"..\",\"is_group\":false,\"file\":\"secrets.json\",\"format\":\"jsonl\",\"exportfilename\":\"x\"}' \\\n  http://TARGET:8000/api/chats/export\n```\n\nDelete sensitive file (`settings.json`):\n\n```bash\ncurl -b cookie.txt -H \"x-csrf-token: $TOKEN\" -H \"content-type: application/json\" \\\n  -d '{\"avatar_url\":\"..\",\"chatfile\":\"settings.json\"}' \\\n  http://TARGET:8000/api/chats/delete\n```\n\n### Impact\n- Confidentiality: exposed per-user secrets and config data.\n- Integrity/Availability: attacker can delete critical per-user files and break account operation.\n- Risk is significant in multi-user or remotely reachable deployments.\n\n### Resolution\n\nThe issue was addressed in version 1.17.0",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-01T21:41:48Z",
+    "Severity": "HIGH",
+    "Summary": "SillyTavern: Path Traversal in `/api/chats/export` and `/api/chats/delete` allows arbitrary file read/delete within user data root",
+    "UpdatedAt": "2026-04-01T21:41:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.17.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.16.0"
+    }
+  ]
+}
