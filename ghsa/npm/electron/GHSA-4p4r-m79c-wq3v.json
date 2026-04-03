@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T02:37:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346753,
+    "Id": "GSA_kwCzR0hTQS00cDRyLW03OWMtd3Ezds4ABUqB",
+    "GhsaId": "GHSA-4p4r-m79c-wq3v",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-4p4r-m79c-wq3v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4p4r-m79c-wq3v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4p4r-m79c-wq3v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34767"
+      }
+    ],
+    "Description": "### Impact\nApps that register custom protocol handlers via `protocol.handle()` / `protocol.registerSchemesAsPrivileged()` or modify response headers via `webRequest.onHeadersReceived` may be vulnerable to HTTP response header injection if attacker-controlled input is reflected into a response header name or value.\n\nAn attacker who can influence a header value may be able to inject additional response headers, affecting cookies, content security policy, or cross-origin access controls.\n\nApps that do not reflect external input into response headers are not affected.\n\n### Workarounds\nValidate or sanitize any untrusted input before including it in a response header name or value.\n\n### Fixed Versions\n* `41.0.3`\n* `40.8.3`\n* `39.8.3`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, send an email to [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:37:24Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: HTTP Response Header Injection in custom protocol handlers and webRequest",
+    "UpdatedAt": "2026-04-03T02:37:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.3"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.3"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.3"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

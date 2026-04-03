@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T02:45:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346764,
+    "Id": "GSA_kwCzR0hTQS14ajV4LW0zZjMtNXgzaM4ABUqM",
+    "GhsaId": "GHSA-xj5x-m3f3-5x3h",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-xj5x-m3f3-5x3h"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xj5x-m3f3-5x3h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xj5x-m3f3-5x3h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34778"
+      }
+    ],
+    "Description": "### Impact\nA service worker running in a session could spoof reply messages on the internal IPC channel used by `webContents.executeJavaScript()` and related methods, causing the main-process promise to resolve with attacker-controlled data.\n\nApps are only affected if they have service workers registered and use the result of `webContents.executeJavaScript()` (or `webFrameMain.executeJavaScript()`) in security-sensitive decisions.\n\n### Workarounds\nDo not trust the return value of `webContents.executeJavaScript()` for security decisions. Use dedicated, validated IPC channels for security-relevant communication with renderers.\n\n### Fixed Versions\n* `41.0.0`\n* `40.8.1`\n* `39.8.1`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:44:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Service worker can spoof executeJavaScript IPC replies",
+    "UpdatedAt": "2026-04-03T02:45:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

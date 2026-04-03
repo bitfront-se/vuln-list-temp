@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-03T02:46:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346766,
+    "Id": "GSA_kwCzR0hTQS1qZnFnLWhmMjMtcXB3Ms4ABUqO",
+    "GhsaId": "GHSA-jfqg-hf23-qpw2",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-jfqg-hf23-qpw2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jfqg-hf23-qpw2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jfqg-hf23-qpw2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34780"
+      }
+    ],
+    "Description": "### Impact\nApps that pass `VideoFrame` objects (from the WebCodecs API) across the `contextBridge` are vulnerable to a context isolation bypass. An attacker who can execute JavaScript in the main world (for example, via XSS) can use a bridged `VideoFrame` to gain access to the isolated world, including any Node.js APIs exposed to the preload script.\n\nApps are only affected if a preload script returns, resolves, or passes a `VideoFrame` object to the main world via `contextBridge.exposeInMainWorld()`. Apps that do not bridge `VideoFrame` objects are not affected.\n\n### Workarounds\nDo not pass `VideoFrame` objects across `contextBridge`. If an app needs to transfer video frame data, serialize it to an `ArrayBuffer` or `ImageBitmap` before bridging.\n\n### Fixed Versions\n* `41.0.0-beta.8`\n* `40.7.0`\n* `39.8.0`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:46:56Z",
+    "Severity": "HIGH",
+    "Summary": "Electron: Context Isolation bypass via contextBridge VideoFrame transfer",
+    "UpdatedAt": "2026-04-03T02:46:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0-beta.8"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0-beta.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.7.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.0"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.0"
+    }
+  ]
+}

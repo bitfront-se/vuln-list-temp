@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T02:44:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346763,
+    "Id": "GSA_kwCzR0hTQS1yNXA3LWdwNGotcWhyeM4ABUqL",
+    "GhsaId": "GHSA-r5p7-gp4j-qhrx",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-r5p7-gp4j-qhrx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r5p7-gp4j-qhrx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r5p7-gp4j-qhrx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34777"
+      }
+    ],
+    "Description": "### Impact\nWhen an iframe requests `fullscreen`, `pointerLock`, `keyboardLock`, `openExternal`, or `media` permissions, the origin passed to `session.setPermissionRequestHandler()` was the top-level page's origin rather than the requesting iframe's origin. Apps that grant permissions based on the origin parameter or `webContents.getURL()` may inadvertently grant permissions to embedded third-party content.\n\nThe correct requesting URL remains available via `details.requestingUrl`. Apps that already check `details.requestingUrl` are not affected.\n\n### Workarounds\nIn your `setPermissionRequestHandler`, inspect `details.requestingUrl` rather than the origin parameter or `webContents.getURL()` when deciding whether to grant `fullscreen`, `pointerLock`, `keyboardLock`, `openExternal`, or `media` permissions.\n\n### Fixed Versions\n* `41.0.0`\n* `40.8.1`\n* `39.8.1`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:44:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Incorrect origin passed to permission request handler for iframe requests",
+    "UpdatedAt": "2026-04-03T02:44:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

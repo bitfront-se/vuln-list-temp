@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T03:45:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "dompurify"
+  },
+  "Advisory": {
+    "DatabaseId": 346815,
+    "Id": "GSA_kwCzR0hTQS1jajYzLWpoaHItd2N4ds4ABUq_",
+    "GhsaId": "GHSA-cj63-jhhr-wcxv",
+    "References": [
+      {
+        "Url": "https://github.com/cure53/DOMPurify/security/advisories/GHSA-cj63-jhhr-wcxv"
+      },
+      {
+        "Url": "https://github.com/cure53/DOMPurify/releases/tag/3.3.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cj63-jhhr-wcxv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cj63-jhhr-wcxv"
+      }
+    ],
+    "Description": "## Summary\nWhen `USE_PROFILES` is enabled, DOMPurify rebuilds `ALLOWED_ATTR` as a plain array before populating it with the requested allowlists. Because the sanitizer still looks up attributes via `ALLOWED_ATTR[lcName]`, any `Array.prototype` property that is polluted also counts as an allowlisted attribute. An attacker who can set `Array.prototype.onclick = true` (or a runtime already subject to prototype pollution) can thus force DOMPurify to keep event handlers such as `onclick` even when they are normally forbidden. The provided PoC sanitizes `\u003cimg onclick=...\u003e` with `USE_PROFILES` and adds the sanitized output to the DOM; the polluted prototype allows the event handler to survive and execute, turning what should be a blocklist into a silent XSS vector.\n\n## Impact\nPrototype pollution makes DOMPurify accept dangerous event handler attributes, which bypasses the sanitizer and results in DOM-based XSS once the sanitized markup is rendered.\n\n## Credits\nIdentified by Cantina’s Apex (https://www.cantina.security).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T03:45:08Z",
+    "Severity": "MODERATE",
+    "Summary": "DOMPurify USE_PROFILES prototype pollution allows event handlers",
+    "UpdatedAt": "2026-04-03T03:45:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.3.1"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T02:44:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346762,
+    "Id": "GSA_kwCzR0hTQS0zYzh2LWNmcDUtOTg4Nc4ABUqK",
+    "GhsaId": "GHSA-3c8v-cfp5-9885",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-3c8v-cfp5-9885"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3c8v-cfp5-9885"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3c8v-cfp5-9885"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34776"
+      }
+    ],
+    "Description": "### Impact\nOn macOS and Linux, apps that call `app.requestSingleInstanceLock()` were vulnerable to an out-of-bounds heap read when parsing a crafted second-instance message. Leaked memory could be delivered to the app's `second-instance` event handler.\n\nThis issue is limited to processes running as the same user as the Electron app.\n\nApps that do not call `app.requestSingleInstanceLock()` are not affected. Windows is not affected by this issue.\n\n### Workarounds\nThere are no app side workarounds, developers must update to a patched version of Electron.\n\n### Fixed Versions\n* `41.0.0`\n* `40.8.1`\n* `39.8.1`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:43:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Out-of-bounds read in second-instance IPC on macOS and Linux",
+    "UpdatedAt": "2026-04-03T02:44:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-03T03:29:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "better-auth"
+  },
+  "Advisory": {
+    "DatabaseId": 346803,
+    "Id": "GSA_kwCzR0hTQS14ZzZ4LWg5YzktMm04M84ABUqz",
+    "GhsaId": "GHSA-xg6x-h9c9-2m83",
+    "References": [
+      {
+        "Url": "https://github.com/better-auth/better-auth/security/advisories/GHSA-xg6x-h9c9-2m83"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xg6x-h9c9-2m83"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xg6x-h9c9-2m83"
+      }
+    ],
+    "Description": "### Summary\n\nUnder certain configurations, sessions may be considered valid before two-factor authentication (2FA) is fully completed. This can allow access to authenticated routes without verifying the second factor.\n\n---\n\n### Description\n\nWhen two-factor authentication is enabled, the authentication flow correctly identifies users who require additional verification and defers full authentication until the second factor is completed.\n\nHowever, when `session.cookieCache` is enabled, the session generated during the initial sign-in step may be cached as valid **prior to 2FA verification**. Subsequent session lookups may then return this cached session without re-evaluating the 2FA requirement.\n\nThis results in a situation where session validity can be established before all authentication constraints are satisfied.\n\n---\n\n### Impact\n\nAn attacker (or user) with valid primary credentials may gain access to protected application routes without completing the required second authentication factor.\n\nAny application using `better-auth` with both two-factor authentication and session cookie caching enabled may be affected.\n\n---\n\n### Mitigation\n\n* Upgrade to a version of `better-auth` that includes the fix for this issue.\n* Ensure that session caching does not treat sessions as fully authenticated until all required authentication steps, including 2FA, are completed.\n* As a temporary workaround, disable `session.cookieCache` when using two-factor authentication.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T03:29:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "Better Auth Has Two-Factor Authentication Bypass via Premature Session Caching (session.cookieCache)",
+    "UpdatedAt": "2026-04-03T03:29:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.9"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.9"
+    }
+  ]
+}

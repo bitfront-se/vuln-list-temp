@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T02:41:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346759,
+    "Id": "GSA_kwCzR0hTQS1td21oLW1xNGctZzZncs4ABUqH",
+    "GhsaId": "GHSA-mwmh-mq4g-g6gr",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-mwmh-mq4g-g6gr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mwmh-mq4g-g6gr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mwmh-mq4g-g6gr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34773"
+      }
+    ],
+    "Description": "### Impact\nOn Windows, `app.setAsDefaultProtocolClient(protocol)` did not validate the protocol name before writing to the registry. Apps that pass untrusted input as the protocol name may allow an attacker to write to arbitrary subkeys under `HKCU\\Software\\Classes\\`, potentially hijacking existing protocol handlers.\n\nApps are only affected if they call `app.setAsDefaultProtocolClient()` with a protocol name derived from external or untrusted input. Apps that use a hardcoded protocol name are not affected.\n\n### Workarounds\nValidate the protocol name matches `/^[a-zA-Z][a-zA-Z0-9+.-]*$/` before passing it to `app.setAsDefaultProtocolClient()`.\n\n### Fixed Versions\n* `41.0.0`\n* `40.8.1`\n* `39.8.1`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:41:52Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Registry key path injection in app.setAsDefaultProtocolClient on Windows",
+    "UpdatedAt": "2026-04-03T02:41:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

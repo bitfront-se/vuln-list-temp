@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-03T02:39:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346756,
+    "Id": "GSA_kwCzR0hTQS1qanAzLW1xM3gtMjk1bc4ABUqE",
+    "GhsaId": "GHSA-jjp3-mq3x-295m",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-jjp3-mq3x-295m"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jjp3-mq3x-295m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jjp3-mq3x-295m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34770"
+      }
+    ],
+    "Description": "### Impact\nApps that use the `powerMonitor` module may be vulnerable to a use-after-free. After the native `PowerMonitor` object is garbage-collected, the associated OS-level resources (a message window on Windows, a shutdown handler on macOS) retain dangling references. A subsequent session-change event (Windows) or system shutdown (macOS) dereferences freed memory, which may lead to a crash or memory corruption.\n\nAll apps that access `powerMonitor` events (`suspend`, `resume`, `lock-screen`, etc.) are potentially affected. The issue is not directly renderer-controllable.\n\n### Workarounds\nThere are no app side workarounds, you must update to a patched version of Electron.\n\n### Fixed Versions\n* `41.0.0-beta.8`\n* `40.8.0`\n* `39.8.1`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:39:52Z",
+    "Severity": "HIGH",
+    "Summary": "Electron: Use-after-free in PowerMonitor on Windows and macOS",
+    "UpdatedAt": "2026-04-03T02:39:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0-beta.8"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0-beta.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.0"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

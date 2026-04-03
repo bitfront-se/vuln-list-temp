@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T02:41:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346758,
+    "Id": "GSA_kwCzR0hTQS05dzk3LTI0NjQtODc4M84ABUqG",
+    "GhsaId": "GHSA-9w97-2464-8783",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-9w97-2464-8783"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9w97-2464-8783"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9w97-2464-8783"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34772"
+      }
+    ],
+    "Description": "### Impact\nApps that allow downloads and programmatically destroy sessions may be vulnerable to a use-after-free. If a session is torn down while a native save-file dialog is open for a download, dismissing the dialog dereferences freed memory, which may lead to a crash or memory corruption.\n\nApps that do not destroy sessions at runtime, or that do not permit downloads, are not affected.\n\n### Workarounds\nAvoid destroying sessions while a download save dialog may be open. Cancel pending downloads before session teardown.\n\n### Fixed Versions\n* `41.0.0-beta.7`\n* `40.7.0`\n* `39.8.0`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, please email [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:41:23Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Use-after-free in download save dialog callback",
+    "UpdatedAt": "2026-04-03T02:41:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0-beta.7"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0-beta.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.7.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.0"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}

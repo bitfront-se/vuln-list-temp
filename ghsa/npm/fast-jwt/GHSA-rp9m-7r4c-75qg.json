@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-03T04:07:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-jwt"
+  },
+  "Advisory": {
+    "DatabaseId": 346824,
+    "Id": "GSA_kwCzR0hTQS1ycDltLTdyNGMtNzVxZ84ABUrI",
+    "GhsaId": "GHSA-rp9m-7r4c-75qg",
+    "References": [
+      {
+        "Url": "https://github.com/nearform/fast-jwt/security/advisories/GHSA-rp9m-7r4c-75qg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rp9m-7r4c-75qg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rp9m-7r4c-75qg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35039"
+      }
+    ],
+    "Description": "## Impact\n\nSetting up a custom cacheKeyBuilder method which does not properly create unique keys for different tokens can lead to cache collisions. This could cause tokens to be mis-identified during the verification process leading to:\n\n- Valid tokens returning claims from different valid tokens\n- Users being mis-identified as other users based on the wrong token\n\nThis could result in:\n- User impersonation - UserB receives UserA's identity and permissions\n- Privilege escalation - Low-privilege users inherit admin-level access\n- Cross-tenant data access - Users gain access to other tenants' resources\n- Authorization bypass - Security decisions made on wrong user identity\n\n## Affected Configurations\n\nThis vulnerability ONLY affects applications that BOTH:\n\n1. Enable caching using the cache option\n2. Use custom cacheKeyBuilder functions that can produce collisions\n\nVULNERABLE examples:\n```\n// Collision-prone: same audience = same cache key\ncacheKeyBuilder: (token) =\u003e {\n  const { aud } = parseToken(token)\n  return `aud=${aud}`\n}\n\n// Collision-prone: grouping by user type\ncacheKeyBuilder: (token) =\u003e {\n  const { aud } = parseToken(token)\n  return aud.includes('admin') ? 'admin-users' : 'regular-users'\n}\n\n// Collision-prone: tenant + service grouping\ncacheKeyBuilder: (token) =\u003e {\n  const { iss, aud } = parseToken(token)\n  return `${iss}-${aud}`\n}\n```\n\nSAFE examples:\n```\n// Default hash-based (recommended)\ncreateVerifier({ cache: true })  // Uses secure default\n\n// Include unique user identifier\ncacheKeyBuilder: (token) =\u003e {\n  const { sub, aud, iat } = parseToken(token)\n  return `${sub}-${aud}-${iat}`\n}\n\n// No caching (always safe)\ncreateVerifier({ cache: false })\n```\n### Not Affected\n\n- Applications using **default caching**\n- Applications with **caching disabled**\n \n## Assessment Guide\n\nTo determine if a consumer application is affected:\n\n1. Check if caching is enabled: Look for cache: true or cache: \u003cnumber\u003e in verifier configuration\n2. Check for custom cache key builders: Look for cacheKeyBuilder function in configuration\n3. Analyze collision potential: Review if the application's cacheKeyBuilder can produce identical keys for different users/tokens\n4. If no custom cacheKeyBuilder: The project is NOT affected (default is safe)\n\n## Mitigations\n\nWhile fast-jwt will look to include a fix for this in the next version, immediate mitigations include:\n\n- Ensure uniqueness of keys produced in cacheKeyBuilder\n- Remove custom cacheKeyBuilder method\n- Disable caching",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T04:07:09Z",
+    "Severity": "CRITICAL",
+    "Summary": "fast-jwt: Cache Confusion via cacheKeyBuilder Collisions Can Return Claims From a Different Token (Identity/Authorization Mixup)",
+    "UpdatedAt": "2026-04-03T04:07:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.0.1, \u003c 6.1.0"
+    }
+  ]
+}

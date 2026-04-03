@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-03T02:38:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346754,
+    "Id": "GSA_kwCzR0hTQS1qZnF4LWZ4aDMtYzYyas4ABUqC",
+    "GhsaId": "GHSA-jfqx-fxh3-c62j",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-jfqx-fxh3-c62j"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jfqx-fxh3-c62j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jfqx-fxh3-c62j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34768"
+      }
+    ],
+    "Description": "### Impact\nOn Windows, `app.setLoginItemSettings({openAtLogin: true})` wrote the executable path to the `Run` registry key without quoting. If the app is installed to a path containing spaces, an attacker with write access to an ancestor directory may be able to cause a different executable to run at login instead of the intended app.\n\nOn a default Windows install, standard system directories are protected against writes by standard users, so exploitation typically requires a non-standard install location.\n\n### Workarounds\nInstall the application to a path without spaces, or to a location where all ancestor directories are protected against unauthorized writes.\n\n### Fixed Versions\n* `41.0.0-beta.8`\n* `40.8.0`\n* `39.8.1`\n* `38.8.6`\n\n### For more information\nIf there are any questions or comments about this advisory, send an email to [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T02:38:08Z",
+    "Severity": "LOW",
+    "Summary": "Electron: Unquoted executable path in app.setLoginItemSettings on Windows",
+    "UpdatedAt": "2026-04-03T02:38:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.9,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0-beta.8"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.0.0-beta.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.0"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0-alpha.1, \u003c 39.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.8.6"
+      },
+      "VulnerableVersionRange": "\u003c 38.8.6"
+    }
+  ]
+}
