@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-03T21:59:52Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 347000,
+    "Id": "GSA_kwCzR0hTQS1qamhjLXY3YzItNWhoNs4ABUt4",
+    "GhsaId": "GHSA-jjhc-v7c2-5hh6",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-jjhc-v7c2-5hh6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jjhc-v7c2-5hh6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jjhc-v7c2-5hh6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35030"
+      }
+    ],
+    "Description": "###  Impact\n\nWhen JWT authentication is enabled (`enable_jwt_auth: true`), the OIDC userinfo cache uses `token[:20]` as the cache key. JWT headers produced by the same signing algorithm generate identical first 20 characters.\n\nThis configuration option is not enabled by default. **Most instances are not affected.**\n\nAn unauthenticated attacker can craft a token whose first 20 characters match a legitimate user's cached token. On cache hit, the attacker inherits the legitimate user's identity and permissions. This affects deployments with JWT/OIDC authentication enabled.\n\n###  Patches\n\nFixed in v1.83.0. The cache key now uses the full hash of the JWT token.\n\n###  Workarounds\n\nDisable OIDC userinfo caching by setting the cache TTL to 0, or disable JWT authentication entirely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T21:59:50Z",
+    "Severity": "CRITICAL",
+    "Summary": "LiteLLM: Authentication bypass via OIDC userinfo cache key collision",
+    "UpdatedAt": "2026-04-03T21:59:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.83.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.83.0"
+    }
+  ]
+}

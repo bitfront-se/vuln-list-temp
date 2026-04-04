@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-03T21:53:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@budibase/server"
+  },
+  "Advisory": {
+    "DatabaseId": 346995,
+    "Id": "GSA_kwCzR0hTQS1nanc5LTM0Z2YtcnA2bc4ABUtz",
+    "GhsaId": "GHSA-gjw9-34gf-rp6m",
+    "References": [
+      {
+        "Url": "https://github.com/Budibase/budibase/security/advisories/GHSA-gjw9-34gf-rp6m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25044"
+      },
+      {
+        "Url": "https://github.com/Budibase/budibase/releases/tag/3.33.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gjw9-34gf-rp6m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gjw9-34gf-rp6m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25044"
+      }
+    ],
+    "Description": "**Location**: `packages/server/src/automations/steps/bash.ts`  \n\n#### Description\nThe bash automation step executes user-provided commands using `execSync` without proper sanitization or validation. User input is processed through `processStringSync` which allows template interpolation, potentially allowing arbitrary command execution.\n\n#### Code Reference\n```21:28:packages/server/src/automations/steps/bash.ts\n    const command = processStringSync(inputs.code, context)\n\n    let stdout,\n      success = true\n    try {\n      stdout = execSync(command, {\n        timeout: environment.QUERY_THREAD_TIMEOUT,\n      }).toString()\n```\n\n#### Attack Vector\nAn attacker with access to create or modify automations can inject malicious shell commands by including template syntax that evaluates to command injection payloads (e.g., `$(rm -rf /)`, `; malicious-command`, `| malicious-command`).\n\n#### Impact\n- Remote code execution (RCE)\n- Complete system compromise\n- Data exfiltration\n- Lateral movement within the infrastructure\n\n#### Recommendation\n1. **Immediate**: Disable bash automation step in production until fixed\n2. Implement a whitelist of allowed commands\n3. Use parameterized command execution with proper escaping\n4. Implement command argument validation\n5. Consider using a restricted shell or command sandboxing\n6. Add rate limiting and monitoring for command execution\n\n#### Example Fix\n```typescript\nimport { spawn } from \"child_process\"\n\n// Validate against whitelist\nconst ALLOWED_COMMANDS = [\"echo\", \"date\", \"pwd\"] // Extend as needed\n\nfunction sanitizeCommand(input: string): string {\n  // Remove dangerous characters and command chaining\n  return input.replace(/[;\u0026|`$(){}[\\]]/g, \"\").trim()\n}\n\nfunction validateCommand(cmd: string): boolean {\n  const parts = cmd.split(/\\s+/)\n  return ALLOWED_COMMANDS.includes(parts[0])\n}\n\nexport async function run({ inputs, context }) {\n  if (!inputs.code) {\n    return { stdout: \"Budibase bash automation failed: Invalid inputs\" }\n  }\n\n  const processedCommand = processStringSync(inputs.code, context)\n  const sanitized = sanitizeCommand(processedCommand)\n  \n  if (!validateCommand(sanitized)) {\n    return {\n      success: false,\n      stdout: \"Command not allowed\"\n    }\n  }\n\n  // Use spawn instead of execSync with proper argument handling\n  return new Promise((resolve) =\u003e {\n    const [command, ...args] = sanitized.split(/\\s+/)\n    const proc = spawn(command, args, {\n      timeout: environment.QUERY_THREAD_TIMEOUT,\n    })\n    \n    let stdout = \"\"\n    proc.stdout.on(\"data\", (data) =\u003e { stdout += data })\n    proc.on(\"close\", (code) =\u003e {\n      resolve({ stdout, success: code === 0 })\n    })\n  })\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T21:53:32Z",
+    "Severity": "HIGH",
+    "Summary": "Budibase: Command Injection in Bash Automation Step",
+    "UpdatedAt": "2026-04-03T21:53:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.33.4"
+      },
+      "VulnerableVersionRange": "\u003c 3.33.4"
+    }
+  ]
+}

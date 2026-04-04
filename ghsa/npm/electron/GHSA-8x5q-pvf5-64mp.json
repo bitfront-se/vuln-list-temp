@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-03T21:52:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 346994,
+    "Id": "GSA_kwCzR0hTQS04eDVxLXB2ZjUtNjRtcM4ABUty",
+    "GhsaId": "GHSA-8x5q-pvf5-64mp",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-8x5q-pvf5-64mp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8x5q-pvf5-64mp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8x5q-pvf5-64mp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34764"
+      }
+    ],
+    "Description": "### Impact\nApps that use offscreen rendering with GPU shared textures may be vulnerable to a use-after-free. Under certain conditions, the `release()` callback provided on a `paint` event texture can outlive its backing native state, and invoking it after that point dereferences freed memory in the main process, which may lead to a crash or memory corruption.\n\nApps are only affected if they use offscreen rendering with `webPreferences.offscreen: { useSharedTexture: true }`. Apps that do not enable shared-texture offscreen rendering are not affected.\n\n### Workarounds\nEnsure `texture.release()` is called promptly after the texture has been consumed, before the texture object becomes unreachable.\n\n### Fixed Versions\n* `42.0.0-alpha.5`\n* `41.1.0`\n* `40.8.5`\n* `39.8.5`\n\n### For more information\nIf there are any questions or comments about this advisory, send an email to [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T21:52:33Z",
+    "Severity": "LOW",
+    "Summary": "Electron: Use-after-free in offscreen shared texture release() callback",
+    "UpdatedAt": "2026-04-03T21:52:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-alpha.5"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-alpha.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.5"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.5"
+      },
+      "VulnerableVersionRange": "\u003e= 33.0.0-alpha.1, \u003c 39.8.5"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-03T22:01:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-jwt"
+  },
+  "Advisory": {
+    "DatabaseId": 347001,
+    "Id": "GSA_kwCzR0hTQS1obTdyLWM3cXctZ2hwNs4ABUt5",
+    "GhsaId": "GHSA-hm7r-c7qw-ghp6",
+    "References": [
+      {
+        "Url": "https://github.com/nearform/fast-jwt/security/advisories/GHSA-hm7r-c7qw-ghp6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9ggr-2464-2j32"
+      },
+      {
+        "Url": "https://www.rfc-editor.org/rfc/rfc7515.html#section-4.1.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hm7r-c7qw-ghp6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hm7r-c7qw-ghp6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35042"
+      }
+    ],
+    "Description": "## Summary\n\n`fast-jwt` does not validate the `crit` (Critical) Header Parameter defined in RFC 7515 §4.1.11. When a JWS token contains a `crit` array listing extensions that `fast-jwt` does not understand, the library accepts the token instead of rejecting it. This violates the **MUST** requirement in the RFC.\n\n---\n\n## RFC Requirement\n\nRFC 7515 §4.1.11:\n\n\u003e If any of the listed extension Header Parameters are **not understood\n\u003e and supported** by the recipient, then the **JWS is invalid**.\n\n---\n\n## Proof of Concept\n\n```javascript\nconst { createSigner, createVerifier } = require(\"fast-jwt\"); // v3.3.3\n\nconst signer = createSigner({ key: \"secret\", algorithm: \"HS256\" });\nconst token = signer({\n  sub: \"attacker\",\n  role: \"admin\",\n  header: { crit: [\"x-custom-policy\"], \"x-custom-policy\": \"require-mfa\" },\n});\n\n// Should REJECT — x-custom-policy is not understood\nconst verifier = createVerifier({ key: \"secret\", algorithms: [\"HS256\"] });\ntry {\n  const result = verifier(token);\n  console.log(\"ACCEPTED:\", result);\n  // Output: ACCEPTED: { sub: 'attacker', role: 'admin' }\n} catch (e) {\n  console.log(\"REJECTED:\", e.message);\n}\n```\n\n**Expected:** Error — unsupported critical extension\n**Actual:** Token accepted.\n\n### Comparison\n\n```javascript\n// jose (panva) v4+ — correctly rejects\nconst jose = require(\"jose\");\nawait jose.jwtVerify(token, new TextEncoder().encode(\"secret\"));\n// throws: Extension Header Parameter \"x-custom-policy\" is not recognized\n```\n\n---\n\n## Impact\n\n- **Split-brain verification** in mixed-library environments\n- **Security policy bypass** when `crit` carries enforcement semantics\n- **Token binding bypass** (RFC 7800 `cnf` confirmation)\n- See CVE-2025-59420 for full impact analysis\n\n---\n\n## Suggested Fix\n\nIn `src/verifier.js`, add crit validation after header decoding:\n\n```javascript\nconst SUPPORTED_CRIT = new Set([\"b64\"]);\n\nfunction validateCrit(header) {\n  if (!header.crit) return;\n  if (!Array.isArray(header.crit) || header.crit.length === 0)\n    throw new Error(\"crit must be a non-empty array\");\n  for (const ext of header.crit) {\n    if (!SUPPORTED_CRIT.has(ext))\n      throw new Error(`Unsupported critical extension: ${ext}`);\n    if (!(ext in header))\n      throw new Error(`Critical extension ${ext} not present in header`);\n  }\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T22:01:25Z",
+    "Severity": "HIGH",
+    "Summary": "fast-jwt accepts unknown `crit` header extensions (RFC 7515 violation)",
+    "UpdatedAt": "2026-04-03T22:01:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 6.1.0"
+    }
+  ]
+}

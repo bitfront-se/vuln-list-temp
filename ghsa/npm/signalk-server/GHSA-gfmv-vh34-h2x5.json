@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-03T21:42:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "signalk-server"
+  },
+  "Advisory": {
+    "DatabaseId": 346984,
+    "Id": "GSA_kwCzR0hTQS1nZm12LXZoMzQtaDJ4Nc4ABUto",
+    "GhsaId": "GHSA-gfmv-vh34-h2x5",
+    "References": [
+      {
+        "Url": "https://github.com/SignalK/signalk-server/security/advisories/GHSA-gfmv-vh34-h2x5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33951"
+      },
+      {
+        "Url": "https://github.com/SignalK/signalk-server/releases/tag/v2.24.0-beta.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gfmv-vh34-h2x5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gfmv-vh34-h2x5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33951"
+      }
+    ],
+    "Description": "## Summary\n\nThe SignalK Server exposes an unauthenticated HTTP endpoint that allows remote attackers to modify navigation data source priorities. This endpoint, accessible via `PUT /signalk/v1/api/sourcePriorities`, does not enforce authentication or authorization checks and directly assigns user-controlled input to the server configuration.\n\nAs a result, attackers can influence which GPS, AIS, or other sensor data sources are trusted by the system. The changes are immediately applied and persisted to disk, allowing the manipulation to survive server restarts.\n\n### Affected Component\n- **File**: `src/serverroutes.ts`\n- **Endpoint**: `PUT /signalk/v1/api/sourcePriorities` (also accessible at `/skServer/sourcePriorities`)\n- **Lines**: 1064-1076\n- **Function**: Source priorities configuration handler\n\n### Vulnerable Code\n\n```typescript\n// src/serverroutes.ts - Lines 1064-1076\napp.put(\n  `${SERVERROUTESPREFIX}/sourcePriorities`,\n  (req: Request, res: Response) =\u003e {\n    app.config.settings.sourcePriorities = req.body\n    app.activateSourcePriorities()\n    writeSettingsFile(app, app.config.settings, (err: any) =\u003e {\n      if (err) {\n        res\n          .status(500)\n          .send('Unable to save to sourcePrefences in settings file')\n      } else {\n        res.json({ result: 'ok' })\n      }\n    })\n  }\n)\n```\n## Vulnerability Characteristics\n\n**Missing Authentication**: The endpoint has zero authentication middleware, allowing unauthenticated access from any network-adjacent attacker.\n\n**Direct Configuration Assignment**: User-supplied request body is directly assigned to app.config.settings.sourcePriorities without validation or sanitization.\n\n**Persistent Storage**: Malicious configuration is written to disk via writeSettingsFile(), ensuring changes survive server restarts.\n**Live Configuration Update**: Changes take effect immediately via activateSourcePriorities(), affecting live navigation data processing.\n\n**No Input Validation**: No JSON schema validation, type checking, or field allowlisting is performed on the request body.\n\n## Impact\n- **Navigation Data Manipulation**: Attackers can modify source priorities to change which existing, active source's data is being used",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T21:42:11Z",
+    "Severity": "MODERATE",
+    "Summary": "Signal K Server: Unauthenticated Source Priorities Manipulation ",
+    "UpdatedAt": "2026-04-03T21:42:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.24.0-beta.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.24.0-beta.1"
+    }
+  ]
+}

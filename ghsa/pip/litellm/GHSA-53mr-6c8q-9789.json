@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-03T21:59:32Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 346999,
+    "Id": "GSA_kwCzR0hTQS01M21yLTZjOHEtOTc4Oc4ABUt3",
+    "GhsaId": "GHSA-53mr-6c8q-9789",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-53mr-6c8q-9789"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-53mr-6c8q-9789"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-53mr-6c8q-9789"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35029"
+      }
+    ],
+    "Description": "### Impact\n\nThe `/config/update endpoint` does not enforce admin role authorization. A user who is already authenticated into the platform can then use this endpoint to do the following:\n\n  - Modify proxy configuration and environment variables\n  - Register custom pass-through endpoint handlers pointing to attacker-controlled Python code, achieving remote code execution\n  - Read arbitrary server files by setting UI_LOGO_PATH and fetching via /get_image\n  - Take over other priveleged accounts by overwriting UI_USERNAME and UI_PASSWORD environment variables\n\n### Patches\n\nFixed in v1.83.0. The endpoint now requires `proxy_admin` role.\n\n### Workarounds\n\nRestrict API key distribution. There is no configuration-level workaround.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T21:59:31Z",
+    "Severity": "HIGH",
+    "Summary": "LiteLLM: Privilege escalation via unrestricted proxy configuration endpoint",
+    "UpdatedAt": "2026-04-03T21:59:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.83.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.83.0"
+    }
+  ]
+}
