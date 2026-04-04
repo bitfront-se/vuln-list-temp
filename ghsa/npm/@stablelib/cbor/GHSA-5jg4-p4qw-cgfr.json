@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-04T05:33:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@stablelib/cbor"
+  },
+  "Advisory": {
+    "DatabaseId": 347025,
+    "Id": "GSA_kwCzR0hTQS01amc0LXA0cXctY2dmcs4ABUuR",
+    "GhsaId": "GHSA-5jg4-p4qw-cgfr",
+    "References": [
+      {
+        "Url": "https://github.com/StableLib/stablelib/security/advisories/GHSA-5jg4-p4qw-cgfr"
+      },
+      {
+        "Url": "https://github.com/StableLib/stablelib/commit/0149e18d9d4736e22c257744ca945ebce7899a01"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5jg4-p4qw-cgfr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5jg4-p4qw-cgfr"
+      }
+    ],
+    "Description": "### Summary\n\n`@stablelib/cbor` decodes nested CBOR structures recursively and does not enforce a maximum nesting depth. A sufficiently deep attacker-controlled CBOR payload can therefore crash decoding with `RangeError: Maximum call stack size exceeded`.\n\n### Details\n\nThe decoder processes arrays, maps, and tagged values through recursive calls. Each nested container causes another descent into `_decodeValue()` until a leaf value is reached.\n\nThere is no depth limit, no iterative fallback, and no protection against pathological nesting. An attacker can therefore supply a payload made of thousands of nested arrays, maps, or tags and force the decoder to recurse until the JavaScript call stack is exhausted.\n\n### PoC\n\n```js\nimport { decode } from \"@stablelib/cbor\";\n\nconst depth = 12000;\nconst payload = new Uint8Array(depth + 1);\n\n// Build [[[...[null]...]]]\npayload.fill(0x81, 0, depth); // array(1)\npayload[depth] = 0xf6;        // null\n\ndecode(payload);\n// RangeError: Maximum call stack size exceeded\n```\n\n### Impact\n\nAny application that decodes attacker-controlled CBOR can be forced into a reliable denial of service with a single crafted payload.\n\nThe immediate result is an exception during decoding. In services that do not catch that exception safely, the request fails and the worker or process handling the decode may terminate.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T05:33:09Z",
+    "Severity": "HIGH",
+    "Summary": "@stablelib/cbor: Stack exhaustion Denial of Service via deeply nested CBOR arrays, maps, or tags",
+    "UpdatedAt": "2026-04-04T05:33:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.3"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.3"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-04T06:14:44Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "lightrag-hku"
+  },
+  "Advisory": {
+    "DatabaseId": 347043,
+    "Id": "GSA_kwCzR0hTQS1tY3d3LTRoeHEtaGZyM84ABUuj",
+    "GhsaId": "GHSA-mcww-4hxq-hfr3",
+    "References": [
+      {
+        "Url": "https://github.com/HKUDS/LightRAG/security/advisories/GHSA-mcww-4hxq-hfr3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mcww-4hxq-hfr3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mcww-4hxq-hfr3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-30762"
+      }
+    ],
+    "Description": "Summary:\nThe file lightrag/api/config.py (line 397) uses a default JWT secret \"lightrag-jwt-default-secret\" when the TOKEN_SECRET environment variable is not set. The AuthHandler in lightrag/api/auth.py (lines 24-25) uses this secret to sign and verify tokens. An unauthenticated attacker can forge valid JWT tokens using the publicly known default secret and gain access to any protected endpoint.\n\nReproduction:\n1. Install LightRAG v1.4.10 with AUTH_ACCOUNTS configured but no TOKEN_SECRET set\n2. Use PyJWT to sign a token: jwt.encode({\"sub\": \"admin\", \"role\": \"user\"}, \"lightrag-jwt-default-secret\", algorithm=\"HS256\")\n3. Send a request to any protected endpoint with the header: Authorization: Bearer \u003cforged_token\u003e\n4. Access is granted without valid credentials\n\nSuggested Fix:\nRequire TOKEN_SECRET to be explicitly set when AUTH_ACCOUNTS is configured. Refuse to start the API server if authentication is enabled but no custom secret is provided.\n\n---\nVenkata Avinash Taduturi\ntaduturivenkata@gmail.com",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:14:41Z",
+    "Severity": "HIGH",
+    "Summary": "LightRAG: Hardcoded JWT Signing Secret Allows Authentication Bypass",
+    "UpdatedAt": "2026-04-04T06:14:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.13"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.12"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-04T05:32:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mflow"
+  },
+  "Advisory": {
+    "DatabaseId": 346104,
+    "Id": "GSA_kwCzR0hTQS1ydmhqLThjaGotOHYzY84ABUf4",
+    "GhsaId": "GHSA-rvhj-8chj-8v3c",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0596"
+      },
+      {
+        "Url": "https://huntr.com/bounties/2e905add-f9f5-4309-a3db-b17de5981285"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/pull/19738"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/commit/202fac4c83ccc8544c087c142b80196d0e60695c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rvhj-8chj-8v3c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rvhj-8chj-8v3c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-0596"
+      }
+    ],
+    "Description": "A command injection vulnerability exists in Mflow when serving a model with `enable_mlserver=True`. The `model_uri` is embedded directly into a shell command executed via `bash -c` without proper sanitization. If the `model_uri` contains shell metacharacters, such as `$()` or backticks, it allows for command substitution and execution of attacker-controlled commands. This vulnerability affects the latest version of mlflow/mlflow and can lead to privilege escalation if a higher-privileged service serves models from a directory writable by lower-privileged users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-03-31T15:31:56Z",
+    "Severity": "CRITICAL",
+    "Summary": "Mflow: Command Injection when serving models with enable_mlserver=True",
+    "UpdatedAt": "2026-04-04T05:32:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.0/AV:A/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.9.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.9.0"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-04T06:10:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "directus"
+  },
+  "Advisory": {
+    "DatabaseId": 347037,
+    "Id": "GSA_kwCzR0hTQS13djNoLTVmeDctOTY2aM4ABUud",
+    "GhsaId": "GHSA-wv3h-5fx7-966h",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-wv3h-5fx7-966h"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wv3h-5fx7-966h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wv3h-5fx7-966h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35409"
+      }
+    ],
+    "Description": "### Summary\nA Server-Side Request Forgery (SSRF) protection bypass has been identified and fixed in Directus. The IP address validation mechanism used to block requests to local and private networks could be circumvented using IPv4-Mapped IPv6 address notation.\n\n### Details\nDirectus implements an IP deny-list to prevent server-side requests to internal/private network ranges. The validation logic failed to normalize IPv4-Mapped IPv6 addresses (e.g., the IPv6 representation of `127.0.0.1`) before checking them against the deny-list. Because the deny-list check did not recognize these mapped addresses as equivalent to their IPv4 counterparts, an attacker could bypass the restriction while the underlying HTTP client and operating system still resolved and connected to the intended private target.\n\nThis has been fixed by adding a normalization step that converts IPv4-Mapped IPv6 addresses to their canonical IPv4 form prior to validation.\n\n### Impact\nAn authenticated user (or an unauthenticated user if public file-import permissions are enabled) could exploit this bypass to perform SSRF attacks against internal services on the same host (databases, caches, internal APIs) or cloud instance metadata endpoints (e.g., AWS/GCP/Azure IMDS).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:10:53Z",
+    "Severity": "HIGH",
+    "Summary": "Directus: SSRF Protection Bypass via IPv4-Mapped IPv6 Addresses in File Import",
+    "UpdatedAt": "2026-04-04T06:10:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.0"
+      },
+      "VulnerableVersionRange": "\u003c 11.16.0"
+    }
+  ]
+}

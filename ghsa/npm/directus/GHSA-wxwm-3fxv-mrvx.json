@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-04T06:10:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "directus"
+  },
+  "Advisory": {
+    "DatabaseId": 347036,
+    "Id": "GSA_kwCzR0hTQS13eHdtLTNmeHYtbXJ2eM4ABUuc",
+    "GhsaId": "GHSA-wxwm-3fxv-mrvx",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-wxwm-3fxv-mrvx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wxwm-3fxv-mrvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wxwm-3fxv-mrvx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35413"
+      }
+    ],
+    "Description": "## Summary\n\nWhen `GRAPHQL_INTROSPECTION=false` is configured, Directus correctly blocks standard GraphQL introspection queries (`__schema`, `__type`). However, the `server_specs_graphql` resolver on the `/graphql/system` endpoint returns an equivalent SDL representation of the schema and was not subject to the same restriction. This allowed the introspection control to be bypassed, exposing schema structure (collection names, field names, types, and relationships) to unauthenticated users at the public permission level, and to authenticated users at their permitted permission level.\n\n## Impact\n\nAdministrators who set `GRAPHQL_INTROSPECTION=false` to hide schema structure from clients would have had a false sense of security, as equivalent schema information remained accessible via the SDL endpoint without authentication.\n\n## Credit\n\nThis vulnerability was discovered and reported by [bugbunny.ai](https://bugbunny.ai).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:10:27Z",
+    "Severity": "MODERATE",
+    "Summary": "Directus: GraphQL Schema SDL Disclosure Setting",
+    "UpdatedAt": "2026-04-04T06:10:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.1"
+      },
+      "VulnerableVersionRange": "\u003c 11.16.1"
+    }
+  ]
+}

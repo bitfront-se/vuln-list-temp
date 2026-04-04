@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-04T06:09:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "directus"
+  },
+  "Advisory": {
+    "DatabaseId": 347035,
+    "Id": "GSA_kwCzR0hTQS1jZjQ1LWh4d2otNGNmas4ABUub",
+    "GhsaId": "GHSA-cf45-hxwj-4cfj",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-cf45-hxwj-4cfj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cf45-hxwj-4cfj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cf45-hxwj-4cfj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35410"
+      }
+    ],
+    "Description": "### Summary\n\nAn open redirect vulnerability exists in the login redirection logic. The `isLoginRedirectAllowed` function fails to correctly identify certain malformed URLs as external, allowing attackers to bypass redirect allow-list validation and redirect users to arbitrary external domains upon successful authentication.\n\n### Details\n\nA parser differential exists between the server-side URL validation logic and how modern browsers interpret URL path segments containing backslashes. Specifically, certain URL patterns are incorrectly classified as safe relative paths by the server, but are normalized by browsers into external domain references.\n\nThis is particularly impactful in SSO authentication flows (e.g., OAuth2 providers), where an attacker can craft a login URL that redirects the victim to an attacker-controlled site immediately after successful authentication, without any visible indication during the login process.\n\n### Impact\n\n- **Phishing:** Users may be silently redirected to attacker-controlled sites impersonating legitimate services after authenticating.\n- **Credential/token theft:** The redirect can be chained to capture OAuth tokens or authorization codes.\n- **Trust erosion:** Users lose confidence in the application after being redirected to unexpected domains post-login.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:09:55Z",
+    "Severity": "MODERATE",
+    "Summary": "Directus: Open Redirect via Parser Bypass in OAuth2/SAML Authentication Flow",
+    "UpdatedAt": "2026-04-04T06:09:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.1"
+      },
+      "VulnerableVersionRange": "\u003c 11.16.1"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-04T06:08:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "directus"
+  },
+  "Advisory": {
+    "DatabaseId": 347034,
+    "Id": "GSA_kwCzR0hTQS1xNzVjLTRnbXYtbWc5eM4ABUua",
+    "GhsaId": "GHSA-q75c-4gmv-mg9x",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-q75c-4gmv-mg9x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q75c-4gmv-mg9x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q75c-4gmv-mg9x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35411"
+      }
+    ],
+    "Description": "### Summary\n\nDirectus is vulnerable to an Open Redirect via the redirect query parameter on the `/admin/tfa-setup` page. When an administrator who has not yet configured Two-Factor Authentication (2FA) visits a crafted URL, they are presented with the legitimate Directus 2FA setup page. After completing the setup process, the application redirects the user to the attacker-controlled URL specified in the `redirect` parameter without any validation.\n\nThis vulnerability could be used in phishing attacks targeting Directus administrators, as the initial interaction occurs on a trusted domain.\n\n### Credits\nDiscovered by Neo by ProjectDiscovery (https://neo.projectdiscovery.io/)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:08:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Directus: Open Redirect in Admin 2FA Setup Page",
+    "UpdatedAt": "2026-04-04T06:08:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.1"
+      },
+      "VulnerableVersionRange": "\u003c 11.16.1"
+    }
+  ]
+}

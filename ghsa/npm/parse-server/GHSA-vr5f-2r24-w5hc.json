@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-04T04:22:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 347022,
+    "Id": "GSA_kwCzR0hTQS12cjVmLTJyMjQtdzVoY84ABUuO",
+    "GhsaId": "GHSA-vr5f-2r24-w5hc",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-vr5f-2r24-w5hc"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10383"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10384"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vr5f-2r24-w5hc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vr5f-2r24-w5hc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35200"
+      }
+    ],
+    "Description": "### Impact\n\nA file can be uploaded with a filename extension that passes the file extension allowlist (e.g., `.txt`) but with a `Content-Type` header that differs from the extension (e.g., `text/html`). The `Content-Type` is passed to the storage adapter without consistency validation. Storage adapters that store and serve the provided Content-Type (such as S3 or GCS) serve the file with the mismatched Content-Type. The default GridFS adapter is not affected because it derives Content-Type from the filename at serving time.\n\n### Patches\n\nThe file upload now derives the Content-Type from the filename extension, overriding any user-provided Content-Type when the file has an extension.\n\n### Workarounds\n\nConfigure the storage adapter or CDN to derive Content-Type from the filename extension instead of using the stored Content-Type.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T04:22:11Z",
+    "Severity": "LOW",
+    "Summary": "Parse Server: File upload Content-Type override via extension mismatch",
+    "UpdatedAt": "2026-04-04T04:22:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.73"
+      },
+      "VulnerableVersionRange": "\u003c= 8.6.72"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.7.1-alpha.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.7.1-alpha.4"
+    }
+  ]
+}

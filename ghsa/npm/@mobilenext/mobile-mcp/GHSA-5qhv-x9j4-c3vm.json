@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-04T05:37:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@mobilenext/mobile-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 347026,
+    "Id": "GSA_kwCzR0hTQS01cWh2LXg5ajQtYzN2bc4ABUuS",
+    "GhsaId": "GHSA-5qhv-x9j4-c3vm",
+    "References": [
+      {
+        "Url": "https://github.com/mobile-next/mobile-mcp/security/advisories/GHSA-5qhv-x9j4-c3vm"
+      },
+      {
+        "Url": "https://github.com/mobile-next/mobile-mcp/pull/299"
+      },
+      {
+        "Url": "https://github.com/mobile-next/mobile-mcp/releases/tag/0.0.50"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5qhv-x9j4-c3vm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5qhv-x9j4-c3vm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35394"
+      }
+    ],
+    "Description": "### Summary\n\nThe `mobile_open_url` tool in mobile-mcp passes user-supplied URLs directly to Android's intent system without any scheme validation, allowing execution of arbitrary Android intents, including USSD codes, phone calls, SMS messages, and content provider access.\n\n### Details\n\nThe vulnerable code passes URLs directly to `adb shell am start -a android.intent.action.VIEW -d \u003curl\u003e` without checking the URL scheme. This can enable malicious schemes such as `tel:`, `sms:`, `mailto:`, `content://`, and `market://` to be executed.\n\nSince MCP servers are designed to be operated by AI agents, which are vulnerable to prompt injection attacks, a malicious document or website could inject instructions that cause the AI to execute dangerous intents on a connected mobile device.\n\n### Impact\n\nAn attacker via prompt injection can:\n- Execute USSD codes (e.g., `tel:*#06#` to display IMEI - confirmed on Pixel 7a, behavior varies by device; or device-specific factory reset codes)\n- Initiate phone calls to premium rate numbers\n- Draft SMS messages with attacker-controlled content\n- Access content providers (contacts, SMS, call logs)\n- Open app installation prompts\n\n### Proof of Concept\n```json\n{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"mobile_open_url\",\"arguments\":{\"device\":\"\u003cid\u003e\",\"url\":\"tel:*#06#\"}}}\n```\n\nResult: IMEI displayed on device.\n```json\n{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"mobile_open_url\",\"arguments\":{\"device\":\"\u003cid\u003e\",\"url\":\"sms:1234567890?body=HACKED\"}}}\n```\n\nResult: SMS app opens with a pre-filled message.\n\n### Remediation\n\nUpgrade to version 0.0.50 or later, which restricts `mobile_open_url` to `http://` and `https://` schemes by default. Users who require other URL schemes can opt in by setting `MOBILEMCP_ALLOW_UNSAFE_URLS=1`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T05:37:10Z",
+    "Severity": "HIGH",
+    "Summary": "@mobilenext/mobile-mcp: Arbitrary Android Intent Execution via mobile_open_url",
+    "UpdatedAt": "2026-04-04T05:37:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.50"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.50"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-04T06:11:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "directus"
+  },
+  "Advisory": {
+    "DatabaseId": 347038,
+    "Id": "GSA_kwCzR0hTQS1xcW12LTVwM2ctcHg4Oc4ABUue",
+    "GhsaId": "GHSA-qqmv-5p3g-px89",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-qqmv-5p3g-px89"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qqmv-5p3g-px89"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qqmv-5p3g-px89"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35412"
+      }
+    ],
+    "Description": "## Summary\n\nDirectus' TUS resumable upload endpoint (`/files/tus`) allows any authenticated user with basic file upload permissions to overwrite arbitrary existing files by UUID. The TUS controller performs only collection-level authorization checks, verifying the user has some permission on `directus_files`, but never validates item-level access to the specific file being replaced. As a result, row-level permission rules (e.g., \"users can only update their own files\") are completely bypassed via the TUS path while being correctly enforced on the standard REST upload path.\n\n## Impact\n\n- **Arbitrary file overwrite:** Any authenticated user with basic TUS upload permissions can overwrite any file in `directus_files` by UUID, regardless of row-level permission rules.\n- **Permanent data loss:** The victim file's original stored bytes are deleted from storage and replaced with attacker-controlled content.\n- **Metadata corruption:** The victim file's database record is updated with the attacker's filename, type, and size metadata.\nPrivilege escalation potential: If admin-owned files (e.g., application assets, templates) are stored in `directus_files`, a low-privilege user could replace them with malicious content.\n\n## Workaround\n\nDisable TUS uploads by setting `TUS_ENABLED=false` if resumable uploads are not required.\n\n## Credit\n\nThis vulnerability was discovered and reported by [bugbunny.ai](https://bugbunny.ai).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:11:18Z",
+    "Severity": "HIGH",
+    "Summary": "Directus: TUS Upload Authorization Bypass Allows Arbitrary File Overwrite",
+    "UpdatedAt": "2026-04-04T06:11:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.1"
+      },
+      "VulnerableVersionRange": "\u003c 11.16.1"
+    }
+  ]
+}

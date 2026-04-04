@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-04T06:12:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "directus"
+  },
+  "Advisory": {
+    "DatabaseId": 347040,
+    "Id": "GSA_kwCzR0hTQS1waDUyLTY3ZnEtNzV3as4ABUug",
+    "GhsaId": "GHSA-ph52-67fq-75wj",
+    "References": [
+      {
+        "Url": "https://github.com/directus/directus/security/advisories/GHSA-ph52-67fq-75wj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ph52-67fq-75wj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ph52-67fq-75wj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35441"
+      }
+    ],
+    "Description": "### Summary\n\nDirectus' GraphQL endpoints (`/graphql` and `/graphql/system`) did not deduplicate resolver invocations within a single request. An authenticated user could exploit GraphQL aliasing to repeat an expensive relational query many times in a single request, forcing the server to execute a large number of independent complex database queries concurrently, multiplying database load linearly with the number of aliases. The existing token limit on GraphQL queries still permitted enough aliases for significant resource exhaustion, while the relational depth limit applied per alias without reducing the total number executed. Rate limiting is disabled by default, meaning no built-in throttle prevented this from causing CPU, memory, and I/O exhaustion that could degrade or crash the service. Any authenticated user, including those with minimal read-only permissions, could trigger this condition.\n\n### Fix\n\nA request-scoped resolver deduplication mechanism was introduced and applied broadly across all GraphQL read resolvers, both system and items endpoints. When multiple aliases in a single request invoke the same resolver with identical arguments, only the first call executes; all subsequent aliases share its result. This eliminates the amplification factor regardless of how many aliases a query contains.\n\n### Impact\n\n- **Service degradation or outage:** Concurrent complex database queries exhaust the connection pool and server resources, affecting all users\n- **Low privilege required:** Any authenticated user, including those with read-only access to a single collection, can trigger this condition\n- **Linear scaling:** Impact scales with the number of aliases and depth of relational queries\n- **Compounded by concurrency:** Multiple simultaneous requests multiply the effect further",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:12:52Z",
+    "Severity": "MODERATE",
+    "Summary": "Directus: GraphQL Alias Amplification Denial of Service Due to Missing Query Cost/Complexity Limits",
+    "UpdatedAt": "2026-04-04T06:12:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.17.0"
+      },
+      "VulnerableVersionRange": "\u003c 11.17.0"
+    }
+  ]
+}

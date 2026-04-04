@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-04T06:17:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "defu"
+  },
+  "Advisory": {
+    "DatabaseId": 347048,
+    "Id": "GSA_kwCzR0hTQS03Mzd2LW1xZzctYzg3OM4ABUuo",
+    "GhsaId": "GHSA-737v-mqg7-c878",
+    "References": [
+      {
+        "Url": "https://github.com/unjs/defu/security/advisories/GHSA-737v-mqg7-c878"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-737v-mqg7-c878"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-737v-mqg7-c878"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35209"
+      }
+    ],
+    "Description": "### Impact\n\nApplications that pass unsanitized user input (e.g. parsed JSON request bodies, database records, or config files from untrusted sources) as the first argument to `defu()` are vulnerable to prototype pollution.\n\nA crafted payload containing a `__proto__` key can override intended default values in the merged result:\n\n```js\nimport { defu } from 'defu'\n\nconst userInput = JSON.parse('{\"__proto__\":{\"isAdmin\":true}}')\nconst config = defu(userInput, { isAdmin: false })\n\nconfig.isAdmin // true — attacker overrides the server default\n```\n\n### Root Cause\n\nThe internal `_defu` function used `Object.assign({}, defaults)` to copy the defaults object. `Object.assign` invokes the `__proto__` setter, which replaces the resulting object's `[[Prototype]]` with attacker-controlled values. Properties inherited from the polluted prototype then bypass the existing `__proto__` key guard in the `for...in` loop and land in the final result.\n\n### Fix\n\nReplace `Object.assign({}, defaults)` with object spread (`{ ...defaults }`), which uses `[[DefineOwnProperty]]` and does not invoke the `__proto__` setter.\n\n### Affected Versions\n\n\u003c= 6.1.4\n\n### Credits\n\nReported by [@BlackHatExploitation](https://github.com/BlackHatExploitation)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-04T06:17:53Z",
+    "Severity": "HIGH",
+    "Summary": "defu: Prototype pollution via `__proto__` key in defaults argument",
+    "UpdatedAt": "2026-04-04T06:17:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.5"
+      },
+      "VulnerableVersionRange": "\u003c= 6.1.4"
+    }
+  ]
+}
