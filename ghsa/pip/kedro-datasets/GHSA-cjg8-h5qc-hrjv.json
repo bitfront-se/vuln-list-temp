@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-06T17:55:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "kedro-datasets"
+  },
+  "Advisory": {
+    "DatabaseId": 347298,
+    "Id": "GSA_kwCzR0hTQS1jamc4LWg1cWMtaHJqds4ABUyi",
+    "GhsaId": "GHSA-cjg8-h5qc-hrjv",
+    "References": [
+      {
+        "Url": "https://github.com/kedro-org/kedro-plugins/security/advisories/GHSA-cjg8-h5qc-hrjv"
+      },
+      {
+        "Url": "https://github.com/kedro-org/kedro/issues/5452"
+      },
+      {
+        "Url": "https://github.com/kedro-org/kedro-plugins/pull/1346"
+      },
+      {
+        "Url": "https://github.com/kedro-org/kedro-plugins/commit/65115f76b872217317734b6bde8927170c98fc4b"
+      },
+      {
+        "Url": "https://github.com/kedro-org/kedro-plugins/releases/tag/kedro-datasets-9.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cjg8-h5qc-hrjv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cjg8-h5qc-hrjv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35492"
+      }
+    ],
+    "Description": "### Impact\n\nPartitionedDataset in kedro-datasets was vulnerable to path traversal. Partition IDs were concatenated directly with the dataset base path without validation. An attacker or malicious input containing .. components in a partition ID could cause files to be written outside the configured dataset directory, potentially overwriting arbitrary files on the filesystem.\nUsers of PartitionedDataset with any storage backend (local filesystem, S3, GCS, etc.) are affected.\n\n### Patches\nYes. The vulnerability has been patched in kedro-datasets version 9.3.0.\nUsers should upgrade to kedro-datasets \u003e= 9.3.0. The fix normalizes constructed paths using `posixpath.normpath` and validates that the resolved path remains within the dataset base directory before use, raising a `DatasetError` if the path escapes the base directory.\n\n### Workarounds\nUsers who cannot upgrade should validate partition IDs before passing them to PartitionedDataset, ensuring they do not contain `..` path components.\n\n### References\nFix: https://github.com/kedro-org/kedro-plugins/pull/1346\nReport: https://github.com/kedro-org/kedro/issues/5452",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-06T17:55:14Z",
+    "Severity": "MODERATE",
+    "Summary": "kedro-datasets has a path traversal vulnerability in PartitionedDataset that allows arbitrary file write",
+    "UpdatedAt": "2026-04-06T17:55:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 9.3.0"
+    }
+  ]
+}

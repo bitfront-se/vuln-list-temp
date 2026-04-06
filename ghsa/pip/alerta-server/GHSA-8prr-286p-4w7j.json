@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-03-31T23:23:21Z",
   "Package": {
     "Ecosystem": "PIP",
@@ -29,6 +29,9 @@
         "Url": "https://github.com/alerta/alerta/releases/tag/v9.1.0"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34400"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-8prr-286p-4w7j"
       }
     ],
@@ -45,9 +48,9 @@
     "Description": "### Impact\nThe Query string search API (q=) was vulnerable to SQL injection via the Postgres query parser, which built WHERE clauses by interpolating user-supplied search terms directly into SQL strings via f-strings.\n\n### Patches\nFixed in v9.1.0. The Postgres query parser now uses parameterized queries with %(name)s placeholders passed to psycopg2's cursor.execute(), preventing SQL injection through the ?q= parameter. The MongoDB backend was not affected.\n\n### Workarounds\nUpgrade to v9.1.0 or later. If unable to upgrade, deploy a proxy in front of the Alerta API to sanitize the q= parameter.\n\n### Resources\nhttps://github.com/alerta/alerta/pull/712/files\nhttps://owasp.org/www-community/attacks/SQL_Injection",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-31T23:23:21Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "alerta-server has potential SQL Injection vulnerability in Query String Syntax (q=) API",
-    "UpdatedAt": "2026-03-31T23:23:21Z",
+    "UpdatedAt": "2026-04-06T17:37:22Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
