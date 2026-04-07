@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:05:16Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openfga/openfga"
+  },
+  "Advisory": {
+    "DatabaseId": 347498,
+    "Id": "GSA_kwCzR0hTQS1qd3ZqLWc4cGMtY3g0Nc4ABU1q",
+    "GhsaId": "GHSA-jwvj-g8pc-cx45",
+    "References": [
+      {
+        "Url": "https://github.com/openfga/openfga/security/advisories/GHSA-jwvj-g8pc-cx45"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34972"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jwvj-g8pc-cx45"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jwvj-g8pc-cx45"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34972"
+      }
+    ],
+    "Description": "### Description\n\nIn OpenFGA, under specific conditions, BatchCheck calls with multiple checks sent for the same object, relation, and user combination can result in improper policy enforcement.\n\n### Am I affected?\n\nYou are affected if you meet the following preconditions:\n1. You execute **BatchCheck** operations which rely on context. \n2. Multiple checks are sent within a single BatchCheck operation for the same user/object/relation combination, each containing context.\n3. The contexts between those checks differ in a specific way\n\n### Fix\nUpgrade to OpenFGA v1.14.0\n\n### Acknowledgement\nOpenFGA would like to thank @bugbunny-research for the discovery and detailed report.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:05:16Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenFGA's BatchCheck within-request deduplication produces incorrect authorization decisions via list-value cache-key collision",
+    "UpdatedAt": "2026-04-07T18:05:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.14.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.0, \u003c= 1.13.1"
+    }
+  ]
+}

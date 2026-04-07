@@ -1,0 +1,86 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-07T15:52:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 347474,
+    "Id": "GSA_kwCzR0hTQS1mMzd2LTgyYzQtNHg2NM4ABU1S",
+    "GhsaId": "GHSA-f37v-82c4-4x64",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-f37v-82c4-4x64"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/50475"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/a48f03fb8d03933547281ddb2dbb6c6b9e705287"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v39.8.5"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v40.8.5"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.1.0"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.0.0-alpha.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f37v-82c4-4x64"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f37v-82c4-4x64"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34781"
+      }
+    ],
+    "Description": "### Impact\nApps that call `clipboard.readImage()` may be vulnerable to a denial of service. If the system clipboard contains image data that fails to decode, the resulting null bitmap is passed unchecked to image construction, triggering a controlled abort and crashing the process.\n\nApps are only affected if they call `clipboard.readImage()`. Apps that do not read images from the clipboard are not affected. This issue does not allow memory corruption or code execution.\n\n### Workarounds\nValidate that the clipboard contains image data via `clipboard.availableFormats()` before calling `clipboard.readImage()`. Note this only narrows the window — upgrading to a fixed version is recommended.\n\n### Fixed Versions\n* `42.0.0-alpha.5`\n* `41.1.0`\n* `40.8.5`\n* `39.8.5`\n\n### For more information\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T15:52:28Z",
+    "Severity": "LOW",
+    "Summary": "Electron: Crash in clipboard.readImage() on malformed clipboard image data",
+    "UpdatedAt": "2026-04-07T15:52:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-alpha.5"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-alpha.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.8.5"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.8.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.5"
+      },
+      "VulnerableVersionRange": "\u003c 39.8.5"
+    }
+  ]
+}

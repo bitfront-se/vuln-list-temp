@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:15:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 347516,
+    "Id": "GSA_kwCzR0hTQS0yZjdqLXJwNTgtbXI0Ms4ABU18",
+    "GhsaId": "GHSA-2f7j-rp58-mr42",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2f7j-rp58-mr42"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/676b748056b5efca6f1255708e9dd9469edf5e2e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2f7j-rp58-mr42"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2f7j-rp58-mr42"
+      }
+    ],
+    "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, the Gateway `connect` success snapshot exposed local `configPath` and `stateDir` metadata to non-admin clients. Low-privilege authenticated clients could learn host filesystem layout and deployment details that were not needed for their role.\n\n## Impact\n\nA non-admin client could recover host-specific filesystem paths and related deployment metadata, aiding host fingerprinting and chained attacks. This was an information-disclosure issue, not a direct authorization bypass.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `676b748056b5efca6f1255708e9dd9469edf5e2e` — limit connect snapshot metadata to admin-scoped clients\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @topsec-bunney for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:15:44Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Gateway hello snapshots exposed host config and state paths to non-admin clients",
+    "UpdatedAt": "2026-04-07T18:15:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.1"
+    }
+  ]
+}

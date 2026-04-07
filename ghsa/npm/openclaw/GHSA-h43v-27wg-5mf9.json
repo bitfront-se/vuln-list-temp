@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:14:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 347508,
+    "Id": "GSA_kwCzR0hTQS1oNDN2LTI3d2ctNW1mOc4ABU10",
+    "GhsaId": "GHSA-h43v-27wg-5mf9",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-h43v-27wg-5mf9"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/4ee742174f36b5445703e3b1ef2fbd6ae6700fa4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h43v-27wg-5mf9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h43v-27wg-5mf9"
+      }
+    ],
+    "Description": "## Summary\n\nBefore OpenClaw 2026.3.31, the Nostr DM ingress path could issue pairing challenges before validating the event signature. A forged DM could create a pending pairing entry and trigger a pairing-reply attempt before signature rejection.\n\n## Impact\n\nAn unauthenticated remote sender could consume shared pairing capacity and trigger bounded relay/logging work on the Nostr channel. This issue did not grant message decryption, pairing approval, or broader authorization bypass.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003e= 2026.3.22, \u003c 2026.3.31`\n- Patched versions: `\u003e= 2026.3.31`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `4ee742174f36b5445703e3b1ef2fbd6ae6700fa4` — verify inbound DM signatures before pairing replies\n\n## Release Process Note\n\nThe fix shipped in OpenClaw `2026.3.31` on March 31, 2026. The current published npm release `2026.4.1` from April 1, 2026 also contains the fix.\n\nThanks @smaeljaish771 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:14:39Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Forged Nostr DMs could create pairing state before signature verification",
+    "UpdatedAt": "2026-04-07T18:14:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.31"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.3.22, \u003c 2026.3.31"
+    }
+  ]
+}

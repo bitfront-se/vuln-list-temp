@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:14:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 347511,
+    "Id": "GSA_kwCzR0hTQS1tMzRxLWg5M3ctdmc1eM4ABU13",
+    "GhsaId": "GHSA-m34q-h93w-vg5x",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-m34q-h93w-vg5x"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/b21c9840c2e38f4bb338d031511b479d5f07ca25"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m34q-h93w-vg5x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m34q-h93w-vg5x"
+      }
+    ],
+    "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, the OpenShell mirror backend accepted arbitrary absolute `remoteWorkspaceDir` and `remoteAgentWorkspaceDir` values. In mirror mode, those paths were then used as the target of remote cleanup and overwrite operations.\n\n## Impact\n\nIf an attacker could influence those OpenShell config values, mirror sync could delete the contents of an unintended remote directory and replace them with uploaded workspace data. This was a destructive remote-path bug in the mirror-sync path.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `b21c9840c2e38f4bb338d031511b479d5f07ca25` — constrain OpenShell mirror sync roots\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @jufeng123768 for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:14:57Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: OpenShell mirror mode could delete arbitrary remote directories when roots were mis-scoped",
+    "UpdatedAt": "2026-04-07T18:14:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.1"
+    }
+  ]
+}

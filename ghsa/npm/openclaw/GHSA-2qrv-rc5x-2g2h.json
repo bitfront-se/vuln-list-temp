@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:15:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 347515,
+    "Id": "GSA_kwCzR0hTQS0ycXJ2LXJjNXgtMmcyaM4ABU17",
+    "GhsaId": "GHSA-2qrv-rc5x-2g2h",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2qrv-rc5x-2g2h"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/53c29df2a9eb242a70d0ff29f3d1e67c8d6801f0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2qrv-rc5x-2g2h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2qrv-rc5x-2g2h"
+      }
+    ],
+    "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, built-in channel setup and login could resolve an untrusted workspace channel shadow before the plugin was explicitly trusted. A malicious workspace plugin that claimed a bundled channel id could execute during channel setup even while still disabled.\n\n## Impact\n\nA cloned workspace could turn channel setup for a built-in channel into unintended in-process code execution from an untrusted workspace plugin. This bypassed the intended workspace-plugin trust boundary during setup and login.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `53c29df2a9eb242a70d0ff29f3d1e67c8d6801f0` — ignore untrusted workspace channel shadows during setup resolution\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @zpbrent for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:15:41Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Untrusted workspace channel shadows could execute during built-in channel setup",
+    "UpdatedAt": "2026-04-07T18:15:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.1"
+    }
+  ]
+}

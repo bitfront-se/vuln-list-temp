@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:15:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 347517,
+    "Id": "GSA_kwCzR0hTQS05OGNoLTQ1d3AtY2g0N84ABU19",
+    "GhsaId": "GHSA-98ch-45wp-ch47",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-98ch-45wp-ch47"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/7eb094a00d80e9f6bf0e62f2c45d3b88ff67c04d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-98ch-45wp-ch47"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-98ch-45wp-ch47"
+      }
+    ],
+    "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, system-run approval binding normalized environment override keys differently from host execution. Windows-compatible keys could be omitted from the approval binding while still being injected at execution time.\n\n## Impact\n\nAn approved command could run with attacker-chosen environment overrides that were not represented in the approval binding. This created an approval-integrity gap for affected host-exec flows.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `7eb094a00d80e9f6bf0e62f2c45d3b88ff67c04d` — align approval binding with execution-time env-key normalization\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @iskindar for reporting, and thanks @wsparks-vc for coordination.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:15:48Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Windows-compatible env override keys could bypass system.run approval binding",
+    "UpdatedAt": "2026-04-07T18:15:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.1"
+    }
+  ]
+}

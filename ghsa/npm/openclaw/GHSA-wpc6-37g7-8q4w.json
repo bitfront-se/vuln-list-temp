@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-07T18:14:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 347507,
+    "Id": "GSA_kwCzR0hTQS13cGM2LTM3ZzctOHE0d84ABU1z",
+    "GhsaId": "GHSA-wpc6-37g7-8q4w",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-wpc6-37g7-8q4w"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/0c8375424620e12777ef24c162eedc7e9fcfd7e3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wpc6-37g7-8q4w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wpc6-37g7-8q4w"
+      }
+    ],
+    "Description": "## Summary\n\nBefore OpenClaw 2026.3.31, exec allowlist matching could treat shell init-file wrapper invocations as if the approved script itself were being executed. Shell options such as `--rcfile`, `--init-file`, and `--startup-file` could therefore inherit allowlist trust from a matched script path even though the shell loaded attacker-chosen initialization first.\n\n## Impact\n\nThis issue only applied when exec allowlist or allow-always behavior was enabled and the attacker could steer a shell-wrapper command shape that used init-file options. The result was a narrower allowlist bypass, not generic arbitrary command execution from an untrusted boundary.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.3.31`\n- Patched versions: `\u003e= 2026.3.31`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `0c8375424620e12777ef24c162eedc7e9fcfd7e3` — reject shell init-file script matches\n\n## Release Process Note\n\nThe fix shipped in OpenClaw `2026.3.31` on March 31, 2026. The current published npm release `2026.4.1` from April 1, 2026 also contains the fix.\n\nThanks @cyjhhh for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T18:14:35Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Shell init-file options could satisfy exec allowlist script matching",
+    "UpdatedAt": "2026-04-07T18:14:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.3.31"
+      },
+      "VulnerableVersionRange": "\u003c 2026.3.31"
+    }
+  ]
+}

@@ -36,6 +36,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-4w7w-66w2-5vf9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39365"
       }
     ],
     "Description": "### Summary\n\nAny files ending with `.map` even out side the project can be returned to the browser.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host))\n- have a sensitive content in files ending with `.map` and the path is predictable\n\n### Details\n\nIn Vite v7.3.1, the dev server’s handling of `.map` requests for optimized dependencies resolves file paths and calls `readFile` without restricting `../` segments in the URL. As a result, it is possible to bypass the [`server.fs.strict`](https://vite.dev/config/server-options#server-fs-strict) allow list and retrieve `.map` files located outside the project root, provided they can be parsed as valid source map JSON.\n\n### PoC\n1. Create a minimal PoC sourcemap outside the project root\n    ```bash\n    cat \u003e /tmp/poc.map \u003c\u003c'EOF'\n    {\"version\":3,\"file\":\"x.js\",\"sources\":[],\"names\":[],\"mappings\":\"\"}\n    EOF\n    ```\n2. Start the Vite dev server (example)\n    ```bash\n    pnpm -C playground/fs-serve dev --host 127.0.0.1 --port 18080\n    ```\n3. Confirm that direct `/@fs` access is blocked by `strict` (returns 403)\n    \u003cimg width=\"4004\" height=\"1038\" alt=\"image\" src=\"https://github.com/user-attachments/assets/15a859a8-1dc6-4105-8d58-80527c0dd9ab\" /\u003e\n4. Inject `../` segments under the optimized deps `.map` URL prefix to reach `/tmp/poc.map`\n    \u003cimg width=\"2790\" height=\"846\" alt=\"image\" src=\"https://github.com/user-attachments/assets/5d02957d-2e6a-4c45-9819-3f024e0e81f2\" /\u003e",
@@ -43,7 +47,7 @@
     "PublishedAt": "2026-04-06T18:03:46Z",
     "Severity": "MODERATE",
     "Summary": "Vite Vulnerable to Path Traversal in Optimized Deps `.map` Handling",
-    "UpdatedAt": "2026-04-06T18:03:46Z",
+    "UpdatedAt": "2026-04-07T14:18:33Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

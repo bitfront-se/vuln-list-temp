@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/a26f4d0f3ef0757db6c6c40277cc06a5de76c52f"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34511"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-pkce-verifier-exposure-via-oauth-state-parameter"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-9jpj-g8vv-j5mf"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-9jpj-g8vv-j5mf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34511"
       }
     ],
     "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, the Gemini OAuth flow reused the PKCE verifier as the OAuth `state` value. Because the provider reflected `state` back in the redirect URL, the verifier could be exposed alongside the authorization code.\n\n## Impact\n\nAnyone who could capture the redirect URL could learn both the authorization code and the PKCE verifier, defeating PKCE's interception protection for that flow and enabling token redemption.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `a26f4d0f3ef0757db6c6c40277cc06a5de76c52f` — separate OAuth state from the PKCE verifier\n\nOpenClaw thanks @BG0ECV for reporting.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-04-04T06:26:55Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: Gemini OAuth exposed the PKCE verifier through the OAuth state parameter",
-    "UpdatedAt": "2026-04-04T06:26:56Z",
+    "UpdatedAt": "2026-04-07T14:24:17Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

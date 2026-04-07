@@ -33,6 +33,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-v2wj-q39q-566r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39364"
       }
     ],
     "Description": "### Summary\n\nThe contents of files that are specified by [`server.fs.deny`](https://vite.dev/config/server-options#server-fs-deny) can be returned to the browser.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host))\n- the sensitive file exists in the allowed directories specified by [`server.fs.allow`](https://vite.dev/config/server-options#server-fs-allow)\n- the sensitive file is denied with a pattern that matches a file by [`server.fs.deny`](https://vite.dev/config/server-options#server-fs-deny)\n\n### Details\n\nOn the Vite dev server, files that should be blocked by `server.fs.deny` (e.g., `.env`, `*.crt`) can be retrieved with HTTP 200 responses when query parameters such as `?raw`, `?import\u0026raw`, or `?import\u0026url\u0026inline` are appended.\n\n### PoC\n\n1. Start the dev server: `pnpm exec vite root --host 127.0.0.1 --port 5175 --strictPort`\n2. Confirm that `server.fs.deny` is enforced (expect 403): `curl -i http://127.0.0.1:5175/src/.env | head -n 20`\n   \u003cimg width=\"3944\" height=\"1092\" alt=\"image\" src=\"https://github.com/user-attachments/assets/ecb9f2e0-e08f-4ac7-b194-e0f988c4cd4f\" /\u003e\n3. Confirm that the same files can be retrieved with query parameters (expect 200):\n   \u003cimg width=\"2014\" height=\"373\" alt=\"image\" src=\"https://github.com/user-attachments/assets/76bc2a6a-44f4-4161-ae47-eab5ae0c04a8\" /\u003e",
@@ -40,7 +44,7 @@
     "PublishedAt": "2026-04-06T18:03:32Z",
     "Severity": "HIGH",
     "Summary": "Vite: `server.fs.deny` bypassed with queries",
-    "UpdatedAt": "2026-04-06T18:03:32Z",
+    "UpdatedAt": "2026-04-07T14:18:17Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
