@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/releases/tag/v2026.3.11"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32916"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-authorization-bypass-in-plugin-subagent-routes-via-synthetic-admin-scopes"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-xw77-45gv-p728"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-xw77-45gv-p728"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32916"
       }
     ],
     "Description": "## Summary\nIn affected versions of `openclaw`, the plugin subagent runtime dispatched gateway methods through a synthetic operator client that always carried broad administrative scopes. Plugin-owned HTTP routes using `auth: \"plugin\"` could therefore trigger admin-only gateway actions without normal gateway authorization.\n\n## Impact\nThis is a critical authorization bypass. An external unauthenticated request to a plugin-owned route could reach privileged subagent runtime methods and perform admin-only gateway actions such as deleting sessions, reading session data, or triggering agent execution.\n\n## Affected Packages and Versions\n- Package: `openclaw` (npm)\n- Affected versions: `\u003e= 2026.3.7, \u003c 2026.3.11`\n- Fixed in: `2026.3.11`\n\n## Technical Details\nThe new plugin subagent runtime preserved neither the original caller's auth context nor least-privilege scope. Instead, it executed gateway dispatches through a fabricated operator client with administrative scopes, which was reachable from plugin-owned routes that intentionally bypass normal gateway auth so plugins can perform their own webhook verification.\n\n## Fix\nOpenClaw now preserves real authorization boundaries for plugin subagent calls instead of dispatching them through synthetic admin scopes. The fix shipped in `openclaw@2026.3.11`.\n\n## Workarounds\nUpgrade to `2026.3.11` or later.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-13T15:47:23Z",
     "Severity": "CRITICAL",
     "Summary": "OpenClaw: Plugin subagent routes could bypass gateway authorization with synthetic admin scopes",
-    "UpdatedAt": "2026-03-13T15:47:25Z",
+    "UpdatedAt": "2026-04-06T22:49:27Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.4,

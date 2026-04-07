@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-06T23:08:07Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mlflow"
+  },
+  "Advisory": {
+    "DatabaseId": 346945,
+    "Id": "GSA_kwCzR0hTQS03cWhmLXY2NW0tZzVmM84ABUtB",
+    "GhsaId": "GHSA-7qhf-v65m-g5f3",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0545"
+      },
+      {
+        "Url": "https://huntr.com/bounties/b2e5b028-9541-4d29-8703-a76f1a3734d8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7qhf-v65m-g5f3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7qhf-v65m-g5f3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-0545"
+      }
+    ],
+    "Description": "In mlflow/mlflow, the FastAPI job endpoints under `/ajax-api/3.0/jobs/*` are not protected by authentication or authorization when the `basic-auth` app is enabled. This vulnerability affects the latest version of the repository. If job execution is enabled (`MLFLOW_SERVER_ENABLE_JOB_EXECUTION=true`) and any job function is allowlisted, any network client can submit, read, search, and cancel jobs without credentials, bypassing basic-auth entirely. This can lead to unauthenticated remote code execution if allowed jobs perform privileged actions such as shell execution or filesystem changes. Even if jobs are deemed safe, this still constitutes an authentication bypass, potentially resulting in job spam, denial of service (DoS), or data exposure in job results.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-03T18:31:23Z",
+    "Severity": "CRITICAL",
+    "Summary": "mlflow: FastAPI job endpoints under `/ajax-api/3.0/jobs/*` are not protected by authentication or authorization",
+    "UpdatedAt": "2026-04-06T23:08:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.1"
+    }
+  ]
+}

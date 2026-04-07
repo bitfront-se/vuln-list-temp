@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-06T23:09:04Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "PraisonAI"
+  },
+  "Advisory": {
+    "DatabaseId": 347371,
+    "Id": "GSA_kwCzR0hTQS1qZnhjLXY1ZzktMzh4cs4ABUzr",
+    "GhsaId": "GHSA-jfxc-v5g9-38xr",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-jfxc-v5g9-38xr"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/releases/tag/v4.5.113"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jfxc-v5g9-38xr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jfxc-v5g9-38xr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39305"
+      }
+    ],
+    "Description": "The Action Orchestrator feature contains a Path Traversal vulnerability that allows an attacker (or compromised agent) to write to arbitrary files outside of the configured workspace directory. By supplying relative path segments (`../`) in the target path, malicious actions can overwrite sensitive system files or drop executable payloads on the host.\n\n### Details\nLocation: `src/praisonai/praisonai/cli/features/action_orchestrator.py` (Lines 402, 409, 423)\n\nVulnerable Code snippet:\n```python\ntarget = workspace / step.target\n```\n\nIn the `_apply_step` method, paths are constructed by concatenating the `workspace` path with a user-supplied `step.target` string: `target = workspace / step.target`. The code fails to resolve and validate that the final absolute path remains within the bounds of the `workspace` directory. When processing `FILE_CREATE` or `FILE_EDIT` actions, this flaw permits arbitrary file modification.\n\n### PoC\nConstruct a malicious `ActionStep` payload with path traversal characters:\n\n```python\nfrom praisonai.cli.features.action_orchestrator import ActionStep, ActionType, ActionStatus\n\n# Payload targeting a file outside the workspace\nstep = ActionStep(\n    id=\"test_traversal\",\n    action_type=ActionType.FILE_CREATE,\n    description=\"Malicious file write\",\n    target=\"../../../../../../../tmp/orchestrator_pwned.txt\",\n    params={\"content\": \"pwned\"},\n    status=ActionStatus.APPROVED\n)\n\n# When the orchestrator applies this step, it writes to the traversed path\n# _apply_step(step)\n```\n\n### Impact\nThis is an Arbitrary File Write vulnerability. Anyone running the Action Orchestrator to apply modifications is vulnerable. A malicious prompt could trick the agent into generating a plan that overwrites critical files (e.g., `~/.ssh/authorized_keys`, `.bashrc`) leading to Remote Code Execution (RCE) or system corruption.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-06T23:09:03Z",
+    "Severity": "CRITICAL",
+    "Summary": "PraisonAI Vulnerable to Arbitrary File Write / Path Traversal in Action Orchestrator",
+    "UpdatedAt": "2026-04-06T23:09:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.113"
+      },
+      "VulnerableVersionRange": "\u003c= 4.5.112"
+    }
+  ]
+}

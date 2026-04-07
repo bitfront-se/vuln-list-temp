@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "CRITICAL",
   "UpdatedAt": "2026-03-31T23:50:24Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/4ee4960de2330b5322127f925f3687dc6f105be1"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33579"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-privilege-escalation-via-missing-caller-scope-validation-in-device-pair-approval"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-hc5h-pmr3-3497"
       }
     ],
@@ -24,14 +30,18 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-hc5h-pmr3-3497"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33579"
       }
     ],
-    "Description": "## Summary\n\nThe `/pair approve` command path called device approval without forwarding caller scopes into the core approval check.\n\n## Impact\n\nA caller that held pairing privileges but not admin privileges could approve a pending device request asking for broader scopes, including admin access.\n\n## Affected Component\n\n`extensions/device-pair/index.ts, src/infra/device-pairing.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `4ee4960de2` (`Pairing: forward caller scopes during approval`).",
+    "Description": "## Summary\n\nThe `/pair approve` command path called device approval without forwarding caller scopes into the core approval check.\n\n## Impact\n\nA caller that held pairing privileges but not admin privileges could approve a pending device request asking for broader scopes, including admin access.\n\n## Affected Component\n\n`extensions/device-pair/index.ts, src/infra/device-pairing.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `4ee4960de2` (`Pairing: forward caller scopes during approval`).\n\nOpenClaw thanks @AntAISecurityLab for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-31T23:50:22Z",
-    "Severity": "HIGH",
+    "Severity": "CRITICAL",
     "Summary": "OpenClaw: /pair approve command path omitted caller scope subsetting and reopened device pairing escalation",
-    "UpdatedAt": "2026-03-31T23:50:24Z",
+    "UpdatedAt": "2026-04-06T23:39:45Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
