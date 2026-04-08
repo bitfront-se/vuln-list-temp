@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:16:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 347621,
+    "Id": "GSA_kwCzR0hTQS13bW1tLWY5MzktNmc5Y84ABU3l",
+    "GhsaId": "GHSA-wmmm-f939-6g9c",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-wmmm-f939-6g9c"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/9aff14bd727f8b0435c963363fd803260e7b8e3c"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wmmm-f939-6g9c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wmmm-f939-6g9c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39407"
+      }
+    ],
+    "Description": "## Summary\n\nA path handling inconsistency in `serveStatic` allows protected static files to be accessed by using repeated slashes (`//`) in the request path.\n\nWhen route-based middleware (e.g., `/admin/*`) is used for authorization, the router may not match paths containing repeated slashes, while serveStatic resolves them as normalized paths. This can lead to a middleware bypass.\n\n## Details\n\nThe routing layer and `serveStatic` handle repeated slashes differently.\n\nFor example:\n\n```\n/admin/secret.txt =\u003e matches /admin/*\n/admin//secret.txt =\u003e may not match /admin/*\n```\n\nHowever, `serveStatic` may interpret both paths as the same file location (e.g., `admin/secret.txt`) and return the file.\n\nThis inconsistency allows a request such as:\n\n```\nGET //admin/secret.txt\n```\n\nto bypass middleware registered on `/admin/*` and access protected files.\n\nThe issue has been fixed by rejecting paths that contain repeated slashes, ensuring consistent behavior between route matching and static file resolution.\n\n## Impact\n\nAn attacker can access static files that are intended to be protected by route-based middleware by using repeated slashes in the request path.\n\nThis can lead to unauthorized access to sensitive files under the static root.\n\nThis issue affects applications that rely on serveStatic together with route-based middleware for access control.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:16:45Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: Middleware bypass via repeated slashes in serveStatic",
+    "UpdatedAt": "2026-04-08T00:16:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.12"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.12"
+    }
+  ]
+}

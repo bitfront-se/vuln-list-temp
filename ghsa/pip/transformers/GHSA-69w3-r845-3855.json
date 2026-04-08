@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:17:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "transformers"
+  },
+  "Advisory": {
+    "DatabaseId": 347398,
+    "Id": "GSA_kwCzR0hTQS02OXczLXI4NDUtMzg1Nc4ABU0G",
+    "GhsaId": "GHSA-69w3-r845-3855",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1839"
+      },
+      {
+        "Url": "https://github.com/huggingface/transformers/commit/03c8082ba4594c9b8d6fe190ca9bed0e5f8ca396"
+      },
+      {
+        "Url": "https://huntr.com/bounties/3c77bb97-e493-493d-9a88-c57f5c536485"
+      },
+      {
+        "Url": "https://github.com/huggingface/transformers/releases/tag/v5.0.0rc3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-69w3-r845-3855"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-69w3-r845-3855"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1839"
+      }
+    ],
+    "Description": "A vulnerability in the HuggingFace Transformers library, specifically in the `Trainer` class, allows for arbitrary code execution. The `_load_rng_state()` method in `src/transformers/trainer.py` at line 3059 calls `torch.load()` without the `weights_only=True` parameter. This issue affects all versions of the library supporting `torch\u003e=2.2` when used with PyTorch versions below 2.6, as the `safe_globals()` context manager provides no protection in these versions. An attacker can exploit this vulnerability by supplying a malicious checkpoint file, such as `rng_state.pth`, which can execute arbitrary code when loaded. The issue is resolved in version v5.0.0rc3.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T06:30:28Z",
+    "Severity": "MODERATE",
+    "Summary": "HuggingFace Transformers allows for arbitrary code execution in the `Trainer` class",
+    "UpdatedAt": "2026-04-08T00:17:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.0/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.0rc3"
+      },
+      "VulnerableVersionRange": "\u003c 5.0.0rc3"
+    }
+  ]
+}

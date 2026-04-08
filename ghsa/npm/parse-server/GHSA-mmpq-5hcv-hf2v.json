@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:07:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 347599,
+    "Id": "GSA_kwCzR0hTQS1tbXBxLTVoY3YtaGYyds4ABU3P",
+    "GhsaId": "GHSA-mmpq-5hcv-hf2v",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-mmpq-5hcv-hf2v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39321"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10398"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10399"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mmpq-5hcv-hf2v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mmpq-5hcv-hf2v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39321"
+      }
+    ],
+    "Description": "### Impact\n\nThe login endpoint response time differs measurably depending on whether the submitted username or email exists in the database. When a user is not found, the server responds immediately. When a user exists but the password is wrong, a bcrypt comparison runs first, adding significant latency. This timing difference allows an unauthenticated attacker to enumerate valid usernames.\n\n### Patches\n\nA dummy bcrypt comparison is now performed when no user is found, normalizing response timing regardless of user existence. Additionally, accounts without a stored password (e.g. OAuth-only) now also run a dummy comparison to prevent the same timing oracle.\n\n### Workarounds\n\nConfigure rate limiting on the login endpoint to slow automated enumeration. This reduces throughput but does not eliminate the timing signal for individual requests.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:07:10Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server has a login timing side-channel reveals user existence",
+    "UpdatedAt": "2026-04-08T00:07:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.74"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.74"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.8.0-alpha.6"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.8.0-alpha.6"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-08T00:14:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "drizzle-orm"
+  },
+  "Advisory": {
+    "DatabaseId": 347613,
+    "Id": "GSA_kwCzR0hTQS1ncGo1LWczOGotOTR2Oc4ABU3d",
+    "GhsaId": "GHSA-gpj5-g38j-94v9",
+    "References": [
+      {
+        "Url": "https://github.com/drizzle-team/drizzle-orm/security/advisories/GHSA-gpj5-g38j-94v9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39356"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gpj5-g38j-94v9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gpj5-g38j-94v9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39356"
+      }
+    ],
+    "Description": "### Summary\n\nDrizzle ORM improperly escaped quoted SQL identifiers in its dialect-specific `escapeName()` implementations. In affected versions, embedded identifier delimiters were not escaped before the identifier was wrapped in quotes or backticks.\n\nAs a result, applications that pass attacker-controlled input to APIs that construct SQL identifiers or aliases, such as `sql.identifier()`, `.as()`, may allow an attacker to terminate the quoted identifier and inject SQL.\n\n### Affected components\n\nThe issue affects the identifier escaping logic used by the PostgreSQL, MySQL, SQLite, SingleStore, and Gel dialects.\n\n### Impact\n\nThis issue only affects applications that pass untrusted runtime input into identifier or alias construction. Common examples include dynamic sorting, dynamic report builders, and CTE or alias names derived from request parameters.\n\nDepending on the database dialect, query context, and database permissions, successful exploitation may enable blind or direct data disclosure, schema enumeration, query manipulation, privilege escalation, or destructive operations.\n\nApplications that use only static schema objects, or that strictly map user input through an allowlist of known column or alias names, are not affected.\n\n### Details\n\nIn affected versions, `escapeName()` wrapped the identifier but did not escape the quote delimiter inside the identifier value:\n\n- PostgreSQL / SQLite / Gel: `\"` was not doubled to `\"\"`\n- MySQL / SingleStore: `` ` `` was not doubled to `` `` ``\n\nBecause of this, crafted input containing the dialect-specific identifier delimiter could break out of the quoted identifier and be interpreted as SQL syntax.\n\nA representative vulnerable pattern is dynamic sorting using untrusted input:\n\n```ts\nconst sortField = req.query.sort || 'id';\n\nconst rows = await db\n  .select()\n  .from(users)\n  .orderBy(sql.identifier(sortField));",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:14:58Z",
+    "Severity": "HIGH",
+    "Summary": "Drizzle ORM has SQL injection via improperly escaped SQL identifiers",
+    "UpdatedAt": "2026-04-08T00:14:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-beta.20"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-beta.2, \u003c 1.0.0-beta.20"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.45.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.45.2"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:17:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 347625,
+    "Id": "GSA_kwCzR0hTQS1yNXJwLWo2d2gtcnZ2NM4ABU3p",
+    "GhsaId": "GHSA-r5rp-j6wh-rvv4",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-r5rp-j6wh-rvv4"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/cc067c85592415cb1880ad3c61ed923472452ec0"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r5rp-j6wh-rvv4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r5rp-j6wh-rvv4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39410"
+      }
+    ],
+    "Description": "## Summary\n\nA discrepancy between browser cookie parsing and `parse()` handling allows cookie prefix protections to be bypassed.\n\nCookie names that are treated as distinct by the browser may be normalized to the same key by `parse()`, allowing attacker-controlled cookies to override legitimate ones.\n\n## Details\n\nBrowsers follow RFC 6265bis and only trim SP (`0x20`) and HTAB (`0x09`) from cookie names. Other characters, such as the non-breaking space (`U+00A0`), are preserved as part of the cookie name.\n\nFor example, the browser treats the following cookies as distinct:\n\n```\n\"dummy-cookie\"\n\"\\u00a0dummy-cookie\"\n```\n\nHowever, `parse()` previously used JavaScript's `trim()`, which removes a broader set of characters including `U+00A0`. As a result, both names are normalized to:\n\n```\n\"dummy-cookie\"\n```\n\nThis mismatch allows attacker-controlled cookies with a `U+00A0` prefix to shadow or override legitimate cookies when accessed via `getCookie()`.\n\n## Impact\n\nAn attacker who can set cookies (e.g., via a man-in-the-middle on a non-secure page or other injection vector) can bypass cookie prefix protections and override sensitive cookies.\n\nThis may lead to:\n\n* Bypassing `__Secure-` and `__Host-` prefix protections\n* Overriding cookies that rely on the Secure attribute\n* Session fixation or session hijacking depending on application usage\n\nThis issue affects applications that rely on `getCookie()` for security-sensitive cookie handling.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:17:21Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: Non-breaking space prefix bypass in cookie name handling in getCookie()",
+    "UpdatedAt": "2026-04-08T00:17:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.12"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.12"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-07T20:13:33Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.modelcontextprotocol.sdk:mcp-core"
+  },
+  "Advisory": {
+    "DatabaseId": 347561,
+    "Id": "GSA_kwCzR0hTQS04anhyLXByNzItcjQ2OM4ABU2p",
+    "GhsaId": "GHSA-8jxr-pr72-r468",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/java-sdk/security/advisories/GHSA-8jxr-pr72-r468"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/java-sdk/releases/tag/v1.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8jxr-pr72-r468"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8jxr-pr72-r468"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35568"
+      }
+    ],
+    "Description": "### Summary\n\nThe java-sdk contains a DNS rebinding vulnerability. This vulnerability allows an attacker to access a locally or network-private java-sdk MCP server via a victims browser that is either local, or network adjacent.\n\nThis allows an attacker to make any tool call to the server as if they were a locally running MCP connected AI agent.\n\n### Details\n\nPrior to 1.0.0 no Origin header validation was occurring, in violation of the MCP specification. [Base Protocol \u003e Transports: 2.0.1 Security Warning](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#security-warning):\n\n\u003e 1: Servers MUST validate the Origin header on all incoming connections to prevent DNS rebinding attacks.\n\nWhen the web server serving HTTP traffic to the MCP server does not perform standard CORS checks, a DNS rebinding attack is possible.\n\nSome default server configurations and frameworks come with embedded `Origin` header validation. MCP servers built using those are not vulnerable to this issue. For example, the following are NOT vulnerable:\n- Spring AI\n\n### Impact\n\nAny developer connecting to a malicious website can inadvertently allow an attacker to make tool calls to local or private-network MCP servers.\n\n### Workarounds\n\nUsers can mitigate this risk by:\n1. Running the MCP server behind a reverse proxy (like Nginx or HAProxy) configured to strictly validate the `Host` and `Origin` headers.\n2. Using a framework that inherently enforces strict CORS and Origin validation (such as Spring AI).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-07T20:13:32Z",
+    "Severity": "HIGH",
+    "Summary": "Java-SDK has a DNS Rebinding Vulnerability",
+    "UpdatedAt": "2026-04-07T20:13:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.0"
+    }
+  ]
+}

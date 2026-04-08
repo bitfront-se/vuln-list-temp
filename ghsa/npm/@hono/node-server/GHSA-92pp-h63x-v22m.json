@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:16:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@hono/node-server"
+  },
+  "Advisory": {
+    "DatabaseId": 347620,
+    "Id": "GSA_kwCzR0hTQS05MnBwLWg2M3gtdjIybc4ABU3k",
+    "GhsaId": "GHSA-92pp-h63x-v22m",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/node-server/security/advisories/GHSA-92pp-h63x-v22m"
+      },
+      {
+        "Url": "https://github.com/honojs/node-server/commit/025c30f55d589ddbe6048b151d77e904f67a8cc2"
+      },
+      {
+        "Url": "https://github.com/honojs/node-server/releases/tag/v1.19.13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92pp-h63x-v22m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92pp-h63x-v22m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39406"
+      }
+    ],
+    "Description": "## Summary\n\nA path handling inconsistency in `serveStatic` allows protected static files to be accessed by using repeated slashes (`//`) in the request path.\n\nWhen route-based middleware (e.g., `/admin/*`) is used for authorization, the router may not match paths containing repeated slashes, while `serveStatic` resolves them as normalized paths. This can lead to a middleware bypass.\n\n## Details\n\nThe routing layer and `serveStatic` handle repeated slashes differently.\n\nFor example:\n\n- `/admin/secret.txt` =\u003e matches `/admin/*`\n- `//admin/secret.txt` =\u003e may not match `/admin/*`\n\nThis inconsistency allows a request such as:\n\n```\nGET //admin/secret.txt\n```\n\nto bypass middleware registered on `/admin/*` and access protected files.\n\n## Impact\n\nAn attacker can access static files that are intended to be protected by route-based middleware by using repeated slashes in the request path.\n\nThis can lead to unauthorized access to sensitive files under the static root.\n\nThis issue affects applications that rely on `serveStatic` together with route-based middleware for access control.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:16:39Z",
+    "Severity": "MODERATE",
+    "Summary": "@hono/node-server: Middleware bypass via repeated slashes in serveStatic",
+    "UpdatedAt": "2026-04-08T00:16:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.19.13"
+      },
+      "VulnerableVersionRange": "\u003c 1.19.13"
+    }
+  ]
+}

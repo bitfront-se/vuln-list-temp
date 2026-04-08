@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:17:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 347623,
+    "Id": "GSA_kwCzR0hTQS0yNnBwLTh3Z3YtaGp2bc4ABU3n",
+    "GhsaId": "GHSA-26pp-8wgv-hjvm",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-26pp-8wgv-hjvm"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/a586cd72e3f6122792e631ecf1817e5cabb803ec"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-26pp-8wgv-hjvm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-26pp-8wgv-hjvm"
+      }
+    ],
+    "Description": "## Summary\n\nCookie names are not validated on the write path when using `setCookie()`, `serialize()`, or `serializeSigned()` to generate Set-Cookie headers.\n\nWhile certain cookie attributes such as domain and path are validated, the cookie name itself may contain invalid characters.\n\nThis results in inconsistent handling of cookie names between parsing (read path) and serialization (write path).\n\n## Details\n\nWhen applications use `setCookie()`, `serialize()`, or `serializeSigned()` with a user-controlled cookie name, invalid values (e.g., containing control characters such as `\\r` or `\\n`) can be used to construct malformed `Set-Cookie` header values.\n\nFor example:\n\n```\nSet-Cookie: legit\nX-Injected: evil=value\n```\n\nHowever, in modern runtimes such as Node.js and Cloudflare Workers, such invalid header values are rejected and result in a runtime error before the response is sent.\n\nAs a result, the reported header injection / response splitting behavior could not be reproduced in these environments.\n\n## Impact\n\nApplications that pass untrusted input as the cookie name to `setCookie()`, `serialize()`, or `serializeSigned()` may encounter runtime errors due to invalid header values.\n\nIn tested environments, malformed `Set-Cookie` headers are rejected before being sent, and the reported header injection behavior could not be reproduced.\n\nThis issue primarily affects correctness and robustness rather than introducing a confirmed exploitable vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:17:02Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono missing validation of cookie name on write path in setCookie()",
+    "UpdatedAt": "2026-04-08T00:17:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.12"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.12"
+    }
+  ]
+}

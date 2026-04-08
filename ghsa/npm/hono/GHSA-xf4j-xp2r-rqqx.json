@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:16:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 347622,
+    "Id": "GSA_kwCzR0hTQS14ZjRqLXhwMnItcnFxeM4ABU3m",
+    "GhsaId": "GHSA-xf4j-xp2r-rqqx",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-xf4j-xp2r-rqqx"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/b470278920fffcfd6d76002755d6db53db827679"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xf4j-xp2r-rqqx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xf4j-xp2r-rqqx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39408"
+      }
+    ],
+    "Description": "## Summary\n\nA path traversal issue in `toSSG()` allows files to be written outside the configured output directory during static site generation. When using dynamic route parameters via `ssgParams`, specially crafted values can cause generated file paths to escape the intended output directory.\n\n## Details\n\nThe static site generation process creates output files based on route paths derived from application routes and parameters. When `ssgParams` is used to provide values for dynamic routes, those values are used to construct output file paths. If these values contain traversal sequences (e.g. `..`), the resulting output path may resolve outside the configured output directory. As a result, files may be written to unintended locations instead of being confined within the specified output directory.\n\nFor example:\n \n```ts\nimport { Hono } from 'hono'\nimport { toSSG, ssgParams } from 'hono/ssg'\n\nconst app = new Hono()\n\napp.get('/:id', ssgParams([{ id: '../pwned' }]), (c) =\u003e {\n  return c.text('pwned')\n})\n\ntoSSG(app, fs, { dir: './static' })\n```\n\nIn this case, the generated output path may resolve outside `./static`, resulting in a file being written outside the intended output directory.\n\n## Impact\n\nAn attacker who can influence values passed to `ssgParams` during the build process may be able to write files outside the intended output directory.\n\nDepending on the build and deployment environment, this may:\n\n* overwrite unintended files\n* affect generated artifacts\n* impact deployment outputs or downstream tooling\n\nThis issue is limited to build-time static site generation and does not affect request-time routing.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:16:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: Path traversal in toSSG() allows writing files outside the output directory",
+    "UpdatedAt": "2026-04-08T00:16:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.12"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 4.12.11"
+    }
+  ]
+}

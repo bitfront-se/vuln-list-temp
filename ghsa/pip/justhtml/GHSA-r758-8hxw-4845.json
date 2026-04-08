@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-08T00:06:18Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "justhtml"
+  },
+  "Advisory": {
+    "DatabaseId": 347598,
+    "Id": "GSA_kwCzR0hTQS1yNzU4LThoeHctNDg0Nc4ABU3O",
+    "GhsaId": "GHSA-r758-8hxw-4845",
+    "References": [
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/security/advisories/GHSA-r758-8hxw-4845"
+      },
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/commit/8adc4dfe31723dc522f44338f9bd98381c92b076"
+      },
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/releases/tag/v1.14.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r758-8hxw-4845"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r758-8hxw-4845"
+      }
+    ],
+    "Description": "## Summary\n\nA parser-differential / mutation XSS issue was found in `justhtml` when using a **custom sanitization policy** that preserves foreign namespaces such as SVG or MathML.\n\nUnder these custom settings, specially crafted input could sanitize into HTML that looked safe at first, but became unsafe when parsed again by a browser or another HTML parser.\n\n## Impact\n\nThis issue does **not** affect the default safe configuration.\n\nYou may be affected if you use a custom `SanitizationPolicy` with settings like:\n\n- `drop_foreign_namespaces=False`\n- allowlisted foreign elements such as MathML or SVG\n- allowlisted raw-text containers such as `\u003cstyle\u003e`\n\nIn that case, an attacker could inject markup that survives sanitization and turns into active HTML after re-parsing.\n\n## Affected versions\n\n- `justhtml` `\u003c= 1.13.0`\n\n## Fixed version\n\n- Fixed in `1.14.0`\n\n## Workarounds\n\nUntil you upgrade:\n\n- keep `drop_foreign_namespaces=True`\n- avoid allowlisting foreign namespaces for untrusted input\n- avoid allowlisting raw-text containers such as `\u003cstyle\u003e` in custom policies\n\n## Notes\n\nThe default `JustHTML(..., sanitize=True)` behavior was not found to be vulnerable in this issue.\n\n## Credit\n\nDiscovered by JustHTML author during a LLM-based security review of `justhtml`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:06:17Z",
+    "Severity": "LOW",
+    "Summary": "justhtml: Mutation XSS with custom foreign-namespace sanitization policies",
+    "UpdatedAt": "2026-04-08T00:06:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.14.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.13.0, \u003c 1.14.0"
+    }
+  ]
+}

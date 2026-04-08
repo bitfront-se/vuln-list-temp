@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T00:06:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "coursevault-preview"
+  },
+  "Advisory": {
+    "DatabaseId": 347597,
+    "Id": "GSA_kwCzR0hTQS05aDltLXJyNjctOWpwZ84ABU3N",
+    "GhsaId": "GHSA-9h9m-rr67-9jpg",
+    "References": [
+      {
+        "Url": "https://github.com/moritzmyrz/coursevault-preview/security/advisories/GHSA-9h9m-rr67-9jpg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35613"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9h9m-rr67-9jpg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9h9m-rr67-9jpg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35613"
+      }
+    ],
+    "Description": "## Summary\n\n`coursevault-preview` versions prior to `0.1.1` contain a path traversal vulnerability in the `resolveSafe` utility. The boundary check used `String.prototype.startsWith(baseDir)` on a normalized path, which does not enforce a directory boundary. An attacker who controls the `relativePath` argument to affected `CoursevaultPreview` methods may be able to read files outside the configured `baseDir` when a sibling directory exists whose name shares the same string prefix.\n\n## Details\n\nThe vulnerable code in `src/utils/errors.ts`:\n\n```ts\nif (!full.startsWith(base)) {   // ← insufficient\n  throw new Error(\"Path escapes the base directory\");\n}\n```\n\nBecause the check is a raw string prefix test rather than a path-boundary test, the following bypass is possible:\n\n```\nbaseDir  = \"/srv/courses\"\npayload  = \"../courses-admin/config.json\"\nresolved = \"/srv/courses-admin/config.json\"\n\n\"/srv/courses-admin/config.json\".startsWith(\"/srv/courses\") // → true ✗\n```\n\nAny file whose absolute path begins with the `baseDir` string — including files in sibling directories that share a name prefix — passes the guard and can be accessed by the caller through affected file-access methods.\n\nThe fix replaces the check with a separator-aware comparison:\n\n```ts\nif (full !== base \u0026\u0026 !full.startsWith(base + sep)) {\n  throw new Error(\"Path escapes the base directory\");\n}\n```\n\n## Impact\n\nAn application that passes untrusted input as the `relativePath` argument to affected file-access methods may expose file contents outside the intended directory.\n\n1. Attacker control over the `relativePath` parameter.\n2. A sibling directory on the filesystem whose name shares a string prefix with `baseDir`.\n\nThere is no network exposure in the package itself; impact is limited to local file disclosure within the host process's file system permissions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T00:06:03Z",
+    "Severity": "MODERATE",
+    "Summary": "coursevault-preview has a path traversal due to improper base-directory boundary validation",
+    "UpdatedAt": "2026-04-08T00:06:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.1.1"
+    }
+  ]
+}
