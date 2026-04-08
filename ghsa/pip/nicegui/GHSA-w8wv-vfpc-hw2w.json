@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T15:04:13Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nicegui"
+  },
+  "Advisory": {
+    "DatabaseId": 347895,
+    "Id": "GSA_kwCzR0hTQS13OHd2LXZmcGMtaHcyd84ABU73",
+    "GhsaId": "GHSA-w8wv-vfpc-hw2w",
+    "References": [
+      {
+        "Url": "https://github.com/zauberzeug/nicegui/security/advisories/GHSA-w8wv-vfpc-hw2w"
+      },
+      {
+        "Url": "https://github.com/zauberzeug/nicegui/commit/d38a702e3af2da5b0708f689be8d71413fc77056"
+      },
+      {
+        "Url": "https://github.com/zauberzeug/nicegui/releases/tag/v3.10.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w8wv-vfpc-hw2w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w8wv-vfpc-hw2w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39844"
+      }
+    ],
+    "Description": "### Summary\n\nThe upload filename sanitization introduced in GHSA-9ffm-fxg3-xrhh uses `PurePosixPath(filename).name` to strip path components. Since `PurePosixPath` only recognizes forward slashes (`/`) as path separators, an attacker can bypass this sanitization on Windows by using backslashes (`\\`) in the upload filename.\n\nApplications that construct file paths using `file.name` (a pattern demonstrated in NiceGUI's bundled examples) are vulnerable to arbitrary file write on Windows.\n\n### Details\n\nThe sanitization in `nicegui/elements/upload_files.py` uses:\n\n```python\nfilename = PurePosixPath(upload.filename or '').name\n```\n\n`PurePosixPath` treats backslashes as literal characters, not path separators:\n\n```python\n\u003e\u003e\u003e PurePosixPath('..\\\\..\\\\secret\\\\evil.txt').name\n'..\\\\..\\\\secret\\\\evil.txt'  # Not stripped!\n```\n\nWhen this filename is used in a path operation on Windows (e.g., `Path('uploads') / file.name`), Windows `Path` interprets backslashes as directory separators, resolving the path outside the intended directory.\n\n### Impact\n\nOn Windows deployments of NiceGUI applications that use `file.name` in path construction:\n\n- **Arbitrary file write** outside the intended upload directory\n- **Potential remote code execution** through overwriting application files or placing executables in known locations\n- **Data integrity loss** through overwriting existing files\n\nLinux and macOS are not affected, as they treat backslashes as literal filename characters.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T15:04:13Z",
+    "Severity": "MODERATE",
+    "Summary": "NiceGUI: Upload filename sanitization bypass via backslashes allows path traversal on Windows",
+    "UpdatedAt": "2026-04-08T15:04:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.0"
+    }
+  ]
+}

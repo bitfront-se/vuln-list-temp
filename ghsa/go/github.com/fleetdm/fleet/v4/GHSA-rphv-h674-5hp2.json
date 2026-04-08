@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-08T18:03:54Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/fleetdm/fleet/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 347923,
+    "Id": "GSA_kwCzR0hTQS1ycGh2LWg2NzQtNWhwMs4ABU8T",
+    "GhsaId": "GHSA-rphv-h674-5hp2",
+    "References": [
+      {
+        "Url": "https://github.com/fleetdm/fleet/security/advisories/GHSA-rphv-h674-5hp2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rphv-h674-5hp2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rphv-h674-5hp2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27806"
+      }
+    ],
+    "Description": "## Summary\n\nThe Orbit agent's FileVault disk encryption key rotation flow on collects a local user's password via a GUI dialog and interpolates it directly into a Tcl/expect script executed via `exec.Command(\"expect\", \"-c\", script)`. Because the password is inserted into Tcl brace-quoted `send {%s}`, a password containing `}` terminates the literal and injects arbitrary Tcl commands. Since Orbit runs as root, this allows a local unprivileged user to escalate to root privileges.\n\n## CWE\n\n- **CWE-78**: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')\n- **CWE-94**: Improper Control of Generation of Code ('Code Injection')\n\n## Impact\n\n- Local privilege escalation to root: Any unprivileged local user on a managed endpoint can execute arbitrary commands as root\n\n## Credit\n\nThis vulnerability was discovered and reported by [bugbunny.ai](https://bugbunny.ai).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T18:03:52Z",
+    "Severity": "HIGH",
+    "Summary": "Fleet Affected by Local Privilege Escalation via Tcl Command Injection in Orbit",
+    "UpdatedAt": "2026-04-08T18:03:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.81.1"
+      },
+      "VulnerableVersionRange": "\u003c 4.81.1"
+    }
+  ]
+}

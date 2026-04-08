@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-08T15:03:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "liquidjs"
+  },
+  "Advisory": {
+    "DatabaseId": 347893,
+    "Id": "GSA_kwCzR0hTQS01NnA1LThtaHItMmZwaM4ABU71",
+    "GhsaId": "GHSA-56p5-8mhr-2fph",
+    "References": [
+      {
+        "Url": "https://github.com/harttle/liquidjs/security/advisories/GHSA-56p5-8mhr-2fph"
+      },
+      {
+        "Url": "https://github.com/harttle/liquidjs/pull/867"
+      },
+      {
+        "Url": "https://github.com/harttle/liquidjs/releases/tag/v10.25.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-56p5-8mhr-2fph"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-56p5-8mhr-2fph"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35525"
+      }
+    ],
+    "Description": "### Summary\n\nLiquidJS enforces partial and layout root restrictions using the resolved pathname string, but it does not resolve the canonical filesystem path before opening the file. A symlink placed inside an allowed partials or layouts directory can therefore point to a file outside that directory and still be loaded.\n\n### Details\n\nFor `{% include %}`, `{% render %}`, and `{% layout %}`, LiquidJS checks whether the candidate path is inside the configured partials or layouts roots before reading it. That check is path-based, not realpath-based.\n\nBecause of that, a file like `partials/link.liquid` passes the directory containment check as long as its pathname is under the allowed root. If `link.liquid` is actually a symlink to a file outside the allowed root, the filesystem follows the symlink when the file is opened and LiquidJS renders the external target.\n\nSo the restriction is applied to the path string that was requested, not to the file that is actually read.\n\nThis matters in environments where an attacker can place templates or otherwise influence files under a trusted template root, including uploaded themes, extracted archives, mounted content, or repository-controlled template trees.\n\n### PoC\n\n```js\nconst { Liquid } = require('liquidjs');\nconst fs = require('fs');\n\nfs.rmSync('/tmp/liquid-root', { recursive: true, force: true });\nfs.mkdirSync('/tmp/liquid-root', { recursive: true });\n\nfs.writeFileSync('/tmp/secret-outside.liquid', 'SECRET_OUTSIDE');\nfs.symlinkSync('/tmp/secret-outside.liquid', '/tmp/liquid-root/link.liquid');\n\nconst engine = new Liquid({ root: ['/tmp/liquid-root'] });\n\nengine.parseAndRender('{% render \"link.liquid\" %}')\n  .then(console.log);\n// SECRET_OUTSIDE\n```\n\n### Impact\n\nIf an attacker can place or influence symlinks under a trusted partials or layouts directory, they can make LiquidJS read and render files outside the intended template root. In practice this can expose arbitrary readable files reachable through symlink targets.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T15:03:47Z",
+    "Severity": "HIGH",
+    "Summary": "LiquidJS: Root restriction bypass for partial and layout loading through symlinked templates",
+    "UpdatedAt": "2026-04-08T15:03:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.25.3"
+      },
+      "VulnerableVersionRange": "\u003c= 10.25.2"
+    }
+  ]
+}
