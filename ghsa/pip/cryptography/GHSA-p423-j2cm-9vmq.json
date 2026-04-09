@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-08T19:23:10Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "cryptography"
+  },
+  "Advisory": {
+    "DatabaseId": 347975,
+    "Id": "GSA_kwCzR0hTQS1wNDIzLWoyY20tOXZtcc4ABU9H",
+    "GhsaId": "GHSA-p423-j2cm-9vmq",
+    "References": [
+      {
+        "Url": "https://github.com/pyca/cryptography/security/advisories/GHSA-p423-j2cm-9vmq"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p423-j2cm-9vmq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p423-j2cm-9vmq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39892"
+      }
+    ],
+    "Description": "If a non-contiguous buffer was passed to APIs which accepted Python buffers (e.g. `Hash.update()`), this could lead to buffer overflows. For example:\n\n```python\nh = Hash(SHA256())\nb.update(buf[::-1])\n```\n\nwould read past the end of the buffer on Python \u003e3.11",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-08T19:23:08Z",
+    "Severity": "MODERATE",
+    "Summary": "Cryptography vulnerable to buffer overflow if non-contiguous buffers were passed to APIs",
+    "UpdatedAt": "2026-04-08T19:23:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "46.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 45.0.0, \u003c 46.0.7"
+    }
+  ]
+}
