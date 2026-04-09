@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-393c-p46r-7c95"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39942"
       }
     ],
     "Description": "## Summary\n\nA broken access control vulnerability was identified in the Directus file management API that allows authenticated users to overwrite files belonging to other users by manipulating the `filename_disk` parameter.\n\n## Details\n\nThe `PATCH /files/{id}` endpoint accepts a user-controlled `filename_disk` parameter. By setting this value to match the storage path of another user's file, an attacker can overwrite that file's content while manipulating metadata fields such as `uploaded_by` to obscure the tampering.\n\n## Impact\n\n- **Unauthorized File Overwrite**: Attackers can replace legitimate files with malicious content, creating significant risk of malware propagation and data corruption.\n- **Remote Code Execution**: If the storage backend is shared with the extensions location, attackers can deploy malicious extensions that execute arbitrary code when loaded.\n- **Data Integrity Compromise**: Files can be tampered with or replaced without visible indication in the application interface.\n\n## Mitigation\n\nThe `filename_disk` parameter should be treated as a server-controlled value. Uniqueness of storage paths must be enforced server-side, and `filename_disk` should be excluded from the fields users are permitted to update directly.",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-04-04T06:06:39Z",
     "Severity": "HIGH",
     "Summary": "Directus: Path Traversal and Broken Access Control in File Management API",
-    "UpdatedAt": "2026-04-07T22:11:27Z",
+    "UpdatedAt": "2026-04-09T14:30:27Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 8.5,

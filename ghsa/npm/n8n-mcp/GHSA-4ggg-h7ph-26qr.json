@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-4ggg-h7ph-26qr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39974"
       }
     ],
     "Description": "## Impact\nAn authenticated Server-Side Request Forgery in `n8n-mcp` allows a caller holding a valid `AUTH_TOKEN` to cause the server to issue HTTP requests to arbitrary URLs supplied through multi-tenant HTTP headers. Response bodies are reflected back through JSON-RPC, so an attacker can read the contents of any URL the server can reach — including cloud instance metadata endpoints (AWS IMDS, GCP, Azure, Alibaba, Oracle), internal network services, and any other host the server process has network access to.\n\nThe primary at-risk deployments are multi-tenant HTTP installations where more than one operator can present a valid `AUTH_TOKEN`, or where a token is shared with less-trusted clients. Single-tenant stdio deployments and HTTP deployments without multi-tenant headers are not affected.\n\n## Affected versions\n`n8n-mcp` ≤ `2.47.3` (all versions up to and including 2.47.3).\n\n## Patched versions\n`n8n-mcp` `2.47.4` and later.\n\n## Workarounds\nIf you cannot immediately upgrade:\n1. **Egress filtering at the network layer** — block outbound traffic from the `n8n-mcp` container to RFC1918 ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), link-local `169.254.0.0/16`, and any other internal ranges. This defends against any future SSRF-class issue and is recommended even after upgrading.\n2. **Disable multi-tenant headers** — if your deployment does not require per-request instance switching, unset `ENABLE_MULTI_TENANT` and do not accept `x-n8n-url` / `x-n8n-key` headers at the reverse proxy.\n3. **Restrict `AUTH_TOKEN` distribution** — ensure the bearer token is only held by fully trusted operators until you can upgrade.\n\n## Remediation\nUpgrade to `n8n-mcp` 2.47.4 or later. No configuration changes are required; the fix adds validation at the URL entry points and normalizes URLs at the API client layer.\n\n## Credits\nReported by the Eresus Security Research Team. @ibrahmsql",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-04-08T19:53:48Z",
     "Severity": "HIGH",
     "Summary": "n8n-mcp has authenticated SSRF via instance-URL header in multi-tenant HTTP mode",
-    "UpdatedAt": "2026-04-08T19:53:49Z",
+    "UpdatedAt": "2026-04-09T14:31:08Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 8.5,

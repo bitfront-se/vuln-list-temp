@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mvv8-v4jj-g47j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39943"
       }
     ],
     "Description": "### Summary\n\nDirectus stores revision records (in `directus_revisions`) whenever items are created or updated. Due to the revision snapshot code not consistently calling the `prepareDelta` sanitization pipeline, sensitive fields (including user tokens, two-factor authentication secrets, external auth identifiers, auth data, stored credentials, and AI provider API keys) could be stored in plaintext within revision records.\n\n### Impact\nAny user or service account with read access to `directus_revisions` (or flow logs) could retrieve values for fields that are supposed to be concealed or encrypted at rest, including:\n- `token`, `tfa_secret`, `external_identifier`, `auth_data`, `credentials`\n- `ai_openai_api_key`, `ai_anthropic_api_key`, `ai_google_api_key`, `ai_openai_compatible_api_key`\n\nThis could lead to account takeover (via stolen tokens or 2FA secrets) or unauthorized use of third-party API keys stored against users.\n\n### Affected code paths\n\n1. **Item create/update revisions** The data (snapshot) field written to directus_revisions was not processed through prepareDelta, so concealed/encrypted fields were stored without redaction. Relational fields were also included, which should have been excluded.\n2. **Authentication service** When a user was auto-suspended after repeated failed login attempts, the revision record was created with the raw user object (including all sensitive fields) rather than the sanitized delta.",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-04-04T06:12:07Z",
     "Severity": "MODERATE",
     "Summary": "Directus: Sensitive fields exposed in revision history",
-    "UpdatedAt": "2026-04-07T22:11:45Z",
+    "UpdatedAt": "2026-04-09T14:30:52Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.5,
