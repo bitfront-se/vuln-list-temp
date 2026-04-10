@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-09T20:28:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "gramps-webapi"
+  },
+  "Advisory": {
+    "DatabaseId": 348259,
+    "Id": "GSA_kwCzR0hTQS05Z2p2LWp2bTctdnYyds4ABVBj",
+    "GhsaId": "GHSA-9gjv-jvm7-vv2v",
+    "References": [
+      {
+        "Url": "https://github.com/gramps-project/gramps-web-api/security/advisories/GHSA-9gjv-jvm7-vv2v"
+      },
+      {
+        "Url": "https://github.com/gramps-project/gramps-web-api/releases/tag/v3.11.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9gjv-jvm7-vv2v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9gjv-jvm7-vv2v"
+      }
+    ],
+    "Description": "## Summary\n\nUsers with the **Guest** role could receive private sub-object data (e.g. private alternate names, private addresses, private note/citation/media handles) through list API endpoints such as `GET /api/people/`, `GET /api/places/`, `GET /api/events/`, and all other object list endpoints.\n\n**This does not expose objects (people, places, events, …) that are themselves marked private.** Top-level private objects are correctly excluded from all responses. Only sub-object data attached to otherwise-public objects is affected.\n\n## Affected Versions\n\nAll versions of Gramps Web API prior to the fix.\n\n## Root Cause\n\nThe vulnerability originates from the behaviour of `PrivateProxyDb.iter_*()` in **Gramps core**. The `ProxyDbBase.__iter_object()` helper, which backs all `iter_*()` methods in `PrivateProxyDb`, correctly filters out top-level private objects but returns the remaining objects **unsanitized** — i.e. without stripping private sub-object references. In contrast, `PrivateProxyDb.get_*_from_handle()` does call the appropriate `sanitize_*()` function.\n\nGramps Web API's `ModifiedPrivateProxyDb` (which wraps the raw database for non-admin users) inherited this behaviour without override.\n\nThe same issue affects Gramps desktop features that consume `iter_*()` output: reports and exports generated via Gramps desktop using `PrivateProxyDb` may also include private sub-object data that should have been stripped.\n\n## Conditions Required\n\n**This issue only affects trees in which sub-objects have been explicitly marked private in Gramps desktop.** The Gramps Web frontend UI does not expose controls for setting the private flag on sub-objects (alternate names, addresses, notes,\ncitations, media references, event references, etc.). In practice, such flags are set in Gramps desktop and then synced or imported into Gramps Web.\n\n## Impact\n\nWhen the conditions above are met, a user with the Guest role querying any list endpoint receives:\n\n- **Full content** of private embedded sub-objects on people, such as alternate  names (first name, surname, etc.) and addresses (street, city, etc.).\n- **Handles referencing** private notes, citations, and media attached to places,  events, sources, and other objects. These reveal the *existence* of private\n  linked objects but not their content; fetching those objects by handle is  correctly blocked by the proxy.\n\n## Fix\n\n`ModifiedPrivateProxyDb` now overrides all `iter_*()` object methods to check `obj.get_privacy()` directly on the already-loaded object (eliminating the redundant per-object refetch) and to call the appropriate `sanitize_*()` function before yielding each object. This is consistent with the behaviour of `get_*_from_handle()` in `PrivateProxyDb`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-09T20:28:40Z",
+    "Severity": "MODERATE",
+    "Summary": "Gramps Web API: Private Sub-Object Data in Non-Private Objects Exposed to Guest Users",
+    "UpdatedAt": "2026-04-09T20:28:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.11.0"
+    }
+  ]
+}
