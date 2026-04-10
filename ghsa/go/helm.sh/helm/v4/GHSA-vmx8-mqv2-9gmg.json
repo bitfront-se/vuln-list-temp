@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-10T15:32:59Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "helm.sh/helm/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 348468,
+    "Id": "GSA_kwCzR0hTQS12bXg4LW1xdjItOWdtZ84ABVE0",
+    "GhsaId": "GHSA-vmx8-mqv2-9gmg",
+    "References": [
+      {
+        "Url": "https://github.com/helm/helm/security/advisories/GHSA-vmx8-mqv2-9gmg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35204"
+      },
+      {
+        "Url": "https://github.com/helm/helm/commit/36c8539e99bc42d7aef9b87d136254662d04f027"
+      },
+      {
+        "Url": "https://github.com/helm/helm/releases/tag/v4.1.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vmx8-mqv2-9gmg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vmx8-mqv2-9gmg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35204"
+      }
+    ],
+    "Description": "Helm is a package manager for Charts for Kubernetes. In Helm versions \u003e=4.0.0 and \u003c=4.1.3, a specially crafted Helm plugin, when installed or updated, will cause Helm to write the contents of the plugin to an arbitrary filesystem location.\n\n### Impact\n\nA Helm user who installs or updates a plugin that is specially crafted can cause Helm to attempt to write the content of the affected plugin to an arbitrary location on the user's filesystem. Impacted users risk potentially overwriting user and system files which may further compromise the integrity of a system.\n\n### Patches\n\nThis issue has been patched in Helm v4.1.4\n\nInstalling/updating a plugin with a non-SemVer version (which excludes path traversal patterns) will result in an error.\n\n### Workarounds\n\nValidate that the `plugin.yaml` of the Helm plugin does not include a `version:` field containing POSIX dot-dot path separators ie. \"`/../`\".",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-10T15:32:56Z",
+    "Severity": "HIGH",
+    "Summary": "Helm has a path traversal in plugin metadata version enables arbitrary file write outside Helm plugin directory",
+    "UpdatedAt": "2026-04-10T15:32:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 4.1.3"
+    }
+  ]
+}

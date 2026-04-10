@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-x2cm-hg9c-mf5w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35662"
       }
     ],
     "Description": "## Summary\nLeaf subagents could still use the send action to message controlled child sessions even when their controlScope was narrower than children.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `7679eb375294941b02214c234aff3948796969d0`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- src/auto-reply/reply/commands-subagents/action-send.ts now threads controller context through the send path.\n- src/agents/subagent-control.ts now blocks send attempts unless the requester owns the target and has controlScope=\"children\".\n\nOpenClaw thanks @space08 for reporting.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-03-26T21:44:41Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw leaf subagents can bypass controlScope restrictions to send messages to child sessions",
-    "UpdatedAt": "2026-03-26T21:44:41Z",
+    "UpdatedAt": "2026-04-10T17:27:44Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

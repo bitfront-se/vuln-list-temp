@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-cxmw-p77q-wchg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35643"
       }
     ],
     "Description": "## Summary\nAndroid Canvas WebView pages from untrusted origins could invoke the JavascriptInterface bridge and inject instructions into the app.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `8b02ef133275be96d8aac2283100016c8a7f32e5`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- apps/android/app/src/main/java/ai/openclaw/app/ui/CanvasScreen.kt now snapshots page origin and rejects untrusted bridge calls.\n- apps/android/app/src/main/java/ai/openclaw/app/node/CanvasActionTrust.kt centralizes trusted origin and path validation for the bridge.\n\nOpenClaw thanks @cyjhhh for reporting.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-03-26T19:30:52Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: Arbitrary code execution via unvalidated WebView JavascriptInterface",
-    "UpdatedAt": "2026-03-26T19:30:56Z",
+    "UpdatedAt": "2026-04-10T17:21:08Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
