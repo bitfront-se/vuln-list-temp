@@ -17,6 +17,15 @@
         "Url": "https://github.com/openclaw/openclaw/commit/651dc7450b68a5396a009db78ef9382633707ead"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35626"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/630f1479c44f78484dfa21bb407cbe6f171dac87"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-unauthenticated-resource-exhaustion-via-voice-call-webhook"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-rm59-992w-x2mv"
       }
     ],
@@ -24,6 +33,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-rm59-992w-x2mv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35626"
       }
     ],
     "Description": "## Summary\nVoice Call webhook handling buffered request bodies before provider signature checks, enabling bounded unauthenticated resource exhaustion.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `651dc7450b68a5396a009db78ef9382633707ead`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- extensions/voice-call/src/webhook.ts now enforces header gating and shared pre-auth body caps before reading attacker-controlled request bodies.\n- extensions/voice-call/src/webhook.test.ts ships regression coverage for missing-signature, oversize, and timeout pre-auth webhook cases.\n\nOpenClaw thanks @SEORY0 for reporting.",
@@ -31,7 +44,7 @@
     "PublishedAt": "2026-03-26T19:50:41Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw is vulnerable to unauthenticated resource exhaustion through its voice call webhook handling",
-    "UpdatedAt": "2026-03-26T19:50:41Z",
+    "UpdatedAt": "2026-04-10T20:19:04Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

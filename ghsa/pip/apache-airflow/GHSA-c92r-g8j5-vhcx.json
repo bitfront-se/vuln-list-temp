@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-10T19:33:24Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 348175,
+    "Id": "GSA_kwCzR0hTQS1jOTJyLWc4ajUtdmhjeM4ABVAP",
+    "GhsaId": "GHSA-c92r-g8j5-vhcx",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-57735"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/56633"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/61339"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/ovn8mpd8zkc604hojt7x3wsw3kc60x98"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/09/16"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c92r-g8j5-vhcx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c92r-g8j5-vhcx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-57735"
+      }
+    ],
+    "Description": "When user logged out, the JWT token the user had authtenticated with was not invalidated, which could lead to reuse of that token in case it was intercepted. In Airflow 3.2 we implemented the mechanism that implements token invalidation at logout. Users who are concerned about the logout scenario and possibility of intercepting the tokens, should upgrade to Airflow 3.2+\n\n\n\nUsers are recommended to upgrade to version 3.2.0, which fixes this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-09T12:31:11Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache Airflow: JWT token still valid after logout",
+    "UpdatedAt": "2026-04-10T19:33:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.2.0"
+    }
+  ]
+}

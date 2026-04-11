@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-03-29T15:48:43Z",
+  "UpdatedAt": "2026-04-10T20:19:27Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "openclaw"
@@ -20,6 +20,12 @@
         "Url": "https://github.com/advisories/GHSA-pg2v-8xwh-qhcc"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35629"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-server-side-request-forgery-via-unguarded-configured-base-urls-in-channel-extensions"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-rhfg-j8jq-7v2h"
       }
     ],
@@ -27,6 +33,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-rhfg-j8jq-7v2h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35629"
       }
     ],
     "Description": "## Summary\n\nSSRF via Unguarded Configured Base URLs in Multiple Channel Extensions (Incomplete Fix for CVE-2026-28476)\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Affected versions: `\u003c= 2026.3.24`\n- First patched version: `2026.3.25`\n- Latest published npm version at verification time: `2026.3.24`\n\n## Details\n\nSeveral channel extensions still used raw `fetch()` against configured base URLs without the SSRF guard that was added for CVE-2026-28476. Commit `f92c92515bd439a71bd03eb1bc969c1964f17acf` routes those outbound requests through `fetchWithSsrFGuard` so configured endpoints cannot be rebound to blocked internal destinations.\n\nVerified vulnerable on tag `v2026.3.24` and fixed on `main` by commit `f92c92515bd439a71bd03eb1bc969c1964f17acf`.\n\n## Fix Commit(s)\n\n- `f92c92515bd439a71bd03eb1bc969c1964f17acf`",
@@ -34,7 +44,7 @@
     "PublishedAt": "2026-03-29T15:48:42Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: SSRF via Unguarded Configured Base URLs in Multiple Channel Extensions (Incomplete Fix for CVE-2026-28476)",
-    "UpdatedAt": "2026-03-29T15:48:43Z",
+    "UpdatedAt": "2026-04-10T20:19:27Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -46,7 +56,7 @@
       "FirstPatchedVersion": {
         "Identifier": "2026.3.28"
       },
-      "VulnerableVersionRange": "\u003c= 2026.3.24"
+      "VulnerableVersionRange": "\u003c 2026.3.28"
     }
   ]
 }

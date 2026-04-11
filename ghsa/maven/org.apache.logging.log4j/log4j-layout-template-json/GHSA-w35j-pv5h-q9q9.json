@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-10T21:16:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.logging.log4j:log4j-layout-template-json"
+  },
+  "Advisory": {
+    "DatabaseId": 348488,
+    "Id": "GSA_kwCzR0hTQS13MzVqLXB2NWgtcTlxOc4ABVFI",
+    "GhsaId": "GHSA-w35j-pv5h-q9q9",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34481"
+      },
+      {
+        "Url": "https://github.com/apache/logging-log4j2/pull/4080"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/n34zdv00gbkdbzt2rx9rf5mqz6lhopcv"
+      },
+      {
+        "Url": "https://logging.apache.org/cyclonedx/vdr.xml"
+      },
+      {
+        "Url": "https://logging.apache.org/log4j/2.x/manual/json-template-layout.html"
+      },
+      {
+        "Url": "https://logging.apache.org/security.html#CVE-2026-34481"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/10/10"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w35j-pv5h-q9q9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w35j-pv5h-q9q9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34481"
+      }
+    ],
+    "Description": "Apache Log4j's JsonTemplateLayout https://logging.apache.org/log4j/2.x/manual/json-template-layout.html , in versions up to and including 2.25.3, produces invalid JSON output when log events contain non-finite floating-point values (NaN, Infinity, or -Infinity), which are prohibited by RFC 8259. This may cause downstream log processing systems to reject or fail to index affected records.\n\nAn attacker can exploit this issue only if both of the following conditions are met:\n\n  *  The application uses JsonTemplateLayout.\n  *  The application logs a MapMessage containing an attacker-controlled floating-point value.\n\n\nUsers are advised to upgrade to Apache Log4j JSON Template Layout 2.25.4, which corrects this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-10T18:31:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Log4j's JsonTemplateLayout produces invalid JSON output when log events contain non-finite floating-point values",
+    "UpdatedAt": "2026-04-10T21:16:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.0-beta3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0-alpha1, \u003c 3.0.0-beta3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.14.0, \u003c 2.25.4"
+    }
+  ]
+}

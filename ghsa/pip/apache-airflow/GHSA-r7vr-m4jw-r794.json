@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-10T19:31:49Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 348173,
+    "Id": "GSA_kwCzR0hTQS1yN3ZyLW00anctcjc5NM4ABVAN",
+    "GhsaId": "GHSA-r7vr-m4jw-r794",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34538"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/64415"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/9mq3msqhmgjwdzbr6bgthj4brb3oz9fl"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/09/9"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/releases/tag/3.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r7vr-m4jw-r794"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r7vr-m4jw-r794"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34538"
+      }
+    ],
+    "Description": "Apache Airflow versions 3.0.0 through 3.1.8 DagRun wait endpoint returns XCom result values even to users who only have DAG Run read permissions, such as the Viewer role.This behavior conflicts with the FAB RBAC model, which treats XCom as a separate protected resource, and with the security model documentation that defines the Viewer role as read-only.\n\nAirflow uses the FAB Auth Manager to manage access control on a per-resource basis. The Viewer role is intended to be read-only by default, and the security model documentation defines Viewer users as those who can inspect DAGs without accessing sensitive execution results.\n\nUsers are recommended to upgrade to Apache Airflow 3.2.0 which resolves this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-09T12:31:10Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow has an authorization bypass in DagRun wait endpoint",
+    "UpdatedAt": "2026-04-10T19:31:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.2.0"
+    }
+  ]
+}

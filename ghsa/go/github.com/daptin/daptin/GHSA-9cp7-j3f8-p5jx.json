@@ -1,0 +1,49 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-10T22:11:07Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/daptin/daptin"
+  },
+  "Advisory": {
+    "DatabaseId": 348584,
+    "Id": "GSA_kwCzR0hTQS05Y3A3LWozZjgtcDVqeM4ABVGo",
+    "GhsaId": "GHSA-9cp7-j3f8-p5jx",
+    "References": [
+      {
+        "Url": "https://github.com/daptin/daptin/security/advisories/GHSA-9cp7-j3f8-p5jx"
+      },
+      {
+        "Url": "https://github.com/daptin/daptin/commit/8d626bbb14f82160a08cbca53e0749f475f5742c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9cp7-j3f8-p5jx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9cp7-j3f8-p5jx"
+      }
+    ],
+    "Description": "### Impact\nThe `cloudstore.file.upload` action in `server/actions/action_cloudstore_file_upload.go` writes user-supplied filenames directly to disk without proper validation. \n\nThis allows unauthenticated attackers to perform path traversal and zip slip attacks, leading to arbitrary file write and potential remote code execution.\n\n**CVSS Score:** 10.0 Critical\n**CVSS Vector:** CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H\n**CWE:** CWE-22 (Path Traversal)\n\n### Patches\n\nUpgrade to a patched version once released. The vulnerability affects all versions \u003c= v0.11.3 (latest).\n\n### Workarounds\n\nRestrict access to the cloudstore.file.upload action through authentication and authorization controls until a patch is available.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-10T22:11:04Z",
+    "Severity": "CRITICAL",
+    "Summary": "Daptin has Unauthenticated Path Traversal and Zip Slip",
+    "UpdatedAt": "2026-04-10T22:11:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.12.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.11.3"
+    }
+  ]
+}

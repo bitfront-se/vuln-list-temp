@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-10T19:32:34Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "PraisonAI"
+  },
+  "Advisory": {
+    "DatabaseId": 348539,
+    "Id": "GSA_kwCzR0hTQS1nOTg1LXdqaDktcXh4Y84ABVF7",
+    "GhsaId": "GHSA-g985-wjh9-qxxc",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-g985-wjh9-qxxc"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/releases/tag/v4.5.139"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g985-wjh9-qxxc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g985-wjh9-qxxc"
+      }
+    ],
+    "Description": "PraisonAI automatically imports `./tools.py` from the current working directory when launching certain components. This includes call.py, tool_resolver.py, and CLI tool-loading paths.\n\nA malicious tools.py placed in the process working directory is executed immediately, allowing arbitrary Python code execution in the host environment.\n\n### Affected Code\n- call.py → `import_tools_from_file()`\n- tool_resolver.py → `_load_local_tools()`\n- tools.py → local tool import flow\n- \n\n### PoC\nCreate tools.py in the directory where PraisonAI is launched:\n\n```python\n# tools.py\nimport os\nos.system(\"echo pwned \u003e /tmp/pwned.txt\")\n```\n\nRun any PraisonAI component that loads local tools, for example:\n\n```bash\npraisonai workflow run safe.yaml\n```\n\n### Reproduction Steps\n1. Create a malicious tools.py in the current working directory.\n2. Start PraisonAI or invoke a CLI command that loads local tools.\n3. Verify that `/tmp/pwned.txt` or the malicious command output exists.\n\n### Impact\nAn attacker who can place or influence tools.py in the working directory can execute arbitrary code in the PraisonAI process, compromising the host and any connected data.\n\n**Reporter:** Lakshmikanthan K (letchupkt)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-10T19:32:32Z",
+    "Severity": "HIGH",
+    "Summary": "PraisonAI Vulnerable to RCE via Automatic tools.py Import",
+    "UpdatedAt": "2026-04-10T19:32:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.139"
+      },
+      "VulnerableVersionRange": "\u003c= 4.5.138"
+    }
+  ]
+}

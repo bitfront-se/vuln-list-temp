@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-10T19:31:32Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.dolphinscheduler:dolphinscheduler"
+  },
+  "Advisory": {
+    "DatabaseId": 348171,
+    "Id": "GSA_kwCzR0hTQS0zY2pjLXZoZm0tZmZwMs4ABVAL",
+    "GhsaId": "GHSA-3cjc-vhfm-ffp2",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-62188"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/ffrmkcwgr2lcz0f5nnnyswhpn3fytsvo"
+      },
+      {
+        "Url": "https://www.cve.org/CVERecord?id=CVE-2023-48796"
+      },
+      {
+        "Url": "https://github.com/apache/dolphinscheduler/releases/tag/3.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3cjc-vhfm-ffp2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3cjc-vhfm-ffp2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-62188"
+      }
+    ],
+    "Description": "An Exposure of Sensitive Information to an Unauthorized Actor vulnerability exists in Apache DolphinScheduler.\n\nThis vulnerability may allow unauthorized actors to access sensitive information, including database credentials.\n\n\nThis issue affects Apache DolphinScheduler versions 3.1.*.\n\n\nUsers are recommended to upgrade to:\n\n  *  version ≥ 3.2.0 if using 3.1.x\n\nAs a temporary workaround, users who cannot upgrade immediately may restrict the exposed management endpoints by setting the following environment variable:\n\n\n```\nMANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,metrics,prometheus\n```\n\nAlternatively, add the following configuration to the application.yaml file:\n\n\n```\nmanagement:\n   endpoints:\n     web:\n        exposure:\n          include: health,metrics,prometheus\n```\n\nThis issue has been reported as CVE-2023-48796:\n\n https://cveprocess.apache.org/cve5/CVE-2023-48796",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-09T12:31:10Z",
+    "Severity": "HIGH",
+    "Summary": "Apache DolphinScheduler vulnerable to sensitive information disclosure",
+    "UpdatedAt": "2026-04-10T19:31:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.0, \u003c 3.2.0"
+    }
+  ]
+}

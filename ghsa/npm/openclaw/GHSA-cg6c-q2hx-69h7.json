@@ -17,6 +17,15 @@
         "Url": "https://github.com/openclaw/openclaw/commit/b0ce53a79cf63834660270513e26d921899b4e5b"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35618"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/630f1479c44f78484dfa21bb407cbe6f171dac87"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-replay-identity-drift-via-query-only-variants-in-plivo-v2-verification"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-cg6c-q2hx-69h7"
       }
     ],
@@ -24,6 +33,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-cg6c-q2hx-69h7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35618"
       }
     ],
     "Description": "## Summary\nBefore `v2026.3.23`, the Plivo V2 verification path treated query-only variants of the same signed request as fresh verified work. Plivo V2 signatures authenticate `baseUrl + nonce`, but the replay key was derived from the full verification URL including the query string, so unsigned query-only changes minted a new `verifiedRequestKey`.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: `\u003c 2026.3.23`\n- Fixed: `\u003e= 2026.3.23`\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Root Cause\nThe vulnerable logic lived in `extensions/voice-call/src/webhook-security.ts`. V2 signature validation already canonicalized to the base URL without query parameters, but the replay key used the full `verificationUrl`, letting query-only variants bypass replay identity stability.\n\n## Fix Commit(s)\n- `b0ce53a79cf63834660270513e26d921899b4e5b` — `fix(voice-call): stabilize plivo v2 replay keys`\n\n## Release Status\nThe fix commit is contained in released tags `v2026.3.23` and `v2026.3.23-2`. The latest shipped tag and npm release both include the fix.\n\n## Code-Level Confirmation\n- `extensions/voice-call/src/webhook-security.ts` now derives the V2 replay key with `createPlivoV2ReplayKey(...)`, which hashes `getBaseUrlNoQuery(url)` plus the nonce.\n- `extensions/voice-call/src/webhook-security.test.ts` contains the regression test `treats query-only V2 variants as the same verified request`.\n\nThanks @smaeljaish771 for reporting.",
@@ -31,7 +44,7 @@
     "PublishedAt": "2026-03-26T18:56:32Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: Plivo V2 verified replay identity drifts on query-only variants",
-    "UpdatedAt": "2026-04-09T13:43:38Z",
+    "UpdatedAt": "2026-04-10T20:18:54Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

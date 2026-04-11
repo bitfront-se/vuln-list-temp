@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-10T22:09:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "unhead"
+  },
+  "Advisory": {
+    "DatabaseId": 348582,
+    "Id": "GSA_kwCzR0hTQS14N21tLTl2dnYtNjR3OM4ABVGm",
+    "GhsaId": "GHSA-x7mm-9vvv-64w8",
+    "References": [
+      {
+        "Url": "https://github.com/unjs/unhead/security/advisories/GHSA-x7mm-9vvv-64w8"
+      },
+      {
+        "Url": "https://github.com/unjs/unhead/commit/64b5ac0aa30cc256ea6677ce3dc4f132f81b2ff6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x7mm-9vvv-64w8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x7mm-9vvv-64w8"
+      }
+    ],
+    "Description": "### Summary\n\n`createStreamableHead({ streamKey })` interpolated its `streamKey` argument directly into the streaming SSR bootstrap and suspense-chunk inline scripts without identifier validation or escaping. If an application forwards untrusted data into that configuration value, the rendered scripts become a script-injection sink.\n\n### Details\n\n`streamKey` was embedded into JavaScript source via dot notation in two public helpers:\n\n* `createBootstrapScript()` returned `\u003cscript\u003ewindow.${streamKey}={...}\u003c/script\u003e`\n* `renderSSRHeadSuspenseChunk()` returned `window.${streamKey}.push(...)`\n\nNo escaping, quoting, or identifier validation was applied before these strings were embedded into HTML. A `streamKey` such as `__unhead__;globalThis.PWNED=1;//` broke out of the intended property access and injected arbitrary JavaScript into the page. The JSON escaping used for streamed head entries did not protect `streamKey` because `streamKey` was inserted as raw code rather than as serialized data.\n\n### Impact\n\n`streamKey` is a developer-chosen configuration value rather than a data field — the intended usage is a hardcoded identifier-shaped constant (default `__unhead__`). Exploitation therefore requires an application to explicitly route untrusted input into a configuration sink, which is not a documented or recommended pattern. We have no reports of any downstream project sourcing `streamKey` from request data.\n\nApplications using the default `streamKey`, or any hardcoded custom key, are **not affected**.\n\n### PoC\n\n```ts\nimport { createStreamableHead, renderSSRHeadShell } from 'unhead/stream/server'\n\nconst { head } = createStreamableHead({\n  streamKey: '__unhead__;globalThis.PWNED=1;//',\n})\n\nconst html = renderSSRHeadShell(\n  head,\n  '\u003c!doctype html\u003e\u003chtml\u003e\u003chead\u003e\u003c/head\u003e\u003cbody\u003e\u003c/body\u003e\u003c/html\u003e',\n)\n\n// \u003c!doctype html\u003e\u003chtml\u003e\u003chead\u003e\u003cscript\u003ewindow.__unhead__;globalThis.PWNED=1;//={_q:[],push(e){this._q.push(e)}}\u003c/script\u003e…\n```\n\n### Patch\n\nFixed on `main` in [`64b5ac0`](https://github.com/unjs/unhead/commit/64b5ac0aa30cc256ea6677ce3dc4f132f81b2ff6). The fix will ship in the next patch release of `unhead`.\n\n`streamKey` is now validated against a conservative ASCII JavaScript-identifier pattern (`/^[$_a-z][$\\w]*$/i`) at every sink — `createStreamableHead`, `createBootstrapScript`, and the internal stream-key resolver. Invalid values throw immediately instead of being emitted into script output.\n\n### Workarounds\n\nDo not pass untrusted data into `createStreamableHead({ streamKey })` or `createBootstrapScript(key)`. If per-tenant keys are required, whitelist them against an identifier-safe pattern before constructing the head instance.\n\n### Credit\n\nThanks to @Jvr2022 for the report.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-10T22:09:39Z",
+    "Severity": "LOW",
+    "Summary": "unhead: Streaming SSR `streamKey` injected into inline script without identifier validation",
+    "UpdatedAt": "2026-04-10T22:09:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0-beta.5, \u003c= 3.0.0"
+    }
+  ]
+}

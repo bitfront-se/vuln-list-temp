@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-10T19:30:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@saltcorn/server"
+  },
+  "Advisory": {
+    "DatabaseId": 348533,
+    "Id": "GSA_kwCzR0hTQS0zMnB2LW1wcWctaDI5Ms4ABVF1",
+    "GhsaId": "GHSA-32pv-mpqg-h292",
+    "References": [
+      {
+        "Url": "https://github.com/saltcorn/saltcorn/security/advisories/GHSA-32pv-mpqg-h292"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40163"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-32pv-mpqg-h292"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-32pv-mpqg-h292"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40163"
+      }
+    ],
+    "Description": "### Summary\n\nTwo unauthenticated path traversal vulnerabilities exist in Saltcorn's mobile sync endpoints. The `POST /sync/offline_changes` endpoint allows an unauthenticated attacker to create arbitrary directories and write a `changes.json` file with attacker-controlled JSON content anywhere on the server filesystem. The `GET /sync/upload_finished` endpoint allows an unauthenticated attacker to list arbitrary directory contents and read specific JSON files.\n\nThe safe path validation function `File.normalise_in_base()` exists in the codebase and is correctly used by the `clean_sync_dir` endpoint in the **same file** (fix for GHSA-43f3-h63w-p6f6), but was not applied to these two endpoints.\n\n### Details\n\n**Finding 1: Arbitrary file write — `POST /sync/offline_changes` (sync.js line 226)**\n\nThe `newSyncTimestamp` parameter from the request body is used directly in `path.join()` without sanitization:\n\n```javascript\nconst syncDirName = `${newSyncTimestamp}_${req.user?.email || \"public\"}`;\nconst syncDir = path.join(\n    rootFolder.location, \"mobile_app\", \"sync\", syncDirName\n);\nawait fs.mkdir(syncDir, { recursive: true });        // creates arbitrary dir\nawait fs.writeFile(\n    path.join(syncDir, \"changes.json\"),\n    JSON.stringify(changes)                           // writes attacker content\n);\n```\n\nNo authentication middleware is applied to this route. Since `path.join()` normalizes `../` sequences, setting `newSyncTimestamp` to `../../../../tmp/evil` causes the path to resolve outside the sync directory.\n\n**Finding 2: Arbitrary directory read — `GET /sync/upload_finished` (sync.js line 288)**\n\nThe `dir_name` query parameter is used directly in `path.join()` without sanitization:\n\n```javascript\nconst syncDir = path.join(\n    rootFolder.location, \"mobile_app\", \"sync\", dir_name\n);\nlet entries = await fs.readdir(syncDir);\n```\n\nAlso unauthenticated. An attacker can list directory contents and read files named `translated-ids.json`, `unique-conflicts.json`, `data-conflicts.json`, or `error.json` from any directory.\n\n**Contrast — fixed endpoint in the same file (line 342):**\n\nThe `clean_sync_dir` endpoint correctly uses `File.normalise_in_base()`:\n\n```javascript\nconst syncDir = File.normalise_in_base(\n    path.join(rootFolder.location, \"mobile_app\", \"sync\"),\n    dir_name\n);\nif (syncDir) await fs.rm(syncDir, { recursive: true, force: true });\n```\n\n### PoC\n\n```bash\n# Write arbitrary file to /tmp/\ncurl -X POST http://TARGET:3000/sync/offline_changes \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"newSyncTimestamp\": \"../../../../tmp/saltcorn_poc\",\n    \"oldSyncTimestamp\": \"0\",\n    \"changes\": {\"proof\": \"path_traversal_write\"}\n  }'\n# Result: /tmp/saltcorn_poc_public/changes.json created with attacker content\n\n# List /etc/ directory\ncurl \"http://TARGET:3000/sync/upload_finished?dir_name=../../../../etc\"\n```\n\n### Impact\n\n- **Unauthenticated arbitrary directory creation** anywhere on the filesystem\n- **Unauthenticated arbitrary JSON file write** (`changes.json`) to any writable directory\n- **Unauthenticated directory listing** of arbitrary directories\n- **Unauthenticated read** of specific JSON files from arbitrary directories\n- Potential for **remote code execution** via writing to sensitive paths (cron, systemd, Node.js module paths)\n\n### Remediation\n\nApply `File.normalise_in_base()` to both endpoints, matching the existing pattern in `clean_sync_dir`:\n\n```javascript\n// offline_changes fix\nconst syncDirName = `${newSyncTimestamp}_${req.user?.email || \"public\"}`;\nconst syncDir = File.normalise_in_base(\n    path.join(rootFolder.location, \"mobile_app\", \"sync\"),\n    syncDirName\n);\nif (!syncDir) {\n    return res.status(400).json({ error: \"Invalid sync directory name\" });\n}\n\n// upload_finished fix\nconst syncDir = File.normalise_in_base(\n    path.join(rootFolder.location, \"mobile_app\", \"sync\"),\n    dir_name\n);\nif (!syncDir) {\n    return res.json({ finished: false });\n}\n```\n\nAdditionally, add `loggedIn` middleware to endpoints that modify server state.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-10T19:30:27Z",
+    "Severity": "HIGH",
+    "Summary": "Saltcorn has an Unauthenticated Path Traversal in sync endpoints, allowing arbitrary file write and directory read",
+    "UpdatedAt": "2026-04-10T19:30:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6.0-beta.4"
+      },
+      "VulnerableVersionRange": "\u003e= 1.6.0-alpha.0, \u003c 1.6.0-beta.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.5"
+      },
+      "VulnerableVersionRange": "\u003e= 1.5.0-beta.0, \u003c 1.5.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.5"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.5"
+    }
+  ]
+}

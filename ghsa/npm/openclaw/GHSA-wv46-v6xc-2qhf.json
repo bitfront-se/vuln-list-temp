@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-03-26T19:08:19Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -15,6 +15,15 @@
       },
       {
         "Url": "https://github.com/openclaw/openclaw/commit/7ade3553b74ee3f461c4acd216653d5ba411f455"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35670"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/630f1479c44f78484dfa21bb407cbe6f171dac87"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-webhook-reply-rebinding-via-username-resolution-in-synology-chat"
       },
       {
         "Url": "https://github.com/advisories/GHSA-wv46-v6xc-2qhf"
@@ -33,13 +42,13 @@
     "Description": "## Summary\nSynology Chat reply delivery could rebind to a mutable username match instead of the stable numeric user_id recorded by the webhook event.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `7ade3553b74ee3f461c4acd216653d5ba411f455`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- extensions/synology-chat/src/webhook-handler.ts now keeps replies bound to the stable webhook user identifier unless an explicit dangerous opt-in is enabled.\n- extensions/synology-chat/src/config-schema.ts contains the explicit dangerous opt-in seam instead of silent username rebinding.\n\nOpenClaw thanks @nexrin for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-26T19:08:16Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "OpenClaw: Synology Chat reply delivery could be rebound through username-based user resolution.",
-    "UpdatedAt": "2026-04-10T17:30:18Z",
+    "UpdatedAt": "2026-04-10T19:46:23Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:L/A:N"
     }
   },
   "Versions": [
