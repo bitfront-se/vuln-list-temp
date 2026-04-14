@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-14T01:11:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "follow-redirects"
+  },
+  "Advisory": {
+    "DatabaseId": 348984,
+    "Id": "GSA_kwCzR0hTQS1yNHE1LXZtbW0tMjY1M84ABVM4",
+    "GhsaId": "GHSA-r4q5-vmmm-2653",
+    "References": [
+      {
+        "Url": "https://github.com/follow-redirects/follow-redirects/security/advisories/GHSA-r4q5-vmmm-2653"
+      },
+      {
+        "Url": "https://github.com/follow-redirects/follow-redirects/commit/844c4d302ac963d29bdb5dc1754ec7df3d70d7f9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4q5-vmmm-2653"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4q5-vmmm-2653"
+      }
+    ],
+    "Description": "## Summary\n\nWhen an HTTP request follows a cross-domain redirect (301/302/307/308), `follow-redirects` only strips `authorization`, `proxy-authorization`, and `cookie` headers (matched by regex at index.js:469-476). Any custom authentication header (e.g., `X-API-Key`, `X-Auth-Token`, `Api-Key`, `Token`) is forwarded verbatim to the redirect target.\n\nSince `follow-redirects` is the redirect-handling dependency for **axios** (105K+ stars), this vulnerability affects the entire axios ecosystem.\n\n## Affected Code\n\n`index.js`, lines 469-476:\n\n```javascript\nif (redirectUrl.protocol !== currentUrlParts.protocol \u0026\u0026\n   redirectUrl.protocol !== \"https:\" ||\n   redirectUrl.host !== currentHost \u0026\u0026\n   !isSubdomain(redirectUrl.host, currentHost)) {\n  removeMatchingHeaders(/^(?:(?:proxy-)?authorization|cookie)$/i, this._options.headers);\n}\n```\n\nThe regex only matches `authorization`, `proxy-authorization`, and `cookie`. Custom headers like `X-API-Key` are not matched.\n\n## Attack Scenario\n\n1. App uses axios with custom auth header: `headers: { 'X-API-Key': 'sk-live-secret123' }`\n2. Server returns `302 Location: https://evil.com/steal`\n3. follow-redirects sends `X-API-Key: sk-live-secret123` to `evil.com`\n4. Attacker captures the API key\n\n## Impact\n\nAny custom auth header set via axios leaks on cross-domain redirect. Extremely common pattern. Affects all axios users in Node.js.\n\n## Suggested Fix\n\nAdd a `sensitiveHeaders` option that users can extend, or strip ALL non-standard headers on cross-domain redirect.\n\n## Disclosure\n\nSource code review, manually verified. Found 2026-03-20.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T01:11:11Z",
+    "Severity": "MODERATE",
+    "Summary": "follow-redirects leaks Custom Authentication Headers to Cross-Domain Redirect Targets",
+    "UpdatedAt": "2026-04-14T01:11:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.16.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.15.11"
+    }
+  ]
+}
