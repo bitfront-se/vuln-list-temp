@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-14T00:06:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.jetty:jetty-jaspi"
+  },
+  "Advisory": {
+    "DatabaseId": 348946,
+    "Id": "GSA_kwCzR0hTQS1yN3A4LXhxNW0tNDM2Y84ABVMS",
+    "GhsaId": "GHSA-r7p8-xq5m-436c",
+    "References": [
+      {
+        "Url": "https://github.com/jetty/jetty.project/security/advisories/GHSA-r7p8-xq5m-436c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5795"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/26118760/JaspiAuthenticator_Security_Report.pdf"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/issues/92"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r7p8-xq5m-436c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r7p8-xq5m-436c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-5795"
+      }
+    ],
+    "Description": "### Description (as reported)\n\nA security vulnerability has been identified in Jetty's  `JaspiAuthenticator.java`. \n\nThe root cause is a failure to consistently clear authentication metadata stored in  `ThreadLocal`  during certain error or incomplete authentication flows. \nSpecifically, after a `GroupPrincipalCallback`  is persisted into the  `ThreadLocal`, the authentication process may exit prematurely — before the  `ThreadLocal`  storage is cleared — if a mandatory `CallerPrincipalCallback`  is missing or an exception occurs. \nThis allows a subsequent, unprivileged user processed by the same worker thread to inherit these residual security roles, leading to Broken Access Control and Privilege Escalation.\n\nSee also attached PDF.\n\n### Impact\nAn unauthenticated user may gain ungrated privileges from a previous request (privilege escalation).\n\n### Patches\nNo patches yet.\n\n### Workarounds\nDo not use Jetty's JASPI.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T00:06:27Z",
+    "Severity": "HIGH",
+    "Summary": "Eclipse Jetty: Early return from the JASPIAuthenticator code can potentially no clear ThreadLocal variables",
+    "UpdatedAt": "2026-04-14T00:06:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.4.61"
+      },
+      "VulnerableVersionRange": "\u003e= 9.4.0, \u003c= 9.4.60"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.29"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c= 10.0.28"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.29"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0, \u003c= 11.0.28"
+    }
+  ]
+}
