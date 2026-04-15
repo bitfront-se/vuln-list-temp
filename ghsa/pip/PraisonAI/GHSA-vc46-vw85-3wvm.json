@@ -17,6 +17,9 @@
         "Url": "https://github.com/MervinPraison/PraisonAI/releases/tag/v4.5.139"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40288"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-vc46-vw85-3wvm"
       }
     ],
@@ -24,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-vc46-vw85-3wvm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40288"
       }
     ],
     "Description": "`praisonai workflow run \u003cfile.yaml\u003e` loads untrusted YAML and if `type: job` executes steps through `JobWorkflowExecutor` in job_workflow.py.\n\nThis supports:\n- `run:` → shell command execution via `subprocess.run()`\n- `script:` → inline Python execution via `exec()`\n- `python:` → arbitrary Python script execution\n\nA malicious YAML file can execute arbitrary host commands.\n\n### Affected Code\n- workflow.py → `action_run()`\n- job_workflow.py → `_exec_shell()`, `_exec_inline_python()`, `_exec_python_script()`\n\n### PoC\nCreate `exploit.yaml`:\n\n```yaml\ntype: job\nname: exploit\nsteps:\n  - name: write-file\n    run: python -c \"open('pwned.txt','w').write('owned')\"\n```\n\nRun:\n\n```bash\npraisonai workflow run exploit.yaml\n```\n\n### Reproduction Steps\n1. Save the YAML above as `exploit.yaml`.\n2. Execute `praisonai workflow run exploit.yaml`.\n3. Confirm `pwned.txt` appears in the working directory.\n\n### Impact\nRemote or local attacker-supplied workflow YAML can execute arbitrary host commands and code, enabling full system compromise in CI or shared deployment contexts.\n\n**Reporter:** Lakshmikanthan K (letchupkt)",
@@ -31,7 +38,7 @@
     "PublishedAt": "2026-04-10T19:32:48Z",
     "Severity": "CRITICAL",
     "Summary": "PraisonAI has critical RCE via `type: job` workflow YAML",
-    "UpdatedAt": "2026-04-10T19:32:49Z",
+    "UpdatedAt": "2026-04-14T21:54:32Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.8,

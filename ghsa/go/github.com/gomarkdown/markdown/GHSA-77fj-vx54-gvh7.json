@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-14T22:38:21Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/gomarkdown/markdown"
+  },
+  "Advisory": {
+    "DatabaseId": 349374,
+    "Id": "GSA_kwCzR0hTQS03N2ZqLXZ4NTQtZ3ZoN84ABVS-",
+    "GhsaId": "GHSA-77fj-vx54-gvh7",
+    "References": [
+      {
+        "Url": "https://github.com/gomarkdown/markdown/security/advisories/GHSA-77fj-vx54-gvh7"
+      },
+      {
+        "Url": "https://github.com/gomarkdown/markdown/commit/759bbc3e32073c3bc4e25969c132fc520eda2778"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-77fj-vx54-gvh7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-77fj-vx54-gvh7"
+      }
+    ],
+    "Description": "### Summary\n\nProcessing a malformed input containing a `\u003c` character that is not followed by a `\u003e` character anywhere in the remaining text with a SmartypantsRenderer will lead to Out of Bounds read or a panic.\n\n### Details\n\nThe `smartLeftAngle()` function in `html/smartypants.go:367-376` performs an out-of-bounds slice operation when processing a `\u003c` character that is not followed by a `\u003e` character anywhere in the remaining text.\nhttps://github.com/gomarkdown/markdown/blob/37c66b85d6ab025ba67a73ba03b7f3ef55859cca/html/smartypants.go#L367-L376\nIf the length of the slice is lower than its capacity, this leads to an extra byte of data read. If the length equals the capacity, this leads to a panic.\n\n### PoC\n```golang\npackage main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\n\t\"github.com/gomarkdown/markdown/html\"\n)\n\nfunc main() {\n\tsrc := []byte(\"\u003ca\")\n\n\tfmt.Printf(\"Input: %q  (len=%d, cap=%d)\\n\", src, len(src), cap(src))\n\n\tvar buf bytes.Buffer\n\tsp := html.NewSmartypantsRenderer(html.Smartypants)\n\tsp.Process(\u0026buf, src) // panics: slice bounds out of range\n\n\tfmt.Printf(\"Output: %q\\n\", buf.String())\n}\n```\n\n### Impact\nThis vulnerability will lead to a Denial of Service / panic on the processing service.\n\n\n-- The Datadog Security Team",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T22:38:20Z",
+    "Severity": "HIGH",
+    "Summary": "Go Markdown has an Out-of-bounds Read in SmartypantsRenderer",
+    "UpdatedAt": "2026-04-14T22:38:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260411013819-759bbc3e3207"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260411013819-759bbc3e3207"
+    }
+  ]
+}

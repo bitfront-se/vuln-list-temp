@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-14T22:30:25Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/containers/podman/v5"
+  },
+  "Advisory": {
+    "DatabaseId": 349361,
+    "Id": "GSA_kwCzR0hTQS1oYzh3LWgybWYtaHA1Oc4ABVSx",
+    "GhsaId": "GHSA-hc8w-h2mf-hp59",
+    "References": [
+      {
+        "Url": "https://github.com/containers/podman/security/advisories/GHSA-hc8w-h2mf-hp59"
+      },
+      {
+        "Url": "https://github.com/containers/podman/commit/571c842bd357ee626019ea97d030fb772fc654ed"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hc8w-h2mf-hp59"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hc8w-h2mf-hp59"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33414"
+      }
+    ],
+    "Description": "## Summary\n\nA command injection vulnerability exists in Podman's HyperV machine backend. The VM image path is inserted into a PowerShell double-quoted string without sanitization, allowing `$()` subexpression injection.\n\n## Affected Code\n\n**File**: `pkg/machine/hyperv/stubber.go:647`\n\n```go\nresize := exec.Command(\"powershell\", []string{\n    \"-command\",\n    fmt.Sprintf(\"Resize-VHD \\\"%s\\\" %d\", imagePath.GetPath(), newSize.ToBytes()),\n}...)\n```\n\n\n\n## Root Cause\n\nPowerShell evaluates `$()` subexpressions inside double-quoted strings before executing the outer command. The `fmt.Sprintf` call places the user-controlled image path directly into double quotes without escaping or sanitization.\n\n## Impact\n\nAn attacker who can control the VM image path (through a crafted machine name or image directory) can execute arbitrary PowerShell commands with the privileges of the Podman process on the Windows host. On typical Windows installations, this means SYSTEM-level code execution.\n\n\n## Patch\n\nhttps://github.com/containers/podman/commit/571c842bd357ee626019ea97d030fb772fc654ed\n\nThe affected code is only used on Windows, all other operating systems are not affected by this and can thus ignore the CVE patch.\n\n## Credit\n\nWe like to thank Sang-Hoon Choi (@KoreaSecurity) for reporting this issue to us.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T22:30:24Z",
+    "Severity": "MODERATE",
+    "Summary": "PowerShell Command Injection in Podman HyperV Machine",
+    "UpdatedAt": "2026-04-14T22:30:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.8.2"
+      },
+      "VulnerableVersionRange": "\u003c= 5.8.1"
+    }
+  ]
+}

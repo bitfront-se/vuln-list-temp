@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-14T23:17:13Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "keras"
+  },
+  "Advisory": {
+    "DatabaseId": 348843,
+    "Id": "GSA_kwCzR0hTQS00ZjNmLWcyNGgtZnI4bc4ABVKr",
+    "GhsaId": "GHSA-4f3f-g24h-fr8m",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1462"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/commit/b6773d3decaef1b05d8e794458e148cb362f163f"
+      },
+      {
+        "Url": "https://huntr.com/bounties/7e78d6f1-6977-4300-b595-e81bdbda331c"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/pull/22035"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4f3f-g24h-fr8m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4f3f-g24h-fr8m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-1462"
+      }
+    ],
+    "Description": "A vulnerability in the `TFSMLayer` class of the `keras` package, version 3.13.0, allows attacker-controlled TensorFlow SavedModels to be loaded during deserialization of `.keras` models, even when `safe_mode=True`. This bypasses the security guarantees of `safe_mode` and enables arbitrary attacker-controlled code execution during model inference under the victim's privileges. The issue arises due to the unconditional loading of external SavedModels, serialization of attacker-controlled file paths, and the lack of validation in the `from_config()` method.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-13T15:31:42Z",
+    "Severity": "HIGH",
+    "Summary": "Keras has an untrusted deserialization vulnerability",
+    "UpdatedAt": "2026-04-14T23:17:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.13.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.13.2"
+    }
+  ]
+}

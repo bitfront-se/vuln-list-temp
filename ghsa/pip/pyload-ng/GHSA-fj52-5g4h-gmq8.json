@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-14T23:39:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pyload-ng"
+  },
+  "Advisory": {
+    "DatabaseId": 349419,
+    "Id": "GSA_kwCzR0hTQS1majUyLTVnNGgtZ21xOM4ABVTr",
+    "GhsaId": "GHSA-fj52-5g4h-gmq8",
+    "References": [
+      {
+        "Url": "https://github.com/pyload/pyload/security/advisories/GHSA-fj52-5g4h-gmq8"
+      },
+      {
+        "Url": "https://github.com/pyload/pyload/commit/e95804fb0d06cbb07d2ba380fc494d9ff89b68c1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fj52-5g4h-gmq8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fj52-5g4h-gmq8"
+      }
+    ],
+    "Description": "### Summary\nThe `pyload` application does not properly invalidate or modify sessions upon changes made to a user's permissions.\n\n### Details\nWhenever an administrator changes the permissions a specific account has, they do not expect that account still being able to access data that their new permissions do not allow. This is not the case for the `pyload` application, as a user with a valid session can still perform the actions.\n\n### PoC\nTake a user with all the permissions, as shown below.\n![image](https://user-images.githubusercontent.com/44903767/294956335-0e4da84f-bf9a-42c8-87f1-f5ff35967c63.png)\n\nWe now log in as this user.\n![image](https://user-images.githubusercontent.com/44903767/294956539-ac6805fe-957d-4289-8ca9-2f3b6b2878a3.png)\n\nLet us now take away all the permissions.\n![image](https://user-images.githubusercontent.com/44903767/294956689-757e6e08-03fd-42eb-b4a5-1ceefa6c24ed.png)\n\nThe logged in session can still be used to access everything in the application.\n![image](https://user-images.githubusercontent.com/44903767/294956943-fa0f23c0-a28c-4eed-89d6-1cc074feda6d.png)\n\n### Impact\nShould permissions be taken away, then the user is expected not to be able to execute the actions belonging to those actions anymore.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T23:39:25Z",
+    "Severity": "LOW",
+    "Summary": "pyLoad's Session Not Invalidated After Permission Changes",
+    "UpdatedAt": "2026-04-14T23:39:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.5.0b3.dev97"
+    }
+  ]
+}
