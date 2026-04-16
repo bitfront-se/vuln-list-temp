@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-16T01:20:23Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "keystone"
+  },
+  "Advisory": {
+    "DatabaseId": 349348,
+    "Id": "GSA_kwCzR0hTQS1wZngyLTl4OW0tN2doeM4ABVSk",
+    "GhsaId": "GHSA-pfx2-9x9m-7ghx",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40683"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/keystone/+bug/2121152"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/keystone/+bug/2141713"
+      },
+      {
+        "Url": "https://review.opendev.org/958205"
+      },
+      {
+        "Url": "https://www.openwall.com/lists/oss-security/2026/04/14/9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pfx2-9x9m-7ghx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pfx2-9x9m-7ghx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40683"
+      }
+    ],
+    "Description": "In OpenStack Keystone before 28.0.1, the LDAP identity backend does not convert the user enabled attribute to a boolean when the user_enabled_invert configuration option is False (the default). The _ldap_res_to_model method in the UserApi class only performed string-to-boolean conversion when user_enabled_invert was True. When False, the raw string value from LDAP (e.g., \"FALSE\") was used directly. Since non-empty strings are truthy in Python, users marked as disabled in LDAP were treated as enabled by Keystone, allowing them to authenticate and perform actions. All deployments using the LDAP identity backend without user_enabled_invert=True or user_enabled_emulation are affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-14T21:31:48Z",
+    "Severity": "HIGH",
+    "Summary": "OpenStack Keystone: LDAP identity backend does not convert enabled attribute to boolean",
+    "UpdatedAt": "2026-04-16T01:20:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:L/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "28.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 28.0.1"
+    }
+  ]
+}
