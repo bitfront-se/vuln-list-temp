@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-15T19:19:44Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "dev.dsf:dsf-bpe-server"
+  },
+  "Advisory": {
+    "DatabaseId": 349529,
+    "Id": "GSA_kwCzR0hTQS1najdwLTU5NXgtcXdmNc4ABVVZ",
+    "GhsaId": "GHSA-gj7p-595x-qwf5",
+    "References": [
+      {
+        "Url": "https://github.com/datasharingframework/dsf/security/advisories/GHSA-gj7p-595x-qwf5"
+      },
+      {
+        "Url": "https://github.com/datasharingframework/dsf/commit/7d25feafb83d66cb59985ac88568b67d937b1937"
+      },
+      {
+        "Url": "https://github.com/datasharingframework/dsf/commit/f4ecb002f7d12642f92da6b79371ed367d0140e7"
+      },
+      {
+        "Url": "https://dsf.dev/operations/v2.1.0/bpe/oidc.html"
+      },
+      {
+        "Url": "https://dsf.dev/operations/v2.1.0/fhir/oidc.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gj7p-595x-qwf5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gj7p-595x-qwf5"
+      }
+    ],
+    "Description": "### Affected Components\nDSF FHIR Server with enabled [OIDC authentication](https://dsf.dev/operations/v2.1.0/fhir/oidc.html).\nDSF BPE Server with enabled [OIDC authentication](https://dsf.dev/operations/v2.1.0/bpe/oidc.html).\n\n### Summary\nOIDC-authenticated sessions had no configured maximum inactivity timeout. Sessions persisted indefinitely after login, even after the OIDC access token expired.\n\n### Impact\nIf a user logs in via OIDC and leaves their browser without explicitly logging out, the session remains valid indefinitely. Another person using the same browser can access the DSF UI with the previous user's permissions. This is a realistic threat in hospital environments with shared workstations.\n\nOnly affects OIDC browser sessions, not relevant for mTLS machine-to-machine communication.\n\n### Fix (commits f4ecb00, 7d25fea)\n- Added configurable session timeout via `dev.dsf.server.auth.oidc.session.timeout` (default: `PT30M`).\n- Enabled `logoutWhenIdTokenIsExpired(true)` in OpenID configuration to tie session lifetime to token lifetime.\n- Websocket sessions are now closed with `VIOLATED_POLICY` when credentials expire, prevents stale websocket connections from continuing to receive events after session timeout.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-15T19:19:43Z",
+    "Severity": "MODERATE",
+    "Summary": "Data Sharing Framework is Missing Session Timeout for OIDC Sessions",
+    "UpdatedAt": "2026-04-15T19:19:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c 2.1.0"
+    }
+  ]
+}

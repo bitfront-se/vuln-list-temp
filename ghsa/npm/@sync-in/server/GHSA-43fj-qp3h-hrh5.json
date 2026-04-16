@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-15T18:57:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@sync-in/server"
+  },
+  "Advisory": {
+    "DatabaseId": 349528,
+    "Id": "GSA_kwCzR0hTQS00M2ZqLXFwM2gtaHJoNc4ABVVY",
+    "GhsaId": "GHSA-43fj-qp3h-hrh5",
+    "References": [
+      {
+        "Url": "https://github.com/Sync-in/server/security/advisories/GHSA-43fj-qp3h-hrh5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-43fj-qp3h-hrh5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-43fj-qp3h-hrh5"
+      }
+    ],
+    "Description": "### Summary\nThe `/api/auth/login` endpoint contains a logic flaw that allows unauthenticated remote attackers to enumerate valid usernames by measuring the application's response time.\n\n### Details\nThe logic flaw can be located at the below point in source:\nhttps://github.com/Sync-in/server/blob/7868bb2b3025f92e6c38087456304758713971b2/backend/src/applications/users/services/users-queries.service.ts#L91-L95\n\nEndpoints used for authentication should respond to the user with a consistent cadence, preventing remote actors from deriving sensitive information about an application based on backend behavior. In the case of authentication endpoints, this timing discrepancy is often caused by short-circuiting due to the lack of a matched user to compare against - as is the case with Sync-in.\n\n### Validation\nTickTock Enum (Burp Suite Extension) was utilized to validate this finding. Authentication attempts with a valid username see a response from the application at around 350-400ms on average, while invalid usernames are returned at only 95-100ms on average.\n\u003cimg width=\"1302\" height=\"284\" alt=\"image\" src=\"https://github.com/user-attachments/assets/31eeb72a-c3c2-4057-ac69-c0c92f0bbd4e\" /\u003e\n\n### Impact\nAn unauthenticated remote attacker can enumerate valid usernames. This significantly weakens the application's security posture by facilitating targeted brute-force attacks, stuffing, social engineering, and a suite of other more targeted attacks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-15T18:57:50Z",
+    "Severity": "MODERATE",
+    "Summary": "Sync-in Server has Username Enumeration via Timing Attack",
+    "UpdatedAt": "2026-04-15T18:57:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.1.0"
+    }
+  ]
+}

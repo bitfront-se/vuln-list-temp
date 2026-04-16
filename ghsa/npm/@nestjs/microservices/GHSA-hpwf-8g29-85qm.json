@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-hpwf-8g29-85qm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40879"
       }
     ],
     "Description": "### Impact\nAttacker sends many small, valid JSON messages in one TCP frame\n → handleData() recurses once per message; buffer shrinks each call\n → maxBufferSize is never reached; call stack overflows instead\n → A ~47 KB payload is sufficient to trigger RangeError\n\n### Patches\n\nFixed in `@nestjs/microservices@11.1.19`\n\n### References\n\nDiscovered by https://github.com/hwpark6804-gif",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-04-14T00:15:09Z",
     "Severity": "HIGH",
     "Summary": "Nest Affected by DoS via Recursive handleData in JsonSocket (TCP Transport)",
-    "UpdatedAt": "2026-04-14T00:15:11Z",
+    "UpdatedAt": "2026-04-15T21:14:55Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,
