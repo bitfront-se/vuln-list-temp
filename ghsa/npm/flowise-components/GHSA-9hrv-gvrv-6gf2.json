@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-16T21:23:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise-components"
+  },
+  "Advisory": {
+    "DatabaseId": 349761,
+    "Id": "GSA_kwCzR0hTQS05aHJ2LWd2cnYtNmdmMs4ABVZB",
+    "GhsaId": "GHSA-9hrv-gvrv-6gf2",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-9hrv-gvrv-6gf2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9hrv-gvrv-6gf2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9hrv-gvrv-6gf2"
+      }
+    ],
+    "Description": "### Summary\n\nThe attacker provides an intranet address through the base url field configured in the Execute Flow node \n→ Bypass checkDenyList / resolveAndValidate in httpSecurity.ts (not called)\n→ Causes the server to initiate an HTTP request to any internal network address, read cloud metadata, or detect internal network services \n\n### Details\n\n\u003cimg width=\"1280\" height=\"860\" alt=\"9a52a74e6fe2fd78e4962d1d68057fc2\" src=\"https://github.com/user-attachments/assets/20df0006-9129-4886-8928-16d19a617c23\" /\u003e\n\nThen initiate the call: \n\n```\nPOST /api/v1/prediction/d6739838-d3b3-43d9-86ff-911a3d757a7e HTTP/1.1\nHost: 127.0.0.1:3000\nContent-Type: application/json\nAuthorization: Bearer apikey\nContent-Length: 17\n\n{\"question\": \"1\"}\n```\n\nServer received a request:\n\n\u003cimg width=\"1432\" height=\"172\" alt=\"f45c757fec408e13739db068252ff21b\" src=\"https://github.com/user-attachments/assets/d3dfe0f5-83ec-4c79-ab32-754382a68d5f\" /\u003e\n\nAnd there is an echo: \n\n\u003cimg width=\"1280\" height=\"666\" alt=\"fa0caf0deb306cfeeea8fdf8941a287e\" src=\"https://github.com/user-attachments/assets/55a94d25-120b-4e9c-9517-46c2fc2b667f\" /\u003e\n\nFix:\nCall secureFetch for verification\n\n\n\n### Impact\n\nThis is a Server-Side Request Forgery (SSRF) vulnerability that may lead to the following risks: \n- Explore Internal Web Applications\n- Access sensitive management interfaces\n- Leak internal configuration, credentials, or confidential information\n\nThis vulnerability significantly increases the risk of internal service enumeration and potential lateral movement in enterprise environments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T21:23:17Z",
+    "Severity": "MODERATE",
+    "Summary": "Flowise Execute Flow function has an SSRF vulnerability",
+    "UpdatedAt": "2026-04-16T21:23:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.0.13"
+    }
+  ]
+}

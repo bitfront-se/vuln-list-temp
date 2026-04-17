@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-16T21:08:47Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "weblate"
+  },
+  "Advisory": {
+    "DatabaseId": 349741,
+    "Id": "GSA_kwCzR0hTQS1mZmdoLTNqcmYtOHd2aM4ABVYt",
+    "GhsaId": "GHSA-ffgh-3jrf-8wvh",
+    "References": [
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/security/advisories/GHSA-ffgh-3jrf-8wvh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40256"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/pull/18847"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/commit/e30dbcb33ae78e754ecef192d54f996b89cb4e15"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ffgh-3jrf-8wvh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ffgh-3jrf-8wvh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40256"
+      }
+    ],
+    "Description": "### Impact\nWeblate repository-boundary validation relies on string prefix checks on resolved absolute paths. In multiple code paths, the check uses startswith against the repository root path. This is not path-segment aware and can be bypassed when the external path shares the same string prefix as the repository path (for example, repo and repo_outside).\n\n### Patches\n* https://github.com/WeblateOrg/weblate/pull/18847\n\n### References\nThanks to [m9nx4u](https://hackerone.com/m9nx4u) for reporting this issue via HackerOne.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T21:08:47Z",
+    "Severity": "MODERATE",
+    "Summary": "Weblate: Prefix-Based Repository Boundary Check Bypass via Symlink/Junction Path Prefix Collision",
+    "UpdatedAt": "2026-04-16T21:08:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.17"
+      },
+      "VulnerableVersionRange": "\u003c 5.17"
+    }
+  ]
+}

@@ -33,6 +33,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-gj7p-595x-qwf5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40939"
       }
     ],
     "Description": "### Affected Components\nDSF FHIR Server with enabled [OIDC authentication](https://dsf.dev/operations/v2.1.0/fhir/oidc.html).\nDSF BPE Server with enabled [OIDC authentication](https://dsf.dev/operations/v2.1.0/bpe/oidc.html).\n\n### Summary\nOIDC-authenticated sessions had no configured maximum inactivity timeout. Sessions persisted indefinitely after login, even after the OIDC access token expired.\n\n### Impact\nIf a user logs in via OIDC and leaves their browser without explicitly logging out, the session remains valid indefinitely. Another person using the same browser can access the DSF UI with the previous user's permissions. This is a realistic threat in hospital environments with shared workstations.\n\nOnly affects OIDC browser sessions, not relevant for mTLS machine-to-machine communication.\n\n### Fix (commits f4ecb00, 7d25fea)\n- Added configurable session timeout via `dev.dsf.server.auth.oidc.session.timeout` (default: `PT30M`).\n- Enabled `logoutWhenIdTokenIsExpired(true)` in OpenID configuration to tie session lifetime to token lifetime.\n- Websocket sessions are now closed with `VIOLATED_POLICY` when credentials expire, prevents stale websocket connections from continuing to receive events after session timeout.",
@@ -40,7 +44,7 @@
     "PublishedAt": "2026-04-15T19:19:43Z",
     "Severity": "MODERATE",
     "Summary": "Data Sharing Framework is Missing Session Timeout for OIDC Sessions",
-    "UpdatedAt": "2026-04-15T19:19:44Z",
+    "UpdatedAt": "2026-04-16T21:41:56Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

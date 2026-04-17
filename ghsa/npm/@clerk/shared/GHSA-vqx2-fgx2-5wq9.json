@@ -1,0 +1,58 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-16T21:28:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@clerk/shared"
+  },
+  "Advisory": {
+    "DatabaseId": 349765,
+    "Id": "GSA_kwCzR0hTQS12cXgyLWZneDItNXdxOc4ABVZF",
+    "GhsaId": "GHSA-vqx2-fgx2-5wq9",
+    "References": [
+      {
+        "Url": "https://github.com/clerk/javascript/security/advisories/GHSA-vqx2-fgx2-5wq9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vqx2-fgx2-5wq9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vqx2-fgx2-5wq9"
+      }
+    ],
+    "Description": "## Summary\n\n`createRouteMatcher` in `@clerk/nextjs`, `@clerk/nuxt`, and `@clerk/astro` can be bypassed by certain crafted requests, allowing them to skip middleware gating and reach downstream handlers.\n\nSessions are not compromised and no existing user can be impersonated - the bypass only affects the middleware-level gating decision.\n\n## Who is affected\n\nAll apps using `createRouteMatcher` should upgrade to the patched versions. Patches are drop-in with no API changes. The information below describes the scope of the bypass and helps you understand whether you are potentially affected, but is not a reason to delay the upgrade.\n\nApps relying only on middleware gating via `createRouteMatcher` are affected, because a crafted request can skip middleware checks and reach downstream handlers (API routes, server components, etc.). This middleware pattern permits the bypass:\n\n```ts\n// Next.js example, equivalent patterns exist in Nuxt and Astro\nconst isProtectedRoute = createRouteMatcher(['/admin(.*)']);\n\nexport default clerkMiddleware(async (auth, req) =\u003e {\n  if (isProtectedRoute(req)) {\n    await auth.protect();\n  }\n});\n```\n\nThat said, the bypass is limited to the middleware-level route-matching gate. `clerkMiddleware` still authenticates the request and `auth()` reflects the real authentication state of the caller. Auth checks performed inside your route handlers, server components, or server actions continue to work correctly and are not affected. Whether your app is affected in practice depends on whether you have those downstream checks.\n\nExternal APIs that authenticate each request with a token are also unaffected on those endpoints, since token verification runs independently.\n\nAdditionally, this common middleware pattern correctly blocks the bypass at the middleware layer:\n\n```ts\n// Next.js example, equivalent patterns exist in Nuxt and Astro\nconst isPublicRoute = createRouteMatcher(['/docs(.*)']);\n\nexport default clerkMiddleware(async (auth, req) =\u003e {\n  if (!isPublicRoute(req)) {\n    await auth.protect();\n  }\n});\n```\n\n`@clerk/shared` is usually not imported directly in application code, but if you import `createPathMatcher` from an affected `@clerk/shared` version, you are also affected. Run `npm why @clerk/shared` (or your package manager's equivalent) to check your installed version.\n\n## Recommended actions\n\nInstall the patched version for your framework (pick the one matching your current major):\n\n**`@clerk/nextjs`**\n- v7.x: fixed in `7.2.1`\n- v6.x: fixed in `6.39.2`\n- v5.x: fixed in `5.7.6`\n\n**`@clerk/nuxt`**\n- v2.x: fixed in `2.2.2`\n- v1.x: fixed in `1.13.28`\n\n**`@clerk/astro`**\n- v3.x: fixed in `3.0.15`\n- v2.x: fixed in `2.17.10`\n- v1.x: fixed in `1.5.7`\n\n**`@clerk/shared`**\n- v4.x: fixed in `4.8.1`\n- v3.x: fixed in `3.47.4`\n- v2.x: fixed in `2.22.1`\n\n## Workaround\n\nIf you cannot upgrade immediately, adding server-side auth checks (`auth()`) inside your route handlers, server components, or server actions provides defense-in-depth against this bypass.\n\n## Timeline\n\nThis issue was reported on 13 APR 2026, patched on 15 APR 2026, and publicly disclosed on 15 APR 2026.\n\nThanks to [Christiaan Swiers](https://github.com/YouGina) for the responsible disclosure of this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T21:28:26Z",
+    "Severity": "CRITICAL",
+    "Summary": "Official Clerk JavaScript SDKs: Middleware-based route protection bypass",
+    "UpdatedAt": "2026-04-16T21:28:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.47.4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0-canary.v20250225091530, \u003c 3.47.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.20.17, \u003c 2.22.1"
+    }
+  ]
+}

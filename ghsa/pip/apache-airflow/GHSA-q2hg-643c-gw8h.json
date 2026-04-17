@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-16T22:57:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 349682,
+    "Id": "GSA_kwCzR0hTQS1xMmhnLTY0M2MtZ3c4aM4ABVXy",
+    "GhsaId": "GHSA-q2hg-643c-gw8h",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-54550"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/63200"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/3mf4cfx070ofsnf9qy0s2v5gqb5sc2g1"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/15/1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q2hg-643c-gw8h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q2hg-643c-gw8h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-54550"
+      }
+    ],
+    "Description": "The example example_xcom that was included in airflow documentation implemented unsafe pattern of reading value\nfrom xcom in the way that could be exploited to allow UI user who had access to modify XComs to perform arbitrary\nexecution of code on the worker. Since the UI users are already highly trusted, this is a Low severity vulnerability.\n\nIt does not affect Airflow release - example_dags are not supposed to be enabled in production environment, however\nusers following the example could replicate the bad pattern. Documentation of Airflow 3.2.0 contains version of\nthe example with improved resiliance for that case.\n\nUsers who followed that pattern are advised to adjust their implementations accordingly.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T15:31:31Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Airflow: RCE by race condition in example_xcom dag",
+    "UpdatedAt": "2026-04-16T22:57:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.0"
+    }
+  ]
+}

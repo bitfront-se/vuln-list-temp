@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-16T21:09:42Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "HotChocolate.Language"
+  },
+  "Advisory": {
+    "DatabaseId": 349745,
+    "Id": "GSA_kwCzR0hTQS1xcjNtLXh3NGMtanF3M84ABVYx",
+    "GhsaId": "GHSA-qr3m-xw4c-jqw3",
+    "References": [
+      {
+        "Url": "https://github.com/ChilliCream/graphql-platform/security/advisories/GHSA-qr3m-xw4c-jqw3"
+      },
+      {
+        "Url": "https://github.com/ChilliCream/graphql-platform/pull/9528"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qr3m-xw4c-jqw3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qr3m-xw4c-jqw3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40324"
+      }
+    ],
+    "Description": "### Impact\n\nHot Chocolate's `Utf8GraphQLParser` is a recursive descent parser with no recursion depth limit. A crafted GraphQL document with deeply nested selection sets, object values, list values, or list types can trigger a `StackOverflowException` on payloads as small as **40 KB**.\n\nBecause `StackOverflowException` is **uncatchable in .NET** (since .NET 2.0), the entire worker process is terminated immediately. All in-flight HTTP requests, background `IHostedService` tasks, and open WebSocket subscriptions on that worker are dropped. The orchestrator (Kubernetes, IIS, etc.) must restart the process.\n\nThis occurs **before any validation rules run** — `MaxExecutionDepth`, complexity analyzers, persisted query allow-lists, and custom `IDocumentValidatorRule` implementations cannot intercept the crash because `Utf8GraphQLParser.Parse` is invoked before validation. The existing `MaxAllowedFields=2048` limit does not help because the crashing payloads contain very few fields.\n\n**Severity:** Critical (9.1) — `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H`\n\n### Patches\n\n- **v12 line:** Fixed in `12.22.7`\n- **v13 line:** Fixed in `13.9.16`\n- **v14 line:** Fixed in `14.3.1`\n- **v15 line:** Fixed in `15.1.14`\n\nThe fix adds a `MaxAllowedRecursionDepth` option to `ParserOptions` with a safe default, and enforces it across all recursive parser methods (`ParseSelectionSet`, `ParseValueLiteral`, `ParseObject`, `ParseList`, `ParseTypeReference`, etc.). When the limit is exceeded, a catchable `SyntaxException` is thrown instead of overflowing the stack.\n\n### Workarounds\n\nThere is no application-level workaround. `StackOverflowException` cannot be caught in .NET. The only mitigation is to upgrade to a patched version.\n\nOperators can reduce (but not eliminate) risk by limiting HTTP request body size at the reverse proxy or load balancer layer, though the smallest crashing payload (40 KB) is well below most default body size limits and is highly compressible (~few hundred bytes via gzip).\n\n### References\n\n- Fix for v15: https://github.com/ChilliCream/graphql-platform/pull/9528",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T21:09:40Z",
+    "Severity": "CRITICAL",
+    "Summary": "ChilliCream GraphQL Platform: Utf8GraphQLParser Stack Overflow via Deeply Nested GraphQL Documents",
+    "UpdatedAt": "2026-04-16T21:09:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.1.14"
+      },
+      "VulnerableVersionRange": "\u003e= 15.0.0, \u003c 15.1.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.3.1"
+      },
+      "VulnerableVersionRange": "\u003e= 14.0.0, \u003c 14.3.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.9.16"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c 13.9.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.22.7"
+      },
+      "VulnerableVersionRange": "\u003c 12.22.7"
+    }
+  ]
+}

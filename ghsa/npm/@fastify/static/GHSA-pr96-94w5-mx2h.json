@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-16T22:34:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@fastify/static"
+  },
+  "Advisory": {
+    "DatabaseId": 349800,
+    "Id": "GSA_kwCzR0hTQS1wcjk2LTk0dzUtbXgyaM4ABVZo",
+    "GhsaId": "GHSA-pr96-94w5-mx2h",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fastify-static/security/advisories/GHSA-pr96-94w5-mx2h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-6410"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pr96-94w5-mx2h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pr96-94w5-mx2h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-6410"
+      }
+    ],
+    "Description": "### Impact\n\n`@fastify/static` v9.1.0 and earlier serves directory listings outside the configured static root when the `list` option is enabled. A request such as `/public/../outside/` causes `dirList.path()` to resolve a directory outside the root via `path.join()` without a containment check.\n\nA remote unauthenticated attacker can obtain directory listings for arbitrary directories accessible to the Node.js process, disclosing directory names and filenames that should not be exposed. File contents are not disclosed.\n\n### Patches\n\nUpgrade to `@fastify/static` \u003e= 9.1.1.\n\n### Workarounds\n\nDisable directory listing by removing the `list` option from the plugin configuration.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T22:34:30Z",
+    "Severity": "MODERATE",
+    "Summary": "@fastify/static vulnerable to path traversal in directory listing",
+    "UpdatedAt": "2026-04-16T22:34:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 9.1.0"
+    }
+  ]
+}

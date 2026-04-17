@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-16T21:26:24Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 349470,
+    "Id": "GSA_kwCzR0hTQS00ZzQ4LTU0cTItZmc3cc4ABVUe",
+    "GhsaId": "GHSA-4g48-54q2-fg7q",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25219"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/61580"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/61582"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/t4dlmqkn0njz4chk3g7mdgzb96y4ttqh"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/15/3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4g48-54q2-fg7q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4g48-54q2-fg7q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25219"
+      }
+    ],
+    "Description": "The `access_key` and `connection_string` connection properties were not marked as sensitive names in secrets masker. This means that user with read permission could see the values in Connection UI, as well as when Connection was accidently logged to logs, those values could be seen in the logs. Azure Service Bus used those properties to store sensitive values. Possibly other providers could be also affected if they used the same fields to store sensitive data.\n\nIf you used Azure Service Bus connection with those values set or if you have other connections with those values storing senesitve values, you should upgrade Airflow to 3.1.8.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-15T15:31:42Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airlfow: Sensitive Azure Service Bus connection string (and possibly other providers) exposed to users with view access",
+    "UpdatedAt": "2026-04-16T21:26:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.8"
+      },
+      "VulnerableVersionRange": "\u003c 3.1.8"
+    }
+  ]
+}

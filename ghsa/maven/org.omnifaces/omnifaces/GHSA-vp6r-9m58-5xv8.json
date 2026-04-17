@@ -1,0 +1,70 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-16T21:31:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.omnifaces:omnifaces"
+  },
+  "Advisory": {
+    "DatabaseId": 349771,
+    "Id": "GSA_kwCzR0hTQS12cDZyLTltNTgtNXh2OM4ABVZL",
+    "GhsaId": "GHSA-vp6r-9m58-5xv8",
+    "References": [
+      {
+        "Url": "https://github.com/omnifaces/omnifaces/security/advisories/GHSA-vp6r-9m58-5xv8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vp6r-9m58-5xv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vp6r-9m58-5xv8"
+      }
+    ],
+    "Description": "### Impact\n\nServer-side EL injection leading to Remote Code Execution (RCE). Affects applications that use `CDNResourceHandler` with a wildcard CDN mapping (e.g. `libraryName:*=https://cdn.example.com/*`). An attacker can craft a resource request\nURL containing an EL expression in the resource name, which is evaluated server-side.\n\nThe severity depends on the EL implementation and the objects available in the EL context. In the worst case this leads to Remote Code Execution (RCE). At minimum it allows information disclosure and denial of service.\n\nApplications using `CDNResourceHandler` without wildcard mappings (i.e. only explicit resource-to-URL mappings) are **not** affected.\n\n### Patches\n\nFixed in versions 5.2.3, 4.7.5, 3.14.16, 2.7.32, and 1.14.2. Users should upgrade to the appropriate version for their branch.\n\n### Workarounds\n\nReplace wildcard CDN mappings with explicit resource-to-URL mappings. For example, replace:\n```\nlibraryName:*=https://cdn.example.com/*\n```\nwith individual entries:\n```\nlibraryName:resource1.js=https://cdn.example.com/resource1.js,\nlibraryName:resource2.js=https://cdn.example.com/resource2.js\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-16T21:31:14Z",
+    "Severity": "HIGH",
+    "Summary": "OmniFaces: EL injection via crafted resource name in wildcard CDN mapping",
+    "UpdatedAt": "2026-04-16T21:31:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0-M1, \u003c 5.2.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.7.5"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0-M1, \u003c 4.7.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.16"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0-RC1, \u003c 3.14.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.7.32"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0-RC1, \u003c 2.7.32"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.14.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.14.2"
+    }
+  ]
+}
