@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-03-26T21:37:40Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -17,6 +17,15 @@
         "Url": "https://github.com/openclaw/openclaw/commit/a47722de7e3c9cbda8d5512747ca7e3bb8f6ee66"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35622"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/630f1479c44f78484dfa21bb407cbe6f171dac87"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-improper-authentication-verification-in-google-chat-webhook"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-mp66-rf4f-mhh8"
       }
     ],
@@ -24,18 +33,22 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mp66-rf4f-mhh8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35622"
       }
     ],
     "Description": "## Summary\nGoogle Chat app-url webhook verification accepted add-on principals outside the intended deployment binding.\n\n## Affected Packages / Versions\n- Package: `openclaw` (npm)\n- Affected: \u003c 2026.3.22\n- Fixed: \u003e= 2026.3.22\n- Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`)\n- Latest published npm version checked: `2026.3.23-2`\n\n## Fix Commit(s)\n- `a47722de7e3c9cbda8d5512747ca7e3bb8f6ee66`\n\n## Release Status\nThe fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`.\n\n## Code-Level Confirmation\n- extensions/googlechat/src/auth.ts now requires expectedAddOnPrincipal matching for add-on principals and rejects unexpected issuers.\n- extensions/googlechat/src/monitor-webhook.ts passes the configured appPrincipal into auth verification for the shipped webhook path.\n\nOpenClaw thanks @ijxpwastaken for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-03-26T21:37:36Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "OpenClaw: Google Chat app-url webhook auth accepted non-deployment add-on principals",
-    "UpdatedAt": "2026-03-26T21:37:40Z",
+    "UpdatedAt": "2026-04-18T00:57:37Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:N"
     }
   },
   "Versions": [

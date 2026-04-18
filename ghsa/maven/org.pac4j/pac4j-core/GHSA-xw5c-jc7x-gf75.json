@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-18T01:04:38Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.pac4j:pac4j-core"
+  },
+  "Advisory": {
+    "DatabaseId": 349887,
+    "Id": "GSA_kwCzR0hTQS14dzVjLWpjN3gtZ2Y3Nc4ABVa_",
+    "GhsaId": "GHSA-xw5c-jc7x-gf75",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40458"
+      },
+      {
+        "Url": "https://cert.pl/en/posts/2026/04/CVE-2026-40458"
+      },
+      {
+        "Url": "https://www.pac4j.org/blog/security-advisory-pac4j-core-and-ldap.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xw5c-jc7x-gf75"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xw5c-jc7x-gf75"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40458"
+      }
+    ],
+    "Description": "PAC4J is vulnerable to Cross-Site Request Forgery (CSRF). A malicious attacker can craft a specially designed website which, when visited by a user, will automatically submit a forged cross-site request with a token whose hash collides with the victim's legitimate CSRF token. Importantly, the attacker does not need to know the victim’s CSRF token or its hash prior to the attack. Collisions in the deterministic String.hashCode() function can be computed directly, reducing the effective token's security space to 32 bits. This bypasses CSRF protection, allowing profile updates, password changes, account linking, and any other state-changing operations to be performed without the victim's consent.\n\nThis issue was fixed in PAC4J versions 5.7.10 and 6.4.1.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T15:31:18Z",
+    "Severity": "HIGH",
+    "Summary": "PAC4J has a Cross-Site Request Forgery (CSRF) Vulnerability",
+    "UpdatedAt": "2026-04-18T01:04:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0-RC1, \u003c 6.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.7.10"
+      },
+      "VulnerableVersionRange": "\u003c 5.7.10"
+    }
+  ]
+}

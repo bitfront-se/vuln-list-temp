@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-18T01:02:43Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/yuin/goldmark/renderer/html"
+  },
+  "Advisory": {
+    "DatabaseId": 349883,
+    "Id": "GSA_kwCzR0hTQS1jOTdtLXZ4aGotcDdqNs4ABVa7",
+    "GhsaId": "GHSA-c97m-vxhj-p7j6",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5160"
+      },
+      {
+        "Url": "https://github.com/yuin/goldmark/commit/cb46bbc4eca29d55aa9721e04ad207c23ccc44f9"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-GOLANG-GITHUBCOMYUINGOLDMARKRENDERERHTML-15838406"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c97m-vxhj-p7j6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c97m-vxhj-p7j6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-5160"
+      }
+    ],
+    "Description": "Versions of the package github.com/yuin/goldmark/renderer/html before 1.7.17 are vulnerable to Cross-site Scripting (XSS) due to improper ordering of URL validation and normalization. The renderer validates link destinations using a prefix-based check (IsDangerousURL) before resolving HTML entities. This allows an attacker to bypass protocol filtering by encoding dangerous schemes using HTML5 named character references. For example, a payload such as javascript\u0026colon;alert(1) is not recognized as dangerous during validation, leading to arbitrary script execution in the context of applications that render the URL.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T15:31:17Z",
+    "Severity": "MODERATE",
+    "Summary": "goldmark vulnerable to Cross-site Scripting (XSS)",
+    "UpdatedAt": "2026-04-18T01:02:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.17"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.17"
+    }
+  ]
+}

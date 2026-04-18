@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-18T00:55:22Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Zio"
+  },
+  "Advisory": {
+    "DatabaseId": 350000,
+    "Id": "GSA_kwCzR0hTQS1oMzlnLTZ4M2MtN2ZxOc4ABVcw",
+    "GhsaId": "GHSA-h39g-6x3c-7fq9",
+    "References": [
+      {
+        "Url": "https://github.com/xoofx/zio/security/advisories/GHSA-h39g-6x3c-7fq9"
+      },
+      {
+        "Url": "https://github.com/xoofx/zio/commit/c8c2f5328e50c1e7ab8c5c405fe70e0bd35f4782"
+      },
+      {
+        "Url": "https://github.com/xoofx/zio/releases/tag/0.22.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h39g-6x3c-7fq9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h39g-6x3c-7fq9"
+      }
+    ],
+    "Description": "# Summary\n\n`SubFileSystem` fails to confine operations to its declared sub path when the input path is `/../` (or equivalents `/../`, `/..\\\\`). This path passes all validation but resolves to the root of the parent filesystem, allowing directory level operations outside the intended boundary.\n\n# Affected Component\n\n`Zio.UPath.ValidateAndNormalize`\n`Zio.FileSystems.SubFileSystem`\n\n`UPath.ValidateAndNormalize` has a trailing slash optimisation.\n\n```csharp\nif (!processParts \u0026\u0026 i + 1 == path.Length)\n    return path.Substring(0, path.Length - 1);\n```\n\nWhen the input ends with `/` or `\\`, and `processParts` is still false, the function strips the trailing separator and returns immediately before the `..` resolution logic runs.  The input `/../` triggers this path: the trailing `/` is the last character, `processParts` has not been set (because `..` as the first relative segment after root is specifically exempted), so the function returns `/..` with the `..` segment unresolved.\n\nThe resulting `UPath` with `FullName = \"/..\"` is absolute, contains no control characters, and no colon so it passes `FileSystem.ValidatePath` without rejection.\n\nWhen this path reaches `SubFileSystem.ConvertPathToDelegate`:\n\n```csharp\nprotected override UPath ConvertPathToDelegate(UPath path)\n{\n    var safePath = path.ToRelative();     // \"/..\".ToRelative() = \"..\"\n    return SubPath / safePath;            // \"/jail\" / \"..\" = \"/\"  (resolved by Combine)\n}\n```\n\nThe delegate filesystem receives `/` (the root) instead of a path under `/jail`.\n\n# Proof of Concept\n\n```csharp\nusing Zio;\nusing Zio.FileSystems;\n\nvar root = new MemoryFileSystem();\nroot.CreateDirectory(\"/sandbox\");\nvar sub = new SubFileSystem(root, \"/sandbox\");\n\nConsole.WriteLine(sub.DirectoryExists(\"/../\"));           // True (sees parent root)\nConsole.WriteLine(sub.ConvertPathToInternal(\"/../\"));     // \"/\" (parent root path)\n```\n\n# Impact\n\nThe escape is limited to directory level operations because appending a filename after `..` (e.g., `/../file.txt`) causes normal `..` resolution to trigger, which correctly rejects the path as going above root.  Only the bare terminal `/../` (which strips to `/..`) survives.  This means that exploitability is limited, and this vulnerability does not escalate to file read/write.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-18T00:55:19Z",
+    "Severity": "LOW",
+    "Summary": "Zio has SubFileSystem Path Confinement Bypass via Unresolved `..` Segment",
+    "UpdatedAt": "2026-04-18T00:55:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.22.2"
+      },
+      "VulnerableVersionRange": "\u003c= 0.22.1"
+    }
+  ]
+}

@@ -14,6 +14,15 @@
         "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vcx4-4qxg-mfp4"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35628"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/c2c136ae9517ddd0789d742a0fdf4c10e8c729a7"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-brute-force-attack-via-missing-telegram-webhook-rate-limiting"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-vcx4-4qxg-mfp4"
       }
     ],
@@ -21,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-vcx4-4qxg-mfp4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35628"
       }
     ],
     "Description": "## Summary\n\nTelegram Webhook Missing Guess Rate Limiting Enables Brute-Force Guessing of Weak Webhook Secret\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Affected versions: `\u003c= 2026.3.24`\n- First patched version: `2026.3.25`\n- Latest published npm version at verification time: `2026.3.24`\n\n## Details\n\nTelegram webhook auth previously rejected bad secrets but did not throttle repeated guesses, allowing brute-force attempts against weak webhook secrets. Commit `c2c136ae9517ddd0789d742a0fdf4c10e8c729a7` adds repeated-guess throttling before auth failure responses.\n\nVerified vulnerable on tag `v2026.3.24` and fixed on `main` by commit `c2c136ae9517ddd0789d742a0fdf4c10e8c729a7`.\n\n## Fix Commit(s)\n\n- `c2c136ae9517ddd0789d742a0fdf4c10e8c729a7`\n\n## Release Process Note\n\n`2026.3.25` is the next planned OpenClaw release version in `package.json`. This advisory is being published ahead of that npm release so the draft is no longer blocked; once `2026.3.25` is published, the structured patched-version metadata will match the released artifact.",
@@ -28,11 +41,11 @@
     "PublishedAt": "2026-03-27T22:37:35Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Telegram Webhook Missing Guess Rate Limiting Enables Brute-Force Guessing of Weak Webhook Secret",
-    "UpdatedAt": "2026-03-27T22:37:36Z",
+    "UpdatedAt": "2026-04-18T00:45:44Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
     }
   },
   "Versions": [
