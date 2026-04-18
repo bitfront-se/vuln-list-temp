@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-17T21:35:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 349944,
+    "Id": "GSA_kwCzR0hTQS1qd3JxLThnNXgtNWZobc4ABVb4",
+    "GhsaId": "GHSA-jwrq-8g5x-5fhm",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-jwrq-8g5x-5fhm"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/66024"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/43d4be902755c970b3d15608679761877718da69"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jwrq-8g5x-5fhm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jwrq-8g5x-5fhm"
+      }
+    ],
+    "Description": "## Summary\n\nCollect-mode queue batches could reuse the last sender authorization context.\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Ecosystem: npm\n- Affected versions: `\u003c 2026.4.14`\n- Patched versions: `\u003e= 2026.4.14`\n\n## Impact\n\nCollect-mode queued messages from different senders could be drained as one batch using the final sender's authorization context, allowing earlier messages to inherit a more privileged context.\n\n## Technical Details\n\nThe fix splits collect-mode batches by sender authorization context before dispatch, preserving each message's own trust state.\n\n## Fix\n\nThe issue was fixed in #66024. The first stable tag containing the fix is `v2026.4.14`, and `openclaw@2026.4.14` includes the fix.\n\n## Fix Commit(s)\n\n- `43d4be902755c970b3d15608679761877718da69`\n- PR: #66024\n\n## Release Process Note\n\nUsers should upgrade to `openclaw` 2026.4.14 or newer. The latest npm release, `2026.4.14`, already includes the fix.\n\n## Credits\n\nThanks to @zsxsoft, with sponsorship from @KeenSecurityLab and @qclawer for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T21:35:35Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Collect-mode queue batches could reuse the last sender authorization context",
+    "UpdatedAt": "2026-04-17T21:35:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.14"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.14"
+    }
+  ]
+}

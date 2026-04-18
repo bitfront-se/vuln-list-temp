@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-17T22:31:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "math-codegen"
+  },
+  "Advisory": {
+    "DatabaseId": 349985,
+    "Id": "GSA_kwCzR0hTQS1wNng1LXA0eGYtY2M0cs4ABVch",
+    "GhsaId": "GHSA-p6x5-p4xf-cc4r",
+    "References": [
+      {
+        "Url": "https://github.com/mauriciopoppe/math-codegen/security/advisories/GHSA-p6x5-p4xf-cc4r"
+      },
+      {
+        "Url": "https://github.com/mauriciopoppe/math-codegen/pull/11"
+      },
+      {
+        "Url": "https://github.com/hits3134"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p6x5-p4xf-cc4r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p6x5-p4xf-cc4r"
+      }
+    ],
+    "Description": "### Impact\n\nString literal content passed to `cg.parse()` is injected verbatim into a `new Function()` body without sanitization. This allows an attacker to execute arbitrary system commands when user-controlled input reaches the parser. Any application exposing a math evaluation endpoint where user input flows into `cg.parse()` is vulnerable to full RCE.\n    \n### Patches\n\nThe vulnerability is addressed by using `JSON.stringify()` on string literal values in `lib/node/ConstantNode.js` to ensure they are treated as data rather than code. Users should upgrade to version 0.4.3 or later.\n    \n### Workarounds\n\nAvoid passing un-sanitized user input to the parser or manually escape string literals in the input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T22:31:45Z",
+    "Severity": "CRITICAL",
+    "Summary": "Remote Code Execution (RCE) via String Literal Injection into math-codegen",
+    "UpdatedAt": "2026-04-17T22:31:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.3"
+      },
+      "VulnerableVersionRange": "\u003c 0.4.3"
+    }
+  ]
+}

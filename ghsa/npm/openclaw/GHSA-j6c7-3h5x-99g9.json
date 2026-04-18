@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-17T21:53:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 349953,
+    "Id": "GSA_kwCzR0hTQS1qNmM3LTNoNXgtOTlnOc4ABVcB",
+    "GhsaId": "GHSA-j6c7-3h5x-99g9",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j6c7-3h5x-99g9"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/65717"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/8f8492d172f4c5b4fd7dd9a47855ed620c8770ab"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j6c7-3h5x-99g9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j6c7-3h5x-99g9"
+      }
+    ],
+    "Description": "## Summary\n\nShell-wrapper detection missed env-argv assignment injection forms.\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Ecosystem: npm\n- Affected versions: `\u003e= 2026.2.22 \u003c 2026.4.12`\n- Patched versions: `\u003e= 2026.4.12`\n\n## Impact\n\nExec preflight handling missed shell-wrapper and argv-level environment assignment forms that could affect execution semantics, including high-risk shell environment controls.\n\n## Technical Details\n\nThe fix broadens shell-wrapper detection and blocks environment assignments in argv forms. High-risk shell variables such as `SHELLOPTS` and `PS4` are covered by the host environment security policy.\n\n## Fix\n\nThe issue was fixed in #65717. The first stable tag containing the fix is `v2026.4.12`, and `openclaw@2026.4.14` includes the fix.\n\n## Fix Commit(s)\n\n- `8f8492d172f4c5b4fd7dd9a47855ed620c8770ab`\n- PR: #65717\n\n## Release Process Note\n\nUsers should upgrade to `openclaw` 2026.4.12 or newer. The latest npm release, `2026.4.14`, already includes the fix.\n\n## Credits\n\nThanks to @decsecre583 for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T21:53:36Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Shell-wrapper detection missed env-argv assignment injection forms",
+    "UpdatedAt": "2026-04-17T21:53:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.12"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.2.22, \u003c 2026.4.12"
+    }
+  ]
+}

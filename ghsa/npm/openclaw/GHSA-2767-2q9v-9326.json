@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-17T21:57:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 349959,
+    "Id": "GSA_kwCzR0hTQS0yNzY3LTJxOXYtOTMyNs4ABVcH",
+    "GhsaId": "GHSA-2767-2q9v-9326",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2767-2q9v-9326"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/63495"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/65788"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/08ae021d1f42905a85a550813c0d95169b171a6c"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/ddb7a8dd80b8d5dd04aafa44ce7a4354b568bb2d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2767-2q9v-9326"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2767-2q9v-9326"
+      }
+    ],
+    "Description": "## Summary\n\nQQBot reply media URL handling could trigger SSRF and re-upload fetched bytes.\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Ecosystem: npm\n- Affected versions: `\u003c 2026.4.12`\n- Patched versions: `\u003e= 2026.4.12`\n\n## Impact\n\nQQBot reply media URLs could be treated as trusted media sources, allowing SSRF fetches whose returned bytes were then re-uploaded through the channel.\n\n## Technical Details\n\nThe fix routes QQBot remote media fetches through SSRF-guarded media fetching and explicit URL allowlist policy.\n\n## Fix\n\nThe issue was fixed in #63495 and #65788. The first stable tag containing the fix is `v2026.4.12`, and `openclaw@2026.4.14` includes the fix.\n\n## Fix Commit(s)\n\n- `08ae021d1f4f02e0ca5fd8a3b9659291c1ecf95a`\n- `ddb7a8dd80b8d5dd04aafa44ce7a4354b568bb2d`\n- PR: #63495, #65788\n\n## Release Process Note\n\nUsers should upgrade to `openclaw` 2026.4.12 or newer. The latest npm release, `2026.4.14`, already includes the fix.\n\n## Credits\n\nThanks to @threalwinky for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T21:57:31Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: QQBot reply media URL handling could trigger SSRF and re-upload fetched bytes",
+    "UpdatedAt": "2026-04-17T21:57:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.12"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.12"
+    }
+  ]
+}

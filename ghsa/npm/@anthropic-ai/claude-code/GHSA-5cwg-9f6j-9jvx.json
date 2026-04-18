@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-17T22:19:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 349977,
+    "Id": "GSA_kwCzR0hTQS01Y3dnLTlmNmotOWp2eM4ABVcZ",
+    "GhsaId": "GHSA-5cwg-9f6j-9jvx",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-5cwg-9f6j-9jvx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35603"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5cwg-9f6j-9jvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5cwg-9f6j-9jvx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35603"
+      }
+    ],
+    "Description": "On Windows, Claude Code loaded system-wide default configuration from `C:\\ProgramData\\ClaudeCode\\managed-settings.json` without validating directory ownership or access permissions. Because the `ProgramData` directory is writable by non-administrative users by default and the `ClaudeCode` subdirectory was not pre-created or access-restricted, a low-privileged local user could create this directory and place a malicious configuration file that would be automatically loaded for any user launching Claude Code on the same machine. Exploiting this would have required a shared multi-user Windows system and a victim user to launch Claude Code after the malicious configuration was placed.\n\nUsers on standard Claude Code auto-update have received this fix already. Users performing manual updates are advised to update to the latest version.\n\nThank you to hackerone.com/edbr for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T22:19:38Z",
+    "Severity": "MODERATE",
+    "Summary": "Claude Code: Insecure System-Wide Configuration Loading Enables Local Privilege Escalation on Windows",
+    "UpdatedAt": "2026-04-17T22:19:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.75"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.75"
+    }
+  ]
+}

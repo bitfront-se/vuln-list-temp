@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-17T21:50:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 349950,
+    "Id": "GSA_kwCzR0hTQS1yNzdjLTJjbXItN3A0N84ABVb-",
+    "GhsaId": "GHSA-r77c-2cmr-7p47",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r77c-2cmr-7p47"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/pull/66025"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/48aae82bbc19ba8b0741e61a08063eb0d1df464e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r77c-2cmr-7p47"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r77c-2cmr-7p47"
+      }
+    ],
+    "Description": "## Summary\n\nDelivery queue recovery could lose group tool-policy context for media replay.\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Ecosystem: npm\n- Affected versions: `\u003e= 2026.4.10 \u003c 2026.4.14`\n- Patched versions: `\u003e= 2026.4.14`\n\n## Impact\n\nRecovered queued outbound media could be replayed without the original session context needed to enforce group tool policy, weakening channel media restrictions after restart/recovery.\n\n## Technical Details\n\nThe fix persists and replays the relevant session context with delivery queue entries so recovered media dispatch goes through the same policy checks.\n\n## Fix\n\nThe issue was fixed in #66025. The first stable tag containing the fix is `v2026.4.14`, and `openclaw@2026.4.14` includes the fix.\n\n## Fix Commit(s)\n\n- `48aae82bbc19ba8b0741e61a08063eb0d1df464e`\n- PR: #66025\n\n## Release Process Note\n\nUsers should upgrade to `openclaw` 2026.4.14 or newer. The latest npm release, `2026.4.14`, already includes the fix.\n\n## Credits\n\nThanks to @zsxsoft, with sponsorship from @KeenSecurityLab and @qclawer for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-17T21:50:55Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Delivery queue recovery could lose group tool-policy context for media replay",
+    "UpdatedAt": "2026-04-17T21:50:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.14"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.4.10, \u003c 2026.4.14"
+    }
+  ]
+}
