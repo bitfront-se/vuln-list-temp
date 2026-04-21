@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-21T17:26:44Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openbao/openbao"
+  },
+  "Advisory": {
+    "DatabaseId": 350318,
+    "Id": "GSA_kwCzR0hTQS03Y2N2LXJwNm0tcmZmcs4ABVhu",
+    "GhsaId": "GHSA-7ccv-rp6m-rffr",
+    "References": [
+      {
+        "Url": "https://github.com/openbao/openbao/security/advisories/GHSA-7ccv-rp6m-rffr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39388"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/pull/2932"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/commit/9ab7a066826cc544c30e8b203f8f472076f366e1"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/releases/tag/v2.5.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7ccv-rp6m-rffr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7ccv-rp6m-rffr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39388"
+      }
+    ],
+    "Description": "### Background\n\nOpenBao's Certificate authentication method, when a token renewal is requested and `disable_binding=true` is set, attempts to verify the current request's presented mTLS certificate matches the original. Token renewals for other authentication methods do not require any supplied login information.\n\n### Impact\n\nDue to incorrect matching, the certificate authentication method would allow renewal of tokens for which the attacker had a sibling certificate+key signed by the same CA, but which did not necessarily match the original role or the originally supplied certificate. This implies an attacker could still authenticate to OpenBao in a similar scope, however, token renewal implies that an attacker may be able to extend the lifetime of dynamic leases held by the original token. This attack requires knowledge of either the original token or its accessor. \n\nThis vulnerability is originally from HashiCorp Vault.\n\n### Patches\n\nThis has been addressed in v2.5.3.\n\n### Workarounds\n\nEnsure privileged roles are tightly scoped to single certificates.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T17:26:42Z",
+    "Severity": "LOW",
+    "Summary": "OpenBao's Certificate Authentication Allows Token Renewal With Different Certificate",
+    "UpdatedAt": "2026-04-21T17:26:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260420160924-abe84e1af4c3"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260420160924-abe84e1af4c3"
+    }
+  ]
+}

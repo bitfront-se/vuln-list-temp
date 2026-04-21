@@ -1,0 +1,77 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-21T14:53:35Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.spinnaker.echo:echo-pipelinetriggers"
+  },
+  "Advisory": {
+    "DatabaseId": 350244,
+    "Id": "GSA_kwCzR0hTQS02OXJ3LTQ1d2otZzR2Ns4ABVgk",
+    "GhsaId": "GHSA-69rw-45wj-g4v6",
+    "References": [
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/security/advisories/GHSA-69rw-45wj-g4v6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-32613"
+      },
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/releases/tag/spinnaker-release-2025.3.2"
+      },
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/releases/tag/spinnaker-release-2025.4.2"
+      },
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/releases/tag/spinnaker-release-2026.0.1"
+      },
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/releases/tag/spinnaker-release-2026.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-69rw-45wj-g4v6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-69rw-45wj-g4v6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32613"
+      }
+    ],
+    "Description": "### Impact\nEcho like some other services, uses SPeL (Spring Expression Language) to process information - specifically around expected artifacts.  Unlike orca, it was NOT restricting that context to a set of trusted classes, but allowing FULL JVM access.  This enables a user to use arbitrary java classes which allow deep access to the system.  This enables the ability to invoke commands, access files, etc.\n\n### Workarounds\nDisable echo entirely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T14:53:34Z",
+    "Severity": "CRITICAL",
+    "Summary": "Spinnaker: RCE via expression parsing due to unrestricted context handling",
+    "UpdatedAt": "2026-04-21T14:53:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 2025.3.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.4.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.4-0, \u003c 2025.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.0-0, \u003c 2026.0.1"
+    }
+  ]
+}

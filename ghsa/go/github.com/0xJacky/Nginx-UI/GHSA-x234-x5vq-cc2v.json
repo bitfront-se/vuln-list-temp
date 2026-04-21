@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-21T15:00:45Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/0xJacky/Nginx-UI"
+  },
+  "Advisory": {
+    "DatabaseId": 350245,
+    "Id": "GSA_kwCzR0hTQS14MjM0LXg1dnEtY2Myds4ABVgl",
+    "GhsaId": "GHSA-x234-x5vq-cc2v",
+    "References": [
+      {
+        "Url": "https://github.com/0xJacky/nginx-ui/security/advisories/GHSA-x234-x5vq-cc2v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33031"
+      },
+      {
+        "Url": "https://github.com/0xJacky/nginx-ui/commit/7b66578adb47bbec839b621a4666495249379174"
+      },
+      {
+        "Url": "https://github.com/0xJacky/nginx-ui/releases/tag/v2.3.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x234-x5vq-cc2v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x234-x5vq-cc2v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33031"
+      }
+    ],
+    "Description": "### Summary\n\nA user who was disabled by an administrator can use previously issued API tokens for up to the token lifetime. In practice, disabling a compromised account does not actually terminate that user’s access, so an attacker who already stole a JWT can continue reading and modifying protected resources after the account is marked disabled.\n\nSince tokens can be used to create new accounts, it is possible the disabled user to maintain the privilege.\n\n### Details\n\nThe application exposes an account-level disable control through the users management API. Login process correctly enforces that control:\nhttps://github.com/0xJacky/nginx-ui/blob/6ec542fd97abf2c5950f374f78a32938ad0030e6/internal/user/login.go#L29-L31\n\nHowever, token-based authentication does not enforce the same check (This code validates token structure and expiry, but returns that user object without checking `user.Status`.):\nhttps://github.com/0xJacky/nginx-ui/blob/6ec542fd97abf2c5950f374f78a32938ad0030e6/internal/user/user.go#L44-L139\n\nThere’s also no token revocation feature, unlike when a password is changed:\nhttps://github.com/0xJacky/nginx-ui/blob/6ec542fd97abf2c5950f374f78a32938ad0030e6/api/user/user.go#L38-L51\n\nAs a result, a disabled user can continue to have full API access. In particular, since that includes account creation, they can create a new account and keep operating even after the JWT expires.\n\n### PoC\n\nThe issue was validated with version 2.3.3 using the `uozi/nginx-ui:sha-c92ec0a` docker image.\n\nView the PoC video:\n\n\nhttps://github.com/user-attachments/assets/7a5175cb-2f79-4c1b-adad-e7d0bf2ea2bd\n\n\n\n### Impact\n\nAdministrators who rely on \"disable user\" as an authentication or authorization control can be bypassed.\n\nThe disabled user can keep reading sensitive configuration and executing authenticated state-changing actions allowed to that account.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T15:00:44Z",
+    "Severity": "HIGH",
+    "Summary": "Nginx-UI: Disabled users retain full API access through previously issued bearer tokens",
+    "UpdatedAt": "2026-04-21T15:01:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.10-0.20260314152518-7b66578adb47"
+      },
+      "VulnerableVersionRange": "\u003c 1.9.10-0.20260314152518-7b66578adb47"
+    }
+  ]
+}
