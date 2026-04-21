@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-5hff-46vh-rxmw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41298"
       }
     ],
     "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, `POST /sessions/:sessionKey/kill` did not enforce write scopes in identity-bearing HTTP modes. A caller limited to read-only operator scopes could still terminate a running subagent session.\n\n## Impact\n\nA read-scoped caller could perform a write-class control-plane mutation and interrupt delegated work. This was an authorization bug on the HTTP scope boundary, not a shared-secret compatibility exception.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `54a0878517167c6e49900498cf77420dadb74beb` — enforce session-kill HTTP scopes\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @EaEa0001 for reporting.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-07T18:15:37Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Read-scoped identity-bearing HTTP clients could kill sessions via /sessions/:sessionKey/kill",
-    "UpdatedAt": "2026-04-07T18:15:39Z",
+    "UpdatedAt": "2026-04-20T23:45:01Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
