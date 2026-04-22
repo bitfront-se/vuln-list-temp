@@ -1,0 +1,58 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-22T14:31:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@saltcorn/data"
+  },
+  "Advisory": {
+    "DatabaseId": 350582,
+    "Id": "GSA_kwCzR0hTQS05MjM3LXJnNXAtcmhmd84ABVl2",
+    "GhsaId": "GHSA-9237-rg5p-rhfw",
+    "References": [
+      {
+        "Url": "https://github.com/saltcorn/saltcorn/security/advisories/GHSA-9237-rg5p-rhfw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9237-rg5p-rhfw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9237-rg5p-rhfw"
+      }
+    ],
+    "Description": "## Summary\n\nWhen a tenant admin is logged out of the root domain (e.g., saltcorn.com) but logged in to their own tenant space as admin, they can simply append `/tenant/create` to their tenant URL. The system reads the role from the tenant context (admin), and a new tenant is created on the **root domain** (in `PUBLIC SCHEMA \u003e _sc_tenants`), rather than in the tenant's own `_sc_tenants` table.\n\nIf the same logic applies to other routes, a tenant admin effectively gains admin rights on the root domain.\n\n## PoC\n\nA tenant-created subtenant appears under the Saltcorn public schema instead of the tenant's own schema.\n\n- Even when `role_id=1` is required for tenant creation on saltcorn.com (only admin can create tenants), existing tenant admins can still create new tenants because their local `role_id:1` is evaluated against the root domain.\n- Even when `role_to_create_tenant` is set to `0` in the tenant's `_sc_config` schema, or removed entirely, the tenant admin can still create sub-tenants on the root domain — suggesting `role_to_create_tenant` is not being read at all.\n\n## Impact\n\nTenant admins gain unauthorized admin-level access to the root domain. Any authenticated tenant admin can perform privileged operations (e.g., creating tenants) on the root domain by exploiting the role context mismatch.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T14:31:34Z",
+    "Severity": "HIGH",
+    "Summary": "@saltcorn/data: Tenant user role is used for tenant creation role check",
+    "UpdatedAt": "2026-04-22T14:31:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6.0-beta.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.6.0-alpha.0, \u003c 1.6.0-beta.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.5.0-beta.0, \u003c 1.5.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.4"
+    }
+  ]
+}

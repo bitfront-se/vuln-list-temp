@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-22T17:36:41Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow-providers-keycloak"
+  },
+  "Advisory": {
+    "DatabaseId": 350030,
+    "Id": "GSA_kwCzR0hTQS01dzZoLXBqdzYtd3ZjNs4ABVdO",
+    "GhsaId": "GHSA-5w6h-pjw6-wvc6",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40948"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/64114"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/kc0odpr70hbqhdb9ksnz42fkqz2xld9q"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/17/14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5w6h-pjw6-wvc6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5w6h-pjw6-wvc6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40948"
+      }
+    ],
+    "Description": "The Keycloak authentication manager in `apache-airflow-providers-keycloak` did not generate or validate the OAuth 2.0 `state` parameter on the login / login-callback flow, and did not use PKCE. An attacker with a Keycloak account in the same realm could deliver a crafted callback URL to a victim's browser and cause the victim to be logged into the attacker's Airflow session (login-CSRF / session fixation), where any credentials the victim subsequently stored in Airflow Connections would be harvestable by the attacker. Users are advised to upgrade `apache-airflow-providers-keycloak` to 0.7.0 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-18T15:34:15Z",
+    "Severity": "MODERATE",
+    "Summary": "apache-airflow-providers-keycloak: Missing OAuth 2.0 State and PKCE Enables Login CSRF and Session Fixation",
+    "UpdatedAt": "2026-04-22T17:36:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.0.1, \u003c 0.7.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-22T14:38:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.openremote:openremote-manager"
+  },
+  "Advisory": {
+    "DatabaseId": 350585,
+    "Id": "GSA_kwCzR0hTQS00OXZ2LTI1cXgtbWc0NM4ABVl5",
+    "GhsaId": "GHSA-49vv-25qx-mg44",
+    "References": [
+      {
+        "Url": "https://github.com/openremote/openremote/security/advisories/GHSA-49vv-25qx-mg44"
+      },
+      {
+        "Url": "https://github.com/openremote/openremote/releases/tag/1.22.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-49vv-25qx-mg44"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-49vv-25qx-mg44"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41166"
+      }
+    ],
+    "Description": "### Summary\nA user who has `write:admin` in one Keycloak realm can call the Manager API to update **Keycloak realm roles** for users in **another** realm, including **`master`**. The handler uses the `{realm}` path segment when talking to the identity provider but does not check that the caller may administer that realm. This could result in a privilege escalation to `master` realm administrator if the attacker controls any user in `master` realm.\n\n### Details\nIn `manager/src/main/java/org/openremote/manager/security/UserResourceImpl.java`, there is no check to validate if the caller should be able to administer a realm they're trying to update.\n\n```340:353:manager/src/main/java/org/openremote/manager/security/UserResourceImpl.java\n    @Override\n    public void updateUserRealmRoles(RequestParams requestParams, String realm, String userId, String[] roles) {\n        try {\n            identityService.getIdentityProvider().updateUserRealmRoles(\n                realm,\n                userId,\n                roles);\n        } catch (ClientErrorException ex) {\n            ex.printStackTrace(System.out);\n            throw new WebApplicationException(ex.getCause(), ex.getResponse().getStatus());\n        } catch (Exception ex) {\n            throw new WebApplicationException(ex);\n        }\n    }\n```\n\n### PoC\n1. Create a **new** Keycloak realm other than `master`. Add a user and grant that user the OpenRemote client role `write:admin`. Remember the realm name (call it `NEW_REALM`).\n2. In Keycloak realm `master`, pick a **low-privilege** user (no `admin` realm role). Copy that user’s UUID (`\u003cmaster-user-uuid\u003e`).\n3. Authenticate as the user from step 1 and obtain a Bearer access token (`\u003ctoken\u003e`) for `NEW_REALM`.\n4. Replace placeholders and run:\n```bash\ncurl -k -X PUT \"https://\u003chost\u003e/api/\u003cNEW_REALM\u003e/user/master/userRealmRoles/\u003cmaster-user-uuid\u003e\" \\\n  -H \"Authorization: Bearer \u003ctoken\u003e\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '[\"admin\"]'\n```\n5. In the Keycloak Admin Console, realm master, that user, Role mapping. Confirm the admin realm role is assigned.\n### Impact\nAn attacker with the OpenRemote client role write:admin in any realm can call this API with {realm} set to another realm (for example master) and change Keycloak realm roles for users there. That can grant admin on master to a user UUID they target, which gives Keycloak administrator access for the master realm.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T14:38:23Z",
+    "Severity": "HIGH",
+    "Summary": "OpenRemote has Improper Access Control via updateUserRealmRoles function",
+    "UpdatedAt": "2026-04-22T14:38:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.22.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.22.1"
+    }
+  ]
+}

