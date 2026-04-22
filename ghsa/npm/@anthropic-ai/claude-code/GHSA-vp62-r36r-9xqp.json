@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-21T18:51:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 350338,
+    "Id": "GSA_kwCzR0hTQS12cDYyLXIzNnItOXhxcM4ABViC",
+    "GhsaId": "GHSA-vp62-r36r-9xqp",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-vp62-r36r-9xqp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39861"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vp62-r36r-9xqp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vp62-r36r-9xqp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39861"
+      }
+    ],
+    "Description": "Claude Code's sandbox did not prevent sandboxed processes from creating symlinks pointing to locations outside the workspace. When Claude Code subsequently wrote to a path within such a symlink, its unsandboxed process followed the symlink and wrote to the target location outside the workspace without prompting the user for confirmation. This allowed a sandbox escape where neither the sandboxed command nor the unsandboxed app could independently write outside the workspace, but their combination could write to arbitrary locations, potentially leading to code execution outside the sandbox. Reliably exploiting this required the ability to add untrusted content into a Claude Code context window to trigger sandboxed code execution via prompt injection.\n\nUsers on standard Claude Code auto-update have received this fix automatically. Users performing manual updates are advised to update to the latest version.\n\nClaude Code thanks hackerone.com/philts for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T18:51:21Z",
+    "Severity": "HIGH",
+    "Summary": "Claude Code: Sandbox Escape via Symlink Following Allows Arbitrary File Write Outside Workspace",
+    "UpdatedAt": "2026-04-21T18:51:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.64"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.64"
+    }
+  ]
+}

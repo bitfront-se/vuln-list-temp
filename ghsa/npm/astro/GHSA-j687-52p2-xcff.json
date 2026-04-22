@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-21T20:39:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "astro"
+  },
+  "Advisory": {
+    "DatabaseId": 350348,
+    "Id": "GSA_kwCzR0hTQS1qNjg3LTUycDIteGNmZs4ABViM",
+    "GhsaId": "GHSA-j687-52p2-xcff",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-j687-52p2-xcff"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/releases/tag/astro@6.1.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j687-52p2-xcff"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j687-52p2-xcff"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41067"
+      }
+    ],
+    "Description": "## Summary\n\nThe `defineScriptVars` function in Astro's server-side rendering pipeline uses a case-sensitive regex `/\u003c\\/script\u003e/g` to sanitize values injected into inline `\u003cscript\u003e` tags via the `define:vars` directive. HTML parsers close `\u003cscript\u003e` elements case-insensitively and also accept whitespace or `/` before the closing `\u003e`, allowing an attacker to bypass the sanitization with payloads like `\u003c/Script\u003e`, `\u003c/script \u003e`, or `\u003c/script/\u003e` and inject arbitrary HTML/JavaScript.\n\n## Details\n\nThe vulnerable function is `defineScriptVars` at `packages/astro/src/runtime/server/render/util.ts:42-53`:\n\n```typescript\nexport function defineScriptVars(vars: Record\u003cany, any\u003e) {\n\tlet output = '';\n\tfor (const [key, value] of Object.entries(vars)) {\n\t\toutput += `const ${toIdent(key)} = ${JSON.stringify(value)?.replace(\n\t\t\t/\u003c\\/script\u003e/g,       // ← Case-sensitive, exact match only\n\t\t\t'\\\\x3C/script\u003e',\n\t\t)};\\n`;\n\t}\n\treturn markHTMLString(output);\n}\n```\n\nThis function is called from `renderElement` at `util.ts:172-174` when a `\u003cscript\u003e` element has `define:vars`:\n\n```typescript\nif (name === 'script') {\n\tdelete props.hoist;\n\tchildren = defineScriptVars(defineVars) + '\\n' + children;\n}\n```\n\nThe regex `/\u003c\\/script\u003e/g` fails to match three classes of closing script tags that HTML parsers accept per the [HTML specification §13.2.6.4](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody):\n\n1. **Case variations**: `\u003c/Script\u003e`, `\u003c/SCRIPT\u003e`, `\u003c/sCrIpT\u003e` — HTML tag names are case-insensitive but the regex has no `i` flag.\n2. **Whitespace before `\u003e`**: `\u003c/script \u003e`, `\u003c/script\\t\u003e`, `\u003c/script\\n\u003e` — after the tag name, the HTML tokenizer enters the \"before attribute name\" state on ASCII whitespace.\n3. **Self-closing slash**: `\u003c/script/\u003e` — the tokenizer enters \"self-closing start tag\" state on `/`.\n\n`JSON.stringify()` does not escape `\u003c`, `\u003e`, or `/` characters, so all these payloads pass through serialization unchanged.\n\n**Execution flow:** User-controlled input (e.g., `Astro.url.searchParams`) → assigned to a variable → passed via `define:vars` on a `\u003cscript\u003e` tag → `renderElement` → `defineScriptVars` → incomplete sanitization → injected into `\u003cscript\u003e` block in HTML response → browser closes the script element early → attacker-controlled HTML parsed and executed.\n\n## PoC\n\n**Step 1:** Create an SSR Astro page (`src/pages/index.astro`):\n\n```astro\n---\nconst name = Astro.url.searchParams.get('name') || 'World';\n---\n\u003chtml\u003e\n\u003cbody\u003e\n  \u003ch1\u003eHello\u003c/h1\u003e\n  \u003cscript define:vars={{ name }}\u003e\n    console.log(name);\n  \u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n```\n\n**Step 2:** Ensure SSR is enabled in `astro.config.mjs`:\n\n```js\nexport default defineConfig({\n  output: 'server'\n});\n```\n\n**Step 3:** Start the dev server and visit:\n\n```\nhttp://localhost:4321/?name=\u003c/Script\u003e\u003cimg/src=x%20onerror=alert(document.cookie)\u003e\n```\n\n**Step 4:** View the HTML source. The output contains:\n\n```html\n\u003cscript\u003econst name = \"\u003c/Script\u003e\u003cimg/src=x onerror=alert(document.cookie)\u003e\";\n  console.log(name);\n\u003c/script\u003e\n```\n\nThe browser's HTML parser matches `\u003c/Script\u003e` case-insensitively, closing the script block. The `\u003cimg onerror=alert(document.cookie)\u003e` is then parsed as HTML and the JavaScript in `onerror` executes.\n\n**Alternative bypass payloads:**\n\n```\n/?name=\u003c/script \u003e\u003cimg/src=x onerror=alert(1)\u003e\n/?name=\u003c/script/\u003e\u003cimg/src=x onerror=alert(1)\u003e\n/?name=\u003c/SCRIPT\u003e\u003cimg/src=x onerror=alert(1)\u003e\n```\n\n## Impact\n\nAn attacker can execute arbitrary JavaScript in the context of a victim's browser session on any SSR Astro application that passes request-derived data to `define:vars` on a `\u003cscript\u003e` tag. This is a documented and expected usage pattern in Astro.\n\nExploitation enables:\n- **Session hijacking** via cookie theft (`document.cookie`)\n- **Credential theft** by injecting fake login forms or keyloggers\n- **Defacement** of the rendered page\n- **Redirection** to attacker-controlled domains\n\nThe vulnerability affects all Astro versions that support `define:vars` and is exploitable in any SSR deployment where user input reaches a `define:vars` script variable.\n\n## Recommended Fix\n\nReplace the case-sensitive exact-match regex with a comprehensive escape that covers all HTML parser edge cases. The simplest correct fix is to escape all `\u003c` characters in the JSON output:\n\n```typescript\nexport function defineScriptVars(vars: Record\u003cany, any\u003e) {\n\tlet output = '';\n\tfor (const [key, value] of Object.entries(vars)) {\n\t\toutput += `const ${toIdent(key)} = ${JSON.stringify(value)?.replace(\n\t\t\t/\u003c/g,\n\t\t\t'\\\\u003c',\n\t\t)};\\n`;\n\t}\n\treturn markHTMLString(output);\n}\n```\n\nThis is the standard approach used by frameworks like Next.js and Rails. Replacing every `\u003c` with `\\u003c` is safe inside JSON string contexts (JavaScript treats `\\u003c` as `\u003c` at runtime) and eliminates all possible `\u003c/script\u003e` variants including case variations, whitespace, and self-closing forms.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T20:39:49Z",
+    "Severity": "MODERATE",
+    "Summary": "Astro: XSS in define:vars via incomplete \u003c/script\u003e tag sanitization",
+    "UpdatedAt": "2026-04-21T20:39:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.6"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.6"
+    }
+  ]
+}

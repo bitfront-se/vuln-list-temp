@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-21T20:38:47Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "lxml"
+  },
+  "Advisory": {
+    "DatabaseId": 350347,
+    "Id": "GSA_kwCzR0hTQS12Zm1xLTY4aHgtNGpmd84ABViL",
+    "GhsaId": "GHSA-vfmq-68hx-4jfw",
+    "References": [
+      {
+        "Url": "https://github.com/lxml/lxml/security/advisories/GHSA-vfmq-68hx-4jfw"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/lxml/+bug/2146291"
+      },
+      {
+        "Url": "https://github.com/lxml/lxml/releases/tag/lxml-6.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vfmq-68hx-4jfw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vfmq-68hx-4jfw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41066"
+      }
+    ],
+    "Description": "### Impact\nUsing either of the two parsers in the default configuration (with `resolve_entities=True`) allows untrusted XML input to read local files.\n\n### Patches\nlxml 6.1.0 changes the default to `resolve_entities='internal'`, thus disallowing local file access by default.\n\n### Workarounds\nSetting the `resolve_entities` option explicitly to `resolve_entities='internal'` or `resolve_entities=False` disables the local file access.\n\n### Resources\nOriginal report: https://bugs.launchpad.net/lxml/+bug/2146291\n\nThe default option was changed to `resolve_entities='internal'` for the normal XML and HTML parsers in lxml 5.0. The default was not changed for `iterparse()` and `ETCompatXMLParser()` at the time. lxml 6.1 makes the safe option the default for all parsers.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T20:38:44Z",
+    "Severity": "HIGH",
+    "Summary": "lxml: Default configuration of iterparse() and ETCompatXMLParser() allows XXE to local files",
+    "UpdatedAt": "2026-04-21T20:38:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-21T20:26:42Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/tektoncd/pipeline"
+  },
+  "Advisory": {
+    "DatabaseId": 350344,
+    "Id": "GSA_kwCzR0hTQS1yeDM1LTZyaHgtNzg1OM4ABViI",
+    "GhsaId": "GHSA-rx35-6rhx-7858",
+    "References": [
+      {
+        "Url": "https://github.com/tektoncd/pipeline/security/advisories/GHSA-rx35-6rhx-7858"
+      },
+      {
+        "Url": "https://github.com/tektoncd/pipeline/releases/tag/v1.11.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rx35-6rhx-7858"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rx35-6rhx-7858"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40923"
+      }
+    ],
+    "Description": "## Summary\n\nA validation bypass in the VolumeMount path restriction allows mounting volumes under restricted `/tekton/` internal paths by using `..` path traversal components. The restriction check uses `strings.HasPrefix` without `filepath.Clean`, so a path like `/tekton/home/../results` passes validation but resolves to `/tekton/results` at runtime.\n\n## Details\n\nTekton Pipelines restricts VolumeMount paths under `/tekton/` (except `/tekton/home`) to prevent users from interfering with internal execution state. The validation at `pkg/apis/pipeline/v1/container_validation.go` checks mount paths using `strings.HasPrefix` without normalizing the path first:\n\n```go\nif strings.HasPrefix(vm.MountPath, \"/tekton/\") \u0026\u0026\n    !strings.HasPrefix(vm.MountPath, \"/tekton/home\") {\n    // reject\n}\n```\n\nBecause `/tekton/home` is an allowed prefix, a path like `/tekton/home/../results` passes both checks. At runtime, the container runtime resolves `..` and the actual mount point becomes `/tekton/results`.\n\nThe same pattern exists in `pkg/apis/pipeline/v1beta1/task_validation.go`.\n\n## Impact\n\nAn authenticated user with Task or TaskRun creation permissions can mount volumes over internal Tekton paths, potentially:\n\n- Writing fake task results that downstream pipelines trust\n- Reading or modifying step scripts before execution\n- Interfering with entrypoint coordination state\n\n## Patches\n\nA patch is available at [v1.11.1](https://github.com/tektoncd/pipeline/releases/tag/v1.11.1).\n\n## Workarounds\n\n- Use admission controllers (OPA/Gatekeeper, Kyverno) to validate that VolumeMount paths do not contain `..` components.\n- In multi-tenant setups, restrict who can create Task and TaskRun resources via RBAC.\n\n## Affected Versions\n\nAll versions through **v1.11.0** (both `v1` and `v1beta1` APIs).\n\n## Acknowledgments\n\nThis vulnerability was reported by [@kodareef5](https://github.com/kodareef5).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-21T20:26:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Tekton Pipelines: VolumeMount path restriction bypass via missing filepath.Clean in /tekton/ check",
+    "UpdatedAt": "2026-04-21T20:26:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.11.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.11.0"
+    }
+  ]
+}
