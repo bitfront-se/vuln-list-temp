@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-23T14:31:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 350958,
+    "Id": "GSA_kwCzR0hTQS1wZm0yLTJtaGctOHdweM4ABVru",
+    "GhsaId": "GHSA-pfm2-2mhg-8wpx",
+    "References": [
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/security/advisories/GHSA-pfm2-2mhg-8wpx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pfm2-2mhg-8wpx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pfm2-2mhg-8wpx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41495"
+      }
+    ],
+    "Description": "### Impact\n\nWhen `n8n-mcp` runs in HTTP transport mode, incoming requests to the `POST /mcp` endpoint had their request metadata written to server logs regardless of the authentication outcome. In deployments where logs are collected, forwarded to external systems, or viewable outside the request trust boundary (shared log storage, SIEM pipelines, support/ops access), this can result in disclosure of:\n\n- bearer tokens from the `Authorization` header\n- per-tenant API keys from the `x-n8n-key` header in multi-tenant setups\n- JSON-RPC request payloads sent to the MCP endpoint\n\nAccess control itself was not bypassed — unauthenticated requests were correctly rejected with `401 Unauthorized` — but sensitive values from those rejected requests could still be persisted in logs.\n\nImpact category: **CWE-532** (Insertion of Sensitive Information into Log File).\n\n### Affected\n\nDeployments running n8n-mcp **v2.47.10 or earlier** in HTTP transport mode (`MCP_MODE=http`). The stdio transport is not affected.\n\n### Patched\n\n**v2.47.11** and later.\n\n- npm: `npx n8n-mcp@latest` (or pin to `\u003e= 2.47.11`)\n- Docker: `docker pull ghcr.io/czlonkowski/n8n-mcp:latest`\n\n### Workarounds\n\nIf users cannot upgrade immediately:\n\n- Restrict network access to the HTTP port (firewall, reverse proxy, or VPN) so only trusted clients can reach the endpoint.\n- Switch to stdio transport (`MCP_MODE=stdio`, the default for CLI invocation), which has no HTTP surface.\n\n### Credit\n\nn8n-MCP thanks [@S4nso](https://github.com/S4nso) (Organization / Jormungandr) for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-23T14:31:46Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n-MCP Logs Sensitive Request Data on Unauthorized /mcp Requests",
+    "UpdatedAt": "2026-04-23T14:31:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.47.11"
+      },
+      "VulnerableVersionRange": "\u003c 2.47.11"
+    }
+  ]
+}
