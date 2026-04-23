@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-22T19:58:47Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/projectdiscovery/nuclei/v3"
+  },
+  "Advisory": {
+    "DatabaseId": 350827,
+    "Id": "GSA_kwCzR0hTQS0yOXJnLXdtY3ctaHBmNM4ABVpr",
+    "GhsaId": "GHSA-29rg-wmcw-hpf4",
+    "References": [
+      {
+        "Url": "https://github.com/projectdiscovery/nuclei/security/advisories/GHSA-29rg-wmcw-hpf4"
+      },
+      {
+        "Url": "https://github.com/projectdiscovery/nuclei/pull/7332"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-29rg-wmcw-hpf4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-29rg-wmcw-hpf4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41646"
+      }
+    ],
+    "Description": "A vulnerability in Nuclei's JavaScript protocol runtime allows JavaScript templates to read local `.js` and `.json` files through the `require()` function, bypassing the default local file access restriction.\n\n**Affected Component**\n\nThe issue is in the JavaScript runtime's module loading system. The goja `require()` function used a default host filesystem loader without routing through the `allow-local-file-access` check.\n\n**Description**\n\nThe goja require() function in Nuclei's JavaScript protocol runtime used the default host filesystem loader, which allowed JavaScript templates to import .js and .json files from anywhere on the host filesystem, ignoring the allow-local-file-access (-lfa) option that controls file access outside the template directory.\n\nThe impact is limited to `.js` and `.json` files, as goja's module loader only resolves those extensions. That said, this is still enough to expose sensitive data stored in JSON configuration files like `package.json`, credential stores, or cloud configuration files sitting on the host filesystem.\n\n**Affected Users**\n\n- **CLI users** running untrusted or third-party JavaScript templates.\n- **SDK users** who have integrated Nuclei into platforms where end-users can supply JavaScript templates, especially when relying on the default file access restriction to limit filesystem reads.\n\n\u003e [!NOTE]\nThe `require()` module loader only resolves `.js` and `.json` files. Other file types cannot be read through this vector.\n\n**Patches**\n\n- The vulnerability is fixed in Nuclei v3.8.0. Upgrading is strongly recommended. \n- Fix reference: #7332\n\n**Mitigation**\n\nUpgrade to Nuclei v3.8.0, where the `require()` registry is rebuilt per execution and file-backed module loads are routed through the same `allow-local-file-access` check as the rest of the filesystem operations.\n\nIn the meantime, avoid running JavaScript templates from unverified sources.\n\n**Workarounds**\n\nIf upgrading is not an option, avoid running untrusted JavaScript templates entirely. There is no flag or configuration that mitigates this on affected versions.\n\n**Acknowledgments**\n\nNuceli thanks @AkashHamal0x01 for reporting this issue through responsible disclosure via security@projectdiscovery.io",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T19:58:47Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuclei: Local File Read via require() Module Loader Bypass",
+    "UpdatedAt": "2026-04-22T19:58:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.8.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.8.0"
+    }
+  ]
+}

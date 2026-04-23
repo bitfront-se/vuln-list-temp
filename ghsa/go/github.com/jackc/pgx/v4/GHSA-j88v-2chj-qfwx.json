@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-22T20:46:52Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/jackc/pgx/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 350841,
+    "Id": "GSA_kwCzR0hTQS1qODh2LTJjaGotcWZ3eM4ABVp5",
+    "GhsaId": "GHSA-j88v-2chj-qfwx",
+    "References": [
+      {
+        "Url": "https://github.com/jackc/pgx/security/advisories/GHSA-j88v-2chj-qfwx"
+      },
+      {
+        "Url": "https://github.com/jackc/pgx/commit/60644f84918a8af66d14a4b0d865d4edafd955da"
+      },
+      {
+        "Url": "https://github.com/jackc/pgx/releases/tag/v5.9.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j88v-2chj-qfwx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j88v-2chj-qfwx"
+      }
+    ],
+    "Description": "### Impact\n\nSQL Injection can occur when:\n\n1. The non-default simple protocol is used.\n2. A dollar quoted string literal is used in the SQL query.\n3. That string literal contains text that would be would be interpreted as a placeholder outside of a string literal.\n4. The value of that placeholder is controllable by the attacker.\n\ne.g.\n\n```go\nattackValue := `$tag$; drop table canary; --`\n_, err = tx.Exec(ctx, `select $tag$ $1 $tag$, $1`, pgx.QueryExecModeSimpleProtocol, attackValue)\n```\n\nThis is unlikely to occur outside of a contrived scenario.\n\n### Patches\n\nThe problem is resolved in v5.9.2.\n\n### Workarounds\n\nDo not use the simple protocol to execute queries matching all the above conditions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T20:46:51Z",
+    "Severity": "LOW",
+    "Summary": "pgx: SQL Injection via placeholder confusion with dollar quoted string literals",
+    "UpdatedAt": "2026-04-22T20:46:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.18.3"
+    }
+  ]
+}

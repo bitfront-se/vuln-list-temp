@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-22T19:55:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "marko"
+  },
+  "Advisory": {
+    "DatabaseId": 350825,
+    "Id": "GSA_kwCzR0hTQS14OWZqLTU3ZmgtYzh3cc4ABVpp",
+    "GhsaId": "GHSA-x9fj-57fh-c8wq",
+    "References": [
+      {
+        "Url": "https://github.com/marko-js/marko/security/advisories/GHSA-x9fj-57fh-c8wq"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x9fj-57fh-c8wq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x9fj-57fh-c8wq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41591"
+      }
+    ],
+    "Description": "### Summary\n\nWhen dynamic text is interpolated into a `\u003cscript\u003e` or `\u003cstyle\u003e` tag the Marko runtime failed to prevent tag breakout when the closing tag used non-lowercase casing.\nAn attacker able to place input inside a `\u003cscript\u003e` or `\u003cstyle\u003e` block could break out of the tag with `\u003c/SCRIPT\u003e`, `\u003c/Style\u003e`, etc. and inject arbitrary HTML/JavaScript, resulting in cross-site scripting.\n\n### Details\n\nThe affected helpers used case-sensitive regular expressions to detect attempts at closing the surrounding tag:\n\n```js\n// packages/runtime-tags/src/html/content.ts\nconst unsafeScriptReg = /\u003c\\/script/g;\nconst unsafeStyleReg  = /\u003c\\/style/g;\n\n// packages/runtime-class/src/runtime/html/helpers/escape-script-placeholder.js\nconst unsafeCharsReg = /\u003c\\/script/g;\n\n// packages/runtime-class/src/runtime/html/helpers/escape-style-placeholder.js\nconst unsafeCharsReg = /\u003c\\/style/g;\n```\n\nHTML tag names are case-insensitive in the browser parser, so inputs such as `\u003c/SCRIPT\u003e`, `\u003c/Script\u003e`, or `\u003c/sTyLe\u003e` were not matched by these regexes and passed through the helpers unchanged. A browser rendering the output treats the mixed-case end tag as a valid closing tag, terminating the script or style context, and then parses anything that follows as HTML.\n\nThe Marko compiler routes interpolated values inside `\u003cscript\u003e` and `\u003cstyle\u003e` tags through these helpers automatically (see `native-tag.ts:1080-1085`), so application code following the framework's conventions had no way to detect or compensate for the gap.\n\n### PoC\n\n```marko\n$ const userCode = \"\u003c/SCRIPT\u003e\u003cscript\u003ealert(1)//\";\n\u003cscript\u003e\n  const data = ${JSON.stringify(userCode)};\n\u003c/script\u003e\n```\n\nWould yield the following:\n\n```html\n\u003cscript\u003econst data = \"\u003c/SCRIPT\u003e\u003cscript\u003ealert(1)//\";\u003c/script\u003e\n```\n\nWhich is then parsed in any WHATWG-compliant browser as:\n```html\n\u003cscript\u003econst data = \"\u003c/script\u003e\n\u003cscript\u003ealert(1)//\";\u003c/script\u003e\n```\n\n### Impact\n\nCross-site scripting. Any Marko template that explicitly interpolates untrusted data inside a `\u003cscript\u003e` or `\u003cstyle\u003e` block is affected.\n\nStored XSS is trivial if the value originates from any persisted user input (username, profile bio, comment body, etc.) that is later embedded in a script tag during rendering. Exploitation yields arbitrary JavaScript execution in the victim's browser, enabling session token theft, account takeover, and arbitrary actions as the victim.\n\nSince the internal `_escape_script` and `_escape_style` helpers are the framework's designated defense against script/style tag breakout, applications following standard Marko patterns had no obvious reason to add a second layer of sanitization.\n\nThis does not affect scripts or hydration state serialized by Marko itself — only templates that explicitly interpolate untrusted values inside a \u003cscript\u003e or \u003cstyle\u003e tag.\n\n### Patch\n\nCommit `19d4b37d0` — `fix: html script, style, and comment escaping`.\n\n```diff\n- const unsafeScriptReg = /\u003c\\/script/g;\n+ const unsafeScriptReg = /\u003c\\/script/gi;\n\n- const unsafeStyleReg  = /\u003c\\/style/g;\n+ const unsafeStyleReg  = /\u003c\\/style/gi;\n```\n\nThe same commit also introduced an `_escape_comment` helper and corresponding `escape-comment-placeholder.js`, hardening HTML comment escaping as a related preventative fix. Test fixtures were added under `escape-script-case`, `escape-style-case`, and `escape-comment`.\n\n### Workarounds\n\nUpgrade to the patched release. As a short-term mitigation on affected versions, pre-sanitize any untrusted data before it reaches a template position rendered inside a `\u003cscript\u003e` or `\u003cstyle\u003e` tag — e.g. normalize `\u003c/script`, `\u003c/style`, and their mixed-case variants before interpolation, or avoid direct interpolation of untrusted values inside these tags entirely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T19:55:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Marko: XSS via case-insensitive script/style closing tag bypass in runtime HTML escaping",
+    "UpdatedAt": "2026-04-22T19:55:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.38.36"
+      },
+      "VulnerableVersionRange": "\u003c 5.38.36"
+    }
+  ]
+}

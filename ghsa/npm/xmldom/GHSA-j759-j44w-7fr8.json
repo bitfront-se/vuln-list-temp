@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-22T20:16:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "xmldom"
+  },
+  "Advisory": {
+    "DatabaseId": 350832,
+    "Id": "GSA_kwCzR0hTQS1qNzU5LWo0NHctN2ZyOM4ABVpw",
+    "GhsaId": "GHSA-j759-j44w-7fr8",
+    "References": [
+      {
+        "Url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-j759-j44w-7fr8"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/pull/987"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/b397540889086da868c30c366ad5c220d1a750c7"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/fda7cc313de30243fea35cada64e0bb12099c2a1"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.8.13"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.9.10"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j759-j44w-7fr8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j759-j44w-7fr8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41672"
+      }
+    ],
+    "Description": "## Summary\n\nThe package allows attacker-controlled comment content to be serialized into XML without validating or neutralizing comment breaking sequences. As a result, an attacker can terminate the comment early and inject arbitrary XML nodes into the serialized output.\n\n---\n\n## Details\n\nThe issue is in the DOM construction and serialization flow for comment nodes.\n\nWhen `createComment(data)` is called, the supplied string is stored as comment data through the generic character-data handling path. That content is kept as-is. Later, when the document is serialized, the serializer writes comment nodes by concatenating the XML comment delimiters with the stored `node.data` value directly.\n\nThat behavior is unsafe because XML comments are a syntax-sensitive context. If attacker-controlled input contains a sequence that closes the comment, the serializer does not preserve it as literal comment text. Instead, it emits output where the remainder of the payload is treated as live XML markup.\n\nThis is a real injection bug, not a formatting issue. The serializer already applies context-aware handling in other places, such as escaping text nodes and rewriting unsafe CDATA terminators. Comment content does not receive equivalent treatment. Because of that gap, untrusted data can break out of the comment boundary and modify the structure of the final XML document.\n\n---\n\n## PoC\n\n```js\nconst { DOMImplementation, DOMParser, XMLSerializer } = require('@xmldom/xmldom');\n\nconst doc = new DOMImplementation().createDocument(null, 'root', null);\n\ndoc.documentElement.appendChild(\n  doc.createComment('--\u003e\u003cinjected attr=\"1\"/\u003e\u003c!--')\n);\n\nconst xml = new XMLSerializer().serializeToString(doc);\nconsole.log(xml);\n// \u003croot\u003e\u003c!----\u003e\u003cinjected attr=\"1\"/\u003e\u003c!----\u003e\u003c/root\u003e\n\nconst reparsed = new DOMParser().parseFromString(xml, 'text/xml');\nconsole.log(reparsed.documentElement.childNodes.item(1).nodeName);\n// injected\n```\n\n---\n\n## Impact\n\nAn application that uses the package to build XML from untrusted input can be made to emit attacker-controlled elements outside the intended comment boundary. That allows the attacker to alter the meaning and structure of generated XML documents.\n\nIn practice, this can affect any workflow that generates XML and then stores it, forwards it, signs it, or hands it to another parser. Realistic targets include XML-based configuration, policy documents, and message formats where downstream consumers trust the serialized structure.\n\n---\n\n## Disclosure\n\nThis vulnerability was publicly disclosed at 2026-04-06T11:25:07Z via [xmldom/xmldom#987](https://github.com/xmldom/xmldom/pull/987), which was subsequently closed without being merged.\n\n---\n\n## Fix Applied\n\n\u003e **⚠ Opt-in required.** Protection is not automatic. Existing serialization calls remain\n\u003e vulnerable unless `{ requireWellFormed: true }` is explicitly passed. Applications that pass\n\u003e untrusted data to `createComment()` or mutate comment nodes with untrusted input (via\n\u003e `appendData`, `insertData`, `replaceData`, `.data =`, or `.textContent =`) should audit all\n\u003e `serializeToString()` call sites and add the option.\n\n`XMLSerializer.serializeToString()` now accepts an options object as a second argument. When `{ requireWellFormed: true }` is passed, the serializer throws `InvalidStateError` before emitting a Comment node whose `.data` would produce malformed XML.\n\nOn `@xmldom/xmldom` ≥ 0.9.10, the full W3C DOM Parsing §3.2.1.4 check is applied: throws if `.data` contains `--` anywhere, ends with `-`, or contains characters outside the XML Char production.\n\nOn `@xmldom/xmldom` ≥ 0.8.13 (LTS), only the `--\u003e` injection sequence is checked. The `0.8.x` SAX parser accepts comments containing `--` (without `\u003e`), so throwing on bare `--` would break a previously-working round-trip on that branch. The `--\u003e` check is sufficient to prevent injection.\n\n### PoC — fixed path\n\n```js\nconst { DOMImplementation, XMLSerializer } = require('@xmldom/xmldom');\n\nconst doc = new DOMImplementation().createDocument(null, 'root', null);\ndoc.documentElement.appendChild(doc.createComment('--\u003e\u003cinjected attr=\"1\"/\u003e\u003c!--'));\n\n// Default (unchanged): verbatim — injection present\nconst unsafe = new XMLSerializer().serializeToString(doc);\nconsole.log(unsafe);\n// \u003croot\u003e\u003c!----\u003e\u003cinjected attr=\"1\"/\u003e\u003c!----\u003e\u003c/root\u003e\n\n// Opt-in guard: throws InvalidStateError before serializing\ntry {\n  new XMLSerializer().serializeToString(doc, { requireWellFormed: true });\n} catch (e) {\n  console.log(e.name, e.message);\n  // InvalidStateError: The comment node data contains \"--\" or ends with \"-\"  (0.9.x)\n  // InvalidStateError: The comment node data contains \"--\u003e\"  (0.8.x — only --\u003e is checked)\n}\n```\n\n### Why the default stays verbatim\n\nThe W3C DOM Parsing and Serialization spec §3.2.1.4 defines a `require well-formed` flag whose **default value is `false`**. With the flag unset, the spec explicitly permits serializing ill-formed comment content verbatim — this is also the behavior of browser implementations (Chrome, Firefox, Safari): `new XMLSerializer().serializeToString(doc)` produces the injection sequence without error in all major browsers.\n\nUnconditionally throwing would be a behavioral breaking change with no spec justification. The opt-in `requireWellFormed: true` flag allows applications that require injection safety to enable strict mode without breaking existing deployments.\n\n### Residual limitation\n\nThe fix operates at serialization time only. There is no creation-time check in `createComment` — the spec does not require one for comment data. Any path that leads to a Comment node with `--` in its data (`createComment`, `appendData`, `.data =`, etc.) produces a node that serializes safely only when `{ requireWellFormed: true }` is passed to `serializeToString`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T20:16:07Z",
+    "Severity": "HIGH",
+    "Summary": "xmldom has XML node injection through unvalidated comment serialization",
+    "UpdatedAt": "2026-04-22T20:16:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.6.0"
+    }
+  ]
+}
