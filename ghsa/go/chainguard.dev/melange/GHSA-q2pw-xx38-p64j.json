@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-23T21:54:12Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "chainguard.dev/melange"
+  },
+  "Advisory": {
+    "DatabaseId": 351030,
+    "Id": "GSA_kwCzR0hTQS1xMnB3LXh4MzgtcDY0as4ABVs2",
+    "GhsaId": "GHSA-q2pw-xx38-p64j",
+    "References": [
+      {
+        "Url": "https://github.com/chainguard-dev/melange/security/advisories/GHSA-q2pw-xx38-p64j"
+      },
+      {
+        "Url": "https://github.com/chainguard-dev/melange/commit/84f3b450ce6e472c4abb8dc4c26d0ce8ac1259ac"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q2pw-xx38-p64j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q2pw-xx38-p64j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29051"
+      }
+    ],
+    "Description": "### Impact\n\n`melange lint --persist-lint-results` (opt-in flag, also usable via `melange build --persist-lint-results`) constructs output file paths by joining `--out-dir` with the `arch` and `pkgname` values read from the `.PKGINFO` control file of the APK being linted. In affected versions these values were not validated for path separators or `..` sequences, so an attacker who can supply an APK to a melange-based lint/build pipeline (e.g. CI that lints third-party APKs, or build-as-a-service) could cause melange to write `lint-\u003cpkgname\u003e-\u003cpkgver\u003e-r\u003cepoch\u003e.json` to an arbitrary `.json` path reachable by the melange process. The written file is a JSON lint report whose content is partially attacker-influenced. There is no direct code-execution path, but the write can clobber other JSON artifacts on the filesystem. The issue only affects deployments that explicitly pass `--persist-lint-results`; the flag is off by default.\n\n### Patches\n\nFixed in melange **v0.43.4** by validating `arch` and `pkgname` for `..`, `/`, and `filepath.Separator` before path construction in `pkg/linter/results.go` (commit [84f3b45](https://github.com/chainguard-dev/melange/commit/84f3b450ce6e472c4abb8dc4c26d0ce8ac1259ac)).\n\n### Workarounds\n\nDo not pass `--persist-lint-results` when linting or building APKs whose `.PKGINFO` contents are not fully trusted. Running melange as a low-privileged user and confining writes to an isolated directory also limits impact.\n\n### Credits\n\nmelange thanks Oleh Konko ([@1seal](https://github.com/1seal) from [1seal.org](https://1seal.org/)) for discovering and reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-23T21:54:10Z",
+    "Severity": "MODERATE",
+    "Summary": "melange has Path Traversal via .PKGINFO in --persist-lint-results",
+    "UpdatedAt": "2026-04-23T21:54:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.43.4"
+      },
+      "VulnerableVersionRange": "\u003e= 0.32.0, \u003c 0.43.4"
+    }
+  ]
+}

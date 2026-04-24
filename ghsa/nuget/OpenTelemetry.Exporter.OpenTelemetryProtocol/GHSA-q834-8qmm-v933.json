@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-23T21:26:11Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenTelemetry.Exporter.OpenTelemetryProtocol"
+  },
+  "Advisory": {
+    "DatabaseId": 351006,
+    "Id": "GSA_kwCzR0hTQS1xODM0LThxbW0tdjkzM84ABVse",
+    "GhsaId": "GHSA-q834-8qmm-v933",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/security/advisories/GHSA-q834-8qmm-v933"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40182"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/pull/6564"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/pull/7017"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-proto/pull/781"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q834-8qmm-v933"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q834-8qmm-v933"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40182"
+      }
+    ],
+    "Description": "### Summary\n\nWhen exporting telemetry to a back-end/collector over gRPC or HTTP using OpenTelemetry Protocol format (OTLP), if the request results in a unsuccessful request (i.e. HTTP 4xx or 5xx), the response is read into memory with no upper-bound on the number of bytes consumed.\n\nThis could cause memory exhaustion in the consuming application if the configured back-end/collector endpoint is attacker-controlled (or a network attacker can MitM the connection) and an extremely large body is returned by the response.\n\n### Details\n\nhttps://github.com/open-telemetry/opentelemetry-dotnet/pull/6564 introduced a change to read the response body when a non-200 HTTP status code is received when exporting telemetry to aid debugging by operators so that the error response is included in the logs emitted by the exporter for both [gRPC](https://github.com/open-telemetry/opentelemetry-dotnet/blob/640cf63628567b76b348b26988920dbc0b5c1662/src/OpenTelemetry.Exporter.OpenTelemetryProtocol/Implementation/ExportClient/OtlpGrpcExportClient.cs#L123-L134) and [HTTP/protobuf](https://github.com/open-telemetry/opentelemetry-dotnet/blob/640cf63628567b76b348b26988920dbc0b5c1662/src/OpenTelemetry.Exporter.OpenTelemetryProtocol/Implementation/ExportClient/OtlpHttpExportClient.cs#L36-L41).\n\nAn unintended consequence of this change is that the response body is [fully read into memory when received with no upper-bound](https://github.com/open-telemetry/opentelemetry-dotnet/blob/640cf63628567b76b348b26988920dbc0b5c1662/src/OpenTelemetry.Exporter.OpenTelemetryProtocol/Implementation/ExportClient/OtlpExportClient.cs#L68-L89).\n\nThis vulnerability was surfaced during the investigation of GHSA-w8rr-5gcm-pp58.\n\n### Impact\n\nIf an application using the OTLP exporter is configured to use a back-end/collector endpoint that is attacker-controlled (or a network attacker can MitM the connection) and an extremely large body is returned by the response the application could have its memory exhausted and create a denial-of-service condition.\n\n### Mitigation\n\nThe application's configured back-end/collector endpoint needs to behave maliciously. If the collector/back-end is a well-behaved implementation response bodies should not be excessively large if a request error occurs.\n\n### Workarounds\n\nNone known.\n\n### Remediation\n\n[#7017](https://github.com/open-telemetry/opentelemetry-dotnet/pull/7017) updates the OTLP exporter for both gRPC and HTTP to:\n\n- Limit the number of bytes read from the response body in an error condition to 4MiB (see https://github.com/open-telemetry/opentelemetry-proto/pull/781);\n- Only attempt to read the response body if OpenTelemetry error logging is enabled.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-23T21:26:10Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenTelemetry dotnet: OTLP exporter reads unbounded HTTP response bodies",
+    "UpdatedAt": "2026-04-23T21:26:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.13.1, \u003c 1.15.2"
+    }
+  ]
+}
