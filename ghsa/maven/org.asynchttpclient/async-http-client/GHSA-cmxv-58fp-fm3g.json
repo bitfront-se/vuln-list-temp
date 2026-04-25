@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2026-04-14T01:07:42Z",
+  "UpdatedAt": "2026-04-24T20:06:17Z",
   "Package": {
     "Ecosystem": "MAVEN",
     "Name": "org.asynchttpclient:async-http-client"
@@ -17,6 +17,18 @@
         "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/6b2fbb7f8"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40490"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/ae557ad35246721c09dafb2976609cd0004e78ae"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-2.14.5"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-3.0.9"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-cmxv-58fp-fm3g"
       }
     ],
@@ -30,12 +42,12 @@
         "Value": "CVE-2026-40490"
       }
     ],
-    "Description": "### Impact\nWhen redirect following is enabled (followRedirect(true)), AsyncHttpClient forwards Authorization and Proxy-Authorization headers along with Realm credentials to arbitrary redirect targets regardless of domain, scheme, or port changes. This leaks credentials on cross-domain redirects and HTTPS-to-HTTP downgrades.\n\nAdditionally, even when stripAuthorizationOnRedirect is set to true, the Realm object containing plaintext credentials is still propagated to the redirect request, causing credential re-generation for Basic and Digest authentication schemes via NettyRequestFactory.\n\nAn attacker who controls a redirect target (via open redirect, DNS rebinding, or MITM on HTTP) can capture Bearer tokens, Basic auth credentials, or any other Authorization header value.\n\n### Patches\nFixed in version 3.0.9. Users should upgrade immediately.\n\nThe fix automatically strips Authorization and Proxy-Authorization headers and clears Realm credentials whenever a redirect crosses origin boundaries (different scheme, host, or port) or downgrades from HTTPS to HTTP.\n\n### Workarounds\nFor users unable to upgrade, set (stripAuthorizationOnRedirect(true)) in the client config and avoid using Realm-based authentication with redirect following enabled. Note that (stripAuthorizationOnRedirect(true)) alone is insufficient on versions prior to 3.0.9 because the Realm bypass still re-generates credentials.\n\nAlternatively, disable redirect following (followRedirect(false)) and handle redirects manually with origin validation.",
+    "Description": "### Impact\nWhen redirect following is enabled (followRedirect(true)), AsyncHttpClient forwards Authorization and Proxy-Authorization headers along with Realm credentials to arbitrary redirect targets regardless of domain, scheme, or port changes. This leaks credentials on cross-domain redirects and HTTPS-to-HTTP downgrades.\n\nAdditionally, even when stripAuthorizationOnRedirect is set to true, the Realm object containing plaintext credentials is still propagated to the redirect request, causing credential re-generation for Basic and Digest authentication schemes via NettyRequestFactory.\n\nAn attacker who controls a redirect target (via open redirect, DNS rebinding, or MITM on HTTP) can capture Bearer tokens, Basic auth credentials, or any other Authorization header value.\n\n### Patches\nFixed in version 3.0.9 or 2.14.5. Users should upgrade immediately.\n\nThe fix automatically strips Authorization and Proxy-Authorization headers and clears Realm credentials whenever a redirect crosses origin boundaries (different scheme, host, or port) or downgrades from HTTPS to HTTP.\n\n### Workarounds\nFor users unable to upgrade, set (stripAuthorizationOnRedirect(true)) in the client config and avoid using Realm-based authentication with redirect following enabled. Note that (stripAuthorizationOnRedirect(true)) alone is insufficient on versions prior to 3.0.9 or 2.14.5 because the Realm bypass still re-generates credentials.\n\nAlternatively, disable redirect following (followRedirect(false)) and handle redirects manually with origin validation.\n\n### References\n - Fix commit: https://github.com/AsyncHttpClient/async-http-client/commit/6b2fbb7f8",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-04-14T01:07:42Z",
     "Severity": "MODERATE",
-    "Summary": "AsyncHttpClient leaks authorization credentialsto untrusted domains on cross-origin redirects",
-    "UpdatedAt": "2026-04-15T21:00:54Z",
+    "Summary": "AsyncHttpClient leaks authorization credentials to untrusted domains on cross-origin redirects",
+    "UpdatedAt": "2026-04-24T20:06:17Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.8,
@@ -45,9 +57,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "2.14.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.14.5"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "3.0.9"
       },
-      "VulnerableVersionRange": "\u003c 3.0.9"
+      "VulnerableVersionRange": "\u003e= 3.0.0.Beta1, \u003c 3.0.9"
     }
   ]
 }

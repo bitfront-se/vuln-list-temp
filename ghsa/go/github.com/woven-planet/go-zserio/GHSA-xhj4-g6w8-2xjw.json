@@ -1,0 +1,49 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-24T16:25:55Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/woven-planet/go-zserio"
+  },
+  "Advisory": {
+    "DatabaseId": 351289,
+    "Id": "GSA_kwCzR0hTQS14aGo0LWc2dzgtMnhqd84ABVw5",
+    "GhsaId": "GHSA-xhj4-g6w8-2xjw",
+    "References": [
+      {
+        "Url": "https://github.com/woven-by-toyota/go-zserio/security/advisories/GHSA-xhj4-g6w8-2xjw"
+      },
+      {
+        "Url": "https://github.com/woven-by-toyota/go-zserio/commit/39ef1decde7e9766207794d396018776b33c6e45"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xhj4-g6w8-2xjw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xhj4-g6w8-2xjw"
+      }
+    ],
+    "Description": "### Impact\n\nWhen deserializing arrays, strings or bytes (blob) types zserio first reads the size of the variable, and then allocates sufficient memory to load data. Since the size is always trusted this can be abused by creating a data file with a large size value, causing the zserio runtime to allocate large amounts of memory.\n\n### Patches\n\nPlease apply [this commit](https://github.com/woven-by-toyota/go-zserio/commit/39ef1decde7e9766207794d396018776b33c6e45).\n\n### Workarounds\n\n- Do not accept zserio data from non-trusted sources.\n- Use secure transportation protocols (like TLS).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-24T16:25:54Z",
+    "Severity": "CRITICAL",
+    "Summary": "go-zserio has Unbounded Memory Allocation for All Platforms",
+    "UpdatedAt": "2026-04-24T16:25:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.1"
+    }
+  ]
+}

@@ -14,6 +14,15 @@
         "Url": "https://github.com/junrar/junrar/security/advisories/GHSA-hf5p-q87m-crj7"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41245"
+      },
+      {
+        "Url": "https://github.com/junrar/junrar/commit/d77e9a83eb721cd51f9c23d7869d0e6ad7f952d7"
+      },
+      {
+        "Url": "https://github.com/junrar/junrar/releases/tag/v7.5.10"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-hf5p-q87m-crj7"
       }
     ],
@@ -21,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-hf5p-q87m-crj7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41245"
       }
     ],
     "Description": "### Summary\n\nA path traversal vulnerability in `LocalFolderExtractor` allows an attacker to write arbitrary files with attacker-controlled content into sibling directories when a crafted RAR archive is extracted.\n\n### Example\n\nGiven an extraction directory set to `/tmp/extract`, a crafted archive with an entry with the filename as `../extract_evil/file.txt` would be actually extracted to `/tmp/extract_evil/file.txt`.\n\n### Details\n\nThe `createDirectory()` and `createFile()` methods in`LocalFolderExtractor` validate extraction paths using a string prefix.",
@@ -28,7 +41,7 @@
     "PublishedAt": "2026-04-16T21:14:33Z",
     "Severity": "MODERATE",
     "Summary": "Junrar: Path Traversal (Zip-Slip) via Sibling Directory Name Prefix",
-    "UpdatedAt": "2026-04-16T21:14:34Z",
+    "UpdatedAt": "2026-04-24T20:56:03Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.9,

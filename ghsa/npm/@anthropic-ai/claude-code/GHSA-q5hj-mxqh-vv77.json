@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-24T16:34:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 351292,
+    "Id": "GSA_kwCzR0hTQS1xNWhqLW14cWgtdnY3N84ABVw8",
+    "GhsaId": "GHSA-q5hj-mxqh-vv77",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-q5hj-mxqh-vv77"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q5hj-mxqh-vv77"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q5hj-mxqh-vv77"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40068"
+      }
+    ],
+    "Description": "Claude Code used the git worktree `commondir` file when determining folder trust but did not validate its contents. By crafting a repository with a `commondir` file pointing to a path the victim had previously trusted, an attacker could bypass the trust dialog and immediately execute malicious hooks defined in `.claude/settings.json`. Exploiting this required the victim to clone a malicious repository and run Claude Code within it, and for the attacker to know or guess a path the victim had already trusted.\n\nUsers on standard Claude Code auto-update have received this fix already. Users performing manual updates are advised to update to the latest version.\n\nClaude Code thanks [hackerone.com/masato_anzai](https://hackerone.com/masato_anzai) for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-24T16:34:03Z",
+    "Severity": "HIGH",
+    "Summary": "Claude Code: Trust Dialog Bypass via Git Worktree Spoofing Allows Arbitrary Code Execution",
+    "UpdatedAt": "2026-04-24T16:34:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.84"
+      },
+      "VulnerableVersionRange": "\u003e= 2.1.63, \u003c 2.1.84"
+    }
+  ]
+}

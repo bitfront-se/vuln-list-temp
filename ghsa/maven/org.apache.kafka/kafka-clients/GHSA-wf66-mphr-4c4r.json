@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-24T20:37:20Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.kafka:kafka-clients"
+  },
+  "Advisory": {
+    "DatabaseId": 350145,
+    "Id": "GSA_kwCzR0hTQS13ZjY2LW1waHItNGM0cs4ABVfB",
+    "GhsaId": "GHSA-wf66-mphr-4c4r",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33558"
+      },
+      {
+        "Url": "https://kafka.apache.org/cve-list"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/pz5g4ky3h0k91tfd14p0dzqjp80960kl"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/17/3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wf66-mphr-4c4r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wf66-mphr-4c4r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33558"
+      }
+    ],
+    "Description": "Information exposure vulnerability has been identified in Apache Kafka.\n\nThe NetworkClient component will output entire requests and responses information in the DEBUG log level in the logs. By default, the log level is set to INFO level. If the DEBUG level is enabled, the sensitive information will be exposed via the requests and responses output log. The entire lists of impacted requests and responses are:\n\n\n  *  AlterConfigsRequest\n\n  *  AlterUserScramCredentialsRequest\n\n  *  ExpireDelegationTokenRequest\n\n  *  IncrementalAlterConfigsRequest\n\n  *  RenewDelegationTokenRequest\n\n  *  SaslAuthenticateRequest\n\n  *  createDelegationTokenResponse\n\n  *  describeDelegationTokenResponse\n\n  *  SaslAuthenticateResponse\n\n\nThis issue affects Apache Kafka: from any version supported the listed API above through v3.9.1, v4.0.0. Apache advises Kafka users to upgrade to v3.9.2, v4.0.1, or later to avoid this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-20T15:31:52Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Kafka exposes sensitive information in its DEBUG logs",
+    "UpdatedAt": "2026-04-24T20:37:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.1"
+      },
+      "VulnerableVersionRange": "= 4.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.11.0, \u003c 3.9.2"
+    }
+  ]
+}

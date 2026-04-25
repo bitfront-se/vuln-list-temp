@@ -1,0 +1,49 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-24T16:17:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 351284,
+    "Id": "GSA_kwCzR0hTQS1yNzVmLTV4OHAtcXZtY84ABVw0",
+    "GhsaId": "GHSA-r75f-5x8p-qvmc",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-r75f-5x8p-qvmc"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.83.7-stable"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r75f-5x8p-qvmc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r75f-5x8p-qvmc"
+      }
+    ],
+    "Description": "### Impact\n\nA database query used during proxy API key checks mixed the caller-supplied key value into the query text instead of passing it as a separate parameter. An unauthenticated attacker could send a specially crafted `Authorization` header to any LLM API route (for example `POST /chat/completions`) and reach this query through the proxy's error-handling path.\n\nAn attacker could read data from the proxy's database and may be able to modify it, leading to unauthorised access to the proxy and the credentials it manages.\n\n### Patches\n\nFixed in **`1.83.7`**. The caller-supplied value is now always passed to the database as a separate parameter. Upgrade to `1.83.7` or later.\n\n### Workarounds\n\nIf upgrading is not immediately possible, set `disable_error_logs: true` under `general_settings`. This removes the path through which unauthenticated input reaches the vulnerable query.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-24T16:17:07Z",
+    "Severity": "CRITICAL",
+    "Summary": "LiteLLM has SQL Injection in Proxy API key verification",
+    "UpdatedAt": "2026-04-24T16:17:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.83.7"
+      },
+      "VulnerableVersionRange": "\u003e= 1.81.16, \u003c 1.83.7"
+    }
+  ]
+}

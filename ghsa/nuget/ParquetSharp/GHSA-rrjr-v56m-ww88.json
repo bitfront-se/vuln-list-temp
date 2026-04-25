@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-24T16:39:55Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "ParquetSharp"
+  },
+  "Advisory": {
+    "DatabaseId": 351296,
+    "Id": "GSA_kwCzR0hTQS1ycmpyLXY1Nm0td3c4OM4ABVxA",
+    "GhsaId": "GHSA-rrjr-v56m-ww88",
+    "References": [
+      {
+        "Url": "https://github.com/G-Research/ParquetSharp/security/advisories/GHSA-rrjr-v56m-ww88"
+      },
+      {
+        "Url": "https://github.com/G-Research/ParquetSharp/releases/tag/23.0.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rrjr-v56m-ww88"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rrjr-v56m-ww88"
+      }
+    ],
+    "Description": "`DecimalConverter.ReadDecimal` makes a stackalloc using what might be an attacker-supplied value. If an attacker declares a decimal column with some unreasonable width, this could lead to a stack overflow. In a service environment, this would potentially take down a service.\n\nThis affects applications using ParquetSharp to read untrusted Parquet files in a network service.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-24T16:39:55Z",
+    "Severity": "MODERATE",
+    "Summary": "ParquetSharp: Possible Stack Overflow When Reading a ParquetFile with Large Decimal Type Width",
+    "UpdatedAt": "2026-04-24T16:39:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "23.0.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 18.1.0, \u003c 23.0.0.1"
+    }
+  ]
+}
