@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-25T23:45:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351364,
+    "Id": "GSA_kwCzR0hTQS0yeGNwLXg4N3ctcTM3N84ABVyE",
+    "GhsaId": "GHSA-2xcp-x87w-q377",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2xcp-x87w-q377"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/5275d008ed33203dba3f98e969ad683a65c416c3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2xcp-x87w-q377"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2xcp-x87w-q377"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nTemplated hook mapping `sessionKey` values were treated differently from request-supplied session keys. A hook mapping could render an externally influenced session key even when `hooks.allowRequestSessionKey` was disabled, bypassing the intended routing opt-in for hook callers.\n\nThis affects webhook routing isolation. It does not grant host execution by itself. Severity is medium.\n\n## Fix\n\nTemplate-rendered mapping session keys are now treated as externally supplied routing input and require `hooks.allowRequestSessionKey=true` plus the existing prefix policy checks.\n\nFix commit:\n\n- `5275d008ed33203dba3f98e969ad683a65c416c3`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:45:11Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Hook mapping templates could bypass hook session-key opt-in",
+    "UpdatedAt": "2026-04-25T23:45:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.20"
+    }
+  ]
+}

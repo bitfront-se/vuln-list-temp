@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-25T23:47:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351367,
+    "Id": "GSA_kwCzR0hTQS1oeHZtLXhqdmYtOTNmM84ABVyH",
+    "GhsaId": "GHSA-hxvm-xjvf-93f3",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-hxvm-xjvf-93f3"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/018494fa3ebb9145112e68b56fe1cb2e9f9a9ed6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hxvm-xjvf-93f3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hxvm-xjvf-93f3"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nWorkspace `.env` loading did not reserve the `OPENCLAW_` runtime-control namespace broadly enough. A malicious workspace could set variables such as `OPENCLAW_GIT_DIR` before source-update or installer flows, potentially steering trusted OpenClaw runtime behavior.\n\nThis requires running OpenClaw from an attacker-controlled workspace. Severity is medium.\n\n## Fix\n\nOpenClaw now reserves the workspace `OPENCLAW_` environment namespace and rejects workspace dotenv entries for OpenClaw runtime-control variables.\n\nFix commit:\n\n- `018494fa3ebb9145112e68b56fe1cb2e9f9a9ed6`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:47:05Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Workspace dotenv could override runtime-control environment variables",
+    "UpdatedAt": "2026-04-25T23:47:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.20"
+    }
+  ]
+}

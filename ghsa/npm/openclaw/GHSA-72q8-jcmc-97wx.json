@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-25T23:46:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351366,
+    "Id": "GSA_kwCzR0hTQS03MnE4LWpjbWMtOTd3eM4ABVyG",
+    "GhsaId": "GHSA-72q8-jcmc-97wx",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-72q8-jcmc-97wx"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/90979d7c3ef7ec30b9f8aa6963a5e38d2f17d166"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72q8-jcmc-97wx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72q8-jcmc-97wx"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nFeishu card-action callbacks could synthesize a message event with DM conversations classified as group conversations. That skipped `dmPolicy` enforcement for card actions, so a sender in a Feishu DM could trigger card-action flows that should have been blocked by a restrictive DM policy.\n\nThe issue is limited to Feishu card-action handling. Severity is medium.\n\n## Fix\n\nOpenClaw now resolves Feishu card-action chat type before dispatch, including API lookup when stored context is unavailable, and avoids falling through to group handling for DMs.\n\nFix commit:\n\n- `90979d7c3ef7ec30b9f8aa6963a5e38d2f17d166`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:46:31Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Feishu card actions could misclassify DMs and skip dmPolicy",
+    "UpdatedAt": "2026-04-25T23:46:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.20"
+    }
+  ]
+}

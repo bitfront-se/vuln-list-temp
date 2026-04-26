@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-25T23:49:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351372,
+    "Id": "GSA_kwCzR0hTQS1qNGM1LTg5ZjUtZjNwbc4ABVyM",
+    "GhsaId": "GHSA-j4c5-89f5-f3pm",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j4c5-89f5-f3pm"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/1fd049e3074cac72f6734a7fe88468c84f5f8bd7"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/e90c89cf8b1459f2aa1f3a665be67392b6c03fdf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j4c5-89f5-f3pm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j4c5-89f5-f3pm"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nBrowser profile creation normalized `cdpUrl` values before persisting them, but did not apply the configured browser SSRF policy at creation time. In deployments that explicitly disabled private-network CDP targets, a stored profile could still point at a private-network or metadata endpoint and later be probed by normal profile status flows.\n\nDefault trusted-operator browser behavior allows private-network CDP endpoints, so this only affected strict-mode deployments. Severity is low.\n\n## Fix\n\nOpenClaw now checks CDP endpoints against the browser SSRF policy during profile creation and reachability operations.\n\nFix commits:\n\n- `1fd049e3074cac72f6734a7fe88468c84f5f8bd7`\n- `e90c89cf8b1459f2aa1f3a665be67392b6c03fdf`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:49:42Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Browser CDP profile creation skipped strict-mode SSRF checks",
+    "UpdatedAt": "2026-04-25T23:49:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.20"
+    }
+  ]
+}

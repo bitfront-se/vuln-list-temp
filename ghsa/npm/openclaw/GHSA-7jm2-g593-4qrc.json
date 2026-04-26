@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-25T23:51:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351375,
+    "Id": "GSA_kwCzR0hTQS03am0yLWc1OTMtNHFyY84ABVyP",
+    "GhsaId": "GHSA-7jm2-g593-4qrc",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-7jm2-g593-4qrc"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/fe30b31a97a917ecc6e92f6c85378b6b20352422"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7jm2-g593-4qrc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7jm2-g593-4qrc"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nThe agent-facing `gateway config.patch` / `config.apply` guard did not cover several operator-trusted settings, including sandbox policy, plugin enablement, gateway auth/TLS, hook routing, MCP server configuration, SSRF policy, and filesystem hardening. A prompt-injected model with access to the owner-only gateway tool could persist changes to those settings.\n\nThis is a model-to-operator guard bypass, not a remote unauthenticated gateway compromise. Severity is medium.\n\n## Fix\n\nOpenClaw now blocks model-driven gateway config mutations for the broader operator-trusted path set and covers per-agent overrides and array-entry patching.\n\nFix commit:\n\n- `fe30b31a97a917ecc6e92f6c85378b6b20352422`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:51:11Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Agent gateway config mutations could change protected operator settings",
+    "UpdatedAt": "2026-04-25T23:51:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.20"
+    }
+  ]
+}

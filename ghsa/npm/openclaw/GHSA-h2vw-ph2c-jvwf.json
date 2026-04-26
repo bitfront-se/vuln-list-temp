@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-25T23:50:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351373,
+    "Id": "GSA_kwCzR0hTQS1oMnZ3LXBoMmMtanZ3Zs4ABVyN",
+    "GhsaId": "GHSA-h2vw-ph2c-jvwf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-h2vw-ph2c-jvwf"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/2f06696579a1ab0cb5bbbbb6a900414a6b2e3cd1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h2vw-ph2c-jvwf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h2vw-ph2c-jvwf"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003e= 2026.4.5, \u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nA malicious workspace `.env` could set `MINIMAX_API_HOST` and redirect credentialed MiniMax requests to an attacker-controlled origin, exposing the MiniMax API key in the outbound `Authorization` header.\n\nThis requires running OpenClaw from an attacker-controlled workspace. Severity is medium.\n\n## Fix\n\nOpenClaw now blocks `MINIMAX_API_HOST` from workspace dotenv injection and removes env-driven URL routing from the affected MiniMax request path.\n\nFix commit:\n\n- `2f06696579a1ab0cb5bbbbb6a900414a6b2e3cd1`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:50:10Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Workspace dotenv MiniMax host override could redirect credentialed requests",
+    "UpdatedAt": "2026-04-25T23:50:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.4.5, \u003c 2026.4.20"
+    }
+  ]
+}

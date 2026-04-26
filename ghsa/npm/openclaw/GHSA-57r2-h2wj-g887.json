@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-04-25T23:47:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351368,
+    "Id": "GSA_kwCzR0hTQS01N3IyLWgyd2otZzg4N84ABVyI",
+    "GhsaId": "GHSA-57r2-h2wj-g887",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-57r2-h2wj-g887"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/f61896b03cc7031f51106a04566831f4ac2a0bd7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-57r2-h2wj-g887"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-57r2-h2wj-g887"
+      }
+    ],
+    "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nOutput from webhook-triggered isolated cron agent runs could be queued into the main session awareness stream without `trusted: false`. That made the event render as a trusted `System:` event instead of an untrusted system event.\n\nThis is a trust-labeling issue that can strengthen prompt-injection impact, but it does not directly bypass gateway auth, tool policy, or sandboxing. Severity is low.\n\n## Fix\n\nOpenClaw now preserves untrusted labels for isolated cron awareness events and forwards the trust flag through cron delivery helpers.\n\nFix commit:\n\n- `f61896b03cc7031f51106a04566831f4ac2a0bd7`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-25T23:47:31Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Isolated cron awareness events were recorded as trusted system events",
+    "UpdatedAt": "2026-04-25T23:47:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.20"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.20"
+    }
+  ]
+}
