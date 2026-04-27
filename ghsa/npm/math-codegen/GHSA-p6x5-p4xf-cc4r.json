@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-p6x5-p4xf-cc4r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41507"
       }
     ],
     "Description": "### Impact\n\nString literal content passed to `cg.parse()` is injected verbatim into a `new Function()` body without sanitization. This allows an attacker to execute arbitrary system commands when user-controlled input reaches the parser. Any application exposing a math evaluation endpoint where user input flows into `cg.parse()` is vulnerable to full RCE.\n    \n### Patches\n\nThe vulnerability is addressed by using `JSON.stringify()` on string literal values in `lib/node/ConstantNode.js` to ensure they are treated as data rather than code. Users should upgrade to version 0.4.3 or later.\n    \n### Workarounds\n\nAvoid passing un-sanitized user input to the parser or manually escape string literals in the input.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-04-17T22:31:45Z",
     "Severity": "CRITICAL",
     "Summary": "Remote Code Execution (RCE) via String Literal Injection into math-codegen",
-    "UpdatedAt": "2026-04-17T22:31:49Z",
+    "UpdatedAt": "2026-04-27T17:43:06Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.8,

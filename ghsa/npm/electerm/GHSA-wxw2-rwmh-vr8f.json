@@ -24,14 +24,18 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-wxw2-rwmh-vr8f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41500"
       }
     ],
-    "Description": "### Impact\n_What kind of vulnerability is it? Who is impacted?_\n\n**Two Command Injection vulnerabilities in electerm:**\n\n1. **macOS Installer** (`electerm_CommandInjection_02`): A command injection vulnerability exists in `github.com/elcterm/electerm/npm/install.js:150`. The `runMac()` function appends attacker-controlled remote `releaseInfo.name` directly into an `exec(\"open ...\")` command without validation.\n\n2. **Linux Installer** (`electerm_CommandInjection_01`): A command injection vulnerability exists in `github.com/elcterm/electerm/npm/install.js:130`. The `runLinux()` function appends attacker-controlled remote version strings directly into an `exec(\"rm -rf ...\")` command without validation.\n\n**Who is impacted:** Users who run `npm install -g electerm`. An attacker who can control the remote release metadata (version string or release name) served by the project's update server could execute arbitrary system commands, tamper local files, and escalate compromise of development/runtime assets.\n\n---\n\n### Patches\n_Has the problem been patched? What versions should users upgrade to?_\n\nFixed in [59708b38c8a52f5db59d7d4eff98e31d573128ee](https://github.com/electerm/electerm/commit/59708b38c8a52f5db59d7d4eff98e31d573128ee), user no need to upgrade, the new version already published in npm\n\n---\n\n### Workarounds\n_Is there a way for users to fix or remediate the vulnerability without upgrading?_\n\nno",
+    "Description": "### Impact\n_What kind of vulnerability is it? Who is impacted?_\n\n**Command Injection vulnerabilities in electerm:**\n\nA command injection vulnerability exists in `github.com/elcterm/electerm/npm/install.js:150`. The `runMac()` function appends attacker-controlled remote `releaseInfo.name` directly into an `exec(\"open ...\")` command without validation.\n\n**Who is impacted:** Users who run `npm install -g electerm` in Mac OS. An attacker who can control the remote release metadata (version string or release name) served by the project's update server could execute arbitrary system commands, tamper local files, and escalate compromise of development/runtime assets.\n\n---\n\n### Patches\n_Has the problem been patched? What versions should users upgrade to?_\n\nFixed in [59708b38c8a52f5db59d7d4eff98e31d573128ee](https://github.com/electerm/electerm/commit/59708b38c8a52f5db59d7d4eff98e31d573128ee), user no need to upgrade, the new version already published in npm\n\n---\n\n### Workarounds\n_Is there a way for users to fix or remediate the vulnerability without upgrading?_\n\nno\n\n---\n\n### References\n_Are there any links users can visit to find out more?_\n\n[59708b38c8a52f5db59d7d4eff98e31d573128ee](https://github.com/electerm/electerm/commit/59708b38c8a52f5db59d7d4eff98e31d573128ee)",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-04-16T21:24:22Z",
     "Severity": "CRITICAL",
     "Summary": "electerm: electerm_install_script_CommandInjection Vulnerability Report",
-    "UpdatedAt": "2026-04-16T21:24:24Z",
+    "UpdatedAt": "2026-04-27T16:42:06Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.8,

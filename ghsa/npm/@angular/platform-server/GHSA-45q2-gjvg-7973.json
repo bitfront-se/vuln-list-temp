@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-45q2-gjvg-7973"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41423"
       }
     ],
     "Description": "### Impact\n\nA [Server-Side Request Forgery (SSRF)](https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/SSRF) vulnerability exists in `@angular/platform-server` due to improper handling of URLs during Server-Side Rendering (SSR).\n\nWhen an attacker sends a request such as `GET /\\evil.com/ HTTP/1.1` the server engine (Express, etc.) passes the URL string to Angular’s rendering functions.\n\nBecause the URL parser normalizes the backslash to a forward slash for HTTP/HTTPS schemes, the internal state of the application is hijacked to believe the current origin is `evil.com`. This misinterpretation tricks the application into treating the attacker’s domain as the local origin. Consequently, any relative `HttpClient` requests or `PlatformLocation.hostname` references are redirected to the attacker controlled server, potentially exposing internal APIs or metadata services.\n\n**Affected APIs:**\n- `renderModule`\n- `renderApplication`\n- `CommonEngine` (from `@angular/ssr`)\n\n**Non-Affected APIs:**\n- `AngularAppEngine` (from `@angular/ssr`)\n- `AngularNodeAppEngine` (from `@angular/ssr`)\n\n### Attack Preconditions\n- The server has outbound network access.\n- The application uses Angular SSR via the affected APIs.\n- A pathname is passed as URL to the rendering method  (e.g. using `req.url`).\n- The server-side code performs HTTP requests using `HttpClient` with relative URLs or uses `PlatformLocation.hostname` to build URLs. \n\n\n### Patches\n- 22.0.0-next.8\n- 21.2.9\n- 20.3.19\n- 19.2.21\n\n### Workarounds\nDevelopers should implement a middleware to sanitize the request URL before it reaches Angular. This involves stripping or normalizing leading slashes:\n\n```js\napp.use((req, res, next) =\u003e {\n  // Sanitize the URL to ensure it starts with a single forward slash\n  if (req.url.startsWith('//') || req.url.startsWith('/\\\\') || req.url.startsWith('\\\\')) {\n     req.url = '/' + req.url.replace(/^[/\\\\]+/, '');\n  }\n  next();\n});\n\n```\n### References\n- [Fix](https://github.com/angular/angular/pull/68194)",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-16T22:36:01Z",
     "Severity": "HIGH",
     "Summary": "Angular: SSRF via protocol-relative and backslash URLs in Angular Platform-Server",
-    "UpdatedAt": "2026-04-16T22:36:02Z",
+    "UpdatedAt": "2026-04-27T16:19:20Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
