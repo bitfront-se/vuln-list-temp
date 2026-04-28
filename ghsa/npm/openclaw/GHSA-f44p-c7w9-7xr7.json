@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-f44p-c7w9-7xr7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41399"
       }
     ],
     "Description": "## Summary\n\nThe gateway accepted unbounded concurrent unauthenticated WebSocket upgrades before allocating them to an authenticated session budget.\n\n## Impact\n\nAn unauthenticated network attacker could consume socket and worker capacity and disrupt WebSocket availability for legitimate clients.\n\n## Affected Component\n\n`src/gateway/server-http.ts, src/gateway/server/preauth-connection-budget.ts`\n\n## Fixed Versions\n\n- Affected: `\u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `cb5f7e201f` (`gateway: cap concurrent pre-auth websocket upgrades`).\n\nDiscovered by：Topsec AlphaLab (wang dong)",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-03-31T23:54:00Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Gateway WebSocket Denial of Service via unbounded pre-auth upgrades",
-    "UpdatedAt": "2026-03-31T23:54:01Z",
+    "UpdatedAt": "2026-04-28T18:22:28Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

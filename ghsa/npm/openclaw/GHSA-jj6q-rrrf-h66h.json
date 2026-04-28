@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-jj6q-rrrf-h66h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41407"
       }
     ],
     "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, several shared-secret comparison call sites still used early length-mismatch checks instead of the shared fixed-length comparison helper. Those paths could leak secret-length information through measurable timing differences.\n\n## Impact\n\nThe affected paths exposed a low-severity timing side channel on secret comparison. The issue did not by itself demonstrate auth bypass, but it weakened the intended constant-time handling for shared secrets.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `be10ecef770a4654519869c3641bbb91087c8c7b` — reuse the shared secret comparison helper at affected call sites\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @kexinoh of Tencent zhuque Lab (https://github.com/Tencent/AI-Infra-Guard) for reporting.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-07T18:16:03Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Shared-secret comparison call sites leaked length information through timing",
-    "UpdatedAt": "2026-04-07T18:16:04Z",
+    "UpdatedAt": "2026-04-28T18:24:40Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

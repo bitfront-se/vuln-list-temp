@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-4p4f-fc8q-84m3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41398"
       }
     ],
     "Description": "## Summary\nBefore OpenClaw 2026.4.2, the iOS A2UI bridge treated generic local-network pages as trusted bridge origins. A page loaded from a local-network or tailnet host could trigger agent.request dispatch without the stricter trusted-canvas origin check.\n\n## Impact\nA loaded attacker-controlled page could inject unauthorized non-owner agent.request runs into the active iOS node session, polluting session state and consuming budget. The demonstrated impact did not include owner-only actions or arbitrary host execution.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.1\n- Patched versions: \u003e= 2026.4.2\n- Latest published npm version: 2026.4.1\n\n## Fix Commit(s)\n49d08382a90f71dabe2877b3f6729ad85f808d57 — restrict A2UI action dispatch to trusted canvas URLs\n\n## Release Process Note\nThe fix is present on main and is staged for OpenClaw 2026.4.2. Publish this advisory after the 2026.4.2 npm release is live.\n\nThanks [@nexrin](https://github.com/nexrin) for reporting.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-07T18:15:03Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: iOS A2UI bridge trusted generic local-network pages for agent.request dispatch",
-    "UpdatedAt": "2026-04-22T02:12:55Z",
+    "UpdatedAt": "2026-04-28T18:22:09Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
