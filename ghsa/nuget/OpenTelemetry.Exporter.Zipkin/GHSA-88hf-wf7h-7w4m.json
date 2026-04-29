@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-28T23:23:28Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenTelemetry.Exporter.Zipkin"
+  },
+  "Advisory": {
+    "DatabaseId": 351783,
+    "Id": "GSA_kwCzR0hTQS04OGhmLXdmN2gtN3c0bc4ABV4n",
+    "GhsaId": "GHSA-88hf-wf7h-7w4m",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/security/advisories/GHSA-88hf-wf7h-7w4m"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/pull/7081"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/commit/c724f4bd6fd88e9a599af1668bf7af9487155b62"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-88hf-wf7h-7w4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-88hf-wf7h-7w4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41310"
+      }
+    ],
+    "Description": "### Summary\n\nThe Zipkin exporter remote endpoint cache accepted unbounded key growth derived from span attributes. In high-cardinality scenarios, this could increase process memory usage over time and degrade availability.\n\n### Details\n\n- Introduce a bounded, thread-safe LRU cache for remote endpoints.\n- Enforce fixed maximum size to prevent unbounded growth.\n\n### Impact\n\n- A process using Zipkin export for client/producer spans could experience avoidable memory growth under sustained unique remote endpoint values.\n\n### Resources\n\n[#7081](https://github.com/open-telemetry/opentelemetry-dotnet/pull/7081)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-28T23:23:28Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenTelemetry's Zipkin remote endpoint cache could grow without bounds and increase memory pressure",
+    "UpdatedAt": "2026-04-28T23:23:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.3"
+      },
+      "VulnerableVersionRange": "\u003c= 1.15.2"
+    }
+  ]
+}
