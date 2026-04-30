@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-30T17:28:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "weblate"
+  },
+  "Advisory": {
+    "DatabaseId": 352130,
+    "Id": "GSA_kwCzR0hTQS1jd2N4LTM4MnYtOG05Z84ABV-C",
+    "GhsaId": "GHSA-cwcx-382v-8m9g",
+    "References": [
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/security/advisories/GHSA-cwcx-382v-8m9g"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/pull/19061"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/pull/19062"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/commit/e1eff1f517c1ee315d69581910baaabb724e5ef0"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/commit/e4b67a76d95d5165ecb9937f7485fd79223b7f14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cwcx-382v-8m9g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cwcx-382v-8m9g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41654"
+      }
+    ],
+    "Description": "### Impact\nAn authenticated user with `project.add` permission (default on hosted Weblate SaaS and for any user holding an active billing/trial plan) can import a crafted project backup ZIP whose `components/\u003cname\u003e.json` contains an attacker-chosen `repo` URL pointing at a **private address** (e.g. `http://127.0.0.1:9999/`) or using a **non-allow-listed scheme** (e.g. `file://`, `git://`). Weblate persists the component via `Component.objects.bulk_create([component])[0]`, which bypasses Django's `full_clean()` and therefore never runs the `validate_repo_url` validator. The URL is subsequently written verbatim into `.git/config` by `configure_repo(pull=False)`.\n\n### Patches\n* https://github.com/WeblateOrg/weblate/pull/19061\n* https://github.com/WeblateOrg/weblate/pull/19062 \n\n### Workarounds\nLimiting who can create projects limits the scope.\n\n### Resources\nWeblate thanks @fg0x0 for reporting this vulnerability via GitHub.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-30T17:28:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Weblate Vulnerable to Authenticated SSRF via Project Backup Import bypassing validate_repo_url",
+    "UpdatedAt": "2026-04-30T17:28:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.17.1"
+      },
+      "VulnerableVersionRange": "\u003c 5.17.1"
+    }
+  ]
+}

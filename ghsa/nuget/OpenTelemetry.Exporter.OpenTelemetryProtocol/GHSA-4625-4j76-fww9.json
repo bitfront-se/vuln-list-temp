@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-30T18:34:33Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenTelemetry.Exporter.OpenTelemetryProtocol"
+  },
+  "Advisory": {
+    "DatabaseId": 352170,
+    "Id": "GSA_kwCzR0hTQS00NjI1LTRqNzYtZnd3Oc4ABV-q",
+    "GhsaId": "GHSA-4625-4j76-fww9",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/security/advisories/GHSA-4625-4j76-fww9"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/pull/7106"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet/commit/78dffdc5ebdf3dc090fdb94e3f1a32d3d1e26dfd"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4625-4j76-fww9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4625-4j76-fww9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42191"
+      }
+    ],
+    "Description": "### Summary\n\nThe OTLP disk retry feature in `OpenTelemetry.Exporter.OpenTelemetryProtocol` silently fell back to `Path.GetTempPath()` when `OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY=disk` was set but `OTEL_DOTNET_EXPERIMENTAL_OTLP_DISK_RETRY_DIRECTORY_PATH` was not configured.\n\nThe exporter stored and loaded `*.blob` files under fixed, signal-named subdirectories (`traces`, `metrics`, `logs`) beneath that shared temporary root path.\n\nOn multi-user systems where the temporary directory is accessible to other local accounts, this exposed three attack surfaces:\n\n- **Blob injection (integrity):** an attacker could write crafted `*.blob` files into the predictable path; the exporter picks them up on the next retry cycle and forwards them to the configured OTLP endpoint under the application's identity.\n- **Telemetry disclosure (confidentiality):** an attacker reads `*.blob` files written by the application between export failures, recovering encoded telemetry payloads (spans, metric data points, log records).\n- **Resource exhaustion (availability):** an attacker deposits numerous or oversized blob files, degrading retry-loop performance or consuming disk space.\n\n### Details\n\n#### Preconditions\n\n1. `OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY` is set to `disk`.\n2. `OTEL_DOTNET_EXPERIMENTAL_OTLP_DISK_RETRY_DIRECTORY_PATH` is not set, causing the exporter to resolve the blob storage root using the `System.IO.Path.GetTempPath()` API.\n3. A local attacker has read or write access to the process' temporary directory (e.g., `/tmp` on Linux, or `%TEMP%` on a multi-user Windows installation).\n\n#### Exploit path\n\n1. A target application starts with `OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY=disk` and no explicit blob directory. The exporter resolves the storage root to `Path.GetTempPath()`, producing paths such as `%TEMP%\\traces`, `%TEMP%\\metrics`, and `%TEMP%\\logs` (or `/tmp/traces` etc. on Linux).\n2. **Injection scenario:** before or during the application's retry window, an attacker writes crafted `*.blob` files into one of those signal subdirectories. On the next retry interval (by default every 60 seconds), [`OtlpExporterPersistentStorageTransmissionHandler`](https://github.com/open-telemetry/opentelemetry-dotnet/blob/c724f4bd6fd88e9a599af1668bf7af9487155b62/src/OpenTelemetry.Exporter.OpenTelemetryProtocol/Implementation/Transmission/OtlpExporterPersistentStorageTransmissionHandler.cs) scans the directory, loads the attacker-supplied blobs, and forwards them to the configured OTLP endpoint using the application's identity and transport credentials.\n3. **Disclosure scenario:** the attacker reads `*.blob` files that the application wrote after a transient export failure, recovering the full serialized telemetry payloads (spans, metric data points, or log records in Protobuf encoding).\n5. **DoS scenario:** the attacker deposits a large number of oversized blob files in the temporary subdirectories, causing the retry loop to consume excess CPU/IO processing them, potentially exhausting available disk space.\n\n### Mitigations\n\nIf an immediate upgrade to a patched version is not possible:\n\n1. Avoid enabling disk retry in shared environments.\n2. Configure a dedicated directory with strict ACL/ownership and least privilege.\n3. Ensure the directory is not shared across tenants/users.\n4. Monitor for unexpected `*.blob` files or abnormal retry backlog growth.\n\n### Resources\n\n- [#7106](https://github.com/open-telemetry/opentelemetry-dotnet/pull/7106)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-30T18:34:30Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenTelemetry's disk retry default temp path enables local blob injection via OTLP Exporter",
+    "UpdatedAt": "2026-04-30T18:34:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.0, \u003c= 1.15.2"
+    }
+  ]
+}

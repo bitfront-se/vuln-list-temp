@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-30T18:20:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@clerk/chrome-extension"
+  },
+  "Advisory": {
+    "DatabaseId": 352134,
+    "Id": "GSA_kwCzR0hTQS13MjRyLTUyNjYtOWMzY84ABV-G",
+    "GhsaId": "GHSA-w24r-5266-9c3c",
+    "References": [
+      {
+        "Url": "https://github.com/clerk/javascript/security/advisories/GHSA-w24r-5266-9c3c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w24r-5266-9c3c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w24r-5266-9c3c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42349"
+      }
+    ],
+    "Description": "### Summary\n\n`has()`, `auth.protect()`, and related authorization predicates in `@clerk/shared`, `@clerk/nextjs`, `@clerk/backend`, and other framework SDKs can return true for certain combined authorization checks when the result should be false, allowing a gated action to proceed for a user who does not satisfy the full set of requested conditions.\n\nSessions are not compromised and no existing user can be impersonated. The bypass is limited to the authorization decision returned by the predicate. `clerkMiddleware` continues to authenticate requests correctly, `auth()` reflects the real authentication state, and token verification is unaffected.\n\n### Who is affected\n\nAll apps that combine more than one authorization dimension in a single `has()` or `auth.protect()` call should upgrade to the patched versions. Patches are drop-in with no API changes. The information below describes the scope of the bypass and helps developers understand whether their apps are potentially affected, but is not a reason to delay the upgrade.\n\nThis call shape can be bypassed if certain conditions are met: a `has()` or `auth.protect()` call that combines a `reverification` check with any of `role`, `permission`, `feature`, or `plan`, or that combines a billing check (`feature` or `plan`) with a role or permission check.\n\n\n```ts\n// Reverification combined with role / permission / feature / plan\nawait auth.protect({ permission: 'org:settings:delete', reverification: 'strict' });\nconst canAct = has({ role: 'org:admin', reverification: 'strict' });\n\n// Billing (feature / plan) combined with role / permission\nconst canAct = has({ permission: 'org:admin', feature: 'premium' });\n```\n\nSingle-condition checks are not affected and continue to fail closed as expected:\n\n```ts\nawait auth.protect({ permission: 'org:settings:delete' });\nhas({ reverification: 'strict' });\n```\n\nThe callback form of `auth.protect` is not affected unless the callback itself invokes one of the affected shapes:\n\n```ts\nawait auth.protect(has =\u003e has({ permission: 'org:X' }) \u0026\u0026 has({ reverification: 'strict' }));\n```\n\nApp patterns that rely only on single-condition checks, or that combine them via the callback form, are unaffected. Authentication, session state, and token verification continue to work correctly regardless of this bypass.\n\n`@clerk/shared` is usually not imported directly in application code, but the fix lives there and reaches an app through its framework package. If developers import `createCheckAuthorization` from `@clerk/shared` directly, their apps are also affected. Run `npm why @clerk/shared` (or the app's package manager's equivalent) to check the installed version.\n\n### Additional `auth.protect()` bypass\n\nA second, related bypass lives in `@clerk/nextjs`: `auth.protect()` silently discarded authorization params (`role`, `permission`, `feature`, `plan`, `reverification`) whenever the same argument object also contained `unauthenticatedUrl`, `unauthorizedUrl`, or `token`.\n\n### Recommended actions\n\nUpgrade to the latest patch release of the consuming app's framework package on its current major. Both Core 2 and Core 3 release lines have patches. See the \"Affected packages\" section above for the exact vulnerable ranges and patched versions per package.\n\nIf a consuming app pins `@clerk/clerk-js` directly, upgrade it to the patched version. Most apps load `@clerk/clerk-js` from Clerk's CDN through their framework package and will receive the fix automatically, with no upgrade step required.\n\n### Workaround\n\nIf developers cannot upgrade immediately, split combined `has()` or `auth.protect()` calls into sequential single-condition checks:\n\n```ts\n// Replace\nawait auth.protect({ permission: 'org:X', reverification: 'strict' });\n// With\nawait auth.protect({ reverification: 'strict' });\nawait auth.protect({ permission: 'org:X' });\n```\n\nEach single-condition check fails closed as expected, so evaluating them independently and denying if either fails produces the correct result.\n\n### Timeline\n\nThis issue was reported on 18 APR 2026, patched on 22 APR 2026, and publicly disclosed on 22 APR 2026.\n\nThanks to AISafe for the responsible disclosure of this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-30T18:20:02Z",
+    "Severity": "HIGH",
+    "Summary": "Clerk has an authorization bypass when combining organization, billing, or reverification checks",
+    "UpdatedAt": "2026-04-30T18:20:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.15"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.1.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.15"
+      },
+      "VulnerableVersionRange": "\u003e= 1.3.5, \u003c= 2.9.14"
+    }
+  ]
+}

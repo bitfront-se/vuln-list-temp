@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-30T17:25:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "notebook"
+  },
+  "Advisory": {
+    "DatabaseId": 352127,
+    "Id": "GSA_kwCzR0hTQS1yY2gzLTgyanItZjl3Oc4ABV9_",
+    "GhsaId": "GHSA-rch3-82jr-f9w9",
+    "References": [
+      {
+        "Url": "https://github.com/jupyter/notebook/security/advisories/GHSA-rch3-82jr-f9w9"
+      },
+      {
+        "Url": "https://jupyterlab.readthedocs.io/en/latest/user/commands.html#commands-in-markdown-output-and-files"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rch3-82jr-f9w9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rch3-82jr-f9w9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40171"
+      }
+    ],
+    "Description": "### Impact\n\nA stored Cross-Site Scripting (XSS) vulnerability in Jupyter Notebook allows attackers to steal authentication tokens from users who open malicious notebook files and interact with elements that the attacker can make look indistinguishable from legitimate controls (single click interaction).\n\nThe vulnerability enables complete account takeover through the Jupyter REST API, allowing the attacker to:\n1. Read all files\n2. Modify/create files\n3. Access running kernels and execute arbitrary code\n4. Create terminals for shell access\n\n### Patches\n\nJupyter Notebook 7.5.6 and JupyterLab 4.5.7 include patches for this vulnerability.\n\n### Workarounds\n\nThe help extension can be disabled via CLI:\n\n```\njupyter labextension disable @jupyter-notebook/help-extension\njupyter labextension disable @jupyterlab/help-extension\n```\n\n### Hardening\n\nThe patched versions include a toggle to disable the command linker functionality altogether, for example via `overrides.json`:\n\n```json\n{\n  \"@jupyterlab/apputils-extension:sanitizer\": {\n    \"allowCommandLinker\": false\n  }\n}\n```\n\n### Resources\n\n- https://jupyterlab.readthedocs.io/en/latest/user/commands.html#commands-in-markdown-output-and-files\n\n### Acknowledgments\n\nReported by Daniel Teixeira - NVIDIA AI Red Team",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-30T17:25:47Z",
+    "Severity": "HIGH",
+    "Summary": "Jupyter Notebook Vulnerable to Authentication Token Theft via CommandLinker XSS",
+    "UpdatedAt": "2026-04-30T17:25:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.5.6"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c= 7.5.5"
+    }
+  ]
+}
