@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T22:18:03Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pygeoapi"
+  },
+  "Advisory": {
+    "DatabaseId": 352024,
+    "Id": "GSA_kwCzR0hTQS1mNnByLTgzcGctZ2hoNs4ABV8Y",
+    "GhsaId": "GHSA-f6pr-83pg-ghh6",
+    "References": [
+      {
+        "Url": "https://github.com/geopython/pygeoapi/security/advisories/GHSA-f6pr-83pg-ghh6"
+      },
+      {
+        "Url": "https://github.com/geopython/pygeoapi/commit/bf25b8695edbdd5476eeffc102b633d1d3e45f52"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f6pr-83pg-ghh6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f6pr-83pg-ghh6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42351"
+      }
+    ],
+    "Description": "### Impact\nA raw string path concatenation vulnerability in pygeoapi's STAC FileSystemProvider plugin can allow for requests to STAC collection based collections to expose directories without authentication.  The issue manifests when pygeoapi is deployed without a proxy or web front end that would normalize URLs with `..` values, along with a resource of type `stac-collection` defined in configuration.\n\n### Patches\nThe issue has been patched in master branch and made available as part of the 0.23.3 release.\n\nThe commit/fix can be found in [bf25b8695edbdd5476eeffc102b633d1d3e45f52](https://github.com/geopython/pygeoapi/commit/bf25b8695edbdd5476eeffc102b633d1d3e45f52).\n### Workarounds\nUsers can safeguard existing applications by disabling STAC collection based resources in their pygeoapi config, until 0.23.3 can be installed and deployed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T22:18:02Z",
+    "Severity": "HIGH",
+    "Summary": "pygeoapi 0.23.x: Path Traversal in STAC FileSystemProvider",
+    "UpdatedAt": "2026-04-29T22:18:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.3"
+      },
+      "VulnerableVersionRange": "\u003e= 0.23.0, \u003c 0.23.3"
+    }
+  ]
+}

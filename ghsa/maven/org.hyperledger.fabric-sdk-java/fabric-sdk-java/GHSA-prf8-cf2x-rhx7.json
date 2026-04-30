@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-29T20:41:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.hyperledger.fabric-sdk-java:fabric-sdk-java"
+  },
+  "Advisory": {
+    "DatabaseId": 351954,
+    "Id": "GSA_kwCzR0hTQS1wcmY4LWNmMngtcmh4N84ABV7S",
+    "GhsaId": "GHSA-prf8-cf2x-rhx7",
+    "References": [
+      {
+        "Url": "https://github.com/hyperledger/fabric/security/advisories/GHSA-prf8-cf2x-rhx7"
+      },
+      {
+        "Url": "https://hyperledger.github.io/fabric-gateway"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-prf8-cf2x-rhx7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-prf8-cf2x-rhx7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41586"
+      }
+    ],
+    "Description": "## Summary\n\nThis advisory covers the deprecated `fabric-sdk-java` client SDK. `Channel.java` implements `readObject()` and exposes `deSerializeChannel()` which call `ObjectInputStream.readObject()` on untrusted byte arrays without configuring an `ObjectInputFilter`. This is the classic Java deserialization RCE pattern.\n\n**Note:** `fabric-sdk-java` is deprecated and maintained in https://github.com/hyperledger/fabric-sdk-java. Filing here as that repo does not have private vulnerability reporting enabled.\n\n## Affected Code\n\n```java\n// src/main/java/org/hyperledger/fabric/sdk/Channel.java\nprivate void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {\n    in.defaultReadObject();  // No ObjectInputFilter configured\n}\n\npublic Channel deSerializeChannel(byte[] channelBytes)\n        throws IOException, ClassNotFoundException, InvalidArgumentException {\n    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(channelBytes));\n    Channel channel = (Channel) ois.readObject();  // Untrusted bytes deserialized\n    return channel;\n}\n```\n\n## Attack Vector\n\nAn attacker who can supply crafted serialized Channel bytes to the client application — for example, by compromising a local channel file, injecting data through an application that accepts Channel bytes from external sources, or exploiting a separate write primitive — can achieve RCE via gadget chain exploitation when deSerializeChannel() processes those bytes. The risk is highest in deployments that accept Channel data from sources outside the client's direct control. Note: channel data is not transmitted from Fabric peers; this is a client-side deserialization surface.\n\n## Proof of Concept\n\n```java\n// Generate malicious payload with ysoserial:\n// java -jar ysoserial.jar CommonsCollections6 \"touch /tmp/pwned\" \u003e malicious_channel.ser\n\n// Victim code:\nbyte[] maliciousBytes = Files.readAllBytes(Paths.get(\"malicious_channel.ser\"));\nChannel channel = client.deSerializeChannel(maliciousBytes);  // RCE fires here\n```\n\n## Notes on Deprecation\n\nfabric-sdk-java is deprecated as of Hyperledger Fabric v2.5 (replaced by `org.hyperledger.fabric:fabric-gateway`). However, organizations that have not yet migrated remain fully exposed. Automated dependency scanners (Snyk, Dependabot) cannot alert users without a published GHSA. This advisory is filed to ensure those users are notified and directed to migrate.\n\n## Fix\n\nFor the deprecated SDK: add `ObjectInputFilter` to whitelist only expected classes:\n\n```java\nObjectInputFilter filter = ObjectInputFilter.Config.createFilter(\n    \"org.hyperledger.fabric.sdk.*;java.util.*;java.lang.*;!*\"\n);\nois.setObjectInputFilter(filter);\n```\n\n**The recommended remediation is migration to `org.hyperledger.fabric:fabric-gateway`**, which does not use Java serialization.\n\n## Resources\n\n- CWE-502: Deserialization of Untrusted Data\n- Migration guide: https://hyperledger.github.io/fabric-gateway/\n\n## Credits\n\nFound via independent security research.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T20:41:58Z",
+    "Severity": "CRITICAL",
+    "Summary": "fabric-sdk-java has ObjectInputStream.readObject() without ObjectInputFilter, which allows Java deserialization RCE",
+    "UpdatedAt": "2026-04-29T20:41:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c= 2.2.26"
+    }
+  ]
+}

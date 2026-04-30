@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T23:11:22Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "ckan"
+  },
+  "Advisory": {
+    "DatabaseId": 352031,
+    "Id": "GSA_kwCzR0hTQS1oN2o3LTNyeDYteHZjZ84ABV8f",
+    "GhsaId": "GHSA-h7j7-3rx6-xvcg",
+    "References": [
+      {
+        "Url": "https://github.com/ckan/ckan/security/advisories/GHSA-h7j7-3rx6-xvcg"
+      },
+      {
+        "Url": "https://docs.ckan.org/en/2.10/changelog.html#v-2-10-10-2026-04-29"
+      },
+      {
+        "Url": "https://docs.ckan.org/en/2.11/changelog.html#v-2-11-5-2026-04-29"
+      },
+      {
+        "Url": "https://docs.ckan.org/en/2.11/extensions/plugin-interfaces.html#ckan.plugins.interfaces.IAuthFunctions"
+      },
+      {
+        "Url": "https://docs.ckan.org/en/2.11/maintaining/configuration.html#ckan-datastore-sqlsearch-enabled"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h7j7-3rx6-xvcg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h7j7-3rx6-xvcg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42031"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in `datastore_search_sql` allowed attackers to inject SQL in order to gain access to private resources and PostgreSQL system information.\n\n### Patches\nThe issue has been patched in CKAN 2.10.10 and CKAN 2.11.5\n\n### Workarounds\nDisable the DataStore SQL search (`ckan.datastore.sqlsearch.enabled = false`). Note that the SQL search is disabled by default.\n\n### More information\n\nAs stated in the [documentation](https://docs.ckan.org/en/2.11/maintaining/configuration.html#ckan-datastore-sqlsearch-enabled), this action function has protections that offer some safety but are not designed to prevent all types of abuse. Depending on the sensitivity of private data in a project's DataStore and the likelihood of abuse of a consuming site, a developer may choose to disable this action function or restrict its use with a [`IAuthFunctions`](https://docs.ckan.org/en/2.11/extensions/plugin-interfaces.html#ckan.plugins.interfaces.IAuthFunctions) plugin.\n\n### Credits\n\n* Reported by Arvin Shivram of Brutecat Security",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T23:11:21Z",
+    "Severity": "HIGH",
+    "Summary": "CKAN has Unauthenticated SQL Injection and Authorization Bypass in `datastore_search_sql`",
+    "UpdatedAt": "2026-04-29T23:11:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.11.0, \u003c= 2.11.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.10"
+      },
+      "VulnerableVersionRange": "\u003c 2.10.10"
+    }
+  ]
+}

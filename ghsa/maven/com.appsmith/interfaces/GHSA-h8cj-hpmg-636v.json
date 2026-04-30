@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T20:59:45Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.appsmith:interfaces"
+  },
+  "Advisory": {
+    "DatabaseId": 351960,
+    "Id": "GSA_kwCzR0hTQS1oOGNqLWhwbWctNjM2ds4ABV7Y",
+    "GhsaId": "GHSA-h8cj-hpmg-636v",
+    "References": [
+      {
+        "Url": "https://github.com/appsmithorg/appsmith/security/advisories/GHSA-h8cj-hpmg-636v"
+      },
+      {
+        "Url": "https://github.com/appsmithorg/appsmith/commit/c8023ba4b3b54204ff3309c9e5c33664ad15ba32"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h8cj-hpmg-636v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h8cj-hpmg-636v"
+      }
+    ],
+    "Description": "### Summary\nA SQL injection vulnerability exists in `FilterDataServiceCE.java` where the `dropTable` method constructs a SQL `DROP TABLE` statement using string concatenation with the table name. If the table name is derived from user input, this allows for arbitrary SQL command execution.\n\n### Details\nThe vulnerability is located in `app/server/appsmith-interfaces/src/main/java/com/appsmith/external/services/ce/FilterDataServiceCE.java`.\n\nLine 627 in `dropTable` method:\n```java\npublic void dropTable(String tableName) {\n    String dropTableQuery = \"DROP TABLE \" + tableName + \";\";\n    executeDbQuery(dropTableQuery);\n}\n```\n\nThe `tableName` argument is concatenated directly into the SQL string without validation or escaping.\n\n### PoC\nIf `dropTable` is exposed to user input (e.g., via a utility API that accepts a table name to clean up), an attacker could provide a value like:\n`valid_table; DROP TABLE users; --`\n\nThe resulting query would be:\n`DROP TABLE valid_table; DROP TABLE users; --;`\n\nThis would delete the intended table and then delete the `users` table (or execute any other injected SQL).\n\n### Impact\n*   **Type:** SQL Injection\n*   **Impact:** Data Loss (Drop Table), potentially Data Exfiltration or Modification depending on database permissions.\n*   **Who is impacted:** Appsmith server instances.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T20:59:45Z",
+    "Severity": "HIGH",
+    "Summary": "appsmith has SQL Injection in FilterDataService via Unsafe DROP TABLE Execution",
+    "UpdatedAt": "2026-04-29T20:59:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.99"
+      },
+      "VulnerableVersionRange": "\u003c= 1.98"
+    }
+  ]
+}

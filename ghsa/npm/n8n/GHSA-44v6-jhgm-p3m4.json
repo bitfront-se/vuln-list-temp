@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T21:21:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351969,
+    "Id": "GSA_kwCzR0hTQS00NHY2LWpoZ20tcDNtNM4ABV7h",
+    "GhsaId": "GHSA-44v6-jhgm-p3m4",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-44v6-jhgm-p3m4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-44v6-jhgm-p3m4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-44v6-jhgm-p3m4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42234"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows containing a Python Code Node could escape the sandbox and achieve arbitrary code execution on the task runner container.\n\n- This issue only affects instances where the Python Task Runner is enabled.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.32, 2.17.4, and 2.18.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Python Code node by adding `n8n-nodes-base.code` to the `NODES_EXCLUDE` environment variable, or disable the Python Task Runner entirely.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:21:50Z",
+    "Severity": "HIGH",
+    "Summary": "n8n has a Python Task Runner Sandbox Escape Vulnerability",
+    "UpdatedAt": "2026-04-29T21:21:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.17.0, \u003c 2.17.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.32"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.32"
+    }
+  ]
+}

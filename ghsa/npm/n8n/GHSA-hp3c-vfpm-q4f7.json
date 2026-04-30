@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-29T21:03:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351962,
+    "Id": "GSA_kwCzR0hTQS1ocDNjLXZmcG0tcTRmN84ABV7a",
+    "GhsaId": "GHSA-hp3c-vfpm-q4f7",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-f3f2-mcxc-pwjx"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-hp3c-vfpm-q4f7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hp3c-vfpm-q4f7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hp3c-vfpm-q4f7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42237"
+      }
+    ],
+    "Description": "## Impact\nThe fix for [GHSA-f3f2-mcxc-pwjx](https://github.com/advisories/GHSA-f3f2-mcxc-pwjx) did not cover the Snowflake node or the legacy MySQL v1 node. Both nodes construct SQL queries by directly interpolating user-controlled table names, column names, and update keys into query strings without identifier escaping, enabling SQL injection against the connected database.\n\nExploitation requires a specific workflow configuration:\n- The Snowflake or MySQL v1 node must be used with user-controlled input passed via expressions (e.g., from a form or webhook) into identifier fields such as table name, column name, or update key.\n\nSuccessful exploitation could allow data exfiltration, modification, or deletion on the downstream database.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.32, 2.17.4, and 2.18.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Migrate workflows from the legacy MySQL v1 node to the MySQL v2 node, which already implements identifier escaping.\n- Disable the Snowflake node by adding `n8n-nodes-base.snowflake` to the `NODES_EXCLUDE` environment variable.\n- Avoid passing unvalidated external user input into table name, column name, or update key fields via expressions in the affected nodes.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:03:29Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n has SQL Injection in Snowflake and MySQL Nodes",
+    "UpdatedAt": "2026-04-29T21:03:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.17.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.32"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.32"
+    }
+  ]
+}

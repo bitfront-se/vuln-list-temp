@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T21:23:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351971,
+    "Id": "GSA_kwCzR0hTQS01MzdqLWdxcGMtcDdmcc4ABV7j",
+    "GhsaId": "GHSA-537j-gqpc-p7fq",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-537j-gqpc-p7fq"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-537j-gqpc-p7fq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-537j-gqpc-p7fq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42235"
+      }
+    ],
+    "Description": "## Impact\nAn unauthenticated attacker could register a malicious MCP OAuth client with a crafted `client_name`. If a victim user authorized the OAuth consent dialog and a second user subsequently revoked that access, a toast notification would render the injected script. Clicking the link would execute arbitrary JavaScript in the victim's authenticated n8n browser session, enabling credential and session token theft, workflow manipulation, or privilege escalation.\n\n## Patches\nThis issue has been fixed in n8n version 2.14.2. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict access to the n8n instance and the MCP OAuth registration endpoint to trusted users only.\n- Disable MCP server functionality if it is not actively required.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:23:04Z",
+    "Severity": "HIGH",
+    "Summary": "n8n Vulnerable to XSS via MCP OAuth client",
+    "UpdatedAt": "2026-04-29T21:23:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.17.0, \u003c 2.17.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.32"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.32"
+    }
+  ]
+}

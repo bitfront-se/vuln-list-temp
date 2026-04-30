@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-29T20:36:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "ckan"
+  },
+  "Advisory": {
+    "DatabaseId": 351953,
+    "Id": "GSA_kwCzR0hTQS1tY3ZmLWp4Y3ctdmo3M84ABV7R",
+    "GhsaId": "GHSA-mcvf-jxcw-vj73",
+    "References": [
+      {
+        "Url": "https://github.com/ckan/ckan/security/advisories/GHSA-mcvf-jxcw-vj73"
+      },
+      {
+        "Url": "https://docs.ckan.org/en/2.10/changelog.html#v-2-10-10-2026-04-29"
+      },
+      {
+        "Url": "https://docs.ckan.org/en/2.11/changelog.html#v-2-11-5-2026-04-29"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mcvf-jxcw-vj73"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mcvf-jxcw-vj73"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41255"
+      }
+    ],
+    "Description": "Views can be marked as exempt from CSRF protection \n\nAccess to the views via tokens or unauthenticated requests marked the endpoint as not requiring CSRF protection. \n\nThe marking was a member variable in flask-wtf.csrf.CSRFProtect(), which was stored as a module level variable in the flask_app middleware. Thsi API was never intended for request level changes, it is primarily a decorator for static configuration. \n\nAn unauthenticated request could hit a protected endpoint, exempting it from CSRF protection for the life of the particular server process. (e.g. one worker of uwsgi).\n\nThis could be leveraged with XSS to perform actions using other user's credentials.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T20:36:07Z",
+    "Severity": "MODERATE",
+    "Summary": "CKAN has CSRF exemption primed by anonymous requests",
+    "UpdatedAt": "2026-04-29T20:36:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.11.0, \u003c= 2.11.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.10"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.10.10"
+    }
+  ]
+}

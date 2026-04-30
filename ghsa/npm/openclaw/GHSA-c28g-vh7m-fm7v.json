@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-29T21:27:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 351974,
+    "Id": "GSA_kwCzR0hTQS1jMjhnLXZoN20tZm03ds4ABV7m",
+    "GhsaId": "GHSA-c28g-vh7m-fm7v",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-c28g-vh7m-fm7v"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/2aa93d44a1b2c7058c371f261fda2b5d4de4a882"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/995febb7b1e811ff6a1df5b18c22de94103f4c9f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c28g-vh7m-fm7v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c28g-vh7m-fm7v"
+      }
+    ],
+    "Description": "## Impact\n\nOpenClaw deployments before `2026.4.21` could treat a non-owner sender as authorized for owner-enforced slash commands when all of the following were true:\n\n- a channel plugin declared `commands.enforceOwnerForCommands: true`;\n- the channel accepted wildcard inbound senders with `allowFrom: [\"*\"]`;\n- no explicit `commands.ownerAllowFrom` was configured.\n\nIn that state, `src/auto-reply/command-auth.ts` reused the channel inbound wildcard as part of the command-owner decision. A sender who was not the owner could therefore pass the owner-command gate for commands such as `/send`, `/config`, or `/debug` on the affected channel.\n\nThe issue is limited to the command-owner authorization axis. It does not by itself grant owner-only tool access, host/sandbox access, or gateway administrator scope.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` on npm\n- Affected versions: `\u003c= 2026.4.20`\n- Patched version: `2026.4.21`\n\nThe latest public release, `2026.4.21`, contains the fix.\n\n## Patches\n\nThe fix requires a concrete owner identity or internal operator-admin scope when a plugin enforces owner-only commands. Wildcard channel `allowFrom` no longer implies wildcard command ownership.\n\nFix commits:\n\n- `2aa93d44a1b2c7058c371f261fda2b5d4de4a882` on `main`\n- `995febb7b1e811ff6a1df5b18c22de94103f4c9f` in the `2026.4.21` release line\n\n## Workarounds\n\nUpgrade to `openclaw@2026.4.21` or later. Before upgrading, avoid wildcard/open-DM sender policy on owner-enforced channels, or configure `commands.ownerAllowFrom` to the intended owner identities.\n\n## Credits\n\nOpenClaw thanks @zsxsoft for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:27:05Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Owner-enforced commands could accept wildcard channel senders as command owners",
+    "UpdatedAt": "2026-04-29T21:27:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.21"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.20"
+    }
+  ]
+}

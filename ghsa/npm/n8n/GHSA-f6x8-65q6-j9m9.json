@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-29T21:10:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351964,
+    "Id": "GSA_kwCzR0hTQS1mNng4LTY1cTYtajltOc4ABV7c",
+    "GhsaId": "GHSA-f6x8-65q6-j9m9",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-f6x8-65q6-j9m9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f6x8-65q6-j9m9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f6x8-65q6-j9m9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42230"
+      }
+    ],
+    "Description": "## Impact\nThe `/mcp-oauth/register` endpoint accepted OAuth client registrations without authentication, allowing arbitrary `redirect_uri` values to be registered. When a user denies the MCP OAuth consent dialog, the `handleDeny` handler redirects the user to the registered `redirect_uri` without validation, enabling an open redirect to an attacker-controlled URL. An attacker can craft a phishing link and send it to a victim; if the victim clicks \"Deny\" on the consent page, they are silently redirected to an external site.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.32, 2.17.4, and 2.18.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict network access to the n8n instance to prevent untrusted users from reaching the MCP OAuth endpoints.\n- Limit access to the n8n instance to fully trusted users only.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:10:17Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n has Open Redirect in MCP OAuth Consent Flow",
+    "UpdatedAt": "2026-04-29T21:10:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.17.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.32"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.32"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-29T21:25:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351972,
+    "Id": "GSA_kwCzR0hTQS1xNWY0LTk5anYtcGdnNc4ABV7k",
+    "GhsaId": "GHSA-q5f4-99jv-pgg5",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-q5f4-99jv-pgg5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q5f4-99jv-pgg5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q5f4-99jv-pgg5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42231"
+      }
+    ],
+    "Description": "## Impact\nA flaw in the `xml2js` library used to parse XML request bodies in n8n's webhook handler allowed prototype pollution via a crafted XML payload. An authenticated user with permission to create or modify workflows could exploit this to pollute the JavaScript object prototype and, by chaining the pollution with the Git node's SSH operations, achieve remote code execution on the n8n host.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.32, 2.17.4, and 2.18.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:25:02Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n has Prototype Pollution in XML Webhook Body Parser that Leads to RCE",
+    "UpdatedAt": "2026-04-29T21:25:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.17.0, \u003c 2.17.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.32"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.32"
+    }
+  ]
+}

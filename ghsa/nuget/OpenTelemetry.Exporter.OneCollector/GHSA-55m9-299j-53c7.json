@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-04-29T20:17:58Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenTelemetry.Exporter.OneCollector"
+  },
+  "Advisory": {
+    "DatabaseId": 351948,
+    "Id": "GSA_kwCzR0hTQS01NW05LTI5OWotNTNjN84ABV7M",
+    "GhsaId": "GHSA-55m9-299j-53c7",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/security/advisories/GHSA-55m9-299j-53c7"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4117"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/commit/77dc5d14fcdf6c6b3aeba5f8bba5dfded90495c9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-55m9-299j-53c7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-55m9-299j-53c7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41484"
+      }
+    ],
+    "Description": "### Summary\n\nWhen exporting telemetry to a back-end/collector over HTTP using the OpenTelemetry.Exporter.OneCollector exporter, if the request results in a unsuccessful request (i.e. HTTP 4xx or 5xx), the response is read into memory with no upper-bound on the number of bytes consumed.\n\nThis could cause memory exhaustion in the consuming application if the configured back-end/collector endpoint is attacker-controlled (or a network attacker can MitM the connection) and an extremely large body is returned by the response.\n\n### Details\n\nThe [`HttpJsonPostTransport`](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/171c6b81f88831641b56b470e6f92862e605013d/src/OpenTelemetry.Exporter.OneCollector/Internal/Transports/HttpJsonPostTransport.cs) class reads the response body when a non-200 HTTP status code is received when exporting telemetry to aid debugging by operators so that the error response is included in the logs emitted by the exporter.\n\nAn attacker who controls the configured endpoint, or who can intercept traffic to them (MiTM), can return an arbitrarily large response body. This causes unbounded heap allocation in the consuming process, leading to high transient memory pressure, garbage-collection stalls, or an OutOfMemoryException that terminates the process.\n\n### Impact\n\nIf an application using the OneCollector exporter is configured to use a back-end/collector endpoint that is attacker-controlled (or a network attacker can MitM the connection) and an extremely large body is returned by the response the application could have its memory exhausted and create a denial-of-service condition.\n\n### Mitigation\n\nThe application's configured back-end/collector endpoint needs to behave maliciously. If the collector/back-end is a well-behaved implementation response bodies should not be excessively large if a request error occurs.\n\n### Workarounds\n\nUse network-level controls (firewall rules, mTLS, service mesh) to prevent Man-in-the-Middle (MitM) attacks on the configured back-end/collector endpoint.\n\n### Remediation\n\n[#4117](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4117) updates the OneCollector exporter to limit the number of bytes read from the response body in an error condition to 4MiB.\n\n### Resources\n\n- [#4117](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4117)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T20:17:57Z",
+    "Severity": "MODERATE",
+    "Summary": "OneCollector exporter reads unbounded HTTP response bodies",
+    "UpdatedAt": "2026-04-29T20:17:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.15.0"
+    }
+  ]
+}

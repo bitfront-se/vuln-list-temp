@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T21:19:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351967,
+    "Id": "GSA_kwCzR0hTQS00OW05LXBnd3ctOXZxNs4ABV7f",
+    "GhsaId": "GHSA-49m9-pgww-9vq6",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-49m9-pgww-9vq6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-49m9-pgww-9vq6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-49m9-pgww-9vq6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42236"
+      }
+    ],
+    "Description": "## Impact\nThe MCP OAuth client registration endpoint accepted unauthenticated requests and stored client data without adequate resource controls. An unauthenticated remote attacker could exhaust server memory resources by sending large registration payloads, rendering the n8n instance unavailable. The MCP enable/disable toggle gates MCP access but did not restrict client registrations, meaning the endpoint is reachable regardless of whether MCP access is enabled on the instance.\n\nThe patches address the unbound registration with an upper bound of registered clients and disabling creation when MCP is disabled on the instance. Mean to restrict the payload size of requests already exist and can be used to control additional risks.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.32, 2.17.4, and 2.18.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict network access to the n8n instance to prevent requests from untrusted sources.\n- Reduce the maximum accepted payload size by lowering the `N8N_PAYLOAD_SIZE_MAX` environment variable from its default value.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:19:07Z",
+    "Severity": "HIGH",
+    "Summary": "n8n Vulnerable to Unauthenticated Denial of Service via MCP Client Registration",
+    "UpdatedAt": "2026-04-29T21:19:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.17.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.32"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.32"
+    }
+  ]
+}

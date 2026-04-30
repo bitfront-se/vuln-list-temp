@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-04-29T21:22:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 351970,
+    "Id": "GSA_kwCzR0hTQS1yNHY2LTlmcWMtdzVqcs4ABV7i",
+    "GhsaId": "GHSA-r4v6-9fqc-w5jr",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-r4v6-9fqc-w5jr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4v6-9fqc-w5jr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4v6-9fqc-w5jr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42226"
+      }
+    ],
+    "Description": "## Impact\nThe `dynamic-node-parameters` endpoints did not verify whether the authenticated caller was authorized to use a supplied credential reference. An authenticated user with access to a shared workflow could supply a foreign credential ID in the request body, causing the backend to decrypt and use that credential in a helper execution path where the caller also controls the destination URL. This allowed the caller to force the backend to authenticate against attacker-controlled infrastructure using a credential belonging to another user, effectively exfiltrating a reusable API key.\n\nThe issue is not limited to any single node type; any node that resolves credentials dynamically through these endpoints may be affected.\n\n## Patches\nThe issue has been fixed in n8n version 2.18.0. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n access to fully trusted users only.\n- Avoid sharing workflows with users who should not have access to the credentials those workflows reference.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-29T21:22:26Z",
+    "Severity": "HIGH",
+    "Summary": "n8n's Credential Authorization Bypass in dynamic-node-parameters Allows Foreign API Key Replay",
+    "UpdatedAt": "2026-04-29T21:22:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.33"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.17.0, \u003c 2.17.5"
+    }
+  ]
+}
