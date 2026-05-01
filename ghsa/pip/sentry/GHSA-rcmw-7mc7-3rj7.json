@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-04-30T20:44:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "sentry"
+  },
+  "Advisory": {
+    "DatabaseId": 352171,
+    "Id": "GSA_kwCzR0hTQS1yY213LTdtYzctM3JqN84ABV-r",
+    "GhsaId": "GHSA-rcmw-7mc7-3rj7",
+    "References": [
+      {
+        "Url": "https://github.com/getsentry/sentry/security/advisories/GHSA-rcmw-7mc7-3rj7"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry/pull/113720"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry/commit/0c67558ae7fe08738912d4c5233b53ead048da3b"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry/releases/tag/26.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rcmw-7mc7-3rj7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rcmw-7mc7-3rj7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42354"
+      }
+    ],
+    "Description": "### Impact\nA critical vulnerability was discovered in the SAML SSO implementation of Sentry. It was reported to us via Sentry's private bug bounty program.\n\nThe vulnerability allows an attacker to take over any user account by using a malicious SAML Identity Provider and another organization on the same Sentry instance. The victim email address must be known in order to exploit this vulnerability.\n\nSelf-hosted users are only vulnerable if the following conditions are met:\n- They have more than one organization configured (SENTRY_SINGLE_ORGANIZATION = False).\n- A malicious user has existing access and permissions to modify SSO settings for another organization in their multi-organization instance. \n\n### Patches\n- [Sentry SaaS](https://sentry.io/): The fix was deployed in April. No action is required.\n- [Self-Hosted Sentry](https://github.com/getsentry/self-hosted): If only a single organization is allowed (SENTRY_SINGLE_ORGANIZATION = True), then no action is needed. Sentry recommends upgrading to version 26.4.1 or higher.\n\n### Workarounds\nUser account-based two-factor authentication prevents an attacker from being able to complete authentication with a victim's user account. Organization administrators cannot do this on a user's behalf, this requires individual users to ensure 2FA has been enabled for their account.\n\nUsers can manage their two-factor authentication settings through Account Settings \u003e [Security](https://sentry.io/settings/account/security/) page. For step-by-step details, please see the Sentry [helpdesk article](https://sentry.zendesk.com/hc/en-us/articles/46773315774235-How-do-I-enable-two-factor-authentication-2FA-on-my-Sentry-account).\n\n### Resources\n\n- https://github.com/getsentry/sentry/pull/113720 \n\nPlease note that this is distinct vulnerability from the similar https://github.com/getsentry/sentry/security/advisories/GHSA-7pq6-v88g-wf3w from 2025.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-30T20:44:24Z",
+    "Severity": "CRITICAL",
+    "Summary": "Sentry's improper authentication on SAML SSO process allows user identity linking",
+    "UpdatedAt": "2026-04-30T20:44:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 21.12.0, \u003c= 26.4.0"
+    }
+  ]
+}
