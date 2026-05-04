@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-04T16:29:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 352754,
+    "Id": "GSA_kwCzR0hTQS1ncmo1LWpqbTgtaDM1cM4ABWHy",
+    "GhsaId": "GHSA-grj5-jjm8-h35p",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-grj5-jjm8-h35p"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/2b5f3e3a060d9088f5e1cdd585d683d491f990a3"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/f9b700b1c7d9ef2df416666cb24e0b659140cc74"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-grj5-jjm8-h35p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-grj5-jjm8-h35p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24118"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nThe `__lookupGetter__` method allows to read the getter of an object. It is special in VM2 since it will switch between the host and sandbox version of the method when passed to the other context.\nThis allows to access getters on an object in the host context if the method is called from the host context which can be achieved by using the host `apply` method which can be accessed through `Buffer.apply`.\nAfterwards, this function can be used to call the host version of `__lookupGetter__` with `Buffer` and `__proto__` resulting in the prototype lookup method from the host context.\nWith this method the hosts `Function.prototype` object can be retrieved and the host `Function` acquired through the `constructor` property which allows to create and run code in the host context.\nThis issue was attempted to be fixed with https://github.com/patriksimek/vm2/blob/4b009c2d4b1131c01810c1205e641d614c322a29/lib/bridge.js#L427. However, this can be circumvented by using `Object.getOwnPropertyDescriptor` to get the `constructor` property.\n\n### PoC\n\nThe following code demonstrates this issue by acquiring the host process object and executing `touch pwned`.\n\n```js\nconst {VM} = require(\"vm2\");\nconst vm = new VM();\nvm.run(`\nconst g = ({}).__lookupGetter__;\nconst a = Buffer.apply;\nconst p = a.apply(g, [Buffer, ['__proto__']]);\nObject.getOwnPropertyDescriptor(p.call(a),'constructor').value('return process')().mainModule.require('child_process').execSync('touch pwned');\n`);\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that arbitrary code can be executed inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T16:29:15Z",
+    "Severity": "CRITICAL",
+    "Summary": "VM2 Sandbox Breakout Through __lookupGetter__",
+    "UpdatedAt": "2026-05-04T16:29:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.4"
+    }
+  ]
+}
