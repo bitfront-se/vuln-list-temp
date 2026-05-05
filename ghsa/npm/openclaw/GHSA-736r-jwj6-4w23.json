@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-736r-jwj6-4w23"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42434"
       }
     ],
     "Description": "## Summary\n\nSandboxed agents could escape exec routing via host=node override.\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Ecosystem: npm\n- Affected versions: `\u003e= 2026.4.5 \u003c 2026.4.10`\n- Patched versions: `\u003e= 2026.4.10`\n\n## Impact\n\nA sandboxed agent could request `host: \"node\"` and route exec to a remote node instead of the intended sandbox execution path, bypassing the sandbox routing boundary.\n\n## Technical Details\n\nThe fix blocks sandboxed exec escape to remote node targets and keeps routing aligned with the active sandbox policy.\n\n## Fix\n\nThe issue was fixed in #63880. The first stable tag containing the fix is `v2026.4.10`, and `openclaw@2026.4.14` includes the fix.\n\n## Fix Commit(s)\n\n- `dffad08529202edbf34e4808788e1182fe10f6a9`\n- PR: #63880\n\n## Release Process Note\n\nUsers should upgrade to `openclaw` 2026.4.10 or newer. The latest npm release, `2026.4.14`, already includes the fix.\n\n## Credits\n\nThanks to @zsxsoft, with sponsorship from @KeenSecurityLab and @qclawer for reporting this issue.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-04-17T22:14:56Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: Sandboxed agents could escape exec routing via host=node override",
-    "UpdatedAt": "2026-04-17T22:14:57Z",
+    "UpdatedAt": "2026-05-05T11:48:25Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

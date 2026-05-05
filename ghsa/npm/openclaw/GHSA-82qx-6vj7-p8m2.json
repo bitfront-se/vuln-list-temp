@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-82qx-6vj7-p8m2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43571"
       }
     ],
     "Description": "## Summary\n\nChannel setup catalog lookups could include untrusted workspace plugin shadows.\n\n## Affected Packages / Versions\n\n- Package: `openclaw`\n- Ecosystem: npm\n- Affected versions: `\u003c 2026.4.10`\n- Patched versions: `\u003e= 2026.4.10`\n\n## Impact\n\nChannel setup could resolve a workspace plugin shadow before a bundled channel plugin, causing setup-time plugin loading without the intended trust gate.\n\n## Technical Details\n\nThe fix routes setup catalog lookups through trusted catalog paths and uses `excludeWorkspace: true` where setup should not include workspace shadows.\n\n## Fix\n\nThe issue was fixed in the advisory fix branch. The first stable tag containing the fix is `v2026.4.10`, and `openclaw@2026.4.14` includes the fix.\n\n## Fix Commit(s)\n\n- `1fede43b948df40ca8674511d4bd08d39f6c5837`\n- PR: private advisory fork\n\n## Release Process Note\n\nUsers should upgrade to `openclaw` 2026.4.10 or newer. The latest npm release, `2026.4.14`, already includes the fix.\n\n## Credits\n\nThanks to @zsxsoft, with sponsorship from @KeenSecurityLab and @qclawer for reporting this issue.",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-17T21:58:46Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: Channel setup catalog lookups could include untrusted workspace plugin shadows",
-    "UpdatedAt": "2026-04-17T21:58:48Z",
+    "UpdatedAt": "2026-05-05T12:02:14Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
