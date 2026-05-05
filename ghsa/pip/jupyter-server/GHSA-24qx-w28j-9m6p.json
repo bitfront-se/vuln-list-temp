@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T16:54:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "jupyter-server"
+  },
+  "Advisory": {
+    "DatabaseId": 352986,
+    "Id": "GSA_kwCzR0hTQS0yNHF4LXcyOGotOW02cM4ABWLa",
+    "GhsaId": "GHSA-24qx-w28j-9m6p",
+    "References": [
+      {
+        "Url": "https://github.com/jupyter-server/jupyter_server/security/advisories/GHSA-24qx-w28j-9m6p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-24qx-w28j-9m6p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-24qx-w28j-9m6p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40110"
+      }
+    ],
+    "Description": "Jupyter Server uses `re.match()` to validate the Origin header against the `allow_origin_pat` configuration.\n\nSince `re.match()` only anchors at the start of the string, an attacker who controls a domain like `http://trusted.example.com.evil.com/` passes validation against a pattern intended to match only `trusted.example.com`.\n\n### Impact\n\n\u003c=2.17.0\n\n### Patches\n\n057869a327c46730afede3eab0ca2d2e3e74acea, 49b34392feaa97735b3b777e3baf8f22f2a14ed8 \n\n### Workarounds\n\nWrap your `allow_origin_pat` value with `^` and `$`\n\n### References\n\nhttps://github.com/jupyter-server/jupyter_server/pull/603\nhttps://docs.python.org/3/library/re.html#re.fullmatch\nhttps://docs.python.org/3/library/re.html#re.match",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T16:54:31Z",
+    "Severity": "HIGH",
+    "Summary": "Jupyter Server has a  CORS Origin Validation Bypass via `re.match()` in `allow_origin_pat` (from huntr)",
+    "UpdatedAt": "2026-05-05T16:54:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.17.0"
+    }
+  ]
+}

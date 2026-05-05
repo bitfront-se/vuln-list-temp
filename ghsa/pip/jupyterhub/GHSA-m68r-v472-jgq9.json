@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T18:10:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "jupyterhub"
+  },
+  "Advisory": {
+    "DatabaseId": 352996,
+    "Id": "GSA_kwCzR0hTQS1tNjhyLXY0NzItamdxOc4ABWLk",
+    "GhsaId": "GHSA-m68r-v472-jgq9",
+    "References": [
+      {
+        "Url": "https://github.com/jupyterhub/jupyterhub/security/advisories/GHSA-m68r-v472-jgq9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m68r-v472-jgq9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m68r-v472-jgq9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40864"
+      }
+    ],
+    "Description": "## Summary\n\nJupyterHub's XSRF protection (updated in 4.1.0) inappropriately treated requests with `Sec-Fetch-Mode: no-cors` as same-origin requests, which they are not, bypassing XSRF checks. The JSON API is not affected, only HTTP form endpoints, such as `/hub/spawn` and `/hub/accept-share`, meaning attackers could trigger server spawn (but not access the server) and if the attacker is a JupyterHub user permitted to share access to their server, cause a user to accept a share and have access to the attacker's server.\n\n## Patches\n\nUpgrade to JupyterHub 5.4.5.\n\n## Mitigations\n\nIf a reverse proxy is in use, drop requests to JupyterHub with `Sec-Fetch-Mode: no-cors`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T18:10:58Z",
+    "Severity": "MODERATE",
+    "Summary": "JupyterHub has cross-origin form POSTs bypass XSRF (CWE-352)",
+    "UpdatedAt": "2026-05-05T18:10:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 4.1.0, \u003c 5.4.5"
+    }
+  ]
+}

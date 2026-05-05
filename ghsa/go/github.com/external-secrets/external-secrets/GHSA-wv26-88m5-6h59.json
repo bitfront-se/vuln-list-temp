@@ -1,0 +1,50 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-05T18:37:14Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/external-secrets/external-secrets"
+  },
+  "Advisory": {
+    "DatabaseId": 353042,
+    "Id": "GSA_kwCzR0hTQS13djI2LTg4bTUtNmg1Oc4ABWMS",
+    "GhsaId": "GHSA-wv26-88m5-6h59",
+    "References": [
+      {
+        "Url": "https://github.com/external-secrets/external-secrets/security/advisories/GHSA-wv26-88m5-6h59"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wv26-88m5-6h59"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wv26-88m5-6h59"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42875"
+      }
+    ],
+    "Description": "### Impact\n\nNamespaced SecretStore resources that used CAProvider with type `ConfigMap` could resolve CA material from another namespace when `caProvider.namespace` was set. \nThis bypassed the namespace boundary enforced for SecretStore-backed references in providers that rely on the shared runtime CA resolver. \n\nThe accessible data is used as CA validation material, hence it is not directly exposed.\n\nImpact:\n- Direct data exfiltration risk: low\n- Existence disclosure: an attacker can infer whether a target ConfigMap/key exists in another namespace.\n- Trust-boundary violation: a tenant can make its SecretStore consume CA material owned by another namespace.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T18:37:12Z",
+    "Severity": "LOW",
+    "Summary": "External Secrets Operator has Namespace Isolation Bypass in CAProvider ConfigMap Resolution for SecretStore",
+    "UpdatedAt": "2026-05-05T18:37:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.0"
+    }
+  ]
+}

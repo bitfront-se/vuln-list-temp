@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-05T18:35:24Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "microdot"
+  },
+  "Advisory": {
+    "DatabaseId": 353041,
+    "Id": "GSA_kwCzR0hTQS03d2M4LXd2YzQtbTQ5OM4ABWMR",
+    "GhsaId": "GHSA-7wc8-wvc4-m498",
+    "References": [
+      {
+        "Url": "https://github.com/miguelgrinberg/microdot/security/advisories/GHSA-7wc8-wvc4-m498"
+      },
+      {
+        "Url": "https://github.com/miguelgrinberg/microdot/commit/99b281b45faef8472410f2d56bfef496dfbd95d5"
+      },
+      {
+        "Url": "https://github.com/miguelgrinberg/microdot/blob/main/CHANGES.md"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7wc8-wvc4-m498"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7wc8-wvc4-m498"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42874"
+      }
+    ],
+    "Description": "### Impact\nThe `Response.set_cookie()` method does not sanitize its string arguments, and in particular will not detect the presence of the `\\r\\n` sequence in them. This can be a potential source of header injection attacks.\n\nFor a header injection attack through this issue to be possible, an attacker must first infiltrate the client (for example through an independent XSS attack), so that it can send malicious information that is destined to be stored in a cookie by the server on behalf of the victim. An attacker that infiltrates one client can only orchestrate a header injection attack for that client, all other clients that were not infiltrated are safe.\n\n### Patches\nUpgrade to version 2.6.1.\n\n### Workarounds\nDo not pass untrusted data to the `Response.set_cookie()` method.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T18:35:20Z",
+    "Severity": "LOW",
+    "Summary": "Microdot has HTTP response splitting in Response.set_cookie()",
+    "UpdatedAt": "2026-05-05T18:35:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.6.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.6.1"
+    }
+  ]
+}

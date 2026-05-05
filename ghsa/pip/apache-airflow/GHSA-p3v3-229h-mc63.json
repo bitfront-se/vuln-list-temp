@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T18:11:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 351123,
+    "Id": "GSA_kwCzR0hTQS1wM3YzLTIyOWgtbWM2M84ABVuT",
+    "GhsaId": "GHSA-p3v3-229h-mc63",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-38743"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/64822"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/sk2wj0x48o8qb4p7c47gvnhjbm0mg396"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/04/24/3"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/fed4921098d51fd3ec17b7f5cff80f6c36fd05e2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p3v3-229h-mc63"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p3v3-229h-mc63"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-38743"
+      }
+    ],
+    "Description": "The authenticated /ui/dags endpoint did not enforce per-DAG access control on embedded Human-in-the-Loop (HITL) and TaskInstance records: a logged-in Airflow user with read access to at least one DAG could retrieve HITL prompts (including their request parameters) and full TaskInstance details for DAGs outside their authorized scope. Because HITL prompts and TaskInstance fields routinely carry operator parameters and free-form context attached to a task, the leak widens visibility of DAG-run data beyond the intended per-DAG RBAC boundary for every authenticated user.\n\nUsers are recommended to upgrade to version 3.2.1 , which fixes this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-24T15:32:32Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow's authenticated /ui/dags endpoint did not enforce per-DAG access control on embedded Human-in-the-Loop (HITL) and TaskInstance record",
+    "UpdatedAt": "2026-05-05T18:11:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.1rc1"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.1rc1"
+    }
+  ]
+}

