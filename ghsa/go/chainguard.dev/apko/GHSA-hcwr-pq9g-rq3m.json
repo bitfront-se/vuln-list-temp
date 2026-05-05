@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-04T21:27:21Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "chainguard.dev/apko"
+  },
+  "Advisory": {
+    "DatabaseId": 352845,
+    "Id": "GSA_kwCzR0hTQS1oY3dyLXBxOWctcnEzbc4ABWJN",
+    "GhsaId": "GHSA-hcwr-pq9g-rq3m",
+    "References": [
+      {
+        "Url": "https://github.com/chainguard-dev/apko/security/advisories/GHSA-hcwr-pq9g-rq3m"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hcwr-pq9g-rq3m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hcwr-pq9g-rq3m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42575"
+      }
+    ],
+    "Description": "apko verifies the signature on `APKINDEX.tar.gz` but never compares individually downloaded `.apk` packages against the checksum recorded in the signed index. The checksum is parsed and available via `ChecksumString()`, and the downloaded package control hash is computed, but the two values are never compared in `getPackageImpl()`. Mismatched packages are silently accepted. An attacker who can substitute download responses (compromised mirror, HTTP repository, poisoned CDN cache) can install arbitrary packages into built images.\n\n**Fix:** No fix available yet.\n\n**Acknowledgements**\n\napko thanks Oleh Konko from [1seal](https://1seal.org/) for discovering and reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T21:27:17Z",
+    "Severity": "HIGH",
+    "Summary": "apko doesn't verify downloaded apk packages against APKINDEX checksum (package substitution possible)",
+    "UpdatedAt": "2026-05-04T21:27:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.7"
+      },
+      "VulnerableVersionRange": "\u003c 1.2.7"
+    }
+  ]
+}

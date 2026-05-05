@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-04T20:14:39Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pyp2spec"
+  },
+  "Advisory": {
+    "DatabaseId": 352816,
+    "Id": "GSA_kwCzR0hTQS1yMzV4LXY4cDgteHZod84ABWIw",
+    "GhsaId": "GHSA-r35x-v8p8-xvhw",
+    "References": [
+      {
+        "Url": "https://github.com/befeleme/pyp2spec/security/advisories/GHSA-r35x-v8p8-xvhw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r35x-v8p8-xvhw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r35x-v8p8-xvhw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42301"
+      }
+    ],
+    "Description": "### Impact\npyp2spec was writing PyPI package metadata (e.g. the summary field) into the generated spec file without escaping RPM macro directives. When a packager then runs rpmbuild, those directives get evaluated, so a malicious package can execute arbitrary commands on the build machine.\n\nThe macro evaluates during spec parsing, not only during the build step. Any rpm tool touching the generated spec triggers execution, `rpmbuild -bs`, `rpmbuild --nobuild`, `rpm -q --specfile`, so the victim doesn't need to commit to a full build before getting compromised. The realistic attack path is typosquatting or targeting a package known to be under Fedora review rather than drive-by publishing. Fedora packagers hold dist-git SSH keys, Koji build credentials, and Bodhi update credentials, so compromise of one packager's workstation enables committing malicious source to dist-git and riding it through the normal build pipeline to end users.\n\n### Patches\nPatched in 0.14.1.\n\n### Workarounds\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T20:14:38Z",
+    "Severity": "HIGH",
+    "Summary": "pyp2spec is Vulnerable to Code Injection",
+    "UpdatedAt": "2026-05-04T20:14:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.14.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.14.1"
+    }
+  ]
+}

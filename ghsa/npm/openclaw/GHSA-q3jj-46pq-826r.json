@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T20:21:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 352822,
+    "Id": "GSA_kwCzR0hTQS1xM2pqLTQ2cHEtODI2cs4ABWI2",
+    "GhsaId": "GHSA-q3jj-46pq-826r",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-q3jj-46pq-826r"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/31160dc069b7cc5d833b39c53736a41ad3befda2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q3jj-46pq-826r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q3jj-46pq-826r"
+      }
+    ],
+    "Description": "## Summary\nACP child sessions inherit subagent security envelope constraints.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nA restricted subagent spawning an ACP child session could fail to carry forward subagent-only constraints such as depth, child-count limits, control scope, or target-agent restrictions.\n\n## Fix\nACP spawn now resolves and persists child subagent envelope fields, enforces maximum depth and active-child caps, and applies the inherited control scope to child ACP sessions.\n\n## Fix Commit(s)\n- 31160dc069b7cc5d833b39c53736a41ad3befda2\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @zsxsoft, @qclawer, and @KeenSecurityLab for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T20:21:49Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's ACP child sessions inherit subagent security envelope constraints",
+    "UpdatedAt": "2026-05-04T20:21:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.22"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.21"
+    }
+  ]
+}

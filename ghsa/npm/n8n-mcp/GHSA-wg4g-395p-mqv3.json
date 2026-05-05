@@ -14,6 +14,9 @@
         "Url": "https://github.com/czlonkowski/n8n-mcp/security/advisories/GHSA-wg4g-395p-mqv3"
       },
       {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/commit/59b665bda36797823df238aeaf20adb862c9f451"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-wg4g-395p-mqv3"
       }
     ],
@@ -21,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-wg4g-395p-mqv3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42282"
       }
     ],
     "Description": "### Impact\n\nWhen `n8n-mcp` runs in HTTP transport mode, authenticated MCP `tools/call` requests had their full arguments and JSON-RPC params written to server logs by the request dispatcher and several sibling code paths before any redaction. When a tool call carries credential material — most notably `n8n_manage_credentials.data` — the raw values can be persisted in logs.\n\nIn deployments where logs are collected, forwarded to external systems, or viewable outside the request trust boundary (shared log storage, SIEM pipelines, support/ops access), this can result in disclosure of:\n\n- bearer tokens and OAuth credentials sent through `n8n_manage_credentials`\n- per-tenant API keys and webhook auth headers embedded in tool arguments\n- arbitrary secret-bearing payloads passed to any MCP tool\n\nThe issue requires authentication (`AUTH_TOKEN` accepted by the server), so unauthenticated callers cannot trigger it; the runtime exposure is also reduced by an existing console-silencing layer in HTTP mode, but that layer is fragile and the values are still constructed and passed into the logger. The fix removes the leak at the source.\n\nImpact category: **CWE-532** (Insertion of Sensitive Information into Log File). CVSS 3.1 score: **4.3 Medium** (`AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N`).\n\n### Affected\n\nDeployments running n8n-mcp **v2.47.12 or earlier** in HTTP transport mode (`MCP_MODE=http`). The stdio transport short-circuits the relevant log calls and is not affected in practice.\n\n### Patched\n\n**v2.47.13** and later.\n\n- npm: `npx n8n-mcp@latest` (or pin to `\u003e= 2.47.13`)\n- Docker: `docker pull ghcr.io/czlonkowski/n8n-mcp:latest`\n\nThe patch routes tool-call arguments through a metadata-only summarizer (`summarizeToolCallArgs`) that records type, top-level key names, and approximate size — never values. The same pattern was adopted earlier for HTTP request bodies in GHSA-pfm2-2mhg-8wpx.\n\n### Workarounds\n\nIf developers cannot upgrade immediately:\n\n- Restrict access to the HTTP port (firewall, reverse proxy, or VPN) so only trusted clients can authenticate.\n- Restrict access to server logs (no shared SIEM ingestion, no support read-only access) until the upgrade lands.\n- Switch to stdio transport (`MCP_MODE=stdio`, the default for CLI invocation), which has no HTTP surface and short-circuits the affected log calls.\n\n### Credit\n\nn8n-MCP thanks [@Mirr2](https://github.com/Mirr2) (Organization / Jormungandr) for reporting this issue.",
@@ -28,7 +35,7 @@
     "PublishedAt": "2026-04-25T23:35:28Z",
     "Severity": "MODERATE",
     "Summary": "n8n-MCP: Sensitive MCP tool-call arguments logged on authenticated requests in HTTP mode",
-    "UpdatedAt": "2026-04-25T23:35:29Z",
+    "UpdatedAt": "2026-05-04T22:02:16Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 4.3,

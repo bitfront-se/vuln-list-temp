@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/99ef3a63c58440d53f8e45ad861b846032fcb036"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41908"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-scope-enforcement-bypass-in-assistant-media-route"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-v8qf-fr4g-28p2"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-v8qf-fr4g-28p2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41908"
       }
     ],
     "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nThe Control UI assistant-media route authenticated trusted-proxy callers but did not enforce the declared operator scopes for identity-bearing HTTP auth paths. A trusted-proxy caller without `operator.read` could access assistant-media files and metadata that were otherwise inside allowed media roots.\n\nThe route still required successful gateway authentication and media-root checks. Severity is low.\n\n## Fix\n\nAssistant-media file and metadata requests now require `operator.read` on identity-bearing HTTP auth paths.\n\nFix commit:\n\n- `99ef3a63c58440d53f8e45ad861b846032fcb036`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
@@ -31,11 +41,11 @@
     "PublishedAt": "2026-04-25T23:45:49Z",
     "Severity": "LOW",
     "Summary": "OpenClaw: Assistant media route missed scope enforcement for trusted-proxy authorization",
-    "UpdatedAt": "2026-04-25T23:45:49Z",
+    "UpdatedAt": "2026-05-04T21:05:44Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
     }
   },
   "Versions": [

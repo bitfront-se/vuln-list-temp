@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T20:15:48Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ai.h2o:h2o-core"
+  },
+  "Advisory": {
+    "DatabaseId": 350944,
+    "Id": "GSA_kwCzR0hTQS1xbWN2LWhoN2MtM201Ns4ABVrg",
+    "GhsaId": "GHSA-qmcv-hh7c-3m56",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3960"
+      },
+      {
+        "Url": "https://github.com/h2oai/h2o-3/commit/b9ae2d3c5220db2dc53753357a783e590364d044"
+      },
+      {
+        "Url": "https://huntr.com/bounties/6954fe04-b905-453f-8c53-205ac8377e0d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qmcv-hh7c-3m56"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qmcv-hh7c-3m56"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-3960"
+      }
+    ],
+    "Description": "A critical remote code execution vulnerability exists in the unauthenticated REST API endpoint /99/ImportSQLTable in H2O-3 version 3.46.0.9 and prior. The vulnerability arises due to insufficient security controls in the parameter blacklist mechanism, which only targets MySQL JDBC driver-specific dangerous parameters. An attacker can bypass these controls by switching the JDBC URL protocol to jdbc:postgresql: and exploiting PostgreSQL JDBC driver-specific parameters such as socketFactory and socketFactoryArg. This allows unauthenticated attackers to execute arbitrary code on the H2O-3 server with the privileges of the H2O-3 process. The issue is resolved in version 3.46.0.10.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-23T12:31:34Z",
+    "Severity": "MODERATE",
+    "Summary": "H2O-3 is Vulnerable to Code Injection",
+    "UpdatedAt": "2026-05-04T20:15:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.46.0.10"
+      },
+      "VulnerableVersionRange": "\u003c 3.46.0.10"
+    }
+  ]
+}

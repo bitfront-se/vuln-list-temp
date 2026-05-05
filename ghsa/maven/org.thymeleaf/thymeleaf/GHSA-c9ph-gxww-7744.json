@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-04T21:15:21Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.thymeleaf:thymeleaf"
+  },
+  "Advisory": {
+    "DatabaseId": 352834,
+    "Id": "GSA_kwCzR0hTQS1jOXBoLWd4d3ctNzc0NM4ABWJC",
+    "GhsaId": "GHSA-c9ph-gxww-7744",
+    "References": [
+      {
+        "Url": "https://github.com/thymeleaf/thymeleaf/security/advisories/GHSA-c9ph-gxww-7744"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c9ph-gxww-7744"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c9ph-gxww-7744"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41901"
+      }
+    ],
+    "Description": "### Impact\n\nA security bypass vulnerability exists in the expression execution mechanisms of Thymeleaf up to and including 3.1.4.RELEASE. Although the library provides mechanisms to avoid the execution of potentially dangerous expressions in some specific sandboxed (restricted) contexts, it fails to properly neutralize specific constructs that allow this kind of expressions to be executed. If an application developer passes to the template engine unsanitized variables that contain such expressions, and these values are used in sandboxed contexts inside the templates, these expressions can be executed achieving Server-Side Template Injection (SSTI).\n\n### Patches\n\nThis has been fixed in Thymeleaf 3.1.5.RELEASE. All users are advised to upgrade immediately.\n\n### Workarounds\n\nNo workaround is available beyond ensuring applications do not pass unvalidated/unsanitized data directly to the template engine. Upgrading to 3.1.5.RELEASE is strongly recommended in any case.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T21:15:20Z",
+    "Severity": "CRITICAL",
+    "Summary": "Sandboxed Thymeleaf expressions vulnerable to improper recognition of unauthorized syntax patterns",
+    "UpdatedAt": "2026-05-04T21:15:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.5.RELEASE"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.4.RELEASE"
+    }
+  ]
+}

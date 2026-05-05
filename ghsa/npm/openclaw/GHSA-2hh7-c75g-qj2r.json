@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T20:21:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 352821,
+    "Id": "GSA_kwCzR0hTQS0yaGg3LWM3NWctcWoycs4ABWI1",
+    "GhsaId": "GHSA-2hh7-c75g-qj2r",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2hh7-c75g-qj2r"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/a65eb1b864b7630c1242a82de9e5799b80583c3f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2hh7-c75g-qj2r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2hh7-c75g-qj2r"
+      }
+    ],
+    "Description": "## Summary\nZalo outbound photo URLs are validated through the SSRF guard.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nThe Zalo plugin could forward an attacker-controlled outbound photo URL to the Zalo Bot API without first applying OpenClaw's SSRF validation policy.\n\n## Fix\nZalo sendPhoto now parses and validates outbound photo URLs with the shared SSRF hostname policy before posting to Zalo, and media-reply paths route through the guarded outbound media helpers.\n\n## Fix Commit(s)\n- a65eb1b864b7630c1242a82de9e5799b80583c3f\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @foodlook for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T20:21:11Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw validates Zalo outbound photo URLs through the SSRF guard",
+    "UpdatedAt": "2026-05-04T20:21:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.22"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.21"
+    }
+  ]
+}

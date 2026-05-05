@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T21:14:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 352833,
+    "Id": "GSA_kwCzR0hTQS05M3JnLTJ4bTUtMnA5ds4ABWJB",
+    "GhsaId": "GHSA-93rg-2xm5-2p9v",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-93rg-2xm5-2p9v"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/2321d67263bc710e357644d59f746b08d891051b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-93rg-2xm5-2p9v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-93rg-2xm5-2p9v"
+      }
+    ],
+    "Description": "## Summary\nGateway Control UI bootstrap config required Gateway auth.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nWhen Gateway authentication was enabled, the Control UI bootstrap config endpoint could still be read without a valid Gateway token. That response could expose sensitive bootstrap/config fields intended only for authenticated Control UI sessions.\n\n## Fix\nThe bootstrap config route now goes through the same Gateway read-auth path as other authenticated Control UI reads. Regression tests cover unauthenticated rejection, valid-token access, and basePath handling.\n\n## Fix Commit(s)\n- 2321d67263bc710e357644d59f746b08d891051b\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @zsxsoft for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T21:14:17Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Gateway Control UI bootstrap config required Gateway auth",
+    "UpdatedAt": "2026-05-04T21:14:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.22"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.21"
+    }
+  ]
+}

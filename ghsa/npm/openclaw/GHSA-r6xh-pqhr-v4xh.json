@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-04T20:22:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 352824,
+    "Id": "GSA_kwCzR0hTQS1yNnhoLXBxaHItdjR4aM4ABWI4",
+    "GhsaId": "GHSA-r6xh-pqhr-v4xh",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-r6xh-pqhr-v4xh"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/3cb1a56bfc9579a0f2336f9cfa12a8a744332a19"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r6xh-pqhr-v4xh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r6xh-pqhr-v4xh"
+      }
+    ],
+    "Description": "## Summary\nMCP loopback owner context is derived from server-issued bearer tokens.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nThe loopback MCP path accepted spoofable owner-context metadata from request headers, which could allow a non-owner loopback client to present itself as owner for owner-gated operations.\n\n## Fix\nThe MCP loopback runtime now issues separate owner and non-owner bearer tokens and derives senderIsOwner exclusively from which token authenticated the request. The spoofable sender-owner header is no longer emitted or trusted.\n\n## Fix Commit(s)\n- 3cb1a56bfc9579a0f2336f9cfa12a8a744332a19\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @VladimirEliTokarev for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T20:22:42Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: MCP loopback owner context is derived from server-issued bearer tokens",
+    "UpdatedAt": "2026-05-04T20:22:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.22"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.21"
+    }
+  ]
+}

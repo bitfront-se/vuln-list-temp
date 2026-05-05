@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T20:19:32Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pillow"
+  },
+  "Advisory": {
+    "DatabaseId": 352819,
+    "Id": "GSA_kwCzR0hTQS1yNzNqLXBxajUtdzN4N84ABWIz",
+    "GhsaId": "GHSA-r73j-pqj5-w3x7",
+    "References": [
+      {
+        "Url": "https://github.com/python-pillow/Pillow/security/advisories/GHSA-r73j-pqj5-w3x7"
+      },
+      {
+        "Url": "https://github.com/python-pillow/Pillow/pull/9519"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r73j-pqj5-w3x7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r73j-pqj5-w3x7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42310"
+      }
+    ],
+    "Description": "### Impact\nAn attacker can supply a malicious PDF that causes the process to hang indefinitely, consuming 100% CPU and making the application unresponsive.\n\n### Patches\nPatched version: 12.2.0.\n\nPdfParser (introduced in Pillow 4.2.0) follows Prev pointers in PDF trailers to read cross-reference sections. If a\ntrailer's Prev pointer references an offset that has already been processed — either pointing to itself or forming a\nlonger cycle — the parser enters an infinite loop. Pillow now tracks previously processed trailer offsets and raises an\nerror if a cycle is detected.\n\n### Workarounds\nUse any version but the affected versions: \u003e= 4.2.0, \u003c 12.2.0\n\n### Resources\n - Fix: https://github.com/python-pillow/Pillow/pull/9519",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T20:19:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Pillow has a PDF Parsing Trailer Infinite Loop (DoS)",
+    "UpdatedAt": "2026-05-04T20:19:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0, \u003c 12.2.0"
+    }
+  ]
+}

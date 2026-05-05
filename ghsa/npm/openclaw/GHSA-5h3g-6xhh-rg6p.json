@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-04T21:07:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 352832,
+    "Id": "GSA_kwCzR0hTQS01aDNnLTZ4aGgtcmc2cM4ABWJA",
+    "GhsaId": "GHSA-5h3g-6xhh-rg6p",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5h3g-6xhh-rg6p"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/95119017c847c737bd113f0bff728c4666d79c45"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5h3g-6xhh-rg6p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5h3g-6xhh-rg6p"
+      }
+    ],
+    "Description": "## Summary\nOpenShell FS bridge reads pin and verify the opened file before returning bytes\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nA time-of-check/time-of-use race around OpenShell sandbox filesystem reads could let a symlink swap cause bytes outside the intended mount root to be read.\n\n## Fix\nOpenShell reads now open the file with no-follow semantics where available, validate the pinned file descriptor against the canonical mount root, reject unsafe hardlink/symlink cases, and use a strict fallback ancestor walk on platforms without fd-path readback.\n\n## Fix Commit(s)\n- 95119017c847c737bd113f0bff728c4666d79c45\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @VladimirEliTokarev for reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-04T21:07:36Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: OpenShell FS bridge reads pin and verify the opened file before returning bytes",
+    "UpdatedAt": "2026-05-04T21:07:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.22"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.21"
+    }
+  ]
+}
