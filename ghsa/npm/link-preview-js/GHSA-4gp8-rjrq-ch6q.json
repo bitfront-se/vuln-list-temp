@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T20:13:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "link-preview-js"
+  },
+  "Advisory": {
+    "DatabaseId": 353078,
+    "Id": "GSA_kwCzR0hTQS00Z3A4LXJqcnEtY2g2cc4ABWM2",
+    "GhsaId": "GHSA-4gp8-rjrq-ch6q",
+    "References": [
+      {
+        "Url": "https://github.com/OP-Engineering/link-preview-js/security/advisories/GHSA-4gp8-rjrq-ch6q"
+      },
+      {
+        "Url": "https://github.com/OP-Engineering/link-preview-js/pull/179"
+      },
+      {
+        "Url": "https://github.com/OP-Engineering/link-preview-js/commit/4396d48909fab37553c0e93e26447fe218363ede"
+      },
+      {
+        "Url": "https://github.com/OP-Engineering/link-preview-js/releases/tag/4.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4gp8-rjrq-ch6q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4gp8-rjrq-ch6q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43897"
+      }
+    ],
+    "Description": "### Impact\nThe library did not check for IPv6 loopback attacks. There was also a DNS attack, where an address could be resolved into an internal IP. This could cause internal data leaks.\n\n### Patches\nProblem has been patched in version 4.0.1. However, it cannot be completely solved by the package alone. The regex used for validation has been tightened for IPv6 addresses. \n\nThe DNS resolving, however, is more difficult. The regex has been tightened to prohibit .internal, .local, .nip.io and .sslip.io addresses, however there can be other services not on the list, therefore it is imperative that users use the resolveDNSHost option to do DNS resolution before fetching content. To that regard a (scary) error message has been added when the option is not set.\n\n### Workarounds\nUsers can do their own validation before fetching content.\n\nReported by https://github.com/Andrew-most-likely",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T20:13:02Z",
+    "Severity": "HIGH",
+    "Summary": "link-preview-js vulnerable to IPv6 and internal loopback attacks",
+    "UpdatedAt": "2026-05-05T20:13:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.1"
+      },
+      "VulnerableVersionRange": "\u003c= 4.0.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T22:17:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sse-channel"
+  },
+  "Advisory": {
+    "DatabaseId": 353145,
+    "Id": "GSA_kwCzR0hTQS04NGhtLXdmaDgtYzVwZ84ABWN5",
+    "GhsaId": "GHSA-84hm-wfh8-c5pg",
+    "References": [
+      {
+        "Url": "https://github.com/rexxars/sse-channel/security/advisories/GHSA-84hm-wfh8-c5pg"
+      },
+      {
+        "Url": "https://github.com/rexxars/sse-channel/issues/42"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-84hm-wfh8-c5pg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-84hm-wfh8-c5pg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44217"
+      }
+    ],
+    "Description": "### Impact\n\nImplementations that allows user-provided values to be passed to `event`, `retry` or `id` fields would be susceptible to event spoofing, where an attacker could inject arbitrary messages into the stream.\n\n- **Event Spoofing:** Attacker can inject arbitrary SSE events into the stream\n- **Client-side Manipulation:** Injected events can trigger unintended behavior in frontend JavaScript EventSource listeners\n- **Data Integrity:** Consumers of the SSE stream cannot distinguish injected events from legitimate ones\n\n### Patches\nPatch available in v4.0.1.\n\n### Workarounds\nDo not allow user data to control `event`, `retry` or `id` fields, and if you must - sanitize the input before passing it to `sse-channel`, stripping any newlines. \n\n### Resources\n\nhttps://github.com/rexxars/sse-channel/issues/42",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T22:17:02Z",
+    "Severity": "MODERATE",
+    "Summary": "sse-channel: SSE Injection via unsanitized event fields",
+    "UpdatedAt": "2026-05-05T22:17:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.1"
+      },
+      "VulnerableVersionRange": "\u003c= 4.0.0"
+    }
+  ]
+}

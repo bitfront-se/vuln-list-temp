@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T18:44:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 353046,
+    "Id": "GSA_kwCzR0hTQS1jd2ozLXZxcHAtcG14cs4ABWMW",
+    "GhsaId": "GHSA-cwj3-vqpp-pmxr",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cwj3-vqpp-pmxr"
+      },
+      {
+        "Url": "https://github.com/openclaw/openclaw/commit/bceda6089aa7b3695cc7696b43c61ae3d01bb0ec"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cwj3-vqpp-pmxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cwj3-vqpp-pmxr"
+      }
+    ],
+    "Description": "## Summary\n\nThe agent-facing `gateway` tool protects `config.apply` and `config.patch` with a model-to-operator trust boundary. That guard used a hand-maintained denylist of protected config paths. The config schema outgrew that denylist, leaving sensitive subtrees writable through model-driven gateway config mutations.\n\n## Impact\n\nA prompt-injected or otherwise compromised model running with access to the owner-only `gateway` tool could persist unsafe config changes that crossed security boundaries. Examples included config paths affecting command execution, network/proxy/TLS behavior, credential forwarding, telemetry or hook endpoints, memory/indexing surfaces, and operator policy controls. These changes could survive restart once written to config.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` on npm\n- Affected: versions before `2026.4.23`\n- Fixed: `2026.4.23`\n- Latest stable verified fixed: `openclaw@2026.4.23`, tag `v2026.4.23`\n\n## Fix\n\nOpenClaw replaced the denylist with a fail-closed allowlist. Agent-driven `gateway config.apply` and `gateway config.patch` now permit only narrow agent-tunable prompt/model settings and mention-gating paths. Other config changes are rejected before the gateway mutation RPC is invoked.\n\n## Fix Commit(s)\n\n- `bceda6089aa7b3695cc7696b43c61ae3d01bb0ec` (`fix(gateway): fail closed on runtime config edits`)\n\n## Severity\n\nSeverity remains `high`. The vulnerable entry point is owner-only, but the model/agent is not a trusted principal under OpenClaw's security model, and the guard is the explicit model-to-operator boundary for persisted config mutation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T18:44:31Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's gateway config mutation guard allowed unsafe model-driven config writes",
+    "UpdatedAt": "2026-05-05T18:44:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.23"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.23"
+    }
+  ]
+}

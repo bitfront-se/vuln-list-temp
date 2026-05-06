@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T21:51:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ip-address"
+  },
+  "Advisory": {
+    "DatabaseId": 353134,
+    "Id": "GSA_kwCzR0hTQS12MnY0LTM3cjUtNXY4Z84ABWNu",
+    "GhsaId": "GHSA-v2v4-37r5-5v8g",
+    "References": [
+      {
+        "Url": "https://github.com/beaugunderson/ip-address/security/advisories/GHSA-v2v4-37r5-5v8g"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v2v4-37r5-5v8g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v2v4-37r5-5v8g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42338"
+      }
+    ],
+    "Description": "### Summary\n\n`Address6.group()` and `Address6.link()` do not HTML-escape attacker-controlled content before embedding it in the HTML strings they return, and `AddressError.parseMessage` (emitted by the `Address6` constructor for invalid input) can contain unescaped attacker-controlled content in one branch. An application that (1) passes untrusted input to `Address6` and (2) renders the output of these methods, or the thrown error's `parseMessage`, as HTML (e.g. via `innerHTML`) is vulnerable to cross-site scripting. A related issue in `v6.helpers.spanAll()` produced malformed markup but was not exploitable; it is hardened in the same release for consistency.\n\n### Details\n\nFour related issues were identified and fixed together:\n\n1. **`Address6.group()`: zone ID injection.** The `Address6` constructor stores the raw input (including any IPv6 zone ID) in `this.address` before zone stripping. `group()` then passed `this.address` to `helpers.simpleGroup()`, which wrapped each `:`-separated segment in a `\u003cspan\u003e` element without HTML-escaping the content. A zone ID containing HTML markup was embedded verbatim.\n2. **`Address6.link({ prefix, className })`: attribute-value injection.** `link()` concatenated user-supplied `prefix` and `className` into the `href=\"…\"` and `class=\"…\"` attributes without escaping. A caller passing untrusted content through these options could inject event handlers (e.g. `onmouseover`) and achieve XSS.\n3. **`Address6` constructor: leading-zero IPv4 error path.** The leading-zero branch in `parse4in6()` built `AddressError.parseMessage` by concatenating the raw address through `String.replace()`. Because `parse4in6()` runs before the bad-character check, any characters in the groups preceding the IPv4 suffix flowed into the error's HTML unescaped. Consumers who render `parseMessage` as HTML (its documented purpose — it already contains `\u003cspan class=\"parse-error\"\u003e` markup) could be XSS'd by a crafted input such as `\u003cimg src=x onerror=alert(1)\u003e:10.0.01.1`.\n4. **`v6.helpers.spanAll()`: attribute-value injection (defense in depth).** `spanAll()` embedded each character of its input into a `class=\"digit value-${n} …\"` attribute without escaping. Because `split('')` limits `n` to a single character this was not exploitable in practice, but it produced malformed markup and is fixed for consistency.\n\n### Affected Versions\n\nAll versions up to and including `10.1.0`.\n\n### Patched Version\n\n`10.1.1`.\n\n### Impact\n\nReal-world exposure is believed to be extremely limited. Analysis of all 425 dependent npm packages as well as GitHub code search found zero consumers of `group()`, `link()`, or `spanAll()`: these HTML-emitting surfaces appear to be unused across published npm packages and public repositories. Applications using only the address-parsing and comparison APIs (`isValid`, `correctForm`, `isInSubnet`, `bigInt`, etc.) are not affected.\n\nConsumers who **do** render the output of `group()`, `link()`, `spanAll()`, or `AddressError.parseMessage` as HTML against untrusted input should upgrade.\n\n### PoC\n\n```javascript\nconst { Address6 } = require('ip-address');\nconst addr = new Address6('fe80::1%\u003cimg src=x onerror=alert(1)\u003e');\ndocument.body.innerHTML = addr.group();  // fires the onerror handler in 10.1.0\n```\n\n### Workarounds\n\nIf users cannot upgrade immediately:\n\n- Do not pass untrusted input to the `Address6` constructor, or\n- Never render the output of `group()`, `link()`, or `spanAll()`, nor the `parseMessage` field of any thrown `AddressError`, as HTML; treat these values as text only, or run them through [DOMPurify](https://github.com/cure53/DOMPurify) before inserting into the DOM (DOMPurify's default configuration preserves the library's intended `\u003cspan\u003e` wrapping while stripping any injected event handlers), or\n- Validate input with `Address6.isValid()` and reject anything that contains a zone identifier (a `%` character) or characters outside `[0-9a-fA-F:/]` before passing it to the constructor.\n\n### Lack of separate CVEs\n\nGiven the evidence that these methods are not used, and given that they are all of the same construction, maintainers do not think it's relevant or useful to create a separate CVE for each library method.\n\n### Credit\n\nip-address thanks @scovetta for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T21:50:58Z",
+    "Severity": "MODERATE",
+    "Summary": "ip-address has XSS in Address6 HTML-emitting methods",
+    "UpdatedAt": "2026-05-05T21:51:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 10.1.0"
+    }
+  ]
+}

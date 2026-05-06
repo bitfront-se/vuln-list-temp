@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-05T20:58:28Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/l3montree-dev/devguard"
+  },
+  "Advisory": {
+    "DatabaseId": 353094,
+    "Id": "GSA_kwCzR0hTQS0yZzl2LTdtcjUtZmdqZ84ABWNG",
+    "GhsaId": "GHSA-2g9v-7mr5-fgjg",
+    "References": [
+      {
+        "Url": "https://github.com/l3montree-dev/devguard/security/advisories/GHSA-2g9v-7mr5-fgjg"
+      },
+      {
+        "Url": "https://github.com/l3montree-dev/devguard/commit/6f38310bf93b2a63df3055038f4da82b1f4e6d9a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2g9v-7mr5-fgjg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2g9v-7mr5-fgjg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42300"
+      }
+    ],
+    "Description": "### Impact\nThe `SessionMiddleware` accepts a client-supplied `X-Admin-Token` HTTP request header and uses its raw string value as the authenticated `userID` when no Kratos session cookie is present. An unauthenticated attacker who knows or can guess a target user's Kratos identity UUID can issue requests as that user. Where the target user is an organisation `admin` or `owner`, this gives the attacker full control over that organisation's DevGuard resources.\n\n### Patches\nThe release v1.2.2 patches this issue. Update your DevGuard API Instances to this version.\n\n### Workarounds\nConfigure a reverse proxy to strip the `X-Admin-Token` header before sending requests to the DevGuard API.\n\n### Resources\nFixed commit: https://github.com/l3montree-dev/devguard/commit/6f38310bf93b2a63df3055038f4da82b1f4e6d9a",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T20:58:27Z",
+    "Severity": "CRITICAL",
+    "Summary": "DevGuard has an unauthenticated identity assertion via `X-Admin-Token` header",
+    "UpdatedAt": "2026-05-05T20:58:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.2.2"
+    }
+  ]
+}

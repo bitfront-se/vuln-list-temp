@@ -1,0 +1,107 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T21:44:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-infinispan"
+  },
+  "Advisory": {
+    "DatabaseId": 351517,
+    "Id": "GSA_kwCzR0hTQS00eHd4LWh2djctN3Byas4ABV0d",
+    "GhsaId": "GHSA-4xwx-hvv7-7prj",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40858"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-40858.html"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22146"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22147"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22148"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22149"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22150"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22151"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22152"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/0307dd4709a8136eba3206701004bcb528bc47fd"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/05cffa5ec05ff2ec3c50a77825625da6e426e7a8"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/3926ab2b7745e36da2cd8e0dc019018bc415aff9"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/540d48e1cb5e492bd1c74bfc5a6e929fcf24fe3b"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/5c20de8f047de725e0b32a874cdb5108c3e46558"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/e074c01a719cccf3b1c2efbd2ff31e60fd6220ce"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/CAMEL-23222"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4xwx-hvv7-7prj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4xwx-hvv7-7prj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40858"
+      }
+    ],
+    "Description": "The camel-infinispan component's ProtoStream-based remote aggregation repository deserializes data read from a remote Infinispan cache using java.io.ObjectInputStream without applying any ObjectInputFilter. An attacker who can write to the Infinispan cache used by a Camel application can inject a crafted serialized Java object that, when read during normal aggregation repository operations such as get or recover, results in arbitrary code execution in the context of the application.\n\nThis issue affects Apache Camel: from 4.0.0 before 4.14.7, from 4.15.0 before 4.18.2, from 4.19.0 before 4.20.0.\n\nUsers are recommended to upgrade to version 4.20.0, which fixes the issue. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.7. If users are on the 4.18.x releases stream, then they are suggested to upgrade to 4.18.2.\n\nThe JIRA ticket:  https://issues.apache.org/jira/browse/CAMEL-23322  refers to the various commits that resolved the issue, and have more details. This issue follows the same class of vulnerability previously addressed in CVE-2024-22369, CVE-2024-23114 and CVE-2026-25747.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-27T12:30:38Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Camel-Infinispan Component Vulnerable to Deserialization of Untrusted Data",
+    "UpdatedAt": "2026-05-05T21:44:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.20.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.19.0, \u003c 4.20.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.7"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.14.7"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-05T20:30:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 353084,
+    "Id": "GSA_kwCzR0hTQS1qcHE0LTdmbXEtcTVmas4ABWM8",
+    "GhsaId": "GHSA-jpq4-7fmq-q5fj",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-jpq4-7fmq-q5fj"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10448"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10449"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jpq4-7fmq-q5fj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jpq4-7fmq-q5fj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43930"
+      }
+    ],
+    "Description": "### Impact\n\nA race condition in the MFA SMS one-time password (OTP) login path allows two concurrent `/login` requests carrying the same OTP to both succeed and both receive valid session tokens, breaking the single-use property of the OTP. The vulnerability requires the attacker to already possess the victim's password and intercept the active SMS OTP (e.g. via SIM swap, network mirror, or phishing relay) and to race the legitimate login request, so the practical attack surface is narrow.\n\nThis advisory is the same class of incomplete fix as [GHSA-2299-ghjr-6vjp](https://github.com/parse-community/parse-server/security/advisories/GHSA-2299-ghjr-6vjp) (TOTP recovery codes) and [GHSA-w73w-g5xw-rwhf](https://github.com/parse-community/parse-server/security/advisories/GHSA-w73w-g5xw-rwhf) (MFA recovery in authData-only login). Those previous fixes added optimistic locking only for array-typed authData fields; SMS MFA stores the OTP as a string, so the guard skipped it.\n\n### Patches\n\nThe optimistic lock has been generalized to cover primitive (string, number, boolean) and array authData fields. The lock is implemented as a shared helper `applyAuthDataOptimisticLock` that adds equality predicates on the original values of changed fields to the update WHERE clause. Concurrent writers racing the same single-use token now miss the WHERE condition and surface as `Invalid auth data`.\n\n### Workarounds\n\n- Disable SMS MFA and use TOTP instead (TOTP tokens are time-window validated, not stored single-use).\n- Place a rate limiter on the `/login` endpoint to reduce concurrent-request burst capacity.\n\n### Resources\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-jpq4-7fmq-q5fj\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/pull/10448\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/pull/10449",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T20:30:44Z",
+    "Severity": "LOW",
+    "Summary": "parse-server: MFA SMS one-time password accepted twice under concurrent login",
+    "UpdatedAt": "2026-05-05T20:30:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.76"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.76"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.9.0-alpha.2"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.9.0-alpha.2"
+    }
+  ]
+}

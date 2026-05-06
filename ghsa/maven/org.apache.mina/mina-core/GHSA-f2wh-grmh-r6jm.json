@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-05T21:38:40Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.mina:mina-core"
+  },
+  "Advisory": {
+    "DatabaseId": 351511,
+    "Id": "GSA_kwCzR0hTQS1mMndoLWdybWgtcjZqbc4ABV0X",
+    "GhsaId": "GHSA-f2wh-grmh-r6jm",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41409"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/9ddvsq6c4l5bhwq8l14sob4f8qjvx5c9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-76h9-2vwh-w278"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f2wh-grmh-r6jm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f2wh-grmh-r6jm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41409"
+      }
+    ],
+    "Description": "The fix for CVE-2024-52046 in Apache MINA AbstractIoBuffer.getObject() was incomplete. The classname allowlist of classes allowed to be deserialized was applied too late after a static initializer in a class to be read might already have been executed.\n\nAffected versions are Apache MINA 2.0.0 \u003c= 2.0.27, 2.1.0 \u003c= 2.1.10, and 2.2.0 \u003c= 2.2.5.\n\nThe problem is resolved in Apache MINA 2.0.28, 2.1.11, and 2.2.6 by  applying the classname allowlist earlier.\n\nAffected are applications using Apache MINA that call IoBuffer.getObject().\n\nApplications using Apache MINA are advised to upgrade",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-27T12:30:38Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache MINA Vulnerable to Deserialization of Untrusted Data (CVE-2024-52046 Incomplete Fix)",
+    "UpdatedAt": "2026-05-05T21:38:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.2.0, \u003c 2.2.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.11"
+      },
+      "VulnerableVersionRange": "\u003e= 2.1.0, \u003c 2.1.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.28"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.0.28"
+    }
+  ]
+}

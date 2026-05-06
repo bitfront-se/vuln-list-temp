@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T19:32:58Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xwiki.contrib.plantuml:macro-plantuml-macro"
+  },
+  "Advisory": {
+    "DatabaseId": 353065,
+    "Id": "GSA_kwCzR0hTQS00MmZjLTd3OTctOHZyY84ABWMp",
+    "GhsaId": "GHSA-42fc-7w97-8vrc",
+    "References": [
+      {
+        "Url": "https://github.com/xwiki-contrib/macro-plantuml/security/advisories/GHSA-42fc-7w97-8vrc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42140"
+      },
+      {
+        "Url": "https://github.com/xwiki-contrib/macro-plantuml/commit/c8b19bda93058794e04c8862fc7ca85c59b5fe5c"
+      },
+      {
+        "Url": "https://jira.xwiki.org/browse/PLANTUML-25"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-42fc-7w97-8vrc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-42fc-7w97-8vrc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42140"
+      }
+    ],
+    "Description": "### Impact\n\nThe [PlantUML Macro](https://extensions.xwiki.org/xwiki/bin/view/Extension/PlantUML+Macro) is vulnerable to Server-Side Request Forgery (SSRF). The macro allows users to specify an alternative PlantUML server via the `server` parameter. However, the application does not validate the supplied URL. An attacker can supply an internal IP address or a malicious external URL. The XWiki server will attempt to connect to this URL to \"render\" the diagram.\n\nThis issue affects all versions of the Plant UML Macro extension till version 2.4 included.\n\n### Patches\n\nVersion 2.4.1 of the Plant UML Macro extension fixes the issue by verifying if the supplied server domain matches one of the [trusted domain configured inside of XWiki](https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Configuration/#HTrusteddomains).\n\n### Workarounds\n\nProtect the XWiki server by placing it in a DMZ so that it cannot access any other internal servers.\n\n### Resources\n\nThe issue was fixed in [PLANTUML-25](https://jira.xwiki.org/browse/PLANTUML-25) by the commit [c8b19bda93058794e04c8862fc7ca85c59b5fe5c](https://github.com/xwiki-contrib/macro-plantuml/commit/c8b19bda93058794e04c8862fc7ca85c59b5fe5c).\n\n### For more information\n\nIf there are any questions or comments about this advisory:\n* Open an issue in [JIRA XWiki.org](https://jira.xwiki.org/)\n* Send an email to [Security Mailing List](mailto:security@xwiki.org)\n\n### Attribution\n\nThe issue was reported by Łukasz Rybak.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T19:32:57Z",
+    "Severity": "MODERATE",
+    "Summary": "XWiki PlantUML Macro Vulnerable to Server-Side Request Forgery (SSRF) via 'server' parameter",
+    "UpdatedAt": "2026-05-05T19:32:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.1"
+    }
+  ]
+}

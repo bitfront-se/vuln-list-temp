@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T21:48:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mongoose"
+  },
+  "Advisory": {
+    "DatabaseId": 353131,
+    "Id": "GSA_kwCzR0hTQS13cGc5LTUzZnEtMnI4aM4ABWNr",
+    "GhsaId": "GHSA-wpg9-53fq-2r8h",
+    "References": [
+      {
+        "Url": "https://github.com/Automattic/mongoose/security/advisories/GHSA-wpg9-53fq-2r8h"
+      },
+      {
+        "Url": "https://mongoosejs.com/docs/api/mongoose.html#Mongoose.prototype.sanitizeFilter()"
+      },
+      {
+        "Url": "https://thecodebarbarian.com/whats-new-in-mongoose-6-sanitizefilter.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wpg9-53fq-2r8h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wpg9-53fq-2r8h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42334"
+      }
+    ],
+    "Description": "### Impact\n\nThis vulnerability allows bypassing Mongoose’s sanitizeFilter query sanitization mechanism via the `$nor` operator.\n\nWhen sanitizeFilter is enabled, Mongoose wraps query operators in `$eq` to neutralize them. However, prior to the fix, `$nor` was not included in the set of logical operators that are recursively sanitized. Because `$nor` accepts an array (like `$and` and `$or`), and arrays do not trigger `hasDollarKeys()`, malicious operators such as `$ne`, `$gt`, or `$regex` could be injected inside a `$nor` clause without being sanitized.\n\nThis may lead to:\n\n- Authentication bypass\n- Unauthorized data access\n- Data exfiltration\n\n**Affected users:**\n\nApplications that:\n\n- Explicitly enable sanitizeFilter\n- Pass unsanitized user-controlled input directly into query methods (e.g., `Model.findOne(req.body)`) and rely on `sanitizeFilter` to strip out query selectors\n\nApplications that validate input schemas, whitelist fields, or avoid passing raw request bodies into queries are not affected. For example, `Model.findOne({ user: req.body.user, pwd: req.body.pwd })` is not affected.\n\n### Patches\n\nPatches have been released for all supported Mongoose release lines:\n\n- `^6.13.9`\n- `^7.8.9`\n- `^8.22.1`\n- `^9.1.6`   \n\n### Workarounds\n\nDelete `$nor` keys, use an additional schema validation library, or write middleware to strip out `$nor` from query filters.\n\n### Resources\n\nsanitizeFilter documentation: https://mongoosejs.com/docs/api/mongoose.html#Mongoose.prototype.sanitizeFilter()\n\nOriginal blog post on sanitizeFilter: https://thecodebarbarian.com/whats-new-in-mongoose-6-sanitizefilter.html",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T21:48:06Z",
+    "Severity": "HIGH",
+    "Summary": "Mongoose's Improper Sanitization of $nor in sanitizeFilter May Allow NoSQL Injection",
+    "UpdatedAt": "2026-05-05T21:48:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c= 9.1.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.22.1"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.22.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.8.9"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c= 7.8.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.13.9"
+      },
+      "VulnerableVersionRange": "\u003c 6.13.9"
+    }
+  ]
+}

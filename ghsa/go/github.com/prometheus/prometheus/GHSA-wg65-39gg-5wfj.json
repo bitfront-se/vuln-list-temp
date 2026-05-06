@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T19:33:48Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/prometheus/prometheus"
+  },
+  "Advisory": {
+    "DatabaseId": 353066,
+    "Id": "GSA_kwCzR0hTQS13ZzY1LTM5Z2ctNXdmas4ABWMq",
+    "GhsaId": "GHSA-wg65-39gg-5wfj",
+    "References": [
+      {
+        "Url": "https://github.com/prometheus/prometheus/security/advisories/GHSA-wg65-39gg-5wfj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42151"
+      },
+      {
+        "Url": "https://github.com/prometheus/prometheus/pull/18587"
+      },
+      {
+        "Url": "https://github.com/prometheus/prometheus/pull/18590"
+      },
+      {
+        "Url": "https://github.com/prometheus/prometheus/releases/tag/v3.11.3"
+      },
+      {
+        "Url": "https://github.com/prometheus/prometheus/releases/tag/v3.5.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wg65-39gg-5wfj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wg65-39gg-5wfj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42151"
+      }
+    ],
+    "Description": "### Impact\n\nUsers who use Azure AD remote write with OAuth authentication are impacted.\n\nThe `client_secret` field in the Azure AD remote write OAuth configuration (`storage/remote/azuread`) was typed as `string` instead of `Secret`. Prometheus redacts fields of type `Secret` when serving the configuration via the `/-/config` HTTP API endpoint. Because the field was a plain string, the Azure OAuth client secret was exposed in plaintext to any user or process with access to that endpoint.\n\n### Patches\n\nThe problem has been patched by changing `ClientSecret` in `OAuthConfig` to `Secret`. Users should upgrade to 3.11.3 or 3.5.3 LTS.\n\n### Workarounds\n\nUsers  who can not upgrade can switch to Managed Identity or Workload Identity authentication for Azure AD remote write, which do not involve a client secret.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T19:33:47Z",
+    "Severity": "HIGH",
+    "Summary": "Prometheus Azure AD remote write OAuth client secret exposed via config API",
+    "UpdatedAt": "2026-05-05T19:33:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.311.3"
+      },
+      "VulnerableVersionRange": "\u003e= 0.45.2, \u003c 0.311.3"
+    }
+  ]
+}

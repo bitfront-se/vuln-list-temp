@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-05T20:29:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ssrfcheck"
+  },
+  "Advisory": {
+    "DatabaseId": 353082,
+    "Id": "GSA_kwCzR0hTQS1wNGhjLTlwamgtNTVjOM4ABWM6",
+    "GhsaId": "GHSA-p4hc-9pjh-55c8",
+    "References": [
+      {
+        "Url": "https://github.com/felippe-regazio/ssrfcheck/security/advisories/GHSA-p4hc-9pjh-55c8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-8267"
+      },
+      {
+        "Url": "https://github.com/felippe-regazio/ssrfcheck/issues/5"
+      },
+      {
+        "Url": "https://github.com/felippe-regazio/ssrfcheck/commit/9507b49fd764f2a1a1d1e3b9ee577b7545e6950e"
+      },
+      {
+        "Url": "https://gist.github.com/lirantal/2976840639df824cb3abe60d13c65e04"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-JS-SSRFCHECK-9510756"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p4hc-9pjh-55c8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p4hc-9pjh-55c8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-8267"
+      }
+    ],
+    "Description": "# SSRF Bypass in `ssrfcheck` - fails to classify reserved IP address space as invalid\n\n`ssrfcheck` is an npm package that serves to provide protection from SSRF by validating URLs or hostname inputs.\n\nResources: \n * Project's GitHub code repository: https://github.com/felippe-regazio/ssrfcheck\n * Project's npm package: https://www.npmjs.com/package/ssrfcheck\n \n## Vulnerability\n\nThe `ssrfcheck` package maintains a denylist of IP addresses and ranges to check against when validating if an IP address is to be considered as safe or not.\n\nHowever, the IP address list used for the denylist is incomplete and misses a reserved IP address space as defined by the IANA (Internet Assigned Numbers Authority):\n\n- 224.0.0.0/4 - Multicast\n\nPractically, this reserved IP address space is used for multicast traffic and would most commonly be used for reserved local communication over network protocols such as UDP, which would make it less likely to be used in a typical SSRF attack in practice.\n\nHowever, such reserved IP address space shouldn't be allowed and it would be responsible of the SSRF protection package to align and conform to an agreed-upon standard of special-purposed addresses that should not be considered a valid public IP address. For reference, the popular npm packages `private-ip` and `ipaddr.js` that are highly dependent-upon to make decisions about SSRF protection and both consider the above mentioned IP address space as reserved and is not considered a valid public IP address.\n\n## Exploit Proof of Concept\n\n1. Install the `ssrfcheck` package:\n\n```bash\nnpm install ssrfcheck\n```\n\n2. Define an `app.js` file with the programmatic API of `ssrfcheck`:\n\n```javascript\nimport { isSSRFSafeURL } from 'ssrfcheck';\n\nlet result\nresult = isSSRFSafeURL('https://012.1.2.3/whatever');\nconsole.log(result);  // returns false\nresult = isSSRFSafeURL('https://localhost:8080/whatever');\nconsole.log(result);  // returns false\n\nresult = isSSRFSafeURL('https://239.255.255.250:8080/whatever');\nconsole.log(result);  // returns true - bypassed\n```\n\n## Vulnerable versions\n\nAll versions of ssrfcheck are vulnerable to this issue, up to and including to the latest version of `1.1.1`.\n\n## Assigned CVE\n\n[CVE-2025-8267](https://nvd.nist.gov/vuln/detail/CVE-2025-8267)\n\n# Author\n\nLiran Tal",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T20:29:06Z",
+    "Severity": "HIGH",
+    "Summary": "ssrfcheck: SSRF Bypass Caused by Failure to Classify Reserved IP Address Space as Invalid",
+    "UpdatedAt": "2026-05-05T20:29:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.2.0"
+    }
+  ]
+}

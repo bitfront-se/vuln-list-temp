@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T21:57:56Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenTelemetry.OpAmp.Client"
+  },
+  "Advisory": {
+    "DatabaseId": 353138,
+    "Id": "GSA_kwCzR0hTQS13MmpoLTc3ZnEtN2dwOM4ABWNy",
+    "GhsaId": "GHSA-w2jh-77fq-7gp8",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/security/advisories/GHSA-w2jh-77fq-7gp8"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4116"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/commit/bf1fad4fa298ff451cda0efb0ee9c7a7eb46212a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w2jh-77fq-7gp8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w2jh-77fq-7gp8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42348"
+      }
+    ],
+    "Description": "### Summary\n\nWhen receiving responses from the OpAMP server over HTTP, the OpAMP client allocates an unbounded buffer to read all bytes from the server, with no upper-bound on the number of bytes consumed.\n\nThis could cause memory exhaustion in the consuming application if the configured OpAMP server is attacker-controlled (or a network attacker can MitM the connection) and an extremely large body is returned in the response. \n\n### Details\n\n[#2926](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/2926) introduced the initial HTTP transport components which uses `ReadAsByteArrayAsync` to copy the `HttpResponseMessage.Content` into a byte array. This code path allows an unbounded read of the entire HTTP response message.\n\n### Impact\n\nIf an application using the OpAMP client is configured to use an OpAMP server that is attacker-controlled (or a network attacker can MitM the connection) and an extremely large body is returned in the response, the application could have its memory exhausted and create a denial-of-service condition.\n\n### Mitigation\n\nThe application's configured OpAMP server needs to behave maliciously. If the OpAMP server is a well-behaved implementation, response bodies should not be excessively large.\n\n### Workarounds\n\nNone known.\n\n### Remediation\n\n[#4116](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4116) updates the OpAMP client HTTP transport to limit the maximum size of responses to 128KB.\n\n### Resources\n\n- [#2926](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/2926)\n- [#4116](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4116)\n- [CWE-789](https://cwe.mitre.org/data/definitions/789.html)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T21:57:54Z",
+    "Severity": "MODERATE",
+    "Summary": "OpAMP client reads unbounded HTTP response bodies",
+    "UpdatedAt": "2026-05-05T21:57:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.0-alpha.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.0-alpha.1"
+    }
+  ]
+}

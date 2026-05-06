@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-05T22:20:04Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "ciguard"
+  },
+  "Advisory": {
+    "DatabaseId": 353149,
+    "Id": "GSA_kwCzR0hTQS03d3czLXh2ZjUtY3h3bc4ABWN9",
+    "GhsaId": "GHSA-7ww3-xvf5-cxwm",
+    "References": [
+      {
+        "Url": "https://github.com/Jo-Jo98/ciguard/security/advisories/GHSA-7ww3-xvf5-cxwm"
+      },
+      {
+        "Url": "https://github.com/Jo-Jo98/ciguard/releases/tag/v0.8.2"
+      },
+      {
+        "Url": "https://github.com/Jo-Jo98/ciguard/releases/tag/v0.8.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7ww3-xvf5-cxwm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7ww3-xvf5-cxwm"
+      }
+    ],
+    "Description": "## Summary\n\nciguard's FastAPI Web UI (`src/ciguard/web/app.py`) does not set HTTP defence-in-depth headers. OWASP ZAP baseline scan flagged 11 alerts: missing Content-Security-Policy (Medium), X-Frame-Options (Medium), Sub-Resource-Integrity on `/api/docs` (Medium), COOP / COEP / CORP (Low), Permissions-Policy (Low), X-Content-Type-Options (Low).\n\n## Threat scenario\n\nFor local-only deployment (current intent): minimal — there's no untrusted browser context, no third-party hosting, no auth surface to protect.\n\nFor public hosting (PRD Slice 9 GitHub App or hosted dashboard, future): each missing header reduces a defence layer:\n\n- Missing CSP → injected XSS would have no second-line defence (first-line Jinja autoescape remains intact)\n- Missing X-Frame-Options → clickjacking against any UI button would be possible\n- Missing SRI on jsdelivr-hosted Swagger UI → if jsdelivr were compromised, attacker JS would run in the docs page context\n\n## Patch\n\n- New `SecurityHeadersMiddleware` at `src/ciguard/web/security_headers.py` injecting: X-Content-Type-Options nosniff, X-Frame-Options DENY, Referrer-Policy no-referrer, Permissions-Policy `interest-cohort=()`, Cross-Origin-Opener-Policy same-origin, Cross-Origin-Resource-Policy same-origin, plus per-path CSP with `/api/docs` + `/api/redoc` carve-out for cdn.jsdelivr.net (Swagger UI / ReDoc dependency).\n- COEP intentionally NOT set: would break Swagger UI's cross-origin assets, and ciguard makes no SharedArrayBuffer use that would benefit.\n- Registered via `app.add_middleware(SecurityHeadersMiddleware)`.\n- 6 regression tests in `tests/test_web.py::TestSecurityHeaders`.\n\n## Discovery\n\nFound by OWASP ZAP baseline scan during ciguard's first self-conducted pentest cycle, 2026-04-26.\n\n## CVSS Scoring\n\n- CVSS v3.1: `CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N` — 4.3 (Medium per v3.1 thresholds)\n- CVSS v4.0: `CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:A/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N` — first.org calc 4.3 (Low); GitHub's calc 2.1 (Low). All consistent at Low/borderline.\n\n## Verification\n\n```\n$ curl -sI http://127.0.0.1:8080/ | grep -E '^(X-Frame|X-Content|Referrer|Permissions|Cross-Origin|Content-Security):'\n# Pre-fix: empty\n# Post-fix: 7 headers present\n```\n\n## Resources\n\n- Fix released in [v0.8.2](https://github.com/Jo-Jo98/ciguard/releases/tag/v0.8.2)\n- CI regression gate added in [v0.8.3](https://github.com/Jo-Jo98/ciguard/releases/tag/v0.8.3)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-05T22:20:04Z",
+    "Severity": "LOW",
+    "Summary": "ciguard: Web UI is missing HTTP defence-in-depth headers",
+    "UpdatedAt": "2026-05-05T22:20:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.1.0, \u003c= 0.8.1"
+    }
+  ]
+}

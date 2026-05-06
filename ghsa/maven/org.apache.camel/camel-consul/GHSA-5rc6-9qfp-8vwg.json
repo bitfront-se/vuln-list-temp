@@ -1,0 +1,80 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-05T21:43:49Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-consul"
+  },
+  "Advisory": {
+    "DatabaseId": 351528,
+    "Id": "GSA_kwCzR0hTQS01cmM2LTlxZnAtOHZ3Z84ABV0o",
+    "GhsaId": "GHSA-5rc6-9qfp-8vwg",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-27172"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-27172.html"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/21530"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/21531"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/21532"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/4b540e6e20bad4a4af19688b85a247bdb96c2e2d"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/4e3f709b97aef3ed99e3a52a99c752b37b104063"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/55dd9f8ce5f6db06f3946c3f3df1e2ea16e4f374"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/CAMEL-23029"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5rc6-9qfp-8vwg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5rc6-9qfp-8vwg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-27172"
+      }
+    ],
+    "Description": "The ConsulRegistry in the camel-consul component (class org.apache.camel.component.consul.ConsulRegistry and its inner ConsulRegistryUtils.deserialize method) read Java-serialized values from the Consul KV store and passed them to ObjectInputStream.readObject() without configuring an ObjectInputFilter. An attacker who can write to the Consul KV store backing a Camel ConsulRegistry instance could inject a malicious serialized Java object that is deserialized the next time Camel performs a lookup against that registry, leading to arbitrary code execution in the Camel process. The issue mirrors the class of vulnerability already addressed for other Camel components in CVE-2024-22369, CVE-2024-23114 and CVE-2026-25747, and was overlooked during the original remediation of those CVEs.\n\nThis issue affects Apache Camel: from 3.0.0 before 4.14.6, from 4.15.0 before 4.18.1.\n\nUsers are recommended to upgrade to version 4.19.0, which fixes the issue. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.6. If users are on the 4.18.x releases stream, then they are suggested to upgrade to 4.18.1.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-27T12:30:38Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Camel-Consul component vulnerable to Deserialization of Untrusted Data",
+    "UpdatedAt": "2026-05-05T21:43:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.6"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 4.14.6"
+    }
+  ]
+}
