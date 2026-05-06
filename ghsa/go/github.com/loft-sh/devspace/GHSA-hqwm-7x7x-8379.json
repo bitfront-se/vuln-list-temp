@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-06T17:05:57Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/loft-sh/devspace"
+  },
+  "Advisory": {
+    "DatabaseId": 353444,
+    "Id": "GSA_kwCzR0hTQS1ocXdtLTd4N3gtODM3Oc4ABWSk",
+    "GhsaId": "GHSA-hqwm-7x7x-8379",
+    "References": [
+      {
+        "Url": "https://github.com/devspace-sh/devspace/security/advisories/GHSA-hqwm-7x7x-8379"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hqwm-7x7x-8379"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hqwm-7x7x-8379"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42283"
+      }
+    ],
+    "Description": "### Description\n\nDevSpace's UI server WebSocket accepts connections from all origins by default, and therefore several endpoints are exposed via this WebSocket. When a developer runs the DevSpace UI and at the same time uses a browser to access the internet, a malicious website they visit can use their browser to establish a cross-origin WebSocket connection to `ws://127.0.0.1:8090`. This allows an attacker to access: \n* `/api/logs` to stream real-time pod logs\n* `/api/enter` to open an interactive shell inside the running pod\n* `/api/command` to execute pre-defined pipeline commands\n\n### Patches\n\nVersions 6.3.21 and above are patched.\n\n### Resources\n\n[gorilla/websocket CheckOrigin documentation](https://pkg.go.dev/github.com/gorilla/websocket#hdr-Origin_Considerations)\n\n### Installation Options\n\nDevspace is no longer publishing to NPM or Yarn, please continue to use our [other installation methods](https://www.devspace.sh/docs/getting-started/installation) to get updates in the future, including this patch.\n\n### Credit\n\nDevSpace thanks @b0b0haha for finding and reporting this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T17:05:57Z",
+    "Severity": "HIGH",
+    "Summary": "DevSpace UI Server WebSocket CheckOrigin does not validate source",
+    "UpdatedAt": "2026-05-06T17:05:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.3.21"
+      },
+      "VulnerableVersionRange": "= 6.3.20"
+    }
+  ]
+}

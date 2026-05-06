@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-06T16:42:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "rucio"
+  },
+  "Advisory": {
+    "DatabaseId": 353434,
+    "Id": "GSA_kwCzR0hTQS12anI1LWM5cXYtaGdtM84ABWSa",
+    "GhsaId": "GHSA-vjr5-c9qv-hgm3",
+    "References": [
+      {
+        "Url": "https://github.com/rucio/rucio/security/advisories/GHSA-vjr5-c9qv-hgm3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vjr5-c9qv-hgm3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vjr5-c9qv-hgm3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-29080"
+      }
+    ],
+    "Description": "### Summary\n\nA SQL injection vulnerability in the Oracle path of `FilterEngine.create_sqla_query` allows any authenticated Rucio user to execute arbitrary SQL against the backend database through the DID search endpoint (`GET /dids/\u003cscope\u003e/dids/search`). Attacker-controlled filter keys and values are interpolated directly into `sqlalchemy.text` via Python `str.format`, completely bypassing parameterization. This enables full database compromise including extraction of authentication tokens, password hashes, and all managed data identifiers. The vulnerability is affecting deployments using the default metadata plugin configuration `json_meta` with Oracle database backends.\n\n### Details\n\n*Will follow in two weeks (2025-05-19).*\n\n### Impact\n\n**Vulnerability type:** SQL Injection (CWE-89)\n\n**Who is impacted:**\n\n- **All Oracle-based Rucio deployments** using the default metadata plugin configuration (`json_meta`).\n- ***Not affected*** are PostgreSQL/MySQL deployments using the default `json_meta` plugin (SQLAlchemy parameterizes the JSON path operations via bind parameters on non-Oracle dialects).\n\n**What an attacker can do:**\n\n- **Full database read access:** Extract any table including `identities` (password hashes and salts), `tokens` (active authentication sessions), `accounts` (user enumeration), `rse_settings` (storage endpoint credentials), and `rules` (data management policies).\n- **Password hash extraction:** Combined with Rucio's use of single-iteration SHA-256 for password hashing (no KDF), extracted hashes can be cracked at GPU speed.\n- **Authentication token theft:** Active bearer tokens can be extracted and used for immediate session hijacking.\n- **Data modification:** Oracle PL/SQL enables `INSERT`/`UPDATE`/`DELETE` operations via DML within subqueries and PL/SQL blocks.\n- **Potential remote code execution:** Via Oracle's `UTL_HTTP`, `DBMS_SCHEDULER`, or Java stored procedures if the database user has elevated privileges.\n\n**Required attacker privileges:** Any authenticated Rucio user. Authentication tokens can be obtained via any supported method (userpass, x509, OIDC, SAML, SSH, GSS). No special roles or administrative permissions are required. The `GET /dids/\u003cscope\u003e/dids/search` endpoint is available to all authenticated users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T16:42:49Z",
+    "Severity": "CRITICAL",
+    "Summary": "Rucio has SQL Injection in FilterEngine Oracle JSON Path via DID Search API",
+    "UpdatedAt": "2026-05-06T16:42:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0, \u003c 40.1.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.4.2"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0, \u003c 39.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.5.5"
+      },
+      "VulnerableVersionRange": "\u003e= 36.0.0, \u003c 38.5.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "35.8.5"
+      },
+      "VulnerableVersionRange": "\u003e= 1.27.0, \u003c 35.8.5"
+    }
+  ]
+}
