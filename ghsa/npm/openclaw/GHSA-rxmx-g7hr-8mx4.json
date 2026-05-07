@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/ef7c553dd16ee579f1d1a363f5881a99726c1412"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41354"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-insufficient-scope-in-zalo-webhook-replay-dedupe-keys"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-rxmx-g7hr-8mx4"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-rxmx-g7hr-8mx4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41354"
       }
     ],
     "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, Zalo webhook replay dedupe keys were not scoped strongly enough across chat and sender dimensions. Legitimate events from different conversations or senders could collide and be dropped as duplicates.\n\n## Impact\n\nCross-conversation or cross-sender collisions could cause silent message suppression and break bot workflows. This was an availability issue in webhook event processing.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `ef7c553dd16ee579f1d1a363f5881a99726c1412` — scope Zalo webhook replay dedupe across the missing event dimensions\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @D0ub1e-D for reporting.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-04-07T18:15:59Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Zalo replay dedupe keys could suppress messages across chats or senders",
-    "UpdatedAt": "2026-04-07T18:16:00Z",
+    "UpdatedAt": "2026-05-07T16:44:15Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
