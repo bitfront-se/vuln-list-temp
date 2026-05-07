@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/9c22d636697336a6b22b0ae24798d8b8325d7828"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41372"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-loopback-protection-bypass-via-trailing-dot-localhost-in-cdp-discovery"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-fh32-73r9-rgh5"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-fh32-73r9-rgh5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41372"
       }
     ],
     "Description": "## Summary\n\nBefore OpenClaw 2026.4.2, remote CDP discovery could return a trailing-dot localhost host such as `localhost.` and bypass OpenClaw's loopback-host normalization. That let a non-loopback remote CDP profile pivot the follow-up connection back onto localhost.\n\n## Impact\n\nA hostile discovery response could retarget authenticated browser control toward a localhost-resolving endpoint on the OpenClaw host. This weakened the existing remote-CDP loopback protection and could expose localhost-backed browser state.\n\n## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c= 2026.4.1`\n- Patched versions: `\u003e= 2026.4.2`\n- Latest published npm version: `2026.4.1`\n\n## Fix Commit(s)\n\n- `9c22d636697336a6b22b0ae24798d8b8325d7828` — normalize localhost absolute-form CDP hosts before loopback checks\n\n## Release Process Note\n\nThe fix is present on `main` and is staged for OpenClaw `2026.4.2`. Publish this advisory after the `2026.4.2` npm release is live.\n\nThanks @smaeljaish771 for reporting.",
@@ -31,11 +41,11 @@
     "PublishedAt": "2026-04-07T18:15:56Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Trailing-dot localhost CDP hosts could bypass remote loopback protections",
-    "UpdatedAt": "2026-04-07T18:15:57Z",
+    "UpdatedAt": "2026-05-06T19:03:56Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
     }
   },
   "Versions": [

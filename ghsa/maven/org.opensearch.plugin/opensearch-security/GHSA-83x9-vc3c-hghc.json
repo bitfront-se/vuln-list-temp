@@ -1,0 +1,46 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-07T00:07:43Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.opensearch.plugin:opensearch-security"
+  },
+  "Advisory": {
+    "DatabaseId": 353733,
+    "Id": "GSA_kwCzR0hTQS04M3g5LXZjM2MtaGdoY84ABWXF",
+    "GhsaId": "GHSA-83x9-vc3c-hghc",
+    "References": [
+      {
+        "Url": "https://github.com/opensearch-project/security/security/advisories/GHSA-83x9-vc3c-hghc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-83x9-vc3c-hghc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-83x9-vc3c-hghc"
+      }
+    ],
+    "Description": "### Description\n\nA flaw was identified in the OpenSearch REST layer that could allow authorization checks to be bypassed when processing certain malformed HTTP requests. This could permit unauthorized access to restricted API endpoints in environments that rely on REST-layer authorization.\n\nTransport-level authorization is not affected by this issue.\n\n### Impact\n\nThe default OpenSearch distribution is not affected by this issue. REST actions in the default distribution have corresponding transport actions that independently enforce authorization. Custom plugins that register REST actions without a corresponding transport action may be affected, potentially allowing unauthorized read access to those endpoints.\n\n### Patches\n\nThis issue is fixed in OpenSearch 2.19.0. Users should upgrade to 2.19.0 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:07:42Z",
+    "Severity": "LOW",
+    "Summary": "OpenSearch has a bypass of REST Layer Authorization Using Malformed Paths",
+    "UpdatedAt": "2026-05-07T00:07:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.19.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.11.0.0, \u003c 2.19.0.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-06T19:57:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.micronaut:micronaut-inject"
+  },
+  "Advisory": {
+    "DatabaseId": 353490,
+    "Id": "GSA_kwCzR0hTQS0zcmZxLTR3cGYtcXF3M84ABWTS",
+    "GhsaId": "GHSA-3rfq-4wpf-qqw3",
+    "References": [
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/security/advisories/GHSA-3rfq-4wpf-qqw3"
+      },
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/releases/tag/v4.10.22"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3rfq-4wpf-qqw3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3rfq-4wpf-qqw3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44242"
+      }
+    ],
+    "Description": "## Summary\n\n`ResourceBundleMessageSource` maintains two caches: `messageCache` (bounded at 100 entries via `ConcurrentLinkedHashMap`) and `bundleCache` (unbounded `ConcurrentHashMap`). The `bundleCache` is keyed by `(Locale, baseName)` where the locale originates from the HTTP `Accept-Language` header. In applications that explicitly register a `ResourceBundleMessageSource` bean and serve HTML error responses, an unauthenticated attacker can exhaust heap memory by sending requests with large numbers of unique `Accept-Language` values, each causing a new entry in the unbounded `bundleCache`. Unlike GHSA-2hcp-gjrf-7fhc and the sibling `messageCache` (both bounded), `bundleCache` was not updated to use a bounded cache implementation.\n\n## Details\n\nThe `bundleCache` is initialized in `inject/src/main/java/io/micronaut/context/i18n/ResourceBundleMessageSource.java` at line 150:\n\n```java\n// ResourceBundleMessageSource.java:139-152\nprotected Map\u003cMessageKey, Optional\u003cString\u003e\u003e buildMessageCache() {\n    return new ConcurrentLinkedHashMap.Builder\u003cMessageKey, Optional\u003cString\u003e\u003e()\n            .maximumWeightedCapacity(100)    // ← BOUNDED ✓\n            .build();\n}\n\nprotected Map\u003cMessageKey, Optional\u003cResourceBundle\u003e\u003e buildBundleCache() {\n    return new ConcurrentHashMap\u003c\u003e(18);      // ← UNBOUNDED ✗\n}\n```\n\nThe `resolveBundle()` method at line 169 inserts into `bundleCache` with no eviction policy:\n\n```java\n// ResourceBundleMessageSource.java:169-185\nprivate Optional\u003cResourceBundle\u003e resolveBundle(Locale locale) {\n    MessageKey key = new MessageKey(locale, baseName);\n    final Optional\u003cResourceBundle\u003e resourceBundle = bundleCache.get(key);\n    if (resourceBundle != null) {\n        return resourceBundle;\n    } else {\n        Optional\u003cResourceBundle\u003e opt;\n        try {\n            opt = Optional.of(ResourceBundle.getBundle(baseName, locale, getClassLoader()));\n        } catch (MissingResourceException e) {\n            opt = Optional.empty();\n        }\n        bundleCache.put(key, opt);    // NO SIZE CHECK — unbounded growth\n        return opt;\n    }\n}\n```\n\nThe attack path requires:\n1. The application registers a `ResourceBundleMessageSource` bean (non-default, requires explicit user configuration).\n2. The attacker sends requests that trigger HTML error responses — i.e., requests with `Accept: text/html` to any URL that returns an error (e.g., 404 for any non-existent path).\n3. Each request uses a unique `Accept-Language` value (e.g., `zz-AA`, `zz-AB`, …).\n4. `DefaultHtmlErrorResponseBodyProvider.error()` calls `messageSource.getMessage(code, locale)` → `CompositeMessageSource` delegates to `ResourceBundleMessageSource` → `resolveBundle(locale)` inserts one entry per unique locale into `bundleCache`.\n\nFor locales that don't match any bundle file, `ResourceBundle.getBundle()` throws `MissingResourceException` and `Optional.empty()` is stored — a low-cost sentinel. For locales that DO match a bundle, a full `ResourceBundle` object is retained in memory. In either case, the map itself and the `MessageKey` objects grow without bound.\n\nNote: the `messageCache` is bounded at 100 entries but does not prevent `bundleCache` growth, as `resolveBundle()` is called directly (bypassing `messageCache`) whenever a `messageCache` miss occurs.\n\n## PoC\n\nAgainst a Micronaut application with a `ResourceBundleMessageSource` bean registered (e.g., `@Bean ResourceBundleMessageSource messages() { return new ResourceBundleMessageSource(\"messages\"); }`):\n\n```bash\n# Flood bundleCache with unique locales via HTML error path\nfor i in $(seq 1 100000); do\n  curl -s -o /dev/null \\\n    -H \"Accept: text/html\" \\\n    -H \"Accept-Language: zz-$(printf '%04d' $i)\" \\\n    \"http://localhost:8080/nonexistent-path-$(printf '%06d' $i)\" \u0026\n  [ $((i % 200)) -eq 0 ] \u0026\u0026 wait\ndone\nwait\n```\n\nEach unique `zz-XXXX` tag creates one new `bundleCache` entry. The `MessageKey` (Locale + baseName) and map overhead cost approximately 100-200 bytes per entry. At 100,000 entries, heap consumption from the cache alone reaches roughly 20 MB — significant in resource-constrained deployments. If a locale matches a bundle file, retained `ResourceBundle` objects cost substantially more per entry.\n\n## Impact\n\n- Only affects applications that explicitly register a `ResourceBundleMessageSource` bean (not the default configuration).\n- Requires the ability to send HTTP requests with `Accept: text/html` headers and control over the `Accept-Language` value.\n- Memory grows approximately 100-200 bytes per novel locale (for non-matching locales) up to several KB per locale if bundles are found. Sustained attack over time causes gradual heap exhaustion.\n- Partial availability impact (A:L) under sustained attack in long-running services.\n\n## Recommended Fix\n\nApply the same bounded-cache pattern used for the sibling `messageCache`:\n\n```java\n// In ResourceBundleMessageSource.java — replace buildBundleCache()\nprotected Map\u003cMessageKey, Optional\u003cResourceBundle\u003e\u003e buildBundleCache() {\n    return new ConcurrentLinkedHashMap.Builder\u003cMessageKey, Optional\u003cResourceBundle\u003e\u003e()\n            .maximumWeightedCapacity(50)    // small — one entry per (locale, baseName)\n            .build();\n}\n```\n\nThe number of distinct resource bundle files is bounded at compile time; a limit of 50 entries is more than sufficient for any realistic i18n configuration while fully preventing unbounded growth.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T19:57:54Z",
+    "Severity": "LOW",
+    "Summary": "Micronaut has Unbounded `bundleCache` in `ResourceBundleMessageSource` that Allows Memory Exhaustion via `Accept-Language` Header",
+    "UpdatedAt": "2026-05-06T19:57:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.10.22"
+      },
+      "VulnerableVersionRange": "\u003c 4.10.22"
+    }
+  ]
+}

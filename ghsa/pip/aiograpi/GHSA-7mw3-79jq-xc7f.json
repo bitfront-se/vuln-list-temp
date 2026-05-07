@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-06T22:06:12Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiograpi"
+  },
+  "Advisory": {
+    "DatabaseId": 353687,
+    "Id": "GSA_kwCzR0hTQS03bXczLTc5anEteGM3Zs4ABWWX",
+    "GhsaId": "GHSA-7mw3-79jq-xc7f",
+    "References": [
+      {
+        "Url": "https://github.com/subzeroid/aiograpi/security/advisories/GHSA-7mw3-79jq-xc7f"
+      },
+      {
+        "Url": "https://github.com/ijl/orjson/security/advisories"
+      },
+      {
+        "Url": "https://github.com/subzeroid/aiograpi/blob/main/CHANGELOG.md#072--2026-04-27"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7mw3-79jq-xc7f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7mw3-79jq-xc7f"
+      }
+    ],
+    "Description": "## Impact\n\naiograpi 0.6.6 / 0.7.0 / 0.7.1 declared `orjson==3.11.6` (and later `==3.11.8`) in `requirements.txt` but `setup.py` carried a hard-coded duplicate `requirements = [...]` list that was never updated and still pinned `orjson==3.11.4`.\n\nWhen `setuptools` builds the source distribution it reads the metadata from `setup.py`, not from `requirements.txt`. So `pip install aiograpi==0.6.6` (or 0.7.0 / 0.7.1) actually pulls `orjson==3.11.4` — a version vulnerable to **CVE-2025-67221** (stack overflow in `orjson.dumps` on deeply nested JSON inputs).\n\n## Practical exploitability\n\nLow in the typical aiograpi flow: `orjson` is used to encode request bodies aiograpi itself constructs and to decode responses returned by Instagram. An attacker would need to coerce aiograpi to encode an attacker-controlled deeply-nested Python structure or to decode an attacker-supplied stream — not the normal call shape.\n\nHowever any caller doing `client.public_request(...)` or similar with caller-controlled payloads, or any caller passing aiograpi-decoded `last_json` into recursive serialization, may hit the unbounded recursion. The patched orjson rejects deeply-nested inputs cleanly.\n\n## Patches\n\nFixed in **aiograpi 0.7.2** by migrating to `pyproject.toml` (PEP 621) — single source of truth for dependencies. PyPI installs of 0.7.2 and later resolve `orjson==3.11.8` correctly.\n\n## Workarounds\n\nForce-install a non-vulnerable orjson alongside the affected aiograpi version:\n\n```\npip install 'aiograpi==0.7.1' 'orjson\u003e=3.11.6'\n```\n\nOr just upgrade to a fixed aiograpi:\n\n```\npip install -U 'aiograpi\u003e=0.7.2'\n```\n\n## Resources\n\n- orjson CVE-2025-67221 advisory: https://github.com/ijl/orjson/security/advisories\n- aiograpi 0.7.2 changelog (security section): https://github.com/subzeroid/aiograpi/blob/main/CHANGELOG.md#072--2026-04-27",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T22:06:11Z",
+    "Severity": "LOW",
+    "Summary": "aiograpi has dependency on vulnerable orjson 3.11.4 (CVE-2025-67221)",
+    "UpdatedAt": "2026-05-06T22:06:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.6.6, \u003c 0.7.2"
+    }
+  ]
+}

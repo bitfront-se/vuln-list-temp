@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-06T23:05:54Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Nerdbank.MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 353704,
+    "Id": "GSA_kwCzR0hTQS0yY3dxLXB3ZnItd2N3M84ABWWo",
+    "GhsaId": "GHSA-2cwq-pwfr-wcw3",
+    "References": [
+      {
+        "Url": "https://github.com/AArnott/Nerdbank.MessagePack/security/advisories/GHSA-2cwq-pwfr-wcw3"
+      },
+      {
+        "Url": "https://github.com/AArnott/Nerdbank.MessagePack/pull/941"
+      },
+      {
+        "Url": "https://github.com/AArnott/Nerdbank.MessagePack/commit/7d1eb319cfabe7280e70699946c9a48579fa2f30"
+      },
+      {
+        "Url": "https://github.com/AArnott/Nerdbank.MessagePack/releases/tag/v1.1.62"
+      },
+      {
+        "Url": "https://github.com/msgpack/msgpack/blob/master/spec.md#timestamp-extension-type"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2cwq-pwfr-wcw3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2cwq-pwfr-wcw3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44375"
+      }
+    ],
+    "Description": "### Summary\n\nNerdbank.MessagePack contains an uncontrolled stack allocation vulnerability in DateTime decoding. A malicious MessagePack payload can declare an oversized timestamp extension length, causing the reader to allocate an attacker-controlled number of bytes on the stack. This can trigger a `StackOverflowException`, which is not catchable by user code and terminates the process.\n\n### Impact\n\nApplications are impacted if they deserialize MessagePack data from untrusted or attacker-controlled sources using Nerdbank.MessagePack and the target type contains a `DateTime` value.\n\nA small malicious payload can cause process termination, resulting in a denial of service. This may affect services, APIs, workers, message consumers, or other long-running processes that deserialize untrusted MessagePack input.\n\nThe issue occurs because DateTime timestamp extension decoding derives `tokenSize` from the attacker-controlled extension length before validating that the timestamp length is one of the legal MessagePack timestamp sizes: 4, 8, or 12 bytes. When the buffer is incomplete, that unvalidated size is propagated to the streaming reader slow path, where it is used in a `stackalloc`.\n\n### Patches\n\nThe 1.1.62 version contains the fix for this security vulnerability.\n\n### Workarounds\n\nIf upgrading is not yet possible, avoid deserializing untrusted MessagePack payloads into type graphs that may contain `DateTime` fields or properties.\n\nInput byte-size limits alone may not fully mitigate this issue, because the malicious payload can be small while declaring a very large extension length. Possible mitigations include:\n\n- Pre-validating MessagePack extension headers before deserialization and rejecting timestamp extensions whose length is not 4, 8, or 12 bytes.\n- Rejecting or filtering extension type `-1` timestamp values from untrusted input unless they are known to be valid.\n- Running deserialization of untrusted payloads in an isolated process that can be safely restarted after termination.\n- Restricting MessagePack deserialization to trusted producers until a patched version is available.\n\n### Resources\n\n- CWE-789: Uncontrolled Memory Allocation: https://cwe.mitre.org/data/definitions/789.html\n- MessagePack timestamp extension specification: https://github.com/msgpack/msgpack/blob/master/spec.md#timestamp-extension-type",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T23:05:52Z",
+    "Severity": "HIGH",
+    "Summary": "Nerdbank.MessagePack: Attacker-controlled stackalloc in DateTime decoding causes process-terminating StackOverflowException",
+    "UpdatedAt": "2026-05-06T23:05:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.62"
+      },
+      "VulnerableVersionRange": "\u003c 1.1.62"
+    }
+  ]
+}

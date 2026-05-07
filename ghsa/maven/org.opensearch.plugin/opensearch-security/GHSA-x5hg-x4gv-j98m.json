@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-07T00:09:21Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.opensearch.plugin:opensearch-security"
+  },
+  "Advisory": {
+    "DatabaseId": 353737,
+    "Id": "GSA_kwCzR0hTQS14NWhnLXg0Z3Ytajk4bc4ABWXJ",
+    "GhsaId": "GHSA-x5hg-x4gv-j98m",
+    "References": [
+      {
+        "Url": "https://github.com/opensearch-project/security/security/advisories/GHSA-x5hg-x4gv-j98m"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x5hg-x4gv-j98m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x5hg-x4gv-j98m"
+      }
+    ],
+    "Description": "### Description\n\nA regression was introduced in OpenSearch 2.18.0 that caused the `plugins.security.ssl.transport.enforce_hostname_verification` setting to be ineffective. When this setting was enabled, OpenSearch did not verify that the hostname in a connecting node's TLS certificate matched the hostname of the connection. This could allow a node with a valid certificate (signed by the cluster's trusted CA) but an incorrect hostname SAN to join the cluster.\n\n### Impact\n\nClusters running affected versions with hostname verification enabled did not receive the expected protection from this setting. A node presenting a certificate signed by the cluster's trusted CA could join the cluster regardless of whether its hostname SAN matched. This regression does not affect certificate validation itself — only the additional hostname verification check.\n\n### Patches\n\nThis issue is fixed in OpenSearch 2.19.4 and 3.3.0.\n\n### Workarounds\n\nUse more restrictive values for `plugins.security.nodes_dn` to limit which certificates are accepted for node-to-node communication.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:09:18Z",
+    "Severity": "LOW",
+    "Summary": "OpenSearch has ineffective TLS certificate hostname verification",
+    "UpdatedAt": "2026-05-07T00:09:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.3.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.19.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.19.4.0"
+    }
+  ]
+}

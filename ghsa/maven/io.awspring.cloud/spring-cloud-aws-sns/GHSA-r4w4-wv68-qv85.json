@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-07T00:06:53Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.awspring.cloud:spring-cloud-aws-sns"
+  },
+  "Advisory": {
+    "DatabaseId": 353732,
+    "Id": "GSA_kwCzR0hTQS1yNHc0LXd2NjgtcXY4Nc4ABWXE",
+    "GhsaId": "GHSA-r4w4-wv68-qv85",
+    "References": [
+      {
+        "Url": "https://github.com/awspring/spring-cloud-aws/security/advisories/GHSA-r4w4-wv68-qv85"
+      },
+      {
+        "Url": "https://github.com/awspring/spring-cloud-aws/pull/1614"
+      },
+      {
+        "Url": "https://github.com/awspring/spring-cloud-aws/commit/6ab2efd97891a3d0ed0126ffa1ce223c9cfa9638"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4w4-wv68-qv85"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4w4-wv68-qv85"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44308"
+      }
+    ],
+    "Description": "### Impact\n  \n  Applications using Spring Cloud AWS SNS HTTP/HTTPS endpoint support (@NotificationMessageMapping, @NotificationSubscriptionMapping, @NotificationUnsubscribeConfirmationMapping) did not verify the signature of incoming SNS messages.\n\nAn unauthenticated attacker who knows the endpoint URL could send crafted HTTP POST requests mimicking SNS Notification or SubscriptionConfirmation messages, causing the application to:\n  \n  - Process arbitrary payloads as if they were legitimate SNS notifications.\n  - Auto-confirm subscriptions or unsubscribe from attacker-controlled topics.\n  \nAffected versions: 3.0.0 through 3.4.2, 4.0.0, and 4.0.1.\n  \nThe 3.x line will not receive a fix; users on 3.x should apply the workaround below or upgrade to 4.0.2.\n  \n### Patches\n  \nFixed in Spring Cloud AWS 4.0.2. When using Spring Boot auto-configuration, signature verification is enabled by default. Users should upgrade to 4.0.2.\n  \n### Workarounds\n  \nManually verify the SNS message signature in a servlet filter or Spring HandlerInterceptor before the request reaches the controller, using SnsMessageManager from the AWS SDK v2 sns-message-manager module.\n  \n ### Resources\n  \n  - AWS SNS: Verifying the signatures of Amazon SNS messages (https://docs.aws.amazon.com/sns/latest/dg/sns-verify-signature-of-message.html)\n  - AWS SDK for Java v2: SnsMessageManager (https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/messagemanager/sns/SnsMessageManager.html)\n  - Fix PR: #1614",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:06:52Z",
+    "Severity": "MODERATE",
+    "Summary": "Spring Cloud AWS missing SNS message signature verification allows spoofing of HTTP/HTTPS endpoint notifications",
+    "UpdatedAt": "2026-05-07T00:06:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.0.2"
+    }
+  ]
+}

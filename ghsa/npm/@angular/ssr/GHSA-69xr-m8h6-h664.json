@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-06T23:42:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/ssr"
+  },
+  "Advisory": {
+    "DatabaseId": 353722,
+    "Id": "GSA_kwCzR0hTQS02OXhyLW04aDYtaDY2NM4ABWW6",
+    "GhsaId": "GHSA-69xr-m8h6-h664",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular-cli/security/advisories/GHSA-69xr-m8h6-h664"
+      },
+      {
+        "Url": "https://github.com/angular/angular-cli/pull/33031"
+      },
+      {
+        "Url": "https://angular.dev/best-practices/security#configuring-trusted-proxy-headers"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-69xr-m8h6-h664"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-69xr-m8h6-h664"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44437"
+      }
+    ],
+    "Description": "### Description\nA vulnerability exists in the `X-Forwarded-Prefix` header processing logic within Angular SSR. The internal validation mechanism fails to properly account for URL-encoded characters, specifically dots (`%2e%2e`). This allows an attacker to bypass security filters by injecting encoded path traversal sequences that are later decoded and utilized by the application logic.\nWhen an Angular SSR application is configured to trust proxy headers and is deployed behind a proxy that forwards the `X-Forwarded-Prefix` header without prior sanitization, an attacker can provide a payload such as `/%2e%2e/evil`.\n\nThe vulnerability manifests in two ways:\n- Open Redirect: The application processes a redirect (e.g., router `redirectTo`). The decoded traversal payload manipulates the Location header, forcing the browser to an unintended path or external domain.\n- Server-Side Request Steering: The manipulated prefix is used as the base path for server-side `HttpClient` requests. This causes the server to make requests to unintended internal paths or external endpoints.\n\n### Attack Preconditions\n- The application must use Angular SSR.\n- The application must perform internal redirects or use relative URLs in server-side `HttpClient` requests.\n- The upstream infrastructure (Reverse Proxy/CDN) must pass the `X-Forwarded-Prefix` header to the SSR process without stripping or sanitizing it.\n\n### Workarounds\nUntil the patch is applied, developers should manually sanitize the `X-Forwarded-Prefix` header in their `server.ts`. The workaround involves decoding the component to catch encoded traversal attempts before normalization:\n\n\n```ts\napp.use((req, res, next) =\u003e {\n  let prefix = req.headers['x-forwarded-prefix'];\n  if (Array.isArray(prefix)) prefix = prefix[0];\n\n  if (prefix) {\n    try {\n      // Decode the prefix to catch encoded characters like %2e (dots)\n      const decodedPrefix = decodeURIComponent(prefix);\n      \n      // Sanitize: remove traversal attempts and ensure a safe leading slash\n      req.headers['x-forwarded-prefix'] = decodedPrefix\n        .replace(/\\.\\./g, '')       // Remove any dot-dot sequences\n        .replace(/^[/\\\\]+/, '/');   // Ensure it starts with exactly one slash\n    } catch (e) {\n      // If decoding fails, remove the potentially malicious header entirely\n      delete req.headers['x-forwarded-prefix'];\n    }\n  }\n  next();\n});\n```\n### Configuring Trusted Proxy Headers\nBy default, Angular ignores all X-Forwarded-* headers. If your application is behind a trusted reverse proxy (like a load balancer) that sets these headers, you can configure Angular to trust them.\nYou can configure trustProxyHeaders when initializing the application engine:\n\n```ts\nconst appEngine = new AngularAppEngine({\n  // Trust specific headers\n  trustProxyHeaders: ['x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-prefix'], \n});\n\nconst nodeAppEngine = new AngularNodeAppEngine({\n  // Trust all X-Forwarded-* headers\n  trustProxyHeaders: true, \n});\n```\n\n### Patches\n- 22.0.0-next.7\n- 21.2.9\n- 20.3.25\n- 19.2.25\n\n### Resources\n\n- https://github.com/angular/angular-cli/pull/33031\n- https://angular.dev/best-practices/security#configuring-trusted-proxy-headers",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T23:42:10Z",
+    "Severity": "MODERATE",
+    "Summary": "Angular SSR has Open Redirect and Request Steering via Encoded X-Forwarded-Prefix",
+    "UpdatedAt": "2026-05-06T23:42:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "19.2.25"
+      },
+      "VulnerableVersionRange": "\u003e= 19.0.0-next.0, \u003c 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.25"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.9"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.2.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.0-next.7"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.0-next.7"
+    }
+  ]
+}

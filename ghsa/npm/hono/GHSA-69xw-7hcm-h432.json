@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-06T23:49:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 353725,
+    "Id": "GSA_kwCzR0hTQS02OXh3LTdoY20taDQzMs4ABWW9",
+    "GhsaId": "GHSA-69xw-7hcm-h432",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-69xw-7hcm-h432"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-69xw-7hcm-h432"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-69xw-7hcm-h432"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44455"
+      }
+    ],
+    "Description": "## Summary\n\nImproper handling of JSX element tag names in hono/jsx allowed unvalidated tag names to be directly inserted into the generated HTML output.\n\nWhen untrusted input is used as a tag name via the programmatic `jsx()` or `createElement()` APIs during server-side rendering, specially crafted values may break out of the intended element context and inject unintended HTML.\n\n## Details\n\nWhen rendering JSX elements to HTML strings, attribute values are escaped and attribute names are validated. However, element tag names were previously inserted into the output without validation.\n\nIf a tag name contains characters such as `\u003c`, `\u003e`, quotes, or whitespace, it may alter the structure of the generated HTML.\n\nFor example, malformed tag names can:\n\n* Break out of the intended element and introduce unintended HTML elements\n* Inject attributes or event handlers into the rendered output\n\nThis issue arises when untrusted input (such as query parameters or database content) is used as JSX tag names via `jsx()` or `createElement()` during server-side rendering.\n\n## Impact\n\nAn attacker who can control tag names used in JSX rendering may inject unintended HTML into the generated output.\n\nThis may lead to:\n\n* Injection of unexpected HTML elements or attributes\n* Corruption of the HTML structure\n* Cross-site scripting (XSS) when combined with unsafe usage patterns\n\nThis issue only affects applications that construct JSX tag names from untrusted input. Applications using static or allowlisted tag names are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T23:49:43Z",
+    "Severity": "MODERATE",
+    "Summary": "hono/jsx has Unvalidated JSX Tag Names that May Allow HTML Injection",
+    "UpdatedAt": "2026-05-06T23:49:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.16"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.16"
+    }
+  ]
+}

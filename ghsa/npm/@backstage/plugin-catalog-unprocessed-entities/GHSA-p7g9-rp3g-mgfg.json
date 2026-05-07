@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-06T23:04:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-catalog-unprocessed-entities"
+  },
+  "Advisory": {
+    "DatabaseId": 353703,
+    "Id": "GSA_kwCzR0hTQS1wN2c5LXJwM2ctbWdmZ84ABWWn",
+    "GhsaId": "GHSA-p7g9-rp3g-mgfg",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-p7g9-rp3g-mgfg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p7g9-rp3g-mgfg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p7g9-rp3g-mgfg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44374"
+      }
+    ],
+    "Description": "### Impact   \n\n  The unprocessed entities read endpoints in `@backstage/plugin-catalog-backend-module-unprocessed` do not enforce permission authorization checks. Any authenticated user can access unprocessed entity records regardless of ownership. This is \n  an information disclosure vulnerability affecting Backstage installations using this module.                                                                     \n                                                                        \n  ### Patches             \n                                         \n  This is patched in `@backstage/plugin-catalog-backend-module-unprocessed` version 0.6.11, `@backstage/plugin-catalog-unprocessed-entities-common` version 0.0.15 and `@backstage/plugin-catalog-unprocessed-entities` version 0.2.30. Users should upgrade all packages.                                    \n   \n  ### Workarounds                                                                                                                                                                                                                                  \n                                                                        \n  If users cannot upgrade, they can remove the `@backstage/plugin-catalog-backend-module-unprocessed` module from their backend until the patch is applied. There is no configuration-based workaround to add permission checks to these endpoints    \n  without upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T23:04:07Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage: Catalog unprocessed read endpoints allow authenticated cross-owner data access without permission checks",
+    "UpdatedAt": "2026-05-06T23:04:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.30"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.30"
+    }
+  ]
+}

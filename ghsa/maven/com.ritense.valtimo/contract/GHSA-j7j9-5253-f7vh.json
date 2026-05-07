@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-06T21:41:46Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.ritense.valtimo:contract"
+  },
+  "Advisory": {
+    "DatabaseId": 353677,
+    "Id": "GSA_kwCzR0hTQS1qN2o5LTUyNTMtZjd2aM4ABWWN",
+    "GhsaId": "GHSA-j7j9-5253-f7vh",
+    "References": [
+      {
+        "Url": "https://github.com/valtimo-platform/valtimo/security/advisories/GHSA-j7j9-5253-f7vh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j7j9-5253-f7vh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j7j9-5253-f7vh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42555"
+      }
+    ],
+    "Description": "### Summary\n\nMultiple classes evaluate Spring Expression Language (SpEL) expressions from user-supplied input using `StandardEvaluationContext`, which provides unrestricted access to Java types and methods. An authenticated user with the ADMIN role can achieve Remote Code Execution and credential exfiltration.\n\n### Impact\n\nAn attacker with ADMIN credentials can:\n- **Execute arbitrary OS commands** via `T(java.lang.Runtime).getRuntime().exec('...')`\n- **Exfiltrate all environment variables** (database passwords, API keys, Keycloak secrets) via `T(java.lang.System).getenv()`\n- **Read JVM system properties** via `T(java.lang.System).getProperties()`\n- **Load arbitrary classes** via `T(java.lang.Class).forName('...')`\n\n### Affected Components\n\n**1. DocumentMigrationService** (since 12.0.0)\n\nExploitable through the document migration REST API:\n- `POST /api/management/v1/document-definition/migrate`\n- `POST /api/management/v1/document-definition/migration/conflicts`\n\nThe malicious SpEL expression is supplied in the `source` or `target` field of a `DocumentMigrationPatch` object in the request body, using the `${...}` template syntax.\n\n- In 12.x: `com.ritense.document.service.DocumentMigrationService#handleSpelExpression` (document module)\n- In 13.x: same class, moved to the case module\n\n**2. Condition** (since 13.4.0)\n\nExploitable through any admin-configured widget, dashboard, or feature that uses the `Condition` framework. The SpEL expression is supplied in the `value` field of a condition's JSON configuration.\n\n- `com.ritense.valtimo.contract.conditions.Condition#resolveValue` (contract module)\n\nThis component has a significantly wider attack surface than DocumentMigrationService, as conditions are used across many modules.\n\n### Remediation\n\nReplace `StandardEvaluationContext` with `SimpleEvaluationContext` in both affected classes, which disallows Java type references and arbitrary method invocation:\n\n```kotlin\nval evaluationContext = SimpleEvaluationContext\n    .forPropertyAccessors(MapAccessor(), jsonPropertyAccessor)\n    .build()\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-06T21:41:44Z",
+    "Severity": "CRITICAL",
+    "Summary": "Valtimo has SpEL injection via StandardEvaluationContext that allows Remote Code Execution by admin users",
+    "UpdatedAt": "2026-05-06T21:41:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.23.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.4.0, \u003c 13.23.0"
+    }
+  ]
+}

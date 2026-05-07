@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-07T00:08:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.opensearch.plugin:opensearch-security"
+  },
+  "Advisory": {
+    "DatabaseId": 353734,
+    "Id": "GSA_kwCzR0hTQS0yMnZ4LTJ4MjMtOTh3Ns4ABWXG",
+    "GhsaId": "GHSA-22vx-2x23-98w6",
+    "References": [
+      {
+        "Url": "https://github.com/opensearch-project/security/security/advisories/GHSA-22vx-2x23-98w6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-22vx-2x23-98w6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-22vx-2x23-98w6"
+      }
+    ],
+    "Description": "### Description\n\nA flaw was identified in the OpenSearch Security plugin's handling of index rollover requests. When a rollover request included an explicit target index name, the security plugin did not properly evaluate access control permissions against the target index. This could allow a user with rollover permissions on a source index to create a new index with a name they are not authorized to use.\n\n### Impact\n\nA user with `indices:admin/rollover` permission on a source index pattern could roll over to a target index name outside their authorized index patterns. This is limited to index creation via the rollover API and requires the user to already have rollover privileges on the source index.\n\n### Patches\n\nThis issue is fixed in OpenSearch 2.19.4 and 3.2.0\n\n### Workarounds\n\nGrant the `indices:admin/rollover` permission only to fully trusted users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:08:04Z",
+    "Severity": "LOW",
+    "Summary": "OpenSearch vulnerable to improper authorization for Rollover Requests",
+    "UpdatedAt": "2026-05-07T00:08:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.19.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c= 2.19.3"
+    }
+  ]
+}
