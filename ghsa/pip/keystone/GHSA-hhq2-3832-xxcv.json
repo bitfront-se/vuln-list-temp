@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-07T02:40:03Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "keystone"
+  },
+  "Advisory": {
+    "DatabaseId": 352252,
+    "Id": "GSA_kwCzR0hTQS1oaHEyLTM4MzIteHhjds4ABV_8",
+    "GhsaId": "GHSA-hhq2-3832-xxcv",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-43001"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/keystone/+bug/2149775"
+      },
+      {
+        "Url": "https://review.opendev.org/c/openstack/keystone/+/985804"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hhq2-3832-xxcv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hhq2-3832-xxcv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43001"
+      }
+    ],
+    "Description": "An issue was discovered in OpenStack Keystone 13 through 29. POST /v3/credentials did not validate that the caller-supplied project_id for an EC2-type credential matched the project of the authenticating application credential. This allowed an attacker holding an unrestricted application credential for project A to create an EC2 credential targeting project B; a subsequent /v3/ec2tokens exchange would then issue a Keystone token scoped to project B while still carrying the original app_cred_id, enabling cross-project lateral movement within the credential owner's role footprint.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-01T09:30:25Z",
+    "Severity": "HIGH",
+    "Summary": "OpenStack Keystone has an Incorrect Authorization Issue",
+    "UpdatedAt": "2026-05-07T02:40:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 29.0.1"
+    }
+  ]
+}

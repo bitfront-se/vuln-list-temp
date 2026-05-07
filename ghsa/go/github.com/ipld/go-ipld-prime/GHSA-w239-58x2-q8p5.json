@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-07T02:07:23Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ipld/go-ipld-prime"
+  },
+  "Advisory": {
+    "DatabaseId": 353771,
+    "Id": "GSA_kwCzR0hTQS13MjM5LTU4eDItcThwNc4ABWXr",
+    "GhsaId": "GHSA-w239-58x2-q8p5",
+    "References": [
+      {
+        "Url": "https://github.com/ipld/go-ipld-prime/security/advisories/GHSA-w239-58x2-q8p5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w239-58x2-q8p5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w239-58x2-q8p5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42328"
+      }
+    ],
+    "Description": "The DAG-CBOR and DAG-JSON decoders recurse on each nested map or list without a depth limit. A payload containing deeply nested collections causes the decoder to recurse once per level, growing the goroutine stack until the Go runtime terminates the process with a fatal stack overflow (distinct from a recoverable panic).\n\nFor DAG-CBOR, a payload of approximately 2 MB, consisting of repeated `0x81` (array-of-1) bytes followed by a terminator, produces around 2 million recursion frames and reliably exhausts Go's default 1 GB goroutine stack. The existing allocation budget does not prevent this: each nested collection header costs only a handful of budget units, so the stack is exhausted before the budget is. DAG-JSON has equivalent exposure via `[[[...]]]`-style payloads; it has no budget system and is therefore unprotected against recursion depth as well.\n\nSchema-free decoding (using `basicnode.Prototype.Any`) allows arbitrary nesting depth. Schema-bound decoding bounds nesting only when the schema itself is non-recursive and contains no fields typed as `Any`; schemas with recursive type references or any `Any`-typed fields permit unconstrained nesting at those points.\n\nThe fix adds a configurable `MaxDepth` option to both decoders, defaulting to 1024 nested levels. The decoder returns `ErrDecodeDepthExceeded` when a payload nests beyond the limit. Well-formed IPLD data rarely approaches this depth in practice; the default is generous for legitimate use while preventing stack exhaustion.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T02:07:21Z",
+    "Severity": "MODERATE",
+    "Summary": "go-ipld-prime's DAG-CBOR and DAG-JSON decoders have unbounded recursion depth",
+    "UpdatedAt": "2026-05-07T02:39:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.23.0"
+    }
+  ]
+}

