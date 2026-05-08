@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T17:43:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.bitcoinj:bitcoinj-core"
+  },
+  "Advisory": {
+    "DatabaseId": 354265,
+    "Id": "GSA_kwCzR0hTQS1oZmNmLXYyZjgteDlwY84ABWfZ",
+    "GhsaId": "GHSA-hfcf-v2f8-x9pc",
+    "References": [
+      {
+        "Url": "https://github.com/bitcoinj/bitcoinj/security/advisories/GHSA-hfcf-v2f8-x9pc"
+      },
+      {
+        "Url": "https://github.com/bitcoinj/bitcoinj/releases/tag/v0.17.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hfcf-v2f8-x9pc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hfcf-v2f8-x9pc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44714"
+      }
+    ],
+    "Description": "### Summary\n`ScriptExecution.correctlySpends()` contains two fast-path verification bugs for standard `P2PKH` and native `P2WPKH` spends in `core/src/main/java/org/bitcoinj/script/ScriptExecution.java`.\n\nIn both branches, bitcoinj verifies an attacker-controlled signature/public-key pair but fails to verify that the public key is the one committed to by the output being spent. As a result, any attacker keypair can satisfy bitcoinj's local verification for arbitrary `P2PKH` and `P2WPKH` outputs.\n\nThis doesn't affect the SPV (simple payment verification) trust model, as this model follows PoW and doesn't verify input signatures at all.\n\n### Details\nThe issue is in the optimized branches of `ScriptExecution.correctlySpends(...)`.\n\nIn the `P2PKH` fast path at `core/src/main/java/org/bitcoinj/script/ScriptExecution.java:1042`, the code:\n\n- parses the attacker-supplied signature from `scriptSig`\n- parses the attacker-supplied public key from `scriptSig`\n- computes the sighash against the victim output's `scriptPubKey`\n- checks only `pubkey.verify(sigHash, signature)`\n\nIt never enforces the missing `P2PKH` binding:\n\n- `HASH160(pubkey) == ScriptPattern.extractHashFromP2PKH(scriptPubKey)`\n\nThat means the `OP_DUP OP_HASH160 \u003chash\u003e OP_EQUALVERIFY OP_CHECKSIG` semantics are not actually enforced in this fast path.\n\nRelevant code:\n\n```java\n} else if (ScriptPattern.isP2PKH(scriptPubKey)) {\n    if (chunks.size() != 2)\n        throw new ScriptException(...);\n    TransactionSignature signature;\n    try {\n        byte[] data = Objects.requireNonNull(chunks.get(0).data);\n        signature = TransactionSignature.decodeFromBitcoin(data, true, true);\n    } catch (SignatureDecodeException x) {\n        throw new ScriptException(...);\n    }\n    ECKey pubkey = ECKey.fromPublicOnly(Objects.requireNonNull(chunks.get(1).data));\n    Sha256Hash sigHash = txContainingThis.hashForSignature(scriptSigIndex, scriptPubKey,\n            signature.sigHashMode(), false);\n    boolean validSig = pubkey.verify(sigHash, signature);\n    if (!validSig)\n        throw new ScriptException(...);\n}\n```\n\nIn the native `P2WPKH` fast path at `core/src/main/java/org/bitcoinj/script/ScriptExecution.java:1023`, the bug is similar. The code:\n\n- reads the attacker-supplied pubkey from `witness`\n- builds `scriptCode` from that attacker pubkey with `ScriptBuilder.createP2PKHOutputScript(pubkey)`\n- computes the BIP143 sighash using that attacker-derived `scriptCode`\n- verifies the signature against the attacker pubkey\n\nIt never enforces:\n\n- `HASH160(pubkey) == ScriptPattern.extractHashFromP2WH(scriptPubKey)`\n\nSo for `P2WPKH`, the attacker controls both the pubkey and the `scriptCode` used for signing.\n\nRelevant code:\n\n```java\nif (ScriptPattern.isP2WPKH(scriptPubKey)) {\n    Objects.requireNonNull(witness);\n    if (witness.getPushCount() \u003c 2)\n        throw new ScriptException(...);\n    TransactionSignature signature;\n    try {\n        signature = TransactionSignature.decodeFromBitcoin(witness.getPush(0), true, true);\n    } catch (SignatureDecodeException x) {\n        throw new ScriptException(...);\n    }\n    ECKey pubkey = ECKey.fromPublicOnly(witness.getPush(1));\n    Script scriptCode = ScriptBuilder.createP2PKHOutputScript(pubkey);\n    Sha256Hash sigHash = txContainingThis.hashForWitnessSignature(scriptSigIndex, scriptCode, value,\n            signature.sigHashMode(), false);\n    boolean validSig = pubkey.verify(sigHash, signature);\n    if (!validSig)\n        throw new ScriptException(...);\n}\n```\n\nAffected call sites include:\n\n- `core/src/main/java/org/bitcoinj/core/TransactionInput.java:546`\n- `core/src/main/java/org/bitcoinj/wallet/Wallet.java:4520`\n- `core/src/main/java/org/bitcoinj/signers/LocalTransactionSigner.java:84`\n- `core/src/main/java/org/bitcoinj/signers/CustomTransactionSigner.java:77`\n\nThese call sites use `correctlySpends()` for transaction/input validation and pre-signing checks. Any application that treats a successful result from this path as proof that a spend is valid is affected.\n\n### Fix\nThe issue is fixed on the `release-0.17` branch via 2bc5653c41d260d840692bc554690d4d79208f9c, and on `master` via b575a682acf614b9ff95cacbdeb48f86c3ababe0. A 0.17.1 maintenance release has been made available on Maven Central.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T17:43:06Z",
+    "Severity": "HIGH",
+    "Summary": "bitcoinj has a ScriptExecution P2PKH/P2WPKH Verification Bypass",
+    "UpdatedAt": "2026-05-08T17:43:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.17.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.15, \u003c 0.17.1"
+    }
+  ]
+}

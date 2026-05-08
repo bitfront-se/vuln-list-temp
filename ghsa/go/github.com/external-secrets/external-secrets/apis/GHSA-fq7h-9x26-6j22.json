@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-08T17:24:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/external-secrets/external-secrets/apis"
+  },
+  "Advisory": {
+    "DatabaseId": 354261,
+    "Id": "GSA_kwCzR0hTQS1mcTdoLTl4MjYtNmoyMs4ABWfV",
+    "GhsaId": "GHSA-fq7h-9x26-6j22",
+    "References": [
+      {
+        "Url": "https://github.com/external-secrets/external-secrets/security/advisories/GHSA-fq7h-9x26-6j22"
+      },
+      {
+        "Url": "https://github.com/external-secrets/external-secrets/commit/4ddd240af7fe88725d9857b9a0c198073502e288"
+      },
+      {
+        "Url": "https://github.com/external-secrets/external-secrets/releases/tag/v2.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fq7h-9x26-6j22"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fq7h-9x26-6j22"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42876"
+      }
+    ],
+    "Description": "ExternalSecrets allows users to craft Service Account tokens for misconfigured Service Accounts in namespaces the users have access to.\n\n### Impact\n\nA user who only has permission to create ExternalSecret resources can cause the operator to create a Secret that Kubernetes will automatically populate with a long-lived token for the sepcified service account. This effectively allows the user to impersonate any service account in the namespace without needing direct create permissions on TokenRequest or Secrets of that type.\n\nThe problem is mitigated in severity by the fact that the user must have pre-existing permissions already at almost the same level as the escalation later gives. The attacker cannot use this method to gain access to more information without other things also being misconfigured in the ESO installation.\n\n### Patches\n\nDisallow this combination including the bootstrap token secret type.\n\n### Workarounds\n\n* Add admission control logic to prevent the use of Templates targeting undesired Types\n* Remove Service Account Token generation via kube-controller-manager flags\n* Restrict User RBAC on production clusters and sensitive namespaces",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T17:24:15Z",
+    "Severity": "MODERATE",
+    "Summary": "ExternalSecrets vulnerable to privilege escalation with secret overwriting",
+    "UpdatedAt": "2026-05-08T17:24:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.1.0, \u003c 2.4.1"
+    }
+  ]
+}

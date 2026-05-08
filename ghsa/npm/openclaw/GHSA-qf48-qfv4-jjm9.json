@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/764394c78b6c22c5b53c3cd132d27ff36340bf45"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41363"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-arbitrary-file-read-via-feishu-upload-image-parameter"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-qf48-qfv4-jjm9"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-qf48-qfv4-jjm9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41363"
       }
     ],
     "Description": "## Summary\n\nFeishu upload path resolution could read files outside the configured localRoots sandbox before handing them to the upload path.\n\n## Impact\n\nA tool caller constrained to workspace or localRoots paths could exfiltrate arbitrary host files through Feishu upload actions.\n\n## Affected Component\n\n`extensions/feishu/src/docx.ts`\n\n## Fixed Versions\n\n- Affected: `\u003e= 2026.2.6, \u003c= 2026.3.24`\n- Patched: `\u003e= 2026.3.28`\n- Latest stable `2026.3.28` contains the fix.\n\n## Fix\n\nFixed by commit `764394c78b` (`fix: enforce localRoots sandbox on Feishu docx upload file reads`).",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-31T23:53:00Z",
     "Severity": "MODERATE",
     "Summary": "OpenClaw: Feishu extension resolveUploadInput bypasses file-system sandbox and allows arbitrary file reads via upload_image",
-    "UpdatedAt": "2026-03-31T23:53:00Z",
+    "UpdatedAt": "2026-05-08T15:36:33Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T17:13:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@fastify/accepts-serializer"
+  },
+  "Advisory": {
+    "DatabaseId": 354257,
+    "Id": "GSA_kwCzR0hTQS1xeGhjLXd4M3AtMndtZ84ABWfR",
+    "GhsaId": "GHSA-qxhc-wx3p-2wmg",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fastify-accepts-serializer/security/advisories/GHSA-qxhc-wx3p-2wmg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7768"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qxhc-wx3p-2wmg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qxhc-wx3p-2wmg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-7768"
+      }
+    ],
+    "Description": "### Impact\n\n`@fastify/accepts-serializer` cached serializer-selection results keyed by the request `Accept` header without a size limit or eviction policy. A remote unauthenticated client could send many distinct but matching `Accept` header variants to make the cache grow unbounded. Under sustained load, this can exhaust the Node.js heap and crash the process.\n\n### Patches\n\nUpdate to `@fastify/accepts-serializer \u003e= 6.0.4`. The cache is now bounded by an LRU with a default size of 100 entries, configurable via the new `cacheSize` plugin option.\n\n### Workarounds\n\nNone. Upgrade is required.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T17:13:38Z",
+    "Severity": "HIGH",
+    "Summary": "@fastify/accepts-serializer Vulnerable to Denial of Service via Unbounded Accept Header Cache Growth",
+    "UpdatedAt": "2026-05-08T17:13:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.4"
+      },
+      "VulnerableVersionRange": "\u003c= 6.0.3"
+    }
+  ]
+}

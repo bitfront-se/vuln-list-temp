@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T16:29:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-xml-builder"
+  },
+  "Advisory": {
+    "DatabaseId": 354247,
+    "Id": "GSA_kwCzR0hTQS01d204LWdtbTgtMzlqOc4ABWfH",
+    "GhsaId": "GHSA-5wm8-gmm8-39j9",
+    "References": [
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-builder/security/advisories/GHSA-5wm8-gmm8-39j9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5wm8-gmm8-39j9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5wm8-gmm8-39j9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44665"
+      }
+    ],
+    "Description": "# Summary\nWhen an input data has quotes in attribute values but process entities is not enabled, it breaks the attribute value into multiple attributes. This gives the room for an attacker to insert unwanted attributes to the XML/HTML.\n\n## Detail\n\nMalicious Input\n```\n{\n      a: {\n        \"@_attr\": '\" onClick=\"alert(1)'\n      }\n}\n```\n\nOutput\n```xml\n\u003ca attr=\"\" onClick=\"alert(1)\"\u003e\u003c/a\u003e\n```\n\n### Workarounds\nIf you're not ignoring attributes then keep processEntities flag true.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T16:29:10Z",
+    "Severity": "HIGH",
+    "Summary": "fast-xml-builder allows attribute values with unwanted quotes to bypass malicious or unwanted attributes",
+    "UpdatedAt": "2026-05-08T16:29:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.7"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.6"
+    }
+  ]
+}

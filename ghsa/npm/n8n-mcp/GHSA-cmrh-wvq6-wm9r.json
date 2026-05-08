@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T16:59:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 354251,
+    "Id": "GSA_kwCzR0hTQS1jbXJoLXd2cTYtd205cs4ABWfL",
+    "GhsaId": "GHSA-cmrh-wvq6-wm9r",
+    "References": [
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/security/advisories/GHSA-cmrh-wvq6-wm9r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cmrh-wvq6-wm9r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cmrh-wvq6-wm9r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44694"
+      }
+    ],
+    "Description": "### Summary\n\nAuthenticated Server-Side Request Forgery affecting the webhook trigger tools, the n8n API client (`N8N_API_URL`), and per-request URLs supplied via the `x-n8n-url` header in multi-tenant HTTP mode.\n\n### Impact\n\nA caller with access to the MCP session can drive HTTP requests from the n8n-mcp host to internal services and cloud metadata endpoints that the SSRF gate is meant to block. The response body is returned to the caller, making internal-service enumeration and credential theft immediate without any out-of-band channel.\n\n- **Multi-tenant HTTP deployments** where tenants share an `AUTH_TOKEN`: any tenant with valid credentials can reach the operator's cloud metadata service and exfiltrate temporary IAM / GCP service account / Azure managed-identity credentials.\n- **Single-tenant deployments**: indirect prompt injection through tool arguments reaches the same surface; an attacker who can influence the LLM's tool calls can read internal services from the n8n-mcp host.\n- **Stdio deployments** are reachable via the same prompt-injection path.\n\n### Patched Versions\n\nFixed in `n8n-mcp@2.50.2`.\n\n**Note for operators:** The same SSRF gate that previously covered webhook URLs now also covers the n8n API client base URL. If `N8N_API_URL` points at `http://localhost:5678` (n8n on the same host) or an RFC1918 address (n8n on the same private network), set `WEBHOOK_SECURITY_MODE=moderate` (allows localhost, still blocks RFC1918 and cloud metadata) or `WEBHOOK_SECURITY_MODE=permissive` (allows RFC1918 too — only safe on a trusted private network). Default `strict` is correct for deployments where n8n is reachable at a public hostname.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately:\n\n1. **Restrict network egress** from the n8n-mcp host with a firewall, reverse proxy, or cloud security group. Explicitly deny cloud metadata IPs (`169.254.169.254`, `169.254.170.2`, `100.100.100.200`, `192.0.0.192`, and the GCP `metadata.google.internal` resolved IP) and any RFC1918 networks the server does not legitimately need to reach.\n2. **Run in stdio mode** instead of HTTP if the multi-tenant surface is not needed (no shared `AUTH_TOKEN` to compromise).\n3. **Disable workflow management tools** via `DISABLED_TOOLS=n8n_trigger_webhook_workflow,n8n_create_workflow,n8n_test_workflow` if the deployment does not need them.\n\n### Credit\n\nReported by [@fg0x0](https://github.com/fg0x0).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T16:59:17Z",
+    "Severity": "HIGH",
+    "Summary": "n8n-mcp webhook and API client paths has an authenticated SSRF",
+    "UpdatedAt": "2026-05-08T16:59:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.50.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.7, \u003c 2.50.2"
+    }
+  ]
+}
