@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-07T22:31:37Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "netbox-data-flows"
+  },
+  "Advisory": {
+    "DatabaseId": 353933,
+    "Id": "GSA_kwCzR0hTQS12N3F3LWh4NjYtNHc5eM4ABWaN",
+    "GhsaId": "GHSA-v7qw-hx66-4w9x",
+    "References": [
+      {
+        "Url": "https://github.com/Alef-Burzmali/netbox-data-flows/security/advisories/GHSA-v7qw-hx66-4w9x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v7qw-hx66-4w9x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v7qw-hx66-4w9x"
+      }
+    ],
+    "Description": "### Summary\nAn authenticated user who can create or edit `ObjectAlias` objects can store arbitrary HTML/JavaScript in an alias name. That payload is later rendered unescaped in `DataFlow` table views, causing a stored XSS when another user views the affected page.\n\n### Details\nThe issue is caused by unsafe HTML generation in the plugin’s custom table column renderer.\n\nRelevant code on `main` (`bf96eac`, same commit as `origin/main` at the time of review):\n\n- `netbox_data_flows/models/objectaliases.py`\n  - `ObjectAlias.name` is user-controlled (`CharField`)\n  - `ObjectAlias.__str__()` returns `self.name` directly\n- `netbox_data_flows/tables/dataflows.py`\n  - `DataFlowTable.sources` and `DataFlowTable.destinations` use `ObjectAliasListColumn`\n- `netbox_data_flows/tables/columns.py`\n  - `ObjectAliasListColumn.render()` calls `object_list_to_string(value.all(), linkify=True)`\n- `netbox_data_flows/utils/helpers.py`\n  - `object_list_to_string()` builds raw anchor tags with:\n    ```python\n    mark_safe(separator.join(f'\u003ca href=\"{o.get_absolute_url()}\"\u003e{o}\u003c/a\u003e' for o in objects))\n    ```\n\nThe alias text (`{o}`) is inserted into HTML without escaping, then the whole string is marked safe. Because `ObjectAlias.__str__()` returns the user-supplied name, HTML/JS in the alias name is executed in the victim’s browser.\n\nThis affects any page rendering `DataFlowTable`, including at least:\n- the main Data Flow list page\n- model tabs that reuse `DataFlowTable`\n\n### PoC\nEnvironment:\n- NetBox with `netbox-data-flows` installed\n- No special plugin configuration required\n\nSteps:\n1. Log in as a user with permission to create or edit `ObjectAlias` and `DataFlow`.\n2. Create a new `ObjectAlias` with the following name:\n   ```html\n   \u003cimg src=x onerror=alert(document.domain)\u003e\n   ```\n3. Create or edit a `DataFlow` so this alias is present in either `sources` or `destinations`.\n4. Log in as another user and open the Data Flow list page in the plugin UI.\n5. The JavaScript executes when the table renders the alias list.\n\nA simple path to trigger is the Data Flow list page. Any other page that renders `DataFlowTable` should also be tested.\n\n### Impact\nThis is a stored cross-site scripting vulnerability.\n\nImpacted users:\n- any authenticated user who can view a page rendering the affected `DataFlow` table\n- especially higher-privileged NetBox users, because an attacker with lower privileges may target them by planting a malicious alias name\n\nPossible impact:\n- session theft\n- execution of privileged actions in the victim’s session\n- exfiltration of data visible to the victim in NetBox",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-07T22:31:32Z",
+    "Severity": "HIGH",
+    "Summary": "netbox-data-flows has stored XSS in ObjectAlias names rendered inside DataFlow tables",
+    "UpdatedAt": "2026-05-07T22:31:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.5.0"
+    }
+  ]
+}
