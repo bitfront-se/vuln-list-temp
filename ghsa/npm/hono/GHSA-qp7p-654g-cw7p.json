@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-09T00:46:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 354366,
+    "Id": "GSA_kwCzR0hTQS1xcDdwLTY1NGctY3c3cM4ABWg-",
+    "GhsaId": "GHSA-qp7p-654g-cw7p",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-qp7p-654g-cw7p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qp7p-654g-cw7p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qp7p-654g-cw7p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44458"
+      }
+    ],
+    "Description": "### Summary\n\nThe JSX renderer escapes `style` attribute object values for HTML but not for CSS. Untrusted input in a `style` object value or property name can therefore inject additional CSS declarations into the rendered `style` attribute. The impact is limited to CSS and does not allow JavaScript execution or HTML attribute breakout.\n\n### Details\n\n`style` object values are serialized into a CSS declaration list and escaped for HTML attribute context only. Characters that act as CSS declaration boundaries — such as `;`, comment markers, quoted strings, and block delimiters — are valid in HTML attribute content and can extend a value beyond its assigned property.\n\nThis issue arises when untrusted input is interpolated into a JSX `style` object and rendered server-side.\n\n### Impact\n\nAn attacker who can control the value or property name of a `style` object may inject arbitrary CSS declarations. This may lead to:\n\n- Visual manipulation of the page, including full-viewport overlays usable for phishing\n- Outbound requests to attacker-controlled hosts via CSS resource references such as `url(...)`\n- Hijacking of UI affordances through layout, positioning, or visibility changes\n\nThis issue affects applications that render JSX on the server with `style` object values or property names derived from untrusted input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-09T00:46:44Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono has CSS Declaration Injection via Style Object Values in JSX SSR",
+    "UpdatedAt": "2026-05-09T00:46:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.18"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.18"
+    }
+  ]
+}

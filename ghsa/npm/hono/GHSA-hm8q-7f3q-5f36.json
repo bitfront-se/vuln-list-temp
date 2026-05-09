@@ -1,0 +1,50 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-09T00:45:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 354365,
+    "Id": "GSA_kwCzR0hTQS1obThxLTdmM3EtNWYzNs4ABWg9",
+    "GhsaId": "GHSA-hm8q-7f3q-5f36",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-hm8q-7f3q-5f36"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hm8q-7f3q-5f36"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hm8q-7f3q-5f36"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44459"
+      }
+    ],
+    "Description": "### Summary\n\nImproper validation of the JWT NumericDate claims `exp`, `nbf`, and `iat` in `hono/utils/jwt` allows tokens with non-spec-compliant claim values to silently bypass time-based checks. This issue is not exploitable by an anonymous attacker; it only manifests when a malformed claim value reaches `verify()` — typically when the application itself issues such tokens, or when the signing key is otherwise under attacker control.\n\n### Details\n\nThe validation routine combined option, presence, and threshold checks in a single short-circuiting expression, so several classes of malformed values were silently skipped instead of rejected:\n\n- A falsy numeric value short-circuited the presence check.\n- A non-finite numeric value compared as never-after-now and never-expired.\n- A non-numeric type produced NaN comparisons that evaluated false.\n\nThis deviates from RFC 7519 §4.1.4, which defines NumericDate as a finite JSON numeric value.\n\n### Impact\n\nAn actor able to issue tokens accepted by the application may craft tokens whose `exp`, `nbf`, or `iat` claims silently bypass time-based enforcement. This may lead to:\n\n- Tokens treated as never expiring even with `exp` configured on the verifier.\n- Tokens with a future `nbf` accepted as currently valid.\n- Tokens with a future `iat` accepted as legitimately issued.\n\nDeployments using a well-formed token issuer and protecting the signing key are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-09T00:45:19Z",
+    "Severity": "LOW",
+    "Summary": "Hono has improper validation of NumericDate claims (exp, nbf, iat) in JWT verify()",
+    "UpdatedAt": "2026-05-09T00:45:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.18"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.18"
+    }
+  ]
+}
