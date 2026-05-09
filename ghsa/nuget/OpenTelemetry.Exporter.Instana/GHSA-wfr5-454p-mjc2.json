@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-08T20:48:02Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenTelemetry.Exporter.Instana"
+  },
+  "Advisory": {
+    "DatabaseId": 354314,
+    "Id": "GSA_kwCzR0hTQS13ZnI1LTQ1NHAtbWpjMs4ABWgK",
+    "GhsaId": "GHSA-wfr5-454p-mjc2",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/security/advisories/GHSA-wfr5-454p-mjc2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wfr5-454p-mjc2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wfr5-454p-mjc2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44213"
+      }
+    ],
+    "Description": "### Summary\n\nThe `OpenTelemetry.Exporter.Instana` NuGet package does not validate HTTPS/TLS certificates are valid when sending telemetry to a configured Instana back-end when a proxy is configured using the `INSTANA_ENDPOINT_PROXY` environment variable.\n\nIf a network attacker can Man-in-the-Middle (MitM) the proxy connection, all OpenTelemetry telemetry data and the Instana API key are exposed to the attacker.\n\n### Details\n\nThe [`Transport.ConfigureBackendClient()`](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/b53b6a74fde21a4cee344e584b51a0fe5bf1f337/src/OpenTelemetry.Exporter.Instana/Implementation/Transport.cs#L132-L158) method creates an `HttpClient` instance that completely disables TLS server certificate validation if the `INSTANA_ENDPOINT_PROXY` is configured with a valid proxy URL with no ability to re-enable it.\n\n### Impact\n\nIf the configured proxy is attacker-controlled (or a network attacker MitM the connection), or if it is possible for the process' configuration to be changed to add an attacker-provided value for `INSTANA_ENDPOINT_PROXY` then all Instana telemetry could be read by an unauthorized party and the service's Instana API key compromised, potentially before being forwarded to Instana presenting no noticeable loss of telemetry data without a valid TLS server certificate being presented to the client that matches the expected hostname or IP address.\n\n### Mitigation\n\nThe proxy configured by the `INSTANA_ENDPOINT_PROXY` environment variable must be malicious or be possible to be subject to a MitM attack.\n\n### Workarounds\n\nDo not configure the `INSTANA_ENDPOINT_PROXY` environment variable.\n\n### Remediation\n\n[#4153](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4153) refactors `HttpClient` creation so that TLS certificate validation is no longer disabled by default when using a proxy.\n\nIn environments where this capability is required, for example for local development, the previous behaviour can be restored using the `` option:\n\n```csharp\nbuilder.AddInstanaExporter((options) =\u003e\n{\n    options.HttpClientFactory = () =\u003e\n    {\n        var handler = new HttpClientHandler()\n        {\n#if NET\n            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,\n#else\n            ServerCertificateCustomValidationCallback = static (_, _, _, _) =\u003e true,\n#endif\n        };\n        return new HttpClient(handler, disposeHandler: true);\n    };\n});\n```\n\n### Resources\n\n- [PR #4153](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/4153)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T20:48:02Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenTelemetry.Exporter.Instana bypasses TLS certificate validation when a proxy is configured",
+    "UpdatedAt": "2026-05-08T20:48:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.0.7"
+    }
+  ]
+}

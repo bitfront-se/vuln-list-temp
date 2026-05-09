@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-08T18:37:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electerm"
+  },
+  "Advisory": {
+    "DatabaseId": 354278,
+    "Id": "GSA_kwCzR0hTQS0zN2o0LTg4cnAtMmY2aM4ABWfm",
+    "GhsaId": "GHSA-37j4-88rp-2f6h",
+    "References": [
+      {
+        "Url": "https://github.com/electerm/electerm/security/advisories/GHSA-37j4-88rp-2f6h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-43942"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-37j4-88rp-2f6h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-37j4-88rp-2f6h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43942"
+      }
+    ],
+    "Description": "### Impact\n\nThe `getConstants()` IPC handler in `src/app/lib/ipc-sync.js` serialises the entire `process.env` object and sends it to the renderer. The data is stored as `window.pre.env` and is accessible from any JavaScript running in the renderer (e.g., via the DevTools console or a compromised webview context).\n\nOn developer and CI machines, `process.env` routinely contains secrets such as:\n\n- `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`\n- `GITHUB_TOKEN` / `NPM_TOKEN`\n- `OPENAI_API_KEY` / `DOCKER_AUTH`\n- Internal service credentials, API keys, and database URLs\n\nAn attacker who achieves any JavaScript execution within the renderer—for example, through a malicious plugin, a cross-site scripting (XSS) flaw, or the terminal hyperlink execution chain—can trivially exfiltrate these secrets to a remote server, leading to cloud account compromise, supply chain attacks, and lateral movement. The exposure is visible even without any code execution by simply opening the \"Info\" modal in the application, though that requires local access.\n\n### Patches\n\nA patch is yet to be available.\n\n### Workarounds\n\nUntil a patch is released:\n- Avoid launching electerm with sensitive environment variables set. Use shell scripts or a dedicated terminal profile that clears secrets before starting the application.\n- Do not install plugins from untrusted sources, and audit any installed plugins for network access.\n- Keep the renderer context as locked down as possible: disable the remote debugging port, and do not paste untrusted code into the DevTools console.\n\n### Resources\n- [electerm GitHub Repository](https://github.com/electerm/electerm)\n- [electerm Security Policy](https://github.com/electerm/electerm/security)\n- Vulnerability details originally reported by external researcher (confirmed on v3.7.9, Win10).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T18:37:42Z",
+    "Severity": "MODERATE",
+    "Summary": "Electerm's full process.env exposed to renderer via window.pre.env",
+    "UpdatedAt": "2026-05-08T18:37:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.8.15"
+    }
+  ]
+}

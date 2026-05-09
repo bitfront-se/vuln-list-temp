@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-09T00:40:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "velocityjs"
+  },
+  "Advisory": {
+    "DatabaseId": 354363,
+    "Id": "GSA_kwCzR0hTQS1qNjU4LWMyZ2YteDZwcc4ABWg7",
+    "GhsaId": "GHSA-j658-c2gf-x6pq",
+    "References": [
+      {
+        "Url": "https://github.com/shepherdwind/velocity.js/security/advisories/GHSA-j658-c2gf-x6pq"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j658-c2gf-x6pq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j658-c2gf-x6pq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44966"
+      }
+    ],
+    "Description": "### Summary\nA prototype pollution vulnerability was discovered in Velocity.js \u003c= 2.1.5. This issue occurs during the processing of #set directives in Velocity templates. If an application renders a template controlled by an attacker, it is possible to modify Object.prototype, potentially leading to Denial of Service (DoS) or Remote Code Execution (RCE) depending on the server environment.\n\n### Details\nThe root cause is located in the #set path assignment logic within the source code:\n- File: /src/compile/set.ts \n- Issue: The engine accepts arbitrary path keys and performs assignments using the logic `(baseRef as Record\u003cstring, unknown\u003e)[key] = val`.\n\n\nBecause there is no validation or filtering to block sensitive keys such as \\_\\_proto\\_\\_, constructor, or prototype, an attacker can traverse the prototype chain and pollute the global Object.prototype.\n\n### PoC\n```javascript\nconst {render} = require('velocityjs');\ndelete Object.prototype.polluted;\nconsole.log({}.polluted); // \"\"\nrender('#set($__proto__.polluted = \"hacked\")', {});\nconsole.log({}.polluted); // \"hacked\"\ndelete Object.prototype.polluted;\n```\n\n### Impact\n- Vulnerability Type: Prototype Pollution\n- Who is impacted: Any application that renders Velocity templates where the template content can be influenced or controlled by untrusted users.\n- Severity: High. Prototype pollution can often be used to bypass security controls, cause application crashes (DoS), or be chained with other vulnerabilities to achieve code execution.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-09T00:40:16Z",
+    "Severity": "HIGH",
+    "Summary": "Velocity.js has a Prototype Pollution vulnerability through #set path assignment",
+    "UpdatedAt": "2026-05-09T00:40:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.1.5"
+    }
+  ]
+}

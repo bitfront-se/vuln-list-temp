@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-08T23:43:12Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mistune"
+  },
+  "Advisory": {
+    "DatabaseId": 354355,
+    "Id": "GSA_kwCzR0hTQS01OGN3LWczMjItcDk0ds4ABWgz",
+    "GhsaId": "GHSA-58cw-g322-p94v",
+    "References": [
+      {
+        "Url": "https://github.com/lepture/mistune/security/advisories/GHSA-58cw-g322-p94v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-58cw-g322-p94v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-58cw-g322-p94v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44896"
+      }
+    ],
+    "Description": "In `src/mistune/directives/image.py`, the `render_figure()` function concatenates `figclass` and `figwidth` options directly into HTML attributes without escaping (lines 152-168).\n\nThis allows attribute injection and XSS even when `HTMLRenderer(escape=True)` is used, because these values bypass the inline renderer.\n\nOther attributes in the same file (src, alt, style) are properly escaped; figclass/figwidth were missed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T23:43:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Mistune has XSS via unescaped figclass/figwidth in Figure directive",
+    "UpdatedAt": "2026-05-08T23:43:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.2.0"
+    }
+  ]
+}

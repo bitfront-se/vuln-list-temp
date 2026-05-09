@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-08T23:47:13Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.oviva.telematik:epa4all-client"
+  },
+  "Advisory": {
+    "DatabaseId": 354356,
+    "Id": "GSA_kwCzR0hTQS1nOHIzLTVod2YtcXA5Ns4ABWg0",
+    "GhsaId": "GHSA-g8r3-5hwf-qp96",
+    "References": [
+      {
+        "Url": "https://github.com/oviva-ag/epa4all-client/security/advisories/GHSA-g8r3-5hwf-qp96"
+      },
+      {
+        "Url": "https://github.com/oviva-ag/epa4all-client/pull/34"
+      },
+      {
+        "Url": "https://www.machinespirits.com/advisory/d76aec"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g8r3-5hwf-qp96"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g8r3-5hwf-qp96"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44900"
+      }
+    ],
+    "Description": "### Impact\nIn SignedPublicKeysTrustValidatorImpl.isTrusted(), the ECDSA signature verification at line 45 discards the boolean return value of Signature.verify(). The method performs certificate chain validation, OCSP check, and signature algorithm setup, but never checks whether the signature actually matches. For any structurally valid signature, it returns true.\n\n### Patches\nPatched in [#34](https://github.com/oviva-ag/epa4all-client/pull/34).\n\n### Workarounds\nNone.\n\n### Resources\n- [MS-OVIVA-EPA4ALL-d76aec](https://www.machinespirits.com/advisory/d76aec/)\n\n### Credits\n\n[Machine Spirits](https://machinespirits.com) (contact@machinespirits.de)\n- Dr. rer. nat. Simon Weber\n- Dipl.-Inf. Volker Schönefeld\n- Chiara Fliegner",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T23:47:12Z",
+    "Severity": "HIGH",
+    "Summary": "epa4all-client has a VAU Signature bypass",
+    "UpdatedAt": "2026-05-08T23:47:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.0"
+    }
+  ]
+}

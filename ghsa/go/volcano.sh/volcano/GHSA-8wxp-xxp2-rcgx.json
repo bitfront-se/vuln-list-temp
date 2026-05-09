@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-08T20:44:56Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "volcano.sh/volcano"
+  },
+  "Advisory": {
+    "DatabaseId": 354313,
+    "Id": "GSA_kwCzR0hTQS04d3hwLXh4cDItcmNneM4ABWgJ",
+    "GhsaId": "GHSA-8wxp-xxp2-rcgx",
+    "References": [
+      {
+        "Url": "https://github.com/volcano-sh/volcano/security/advisories/GHSA-8wxp-xxp2-rcgx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8wxp-xxp2-rcgx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8wxp-xxp2-rcgx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44247"
+      }
+    ],
+    "Description": "### Impact\nThe Volcano webhook server does not enforce a size limit on incoming HTTP request bodies. Any in-cluster pod that can reach the webhook endpoint may send an arbitrarily large request body, potentially causing the webhook server to be killed by OOM. All Volcano deployments with the webhook server exposed to in-cluster traffic are affected.\n\n### Patches\nThis issue will be fixed in the following versions:\n- v1.14.2\n- v1.13.3\n- v1.12.4\n\nUsers running versions below these should upgrade accordingly.\n\n### Workarounds\nNo known workarounds. Upgrade to the patched versions listed above.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T20:44:54Z",
+    "Severity": "MODERATE",
+    "Summary": "Volcano's webhook server vulnerable to OOM due to unbounded HTTP request body size",
+    "UpdatedAt": "2026-05-08T20:44:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:C/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.14.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.14.0, \u003c 1.14.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.13.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.13.0, \u003c 1.13.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.12.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.12.4"
+    }
+  ]
+}

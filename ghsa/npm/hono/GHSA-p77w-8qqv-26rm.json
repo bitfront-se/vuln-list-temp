@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-09T00:28:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 354361,
+    "Id": "GSA_kwCzR0hTQS1wNzd3LThxcXYtMjZybc4ABWg5",
+    "GhsaId": "GHSA-p77w-8qqv-26rm",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-p77w-8qqv-26rm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p77w-8qqv-26rm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p77w-8qqv-26rm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44457"
+      }
+    ],
+    "Description": "### Summary\n\nCache Middleware does not skip caching for responses that declare per-user variance via `Vary: Authorization` or `Vary: Cookie`. As a result, a response cached for one authenticated user may be served to subsequent requests from different users.\n\n### Details\n\nThe Cache Middleware skips caching when a response carries `Vary: *`, certain `Cache-Control` directives (`private`, `no-store`, `no-cache`), or `Set-Cookie`. However, `Vary: Authorization` and `Vary: Cookie` — the standard signals defined in RFC 9110 / RFC 9111 to indicate per-user responses — are not treated as cache-skip reasons.\n\nThis issue arises when applications use the Cache Middleware on endpoints that return user-specific data and rely on `Vary: Authorization` or `Vary: Cookie` to scope the response per user, without also setting `Cache-Control: private`.\n\n### Impact\n\nA user may receive a cached response that was originally generated for a different authenticated user. This may lead to:\n\n- Disclosure of personally identifiable information or other user-specific data present in the response body\n- Inconsistent or incorrect behavior in user-specific endpoints\n\nThis issue affects applications that use the Cache Middleware on endpoints whose responses vary by `Authorization` or `Cookie` and that do not also set `Cache-Control: private`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-09T00:28:46Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono's Cache Middleware ignores Vary: Authorization / Vary: Cookie leading to cross-user cache leakage",
+    "UpdatedAt": "2026-05-09T00:28:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.18"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.18"
+    }
+  ]
+}
