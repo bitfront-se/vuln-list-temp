@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T15:29:37Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/ellanetworks/core"
+  },
+  "Advisory": {
+    "DatabaseId": 354563,
+    "Id": "GSA_kwCzR0hTQS1wd2ZoLW1xcDMtcHF3as4ABWkD",
+    "GhsaId": "GHSA-pwfh-mqp3-pqwj",
+    "References": [
+      {
+        "Url": "https://github.com/ellanetworks/core/security/advisories/GHSA-pwfh-mqp3-pqwj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pwfh-mqp3-pqwj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pwfh-mqp3-pqwj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44475"
+      }
+    ],
+    "Description": "## Summary\n\nElla Core does not verify the UE Security Capabilities received in NGAP PathSwitchRequest messages against its locally stored values. A malicious gNB can overwrite Ella Core's stored UE security capabilities for any UE with arbitrary values by sending a single crafted PathSwitchRequest.\n\n## Impact\n\nA gNB can corrupt Ella Core's stored UE security capabilities for a target UE.\n\n## Fix\n\nThe PathSwitchRequest handler now compares the received UE Security Capabilities against Ella Core's locally stored values, preserves the stored values on mismatch, returns them in the PathSwitchRequestAcknowledge, and logs the event.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:29:37Z",
+    "Severity": "MODERATE",
+    "Summary": "Ella Core has a UE Security Capability bypass on NGAP PathSwitchRequest",
+    "UpdatedAt": "2026-05-11T15:29:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:C/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.10.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.10.0"
+    }
+  ]
+}

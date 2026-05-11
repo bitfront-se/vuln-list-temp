@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-11T16:20:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "angular-expressions"
+  },
+  "Advisory": {
+    "DatabaseId": 354590,
+    "Id": "GSA_kwCzR0hTQS1wdzhyLTY2ODkteHZmNM4ABWke",
+    "GhsaId": "GHSA-pw8r-6689-xvf4",
+    "References": [
+      {
+        "Url": "https://github.com/peerigon/angular-expressions/security/advisories/GHSA-pw8r-6689-xvf4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pw8r-6689-xvf4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pw8r-6689-xvf4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44643"
+      }
+    ],
+    "Description": "## Impact\n\nAn attacker can write a malicious expression that escapes the sandbox to execute arbitrary code on the system.\n\nExample of vulnerable code:\n\n```\nconst expressions = require(\"angular-expressions\");\nconst result = expressions.compile(\"a | __proto__\")({}, {});\n```\n\nThis should throw the error : Filter '__proto__' is not defined, however, this shows : \n\nUncaught SyntaxError: Unexpected identifier 'Object'\n\nWith a more complex (undisclosed) payload, one can get full access to Arbitrary code execution on the system.\n\n## Vulnerable versions : \n\nangular-expressions \u003c= 1.5.1\n\n## Patches\n\nThe problem has been patched in version 1.5.2 of angular-expressions.\n\n## Credits\n\nCredits go to San Gil from [www.securityoffice.io](https://securityoffice.io/) who has found the issue and reported it to us.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T16:20:58Z",
+    "Severity": "CRITICAL",
+    "Summary": "Angular Expressions - Remote Code Execution using filters",
+    "UpdatedAt": "2026-05-11T16:20:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.5.1"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-11T15:56:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 354575,
+    "Id": "GSA_kwCzR0hTQS1tZzY2LW1yaDktbThqeM4ABWkP",
+    "GhsaId": "GHSA-mg66-mrh9-m8jx",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-mg66-mrh9-m8jx"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.16"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mg66-mrh9-m8jx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mg66-mrh9-m8jx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44579"
+      }
+    ],
+    "Description": "### Impact\n\nApplications using Partial Prerendering through the Cache Components feature can be vulnerable to connection exhaustion through crafted POST requests to a server action. In affected configurations, a malicious request can trigger a request-body handling deadlock that leaves connections open for an extended period, consuming file descriptors and server capacity until legitimate users are denied service.\n\n### Fix\n\nWe now treat the header used for resuming Partial Prerendered requests as an internal-only header and strip it from untrusted incoming requests. This header should never be accepted directly from external clients.\n\n### Workarounds\n\nIf you cannot upgrade immediately, block requests that would be handled by Next.js if they contain the `Next-Resume` header at the edge.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:56:24Z",
+    "Severity": "HIGH",
+    "Summary": "Next.js vulnerable to Denial of Service via connection exhaustion in applications using Cache Components",
+    "UpdatedAt": "2026-05-11T15:56:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.16"
+      },
+      "VulnerableVersionRange": "\u003e= 15.0.0, \u003c 15.5.16"
+    }
+  ]
+}

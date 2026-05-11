@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-11T15:56:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 354577,
+    "Id": "GSA_kwCzR0hTQS12ZnY2LTkyZmYtajk0Oc4ABWkR",
+    "GhsaId": "GHSA-vfv6-92ff-j949",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-vfv6-92ff-j949"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.16"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vfv6-92ff-j949"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vfv6-92ff-j949"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44582"
+      }
+    ],
+    "Description": "### Impact\n\nReact Server Component responses can be vulnerable to cache poisoning in deployments that rely on shared caches with insufficient response partitioning. In affected conditions, collisions in the `_rsc` cache-busting value can allow an attacker to poison cache entries so users receive the wrong response variant for a given URL.\n\n### Fix\n\nWe strengthened the `_rsc` cache-busting mechanism to make practical collisions significantly harder and to better separate response variants that should not share cache entries.\n\n### Workarounds\n\nIf you cannot upgrade immediately, ensure intermediary caches correctly honor `Vary` for RSC-related request headers, or disable shared caching for affected RSC responses until you can deploy a patched release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:56:48Z",
+    "Severity": "LOW",
+    "Summary": "Next.js vulnerable to cache poisoning via collisions in React Server Component cache-busting",
+    "UpdatedAt": "2026-05-11T15:56:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.16"
+      },
+      "VulnerableVersionRange": "\u003e= 13.4.6, \u003c 15.5.16"
+    }
+  ]
+}

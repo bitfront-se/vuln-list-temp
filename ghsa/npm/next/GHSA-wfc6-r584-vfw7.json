@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T15:55:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 354571,
+    "Id": "GSA_kwCzR0hTQS13ZmM2LXI1ODQtdmZ3N84ABWkL",
+    "GhsaId": "GHSA-wfc6-r584-vfw7",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-wfc6-r584-vfw7"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.16"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wfc6-r584-vfw7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wfc6-r584-vfw7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44576"
+      }
+    ],
+    "Description": "### Impact\n\nApplications using React Server Components can be vulnerable to cache poisoning when shared caches do not correctly partition response variants. Under affected conditions, an attacker can cause an RSC response to be served from the original URL and poison shared cache entries so later visitors receive component payloads instead of the expected HTML.\n\n### Fix\n\nWe now validate and interpret `RSC` request headers consistently across request classification and rendering, and we enforce the intended cache-busting behavior so RSC payloads are not unexpectedly served from the original URL.\n\n### Workarounds\n\nIf you cannot upgrade immediately, ensure your CDN or reverse proxy keys on the relevant RSC request headers and honors `Vary`, or disable shared caching for affected App Router and RSC responses.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:54:46Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js vulnerable to cache poisoning in React Server Component responses",
+    "UpdatedAt": "2026-05-11T15:55:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.16"
+      },
+      "VulnerableVersionRange": "\u003e= 14.2.0, \u003c 15.5.16"
+    }
+  ]
+}

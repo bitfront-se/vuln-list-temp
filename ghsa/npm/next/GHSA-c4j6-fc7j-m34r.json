@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-11T15:55:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 354573,
+    "Id": "GSA_kwCzR0hTQS1jNGo2LWZjN2otbTM0cs4ABWkN",
+    "GhsaId": "GHSA-c4j6-fc7j-m34r",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-c4j6-fc7j-m34r"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.16"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c4j6-fc7j-m34r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c4j6-fc7j-m34r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44578"
+      }
+    ],
+    "Description": "### Impact\n\nSelf-hosted applications using the built-in Node.js server can be vulnerable to server-side request forgery through crafted WebSocket upgrade requests. An attacker can cause the server to proxy requests to arbitrary internal or external destinations, which may expose internal services or cloud metadata endpoints. Vercel-hosted deployments are not affected.\n\n### Fix\n\nWe now apply the same safety checks to WebSocket upgrade handling that already existed for normal HTTP requests, so upgrade requests are only proxied when routing has explicitly marked them as safe external rewrites.\n\n### Workarounds\n\nIf you cannot upgrade immediately, do not expose the origin server directly to untrusted networks. If WebSocket upgrades are not required, block them at your reverse proxy or load balancer, and restrict origin egress to internal networks and metadata services where possible.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:55:15Z",
+    "Severity": "HIGH",
+    "Summary": "Next.js vulnerable to server-side request forgery in applications using WebSocket upgrades",
+    "UpdatedAt": "2026-05-11T15:55:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.16"
+      },
+      "VulnerableVersionRange": "\u003e= 13.4.13, \u003c 15.5.16"
+    }
+  ]
+}

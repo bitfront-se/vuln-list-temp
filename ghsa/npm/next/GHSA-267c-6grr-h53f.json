@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-11T15:55:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 354570,
+    "Id": "GSA_kwCzR0hTQS0yNjdjLTZncnItaDUzZs4ABWkK",
+    "GhsaId": "GHSA-267c-6grr-h53f",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-267c-6grr-h53f"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.16"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-267c-6grr-h53f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-267c-6grr-h53f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44575"
+      }
+    ],
+    "Description": "### Impact\n\nApp Router applications that rely on middleware or proxy-based checks for authorization can allow unauthorized access through transport-specific route variants used for segment prefetching. In affected configurations, specially crafted `.rsc` and segment-prefetch URLs can resolve to the same page without being matched by the intended middleware rule, which can allow protected content to be reached without the expected authorization check.\n\n### Fix\n\nWe now include App Router transport variants when generating middleware matchers, so middleware protections are applied consistently to those requests as well as to the normal page URL.\n\n### Workarounds\n\nIf you cannot upgrade immediately, enforce authorization in the underlying route or page logic instead of relying solely on middleware.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:54:24Z",
+    "Severity": "HIGH",
+    "Summary": "Next.js has a Middleware / Proxy bypass in App Router applications via segment-prefetch routes",
+    "UpdatedAt": "2026-05-11T15:55:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.16"
+      },
+      "VulnerableVersionRange": "\u003e= 15.2.0, \u003c 15.5.16"
+    }
+  ]
+}

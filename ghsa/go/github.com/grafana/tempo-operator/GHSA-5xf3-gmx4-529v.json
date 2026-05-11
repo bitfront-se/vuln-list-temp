@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T13:53:12Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/grafana/tempo-operator"
+  },
+  "Advisory": {
+    "DatabaseId": 288060,
+    "Id": "GSA_kwCzR0hTQS01eGYzLWdteDQtNTI5ds4ABGU8",
+    "GhsaId": "GHSA-5xf3-gmx4-529v",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-2842"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2025-2842"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2355219"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2025:3607"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2025:3740"
+      },
+      {
+        "Url": "https://github.com/grafana/tempo-operator/pull/1144"
+      },
+      {
+        "Url": "https://github.com/grafana/tempo-operator/commit/60b538c45f76755262e211d8df0e601a716308c7"
+      },
+      {
+        "Url": "https://github.com/grafana/tempo-operator/blob/8d1c7f13cb0f8db490144b04665b1fd6a2d56307/CHANGELOG.md?plain=1#L342"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5xf3-gmx4-529v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5xf3-gmx4-529v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-2842"
+      }
+    ],
+    "Description": "A flaw was found in the Tempo Operator. When the Jaeger UI Monitor Tab functionality is enabled in a Tempo instance managed by the Tempo Operator, the Operator creates a ClusterRoleBinding for the Service Account of the Tempo instance to grant the cluster-monitoring-view ClusterRole.\nThis can be exploited if a user has 'create' permissions on TempoStack and 'get' permissions on Secret in a namespace (for example, a user has ClusterAdmin permissions for a specific namespace), as the user can read the token of the Tempo service account and therefore has access to see all cluster metrics.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-04-02T15:31:36Z",
+    "Severity": "MODERATE",
+    "Summary": "Grafana Tempo Operator Vulnerable to Exposure of Sensitive Information to an Unauthorized Actor",
+    "UpdatedAt": "2026-05-11T13:53:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.16.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.16.0"
+    }
+  ]
+}

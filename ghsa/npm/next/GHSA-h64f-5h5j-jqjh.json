@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T15:56:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 354574,
+    "Id": "GSA_kwCzR0hTQS1oNjRmLTVoNWotanFqaM4ABWkO",
+    "GhsaId": "GHSA-h64f-5h5j-jqjh",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-h64f-5h5j-jqjh"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.16"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h64f-5h5j-jqjh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h64f-5h5j-jqjh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44577"
+      }
+    ],
+    "Description": "### Impact\n\nWhen self-hosting Next.js with the default image loader, the Image Optimization API fetches local images entirely into memory without enforcing a maximum size limit. An attacker could cause out-of-memory conditions by requesting large local assets from the `/_next/image` endpoint that match the `images.localPatterns` configuration (by default, all patterns are allowed).\n\n- If you are using `images.localPatterns`, only the patterns in that array are impacted.\n- If you are using `images.unoptimized: true`, you are NOT impacted.\n- If you are using `images.loader: 'custom'`, you are NOT impacted.\n- If you are using Vercel, you are NOT impacted.\n\n### Fix\n\nWe now apply response size limits consistently to internal image fetches, not just external ones, and fail oversized responses before they can exhaust process memory.\n\nThis can be adjusted using the `images.maximumResponseBody` configuration.\n\n### Workarounds\n\nIf you cannot upgrade immediately, avoid routing large local assets through `/_next/image`, disable image optimization for large or untrusted local files, or block image optimization access to those assets at the edge.\n\nYou can disable using the `images.localPatterns: []` configuration. This will still allow fetching remote images (which is not impacted).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T15:56:05Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js has a Denial of Service in the Image Optimization API",
+    "UpdatedAt": "2026-05-11T15:56:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.16"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c 15.5.16"
+    }
+  ]
+}

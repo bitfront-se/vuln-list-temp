@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-11T16:17:23Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 354587,
+    "Id": "GSA_kwCzR0hTQS13eHh4LWd2cXYteHA3cM4ABWkb",
+    "GhsaId": "GHSA-wxxx-gvqv-xp7p",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-wxxx-gvqv-xp7p"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40217"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.83.10-stable"
+      },
+      {
+        "Url": "https://www.x41-dsec.de/lab/advisories/x41-2026-001-litellm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wxxx-gvqv-xp7p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wxxx-gvqv-xp7p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40217"
+      }
+    ],
+    "Description": "### Impact\n\nThe `POST /guardrails/test_custom_code` endpoint runs user-supplied Python inside a hand-rolled sandbox. The sandbox can be escaped using bytecode-level techniques, allowing arbitrary code execution in the proxy process — which runs as root in the default Docker image.\n\n**Reaching the endpoint requires a proxy-admin credential** in default configurations.\n\n### Patches\n\nFixed in **`1.83.11`**. The hand-rolled sandbox has been replaced with `RestrictedPython`. Upgrade to `1.83.11` or later.\n\n### Workarounds\n\nIf upgrading is not immediately possible, block `POST /guardrails/test_custom_code` at your reverse proxy or API gateway.\n\n### References\n\n- Patched release: [`v1.83.10-stable`](https://github.com/BerriAI/litellm/releases/tag/v1.83.10-stable)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T16:17:23Z",
+    "Severity": "HIGH",
+    "Summary": "LiteLLM has a sandbox escape in custom-code guardrail",
+    "UpdatedAt": "2026-05-11T16:17:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.83.10"
+      },
+      "VulnerableVersionRange": "\u003e= 1.81.8, \u003c 1.83.10"
+    }
+  ]
+}
