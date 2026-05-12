@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T19:36:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mermaid"
+  },
+  "Advisory": {
+    "DatabaseId": 354702,
+    "Id": "GSA_kwCzR0hTQS14Y2o5LTVtMmgtNjQ4cs4ABWmO",
+    "GhsaId": "GHSA-xcj9-5m2h-648r",
+    "References": [
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/security/advisories/GHSA-xcj9-5m2h-648r"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/8fead23c59166b7bab6a39eac81acebee2859102"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/e9b0f34d8d82a6260077764ee45e1d7d90957a0f"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.15.0"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/v10.9.6"
+      },
+      {
+        "Url": "https://mermaid.js.org/config/schema-docs/config.html#securitylevel"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xcj9-5m2h-648r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xcj9-5m2h-648r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41148"
+      }
+    ],
+    "Description": "### Details\n\nThe state diagram and any other diagram type that routes user-controlled style strings through createCssStyles parser for Mermaid v11.14.0 and earlier captures `classDef` values with an unrestricted regex:\n\n```jison\n// packages/mermaid/src/diagrams/state/parser/stateDiagram.jison:83\n\u003cCLASSDEFID\u003e[^\\n]*   { this.popState(); return 'CLASSDEF_STYLEOPTS' }\n```\n\nThe value passes unsanitized through `addStyleClass()` -\u003e `createCssStyles()` -\u003e `style.innerHTML` (mermaidAPI.ts:418). A `}` in the value closes the generated CSS selector, and everything after becomes a new CSS rule on the page.\n\n### PoC\n\n```\nstateDiagram-v2 \n      classDef x }*{ background-image: url(\"http://media.giphy.com/media/SggILpMXO7Xt6/giphy.gif\")}\n```\n\nLive demo:\n\u003chttps://mermaid.live/edit#pako:eNpFjzFvgzAQhf-KdVNbEcBgMHhtlkqtOnSJKi8ONsYKBmRMlRTx3-skanvTfbp7996t0IxSAYPZC6_2Rmgn7O4rQ00v5nmvWnRG29OKjqI5aTcug9wZK7RiaHH9A4fO-4kliVXSiFibqbvEzWjvnHxo_fI6vR3e6cGXyX2qTcvhcYMItDMSmHeLisAqZ8UVYeUDQhx8p6ziwEIrhTtx4MNVM4nhcxztrywE0h2wVvRzoGWS_z_8rahBKvcckntgmN5OAFvhDIzUNCZZQXCR5nVaZkUEF2BVFpOcEkoxxhUuyRbB980yjStapKHqoKFlhvPtB7BFZEU\u003e\n\n### Patches\n\nThis has been patched in:\n\n- [v11.15.0](https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.15.0) (see [e9b0f34d8d82a6260077764ee45e1d7d90957a0f](https://github.com/mermaid-js/mermaid/commit/e9b0f34d8d82a6260077764ee45e1d7d90957a0f))\n- [v10.9.6](https://github.com/mermaid-js/mermaid/releases/tag/v10.9.6) (see [8fead23c59166b7bab6a39eac81acebee2859102](https://github.com/mermaid-js/mermaid/commit/8fead23c59166b7bab6a39eac81acebee2859102))\n\n### Workarounds\n\nSetting [`\"securityLevel\": \"sandbox\"`](https://mermaid.js.org/config/schema-docs/config.html#securitylevel)  will prevent this, by rendering the mermaid diagram in a sandboxed `\u003ciframe\u003e`.\n\n### Impact\n\n Enables page defacement, user tracking via `url()` callbacks, and DOM attribute exfiltration via CSS `:has()` selectors.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T19:36:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Mermaid: Improper sanitization of `classDefs` in diagrams leads to CSS injection",
+    "UpdatedAt": "2026-05-11T19:36:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.9.6"
+      },
+      "VulnerableVersionRange": "\u003c= 10.9.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.15.0"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0-alpha.1, \u003c= 11.14.0"
+    }
+  ]
+}

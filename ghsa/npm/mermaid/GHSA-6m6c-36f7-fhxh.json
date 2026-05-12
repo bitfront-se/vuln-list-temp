@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T19:36:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mermaid"
+  },
+  "Advisory": {
+    "DatabaseId": 354704,
+    "Id": "GSA_kwCzR0hTQS02bTZjLTM2ZjctZmh4aM4ABWmQ",
+    "GhsaId": "GHSA-6m6c-36f7-fhxh",
+    "References": [
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/security/advisories/GHSA-6m6c-36f7-fhxh"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/a59ea56174712ee5430dfd5bc877cb5151f501a6"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/faafb5d49106dd32c367f3882505f2dd625aa30e"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.15.0"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/v10.9.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6m6c-36f7-fhxh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6m6c-36f7-fhxh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41150"
+      }
+    ],
+    "Description": "### Impact\n\nMermaid v11.14.0 and earlier are vulnerable to a denial-of-service attack when rendering gantt charts, if they use the [`excludes` attribute](https://mermaid.js.org/syntax/gantt.html?#excludes) to exclude all dates.\n\nExample:\n\n```\ngantt\n  excludes monday,tuesday,wednesday,thursday,friday,saturday,sunday\n  DoS :2025-01-01, 1d\n```\n\n`mermaid.parse` is unaffected, unless you then call the `ganttDb.getTasks()` (which is called when rendering a diagram).\n\n### Patches\n\nThis has been patched in:\n\n- [v11.15.0](https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.15.0) (see [faafb5d49106dd32c367f3882505f2dd625aa30e](https://github.com/mermaid-js/mermaid/commit/faafb5d49106dd32c367f3882505f2dd625aa30e))\n- [v10.9.6](https://github.com/mermaid-js/mermaid/releases/tag/v10.9.6) (see [a59ea56174712ee5430dfd5bc877cb5151f501a6](https://github.com/mermaid-js/mermaid/commit/a59ea56174712ee5430dfd5bc877cb5151f501a6))\n\n### Workarounds\n\nThere are no workarounds available without updating to a newer version of mermaid.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T19:36:55Z",
+    "Severity": "MODERATE",
+    "Summary": "Mermaid Gantt Charts are vulnerable to an Infinite Loop DoS",
+    "UpdatedAt": "2026-05-11T19:36:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.9.6"
+      },
+      "VulnerableVersionRange": "\u003c= 10.9.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.15.0"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0-alpha.1, \u003c= 11.14.0"
+    }
+  ]
+}

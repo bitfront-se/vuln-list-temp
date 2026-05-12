@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-11T19:36:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mermaid"
+  },
+  "Advisory": {
+    "DatabaseId": 354703,
+    "Id": "GSA_kwCzR0hTQS1naGNtLXhxZnctcTR2cs4ABWmP",
+    "GhsaId": "GHSA-ghcm-xqfw-q4vr",
+    "References": [
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/security/advisories/GHSA-ghcm-xqfw-q4vr"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/37ff937f1da2e19f882fd1db01235db4d01f4056"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/4e2d512bf5bf6f9de1a8f0a48da78dc4d09ac4f3"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.15.0"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/v10.9.6"
+      },
+      {
+        "Url": "https://mermaid.js.org/config/schema-docs/config.html#securitylevel"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ghcm-xqfw-q4vr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ghcm-xqfw-q4vr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41149"
+      }
+    ],
+    "Description": "### Impact\n\nUnder the default configuration, Mermaid state diagram's `classDef` allow DOM injection that escapes the SVG, although `\u003cscript\u003e` tags are removed, preventing XSS.\n\n#### Proof-of-concept\n\n```\nstateDiagram-v2\n  classDef xss fill:red\u003c/style\u003e\u003c/svg\u003e\u003cstyle\u003e*{x:x;y:y;overflow:visible!important;contain:none!important;transform:none!important;filter:none!important;clip-path:none!important}\u003c/style\u003e\u003cdiv style=\"x:x;y:y;color:red;font:5em/1 monospace;display:grid;place-items:center;z-index:2147483647;width:100vw;height:100vh;position:fixed;top:0;left:0;background:black\"\u003eHACKED\u003c/div\u003e\u003csvg\u003e\u003cstyle\u003ea:b\n  [*] --\u003e A:::xss\n```\n\n### Patches\n\n- [v11.15.0](https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.15.0) (see [37ff937f1da2e19f882fd1db01235db4d01f4056](https://github.com/mermaid-js/mermaid/commit/37ff937f1da2e19f882fd1db01235db4d01f4056))\n- [v10.9.6](https://github.com/mermaid-js/mermaid/releases/tag/v10.9.6) (see [4e2d512bf5bf6f9de1a8f0a48da78dc4d09ac4f3](https://github.com/mermaid-js/mermaid/commit/4e2d512bf5bf6f9de1a8f0a48da78dc4d09ac4f3))\n\n### Workarounds\n\nIf you can not update to a patched version, setting [`\"securityLevel\": \"sandbox\"`](https://mermaid.js.org/config/schema-docs/config.html#securitylevel)  will prevent this, by rendering the mermaid diagram in a sandboxed `\u003ciframe\u003e`.\n\n### Credits\n\nThanks to @zsxsoft from @KeenSecurityLab for reporting this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T19:36:46Z",
+    "Severity": "MODERATE",
+    "Summary": "Mermaid: Improper sanitization of `classDef` in state diagrams leads to HTML injection",
+    "UpdatedAt": "2026-05-11T19:36:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.9.6"
+      },
+      "VulnerableVersionRange": "\u003c= 10.9.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.15.0"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0-alpha.1, \u003c= 11.14.0"
+    }
+  ]
+}
