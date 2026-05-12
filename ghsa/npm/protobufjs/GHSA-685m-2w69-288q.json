@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-12T15:01:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "protobufjs"
+  },
+  "Advisory": {
+    "DatabaseId": 355091,
+    "Id": "GSA_kwCzR0hTQS02ODVtLTJ3NjktMjg4cc4ABWsT",
+    "GhsaId": "GHSA-685m-2w69-288q",
+    "References": [
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-685m-2w69-288q"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-v7.5.6"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-v8.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-685m-2w69-288q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-685m-2w69-288q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44289"
+      }
+    ],
+    "Description": "## Summary\n\nprotobufjs could recurse without a depth limit while decoding nested protobuf data. This affected both skipping unknown group fields and generated decoding of nested message fields.\n\nA crafted protobuf binary payload could cause the JavaScript call stack to be exhausted during decoding.\n\n## Impact\n\nAn attacker who can provide protobuf binary data decoded by an application may be able to crash the process or otherwise cause decoding to fail with a stack overflow.\n\nThis affects applications that decode untrusted protobuf binary input with affected versions.\n\n## Preconditions\n\n- The application must decode protobuf binary data influenced by an attacker.\n- The crafted input must contain deeply nested protobuf structures, such as nested group tags or nested message fields.\n- The affected decoder path must process the crafted input.\n\n## Workarounds\n\nAvoid decoding untrusted protobuf binary data with affected versions. If immediate upgrade is not possible, reject excessively nested messages at an outer protocol boundary where feasible, or isolate protobuf decoding in a process that can be safely restarted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T15:01:05Z",
+    "Severity": "HIGH",
+    "Summary": "protobuf.js: Denial of service through unbounded protobuf recursion",
+    "UpdatedAt": "2026-05-12T15:01:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 7.5.5"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-12T15:06:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "protobufjs"
+  },
+  "Advisory": {
+    "DatabaseId": 355095,
+    "Id": "GSA_kwCzR0hTQS02NmZmLXhneDQtdmNobc4ABWsX",
+    "GhsaId": "GHSA-66ff-xgx4-vchm",
+    "References": [
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-66ff-xgx4-vchm"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-v7.5.6"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-v8.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-66ff-xgx4-vchm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-66ff-xgx4-vchm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44293"
+      }
+    ],
+    "Description": "## Summary\n\nprotobufjs generated JavaScript for `toObject` conversion could include an unsafe expression derived from a schema-controlled `bytes` field default value. A crafted descriptor with a non-string default value for a `bytes` field could cause attacker-controlled code to be emitted into the generated conversion function.\n\n## Impact\n\nAn attacker who can provide or influence a protobuf descriptor may be able to execute arbitrary JavaScript in the context of the process using protobufjs.\n\nThis requires the application to load an attacker-controlled schema or descriptor and then convert a message of the affected type with defaults enabled. Applications that only use trusted, application-defined schemas are not directly affected by this issue.\n\n## Preconditions\n\n- The application must allow an attacker to control or influence a protobuf JSON descriptor or equivalent reflected schema.\n- The descriptor must define a `bytes` field with an attacker-controlled default value.\n- The application must call `toObject` with defaults enabled for the affected type.\n\n## Workarounds\n\nDo not load protobuf schemas or JSON descriptors from untrusted sources with affected versions. If untrusted schemas must be accepted, validate or restrict field options before loading them and run schema processing in an isolated environment.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T15:06:13Z",
+    "Severity": "HIGH",
+    "Summary": "protobuf.js: Code injection through bytes field defaults in generated toObject code",
+    "UpdatedAt": "2026-05-12T15:06:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 7.5.5"
+    }
+  ]
+}

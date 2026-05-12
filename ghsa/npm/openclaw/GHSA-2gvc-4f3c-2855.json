@@ -26,6 +26,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/f8705f512b09043df02b5da372c33374734bd921"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44110"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-authorization-bypass-in-matrix-room-control-commands-via-dm-pairing-store"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-2gvc-4f3c-2855"
       }
     ],
@@ -33,6 +39,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-2gvc-4f3c-2855"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44110"
       }
     ],
     "Description": "## Summary\n\nMatrix room control-command authorization used the effective allowlist for room traffic, which included sender IDs learned from the Matrix DM pairing store. A sender who was allowed only for a Matrix DM could therefore authorize room control commands when they also posted in a bot room.\n\n## Impact\n\nThis bypass let a DM-paired Matrix sender cross the DM/room authorization boundary and run Matrix room control commands without being present in the configured room allowlist, room membership list, or group allowlist. The issue required a sender already present in the pairing store and able to send to the target Matrix room. Severity remains high because room control commands can drive privileged OpenClaw behavior depending on the deployment's command and tool policy.\n\n## Affected versions\n\n- Affected: `\u003e 2026.3.28, \u003c 2026.4.15`\n- Patched: `2026.4.15`\n\n## Fix\n\nOpenClaw `2026.4.15` fixes the authorization boundary. Room control-command authorizers now use only configured sender IDs, effective room users, and group allowlists; DM pairing-store entries no longer authorize room commands. A follow-up change also skips DM pairing-store reads on room traffic.\n\nVerified in `v2026.4.15`:\n\n- `extensions/matrix/src/matrix/monitor/access-state.ts` builds room command authorizers from `commandAllowFrom`, which excludes pairing-store sender IDs for room traffic.\n- `extensions/matrix/src/matrix/monitor/handler.ts` gates room control commands through those authorizers.\n- `extensions/matrix/src/matrix/monitor/access-state.test.ts` covers a DM pairing-store sender and verifies it cannot authorize room control commands.\n\nFix commits included in `v2026.4.15` and absent from `v2026.4.14`:\n\n- `f8705f512b09043df02b5da372c33374734bd921` via PR #67294\n- `2bfd808a83116bd888e3e2633a61473fa2ed81b6` via PR #67325\n\nThanks to @nexrin and Keen Security Lab for reporting this issue.",
@@ -40,11 +50,11 @@
     "PublishedAt": "2026-04-17T22:32:29Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: Matrix room control-command authorization no longer trusts DM pairing-store entries",
-    "UpdatedAt": "2026-04-22T02:13:22Z",
+    "UpdatedAt": "2026-05-12T13:35:52Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
     }
   },
   "Versions": [

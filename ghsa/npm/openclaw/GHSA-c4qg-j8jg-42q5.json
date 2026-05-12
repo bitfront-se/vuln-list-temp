@@ -1,5 +1,5 @@
 {
-  "Severity": "LOW",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-04-25T23:48:30Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/49db424c8001f2f419aad85f434894d8d85c1a09"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44117"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-server-side-request-forgery-in-qqbot-direct-media-upload"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-c4qg-j8jg-42q5"
       }
     ],
@@ -24,18 +30,22 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-c4qg-j8jg-42q5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44117"
       }
     ],
     "Description": "## Affected Packages / Versions\n\n- Package: `openclaw` (npm)\n- Affected versions: `\u003c 2026.4.20`\n- Patched version: `2026.4.20`\n\n## Impact\n\nThe QQBot direct-upload media path could forward attacker-controlled image URLs without applying the SSRF validation used by the local download path. This could make configured QQBot media delivery request or relay URLs the operator did not intend to allow.\n\nThe affected path is limited to QQBot outbound media handling and does not expose arbitrary local files. Severity is low.\n\n## Fix\n\nOpenClaw now validates QQBot direct-upload media URLs before `uploadC2CMedia` and `uploadGroupMedia` direct-upload calls.\n\nFix commit:\n\n- `49db424c8001f2f419aad85f434894d8d85c1a09`\n\n## Release\n\nFixed in OpenClaw `2026.4.20`.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-04-25T23:48:29Z",
-    "Severity": "LOW",
+    "Severity": "MODERATE",
     "Summary": "OpenClaw: QQBot direct media upload skipped URL SSRF validation",
-    "UpdatedAt": "2026-04-25T23:48:30Z",
+    "UpdatedAt": "2026-05-12T13:38:33Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
     }
   },
   "Versions": [

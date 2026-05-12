@@ -1,5 +1,5 @@
 {
-  "Severity": "HIGH",
+  "Severity": "MODERATE",
   "UpdatedAt": "2026-05-04T20:57:53Z",
   "Package": {
     "Ecosystem": "NPM",
@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/7be82d4fd1193bcb7e44ee38838f00bf924ffa76"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44112"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-symlink-swap-race-condition-in-openshell-fs-bridge-writes"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-wppj-c6mr-83jj"
       }
     ],
@@ -24,18 +30,22 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-wppj-c6mr-83jj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44112"
       }
     ],
-    "Description": "## Summary\nOpenShell FS bridge writes stay pinned to the sandbox mount root.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nA time-of-check/time-of-use race around OpenShell sandbox filesystem writes could let a symlink swap redirect a write outside the intended local mount root.\n\n## Fix\nOpenShell write paths now validate the canonical target against the mount root, reject unsafe symlink parents and symlink leaves for writes, and use root-scoped write helpers before syncing to the remote sandbox.\n\n## Fix Commit(s)\n- 7be82d4fd1193bcb7e44ee38838f00bf924ffa76\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @VladimirEliTokarev for reporting.",
+    "Description": "## Summary\nOpenShell FS bridge writes stay pinned to the sandbox mount root \n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nA time-of-check/time-of-use race around OpenShell sandbox filesystem writes could let a symlink swap redirect a write outside the intended local mount root.\n\n## Fix\nOpenShell write paths now validate the canonical target against the mount root, reject unsafe symlink parents and symlink leaves for writes, and use root-scoped write helpers before syncing to the remote sandbox.\n\n## Fix Commit(s)\n- 7be82d4fd1193bcb7e44ee38838f00bf924ffa76\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nThanks @VladimirEliTokarev for reporting.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-04T20:57:50Z",
-    "Severity": "HIGH",
+    "Severity": "MODERATE",
     "Summary": "OpenClaw: OpenShell FS bridge writes stay pinned to the sandbox mount root",
-    "UpdatedAt": "2026-05-04T20:57:53Z",
+    "UpdatedAt": "2026-05-12T13:36:28Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N"
     }
   },
   "Versions": [

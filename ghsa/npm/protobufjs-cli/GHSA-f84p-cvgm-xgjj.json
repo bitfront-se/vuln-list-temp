@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-12T14:59:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "protobufjs-cli"
+  },
+  "Advisory": {
+    "DatabaseId": 355089,
+    "Id": "GSA_kwCzR0hTQS1mODRwLWN2Z20teGdqas4ABWsR",
+    "GhsaId": "GHSA-f84p-cvgm-xgjj",
+    "References": [
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-f84p-cvgm-xgjj"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-cli-v1.2.1"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-cli-v2.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f84p-cvgm-xgjj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f84p-cvgm-xgjj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42290"
+      }
+    ],
+    "Description": "## Summary\n\n`pbts` invoked JSDoc by building a shell command string from input file paths and executing it through `child_process.exec`. File paths containing shell metacharacters could therefore be interpreted by the shell instead of being passed to JSDoc as plain arguments.\n\n## Impact\n\nAn attacker who can control file names or paths passed to `pbts` may be able to execute arbitrary shell commands with the privileges of the process running `pbts`.\n\nThis affects the protobufjs CLI tooling path. The protobufjs runtime APIs for encoding, decoding, parsing, and loading protobuf messages are not directly affected by this issue.\n\n## Preconditions\n\n- The application or user must invoke `pbts` on file paths influenced by an attacker.\n- The attacker must be able to supply or create a path containing shell-significant characters.\n- The vulnerable `pbts` version must execute the generated JSDoc command through a shell.\n\n## Workarounds\n\nDo not run affected versions of `pbts` on attacker-controlled file names or paths. If this cannot be avoided, sanitize or rename input files before invoking `pbts`, or run the CLI in an isolated environment with minimal privileges.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T14:59:45Z",
+    "Severity": "HIGH",
+    "Summary": "protobuf.js is Vulnerable to OS Command Injection in the CLI",
+    "UpdatedAt": "2026-05-12T14:59:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.0"
+    }
+  ]
+}

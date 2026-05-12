@@ -17,6 +17,12 @@
         "Url": "https://github.com/openclaw/openclaw/commit/3cb1a56bfc9579a0f2336f9cfa12a8a744332a19"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44118"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-owner-context-spoofing-via-bearer-token-header"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-r6xh-pqhr-v4xh"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-r6xh-pqhr-v4xh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44118"
       }
     ],
     "Description": "## Summary\nMCP loopback owner context is derived from server-issued bearer tokens.\n\n## Affected Packages / Versions\n- Package: openclaw (npm)\n- Affected versions: \u003c= 2026.4.21\n- Fixed version: 2026.4.22\n\n## Impact\nThe loopback MCP path accepted spoofable owner-context metadata from request headers, which could allow a non-owner loopback client to present itself as owner for owner-gated operations.\n\n## Fix\nThe MCP loopback runtime now issues separate owner and non-owner bearer tokens and derives senderIsOwner exclusively from which token authenticated the request. The spoofable sender-owner header is no longer emitted or trusted.\n\n## Fix Commit(s)\n- 3cb1a56bfc9579a0f2336f9cfa12a8a744332a19\n\n## Verification\n- The fix commit is contained in the public v2026.4.22 tag.\n- openclaw@2026.4.22 is published on npm and the compiled package contains the fix.\n- Focused regression coverage for this path passed before publication.\n\nOpenClaw thanks @VladimirEliTokarev for reporting.",
@@ -31,11 +41,11 @@
     "PublishedAt": "2026-05-04T20:22:42Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: MCP loopback owner context is derived from server-issued bearer tokens",
-    "UpdatedAt": "2026-05-04T20:22:43Z",
+    "UpdatedAt": "2026-05-12T13:38:34Z",
     "WithdrawnAt": "",
     "CVSS": {
-      "Score": 0,
-      "VectorString": ""
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
     }
   },
   "Versions": [
