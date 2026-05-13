@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-13T15:33:25Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.goobi.viewer:viewer-core"
+  },
+  "Advisory": {
+    "DatabaseId": 355478,
+    "Id": "GSA_kwCzR0hTQS0ycmdwLWY2NmYtNDQ5Oc4ABWyW",
+    "GhsaId": "GHSA-2rgp-f66f-4499",
+    "References": [
+      {
+        "Url": "https://github.com/intranda/goobi-viewer-core/security/advisories/GHSA-2rgp-f66f-4499"
+      },
+      {
+        "Url": "https://github.com/intranda/goobi-viewer-core/commit/326980f24ce1e7cfabf658dd5f615934ca68ebbd"
+      },
+      {
+        "Url": "https://github.com/intranda/goobi-viewer-core/releases/tag/v26.04.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2rgp-f66f-4499"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2rgp-f66f-4499"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45083"
+      }
+    ],
+    "Description": "### Summary\n\nThe Goobi viewer REST endpoint `POST /api/v1/index/stream` accepted an arbitrary Solr streaming\nexpression from unauthenticated network clients and forwarded it to the backend Solr server without restriction.\nAn attacker could read the complete Solr index and, in default Solr deployments, also modify or delete indexed records.\n\nThe API endpoint has now been removed.\n\n### Impact\n\n- **Complete Solr index read without authentication.**\n  All documents indexed by the viewer  including those protected by access conditions such as moving walls, licence requirements or IP restrictions - can be read in full.\n\n- **Index data modification.**\n  `update()` streaming expressions overwrite indexed field values. An attacker can alter metadata, change `ACCESSCONDITION` values, or corrupt document structure.\n\n- **Index data deletion.**\n  `delete()` streaming expressions permanently remove documents. A single expression can delete the entire collection, requiring a full re-index to recover.\n\n### Patches\n\nThe endpoint was removed in 326980f24c\n\n### Workarounds\n\nUntil an update can be deployed, the endpoint should be blocked by a reverse proxy or in the tomcat configuration.\n\nFor Apache httpd the following block can be used in the vhost configuration:\n\n```\n\u003cLocationMatch ^.*api/v[12]/index/stream.*$\u003e\n    Require all denied\n\u003c/LocationMatch\u003e\n```\n\nAlternatively the following security constraint can be added in tomcat via the relevant web.xml:\n```\n\u003csecurity-constraint\u003e\n      \u003cweb-resource-collection\u003e\n        \u003cweb-resource-name\u003eblocked endpoint\u003c/web-resource-name\u003e\n        \u003curl-pattern\u003e/api/v1/index/stream\u003c/url-pattern\u003e\n        \u003curl-pattern\u003e/api/v1/index/stream/*\u003c/url-pattern\u003e\n      \u003c/web-resource-collection\u003e\n      \u003cauth-constraint/\u003e\n\u003c/security-constraint\u003e\n```\n\n### References\n\n- Fix commit: 326980f24c\n- Introducing commit: 6bfb1cbd42\n- [Solr Streaming Expressions reference](https://solr.apache.org/guide/solr/latest/query-guide/streaming-expressions.html)\n\n\n### Contact\n\nIf you have any questions or comments about this advisory:\n\n- Email us at [support@intranda.com](mailto:support@intranda.com)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-13T15:33:24Z",
+    "Severity": "CRITICAL",
+    "Summary": "Goobi viewer - Core: Unauthenticated Solr Streaming Expression Proxy",
+    "UpdatedAt": "2026-05-13T15:33:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 4.8.0, \u003c= 26.04"
+    }
+  ]
+}

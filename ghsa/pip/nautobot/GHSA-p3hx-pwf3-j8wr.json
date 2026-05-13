@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-13T15:31:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nautobot"
+  },
+  "Advisory": {
+    "DatabaseId": 355471,
+    "Id": "GSA_kwCzR0hTQS1wM2h4LXB3ZjMtajh3cs4ABWyP",
+    "GhsaId": "GHSA-p3hx-pwf3-j8wr",
+    "References": [
+      {
+        "Url": "https://github.com/nautobot/nautobot/security/advisories/GHSA-p3hx-pwf3-j8wr"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/commit/9deddfc91ad9260ad17b5e20084e9e2d15be3609"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/commit/c46f97040b2bde4320be36b23577f19a8bcbd8c3"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/releases/tag/v2.4.33"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/releases/tag/v3.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p3hx-pwf3-j8wr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p3hx-pwf3-j8wr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44798"
+      }
+    ],
+    "Description": "### Impact\n\nA user with access to add/change a GitRepository record could use the REST API to directly set the `current_head` field on the record, which was not intended to be user-editable. Doing so could cause Nautobot's local clone(s) of the relevant repository to checkout a commit other than the latest commit on the specified `branch` (resulting in misleading state), or potentially to be unable to make use of the repository at all (until manually remediated) due to the `current_head` pointing to a nonexistent commit hash or malformed value.\n\n### Patches\n\nThe issue has been remediated in Nautobot v2.4.33 and 3.1.2.\n\n\n### Workarounds\n\nNote that many of the same end-result symptoms could be caused by a user with the same level of access simply changing the `branch` or `remote_url` of a GitRepository rather than crafting the `current_head`. Administrators are encouraged to carefully review which users are granted permissions to create and modify GitRepository records.\n\n\n### References\n\n- 2.4.33 (\u003ca href=\"https://github.com/nautobot/nautobot/commit/9deddfc91ad9260ad17b5e20084e9e2d15be3609\"\u003epatch\u003c/a\u003e)\n- 3.1.2 (\u003ca href=\"https://github.com/nautobot/nautobot/commit/c46f97040b2bde4320be36b23577f19a8bcbd8c3\"\u003epatch\u003c/a\u003e)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-13T15:31:04Z",
+    "Severity": "HIGH",
+    "Summary": "Nautobot: GitRepository.current_head field should not be writable through REST API",
+    "UpdatedAt": "2026-05-13T15:31:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.33"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0a2, \u003c 3.1.2"
+    }
+  ]
+}

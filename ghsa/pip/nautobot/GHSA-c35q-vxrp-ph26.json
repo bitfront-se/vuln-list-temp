@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-13T15:31:03Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nautobot"
+  },
+  "Advisory": {
+    "DatabaseId": 355470,
+    "Id": "GSA_kwCzR0hTQS1jMzVxLXZ4cnAtcGgyNs4ABWyO",
+    "GhsaId": "GHSA-c35q-vxrp-ph26",
+    "References": [
+      {
+        "Url": "https://github.com/nautobot/nautobot/security/advisories/GHSA-c35q-vxrp-ph26"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/commit/16aa4aa9796ab7a31c4d615ec945e1f16d8c77c4"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/commit/7324c8f0d8c7245fbc691e15d729adc2d2707d08"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/releases/tag/v2.4.33"
+      },
+      {
+        "Url": "https://github.com/nautobot/nautobot/releases/tag/v3.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c35q-vxrp-ph26"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c35q-vxrp-ph26"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44797"
+      }
+    ],
+    "Description": "### Impact\n\nNautobot's `Webhook` data model and associated feature set could be configured by users with sufficient access to perform requests to various hosts and IP addresses that should not be permitted, allowing for various behaviors similar to server-side request forgery (SSRF).\n\n### Patches\n\nFixes are available in Nautobot v2.4.33 and v3.1.2.\n\nIn support of this fix, three new settings variables have been added to Nautobot:\n\n- `WEBHOOK_ALLOWED_SCHEMES` - By default new or updated `Webhook` records will be restricted to HTTP or HTTPS only, disallowing other schemes that may have been previously allowed. Administrators should audit existing `Webhook` records to identify any that are invalid, and either update/delete said records or customize `WEBHOOK_ALLOWED_SCHEMES` as appropriate.\n- `WEBHOOK_ADDITIONAL_BLOCKED_NETWORKS` - This can be used to specify additional IP networks that should be denied to `Webhook` sending, for example some deployments may wish to disallow RFC1918 addresses or even disallow all networks and carve out specific exemptions using the following setting.\n- `WEBHOOK_ALLOWED_HOSTS` - This can be used to provide an allow-list of specific hosts that would otherwise be blocked by any `WEBHOOK_ADDITIONAL_BLOCKED_NETWORKS` configuration.\n\n### Workarounds\n\nAdministrators should review which users have been granted `add` or `change` permissions for the `Webhook` data model, and should review currently defined `Webhook` records for safety and validity. Other than that, no specific workaround has been identified.\n\n### References\n\n- 2.4.33 (\u003ca href=\"https://github.com/nautobot/nautobot/commit/16aa4aa9796ab7a31c4d615ec945e1f16d8c77c4\"\u003epatch\u003c/a\u003e)\n- 3.1.2 (\u003ca href=\"https://github.com/nautobot/nautobot/commit/7324c8f0d8c7245fbc691e15d729adc2d2707d08\"\u003epatch\u003c/a\u003e)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-13T15:30:59Z",
+    "Severity": "HIGH",
+    "Summary": "Nautobot: Webhook definitions could be used for server-side request forgery (SSRF)",
+    "UpdatedAt": "2026-05-13T15:31:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.33"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0a2, \u003c 3.1.2"
+    }
+  ]
+}
