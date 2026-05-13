@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-13T01:37:26Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openstack-cyborg"
+  },
+  "Advisory": {
+    "DatabaseId": 353937,
+    "Id": "GSA_kwCzR0hTQS1tbXBjLXhqeHItNWhmOM4ABWaR",
+    "GhsaId": "GHSA-mmpc-xjxr-5hf8",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40214"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/openstack-cyborg/+bug/2144056"
+      },
+      {
+        "Url": "https://www.openwall.com/lists/oss-security/2026/05/07/6"
+      },
+      {
+        "Url": "https://security.openstack.org/ossa/OSSA-2026-011.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mmpc-xjxr-5hf8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mmpc-xjxr-5hf8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40214"
+      }
+    ],
+    "Description": "In OpenStack Cyborg before 16.0.1, the Accelerator Request (ARQ) API does not enforce project ownership at any layer. The project_id column in the database is never populated (NULL for every ARQ), database queries have no project filtering, and policy checks are self-referential (the authorize_wsgi decorator compares the caller's project_id with itself rather than the target resource). Any authenticated non-admin user can complete various actions such as deleting ARQs bound to other projects' instances, aka cross-tenant denial of service.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-08T00:31:34Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenStack Cyborg's Accelerator Request (ARQ) API does not enforce project ownership at any layer",
+    "UpdatedAt": "2026-05-13T01:37:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 16.0.1"
+    }
+  ]
+}
