@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-12T22:23:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sillytavern"
+  },
+  "Advisory": {
+    "DatabaseId": 355433,
+    "Id": "GSA_kwCzR0hTQS13bW0zLWg5cWotcDV2Ns4ABWxp",
+    "GhsaId": "GHSA-wmm3-h9qj-p5v6",
+    "References": [
+      {
+        "Url": "https://github.com/SillyTavern/SillyTavern/security/advisories/GHSA-wmm3-h9qj-p5v6"
+      },
+      {
+        "Url": "https://github.com/SillyTavern/SillyTavern/releases/tag/1.18.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wmm3-h9qj-p5v6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wmm3-h9qj-p5v6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44648"
+      }
+    ],
+    "Description": "### Summary\nChanging a user’s password does not invalidate existing sessions, allowing an attacker with a stolen cookie to retain access even after the victim resets their password.\n\n### Details\nSillyTavern relies on cookie-session for authentication, storing all session data (user handle, permissions) in a signed cookie. The endpoints POST /api/users/change-password and POST /api/users/recover-step2 only update the password hash in the database but do not expire current sessions. Because the session is stateless and stored entirely in the client cookie, there is no server-side mechanism to revoke a token once issued.\n\n### PoC\n1.Log into the same SillyTavern account from two different browsers (e.g., Chrome and Firefox private mode).\n2.In Chrome, change the account password under User Settings → Change Password.\n3.In Firefox, refresh the page or perform a protected action (e.g., view API keys).\n4.Expected: Firefox session should be invalidated and ask for login.\n5.Actual: Firefox remains fully authenticated, able to perform all actions as the targeted user.\n\n### Impact\nAn attacker who obtains a valid session cookie (via XSS, MITM, physical access, etc.) can continue using it indefinitely, even after the legitimate user changes their password.\nThis nullifies the most common recovery measure against session theft.\nThe default cookie lifespan is 400 days, giving an attacker a very long exploitation window.\n\n### Resolution\nA fix was released in the version 1.18.0, invalidating a session cookie on account password change.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T22:23:20Z",
+    "Severity": "HIGH",
+    "Summary": "SillyTavern: Existing sessions are not invalidated after password change, allowing session reuse and account takeover",
+    "UpdatedAt": "2026-05-12T22:23:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.18.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.17.0"
+    }
+  ]
+}
