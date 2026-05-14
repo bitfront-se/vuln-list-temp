@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-14T14:54:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 355759,
+    "Id": "GSA_kwCzR0hTQS1waHA2LTgzZmctZ3czZ84ABW2v",
+    "GhsaId": "GHSA-php6-83fg-gw3g",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-php6-83fg-gw3g"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise%403.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-php6-83fg-gw3g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-php6-83fg-gw3g"
+      }
+    ],
+    "Description": "**Detection Method:** Kolega.dev Deep Code Scan\n\n| Attribute | Value |\n|---|---|\n| Severity | Medium |\n| CWE | CWE-522 (Insufficiently Protected Credentials) |\n| Location | packages/server/src/enterprise/controllers/account.controller.ts:128-135 |\n| Practical Exploitability | Medium |\n| Developer Approver | faizan@kolega.ai |\n\n### Description\nThe checkBasicAuth endpoint validates credentials in plaintext without rate limiting and with direct comparison.\n\n### Affected Code\n```\npublic async checkBasicAuth(req: Request, res: Response) {\n    const { username, password } = req.body\n    if (username === process.env.FLOWISE_USERNAME \u0026\u0026 password === process.env.FLOWISE_PASSWORD) {\n        return res.json({ message: 'Authentication successful' })\n```\n\n### Evidence\nCredentials are sent in plaintext in request body and compared directly without hashing. No rate limiting prevents brute force attacks. The endpoint returns different messages for success/failure, enabling enumeration.\n\n### Impact\nCredential brute-forcing - attackers can attempt unlimited username/password combinations against the basic auth system. Successful attacks grant access to the application.\n\n### Recommendation\n1) Implement rate limiting on this endpoint, 2) Use constant-time comparison to prevent timing attacks, 3) Consider using hashed comparison, 4) Return generic error messages, 5) Add logging for failed attempts.\n\n### Notes\nThe checkBasicAuth endpoint at line 128-135 has multiple security issues: (1) No rate limiting - the RateLimiterManager only applies to chatflow-specific endpoints, not auth endpoints. Attackers can perform unlimited brute force attempts. (2) Uses JavaScript === operator for comparison which is not constant-time, potentially enabling timing attacks. (3) Returns different messages for success ('Authentication successful') vs failure ('Authentication failed'), enabling credential enumeration. The endpoint compares plaintext credentials against environment variables FLOWISE_USERNAME and FLOWISE_PASSWORD. While this is basic auth for simpler deployments, the lack of rate limiting makes it actively exploitable for credential brute-forcing.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T14:54:46Z",
+    "Severity": "HIGH",
+    "Summary": "FlowiseAI Exposes Basic Auth Credentials via API",
+    "UpdatedAt": "2026-05-14T14:54:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.1"
+    }
+  ]
+}

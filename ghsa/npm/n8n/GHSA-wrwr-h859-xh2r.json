@@ -1,0 +1,65 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-14T16:17:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 355820,
+    "Id": "GSA_kwCzR0hTQS13cndyLWg4NTkteGgycs4ABW3s",
+    "GhsaId": "GHSA-wrwr-h859-xh2r",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-wrwr-h859-xh2r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hqr4-h3xv-9m3r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wrwr-h859-xh2r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wrwr-h859-xh2r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44791"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could bypass the patch for GHSA-hqr4-h3xv-9m3r in the XML node. When combined with other nodes, this could lead to RCE on the n8n host.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.43, 2.20.7, and 2.22.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the XML node by adding `n8n-nodes-base.xml` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n---\nn8n has adopted CVSS 4.0 as primary score for all security advisories. CVSS 3.1 vector strings are provided for backwards compatibility.\n\nCVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T16:17:49Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n Has an XML Node Prototype Pollution Patch Bypass",
+    "UpdatedAt": "2026-05-14T16:17:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.20.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.20.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.21.0, \u003c 2.22.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.43"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.43"
+    }
+  ]
+}

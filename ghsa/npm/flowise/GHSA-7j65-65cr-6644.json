@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-14T16:19:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 355829,
+    "Id": "GSA_kwCzR0hTQS03ajY1LTY1Y3ItNjY0NM4ABW31",
+    "GhsaId": "GHSA-7j65-65cr-6644",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-7j65-65cr-6644"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/pull/6051"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/commit/49a2259bf2a6b4f3d4b50813cb5161cee0d40040"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise%403.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7j65-65cr-6644"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7j65-65cr-6644"
+      }
+    ],
+    "Description": "## Summary\n\n**Type:** Mass assignment via `Object.assign(entity, body)` -\u003e client-controlled `workspaceId` (and on create, `id`) overwritten on the DatasetRow entity -\u003e cross-workspace data takeover and IDOR.\n**File:** `packages/server/src/services/dataset/index.ts`\n**Root cause:** The DatasetRow controller/service constructs a `new DatasetRow()` and copies the request body into it via `Object.assign(...)` without an explicit field allowlist. The request body therefore can include `workspaceId`, `id`, `createdDate`, `updatedDate`. The server only rebinds *some* of these after the assign (e.g. on create, it overwrites `workspaceId` but not `id`; on update, it overwrites `id` but not `workspaceId`). The remaining client-controlled values land directly on the persisted row, breaking workspace isolation. Same root pattern as the datasetrow entity's sibling controllers and as `DocumentStore` before it was patched in commit 840d2ae.\n\n## Affected Code\n\n**File:** `packages/server/src/services/dataset/index.ts`\n\n```ts\n// create (line 274) and update (line 315)\nObject.assign(newRow, rowBody)          // \u003c-- BUG: rowBody.id, rowBody.datasetId accepted\n```\n\n**Why it's wrong:** `Object.assign(target, source)` copies every own enumerable property of `source` onto `target`. The TypeORM/SQL persistence layer below it does not strip ownership-bearing columns, so `workspaceId` set in the request body lands as the new `workspaceId` of the persisted row. The DocumentStore patch (commit 840d2ae) demonstrated the intended fix shape (explicit field-by-field allowlist) but it has not been applied to this entity.\n\n## Exploit Chain\n\n1. Attacker is an authenticated member of workspace A. They have a session cookie / JWT for the Flowise web UI. State at this point: attacker can read and write entities scoped to workspace A.\n2. Attacker creates a datasetrow in workspace A via the documented API (or reuses an existing one they own). They note its entity `id`.\n3. Attacker issues a `PUT /api/v1/datasetrows/\u003cid\u003e` (or equivalent endpoint) with a JSON body that includes `\"workspaceId\": \"\u003cworkspace-B-id\u003e\"` (an arbitrary other workspace's UUID). State at this point: the request reaches the controller as a workspace-A authenticated request.\n4. The controller calls `Object.assign(updateEntity, body)`. The body's `workspaceId` overwrites the entity's `workspaceId` field. The persistence layer commits the row.\n5. Final state: the datasetrow row is now owned by workspace B. Workspace B members can see it, modify it, and use it. Workspace A loses access (it no longer satisfies their workspace filter). The original creator's workspace audit shows nothing because the operation looked like a normal update.\n\n## Security Impact\n\n**Severity:** High. Cross-workspace boundary violation by any authenticated workspace member.\n**Attacker capability:** Any authenticated user with permission to update a datasetrow can move it to any workspace whose UUID they can guess or enumerate (workspace UUIDs are exposed in many API responses, so enumeration is trivial). DatasetRows hold individual training/evaluation records. The mass assignment lets a member rebind a row to a Dataset in another workspace via `datasetId`, exposing the row content to the destination workspace.\n**Preconditions:** Authenticated session with edit permission for the source datasetrow. No second factor required. Workspace UUIDs are exposed via the `/api/v1/workspaces` listing or via any cross-referenced object's `workspaceId` field, so target enumeration is trivial.\n**Differential:** PoC-verified by source inspection of the original GHSA-q4pr-4r26-c69r. Patched build (with the suggested fix below) refuses the `workspaceId` field; vulnerable build accepts it and persists it.\n\n## Suggested Fix\n\nAlready fixed in PR https://github.com/FlowiseAI/Flowise/pull/6051 (allowlist pattern applied).\n\n```ts\n// Allowlist pattern (matches commit 840d2ae for DocumentStore):\nconst updatedDatasetRow = new DatasetRow()\nif (body.\u003callowed_field_1\u003e !== undefined) updatedDatasetRow.\u003callowed_field_1\u003e = body.\u003callowed_field_1\u003e\nif (body.\u003callowed_field_2\u003e !== undefined) updatedDatasetRow.\u003callowed_field_2\u003e = body.\u003callowed_field_2\u003e\n// ...whitelist only the documented fields. Never copy id, workspaceId, createdDate, updatedDate from the client.\n```\n\nRegression tests should assert that a request body containing `workspaceId`, `id`, `createdDate`, or `updatedDate` is rejected (or at minimum: does not change those columns on the persisted row) for both create and update paths.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T16:19:44Z",
+    "Severity": "HIGH",
+    "Summary": "FlowiseAI: DatasetRow create+update mass-assignment allows cross-workspace row takeover",
+    "UpdatedAt": "2026-05-14T16:19:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.1"
+    }
+  ]
+}

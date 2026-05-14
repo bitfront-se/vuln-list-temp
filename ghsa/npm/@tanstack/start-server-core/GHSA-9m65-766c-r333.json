@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-14T16:37:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tanstack/start-server-core"
+  },
+  "Advisory": {
+    "DatabaseId": 355843,
+    "Id": "GSA_kwCzR0hTQS05bTY1LTc2NmMtcjMzM84ABW4D",
+    "GhsaId": "GHSA-9m65-766c-r333",
+    "References": [
+      {
+        "Url": "https://github.com/TanStack/router/security/advisories/GHSA-9m65-766c-r333"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/security/advisories"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9m65-766c-r333"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9m65-766c-r333"
+      }
+    ],
+    "Description": "### Summary\nA type-confusion bug in seroval ≤ 1.5.2 ([upstream advisory](https://github.com/lxsmnsyc/seroval/security/advisories)) allowed a crafted JSON body sent to one TanStack Start server function to trigger invocation of a different client-referenced server function as a side effect of deserializing the request payload.\n\nThis is not an authentication bypass and not remote code execution. The mechanism only invokes server functions that the same client could already reach directly via /_serverFn/\u003cid\u003e, and the target function's full middleware chain — including any user-supplied authentication, authorization, and inputValidator — runs as it would on a direct call.\n\n### Impact\nTo be exploitable in any meaningful sense, an application would need to expose a client-referenced server function that:\n\n- [ ] Performs a privileged side effect, and\n- [ ] Has no authentication/authorization middleware, and\n- [ ] Has no input validation\n\nA function meeting all three is already directly callable by any unauthenticated client at its own endpoint, so the practical impact on correctly-written applications is nil. The residual concerns are:\n\nA request to function A could cause function B to also execute, which may surprise observability/audit logging that keys off the request URL.\n\nRequest-level middleware (as opposed to per-function middleware) does not re-run for the inner invocation.\nServer-only functions (isClientReferenced: false) cannot be reached through this mechanism.\n\n### Patches\nUpgrade to @tanstack/start-server-core ≥ 1.167.30 (or the equivalent dated release of @tanstack/react-start / @tanstack/solid-start). The fix bumps seroval to ≥ 1.5.3 and adds defense-in-depth to the serialization adapter plugin shape so adapter payloads cannot be confused with internal seroval node types.\n\n### Workarounds\nIf you cannot upgrade immediately, ensure every createServerFn(...) exposed to the client has both an .inputValidator(...) and authentication/authorization middleware via .middleware([...]). This is recommended regardless of this advisory.\n\n### Credits\n- [Mufeed VH](https://x.com/mufeedvh) of [Winfunc Research](https://winfunc.com/)\n- Upstream fix coordinated with Seroval maintainers https://github.com/lxsmnsyc/seroval",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T16:37:10Z",
+    "Severity": "MODERATE",
+    "Summary": "TanStack Start - Server Core: Inbound server-function request deserialization could invoke a sibling client-referenced server function",
+    "UpdatedAt": "2026-05-14T16:37:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.167.30"
+      },
+      "VulnerableVersionRange": "\u003c 1.167.30"
+    }
+  ]
+}

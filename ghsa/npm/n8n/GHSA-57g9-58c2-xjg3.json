@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-14T16:17:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 355819,
+    "Id": "GSA_kwCzR0hTQS01N2c5LTU4YzIteGpnM84ABW3r",
+    "GhsaId": "GHSA-57g9-58c2-xjg3",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-57g9-58c2-xjg3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-57g9-58c2-xjg3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-57g9-58c2-xjg3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44790"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could inject CLI flags on the Git node's Push operation allowing an attacker to read arbitrary files from the n8n server potentially leading to full compromise.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.43, 2.20.7, and 2.22.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Git node by adding `n8n-nodes-base.git` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n---\nn8n has adopted CVSS 4.0 as primary score for all security advisories. CVSS 3.1 vector strings are provided for backwards compatibility.\n\nCVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T16:17:35Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n Has an Arbitrary File Read via Git Node",
+    "UpdatedAt": "2026-05-14T16:17:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.20.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.20.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.21.0, \u003c 2.22.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.43"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.43"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-14T14:58:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 355763,
+    "Id": "GSA_kwCzR0hTQS03ZzczLTk5cjQtbTRtas4ABW2z",
+    "GhsaId": "GHSA-7g73-99r4-m4mj",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-7g73-99r4-m4mj"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise%403.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7g73-99r4-m4mj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7g73-99r4-m4mj"
+      }
+    ],
+    "Description": "**Severity**: HIGH (CVSS ~7.5)\n**Type**: CWE-200 (Exposure of Sensitive Information)\n**File**: `packages/server/src/services/credentials/index.ts:62-71`\n\n**Description**: When credentials are fetched with a `credentialName` filter parameter, the `encryptedData` field is NOT stripped from the response. The code properly omits `encryptedData` when NO filter is used (line 102) but fails to do so when a filter IS used (lines 62-63, 70-71).\nCredential Data Leak\n**Evidence**:\n```typescript\n// Lines 62-63: WITH filter - encryptedData LEAKED\nconst credentials = await appServer.AppDataSource.getRepository(Credential).findBy(searchOptions)\ndbResponse.push(...credentials)  // encryptedData NOT removed!\n\n// Lines 100-102: WITHOUT filter - encryptedData properly omitted\nfor (const credential of credentials) {\n    dbResponse.push(omit(credential, ['encryptedData']))  // Correctly omitted\n}\n```\n\n**Impact**: Authenticated users can extract encrypted credential data (API keys, passwords, tokens for services like OpenAI, AWS, etc.). Combined with access to the encryption key file (`~/.flowise/encryption.key` written with default permissions), this enables full credential theft.\n\n**Reproduction**:\n```bash\ncurl https://TARGET/api/v1/credentials?credentialName=openAIApi \\\n  -H \"Authorization: Bearer API_KEY\"\n# Response includes encryptedData field with AES-encrypted credentials\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T14:58:12Z",
+    "Severity": "HIGH",
+    "Summary": "FlowiseAI Vulnerable to Credential Data Leak",
+    "UpdatedAt": "2026-05-14T14:58:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.1"
+    }
+  ]
+}
