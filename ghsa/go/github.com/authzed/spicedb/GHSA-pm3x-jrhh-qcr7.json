@@ -33,12 +33,12 @@
         "Value": "CVE-2025-64529"
       }
     ],
-    "Description": "### Impact\n\nUsers who:\n1. Use the exclusion operator somewhere in their authorization schema.\n1. Have configured their SpiceDB server such that `--write-relationships-max-updates-per-call` is bigger than 6500.\n1. Issue calls to WriteRelationships with a large enough number of updates that cause the payload to be bigger than what their datastore allows.\n\nUsers will:\n\n1. Receive a successful response from their `WriteRelationships` call, when in reality that call failed.\n2. Receive incorrect permission check results, if those relationships had to be read to resolve the relation involving the exclusion.\n\n### Patches\n\nUpgrade to v.145.2.\n\n### Workarounds\n\nSet `--write-relationships-max-updates-per-call` to `1000`.",
+    "Description": "### Impact\n\nUsers who \n1. use the exclusion operator somewhere in their authorization schema\n1. have configured their SpiceDB server such that `--write-relationships-max-updates-per-call` is bigger than 6500\n1. issue calls to WriteRelationships with a large enough number of updates that cause the payload to be bigger than what their datastore allows\n\nwill \n\n1. receive a successful response from their `WriteRelationships` call, when in reality that call failed,\n2. receive incorrect permission check results, if those relationships had to be read to resolve the relation involving the exclusion\n\n### Patches\n\nUpgrade to v.145.2.\n\n### Workarounds\n\nSet `--write-relationships-max-updates-per-call` to `1000`.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2025-11-13T22:58:20Z",
     "Severity": "LOW",
     "Summary": "SpiceDB WriteRelationships fails silently if payload is too big",
-    "UpdatedAt": "2025-11-21T15:35:05Z",
+    "UpdatedAt": "2026-05-14T20:54:59Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 6.5,

