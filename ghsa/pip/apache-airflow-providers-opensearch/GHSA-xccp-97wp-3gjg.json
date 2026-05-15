@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-15T17:30:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow-providers-opensearch"
+  },
+  "Advisory": {
+    "DatabaseId": 354518,
+    "Id": "GSA_kwCzR0hTQS14Y2NwLTk3d3AtM2dqZ84ABWjW",
+    "GhsaId": "GHSA-xccp-97wp-3gjg",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-43826"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/65509"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/bxsrqx1vwssovnwnrvgh9xcosptmf73y"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/10/2"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/6a6b6ff409fb48c28bd63482828632a3c5a5bb93"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xccp-97wp-3gjg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xccp-97wp-3gjg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43826"
+      }
+    ],
+    "Description": "The OpenSearch logging provider, when configured with a `host` URL that embeds credentials (for example `https://user:password@server.example.com:9200`), wrote the full host URL — including the embedded credentials — into task logs. Any user with task-log read permission could harvest the backend credentials. Users are advised to upgrade to `apache-airflow-providers-opensearch` 1.9.1 or later and, as a defense-in-depth measure, configure the backend credentials via a secret backend rather than embedding them in the `[opensearch] host` URL.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T09:30:32Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow Providers OpenSearch: OpenSearch task-log handler leaks credentials embedded in the host URL",
+    "UpdatedAt": "2026-05-15T17:30:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.9.1"
+    }
+  ]
+}
