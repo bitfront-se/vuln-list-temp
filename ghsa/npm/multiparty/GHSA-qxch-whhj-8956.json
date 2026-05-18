@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T17:35:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multiparty"
+  },
+  "Advisory": {
+    "DatabaseId": 356431,
+    "Id": "GSA_kwCzR0hTQS1xeGNoLXdoaGotODk1Ns4ABXBP",
+    "GhsaId": "GHSA-qxch-whhj-8956",
+    "References": [
+      {
+        "Url": "https://github.com/pillarjs/multiparty/security/advisories/GHSA-qxch-whhj-8956"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-8161"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/pillarjs/multiparty/releases/tag/v4.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qxch-whhj-8956"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qxch-whhj-8956"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-8161"
+      }
+    ],
+    "Description": "### Impact\n\nmultiparty@4.2.3 and lower versions are vulnerable to denial of service via uncaught exception. By sending a `multipart/form-data` request with a field name that collides with an inherited `Object.prototype` property (e.g., `__proto__`, `constructor`, `toString`), the parser invokes `.push()` on the inherited prototype value rather than an array, throwing a `TypeError` that propagates as an uncaught exception and crashes the process. Any service accepting multipart uploads via multiparty is affected.\n\n### Patches\n\nUsers should upgrade to multiparty@4.3.0 or higher.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T17:35:01Z",
+    "Severity": "HIGH",
+    "Summary": "multiparty: Denial of Service via Prototype Pollution leads to Uncaught Exception",
+    "UpdatedAt": "2026-05-18T17:35:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.3"
+    }
+  ]
+}

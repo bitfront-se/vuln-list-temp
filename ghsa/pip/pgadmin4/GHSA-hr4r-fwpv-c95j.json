@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T14:56:49Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pgadmin4"
+  },
+  "Advisory": {
+    "DatabaseId": 354620,
+    "Id": "GSA_kwCzR0hTQS1ocjRyLWZ3cHYtYzk1as4ABWk8",
+    "GhsaId": "GHSA-hr4r-fwpv-c95j",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7819"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/issues/9902"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/commit/435752b83"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hr4r-fwpv-c95j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hr4r-fwpv-c95j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-7819"
+      }
+    ],
+    "Description": "Symbolic-link path traversal (CWE-61, CWE-22) in pgAdmin 4 File Manager.\n\ncheck_access_permission used os.path.abspath, which resolves '..' but does not resolve symbolic links, while the subsequent kernel write follows symlinks. An authenticated user could plant a symbolic link inside their own storage directory pointing outside it and induce pgAdmin to write to any path reachable by the pgAdmin process.\n\nFix switches the access check to os.path.realpath for both source and destination, and adds an _open_upload_target helper that opens the target with O_NOFOLLOW (mode 0o600) to close the leaf-component TOCTOU between the access check and the open. File mode is hardened from 0o644 to 0o600.\n\nThis issue affects pgAdmin 4: before 9.15.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T18:31:44Z",
+    "Severity": "HIGH",
+    "Summary": " pgAdmin 4 File Manager has symbolic-link path traversal",
+    "UpdatedAt": "2026-05-18T14:56:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.15"
+      },
+      "VulnerableVersionRange": "\u003c 9.15"
+    }
+  ]
+}

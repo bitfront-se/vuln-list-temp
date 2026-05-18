@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T14:23:37Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pgadmin4"
+  },
+  "Advisory": {
+    "DatabaseId": 354615,
+    "Id": "GSA_kwCzR0hTQS1ocDg0LXAyZ3EtNmZ2cs4ABWk3",
+    "GhsaId": "GHSA-hp84-p2gq-6fvr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7815"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/issues/9898"
+      },
+      {
+        "Url": "https://github.com/pgadmin-org/pgadmin4/commit/cf53953d9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hp84-p2gq-6fvr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hp84-p2gq-6fvr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-7815"
+      }
+    ],
+    "Description": "SQL injection vulnerability in pgAdmin 4 Maintenance Tool.\n\nFour user-supplied JSON fields (buffer_usage_limit, vacuum_parallel, vacuum_index_cleanup, reindex_tablespace) were concatenated directly into the rendered VACUUM/ANALYZE/REINDEX command and passed to psql --command. An authenticated user with the tools_maintenance permission could break out of the option syntax and execute arbitrary SQL on the connected PostgreSQL server. The injected SQL could in turn invoke COPY ... TO PROGRAM to escalate to operating-system command execution on the database host.\n\nFix introduces server-side allow-listing of all four fields and switches reindex_tablespace from manual quoting to the qtIdent filter.\n\nThis issue affects pgAdmin 4: before 9.15.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T18:31:44Z",
+    "Severity": "HIGH",
+    "Summary": "SQL injection vulnerability in pgAdmin 4 Maintenance Tool",
+    "UpdatedAt": "2026-05-18T14:23:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.15"
+      },
+      "VulnerableVersionRange": "\u003c 9.15"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T17:40:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multiparty"
+  },
+  "Advisory": {
+    "DatabaseId": 356433,
+    "Id": "GSA_kwCzR0hTQS02NXgzLXJ3N3EtZ3g5NM4ABXBR",
+    "GhsaId": "GHSA-65x3-rw7q-gx94",
+    "References": [
+      {
+        "Url": "https://github.com/pillarjs/multiparty/security/advisories/GHSA-65x3-rw7q-gx94"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-8159"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/pillarjs/multiparty/releases/tag/v4.3.0"
+      },
+      {
+        "Url": "https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-65x3-rw7q-gx94"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-65x3-rw7q-gx94"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-8159"
+      }
+    ],
+    "Description": "### Impact\n\nmultiparty@4.2.3 and lower versions are vulnerable to denial of service via regular expression backtracking in the `Content-Disposition` filename parameter parser. A multipart upload with a long header value containing `!filename=\"1` repeated can cause regex matching to take seconds, blocking the event loop. Any service accepting multipart uploads via multiparty is affected.\n\n### Patches\n\nUsers should upgrade to multiparty@4.3.0 or higher.\n\n### Workarounds\n\nNone. Limiting upload sizes at the proxy/gateway layer reduces but does not eliminate the attack surface, since a small ~8 KB header is sufficient to trigger the vulnerable backtracking.\n\n### Resources\n\n- [OWASP: Regular expression Denial of Service (ReDoS)](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T17:40:10Z",
+    "Severity": "HIGH",
+    "Summary": "multiparty vulnerable to ReDoS via filename parsing",
+    "UpdatedAt": "2026-05-18T17:40:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.3"
+    }
+  ]
+}

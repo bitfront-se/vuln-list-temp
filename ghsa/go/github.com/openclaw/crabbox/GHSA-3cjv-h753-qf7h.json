@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-18T16:48:20Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openclaw/crabbox"
+  },
+  "Advisory": {
+    "DatabaseId": 354715,
+    "Id": "GSA_kwCzR0hTQS0zY2p2LWg3NTMtcWY3aM4ABWmb",
+    "GhsaId": "GHSA-3cjv-h753-qf7h",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-45224"
+      },
+      {
+        "Url": "https://github.com/openclaw/crabbox/pull/65"
+      },
+      {
+        "Url": "https://github.com/openclaw/crabbox/commit/6b07193fb5670aac315ea47215651c67b8127868"
+      },
+      {
+        "Url": "https://github.com/openclaw/crabbox/releases/tag/v0.9.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/crabbox-path-traversal-via-islo-provider-workspace-resolution"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3cjv-h753-qf7h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3cjv-h753-qf7h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45224"
+      }
+    ],
+    "Description": "Crabbox before 0.9.0 contains a path traversal vulnerability in the Islo provider's workspace path resolution that allows attackers to supply absolute or relative paths that resolve outside the intended /workspace directory. Attackers can craft a malicious .crabbox.yaml or crabbox.yaml file with traversal sequences to cause arbitrary file deletion and overwrite when sync.delete is enabled, as the workspace preparation logic executes rm -rf and mkdir -p operations on the resolved path without proper validation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T21:31:34Z",
+    "Severity": "MODERATE",
+    "Summary": "Crabbox contains a path traversal vulnerability in the Islo provider's workspace path resolution",
+    "UpdatedAt": "2026-05-18T16:48:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.0"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-18T15:39:00Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "directxtk12_uwp"
+  },
+  "Advisory": {
+    "DatabaseId": 356411,
+    "Id": "GSA_kwCzR0hTQS01cjk3LTc5dnctcXZtNM4ABXA7",
+    "GhsaId": "GHSA-5r97-79vw-qvm4",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/DirectXTK12/security/advisories/GHSA-5r97-79vw-qvm4"
+      },
+      {
+        "Url": "https://github.com/microsoft/DirectXTK12/commit/c037a024a7ed3b2162fa2bbbe209b84ba2904494"
+      },
+      {
+        "Url": "https://github.com/microsoft/DirectXTK12/releases/tag/may2026"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5r97-79vw-qvm4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5r97-79vw-qvm4"
+      }
+    ],
+    "Description": "### Impact\nThe spritefont reader can be induced to perform a 32-bit overflow multiply that could in theory result in a RCE.\n\nThis impacts the use of the *DirectX Tool Kit* **SpriteFont** class file loading ctor if given untrusted data files.\n\n\u003e Note this only applies to x86/ARM builds of the library. ARM64 and x64 native is not subject to this issue.\n\n### Patches\nThis bug has been fixed in the May 7, 2026 release. Alternatively, you can just update your copy of the reader as per [this commit](https://github.com/microsoft/DirectXTK12/commit/c037a024a7ed3b2162fa2bbbe209b84ba2904494).\n\n### Workarounds\nThis does not apply if a project's .spritefont files are all 'trusted' data that were included with an application. It's primarily an issue only if developers are using user-provided or network downloaded spritefont files.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T15:38:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Microsoft DirectX12: .spritefont multiply overflow only in 32-bit builds",
+    "UpdatedAt": "2026-05-18T15:39:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.1.1"
+    }
+  ]
+}

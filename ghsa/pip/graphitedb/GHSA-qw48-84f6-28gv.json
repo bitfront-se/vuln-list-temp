@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T13:27:58Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "graphitedb"
+  },
+  "Advisory": {
+    "DatabaseId": 356377,
+    "Id": "GSA_kwCzR0hTQS1xdzQ4LTg0ZjYtMjhnds4ABXAZ",
+    "GhsaId": "GHSA-qw48-84f6-28gv",
+    "References": [
+      {
+        "Url": "https://github.com/mkh-user/graphite/security/advisories/GHSA-qw48-84f6-28gv"
+      },
+      {
+        "Url": "https://github.com/mkh-user/graphite/releases/tag/v0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qw48-84f6-28gv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qw48-84f6-28gv"
+      }
+    ],
+    "Description": "### Impact\n**Type of vulnerability:** Insecure Deserialization via Python's `pickle` module.\n\n**Who is impacted:**  \nUsers of *Graphite graph database engine* versions **before 0.2** who load database files from untrusted or third-party sources.  \nAn attacker could craft a malicious database file that executes arbitrary code when loaded by the engine. This is possible because the engine used `pickle` for serialization, which is known to be unsafe for untrusted data.\n\n### Patches\nThe vulnerability has been patched starting from **version 0.2**.  \nAll users should upgrade to **version 0.2 or later** (the current version is 0.4 at publishing time).  \nIn version 0.2 and above, the engine uses **JSON** instead of `pickle` for database storage, eliminating the deserialization risk.\n\n### Workarounds\nIf users cannot upgrade immediately:\n\n1. **Do not load database files from untrusted or unknown sources** when using versions \u003c0.2.\n2. **Migrate existing pickle-based databases** to the new JSON format using the provided migration module:\n\n```python\nfrom graphite.Migration import convert_pickle_to_json\nconvert_pickle_to_json(\"path/to/old_database.pkl\", \"path/to/new_database.json\")\n```\n\nAfter migration, you can safely use the database with version 0.2+.\n\n**Note:** Versions 0.2 and later will show a **warning** when attempting to load legacy pickle files, reminding you to migrate them. Also, **you can't load pickle files** in 0.2 and later.\n\n### Resources\n- Upgrade to [v0.2 or newer](https://github.com/mkh-user/graphite/releases)\n- Migration guide: See `graphite.Migration` module documentation\n- More on pickle security: [Python docs – pickle security](https://docs.python.org/3/library/pickle.html#module-pickle)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T13:27:55Z",
+    "Severity": "HIGH",
+    "Summary": "Graphite Has a Pickle Deserialization Vulnerability",
+    "UpdatedAt": "2026-05-18T13:27:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.2"
+    }
+  ]
+}

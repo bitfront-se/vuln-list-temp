@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T15:22:22Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "flash_attn"
+  },
+  "Advisory": {
+    "DatabaseId": 354651,
+    "Id": "GSA_kwCzR0hTQS03ZzV3LXBxOTYtOGM1d84ABWlb",
+    "GhsaId": "GHSA-7g5w-pq96-8c5w",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31253"
+      },
+      {
+        "Url": "https://github.com/Dao-AILab/flash-attention"
+      },
+      {
+        "Url": "https://www.notion.so/CVE-2026-31253-35d1e1393188813f9e77e2038104bc49"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7g5w-pq96-8c5w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7g5w-pq96-8c5w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31253"
+      }
+    ],
+    "Description": "The flash-attention training framework thru commit e724e2588cbe754beb97cf7c011b5e7e34119e62 (2025-13-04) contains an insecure deserialization vulnerability (CWE-502) in its checkpoint loading mechanism. The load_checkpoint() function in checkpoint.py and the checkpoint loading code in eval.py use torch.load() without enabling the security-restrictive weights_only=True parameter. This allows the deserialization of arbitrary Python objects via the pickle module. An attacker can exploit this by providing a maliciously crafted checkpoint file. When a victim loads this checkpoint during model warmstarting or evaluation, arbitrary code is executed on the victim's system.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-11T18:31:44Z",
+    "Severity": "HIGH",
+    "Summary": "flash-attention contains an insecure deserialization vulnerability in its checkpoint loading mechanism",
+    "UpdatedAt": "2026-05-18T15:22:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.8.3"
+    }
+  ]
+}

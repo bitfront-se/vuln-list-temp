@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T13:29:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.springaicommunity:mcp-client-security"
+  },
+  "Advisory": {
+    "DatabaseId": 356379,
+    "Id": "GSA_kwCzR0hTQS1xanA0LTRqdnIteHFnM84ABXAb",
+    "GhsaId": "GHSA-qjp4-4jvr-xqg3",
+    "References": [
+      {
+        "Url": "https://github.com/spring-ai-community/mcp-security/security/advisories/GHSA-qjp4-4jvr-xqg3"
+      },
+      {
+        "Url": "https://github.com/spring-ai-community/mcp-security/pull/68"
+      },
+      {
+        "Url": "https://github.com/spring-ai-community/mcp-security/commit/e6b67d8a67cd7acbee6e4c0741c385d62e3ed576"
+      },
+      {
+        "Url": "https://github.com/spring-ai-community/mcp-security/releases/tag/v0.1.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qjp4-4jvr-xqg3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qjp4-4jvr-xqg3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45609"
+      }
+    ],
+    "Description": "### Summary\n\nThe mcp-security framework fails to implement the mandatory SSRF mitigations outlined in the Model Context Protocol (MCP) [security specifications](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices#mitigation-3). Specifically, it processes untrusted URLs for OAuth-related discovery and metadata without verifying if the targets are malicious or internal to the network.\n\nThis only affects installations with Dynamic Client Registration (DCR) enabled:\n\n```properties\nspring.ai.mcp.client.authorization.dynamic-client-registration.enabled=true\n```\n\nDCR does not validate URLs exposed by MCP Servers (protected resource metadata URL, authorization server URL) and Authorization Servers (all OAuth2 endpoints).\n\n### Workaround\n\nWhen users need to perform DCR, they may provide their own `McpOAuth2ClientManager`. Both `McpMetadataDiscoveryService` and `DynamicClientRegistrationService` are also affected, if used, users should provide their own subclasses.\n\nAlternatively, users can provide the default implementations of these classes with a `RestClient` that implements URL filtering through `ClientHttpRequestInterceptor`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T13:29:29Z",
+    "Severity": "HIGH",
+    "Summary": "Spring AI MCP Security: Unvalidated URL Fetching (SSRF)",
+    "UpdatedAt": "2026-05-18T13:29:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.9"
+      },
+      "VulnerableVersionRange": "\u003c 0.1.9"
+    }
+  ]
+}

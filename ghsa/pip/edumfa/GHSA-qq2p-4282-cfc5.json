@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T15:36:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "edumfa"
+  },
+  "Advisory": {
+    "DatabaseId": 356408,
+    "Id": "GSA_kwCzR0hTQS1xcTJwLTQyODItY2ZjNc4ABXA4",
+    "GhsaId": "GHSA-qq2p-4282-cfc5",
+    "References": [
+      {
+        "Url": "https://github.com/eduMFA/eduMFA/security/advisories/GHSA-qq2p-4282-cfc5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qq2p-4282-cfc5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qq2p-4282-cfc5"
+      }
+    ],
+    "Description": "### Impact\n\nFor deployments using MySQL or MariaDB \u003c 11.6.2 (or newer with innodb_snapshot_isolation=off) reusage of token values might be possible due to faulty transaction isolation inside the database. Exploiting this requires racing this transaction.\nAffected are all tokentypes whose values are only supposed to be used once, for example TOTP, HOTP and likely also WebAuthN.\n\n#### Affected Combinations:\n\n- MySQL (any version)\n- MariaDB with innodb_snapshot_isolation=OFF\n  - innodb_snapshot_isolation was introduced in: MariaDB 10.6.18, MariaDB 10.11.8, MariaDB 11.0.6, MariaDB 11.1.5, MariaDB 11.2.4, MariaDB 11.4.2\n    with default OFF, can be turned ON as a workaround\n  - for MariaDB \u003e= 11.6.2 the default is ON, which is not affected\n- Same rules applies for Galera with underlying MariaDB\n\n### Patches\nFixed in version 2.9.1 by locking rows prior to write with SELECT FOR UPDATE.\n\n### Workarounds\nSet innodb_snapshot_isolation to ON (default in MariaDB \u003e= 11.6.2, e.g packaged in Debian 13).\n\n### Resources\nhttps://mariadb.com/resources/blog/isolation-level-violation-testing-and-debugging-in-mariadb/",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T15:36:18Z",
+    "Severity": "HIGH",
+    "Summary": "eduMFA: Incorrect InnoDB snapshot isolation possibly allows token reusage",
+    "UpdatedAt": "2026-05-18T15:36:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.9.1"
+    }
+  ]
+}

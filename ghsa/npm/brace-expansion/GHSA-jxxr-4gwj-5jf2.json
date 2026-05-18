@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-18T16:22:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "brace-expansion"
+  },
+  "Advisory": {
+    "DatabaseId": 356414,
+    "Id": "GSA_kwCzR0hTQS1qeHhyLTRnd2otNWpmMs4ABXA-",
+    "GhsaId": "GHSA-jxxr-4gwj-5jf2",
+    "References": [
+      {
+        "Url": "https://github.com/juliangruber/brace-expansion/security/advisories/GHSA-jxxr-4gwj-5jf2"
+      },
+      {
+        "Url": "https://github.com/juliangruber/brace-expansion/commit/c0b095bdc52bc4c36dc88deddbadabc49f8371e5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jxxr-4gwj-5jf2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jxxr-4gwj-5jf2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45149"
+      }
+    ],
+    "Description": "The `max` option was being applied too late:\n\nWhen expanding a single large numeric range like `{1..10000000}`, the sequence generation loop generates all 10 million intermediate elements before the `max` limit is applied With `max=10`, the output is correctly limited to 10 items, but the process still allocates `~505 MB` and spends `~800ms` building the full intermediate array.\n\n### Workaround\n\nEnsure the string to be expanded doesn't contain more values than the desired `max` item count.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T16:22:01Z",
+    "Severity": "MODERATE",
+    "Summary": "brace-expansion: Large numeric range defeats documented `max` DoS protection",
+    "UpdatedAt": "2026-05-18T16:22:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c 5.0.6"
+    }
+  ]
+}
