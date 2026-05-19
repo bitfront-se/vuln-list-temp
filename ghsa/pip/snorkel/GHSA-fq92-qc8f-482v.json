@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T20:24:50Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "snorkel"
+  },
+  "Advisory": {
+    "DatabaseId": 355158,
+    "Id": "GSA_kwCzR0hTQS1mcTkyLXFjOGYtNDgyds4ABWtW",
+    "GhsaId": "GHSA-fq92-qc8f-482v",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31223"
+      },
+      {
+        "Url": "https://github.com/snorkel-team/snorkel"
+      },
+      {
+        "Url": "https://www.notion.so/CVE-2026-31223-35d1e1393188811ab1d0e4a8a2e67992"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fq92-qc8f-482v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fq92-qc8f-482v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31223"
+      }
+    ],
+    "Description": "The snorkel library thru v0.10.0 contains a critical insecure deserialization vulnerability (CWE-502) in the BaseLabeler.load() method of the BaseLabeler class. The method loads serialized labeler models using the unsafe pickle.load() function on user-supplied file paths without any validation or security controls. Python's pickle module is inherently dangerous for deserializing untrusted data, as it can execute arbitrary code during the deserialization process. A remote attacker can exploit this by providing a maliciously crafted pickle file, leading to arbitrary code execution on the victim's system when the file is loaded via the vulnerable method.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T18:30:38Z",
+    "Severity": "HIGH",
+    "Summary": "Snorkel BaseLabeler.load uses an unsafe pickle.load",
+    "UpdatedAt": "2026-05-18T20:24:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.10.0"
+    }
+  ]
+}

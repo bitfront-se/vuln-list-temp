@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T20:25:06Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "snorkel"
+  },
+  "Advisory": {
+    "DatabaseId": 355157,
+    "Id": "GSA_kwCzR0hTQS1ncHg1LTd4bTQtMjI5d84ABWtV",
+    "GhsaId": "GHSA-gpx5-7xm4-229w",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31224"
+      },
+      {
+        "Url": "https://github.com/snorkel-team/snorkel"
+      },
+      {
+        "Url": "https://www.notion.so/CVE-2026-31224-35d1e1393188814185f3f6db86c9a4e9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gpx5-7xm4-229w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gpx5-7xm4-229w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31224"
+      }
+    ],
+    "Description": "The snorkel library thru v0.10.0 contains an insecure deserialization vulnerability (CWE-502) in the MultitaskClassifier.load() method of the MultitaskClassifier class. The method loads model weight files using torch.load() without enabling the security-restrictive weights_only=True parameter. This default behavior allows the deserialization of arbitrary Python objects via the Pickle module. A remote attacker can exploit this by providing a maliciously crafted model file, leading to arbitrary code execution on the victim's system when the file is loaded via the vulnerable method.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T18:30:38Z",
+    "Severity": "HIGH",
+    "Summary": "Snorkel MultitaskClassifier.load uses an unsafe torch.load",
+    "UpdatedAt": "2026-05-18T20:25:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.10.0"
+    }
+  ]
+}

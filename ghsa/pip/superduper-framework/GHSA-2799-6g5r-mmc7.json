@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T20:26:46Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "superduper-framework"
+  },
+  "Advisory": {
+    "DatabaseId": 355186,
+    "Id": "GSA_kwCzR0hTQS0yNzk5LTZnNXItbW1jN84ABWty",
+    "GhsaId": "GHSA-2799-6g5r-mmc7",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31225"
+      },
+      {
+        "Url": "https://www.notion.so/CVE-2026-31225-35d1e1393188814f99b5eec7b6517190"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2799-6g5r-mmc7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2799-6g5r-mmc7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31225"
+      }
+    ],
+    "Description": "The superduper project thru v0.10.0 contains a critical remote code execution vulnerability in its query parsing component. The _parse_op_part() function in query.py uses the unsafe eval() function to dynamically evaluate user-supplied query operands without proper sanitization or restriction. Although the function attempts to limit the execution context by providing a restricted global namespace, it does not block access to dangerous built-in functions. A remote attacker can exploit this by submitting a specially crafted query string containing Python code that imports modules (e.g., os) and executes arbitrary system commands, leading to complete compromise of the server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T18:30:38Z",
+    "Severity": "HIGH",
+    "Summary": "Superduper: Remote code execution via unsafe eval in superduper query parsing",
+    "UpdatedAt": "2026-05-18T20:26:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.10.0"
+    }
+  ]
+}

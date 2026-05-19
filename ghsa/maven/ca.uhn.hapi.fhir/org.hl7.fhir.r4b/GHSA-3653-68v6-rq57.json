@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T20:23:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ca.uhn.hapi.fhir:org.hl7.fhir.r4b"
+  },
+  "Advisory": {
+    "DatabaseId": 356485,
+    "Id": "GSA_kwCzR0hTQS0zNjUzLTY4djYtcnE1N84ABXCF",
+    "GhsaId": "GHSA-3653-68v6-rq57",
+    "References": [
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/security/advisories/GHSA-3653-68v6-rq57"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3653-68v6-rq57"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3653-68v6-rq57"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45367"
+      }
+    ],
+    "Description": "## Summary\n\nAll implementations of FHIRPathEngine accept arbitrary FHIRPath expressions and evaluate them without input validation. The FHIRPath functions `matches()`, `matchesFull()`, and `replaceMatches()` pass user-controlled regular expressions directly to Java's `Pattern.compile()` and `String.replaceAll()` without complexity checks or timeouts. An attacker can send a resource containing an evil regex pattern that causes catastrophic backtracking, exhausting system resources, and causing Denial-of-Service.\n\n## Details\n\nThe vulnerability exists in regex execution in FHIRPathEngine implementations across multiple code modules. For example the org.hl7.fhir.r5 module:\n\n\n**Entry point 1 — `FHIRPathEngine.java:5929` (R5 `funcMatches`):**\n```java\nprivate List\u003cBase\u003e funcMatches(ExecutionContext context, List\u003cBase\u003e focus, ExpressionNode exp) {\n    String sw = convertToString(swb); // attacker-controlled regex pattern\n    // ...\n    Pattern p = Pattern.compile(\"(?s)\" + sw); // VULNERABLE: no complexity check\n    Matcher m = p.matcher(st);                // no timeout\n    boolean ok = m.find();\n```\n\n**Entry point 2 — `FHIRPathEngine.java:5951` (R5 `funcMatchesFull`):**\n```java\nPattern p = Pattern.compile(\"(?s)\" + sw); // VULNERABLE: same pattern\nMatcher m = p.matcher(st);\nboolean ok = m.matches();\n```\n\n**Entry point 3 — `FHIRPathEngine.java:5120` (R5 `funcReplaceMatches`):**\n```java\nresult.add(new StringType(convertToString(focus.get(0))\n    .replaceAll(regex, repl)).noExtensions()); // VULNERABLE: replaceAll uses Pattern internally\n```\n\nThe same vulnerabilities exist in the dstu2, dstu2016may, dstu3, r4, and r4b modules, and the FHIRPathEngine is used in the validation module functionality.\n\n**Why this is exploitable:**\n- No timeout mechanism covers FHIRPath evaluation — the `ValidationTimeout` class only protects `InstanceValidator` operations, not `evaluateFhirPath()`\n- Java's `Pattern.compile()` with a pattern like `(a+)+$` against input `\"aaaaaaaaaaaaaaaaaaaaaa!\"` causes exponential backtracking (O(2^n) time complexity)\n\n\n## Impact\n\n- **CPU Exhaustion:** The exponential backtracking in Java's regex engine consumes 100% of a CPU core for the duration of the hang (effectively infinite for sufficiently long input strings) for callers of FHIRPathEngine.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T20:23:54Z",
+    "Severity": "HIGH",
+    "Summary": "HAPI FHIR: ReDoS via FHIRPath matches()/replaceMatches() in FHIR Validator HTTP Endpoint",
+    "UpdatedAt": "2026-05-18T20:23:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.9.7"
+      },
+      "VulnerableVersionRange": "\u003c= 6.9.6"
+    }
+  ]
+}

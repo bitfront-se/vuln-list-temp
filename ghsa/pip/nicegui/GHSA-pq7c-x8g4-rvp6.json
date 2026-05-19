@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-18T20:22:09Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nicegui"
+  },
+  "Advisory": {
+    "DatabaseId": 356484,
+    "Id": "GSA_kwCzR0hTQS1wcTdjLXg4ZzQtcnZwNs4ABXCE",
+    "GhsaId": "GHSA-pq7c-x8g4-rvp6",
+    "References": [
+      {
+        "Url": "https://github.com/zauberzeug/nicegui/security/advisories/GHSA-pq7c-x8g4-rvp6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pq7c-x8g4-rvp6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pq7c-x8g4-rvp6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45554"
+      }
+    ],
+    "Description": "### Summary\n\nTwo FastAPI routes that serve per-component static assets in NiceGUI accept a sub-path parameter that may resolve to a directory rather than a file. Requests that resolve to a directory raise an unhandled `RuntimeError` inside Starlette's `FileResponse`, which Uvicorn writes to the server log as a full traceback. Because the routes are reachable without authentication, a remote attacker can amplify log volume and consume disk and log-pipeline capacity on any publicly reachable NiceGUI server. There is no impact to confidentiality or integrity.\n\n### Details\n\nThe affected routes are the per-component **resource** route (added in v1.4.6) and the **ESM module** route (added in v3.0.0). Both join a user-supplied path segment with a registered base directory and pass the result to `FileResponse`. The existing existence check uses `pathlib.Path.exists()`, which returns `True` for directories — so a request whose sub-path resolves to a directory passes the guard and triggers an unhandled exception inside Starlette.\n\nFastAPI has no default handler for `RuntimeError`, so each such request results in a 500 response and a multi-frame traceback in the server log.\n\nOther NiceGUI-served paths (`/static/...`, `/components/...`, `/libraries/...`) are not affected; they do not use the same sub-path-to-`FileResponse` pattern.\n\n### Impact\n\nA remote, unauthenticated attacker can repeatedly trigger the error condition with crafted requests. Each request emits roughly 100 lines of traceback in a default setup, and more when additional middleware layers are present. At sustained request rates this can:\n\n- exhaust disk space on hosts with default log retention,\n- saturate downstream log-shipping pipelines,\n- generate alert fatigue or mask other events in monitoring.\n\nThere is no remote code execution, no path traversal, and no data exposure beyond the absolute installation path that already appears in any uncaught exception trace.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately:\n\n- Place NiceGUI behind a reverse proxy that rejects requests where the path after `/_nicegui/\u003cversion\u003e/esm/\u003ckey\u003e/` or `/_nicegui/\u003cversion\u003e/resources/\u003ckey\u003e/` is empty.\n- Rate-limit the `/_nicegui/` prefix at the proxy.\n- Configure log rotation aggressively for the affected service.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-18T20:22:07Z",
+    "Severity": "MODERATE",
+    "Summary": "NiceGUI: Unauthenticated log-volume denial of service in dynamic resource routes",
+    "UpdatedAt": "2026-05-18T20:22:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.12.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.1"
+    }
+  ]
+}

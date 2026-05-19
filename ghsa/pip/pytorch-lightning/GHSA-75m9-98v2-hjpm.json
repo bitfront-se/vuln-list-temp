@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-18T20:24:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pytorch-lightning"
+  },
+  "Advisory": {
+    "DatabaseId": 355151,
+    "Id": "GSA_kwCzR0hTQS03NW05LTk4djItaGpwbc4ABWtP",
+    "GhsaId": "GHSA-75m9-98v2-hjpm",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31221"
+      },
+      {
+        "Url": "https://github.com/Lightning-AI/pytorch-lightning"
+      },
+      {
+        "Url": "https://www.notion.so/CVE-2026-31221-35d1e1393188815f8db7c4fd08076639"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-75m9-98v2-hjpm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-75m9-98v2-hjpm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31221"
+      }
+    ],
+    "Description": "PyTorch-Lightning versions 2.6.0 and earlier contain an insecure deserialization vulnerability (CWE-502) in the checkpoint loading mechanism. The LightningModule.load_from_checkpoint() method, which is commonly used to load saved model states, internally calls torch.load() without setting the security-restrictive weights_only=True parameter. This default behavior allows the deserialization of arbitrary Python objects via the Pickle module. A remote attacker can exploit this by providing a maliciously crafted checkpoint file, leading to arbitrary code execution on the victim's system when the file is loaded.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-12T18:30:38Z",
+    "Severity": "HIGH",
+    "Summary": "PyTorch Lightning load_from_checkpoint has an insecure checkpoint deserialization",
+    "UpdatedAt": "2026-05-18T20:24:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.6.0"
+    }
+  ]
+}
