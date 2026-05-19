@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-19T15:47:37Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "land.oras:oras-java-sdk"
+  },
+  "Advisory": {
+    "DatabaseId": 356777,
+    "Id": "GSA_kwCzR0hTQS14bTk2LWdmangtamNyY84ABXGp",
+    "GhsaId": "GHSA-xm96-gfjx-jcrc",
+    "References": [
+      {
+        "Url": "https://github.com/oras-project/oras-java/security/advisories/GHSA-xm96-gfjx-jcrc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xm96-gfjx-jcrc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xm96-gfjx-jcrc"
+      }
+    ],
+    "Description": "### Summary\n\nThe `pullArtifact` methods in `Registry` and `OCILayout` use the `org.opencontainers.image.title` annotation from a pulled manifest as a filename, resolving it against the caller supplied output directory without normalization or a containment check. A manifest publisher can set this annotation to a path that escapes the output directory, causing the SDK to write the layer's blob anywhere the JVM process can write.\n\n### Details\n\nTwo call sites are affected.\n\n`src/main/java/land/oras/Registry.java`, `pullLayer` (reached from `Registry.pullArtifact`):\n\n```java\nPath targetPath = path.resolve(layer.getAnnotations().get(Const.ANNOTATION_TITLE));\n...\nFiles.copy(is, targetPath, StandardCopyOption.REPLACE_EXISTING);\n```\n\n`src/main/java/land/oras/OCILayout.java`, `OCILayout.pullArtifact`:\n\n```java\nFiles.copy(blobPath, path.resolve(layer.getAnnotations().get(Const.ANNOTATION_TITLE)));\n```\n\nThe annotation comes from the remote manifest. `Path.resolve` treats an absolute argument as a full override of the base, and follows `..` segments upward, so the annotation controls the destination. `REPLACE_EXISTING` overwrites files that exist at that destination.\n\nThe unpack branch of `pullLayer` (taken when the layer carries `io.deis.oras.content.unpack=true`) is not affected, because it dispatches through `ArchiveUtils.untar` / `unzip`, which apply `outputPath.startsWith(normalizedTarget)` after normalization. The non unpack branch and `OCILayout.pullArtifact` lack the equivalent check.\n\n`fetchBlob(ContainerRef, Path)` is not affected. The caller passes the destination path and the title annotation is not consulted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:47:36Z",
+    "Severity": "HIGH",
+    "Summary": "ORAS Java: Path traversal in pullArtifact via attacker-controlled org.opencontainers.image.title annotation",
+    "UpdatedAt": "2026-05-19T15:47:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.2"
+      },
+      "VulnerableVersionRange": "\u003c= 0.6.1"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-19T15:38:42Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/go-git/go-git"
+  },
+  "Advisory": {
+    "DatabaseId": 356771,
+    "Id": "GSA_kwCzR0hTQS1jcmhqLTU5Z2gtOHg5Ns4ABXGj",
+    "GhsaId": "GHSA-crhj-59gh-8x96",
+    "References": [
+      {
+        "Url": "https://github.com/go-git/go-git/security/advisories/GHSA-crhj-59gh-8x96"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-crhj-59gh-8x96"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-crhj-59gh-8x96"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45571"
+      }
+    ],
+    "Description": "### Impact\nA path validation issue in `go-git` could allow crafted repository data to affect files outside the intended checkout target, including the repository's `.git` directory.\n\nThese validations were introduced in upstream Git years ago, so the vulnerability arose from go-git drifting from those checks. Some attack vectors were platform-specific: certain payloads affected only Windows users, others affected only macOS users, and some applied across all supported platforms.\n\nUsing non-descendant `go-billy` filesystem instances, or different filesystem types, for the `Storer` and `Worktree` may provide some isolation against `.git` directory manipulation. For example, users that store the `.git` directory through `memfs` while using `osfs` for the worktree are not affected by this vulnerability in the main repository, because repository metadata is not materialized inside the worktree filesystem.\n\nHowever, this isolation does not necessarily apply when the repository contains submodules, since submodule dotgit directories may still be represented or materialized within the worktree context.\n\nIt is important to note that exploitation requires a maliciously crafted repository payload. Users should always exercise caution when interacting with repositories or Git servers they do not trust.\n\n### Patches\nUsers should upgrade to a patched version in order to mitigate this vulnerability. Versions prior to `v5` are likely to be affected, users are recommended to upgrade to a supported go-git version.\n\n### Credits\nThanks to @kodareef5, @AyushParkara and @N0zoM1z0 for reporting this to the go-git project in three separate reports. 🙇",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:38:39Z",
+    "Severity": "MODERATE",
+    "Summary": "go-git: Crafted repositories may modify main and submodule .git directories",
+    "UpdatedAt": "2026-05-19T15:38:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 44.7.0"
+    }
+  ]
+}

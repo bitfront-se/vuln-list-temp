@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-19T15:38:57Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openziti/zrok/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 356772,
+    "Id": "GSA_kwCzR0hTQS1jNjU2LWpjeDItN3Bxas4ABXGk",
+    "GhsaId": "GHSA-c656-jcx2-7pqj",
+    "References": [
+      {
+        "Url": "https://github.com/openziti/zrok/security/advisories/GHSA-c656-jcx2-7pqj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c656-jcx2-7pqj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c656-jcx2-7pqj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45576"
+      }
+    ],
+    "Description": "## Summary\n\nAlice runs `zrok2 copy` from a WebDAV or zrok drive controlled by Bob into a local filesystem target. Bob returns a DAV `href` such as `/../outside.txt`. The sync pipeline stores that path in the source inventory and passes it to `FilesystemTarget.WriteStream`, which joins it with the target root and creates the file outside Alice's selected directory.\n\n### Impact\nUsers given access to a zrok share may be able to traverse the directory tree arbitrarily with the sharing users credentials, allowing for sensitive information to be overwritten.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:38:56Z",
+    "Severity": "HIGH",
+    "Summary": "zrok copy writes attacker-controlled WebDAV paths outside the destination root",
+    "UpdatedAt": "2026-05-19T15:38:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.3"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.3"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-19T14:44:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@haxtheweb/video-player"
+  },
+  "Advisory": {
+    "DatabaseId": 356703,
+    "Id": "GSA_kwCzR0hTQS0ybTZwLWhtM3ctNmptM84ABXFf",
+    "GhsaId": "GHSA-2m6p-hm3w-6jm3",
+    "References": [
+      {
+        "Url": "https://github.com/haxtheweb/issues/security/advisories/GHSA-2m6p-hm3w-6jm3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2m6p-hm3w-6jm3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2m6p-hm3w-6jm3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46496"
+      }
+    ],
+    "Description": "### Summary\nA stored cross-site scripting (XSS) vulnerability exists in HAX CMS due to improper sanitization of the `\u003cvideo-player\u003e` component.\n\nThe component allows `javascript:` URIs in the `source` attribute, which are executed when the page is viewed. This enables attackers to execute arbitrary JavaScript in the context of the victim’s browser and access sensitive data such as JWT tokens and more.\n\n### Details\nThe vulnerability is present in the `\u003cvideo-player\u003e` web component used within the HAX CMS editor.\n\nThe application fails to validate or sanitize user-supplied input in the following attributes:\n- `source`\n- `source-data`\n\nThese attributes accept arbitrary URI schemes, including `javascript:`, which leads to execution of attacker-controlled JavaScript in the browser.\n\nExample vulnerable usage:\n```html\n\u003cvideo-player \n  source=\"javascript:alert(document.domain)\" \n  source-type=\"external\"\u003e\n\u003c/video-player\u003e\n```\n\n\nBecause this content is stored and rendered to other users, the vulnerability is classified as a stored XSS.\n\nThe root cause is the lack of URI scheme validation and improper sanitization of component attributes before rendering.\nBecause this content is stored and rendered to other users, the vulnerability is classified as a stored XSS.\n\nThe root cause is the lack of URI scheme validation and improper sanitization of component attributes before rendering.\n\n\n### PoC\n\nSteps to reproduce:\n1. Log in to HAX CMS as user.\n2. Create a website or any page and switch to the HTML source editor (`\u003c\u003e`).\n3. Insert the following payload:\n\n```html\n\u003cvideo-player source=\"javascript:alert('JWT: '+localStorage.getItem('jwt').substring(0,30))\" source-type=\"external\"\u003e\u003c/video-player\u003e\n```\n\u003cimg width=\"2456\" height=\"1405\" alt=\"image\" src=\"https://github.com/user-attachments/assets/ea037043-7ff7-4840-bed0-1091692c6289\" /\u003e\n\n\nSave the page.\n\nReload or revisit or send the page.\n\nResult\n\u003cimg width=\"2468\" height=\"1394\" alt=\"image\" src=\"https://github.com/user-attachments/assets/543bbf69-900d-4e2d-bd6b-0658fb5aa899\" /\u003e\n\n\nA JavaScript alert executes.\nThe JWT token is exposed.\nThis confirms arbitrary JavaScript execution in the victim’s browser.\n\n\n### Impact\n\nThis vulnerability allows stored XSS leading to:\n\n- Theft of JWT authentication tokens \n- Session hijacking\n- Full account takeover\n- Execution of arbitrary JavaScript in victim browsers\n\nIf an administrator views a malicious page, this can lead to full CMS compromise.\n\nAttack complexity: Low  \nPrivileges required: Low (any authenticated user)  \nUser interaction: Required",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T14:44:34Z",
+    "Severity": "MODERATE",
+    "Summary": "HAX CMS: Stored XSS via '\u003cvideo-player\u003e' component allows arbitrary JavaScript execution and token theft",
+    "UpdatedAt": "2026-05-19T14:44:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.0.0"
+      },
+      "VulnerableVersionRange": "\u003c= 25.0.0"
+    }
+  ]
+}

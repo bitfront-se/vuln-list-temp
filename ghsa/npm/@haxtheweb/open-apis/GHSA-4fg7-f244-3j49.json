@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-19T14:44:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@haxtheweb/open-apis"
+  },
+  "Advisory": {
+    "DatabaseId": 356704,
+    "Id": "GSA_kwCzR0hTQS00Zmc3LWYyNDQtM2o0Oc4ABXFg",
+    "GhsaId": "GHSA-4fg7-f244-3j49",
+    "References": [
+      {
+        "Url": "https://github.com/haxtheweb/issues/security/advisories/GHSA-4fg7-f244-3j49"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4fg7-f244-3j49"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4fg7-f244-3j49"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46391"
+      }
+    ],
+    "Description": "### Summary\nMultiple functions conduct substring-only matching to validate hostnames to which basic authorization should be sent. An attacker can append the matched substrings to an attacker-controlled endpoint and capture authentication.\n\n### Details\n[api/services/website/cacheAddress.js](https://github.com/haxtheweb/open-apis/blob/ff694ce91442c39ae1a78dc21e9ce50546aa207a/api/services/website/cacheAddress.js#L21), [api/apps/haxcms/lib/JOSHelpers.js](https://github.com/haxtheweb/open-apis/blob/ff694ce91442c39ae1a78dc21e9ce50546aa207a/api/apps/haxcms/lib/JOSHelpers.js#L26), and [api/apps/haxcms/convert/elmslnToSite.js](https://github.com/haxtheweb/open-apis/blob/ff694ce91442c39ae1a78dc21e9ce50546aa207a/api/apps/haxcms/convert/elmslnToSite.js#L37) use similar logic to check for hard-coded site names. However, the logic only looks for the substring to be included in the user-controlled string, allowing an attacker to craft an API call and extract the credentials intended for the hard-coded domains.\n\n### PoC\nMaking API calls to an affected endpoint will result in credential theft. The attacker-controlled domains in these proofs of concept are `cloudflared` tunnels, protecting the production credentials from unencrypted exposure.\n\ncacheAddress.js:\n\u003cimg width=\"3404\" height=\"1656\" alt=\"ssrf_cred_theft\" src=\"https://github.com/user-attachments/assets/0a87cef5-3c4d-450a-8bb7-35123d5f621b\" /\u003e\n\nelmslnToSite.js:\n\u003cimg width=\"3409\" height=\"1641\" alt=\"theft2\" src=\"https://github.com/user-attachments/assets/bede82cc-a613-4fc7-bbf6-76166af784f5\" /\u003e\n\nJOSHelpers.js:\n\u003cimg width=\"3407\" height=\"1597\" alt=\"theft3\" src=\"https://github.com/user-attachments/assets/4f3f8bee-443e-4b22-9d41-eb9726619d36\" /\u003e\n\n### Impact\nThis vulnerability allows internal data, including secrets, to be exfiltrated to an attacker-controlled domain. Credentials were confirmed with the maintainer to grant access to unreleased LMS content on subsequent systems; out of scope for PoC.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T14:44:46Z",
+    "Severity": "HIGH",
+    "Summary": "HAX open-apis: Credential Theft via Server-Side Request Forgery (SSRF) in open-apis",
+    "UpdatedAt": "2026-05-19T14:44:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 26.0.0"
+    }
+  ]
+}

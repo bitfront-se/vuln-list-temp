@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-19T15:40:18Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim"
+  },
+  "Advisory": {
+    "DatabaseId": 356774,
+    "Id": "GSA_kwCzR0hTQS13ZzV4LTNnNDctdjM4cs4ABXGm",
+    "GhsaId": "GHSA-wg5x-3g47-v38r",
+    "References": [
+      {
+        "Url": "https://github.com/hyperledger/fabric-chaincode-java/security/advisories/GHSA-wg5x-3g47-v38r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wg5x-3g47-v38r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wg5x-3g47-v38r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45581"
+      }
+    ],
+    "Description": "When chaincode is deployed in chaincode-as-a-service mode with TLS enabled, the chaincode server INFO level logging includes the TLS private key password in plaintext. An attacker with access to the chaincode server logs could recover the TLS private key password. If the attacker can also obtain the TLS private key, they could impersonate the chaincode server.\n\n### Recommendation\n\n- Update to the fixed version of the chaincode runtime.\n- Redact or remove existing logs that contain the TLS private key password.\n- Change the TLS private key password.\n\n### Mitigation\n\nImpacted deployments can mitigate the vulnerability by restricting the logging level to WARNING or higher so that INFO level logs are not written.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:40:13Z",
+    "Severity": "MODERATE",
+    "Summary": "fabric-chaincode-java: TLS Private Key Password Disclosed in INFO Startup Logs in Chaincode-as-a-Service Mode",
+    "UpdatedAt": "2026-05-19T15:40:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.10"
+      },
+      "VulnerableVersionRange": "\u003e= 2.3.1, \u003c= 2.5.9"
+    }
+  ]
+}

