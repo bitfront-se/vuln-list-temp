@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-19T19:51:00Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "OpenMcdf"
+  },
+  "Advisory": {
+    "DatabaseId": 356837,
+    "Id": "GSA_kwCzR0hTQS01cXdtLTdwdnAtdzk4OM4ABXHl",
+    "GhsaId": "GHSA-5qwm-7pvp-w988",
+    "References": [
+      {
+        "Url": "https://github.com/openmcdf/openmcdf/security/advisories/GHSA-5qwm-7pvp-w988"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5qwm-7pvp-w988"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5qwm-7pvp-w988"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45785"
+      }
+    ],
+    "Description": "### Summary\nThe BST name-lookup loop in `DirectoryTree.TryGetDirectoryEntry` (`OpenMcdf/DirectoryTree.cs:35-46`) walks directory entries by repeatedly calling `directories.TryGetSibling(child, siblingType, validateColor)`. A crafted CFB file with cyclic Left/Right sibling links among directory entries - constructed so the per-step BST-order check in `TryGetSibling` (`DirectoryEntries.cs:84-85`) is satisfied at every step - drives this `while (child is not null)` loop forever. There is no cycle detection in `TryGetDirectoryEntry`.\n\n### Details\nThe recent Brent's-algorithm commit ([`24f445a`](https://github.com/openmcdf/openmcdf/commit/24f445a557fc4f46461cf6d02d296cce16c293a0)) protects `DirectoryTreeEnumerator` and works correctly for both attached repros - pure `EnumerateEntries()` throws `FileFormatException: Directory tree contains a loop` cleanly. The unprotected code path is the lookup-by-name loop, which is reached from multiple public APIs:\n- `RootStorage.OpenStorage(name)` / `TryOpenStorage(name)`\n- `RootStorage.OpenStream(name)` / `TryOpenStream(name)`\n\nThe second one matters most: typical consumers iterate `EnumerateEntries()` and call `OpenStream(entry.Name)` per Stream entry. With Brent's algorithm catching the enumeration cycle but not the per-entry lookup, callers can still hang as soon as they touch a streamed entry.\n\n### PoC\nTwo minimal repros attached, demonstrating the same lookup-loop bug reached via two different public APIs:\n\n- `repro_lookup.cfb` (5,632 bytes) - hangs on direct `OpenStorage(name)` for a name not present in the directory\n- `repro_enumerate.cfb` (7,936 bytes) - hangs on `OpenStream(entry.Name)` called for an entry returned by `EnumerateEntries()` (the common consumer pattern)\n\n### Repro 1 - `OpenStorage(name)`\n\n```csharp\nusing OpenMcdf;\n\nusing var fs = File.OpenRead(\"repro_lookup.cfb\");\nusing var root = RootStorage.Open(fs);\nroot.TryOpenStorage(\"__substg1.0_3001001F\", out _);\n// process spins at 100% CPU; Ctrl+C required.\n```\n\n### Repro 2 - `OpenStream` from inside an enumeration loop\n\n```csharp\nusing OpenMcdf;\n\nusing var fs = File.OpenRead(\"repro_enumerate.cfb\");\nusing var root = RootStorage.Open(fs);\nforeach (var entry in root.EnumerateEntries())   // safe: Brent's catches enumeration cycles\n{\n    if (entry.Type == EntryType.Stream)\n        _ = root.OpenStream(entry.Name);          // hangs: lookup path has no cycle detection\n}\n```\n\nBoth processes will not terminate.\n\n(Note: pure `foreach (var entry in root.EnumerateEntries()) { }` with no per-entry lookup is **safe** - Brent's algorithm in `DirectoryTreeEnumerator` catches the enumeration cycle and throws `FileFormatException: Directory tree contains a loop`. The hang only manifests once a name lookup is performed.)\n\n[repros.zip](https://github.com/user-attachments/files/27084338/repros.zip)\n\n### Impact\nA denial of service affecting any application that opens untrusted CFB files with OpenMcdf. A small crafted input with a cyclic directory tree reaches the unprotected BST name-lookup in `DirectoryTree.TryGetDirectoryEntry`, hit by any caller of `OpenStorage` / `TryOpenStorage` / `OpenStream` / `TryOpenStream` - including the very common pattern of iterating `EnumerateEntries()` and calling `OpenStream(entry.Name)` per Stream entry. The cycles bypass the per-step BST-order check in `TryGetSibling`, so no exception is thrown and `try/catch` cannot protect callers. The affected thread is unrecoverable without killing the process. Downstream CFB consumers (e.g. `.msg`-file parsers) inherit transitively.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T19:50:57Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenMcdf: Uncatchable infinite loop in DirectoryTree.TryGetDirectoryEntry on crafted CFB directory cycle",
+    "UpdatedAt": "2026-05-19T19:51:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.3"
+    }
+  ]
+}

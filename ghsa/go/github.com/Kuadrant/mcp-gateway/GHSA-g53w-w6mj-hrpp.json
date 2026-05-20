@@ -1,0 +1,46 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-19T19:42:49Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/Kuadrant/mcp-gateway"
+  },
+  "Advisory": {
+    "DatabaseId": 356833,
+    "Id": "GSA_kwCzR0hTQS1nNTN3LXc2bWotaHJwcM4ABXHh",
+    "GhsaId": "GHSA-g53w-w6mj-hrpp",
+    "References": [
+      {
+        "Url": "https://github.com/Kuadrant/mcp-gateway/security/advisories/GHSA-g53w-w6mj-hrpp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g53w-w6mj-hrpp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g53w-w6mj-hrpp"
+      }
+    ],
+    "Description": "## Summary\n \nThe MCP router (ext_proc) exposes an `initialize`-method code path that, when a\nrequest carries an `mcp-init-host` header, bypasses the gateway JWT session\nvalidator and rewrites the upstream `:authority` header to whatever the caller\nchooses, gated only by a single shared header value (`router-key`). The shared\nvalue is\n\n* a literal string (`secret-api-key`) baked into `cmd/mcp-broker-router/main.go`\n  as a fall-back default, and\n* in controller-managed deployments, a SHA-256 truncation of the\n  `MCPGatewayExtension` UID — a non-secret value visible to anyone with `get`\n  permission on the resource, and additionally exposed in `argv` because it is\n  passed to the broker-router container via `--mcp-router-key=...`.\n\nA request that satisfies the trivial header check is forwarded to any backend\nlistener registered with the gateway (including external services such as\n`api.githubcopilot.com` when configured), bypassing both the broker (where the\nsigned `x-mcp-authorized` capability filter is enforced) and the gateway's\nJWT-based session model.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T19:42:46Z",
+    "Severity": "CRITICAL",
+    "Summary": "MCP Gateway: Authority-injection and JWT/session bypass via the unauthenticated router hair-pin \"router-key\" / \"mcp-init-host\" path",
+    "UpdatedAt": "2026-05-19T19:42:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.6.1"
+    }
+  ]
+}

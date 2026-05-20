@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-19T19:46:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@turbo/codemod"
+  },
+  "Advisory": {
+    "DatabaseId": 356834,
+    "Id": "GSA_kwCzR0hTQS0zcWN3LTJyaHgtMjcyNs4ABXHi",
+    "GhsaId": "GHSA-3qcw-2rhx-2726",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/turborepo/security/advisories/GHSA-3qcw-2rhx-2726"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-45772"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3qcw-2rhx-2726"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3qcw-2rhx-2726"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45772"
+      }
+    ],
+    "Description": "### Impact  \n\nTurborepo can be vulnerable to arbitrary code execution when run in untrusted repositories that contain malicious Yarn configuration. In affected versions, package manager detection executed `yarn --version` from the project directory, which could cause Yarn to load and execute a project-controlled `yarnPath` from `.yarnrc.yml`. An attacker who controls repository contents could cause code execution when a user or CI system runs affected `turbo`, `@turbo/codemod`, or `@turbo/workspace` conversion commands.\n\n### Fix  \n\nTurbo now avoids executing project-local Yarn during package manager detection. Yarn versions and paths are inferred from metadata such as `package.json`, parsing the value of `yarnPath` in `.yarnrc.yml` rather than executing it, and `yarn.lock`, and unrecognized Yarn lockfile formats are rejected instead of falling back to executing `yarn`.\n\n### Workarounds  \n\nIf you cannot upgrade immediately, do not run Turborepo commands in untrusted repositories. Review or remove `.yarnrc.yml` files that define `yarnPath` before running Turborepo, especially in CI or automated tooling that processes external projects.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T19:46:44Z",
+    "Severity": "LOW",
+    "Summary": "Turbo: Unexpected local code execution during Yarn Berry detection",
+    "UpdatedAt": "2026-05-19T19:46:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.14"
+      },
+      "VulnerableVersionRange": "\u003e= 2.3.4, \u003c 2.9.14"
+    }
+  ]
+}

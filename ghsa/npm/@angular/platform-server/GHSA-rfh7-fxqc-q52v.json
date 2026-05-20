@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-19T20:29:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/platform-server"
+  },
+  "Advisory": {
+    "DatabaseId": 356856,
+    "Id": "GSA_kwCzR0hTQS1yZmg3LWZ4cWMtcTUyds4ABXH4",
+    "GhsaId": "GHSA-rfh7-fxqc-q52v",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-rfh7-fxqc-q52v"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/68570"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rfh7-fxqc-q52v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rfh7-fxqc-q52v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46417"
+      }
+    ],
+    "Description": "### Impact\n\nA Server-Side Request Forgery (SSRF) vulnerability exists in `@angular/platform-server`. The issue stems from how the server-side rendering (SSR) engine processes the request URL provided to the rendering entry points.\n\nWhen an absolute-form URL (e.g., `http://evil.com`) is passed to the rendering engine, the internal `ServerPlatformLocation` can be manipulated into adopting the attacker-controlled domain as the \"current\" hostname.\n\nConsequently, any relative `HttpClient` requests or `PlatformLocation.hostname` references are redirected to the attacker controlled server, potentially exposing internal APIs or metadata services.\n\n### Fix Information\nThe vulnerability is mitigated by introducing an Allowlist Mechanism directly into the core rendering APIs.\nThe renderModule and renderApplication functions now include an allowedHosts configuration option. The rendering engine validates the hostname extracted from the request URL against this list before proceeding. If the hostname does not match an allowed entry, the engine prevents the hostname hijacking, ensuring that HttpClient requests remain restricted to trusted domains.\n\n\n### Patches\n- 22.0.0-next.12\n- 21.2.13\n- 20.3.21\n- 19.2.22\n\n\n### Workarounds\nDevelopers unable to update immediately should implement strict URL validation in their server entry point (e.g., `server.ts`). Ensure that `req.url` is validated against a known list of trusted hostnames or normalized to a relative path before being passed to`renderApplication` or `renderModule`.\n\n```TypeScript\n// Example manual normalization in Express\napp.get('*', (req, res, next) =\u003e {\n  const trustedHost = 'localhost:4000';\n  // Ensure the request target matches expectations\n  if (req.headers.host !== trustedHost) {\n     return res.status(403).send('Forbidden');\n  }\n  next();\n});\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T20:29:49Z",
+    "Severity": "HIGH",
+    "Summary": "@angular/platform-server: SSRF via Hostname Hijacking",
+    "UpdatedAt": "2026-05-19T20:29:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 18.2.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "19.2.22"
+      },
+      "VulnerableVersionRange": "\u003e= 19.0.0-next.0, \u003c 19.2.22"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.21"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.21"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.13"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.2.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.0-next.12"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.0-next.12"
+    }
+  ]
+}
