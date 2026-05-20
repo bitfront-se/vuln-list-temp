@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-20T15:33:56Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/xyproto/algernon"
+  },
+  "Advisory": {
+    "DatabaseId": 356972,
+    "Id": "GSA_kwCzR0hTQS1najg0LTkyNGMtNDhmeM4ABXJs",
+    "GhsaId": "GHSA-gj84-924c-48fx",
+    "References": [
+      {
+        "Url": "https://github.com/xyproto/algernon/security/advisories/GHSA-gj84-924c-48fx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gj84-924c-48fx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gj84-924c-48fx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46430"
+      }
+    ],
+    "Description": "### Summary\n\nThe SSE event server bound to `0.0.0.0:5553` on Linux/macOS by default because the platform-dependent host default in `engine/flags.go:39-46` set `host = \"\"` for non-Windows, and `utils.JoinHostPort(\"\", \":5553\")` resolves to `\":5553\"` — a Go `http.Server.Addr` of `\":5553\"` listens on every interface. On Windows the same code chose `\"localhost\"`, binding loopback only.\n\nThe result was a platform split where the OS Algernon's dev workflow is most often used on (Linux/macOS) got the network-exposed default, and only Windows users got the loopback-safe one. A LAN peer with no developer interaction could connect to `\u003cdev-laptop-ip\u003e:5553` and read the file-change stream.\n\nThis advisory covers the bind-address default in isolation. The fix is independent of authentication (#2a) and CORS (#2b) — switching the default to loopback can be done without touching either.\n\n### Details\n\n#### Root cause — platform-dependent `host` default in `handleFlags`\n\n```go\n// engine/flags.go:39-46  (1.17.6)\nhost := \"\"\nif runtime.GOOS == \"windows\" {\n    host = \"localhost\"\n    // Default Bolt database file\n    ac.defaultBoltFilename = filepath.Join(serverTempDir, \"algernon.db\")\n    // Default log file\n    ac.defaultLogFile = filepath.Join(serverTempDir, \"algernon.log\")\n}\n```\n\n```go\n// engine/config.go:388-391  (1.17.6, finalConfiguration)\nif ac.eventAddr == \"\" {\n    ac.eventAddr = utils.JoinHostPort(host, ac.defaultEventColonPort)\n}\n```\n\nResult tabulated:\n\n| Platform | `host` | `eventAddr` after `JoinHostPort` | Effective bind |\n|---|---|---|---|\n| Linux | `\"\"` | `\":5553\"` | `0.0.0.0:5553` (all interfaces) |\n| macOS | `\"\"` | `\":5553\"` | `0.0.0.0:5553` (all interfaces) |\n| Windows | `\"localhost\"` | `\"localhost:5553\"` | `127.0.0.1:5553` (loopback) |\n\nThe same `host` value also governs the main web server bind, so the platform split affects both ports. The web-server bind on Linux/macOS is a separate (defensible) design decision — a server intended to be reachable; the SSE port is *not* such a service and inherited the same default by accident.\n\n#### Why this is an independent finding\n\nThe fix is a single line: change the default `host` value, or change the `eventAddr` default specifically, to `\"localhost\"` regardless of platform. No change to authentication or CORS is required to close the network-reach half of the original bundled advisory. A LAN peer can no longer connect — the listener is unreachable from another host — even if the SSE handler still has no authentication and still returns `Allow-Origin: *`.\n\n### PoC (against 1.17.6 on Linux/macOS)\n\n```bash\n# Operator's laptop on a hotel/cafe/office WiFi:\nalgernon -a /path/to/project\n# =\u003e SSE listener bound to 0.0.0.0:5553\n\n# Any peer on the same subnet:\n$ curl -sN http://\u003cdev-laptop-ip\u003e:5553/sse\nid: 0\ndata: /path/to/project/secret-notes.md\n\nid: 1\ndata: /path/to/project/.env.local\n```\n\nNo interaction from the developer is required. The peer needs network reach and nothing else.\n\n### Impact\n\n- **Confidentiality:** medium. LAN-bounded continuous information disclosure of filenames and edit timing.\n- **Integrity:** none.\n- **Availability:** none directly.\n\nThe CVSS vector uses `AV:A` (adjacent network) to model the LAN-only reach. The vector for a misconfigured deployment behind a NAT-less or routed network would shift to `AV:N` and rise to 5.3.\n\n### Suggestions to fix\n\n**Primary fix — pick `localhost` as the SSE default on every platform.**\n\n```go\n// engine/flags.go -- platform-independent default for the event listener\n// (keep the existing platform split for the WEB server if desired, but\n// not for the event server)\nhost := \"localhost\"\n```\n\nOr, more surgically:\n\n```go\n// engine/config.go -- finalConfiguration\nif ac.eventAddr == \"\" {\n    ac.eventAddr = utils.JoinHostPort(\"localhost\", ac.defaultEventColonPort)\n}\n```\n\nAn operator who genuinely wants LAN-reachable SSE can pass `--eventserver 0.0.0.0:5553` explicitly and accept the consequences.\n\n**Stronger fix — eliminate the second listener entirely.** Mount the SSE handler on the main mux at `/sse`. The bind address is then whatever the main server uses; there is no second listener and therefore no second bind-address default to get wrong.\n\n### Live verification\n\nAudit-host bind check (Windows 10):\n\n```\n$ netstat -an | findstr 5553\n  TCP    127.0.0.1:5553         0.0.0.0:0              LISTENING\n```\n\nConfirms the Windows default is `localhost`. The Linux/macOS bind to `0.0.0.0:5553` is documented in the code path above; it was not exercised on the audit machine because the audit host was Windows. A maintainer reproducing on a Linux host would see `0.0.0.0:5553 LISTENING` from `ss -tlnp`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-20T15:33:56Z",
+    "Severity": "MODERATE",
+    "Summary": "Algernon: Auto-refresh SSE event server binds to all interfaces by default on Linux/macOS",
+    "UpdatedAt": "2026-05-20T15:33:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.17.7"
+      },
+      "VulnerableVersionRange": "\u003c= 1.17.6"
+    }
+  ]
+}
