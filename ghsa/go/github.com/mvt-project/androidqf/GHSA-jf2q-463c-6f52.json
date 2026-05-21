@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-21T17:09:02Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/mvt-project/androidqf"
+  },
+  "Advisory": {
+    "DatabaseId": 357193,
+    "Id": "GSA_kwCzR0hTQS1qZjJxLTQ2M2MtNmY1Ms4ABXNJ",
+    "GhsaId": "GHSA-jf2q-463c-6f52",
+    "References": [
+      {
+        "Url": "https://github.com/mvt-project/androidqf/security/advisories/GHSA-jf2q-463c-6f52"
+      },
+      {
+        "Url": "https://github.com/mvt-project/androidqf/releases/tag/v1.8.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jf2q-463c-6f52"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jf2q-463c-6f52"
+      }
+    ],
+    "Description": "### Summary\n`generateZipPath()` constructs zip entry names for collected APKs using device controlled content from `extractFileName()`. Since `extractFileName()` does not reject traversal sequences, the resulting zip entry name can contain `../`. AndroidQF itself does not extract the zip it creates, but any forensic tool that extracts the acquisition bundle without zip-slip protection could write files to attacker chosen paths.\n\n### Impact\nA compromised device could inject path traversal sequences into the acquisition bundle's zip entry names. When a forensic analyst or forensic tooling extracts the bundle without entry name validation, files could be written outside the intended extraction directory.\n\n### Patched version\n[1.8.3](https://github.com/mvt-project/androidqf/releases/tag/v1.8.3)\n\n### Credits\nThis issue was identified during a security assessment conducted by 0xche.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T17:09:00Z",
+    "Severity": "LOW",
+    "Summary": "androidqf: Zip entry Name Injection in APK bundle (Zip Slip for zip consumers)",
+    "UpdatedAt": "2026-05-21T17:09:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.3"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.2"
+    }
+  ]
+}
