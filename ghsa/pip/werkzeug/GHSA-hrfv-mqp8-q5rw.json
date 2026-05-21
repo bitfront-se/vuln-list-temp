@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2024-11-19T19:17:44Z",
+  "UpdatedAt": "2026-05-20T22:16:53Z",
   "Package": {
     "Ecosystem": "PIP",
     "Name": "werkzeug"
@@ -32,6 +32,9 @@
         "Url": "https://security.netapp.com/advisory/ntap-20231124-0008"
       },
       {
+        "Url": "https://github.com/pallets/werkzeug/commit/cbb446fdcada7685fce936ded01b76c08dbd6eb5"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-hrfv-mqp8-q5rw"
       }
     ],
@@ -45,12 +48,12 @@
         "Value": "CVE-2023-46136"
       }
     ],
-    "Description": "Werkzeug multipart data parser needs to find a boundary that may be between consecutive chunks. That's why parsing is based on looking for newline characters. Unfortunately, code looking for partial boundary in the buffer is written inefficiently, so if we upload a file that starts with CR or LF and then is followed by megabytes of data without these characters: all of these bytes are appended chunk by chunk into internal bytearray and lookup for boundary is performed on growing buffer.\n\nThis allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests. The amount of RAM required can trigger an out of memory kill of the process. If many concurrent requests are sent continuously, this can exhaust or kill all available workers.\n",
+    "Description": "Werkzeug multipart data parser needs to find a boundary that may be between consecutive chunks. That's why parsing is based on looking for newline characters. Unfortunately, code looking for partial boundary in the buffer is written inefficiently, so if we upload a file that starts with CR or LF and then is followed by megabytes of data without these characters: all of these bytes are appended chunk by chunk into internal bytearray and lookup for boundary is performed on growing buffer.\n\nThis allows an attacker to cause a denial of service by sending crafted multipart data to an endpoint that will parse it. The amount of CPU time required can block worker processes from handling legitimate requests. The amount of RAM required can trigger an out of memory kill of the process. If many concurrent requests are sent continuously, this can exhaust or kill all available workers.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2023-10-25T14:22:59Z",
     "Severity": "MODERATE",
     "Summary": "Werkzeug DoS: High resource usage when parsing multipart/form-data containing a large part with CR/LF character at the beginning",
-    "UpdatedAt": "2024-11-19T19:17:44Z",
+    "UpdatedAt": "2026-05-20T22:16:53Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.7,
@@ -62,7 +65,7 @@
       "FirstPatchedVersion": {
         "Identifier": "2.3.8"
       },
-      "VulnerableVersionRange": "\u003c 2.3.8"
+      "VulnerableVersionRange": "\u003e= 2.0.0rc1, \u003c 2.3.8"
     },
     {
       "FirstPatchedVersion": {
