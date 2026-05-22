@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-21T20:35:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 357262,
+    "Id": "GSA_kwCzR0hTQS1mNzR3LTI3MngtbXFjds4ABXOO",
+    "GhsaId": "GHSA-f74w-272x-mqcv",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-f74w-272x-mqcv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f74w-272x-mqcv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f74w-272x-mqcv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46550"
+      }
+    ],
+    "Description": "### Summary\n\nThe refresh-token cookie was set with `httpOnly: true` but missing both the `secure` flag and the `sameSite` attribute. Over plain HTTP the cookie could be intercepted on the network; without `sameSite`, browsers attached it to cross-site POSTs, enabling CSRF against the token-refresh endpoint.\n\n### Details\n\nIn `packages/nocodb/src/services/users/helpers.ts`, `setTokenCookie` produced the cookie with only `httpOnly`, an `expires` date, and an optional `domain` from `NC_BASE_HOST_NAME` — no `secure`, no `sameSite`. The refresh endpoint `POST /api/v2/auth/token/refresh` (`auth.controller.ts`) read the cookie unconditionally and returned a new JWT, with no CSRF token.\n\nThe fix sets `httpOnly: true`, `sameSite: 'lax'`, and conditional `secure: req.ncSiteUrl.startsWith('https')` so the flag is active under HTTPS while still functional on plain-HTTP localhost development.\n\nThis is distinct from GHSA-x4vh-j75g-268g (refresh-token lifecycle on password reset) — different root cause, different attack vector.\n\n### Impact\n\n- Cookie interception on plain HTTP networks (no `secure`).\n- Cross-site refresh: malicious cross-origin pages could trigger token refresh and, combined with any same-origin XSS or open-redirect on the NocoDB domain, capture the new JWT.\n- Refresh tokens have multi-day expiry (`NC_REFRESH_TOKEN_EXP_IN_DAYS`), so the exposure window is long.\n\n### Credit\n\nThis issue was reported by [@ik0z](https://github.com/ik0z).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T20:35:24Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Refresh Token Cookie Set Without `secure` and `sameSite` Flags",
+    "UpdatedAt": "2026-05-21T20:35:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.3"
+    }
+  ]
+}

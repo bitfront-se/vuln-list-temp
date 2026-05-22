@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-21T20:34:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 357259,
+    "Id": "GSA_kwCzR0hTQS05cWdyLTZ2cGctOWdoOc4ABXOL",
+    "GhsaId": "GHSA-9qgr-6vpg-9gh9",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-9qgr-6vpg-9gh9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9qgr-6vpg-9gh9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9qgr-6vpg-9gh9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46547"
+      }
+    ],
+    "Description": "### Summary\nA reflected XSS vulnerability exists in the Page Leaving Warning page. The `ncRedirectUrl` and `ncBackUrl` query parameters are used in `window.location.href` and `\u003ca\u003e` tag bindings without validation, allowing `javascript:` URI injection.\n\n### Details\n`PageLeavingWarning.vue` reads `ncRedirectUrl` and `ncBackUrl` directly from the route query without validation. When `isSameOriginUrl()` returns `false` (as it does for `javascript:` URIs), the raw URL is assigned to `window.location.href`, executing arbitrary JavaScript. The redirect URL is also bound directly to an `\u003ca\u003e` tag's `href` attribute.\n\n### Impact\nAn attacker can execute arbitrary JavaScript in the context of the NocoDB application by sending a crafted link to a victim. No authentication is required.\n\n### Credit\nThis issue was reported by [@naoyashiga](https://github.com/naoyashiga).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T20:34:09Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Reflected Cross-Site Scripting via Page Leaving Redirect URL",
+    "UpdatedAt": "2026-05-21T20:34:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.3"
+    }
+  ]
+}

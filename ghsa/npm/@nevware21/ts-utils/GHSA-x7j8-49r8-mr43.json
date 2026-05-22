@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-21T21:41:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nevware21/ts-utils"
+  },
+  "Advisory": {
+    "DatabaseId": 357309,
+    "Id": "GSA_kwCzR0hTQS14N2o4LTQ5cjgtbXI0M84ABXO9",
+    "GhsaId": "GHSA-x7j8-49r8-mr43",
+    "References": [
+      {
+        "Url": "https://github.com/nevware21/ts-utils/security/advisories/GHSA-x7j8-49r8-mr43"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x7j8-49r8-mr43"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x7j8-49r8-mr43"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46681"
+      }
+    ],
+    "Description": "## Summary\n\nThe _copyProps function in lib/src/object/copy.ts uses for...in to iterate over source object properties without an Object.hasOwnProperty check, and does not filter dangerous keys (__proto__, constructor, prototype). This allows an attacker to pollute the prototype chain of all objects in the application.\n\n## Details\n\nIn _copyProps() (copy.ts lines 186-191), the code iterates all enumerable properties including inherited ones and dangerous keys like __proto__. Any object with a __proto__ key (e.g., from untrusted JSON input) will overwrite the target's prototype.\n\n## PoC\n```\nconst malicious = JSON.parse('{\"__proto__\": {\"polluted\": true}}');\nobjDeepCopy(malicious);\nconsole.log({}.polluted); // true\n```\n## Suggested Fix\n\nAdd objHasOwnProperty check and filter __proto__, constructor, prototype keys.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T21:41:36Z",
+    "Severity": "HIGH",
+    "Summary": "@nevware21/ts-utils: Prototype Pollution in objDeepCopy/objCopyProps via for...in without hasOwnProperty",
+    "UpdatedAt": "2026-05-21T21:41:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.14.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.13.0"
+    }
+  ]
+}

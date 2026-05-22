@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-21T20:34:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 357260,
+    "Id": "GSA_kwCzR0hTQS0yYzV4LTRqZ2YtODhtas4ABXOM",
+    "GhsaId": "GHSA-2c5x-4jgf-88mj",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-2c5x-4jgf-88mj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2c5x-4jgf-88mj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2c5x-4jgf-88mj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46548"
+      }
+    ],
+    "Description": "### Summary\n\nThe `request-filtering-agent` SSRF protection was non-functional in the four notification webhook plugins (Slack, Discord, Mattermost, Teams) because `httpAgent` / `httpsAgent` were passed as part of the request **body** rather than the axios **config**. An authenticated user with hook-creation permission could direct outbound POST requests to arbitrary internal hosts.\n\n### Details\n\n`axios.post(url, data, config)` expects connection agents in the third (config) argument. In all four plugins, the agents were placed in the second (data) argument and serialised as JSON body content:\n\n```ts\n// packages/nocodb/src/plugins/slack/Slack.ts (and Discord / Mattermost / Teams — identical pattern)\nreturn await axios.post(webhook_url, {\n  text,\n  httpAgent: useAgent(webhook_url),   // wrong position — serialised, not used\n  httpsAgent: useAgent(webhook_url),\n});\n```\n\nThe webhook flow: an Editor+ user creates a webhook with `notification.payload.channels[].webhook_url` pointing to an internal host; on trigger, `WebhookInvoker.invoke()` calls the plugin's `sendMessage()` which performs the outbound `axios.post` with no SSRF filtering applied.\n\nThis is distinct from GHSA-xr7v-j379-34v9, which covers a blind SSRF via HEAD in the upload-by-URL path.\n\n### Impact\n\n- Authenticated user (Editor+) can reach cloud-metadata endpoints (`169.254.169.254`) and internal services.\n- Combined with verbose hook logging (`NC_AUTOMATION_LOG_LEVEL=ALL`), response bodies may be exfiltrated.\n\n### Credit\n\nThis issue was reported by [@ik0z](https://github.com/ik0z).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T20:34:28Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: SSRF Protection Bypass in Notification Webhook Plugins (Slack, Discord, Mattermost, Teams)",
+    "UpdatedAt": "2026-05-21T20:34:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.3"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-05-21T20:34:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 357261,
+    "Id": "GSA_kwCzR0hTQS1tNXFnLXJ2anEtNzI3cM4ABXON",
+    "GhsaId": "GHSA-m5qg-rvjq-727p",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-m5qg-rvjq-727p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m5qg-rvjq-727p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m5qg-rvjq-727p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46549"
+      }
+    ],
+    "Description": "### Summary\n\nThe OAuth token strategy attached `oauth_scope` and `oauth_granted_resources` to the request user, but the ACL middleware never consulted either. An OAuth token issued with a restricted scope (e.g. MCP-only) therefore inherited the full permissions of the underlying user across all routes; the `granted_resources.base_id` restriction was bypassed on org-level endpoints that don't populate `req.context.base_id`.\n\n### Details\n\nIn `packages/nocodb/src/strategies/oauth-token.strategy.ts`, the strategy set `is_oauth_token`, `oauth_client_id`, `oauth_granted_resources`, and `oauth_scope` on the user object, then mapped through to the user's existing `roles` / `base_roles`. The ACL middleware in `extract-ids.middleware.ts` honoured `is_api_token` via `blockApiTokenAccess` but had no equivalent gate for `is_oauth_token` or scope-string enforcement.\n\nThe base/workspace restriction logic short-circuited when `req.context.base_id` was unset (org-level routes), so an OAuth token scoped to one base could still call org-level endpoints as the underlying user.\n\nThe fix adds a path-prefix allowlist (`['/mcp', '/api/v3/', '/auth/user/me']`) enforced inside the strategy and a `blockOAuthTokenAccess` ACL flag for endpoints that should never accept OAuth tokens.\n\n### Impact\n\n- Scope escalation: tokens issued with a narrow scope received the underlying user's full role.\n- Resource boundary bypass: per-base restrictions did not apply to org-level routes.\n- Violates least-privilege expectation for third-party OAuth integrations.\n\n### Credit\n\nThis issue was reported by [@ik0z](https://github.com/ik0z).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T20:34:51Z",
+    "Severity": "LOW",
+    "Summary": "NocoDB: OAuth Token Scope Not Enforced at ACL Layer Allows Scope Escalation",
+    "UpdatedAt": "2026-05-21T20:34:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.3"
+    }
+  ]
+}
