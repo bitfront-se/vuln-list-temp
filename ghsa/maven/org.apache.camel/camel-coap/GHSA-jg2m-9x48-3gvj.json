@@ -1,0 +1,86 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-22T13:10:45Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-coap"
+  },
+  "Advisory": {
+    "DatabaseId": 351491,
+    "Id": "GSA_kwCzR0hTQS1qZzJtLTl4NDgtM2d2as4ABV0D",
+    "GhsaId": "GHSA-jg2m-9x48-3gvj",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40453"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-40453.html"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22569"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22575"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/22576"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/1e331daa4eea0a3f01d951e74cda8faee79495a2"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/301bb7401cd480895b94a28a8ad6cf04952d8125"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/3d2efeed2f6ea757f0254a1d1cdeb9a4f28ca147"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/CAMEL-23313"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jg2m-9x48-3gvj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jg2m-9x48-3gvj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40453"
+      }
+    ],
+    "Description": "The fix for CVE-2025-27636 added setLowerCase(true) to HttpHeaderFilterStrategy so that case-variant header names such as 'CAmelExecCommandExecutable' are filtered out alongside 'CamelExecCommandExecutable'. The same setLowerCase(true) call was not applied to five non-HTTP HeaderFilterStrategy implementations: JmsHeaderFilterStrategy and ClassicJmsHeaderFilterStrategy in camel-jms, SjmsHeaderFilterStrategy in camel-sjms, CoAPHeaderFilterStrategy in camel-coap, and GooglePubsubHeaderFilterStrategy in camel-google-pubsub. Because those strategies use case-sensitive String.startsWith('Camel'/'camel') filtering while the Camel Exchange stores headers in a case-insensitive map, an attacker with JMS (or equivalent) producer access to the broker consumed by a Camel route can inject case-variant Camel internal headers, which are then resolved by downstream components such as camel-exec and camel-file using their canonical casing. This enables remote code execution and arbitrary file write on routes that forward JMS messages to header-driven components.\n\nThis issue affects Apache Camel: from 3.0.0 before 4.14.6, from 4.15.0 before 4.18.2, from 4.19.0 before 4.20.0.\n\nUsers are recommended to upgrade to version 4.20.0, which fixes the issue. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.6. If users are on the 4.18.x releases stream, then they are suggested to upgrade to 4.18.2.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-27T09:34:39Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache Camel has an incomplete fix for CVE-2025-27636",
+    "UpdatedAt": "2026-05-22T13:10:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.20.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.19.0, \u003c 4.20.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.6"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 4.14.6"
+    }
+  ]
+}

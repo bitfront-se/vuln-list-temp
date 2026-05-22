@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-22T17:27:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiosend"
+  },
+  "Advisory": {
+    "DatabaseId": 357414,
+    "Id": "GSA_kwCzR0hTQS03bThmLWhnanEtOGdjOc4ABXQm",
+    "GhsaId": "GHSA-7m8f-hgjq-8gc9",
+    "References": [
+      {
+        "Url": "https://github.com/vovchic17/aiosend/security/advisories/GHSA-7m8f-hgjq-8gc9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7m8f-hgjq-8gc9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7m8f-hgjq-8gc9"
+      }
+    ],
+    "Description": "# Vulnerability Description\n\nIn `aiosend/webhook/base.py`, the `WebhookHandler.feed_update()` method performs full deserialization of the incoming JSON via Pydantic **before** verifying the HMAC signature. Anyone can send a request with an arbitrary body — the server will parse it, spend CPU and memory, and only then reject it.\n\n## Vulnerable Code\n\n```python\n# aiosend/webhook/base.py — feed_update()\nupdate = Update.model_validate(body, context={\"client\": self})  #  parsing — always\nif not self._check_signature(body, headers):                    #  auth — too late\n    return False\n```\n\nAdditional aggravating factor: `CryptoPayObject` is declared with `ConfigDict(extra=\"allow\")` — all arbitrary fields from the body are stored in memory without any limits.\n\n## Minimal PoC\n\nRequests with deliberately invalid signatures (zero credentials):\n\n| extra_fields | body_size | parse_time | status |\n|---|---|---|---|\n| 0 | 336 B | 26 µs | **403 REJECTED** |\n| 1,000 | 82 KB | 257 µs | **403 REJECTED** |\n| 5,000 | 410 KB | 1,183 µs | **403 REJECTED** |\n| 10,000 | 820 KB | 2,552 µs | **403 REJECTED** |\n| 10,000 (×512B) | 5.3 MB | 7,490 µs | **403 REJECTED** |\n\nAll requests were rejected — but the server already performed parsing for each one. 10 parallel threads with 5 MB bodies = \u003e75 ms of CPU spent on requests that will never be authorized.\n\n## Affected Components\n\n- `aiosend/webhook/base.py` — `WebhookHandler.feed_update()`\n- `aiosend/types/base.py` — `CryptoPayObject` (`extra=\"allow\"`)\n- All adapters: `AiohttpManager`, `FastAPIManager`, `FlaskManager`\n\n## Exploitation Conditions\n\n- **Attacker**: anyone with network access to the webhook endpoint\n- **Authentication**: not required\n- **Body size limit**: absent at the library level (Flask and FastAPI have no default limit)\n\n---\nThe advisory was translated using Copilot.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-22T17:27:56Z",
+    "Severity": "HIGH",
+    "Summary": "aiosend: Deserialization of request body before signature verification (Pre-auth DoS) in webhook handler",
+    "UpdatedAt": "2026-05-22T17:27:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.6"
+      },
+      "VulnerableVersionRange": "\u003c 3.0.6"
+    }
+  ]
+}
