@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-26T16:41:14Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Weblate"
+  },
+  "Advisory": {
+    "DatabaseId": 357943,
+    "Id": "GSA_kwCzR0hTQS1oZnB2LW1jNXYtcDltbc4ABXY3",
+    "GhsaId": "GHSA-hfpv-mc5v-p9mm",
+    "References": [
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/security/advisories/GHSA-hfpv-mc5v-p9mm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-66407"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/pull/17102"
+      },
+      {
+        "Url": "https://github.com/WeblateOrg/weblate/pull/17103"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/weblate/PYSEC-2025-231.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hfpv-mc5v-p9mm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hfpv-mc5v-p9mm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-66407"
+      }
+    ],
+    "Description": "### Impact\nThe Create Component functionality in Weblate allows authorized users to add new translation components by specifying both a version control system and a source code repository URL to pull from. However, the repository URL field is not validated or sanitized, allowing an attacker to supply arbitrary protocols, hostnames, and IP addresses, including localhost, internal network addresses, and local filenames.\n\nWhen the Mercurial version control system is selected, Weblate exposes the full server-side HTTP response for the provided URL. This effectively creates a server-side request forgery (SSRF) primitive that can probe internal services and return their contents. In addition to accessing internal HTTP endpoints, the behavior also enables local file enumeration by attempting file:// requests. While file contents may not always be returned, the application’s error messages clearly differentiate between files that exist and files that do not, revealing information about the server’s filesystem layout.\n\n\n\nIn cloud environments, this behavior is particularly dangerous, as internal-only endpoints such as cloud metadata services may be accessible, potentially leading to credential disclosure and full environment compromise.\n\n### Patches\n\nThis has been addressed in the Weblate 5.15 release.\n\n* https://github.com/WeblateOrg/weblate/pull/17103\n* https://github.com/WeblateOrg/weblate/pull/17102\n\n### Workarounds\n\nRemoving Mercurial from [VCS_BACKENDS](https://docs.weblate.org/en/latest/admin/config.html#vcs-backends) avoids this vulnerability, as the Git backend is not affected. The Git backend was already configured to block the file protocol and does not expose the HTTP response content in the error message.\n\n### References\nThanks to Jason Marcello for responsible disclosure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-26T16:41:13Z",
+    "Severity": "MODERATE",
+    "Summary": "Weblate has a Server-Side Request Forgery issue",
+    "UpdatedAt": "2026-05-26T16:41:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.15"
+      },
+      "VulnerableVersionRange": "\u003c 5.15"
+    }
+  ]
+}

