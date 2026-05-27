@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-27T00:38:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@hapi/wreck"
+  },
+  "Advisory": {
+    "DatabaseId": 358112,
+    "Id": "GSA_kwCzR0hTQS12aGptLXc2N3EtZzc1Y84ABXbg",
+    "GhsaId": "GHSA-vhjm-w67q-g75c",
+    "References": [
+      {
+        "Url": "https://github.com/hapijs/wreck/security/advisories/GHSA-vhjm-w67q-g75c"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-3787-6prv-h9w3"
+      },
+      {
+        "Url": "https://github.com/hapijs/wreck/commit/a5b6fac9c684621c1d5733d10a0257697cfea373"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vhjm-w67q-g75c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vhjm-w67q-g75c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44979"
+      }
+    ],
+    "Description": "### Impact\nWhen `@hapi/wreck` follows a 3xx redirect to a different hostname, only the `Authorization` and `Cookie` headers are stripped. The standard credential header `Proxy-Authorization` is forwarded intact to the redirect target, potentially exposing forward-proxy credentials to a host outside the original trust boundary.\n\nRedirect following is opt-in. The redirects option defaults to false (no redirections followed), so applications are only affected if they have explicitly set redirects to a positive integer on the request or via `Wreck.defaults({ redirects: ... })`.\n\n### Patches\n`@hapi/wreck` 18.1.1 extends the cross-hostname strip set to include `proxy-authorization`. Upgrade to 18.1.1 or later.\n\n### Workarounds\nIf upgrading is not immediately possible:\n- Leave redirects at its default (`false`) — applications that never enable redirect following are not affected.\n- If redirects are required, set redirects: 0 when calling endpoints with sensitive headers, or strip Proxy-Authorization from the headers before issuing the request.\n- Use the `beforeRedirect` hook to manually strip proxy-authorization (and any other sensitive application headers) when `redirectOptions` targets a different hostname than the original request.\n\n### Resources\n- Related: [CVE-2024-30260 / GHSA-3787-6prv-h9w3 ](https://github.com/nodejs/undici/security/advisories/GHSA-3787-6prv-h9w3)(undici)\n- [RFC 7235 §4.4 — Proxy-Authorization](https://datatracker.ietf.org/doc/html/rfc7235#section-4.4)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-27T00:38:09Z",
+    "Severity": "MODERATE",
+    "Summary": "@hapi/wreck leaks sensitive `Proxy-Authorization` header across cross-hostname redirects",
+    "UpdatedAt": "2026-05-27T00:38:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "18.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 18.1.1"
+    }
+  ]
+}

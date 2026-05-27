@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-26T23:08:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty.incubator:netty-incubator-codec-ohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 358068,
+    "Id": "GSA_kwCzR0hTQS1mNjU5LTM3MmgtNngzeM4ABXa0",
+    "GhsaId": "GHSA-f659-372h-6x3x",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/security/advisories/GHSA-f659-372h-6x3x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f659-372h-6x3x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f659-372h-6x3x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41207"
+      }
+    ],
+    "Description": "HKDF_expand: returns non-NULL on failure. The byte[] is filled with zeros and has no way to distinguish success from failure. Since this output is used as HKDF key material for the response AEAD, a  failure silently produces an all-zero key.\n\nWhen EVP_HPKE_CTX_export fails it also returns an empty byte[] array filled with zeros. This byte[] feeds directly into OHttpCrypto.createResponseAEAD(...).  A silent all-zero export secret would produce a deterministic, attacker-predictable AEAD key.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-26T23:08:26Z",
+    "Severity": "MODERATE",
+    "Summary": "netty-incubator-codec-ohttp's HPKEContext operations may produce empty byte[] on failures",
+    "UpdatedAt": "2026-05-26T23:08:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.21.Final"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.21.Final"
+    }
+  ]
+}

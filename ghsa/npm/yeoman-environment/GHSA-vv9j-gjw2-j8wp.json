@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-26T23:10:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "yeoman-environment"
+  },
+  "Advisory": {
+    "DatabaseId": 358069,
+    "Id": "GSA_kwCzR0hTQS12djlqLWdqdzItajh3cM4ABXa1",
+    "GhsaId": "GHSA-vv9j-gjw2-j8wp",
+    "References": [
+      {
+        "Url": "https://github.com/yeoman/environment/security/advisories/GHSA-vv9j-gjw2-j8wp"
+      },
+      {
+        "Url": "https://github.com/yeoman/environment/commit/78d2af7e60294784b8a8b3b3b5099c6874b6a1fa"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vv9j-gjw2-j8wp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vv9j-gjw2-j8wp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42089"
+      }
+    ],
+    "Description": "### Impact\n\n`yeoman-environment` versions `\u003e= 2.9.0` and `\u003c 6.0.1` install missing local generator packages from caller-supplied package names without user confirmation. In downstream consumers that pass attacker-controlled project configuration into this path, this can result in arbitrary package installation and code execution during CLI bootstrap.\n\nThe vulnerable method is `installLocalGenerators()`, which calls `repository.install()` directly without prompting the user.\n\n### Patches\n\nUpgrade to `yeoman-environment` `6.0.1`, which adds an interactive confirmation prompt before installation ([PR #753](https://github.com/yeoman/environment/pull/753)).\n\n### Workarounds\n\nNone.\n\n### Resources\n\n- [Fix commit 78d2af7](https://github.com/yeoman/environment/commit/78d2af7e60294784b8a8b3b3b5099c6874b6a1fa)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-26T23:10:38Z",
+    "Severity": "HIGH",
+    "Summary": "yeoman-environment Vulnerable to Arbitrary Package Installation without User Confirmation",
+    "UpdatedAt": "2026-05-26T23:10:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.9.0, \u003c 6.0.1"
+    }
+  ]
+}

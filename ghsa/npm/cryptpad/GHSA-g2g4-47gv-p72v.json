@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-26T19:05:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "cryptpad"
+  },
+  "Advisory": {
+    "DatabaseId": 358037,
+    "Id": "GSA_kwCzR0hTQS1nMmc0LTQ3Z3YtcDcyds4ABXaV",
+    "GhsaId": "GHSA-g2g4-47gv-p72v",
+    "References": [
+      {
+        "Url": "https://github.com/cryptpad/cryptpad/security/advisories/GHSA-g2g4-47gv-p72v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-26028"
+      },
+      {
+        "Url": "https://github.com/cryptpad/cryptpad/releases/tag/2026.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g2g4-47gv-p72v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g2g4-47gv-p72v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-26028"
+      }
+    ],
+    "Description": "### Summary\nCryptPad’s HTML sanitizer in Diffmarked.js can be bypassed due to incomplete filtering of restricted tags.\nBecause the sanitizer only validates the src attribute of `\u003ciframe\u003e` `\u003cvideo\u003e`, and `\u003caudio\u003e` elements,  and does not restrict other attributes, an attacker can inject arbitrary HTML through srcdoc. This completely defeats CryptPad’s intended bounce sandboxing and allows link injection or other interactive content inside user-controlled documents.\n\n### Details\nThe sanitizer defines forbidden and restricted tags but treats \u003ciframe\u003e as “restricted” instead of “forbidden”:\n\nhttps://github.com/cryptpad/cryptpad/blob/0dd3c1f53d56dffb06651b86ead6b9b387920173/www/common/diffMarked.js#L403-L407\nThe actual enforcement only checks the src attribute, nothing else:\n\nhttps://github.com/cryptpad/cryptpad/blob/0dd3c1f53d56dffb06651b86ead6b9b387920173/www/common/diffMarked.js#L445-L449\n\nBecause only src is validated, adding a benign blob: src but malicious srcdoc results in unrestricted rendering.\n### PoC\n\nAn attacker can embed arbitrary HTML, including clickable external links, images, or interactive content, completely bypassing CryptPad’s bounce mechanism and sanitization:\n\n```html\n\u003ciframe src=blob: srcdoc=\"\u003ca href=https://attacker.com target=_blank\u003eCLICK ME\u003c/a\u003e\"\u003e\u003c/iframe\u003e\n```\n\nAlthough CSP is strict, CryptPad exposes several same-origin gadgets that can execute attacker-controlled code.\n\nFor example, `jscolor.js` dynamically evaluates user-provided options:\nhttps://github.com/cryptpad/cryptpad/blob/0dd3c1f53d56dffb06651b86ead6b9b387920173/www/common/jscolor.js#L65-L71\n\n### Impact\nSanitizer bypass, HTML injection and potentially XSS.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-26T19:05:10Z",
+    "Severity": "MODERATE",
+    "Summary": "CryptPad has a Sanitizer Bypass in Diffmarked.js that Allows Arbitrary HTML Injection and Potential XSS",
+    "UpdatedAt": "2026-05-26T19:05:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 5.9.0"
+    }
+  ]
+}
