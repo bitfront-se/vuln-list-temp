@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-27T19:57:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/crowdsecurity/crowdsec"
+  },
+  "Advisory": {
+    "DatabaseId": 358705,
+    "Id": "GSA_kwCzR0hTQS0yNzNoLWd2d3ItYzNxas4ABXkx",
+    "GhsaId": "GHSA-273h-gvwr-c3qj",
+    "References": [
+      {
+        "Url": "https://github.com/crowdsecurity/crowdsec/security/advisories/GHSA-273h-gvwr-c3qj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-273h-gvwr-c3qj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-273h-gvwr-c3qj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44981"
+      }
+    ],
+    "Description": "The LAPI router uses `gin-contrib/gzip` with `DefaultDecompressHandle` globally (`pkg/apiserver/controllers/controller.go`).\nThis middleware decompresses incoming request bodies without enforcing a maximum decompressed size. \n\nThe endpoints `/v1/watchers` or `/v1/watchers/login` require no authentication.\nAn attacker can send small gzip-compressed JSON payloads that, when decompressed, result in hundreds of MB of valid JSON occupying server memory.\nSending enough requests concurrently will cause LAPI to allocate excessive heap memory, leading the OS to forcibly terminate the process.\n \nThis vulnerability is not exploitable from the network in default configurations, as LAPI only listens on the loopback interface.\nIf developers' applications are using a multi-server setup, LAPI will be exposed in the network, in which case they are at risk if untrusted IPs can access it.\n \n### Impact\n\nExploiting this vulnerability will make LAPI unreachable, meaning that bouncers will not be able to fetch new decisions (but existing decisions will still be enforced) and log processors will not be able to send alerts, effectively denying the creation of new decisions.\n\n### Workarounds\n\nIf the LAPI is exposed on the network (either directly or through a reverse proxy), for example in the case of a multi-server deployment, restrict access to trusted IP addresses.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-27T19:57:28Z",
+    "Severity": "MODERATE",
+    "Summary": "CrowdSec LAPI: Denial of Service via Unbounded Gzip Decompression",
+    "UpdatedAt": "2026-05-27T19:57:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.8"
+      },
+      "VulnerableVersionRange": "\u003e= 1.7.0, \u003c 1.7.8"
+    }
+  ]
+}
