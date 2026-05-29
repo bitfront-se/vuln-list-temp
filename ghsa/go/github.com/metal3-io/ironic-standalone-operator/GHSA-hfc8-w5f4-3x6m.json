@@ -1,0 +1,61 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T18:23:36Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/metal3-io/ironic-standalone-operator"
+  },
+  "Advisory": {
+    "DatabaseId": 359362,
+    "Id": "GSA_kwCzR0hTQS1oZmM4LXc1ZjQtM3g2bc4ABXvC",
+    "GhsaId": "GHSA-hfc8-w5f4-3x6m",
+    "References": [
+      {
+        "Url": "https://github.com/metal3-io/ironic-standalone-operator/security/advisories/GHSA-hfc8-w5f4-3x6m"
+      },
+      {
+        "Url": "https://github.com/metal3-io/ironic-standalone-operator/pull/619"
+      },
+      {
+        "Url": "https://github.com/metal3-io/ironic-standalone-operator/pull/664"
+      },
+      {
+        "Url": "https://github.com/metal3-io/ironic-standalone-operator/pull/665"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hfc8-w5f4-3x6m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hfc8-w5f4-3x6m"
+      }
+    ],
+    "Description": "## Impact\n\nThe Ironic Standalone Operator (IRSO) is the operator to maintain an Ironic deployment for Metal3. IRSO controller automatically adds its environment label to user-provided Secrets and ConfigMaps without the resource owner's consent. A high-privilege controller modifying user-owned resources constitutes an unauthorized integrity violation. Deployments running IrSO v0.7.0 through v0.8.1 that reference user-provided Secrets or ConfigMaps (TLS certificates, BMC CA, trusted CA) are affected.\n\n## Patches\n\nFixed in v0.9.0, v0.8.2, v0.7.3. \n\n## Workarounds\n\nManually add the environment label (ironic-standalone-operator.metal3.io/environment) to all user-provided Secrets and ConfigMaps before they are referenced in the Ironic resource. This prevents the controller from modifying them.\n\n## Resources\n\n- https://github.com/metal3-io/ironic-standalone-operator/pull/619\n- https://github.com/metal3-io/ironic-standalone-operator/pull/664\n- https://github.com/metal3-io/ironic-standalone-operator/pull/665",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T18:23:34Z",
+    "Severity": "MODERATE",
+    "Summary": "Ironic Standalone Operator's controller modifies user-owned resources without consent",
+    "UpdatedAt": "2026-05-29T18:23:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.8.0, \u003c= 0.8.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.7.2"
+    }
+  ]
+}

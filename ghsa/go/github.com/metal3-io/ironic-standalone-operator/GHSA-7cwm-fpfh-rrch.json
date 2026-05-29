@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T18:22:25Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/metal3-io/ironic-standalone-operator"
+  },
+  "Advisory": {
+    "DatabaseId": 359361,
+    "Id": "GSA_kwCzR0hTQS03Y3dtLWZwZmgtcnJjaM4ABXvB",
+    "GhsaId": "GHSA-7cwm-fpfh-rrch",
+    "References": [
+      {
+        "Url": "https://github.com/metal3-io/ironic-standalone-operator/security/advisories/GHSA-7cwm-fpfh-rrch"
+      },
+      {
+        "Url": "https://github.com/metal3-io/ironic-standalone-operator/pull/635"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7cwm-fpfh-rrch"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7cwm-fpfh-rrch"
+      }
+    ],
+    "Description": "## Impact\n\nThe Ironic Standalone Operator (IRSO) is the operator to maintain an Ironic deployment for Metal3. The Prometheus metrics exporter binds to 0.0.0.0 (all network interfaces) by default with no authentication. The default config is disabled. If enabled, this exposes operational metrics to any host on adjacent networks. Deployments running IrSO v0.7.0 through v0.8.1 with the Prometheus exporter enabled are affected. Versions prior to v0.7.0 do not have the Prometheus exporter feature.\n\n## Patches\n\nThe exporter now exposes a configurable bindAddress field. Users should upgrade to v0.9.0 or later. \n\n## Workarounds\n\nUsers on older versions than v0.9.0 should use host-level firewall rules (iptables/nftables) to restrict access to the metrics port from unintended networks, or disable the metrics service.\n\n## Resources\n\n- https://github.com/metal3-io/ironic-standalone-operator/pull/635",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T18:22:24Z",
+    "Severity": "MODERATE",
+    "Summary": "Ironic Standalone Operator's prometheus metrics exporter bound to all interfaces",
+    "UpdatedAt": "2026-05-29T18:22:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T17:15:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nuxt/nitro-server"
+  },
+  "Advisory": {
+    "DatabaseId": 359348,
+    "Id": "GSA_kwCzR0hTQS1oZzNmLTI4cmctNGp4as4ABXu0",
+    "GhsaId": "GHSA-hg3f-28rg-4jxj",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-hg3f-28rg-4jxj"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/issues/19772"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/pull/35092"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hg3f-28rg-4jxj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hg3f-28rg-4jxj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47200"
+      }
+    ],
+    "Description": "### Summary\n\nWhen `experimental.componentIslands` is enabled (default in Nuxt 4), any `.server.vue` file under `pages/` is automatically registered as a server island under the key `page_\u003crouteName\u003e` and exposed via the `/__nuxt_island/:name` endpoint. Until this fix, requests through that endpoint rendered the page component directly via the SSR renderer without instantiating Vue Router, which meant route middleware declared on the page (including `definePageMeta({ middleware })`) did not run.\n\nFor Nuxt applications that gate a `.server.vue` *page* behind route middleware as their sole auth check, an unauthenticated attacker could bypass that check by requesting `/__nuxt_island/page_\u003crouteName\u003e_\u003canyhash\u003e` directly and receiving the server-rendered HTML.\n\n### Affected configurations\n\nAll three conditions must hold for an application to be vulnerable:\n\n1. `experimental.componentIslands` is enabled (the default in Nuxt 4; opt-in in Nuxt 3).\n2. The application defines one or more `.server.vue` files under `pages/`, registering them as routed pages.\n3. Authentication / authorization for at least one such page is enforced solely via route middleware (`middleware/*.ts` referenced from `definePageMeta`), without a server-side check inside the page or its data layer.\n\nApplications that enforce auth inside the island's own data layer (server-only API routes, `useRequestEvent` + manual session checks, etc.) were not affected. The general \"route middleware does not run for non-page island *components*\" behaviour is documented and unchanged; this advisory concerns the `.server.vue` *page* case specifically, where running middleware is the user's clear expectation.\n\n### Details\n\n- Build (`packages/nuxt/src/components/templates.ts`): `.server.vue` pages are registered as island components with `page_` prefix, making them addressable through `/__nuxt_island/page_\u003crouteName\u003e_\u003chashId\u003e`.\n- Runtime (`packages/nitro-server/src/runtime/handlers/island.ts`): the handler resolves the requested island component and renders it via `renderer.renderToString(ssrContext)`. The Vue Router plugin previously short-circuited middleware execution whenever `ssrContext.islandContext` was set.\n- The two paths interact so that route middleware declared on the source page never runs.\n\n### Proof of concept\n\nGiven a page `app/pages/secret.server.vue`:\n\n```vue\n\u003cscript setup lang=\"ts\"\u003e\ndefinePageMeta({ middleware: 'auth' })\n\u003c/script\u003e\n\n\u003ctemplate\u003e\n\u003ch1\u003eSECRET DATA\u003c/h1\u003e\n\u003c/template\u003e\n```\n\nwith `middleware/auth.ts` blocking unauthenticated access:\n\n```bash\n# Direct page request: blocked by middleware\ncurl -i http://localhost:3000/secret\n# -\u003e 403 / redirect, depending on the middleware\n\n# Island request: middleware did not run before this fix\ncurl -i 'http://localhost:3000/__nuxt_island/page_secret_anyhash'\n# -\u003e 200 OK, body includes \u003ch1\u003eSECRET DATA\u003c/h1\u003e\n```\n\n### Patches\n\nPatched in `nuxt@4.4.6` and `nuxt@3.21.6` by [#35092](https://github.com/nuxt/nuxt/pull/35092). The Vue Router plugin now runs middleware and redirect handling for `page_*` islands (i.e. islands that originate from `.server.vue` files in `pages/`). The island handler propagates middleware-issued responses (`~renderResponse`), and a new `beforeResolve` guard returns HTTP 400 when the requested `page_\u003cname\u003e` does not match the route component the URL resolves to.\n\nNon-page island components are unaffected - they continue to render without route middleware, by design.\n\n### Workarounds\n\nIf you cannot upgrade immediately:\n\n- Enforce authentication inside the `.server.vue` page itself, not via route middleware. Read the session from `useRequestEvent()` and `throw createError({ statusCode: 401 })` (or redirect) before returning data. This is the recommended pattern for islands regardless of this advisory.\n- Disable `experimental.componentIslands` if your app does not use the feature.\n- If your app must keep route-middleware-only auth, gate the `/__nuxt_island/page_*` URL prefix at your reverse proxy or in a server middleware.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T17:15:11Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt's route middleware is not enforced when rendering `.server.vue` pages via `/__nuxt_island/page_*`",
+    "UpdatedAt": "2026-05-29T17:15:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.6"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0, \u003c= 4.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.21.6"
+      },
+      "VulnerableVersionRange": "\u003e= 3.20.0, \u003c= 3.21.5"
+    }
+  ]
+}

