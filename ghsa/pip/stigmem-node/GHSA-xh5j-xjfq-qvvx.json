@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-05-29T22:14:36Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "stigmem-node"
+  },
+  "Advisory": {
+    "DatabaseId": 359653,
+    "Id": "GSA_kwCzR0hTQS14aDVqLXhqZnEtcXZ2eM4ABXzl",
+    "GhsaId": "GHSA-xh5j-xjfq-qvvx",
+    "References": [
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/security/advisories/GHSA-xh5j-xjfq-qvvx"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/CHANGELOG.md#L14-L35"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/SECURITY.md"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/releases/tag/v0.9.0a2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xh5j-xjfq-qvvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xh5j-xjfq-qvvx"
+      }
+    ],
+    "Description": "### Impact\nA mismatch in federation peer-token timestamp handling could cause valid peer tokens to be treated as expired. Impacted deployments are Stigmem nodes using federation peer authentication paths from affected versions. The primary impact is availability and reliability of authenticated federation flows.\n\n### Patches\nPatched in 0.9.0a2. Federation peer-token timestamp handling now uses the canonical millisecond-based validation path and is covered by regression tests.\n\n### Workarounds\nBefore upgrading, avoid mixed peer-token minting paths and restrict federation use to tightly controlled peers.\n\n### Upgrade\nUpgrade to the patched release:\n\n```bash\npip install --upgrade --pre stigmem-node\n```\n\nIf developers install through the Stigmem meta-package instead, they should use the matching extra for deployments, for example:\n\n```bash\npip install --upgrade --pre 'stigmem[node]'\n```\n\n### Resources\n- Release: https://github.com/eidetic-labs/stigmem/releases/tag/v0.9.0a2\n- Changelog: https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/CHANGELOG.md#L14-L35\n- Security policy and posture: https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/SECURITY.md",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T22:14:34Z",
+    "Severity": "HIGH",
+    "Summary": "stigmem-node's federation peer token timestamp validation may reject valid peer tokens",
+    "UpdatedAt": "2026-05-29T22:14:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0a2"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.0a2"
+    }
+  ]
+}

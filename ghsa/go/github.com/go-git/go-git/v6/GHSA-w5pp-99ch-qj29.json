@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T19:43:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/go-git/go-git/v6"
+  },
+  "Advisory": {
+    "DatabaseId": 359426,
+    "Id": "GSA_kwCzR0hTQS13NXBwLTk5Y2gtcWoyOc4ABXwC",
+    "GhsaId": "GHSA-w5pp-99ch-qj29",
+    "References": [
+      {
+        "Url": "https://github.com/go-git/go-git/security/advisories/GHSA-w5pp-99ch-qj29"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w5pp-99ch-qj29"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w5pp-99ch-qj29"
+      }
+    ],
+    "Description": "### Impact\nSeveral denial-of-service issues were identified in `go-git` when parsing maliciously crafted Git repository data.\n\nAn attacker may craft a malicious `.pack`, `.idx` or loose objects that causes an application using an affected version of `go-git` to panic or consume excessive resources.\n\nThis can lead to denial of service in applications that use `go-git` to clone, fetch, open, or otherwise process untrusted repositories or Git object data.\n\nExploitation requires the ability to alter read-only files such as `.pack` or `.idx` from the local repository's `.git/objects/pack/` directory. Alternatively, the user would need to be interacting with a malicious remote server, which is not recommended and exposes users to a broader class of security risks beyond this issue.\n\n### Patches\nUsers should upgrade to a patched version in order to mitigate this vulnerability. Versions prior to `v5` are likely to be affected, users are recommended to upgrade to a supported `go-git` version.\n\n### Credits\ngo-git thanks @kodareef5, @AyushParkara and @N0zoM1z0 for reporting this in four separate reports. 🙇",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T19:43:27Z",
+    "Severity": "MODERATE",
+    "Summary": "go-git: Malformed Git object data may cause panics or resource exhaustion",
+    "UpdatedAt": "2026-05-29T19:43:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.0-alpha.4"
+      },
+      "VulnerableVersionRange": "\u003c= 6.0.0-alpha.3"
+    }
+  ]
+}

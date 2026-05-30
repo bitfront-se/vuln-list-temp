@@ -1,0 +1,46 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-29T22:16:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "stigmem-node"
+  },
+  "Advisory": {
+    "DatabaseId": 359655,
+    "Id": "GSA_kwCzR0hTQS1qbWZjLWhmanEtcHhjcM4ABXzn",
+    "GhsaId": "GHSA-jmfc-hfjq-pxcp",
+    "References": [
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/security/advisories/GHSA-jmfc-hfjq-pxcp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jmfc-hfjq-pxcp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jmfc-hfjq-pxcp"
+      }
+    ],
+    "Description": "### Impact\nStigmem nodes with federation enabled could be configured to run without mTLS outside loopback-only local development. In affected deployments, federation traffic may traverse the network without the intended transport protection. Impacted users are operators who enabled federation and explicitly disabled mTLS while binding the node to a non-loopback URL.\n\n### Patches\nPatched in 0.9.0a2. The node now refuses this configuration unless insecure federation is limited to loopback-only local development.\n\n### Workarounds\nBefore upgrading, operators should enable mTLS for federation or ensure federation endpoints are bound only to loopback/private test environments and are not reachable by untrusted networks.\n\n### Upgrade\nUpgrade to the patched release:\n\n```bash\npip install --upgrade --pre stigmem-node\n```\n\nIf developers install through the Stigmem meta-package instead, they should use the matching extra for deployments, for example:\n\n```bash\npip install --upgrade --pre 'stigmem[node]'\n```\n\n### Resources\n- Release: https://github.com/eidetic-labs/stigmem/releases/tag/v0.9.0a2\n- Changelog: https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/CHANGELOG.md#L14-L35\n- Security policy and posture: https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/SECURITY.md",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T22:16:27Z",
+    "Severity": "CRITICAL",
+    "Summary": "stigmem-node's federation insecure transport settings may allow non-loopback cleartext federation",
+    "UpdatedAt": "2026-05-29T22:16:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0a2"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.0a2"
+    }
+  ]
+}

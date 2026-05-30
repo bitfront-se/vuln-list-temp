@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T21:46:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openc3"
+  },
+  "Advisory": {
+    "DatabaseId": 350893,
+    "Id": "GSA_kwCzR0hTQS1mZnE1LXFwdmYteHE3eM4ABVqt",
+    "GhsaId": "GHSA-ffq5-qpvf-xq7x",
+    "References": [
+      {
+        "Url": "https://github.com/OpenC3/cosmos/security/advisories/GHSA-ffq5-qpvf-xq7x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42086"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/openc3/PYSEC-2026-105.yaml"
+      },
+      {
+        "Url": "https://github.com/rubysec/ruby-advisory-db/blob/master/gems/openc3/CVE-2026-42086.yml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ffq5-qpvf-xq7x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ffq5-qpvf-xq7x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42086"
+      }
+    ],
+    "Description": "### Summary\nThe Command Sender UI uses an unsafe `eval()` function on array-like command parameters, which allows a user-supplied payload to execute in the browser when sending a command. This creates a self-XSS risk because an attacker can trigger their own script execution in the victim’s session, if allowed to influence the array parameter input, for example via phishing. If successful, an attacker may read or modify data in the authenticated browser context, including session tokens in local storage.\n\n### Details\nThe unsafe `eval()`  usage on user-supplied ARRAY parameters happens in `convertToValue` method in [CommandSender.vue](https://github.com/OpenC3/cosmos/blob/main/openc3-cosmos-init/plugins/packages/openc3-cosmos-tool-cmdsender/src/tools/CommandSender/CommandSender.vue)\n\n### PoC\n1.\tUsing a drop-down form, choose any command that supports ARRAY parameters,\n2.\tInside square brackets “[…]” place a JavaScript code to be executed\n3.\tSend command to CmdTlmServer using dedicated “Send” button \n4.\tObserve JavaScript code being executed in the current browser session context\n\nBelow example uses `INST ARYCMD` to execute simple JavaScript code snippet `alert(“XSS”)`.\n\u003cimg width=\"947\" height=\"356\" alt=\"image\" src=\"https://github.com/user-attachments/assets/6fbdb6c9-616a-4268-bbb8-a8a1044437ad\" /\u003e\n\n\u003cimg width=\"942\" height=\"545\" alt=\"image\" src=\"https://github.com/user-attachments/assets/4df24353-aea0-4aa0-adcf-b7c7e387dc83\" /\u003e\n\n### Impact\nLocal JavaScript execution in the user's browser",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-04-22T22:22:28Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenC3 COSMOS is Vulnerable to Self-XSS Through the Command Sender",
+    "UpdatedAt": "2026-05-29T21:46:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0, \u003c 7.0.0"
+    }
+  ]
+}

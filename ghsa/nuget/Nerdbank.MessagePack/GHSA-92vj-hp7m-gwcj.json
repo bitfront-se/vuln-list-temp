@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T20:02:59Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Nerdbank.MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 359431,
+    "Id": "GSA_kwCzR0hTQS05MnZqLWhwN20tZ3djas4ABXwH",
+    "GhsaId": "GHSA-92vj-hp7m-gwcj",
+    "References": [
+      {
+        "Url": "https://github.com/AArnott/Nerdbank.MessagePack/security/advisories/GHSA-92vj-hp7m-gwcj"
+      },
+      {
+        "Url": "https://github.com/AArnott/Nerdbank.MessagePack/commit/c5a239e4f20c38548de44c4dd2a782efd5e2547c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92vj-hp7m-gwcj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92vj-hp7m-gwcj"
+      }
+    ],
+    "Description": "### Impact\n\nApplications that call `OptionalConverters.WithExpandoObjectConverter` and deserialize untrusted data are open to a vulnerability by which an attacker can exploit a `O(n²)` algorithm to burn an inordinate amount of CPU effort by adding a great many properties to an `ExpandoObject`, whose `Add` method is implemented as an `O(n)` algorithm.\n\n### Patches\n\nUpdate to a patched version.\n\nIf a project's `ExpandoObject` data requires more than 128 properties, the default limit should be changed:\n\n```cs\nthis.Serializer = this.Serializer with\n{\n\tStartingContext = this.Serializer.StartingContext with\n\t{\n\t\tSecurity = this.Serializer.StartingContext.Security with\n\t\t{\n\t\t\tExpandoObjectMaxPropertyCount = 256, // Set this to whatever limit is required by your application\n\t\t},\n\t},\n};\n```\n\n### Workarounds\n\nAvoid the non-default `WithExpandoObjectConverter` extension method when deserializing untrusted data.\nIf deserializing untrusted data into an `ExpandoObject` is required, developers should write a custom converter for their project that limits the number of properties allowed before initializing the object.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T20:02:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Nerdbank.MessagePack has Inefficient CPU Computation",
+    "UpdatedAt": "2026-05-29T20:02:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.2.4"
+    }
+  ]
+}

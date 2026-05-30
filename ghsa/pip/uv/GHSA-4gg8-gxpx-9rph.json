@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T19:26:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "uv"
+  },
+  "Advisory": {
+    "DatabaseId": 359422,
+    "Id": "GSA_kwCzR0hTQS00Z2c4LWd4cHgtOXJwaM4ABXv-",
+    "GhsaId": "GHSA-4gg8-gxpx-9rph",
+    "References": [
+      {
+        "Url": "https://github.com/astral-sh/uv/security/advisories/GHSA-4gg8-gxpx-9rph"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4gg8-gxpx-9rph"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4gg8-gxpx-9rph"
+      }
+    ],
+    "Description": "### Impact\n\nIn versions of uv prior to 0.11.15, when installing a distribution containing an entry point specification (under `console_scripts` or `gui_scripts`), uv would place the generated entry point according to the given name even if doing so resulted in a path outside of the environment's scripts directory.\n\nA malicious wheel could use this to place an executable outside of the intended environment, including in a directory already present on the user's `PATH`. This could shadow or overwrite an existing executable and potentially result in unexpected code execution under the wheel's control, even if the wheel's installation environment was not explicitly added to `PATH` by the user.\n\nIn order to exploit this vulnerability, the attacker must induce their target into installing a malicious wheel.\n\n### Patches\n\nuv 0.11.15 and newer address this vulnerability. Users are encouraged to upgrade to 0.11.15.\n\n### Workarounds\n\nThere is no workaround other than upgrading to uv 0.11.15.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T19:26:33Z",
+    "Severity": "MODERATE",
+    "Summary": "uv is vulnerable to arbitrary file write through entry point names",
+    "UpdatedAt": "2026-05-29T19:26:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.11.15"
+      },
+      "VulnerableVersionRange": "\u003c 0.11.15"
+    }
+  ]
+}

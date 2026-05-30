@@ -1,0 +1,55 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-05-29T22:18:21Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "stigmem-node"
+  },
+  "Advisory": {
+    "DatabaseId": 359657,
+    "Id": "GSA_kwCzR0hTQS05dnA4LTNobXYtOGZnaM4ABXzp",
+    "GhsaId": "GHSA-9vp8-3hmv-8fgh",
+    "References": [
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/security/advisories/GHSA-9vp8-3hmv-8fgh"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/CHANGELOG.md#L14-L35"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/SECURITY.md"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/releases/tag/v0.9.0a2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9vp8-3hmv-8fgh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9vp8-3hmv-8fgh"
+      }
+    ],
+    "Description": "### Impact\nFederation peer registration accepted peer key material during registration without a separate administrator approval step based on an out-of-band fingerprint check. Impacted deployments are nodes that accept federation peer registration across a network where initial registration could be intercepted or misdirected.\n\n### Patches\nPatched in 0.9.0a2. Peer registration now uses a pending approval flow, and peer tokens are not accepted until an administrator approves the peer using the expected fingerprint.\n\n### Workarounds\nBefore upgrading, restrict peer registration endpoints to trusted administrative networks and verify peer public-key fingerprints out of band before allowing federation traffic.\n\n### Upgrade\nUpgrade to the patched release:\n\n```bash\npip install --upgrade --pre stigmem-node\n```\n\nIf developers install through the Stigmem meta-package instead, they should use the matching extra for deployments, for example:\n\n```bash\npip install --upgrade --pre 'stigmem[node]'\n```\n\n### Resources\n- Release: https://github.com/eidetic-labs/stigmem/releases/tag/v0.9.0a2\n- Changelog: https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/CHANGELOG.md#L14-L35\n- Security policy and posture: https://github.com/eidetic-labs/stigmem/blob/v0.9.0a2/SECURITY.md",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T22:18:19Z",
+    "Severity": "CRITICAL",
+    "Summary": "stigmem-node's federation peer registration lacked explicit out-of-band approval",
+    "UpdatedAt": "2026-05-29T22:18:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0a2"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.0a2"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-05-29T19:18:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 359420,
+    "Id": "GSA_kwCzR0hTQS04Y3BoLXJncjQtZzV2as4ABXv8",
+    "GhsaId": "GHSA-8cph-rgr4-g5vj",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-8cph-rgr4-g5vj"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10467"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10468"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8cph-rgr4-g5vj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8cph-rgr4-g5vj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47248"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server's GraphQL endpoint discloses schema metadata to unauthenticated callers through `Did you mean ...?` suggestions embedded in GraphQL validation-error messages. An unauthenticated caller who knows only the public application id can iteratively send malformed queries to reconstruct class names, field names, argument names, mutation names, and input-object fields. This bypasses the `IntrospectionControlPlugin` enforced when `graphQLPublicIntrospection: false` (the default) and defeats the schema-hiding goal of prior advisories GHSA-48q3-prgv-gm4w and GHSA-q5q9-2rhp-33qw. Schema disclosure aids reconnaissance for downstream authorization probing but does not by itself leak object data or authentication material.\n\n### Patches\n\nA new `SchemaSuggestionsControlPlugin` Apollo plugin strips the `Did you mean ...?` suffix from GraphQL validation-error messages during `validationDidStart`, which runs before any introspection gate. The plugin applies only when `graphQLPublicIntrospection: false` and the caller is not a master-key or maintenance-key holder, matching the trust model of the existing `IntrospectionControlPlugin`.\n\n### Workarounds\n\nNo code workaround is available short of disabling the GraphQL API (`mountGraphQL: false`). Operators who require disclosure-resistant validation errors should upgrade to a patched release.\n\n### Resources\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-8cph-rgr4-g5vj\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/pull/10467\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/pull/10468",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-29T19:18:01Z",
+    "Severity": "MODERATE",
+    "Summary": "Parse Server's GraphQL \"Did you mean ...?\" validation suggestions disclose schema to unauthenticated callers",
+    "UpdatedAt": "2026-05-29T19:18:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.78"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.78"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.9.1-alpha.2"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.9.1-alpha.2"
+    }
+  ]
+}
