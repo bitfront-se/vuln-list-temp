@@ -1,17 +1,12 @@
 {
-  "id": "GHSA-c336-7962-wfj2",
-  "modified": "2026-05-30T18:56:08.658674844Z",
-  "published": "2026-01-16T16:58:16Z",
+  "id": "PYSEC-2026-169",
+  "modified": "2026-05-30T18:45:05.726805491Z",
+  "published": "2026-01-16T17:15:54.640Z",
   "aliases": [
     "CVE-2026-23528",
-    "PYSEC-2026-169"
+    "GHSA-c336-7962-wfj2"
   ],
-  "related": [
-    "CGA-8prv-6xq4-4gw9",
-    "CGA-c27c-xqwj-2rjh"
-  ],
-  "summary": "Dask Distributed is Vulnerable to Remote Code Execution via Jupyter Proxy and Dashboard",
-  "details": "### Impact\nWhen [Jupyter Lab](https://jupyterlab.readthedocs.io/en/latest/), [jupyter-server-proxy](https://github.com/jupyterhub/jupyter-server-proxy) and [Dask distributed](https://github.com/dask/distributed) are all run together it is possible to craft a URL which will result in code being executed by Jupyter due to a cross-side-scripting (XSS) bug in the Dask dashboard.\n\nIt is possible for attackers to craft a phishing URL that assumes Jupyter Lab and Dask may be running on localhost and using default ports. If a user clicks on the malicious link it will open an error page in the Dask Dashboard via the Jupyter Lab proxy which will cause code to be executed by the default Jupyter Python kernel.\n\nIn order for a user to be impacted they must be running Jupyter Lab locally on the default port (with the [jupyter-server-proxy](https://github.com/jupyterhub/jupyter-server-proxy)) and a Dask distributed cluster on the default port. Then they would need to click the link which would execute the malicious code.\n\n### Patches\nThis has been fixed in the `2026.1.0` release. All users should upgrade to this version.\n\n### Mitigations\nThere are no known workarounds for this bug. The only complete solution is to upgrade to a newer release of Dask. However, there are a few things you could do to reduce your risk.\n\nIt is possible to avoid code execution via Jupyter by uninstalling the [jupyter-server-proxy](https://github.com/jupyterhub/jupyter-server-proxy) and accessing the Dask dashboard directly at it's URL. However, it is still possible for an attacker to craft a URL that executes JavaScript in the user's browser in the Dask dashboard. Which is still a moderate vulnerability. Therefore we recommend all users upgrade to the latest Dask release.\n\nAnother potential mitigation is to ensure both Jupyter and the Dask dashboard are running on non-standard ports. While this doesn't resolve the problem it reduces the chance of this being exploited. If an attacker knew which ports you were using they could still craft a malicious URL, but it would require a more targeted attack.",
+  "details": "Dask distributed is a distributed task scheduler for Dask. Prior to 2026.1.0, when Jupyter Lab, jupyter-server-proxy, and Dask distributed are all run together, it is possible to craft a URL which will result in code being executed by Jupyter due to a cross-side-scripting (XSS) bug in the Dask dashboard. It is possible for attackers to craft a phishing URL that assumes Jupyter Lab and Dask may be running on localhost and using default ports. If a user clicks on the malicious link it will open an error page in the Dask Dashboard via the Jupyter Lab proxy which will cause code to be executed by the default Jupyter Python kernel. This vulnerability is fixed in 2026.1.0.",
   "affected": [
     {
       "package": {
@@ -293,27 +288,20 @@
         "2025.9.1",
         "2025.9.2"
       ],
+      "ecosystem_specific": {},
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-c336-7962-wfj2/GHSA-c336-7962-wfj2.json"
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/distributed/PYSEC-2026-169.yaml"
       }
     }
   ],
   "references": [
     {
-      "type": "WEB",
+      "type": "ADVISORY",
       "url": "https://github.com/dask/distributed/security/advisories/GHSA-c336-7962-wfj2"
     },
     {
-      "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23528"
-    },
-    {
-      "type": "WEB",
+      "type": "FIX",
       "url": "https://github.com/dask/distributed/commit/ab72092a8a938923c2bb51a2cd14ca26614827fa"
-    },
-    {
-      "type": "PACKAGE",
-      "url": "https://github.com/dask/distributed"
     }
   ]
 }
