@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T18:02:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vite"
+  },
+  "Advisory": {
+    "DatabaseId": 360430,
+    "Id": "GSA_kwCzR0hTQS1jMjdnLXE5M3ItMmN3Zs4ABX_u",
+    "GhsaId": "GHSA-c27g-q93r-2cwf",
+    "References": [
+      {
+        "Url": "https://github.com/vitejs/launch-editor/security/advisories/GHSA-c27g-q93r-2cwf"
+      },
+      {
+        "Url": "https://github.com/yyx990803/launch-editor/security/advisories/GHSA-c27g-q93r-2cwf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2024-52011"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/commit/971291e8a6a91226e1616c5c0ec85423d2d50a5e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c27g-q93r-2cwf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c27g-q93r-2cwf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2024-52011"
+      }
+    ],
+    "Description": "### Summary\nDue to the insufficient sanitization of the `file` argument in the `launchEditor`, an attacker can execute arbitrary commands on Windows by supplying a filename that contains special characters.\n\n### Impact\nIf the following conditions are met, an attacker can execute arbitrary commands on the computer that is using the `launch-editor`:\n\n- An attacker can place a file with the malicious filename\n- An attacker can call the `launchEditor` method with the `file` argument controlled\n- The `launch-editor` package is running on Windows\n\nFor example, some development server using this package satisfy these conditions, as a malicious website might be able to force the downloading of a file and the path of that file is predictable.\n\n### Patch\nThis issue has been fixed in the `launch-editor` version 2.9.0 ([commit](https://github.com/vitejs/launch-editor/commit/971291e8a6a91226e1616c5c0ec85423d2d50a5e)).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T18:02:48Z",
+    "Severity": "HIGH",
+    "Summary": "launch-editor vulnerable to command injection via the crafted request on Windows",
+    "UpdatedAt": "2026-06-03T18:02:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.4.9"
+      },
+      "VulnerableVersionRange": "\u003c= 5.4.8"
+    }
+  ]
+}
