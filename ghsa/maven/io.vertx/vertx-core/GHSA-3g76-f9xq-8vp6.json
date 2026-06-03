@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2026-05-09T00:38:30Z",
+  "UpdatedAt": "2026-06-02T22:07:07Z",
   "Package": {
     "Ecosystem": "MAVEN",
     "Name": "io.vertx:vertx-core"
@@ -23,6 +23,15 @@
         "Url": "https://gitlab.eclipse.org/security/vulnerability-reports/-/issues/381"
       },
       {
+        "Url": "https://github.com/vert-x3/wiki/wiki/4.5.27-Release-Notes"
+      },
+      {
+        "Url": "https://vertx.io/blog/eclipse-vert-x-4-5-27"
+      },
+      {
+        "Url": "https://vertx.io/blog/eclipse-vert-x-5-0-12"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-3g76-f9xq-8vp6"
       }
     ],
@@ -36,12 +45,12 @@
         "Value": "CVE-2026-6860"
       }
     ],
-    "Description": "Potential unbounded server-side SNI `SslContext` cache growth in Vert.x TLS handling, with possible resource-exhaustion / DoS impact.\n\nOn affected versions, matching server-side SNI names are cached via `computeIfAbsent(serverName, ...)` in a serverName-keyed `SslContext` cache, and I could not find any bound, TTL, or eviction for that cache.\n\nThe implementation differs slightly by branch, but the same sink appears to be present in released versions `4.3.4` through `5.0.8`:\n- `4.3.x`: `SSLHelper`\n- `4.4.x` / `4.5.x`: `SslChannelProvider`\n- `5.0.x` and current `master`: `SslContextProvider`\n\nIt appears that when server-side SNI is enabled, and wildcard or otherwise broad hostname mappings are used, an unauthenticated client can send many distinct matching SNI names and cause the server to retain increasing numbers of `SslContext` entries over time, leading to increasing memory consumption and possible DoS conditions.\n\nA check was performed on the related TCP SNI path across affected versions, the QUIC SNI path on `5.x`, and the wildcard hostname resolution helpers used during certificate selection.\n\n## Steps to reproduce\n\n1. Configure a Vert.x server with `setSsl(true)` and `setSni(true)`.\n2. Use a keystore or mapping where many distinct SNI names match a wildcard or similarly broad rule.\n3. Send repeated connections with distinct matching SNI values.\n4. Observe that the SNI cache size grows with the number of unique matching names.\n\nLocal observations:\n- initial `sniEntrySize()` = `0`\n- after 20 unique matching names: `20`\n- after 40 unique matching names: `40`\n- repeating previously seen matching names did not grow the cache further\n- non-matching SNI names did not create new cache entries\n\n## What are the affected versions?\n\nAffected released versions confirmed on `origin`:\n- `4.3.4` through `4.3.8`\n- `4.4.0` through `4.4.9`\n- `4.5.0` through `4.5.25`\n- `5.0.0` through `5.0.8`\n\nNot affected by the same sink:\n- `4.0.x` through `4.2.x`\n- `4.3.0` through `4.3.3`\n\n## Are there any ways to mitigate this issue?\n\n- Disable server-side SNI if it is not needed.\n- Avoid wildcard or otherwise high-cardinality hostname mappings where feasible.\n- Apply connection or rate limiting in front of the service.",
+    "Description": "Potential unbounded server-side SNI `SslContext` cache growth in Vert.x TLS handling, with = resource-exhaustion / DoS impact. On affected versions, matching server-side SNI names are cached via `computeIfAbsent(serverName, ...)` in a serverName-keyed `SslContext` cache.\n\nThe implementation differs slightly by branch, but the same sink appears to be present in released versions `4.3.4` through `5.0.11`:\n- `4.3.x`: `SSLHelper`\n- `4.4.x` / `4.5.x`: `SslChannelProvider`\n- `5.0.x` and current `master`: `SslContextProvider`\n\nWhen server-side SNI is enabled and wildcard or otherwise broad hostname mappings are used, an unauthenticated client can send many distinct matching SNI names and cause the server to retain increasing numbers of `SslContext` entries over time, leading to increasing memory consumption and possible DoS conditions.\n\n## Steps to reproduce\n\n1. Configure a Vert.x server with `setSsl(true)` and `setSni(true)`.\n2. Use a keystore or mapping where many distinct SNI names match a wildcard or similarly broad rule.\n3. Send repeated connections with distinct matching SNI values.\n4. Observe that the SNI cache size grows with the number of unique matching names.\n\n## What are the affected versions?\n\nAffected released versions confirmed on `origin`:\n- `4.3.4` through `4.3.8`\n- `4.4.0` through `4.4.9`\n- `4.5.0` through `4.5.26`\n- `5.0.0` through `5.0.11`\n\nNot affected by the same sink:\n- `4.0.x` through `4.2.x`\n- `4.3.0` through `4.3.3`",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-09T00:38:30Z",
     "Severity": "MODERATE",
     "Summary": "Vert.x has a DoS via unbounded server-side SNI SslContext cache growth",
-    "UpdatedAt": "2026-05-13T15:22:37Z",
+    "UpdatedAt": "2026-06-02T22:07:07Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,
@@ -51,15 +60,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": ""
+        "Identifier": "5.0.12"
       },
-      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.0.8"
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.0.11"
     },
     {
       "FirstPatchedVersion": {
-        "Identifier": ""
+        "Identifier": "4.5.27"
       },
-      "VulnerableVersionRange": "\u003e= 4.5.0, \u003c= 4.5.25"
+      "VulnerableVersionRange": "\u003e= 4.5.0, \u003c= 4.5.26"
     },
     {
       "FirstPatchedVersion": {
