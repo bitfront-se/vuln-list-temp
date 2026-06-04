@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-04T18:01:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 360683,
+    "Id": "GSA_kwCzR0hTQS0yZ2NyLW1mY3Etd2NjM84ABYDr",
+    "GhsaId": "GHSA-2gcr-mfcq-wcc3",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-2gcr-mfcq-wcc3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47676"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/6cbb025ff87fca1a3d00d0ccca0eaf3a6385c3f1"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.21"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2gcr-mfcq-wcc3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2gcr-mfcq-wcc3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47676"
+      }
+    ],
+    "Description": "### Summary\n\n`app.mount()` strips the mount prefix from the incoming request path using the raw URL pathname, while route matching is performed against the percent-decoded path. This inconsistency causes the prefix to be stripped at the wrong position when the path contains percent-encoded multi-byte characters, resulting in the mounted sub-application receiving an incorrect path.\n\n### Details\n\nWhen `app.mount(prefix, subApp)` is called, Hono calculates the number of characters to strip based on the decoded mount prefix length, but then applies that slice to the raw URL pathname. When the URL contains percent-encoded characters that expand to fewer characters when decoded (such as encoded non-ASCII characters), the two representations have different lengths, so the prefix is stripped at the wrong byte offset.\n\nAs a result, the sub-application receives a path that does not correspond to the intended sub-path — it may receive a partial or garbled path instead of the expected value after the mount prefix is removed.\n\nThis issue arises when an application uses `app.mount()` with paths that contain percent-encoded characters, particularly when the mount prefix itself or the request path contains encoded non-ASCII characters.\n\n### Impact\n\nA mounted sub-application may receive an incorrectly stripped path, causing requests to be routed to unintended handlers within the sub-application.\n\nThis may lead to:\n\n- Middleware or route handlers in the sub-application being bypassed or incorrectly matched due to the malformed path\n- Requests reaching sub-application routes that the developer did not intend to be accessible via the mounted path\n\nThis issue affects applications that use `app.mount()` where the request URL may contain percent-encoded characters in the mount prefix or subsequent path segments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-04T18:01:00Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: app.mount() strips mount prefix using undecoded path, causing incorrect routing for percent-encoded paths",
+    "UpdatedAt": "2026-06-04T18:01:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.21"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.21"
+    }
+  ]
+}

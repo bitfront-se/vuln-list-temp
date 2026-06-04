@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-04T17:38:22Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/sylabs/singularity/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 360676,
+    "Id": "GSA_kwCzR0hTQS13cWNyLTdyZjMtZjY0bc4ABYDk",
+    "GhsaId": "GHSA-wqcr-7rf3-f64m",
+    "References": [
+      {
+        "Url": "https://github.com/sylabs/singularity/security/advisories/GHSA-wqcr-7rf3-f64m"
+      },
+      {
+        "Url": "https://github.com/sylabs/singularity/commit/c08791793e843d4c9c1f2fc1d9d12abef747378f"
+      },
+      {
+        "Url": "https://docs.sylabs.io/guides/latest/admin-guide/configfiles.html#limiting-container-execution"
+      },
+      {
+        "Url": "https://github.com/sylabs/singularity/releases/tag/v4.4.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wqcr-7rf3-f64m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wqcr-7rf3-f64m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47215"
+      }
+    ],
+    "Description": "### Impact\n\nThe `limit container paths` directive in `singularity.conf` is intended to allow a system administrator limit the paths from which containers can be run, under setuid mode. Due to incorrect matching of a path string, sibling directories with similar names may incorrectly be allowed.\n\nFor example, the configuration:\n\n```\nlimit container paths = /data/safe\n```\n\nWill also allow containers in `/data/safe-but-unsafe` to be run.\n\n\n### Patches\n\nThis issue is patched in SingularityCE 4.4.2 and SingularityPRO 4.3.9 / 4.1.14\n\n### Workarounds\n\nIf you do not use the `limit container paths` functionality, then this issue does not affect your installation.\n\nIf you do use the `limit container paths` functionality then you must update. Please also review the documented limitations when user namespaces are enabled [1].",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-04T17:38:21Z",
+    "Severity": "MODERATE",
+    "Summary": "Singluarity: Incorrect path matching for 'limit container paths' directive",
+    "UpdatedAt": "2026-06-04T17:38:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.4.2"
+    }
+  ]
+}

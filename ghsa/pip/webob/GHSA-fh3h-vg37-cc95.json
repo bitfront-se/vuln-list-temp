@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-04T14:33:35Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "webob"
+  },
+  "Advisory": {
+    "DatabaseId": 360617,
+    "Id": "GSA_kwCzR0hTQS1maDNoLXZnMzctY2M5Nc4ABYCp",
+    "GhsaId": "GHSA-fh3h-vg37-cc95",
+    "References": [
+      {
+        "Url": "https://github.com/Pylons/webob/security/advisories/GHSA-fh3h-vg37-cc95"
+      },
+      {
+        "Url": "https://github.com/Pylons/webob/security/advisories/GHSA-mg3v-6m49-jhp3"
+      },
+      {
+        "Url": "https://github.com/Pylons/webob/commit/1f681a4f17fc10777ef861e8b43ecb26053bc539"
+      },
+      {
+        "Url": "https://github.com/Pylons/webob/commit/2b9fbedafb31180c910cf8526e9ea72b4603d0bc"
+      },
+      {
+        "Url": "https://github.com/Pylons/webob/releases/tag/1.8.10"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fh3h-vg37-cc95"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fh3h-vg37-cc95"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44889"
+      }
+    ],
+    "Description": "### Impact\n\nWhen WebOb normalizes the HTTP Location header to include the request hostname, it does so by parsing the URL that the user is to be redirected to with Python's `urllib.parse`, and joining it to the base URL. `urlsplit` (called internally by `urljoin`) however treats a `//` at the start of a string as a URI without a scheme, and then treats the next part as the hostname. `urljoin` will then use that hostname from the second part as the hostname replacing the original one from the request.\n\nIn a previous advisory https://github.com/Pylons/webob/security/advisories/GHSA-mg3v-6m49-jhp3 an attempt to fix this was made by forcing the replacement of `//` with `/%2f`, however this did not take into account that since Python 3.10 `urlsplit` internally strips ASCII tab, carriage return, and newline characters from the string, so `/\\t/attacker.com` gets turned into `//attacker.com` and the attacker is able to bypass the changes introduced in that previous advisory, thereby bringing back the problem that was attempted to be fixed.\n\n```\n\u003e\u003e\u003e parse.urlparse(\"//attacker.com/some/path\")\nParseResult(scheme='', netloc='attacker.com', path='/some/path', params='', query='', fragment='')\n```\n\nWebOb uses `urljoin` to take the request URI and join the redirect location to it, so assuming the request URI is `https://example.org/` and the URL to redirect to is `/\\t/attacker.com/some/path/`:\n\n```\n\u003e\u003e\u003e parse.urljoin(\"https://example.org/\", \"/\\t/attacker.com/some/path/\")\n'https://attacker.com/some/path/'\n```\n\nWhich redirects from `example.org` where we want the user to stay to `attacker.com`.\n\n### Patches\n\nThis issue has been fixed in WebOb 1.8.10.\n\n### Workarounds\n\nAny use of the `Response` class that includes a `location` can be rewritten to make sure to always pass a full URI that includes the hostname to redirect the user to, or to validate that the redirect target starts with a scheme (e.g. `http://` or `https://`) before assigning to `Response.location`.\n\n### References\n\n- https://github.com/Pylons/webob/security/advisories/GHSA-mg3v-6m49-jhp3\n- CVE-2024-42353\n\n### Thanks\n\n- Caleb Brown of Google",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-04T14:33:35Z",
+    "Severity": "MODERATE",
+    "Summary": "WebOb: Location header normalization during redirect leads to open redirect - again",
+    "UpdatedAt": "2026-06-04T14:33:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.10"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.9"
+    }
+  ]
+}

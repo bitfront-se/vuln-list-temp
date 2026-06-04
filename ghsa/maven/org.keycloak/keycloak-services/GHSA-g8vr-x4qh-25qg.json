@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-04T17:28:19Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.keycloak:keycloak-services"
+  },
+  "Advisory": {
+    "DatabaseId": 356589,
+    "Id": "GSA_kwCzR0hTQS1nOHZyLXg0cWgtMjVxZ84ABXDt",
+    "GhsaId": "GHSA-g8vr-x4qh-25qg",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-8830"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-8830"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2479565"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/issues/49133"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/pull/49344"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/commit/47b9aef70948564151af85fd52e0d7e508c76490"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/commit/d3da77ef363d698e7a74470ba52fcdce09e394c4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g8vr-x4qh-25qg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g8vr-x4qh-25qg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-8830"
+      }
+    ],
+    "Description": "A flaw was found in Keycloak. An authenticated user can bypass configured WebAuthn policies during credential registration by manipulating client-side JavaScript. This occurs because the server-side processAction() fails to validate that the newly created credential's parameters, such as public key algorithms, match the realm's configured WebAuthn policies. This could lead to the creation of credentials that do not adhere to administrative security requirements, potentially weakening the overall security posture of the system by allowing non-compliant authentication methods.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T09:31:20Z",
+    "Severity": "MODERATE",
+    "Summary": "Keycloak: Policy bypass during WebAuthn credential registration via client-side JavaScript manipulation",
+    "UpdatedAt": "2026-06-04T17:28:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.6.3"
+      },
+      "VulnerableVersionRange": "\u003c= 26.6.2"
+    }
+  ]
+}

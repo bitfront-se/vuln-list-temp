@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-04T15:37:18Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.keycloak:keycloak-services"
+  },
+  "Advisory": {
+    "DatabaseId": 356693,
+    "Id": "GSA_kwCzR0hTQS1oZjY3LTV2dnEtZm0zcs4ABXFV",
+    "GhsaId": "GHSA-hf67-5vvq-fm3r",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7507"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-7507"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2464145"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:19594"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:19597"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:19595"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:19596"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/pull/49134"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/commit/d791b270b9ea5203be40a9533c1c12c4d044fb52"
+      },
+      {
+        "Url": "https://github.com/keycloak/keycloak/releases/tag/26.6.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hf67-5vvq-fm3r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hf67-5vvq-fm3r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-7507"
+      }
+    ],
+    "Description": "A session fixation vulnerability was found in Keycloak's login-actions endpoints. An unauthenticated attacker could exploit this flaw by pre-creating an authentication session and tricking a victim into visiting a maliciously crafted link. By leveraging the /login-actions/restart endpoint—which processes session handles without adequate CSRF protection or cookie ownership validation—an attacker can reset the authentication flow state. This causes Single Sign-On (SSO) to authenticate the victim transparently upon clicking the link, allowing the attacker to hijack the required-action form without needing the victim's credentials. A successful exploit could lead to complete account takeover, including highly privileged administrative accounts.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T12:31:42Z",
+    "Severity": "HIGH",
+    "Summary": "Keycloak: Session fixation in OIDC login flow that can lead to account takeover",
+    "UpdatedAt": "2026-06-04T15:37:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.6.2"
+      },
+      "VulnerableVersionRange": "\u003c 26.6.2"
+    }
+  ]
+}

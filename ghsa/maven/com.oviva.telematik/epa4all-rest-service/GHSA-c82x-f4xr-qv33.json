@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-04T17:49:31Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.oviva.telematik:epa4all-rest-service"
+  },
+  "Advisory": {
+    "DatabaseId": 360679,
+    "Id": "GSA_kwCzR0hTQS1jODJ4LWY0eHItcXYzM84ABYDn",
+    "GhsaId": "GHSA-c82x-f4xr-qv33",
+    "References": [
+      {
+        "Url": "https://github.com/oviva-ag/epa4all-client/security/advisories/GHSA-c82x-f4xr-qv33"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47672"
+      },
+      {
+        "Url": "https://github.com/oviva-ag/epa4all-client/pull/43"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c82x-f4xr-qv33"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c82x-f4xr-qv33"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47672"
+      }
+    ],
+    "Description": "### Impact\nAny network-reachable caller can write arbitrary documents to any patient's electronic\nhealth record accessible by the institution's SMC-B card. In a misconfigured deployment\n(e.g., following the production Docker example in the README), this is exploitable from\nthe local network without credentials.\n\n### Patches\n- [#43](https://github.com/oviva-ag/epa4all-client/pull/43)\n\n### Workarounds\nUse network policies or proxies to enforce service-to-service authentication via e.g. mTLS.\n- run the service in an isolated network namespace e.g. as Kubernetes sidecar\n- service-mesh with corresponding policies\n\n### References\n- MS-OVIVA-EPA4ALL-8b2af7\n\n\n### Credits\n[Machine Spirits](https://machinespirits.com/) ([contact@machinespirits.de](mailto:contact@machinespirits.de))\n\n- Dr. rer. nat. Simon Weber\n- Dipl.-Inf. Volker Schönefeld\n- Chiara Fliegner",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-04T17:49:29Z",
+    "Severity": "MODERATE",
+    "Summary": "epa4all-client: Unauthenticated REST API for Patient Record Writes",
+    "UpdatedAt": "2026-06-04T17:49:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.4"
+    }
+  ]
+}
