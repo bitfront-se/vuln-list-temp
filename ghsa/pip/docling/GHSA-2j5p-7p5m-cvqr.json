@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-03T21:14:35Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling"
+  },
+  "Advisory": {
+    "DatabaseId": 360504,
+    "Id": "GSA_kwCzR0hTQS0yajVwLTdwNW0tY3Zxcs4ABYA4",
+    "GhsaId": "GHSA-2j5p-7p5m-cvqr",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling/security/advisories/GHSA-2j5p-7p5m-cvqr"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/releases/tag/v2.91.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2j5p-7p5m-cvqr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2j5p-7p5m-cvqr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44022"
+      }
+    ],
+    "Description": "### Impact\nThe LaTeX backend's handling of `\\includegraphics`, `\\input`, and `\\include` commands lacked path containment validation. Attackers could craft malicious LaTeX documents with path traversal sequences (e.g., `../../../etc/passwd`) to:\n- Read arbitrary files from the file system accessible to the process\n- Include sensitive files in the converted document output\n- Potentially access configuration files, credentials, or other sensitive data\n\n### Patches\nFixed in version 2.91.0. The fix implements strict path validation using `Path.resolve().is_relative_to()` to ensure all resolved paths remain within the base document directory. Attempts to traverse outside the base directory are logged and blocked.\n\n### Workarounds\nAvoid processing untrusted LaTeX documents. If processing is necessary, run in a sandboxed environment with restricted file system access.\n\n### References\n- Fix release: [v2.91.0](https://github.com/docling-project/docling/releases/tag/v2.91.0)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:14:35Z",
+    "Severity": "MODERATE",
+    "Summary": "Docling: Potential Path Traversal via LaTeX \\includegraphics and \\input Commands",
+    "UpdatedAt": "2026-06-03T21:14:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.91.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.73.0, \u003c 2.91.0"
+    }
+  ]
+}

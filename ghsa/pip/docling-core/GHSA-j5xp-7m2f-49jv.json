@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T21:15:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling-core"
+  },
+  "Advisory": {
+    "DatabaseId": 360506,
+    "Id": "GSA_kwCzR0hTQS1qNXhwLTdtMmYtNDlqds4ABYA6",
+    "GhsaId": "GHSA-j5xp-7m2f-49jv",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling-core/security/advisories/GHSA-j5xp-7m2f-49jv"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling-core/releases/tag/v2.74.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j5xp-7m2f-49jv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j5xp-7m2f-49jv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44019"
+      }
+    ],
+    "Description": "### Impact\nIn versions `\u003e= 2.5.0, \u003c 2.74.1`, `docling-core`  could allow local `file://` image references and accepted inline `data:` content without a decoded-size limit.\n\nIn applications that accept untrusted image references, this may allow access to local files readable by the process or excessive memory use from large inline payloads.\n\n### Patches\nPatched in `docling-core` `2.74.1`.\nThe fix blocks local file URIs by default and adds a size limit for decoded inline image data.\n\nUsers should upgrade to:\n- `docling-core` `\u003e= 2.74.1`\n\n### Workarounds\nIf upgrading is not immediately possible:\n- reject `file:` and `data:` image references from untrusted input\n- allow only approved local or remote image sources\n- apply input size and memory limits to processing workers\n\n### References\n- Fix release: [`v2.74.1`](https://github.com/docling-project/docling-core/releases/tag/v2.74.1)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:15:31Z",
+    "Severity": "HIGH",
+    "Summary": "Docling Core: Insufficient validation of image reference URIs",
+    "UpdatedAt": "2026-06-03T21:15:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.74.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.5.0, \u003c 2.74.1"
+    }
+  ]
+}

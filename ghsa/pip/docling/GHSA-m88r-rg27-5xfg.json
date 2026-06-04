@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T21:14:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling"
+  },
+  "Advisory": {
+    "DatabaseId": 360503,
+    "Id": "GSA_kwCzR0hTQS1tODhyLXJnMjctNXhmZ84ABYA3",
+    "GhsaId": "GHSA-m88r-rg27-5xfg",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling/security/advisories/GHSA-m88r-rg27-5xfg"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/releases/tag/v2.74.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m88r-rg27-5xfg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m88r-rg27-5xfg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44020"
+      }
+    ],
+    "Description": "### Impact\nThe USPTO patent XML parser used the standard `xml.sax.parseString()` without protection against XML External Entity (XXE) attacks. An attacker could craft malicious USPTO patent XML files with external entity references that could:\n- Read arbitrary files from the server filesystem\n- Perform Server-Side Request Forgery (SSRF) attacks\n- Cause denial of service through entity expansion (Billion Laughs attack)\n\nThe vulnerability affects three USPTO patent format parsers: ICE (v4.x), Grant v2.5, and Application v1.x.\n\n### Patches\nFixed in version 2.74.0. The parser now uses `defusedxml.sax.make_parser()` with secure configuration that blocks external entity resolution (`feature_external_ges=False`, `feature_external_pes=False`) while allowing DTD declarations required by USPTO files. This prevents XXE attacks while maintaining compatibility with the USPTO XML format.\n\n### Workarounds\nAvoid processing USPTO patent XML files from untrusted sources. Implement resource limits (memory, CPU time) when processing patent documents.\n\n### References\n- Fix release: [v2.74.0](https://github.com/docling-project/docling/releases/tag/v2.74.0)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:14:15Z",
+    "Severity": "HIGH",
+    "Summary": "Docling: Unsafe XML Entity Expansion in USPTO Patent Backend",
+    "UpdatedAt": "2026-06-03T21:14:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.74.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.13.0, \u003c 2.74.0"
+    }
+  ]
+}

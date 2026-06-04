@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T20:02:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling"
+  },
+  "Advisory": {
+    "DatabaseId": 360490,
+    "Id": "GSA_kwCzR0hTQS1janFnLXJxMmgtMmZ2as4ABYAq",
+    "GhsaId": "GHSA-cjqg-rq2h-2fvj",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling/security/advisories/GHSA-cjqg-rq2h-2fvj"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/releases/tag/v2.91.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cjqg-rq2h-2fvj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cjqg-rq2h-2fvj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44017"
+      }
+    ],
+    "Description": "### Impact\nIn versions `\u003c 2.91.0`, The EasyOCR model download functionality extracted ZIP archives without validating member paths, enabling Zip Slip attacks. If an attacker could compromise the model download source (via supply chain attack, DNS spoofing, or MITM), they could write arbitrary files to any location writable by the process, potentially achieving:\n- Remote code execution by overwriting Python files or system binaries\n- Persistent backdoors by modifying startup scripts or SSH keys\n- Data corruption or system compromise\n\n### Patches\nFixed in version 2.91.0. The extraction process now validates each archive member path using `os.path.realpath()` to ensure it remains within the target directory, raising a `SecurityError` for any path traversal attempts.\n\n### Workarounds\nEnsure model downloads occur over secure, authenticated channels. Use integrity verification (checksums) for downloaded models. Run the application with minimal file system permissions.\n\n### References\n- Fix release: [v2.91.0](https://github.com/docling-project/docling/releases/tag/v2.91.0)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T20:02:42Z",
+    "Severity": "HIGH",
+    "Summary": "Docling: Unsafe Zip Extraction in EasyOCR Model Download",
+    "UpdatedAt": "2026-06-03T20:02:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.91.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.91.0"
+    }
+  ]
+}

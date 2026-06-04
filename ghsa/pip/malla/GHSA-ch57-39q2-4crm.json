@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-03T21:06:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "malla"
+  },
+  "Advisory": {
+    "DatabaseId": 360500,
+    "Id": "GSA_kwCzR0hTQS1jaDU3LTM5cTItNGNybc4ABYA0",
+    "GhsaId": "GHSA-ch57-39q2-4crm",
+    "References": [
+      {
+        "Url": "https://github.com/zenitraM/malla/security/advisories/GHSA-ch57-39q2-4crm"
+      },
+      {
+        "Url": "https://github.com/zenitraM/malla/commit/4086e2b5f61615a813b70b25bc76095083552135"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ch57-39q2-4crm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ch57-39q2-4crm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43980"
+      }
+    ],
+    "Description": "Node names (long_name, short_name) received via MQTT are stored in SQLite without sanitization and rendered into the DOM without escaping.\nAny participant on a public Meshtastic MQTT broker can set a malicious node name that executes JavaScript in the browser of every Malla dashboard visitor.\n\nAffected files:\n\n - src/malla/templates/traceroute_graph.html (line ~832)\n - src/malla/templates/map.html (lines ~945, 1078)\n - src/malla/templates/packet_detail.html (lines ~1402, 1452)\n - src/malla/static/js/relay_node_analysis.js (line ~124)\n\nSteps to reproduce\n\n 1. Publish a Meshtastic NODEINFO_APP packet to any public MQTT broker with long_name set to a HTML entity i.e `\u003cimg src=x onerror=alert(1)\u003e`\n 2. Wait for malla-capture to store it\n 3. Open the dashboard\n\nImpact\n\nAllows unauthenticated remote attackers to execute arbitrary JavaScript in the browser, such as: \n\n - Phishing overlays\n - Force redirect to malicious websites\n - Injection of arbitrary third-party scripts (no CSP restrictions)\n - Browser resource abuse \n - Persistent dashboard denial of service",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:06:27Z",
+    "Severity": "MODERATE",
+    "Summary": "malla: Stored XSS via Meshtastic node names in multiple frontend pages",
+    "UpdatedAt": "2026-06-03T21:06:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.1.7"
+    }
+  ]
+}

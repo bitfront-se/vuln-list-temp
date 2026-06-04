@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-03T21:13:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling"
+  },
+  "Advisory": {
+    "DatabaseId": 360502,
+    "Id": "GSA_kwCzR0hTQS1yM3hnLXJnOWotNjdmds4ABYA2",
+    "GhsaId": "GHSA-r3xg-rg9j-67fv",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling/security/advisories/GHSA-r3xg-rg9j-67fv"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/releases/tag/v2.91.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r3xg-rg9j-67fv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r3xg-rg9j-67fv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44018"
+      }
+    ],
+    "Description": "### Impact\nThe METS-GBS backend's XML parsing and the input document format detection lacked security controls, enabling:\n- XML External Entity (XXE) attacks to read local files or cause denial of service\n- Decompression bombs (zip bombs) to exhaust memory and disk space\n- Unbounded archive extraction consuming system resources\n\nAn attacker could craft malicious METS-GBS archives that, when processed, could read sensitive files, exhaust system resources, or cause application crashes.\n\n### Patches\nFixed in version 2.91.0. The fix implements:\n- Secure XML parsing with `resolve_entities=False`, `load_dtd=False`, and `no_network=True`\n- Configurable limits: 300 MB total extraction size, 10 MB per file, 1000 member count\n- Cumulative size tracking across all extractions\n- Early termination when limits are exceeded\n- Secure format detection of METS-GBS tar archives with `_detect_mets_gbs()` method: maximum file size (10 MB per file), maximum member count (1000 members), and exception handling to gracefully fail when limits are exceeded\n\n### Workarounds\nAvoid processing METS-GBS archives from untrusted sources. If necessary, pre-validate archives in an isolated environment with resource limits.\n\n### References\n- Fix release: [v2.91.0](https://github.com/docling-project/docling/releases/tag/v2.91.0)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:13:32Z",
+    "Severity": "MODERATE",
+    "Summary": "Docling: Unsafe Archive Extraction and XML Parsing in METS-GBS Backend",
+    "UpdatedAt": "2026-06-03T21:13:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.91.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.45.0, \u003c 2.91.0"
+    }
+  ]
+}

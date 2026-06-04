@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-03T21:16:26Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling-core"
+  },
+  "Advisory": {
+    "DatabaseId": 360507,
+    "Id": "GSA_kwCzR0hTQS1qbW12LWgzbXAtNTl2OM4ABYA7",
+    "GhsaId": "GHSA-jmmv-h3mp-59v8",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling-core/security/advisories/GHSA-jmmv-h3mp-59v8"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling-core/releases/tag/v2.74.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jmmv-h3mp-59v8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jmmv-h3mp-59v8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44023"
+      }
+    ],
+    "Description": "### Impact\nIn versions `\u003e= 1.5.0, \u003c 2.74.1`, `docling-core` did not sufficiently restrict remote request destinations and could resolve a server-provided `Content-Disposition` to a local path in an unsafe manner.\n\nIn applications that accept untrusted URLs, this could allow SSRF attacks targeting local files outside the user-defined cache directory.\n\n### Patches\nPatched in `docling-core` `2.74.1`.\nThe fix adds stricter validation for remote destinations and normalizes server-provided filenames before use.\n\nUsers should upgrade to:\n- `docling-core` `\u003e= 2.74.1`\n\n### Workarounds\nIf upgrading is not immediately possible, avoid passing untrusted URLs into remote fetch functionality.\n\n### References\n- Fix release: [`v2.74.1`](https://github.com/docling-project/docling-core/releases/tag/v2.74.1)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T21:16:25Z",
+    "Severity": "HIGH",
+    "Summary": "Docling Core: Unsafe remote filename resolution",
+    "UpdatedAt": "2026-06-03T21:16:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.74.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.5.0, \u003c 2.74.1"
+    }
+  ]
+}
