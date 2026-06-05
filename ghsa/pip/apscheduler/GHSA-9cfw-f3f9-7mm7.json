@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-04T21:36:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apscheduler"
+  },
+  "Advisory": {
+    "DatabaseId": 356801,
+    "Id": "GSA_kwCzR0hTQS05Y2Z3LWYzZjktN21tN84ABXHB",
+    "GhsaId": "GHSA-9cfw-f3f9-7mm7",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-31072"
+      },
+      {
+        "Url": "https://gist.github.com/nedlir/11fb77f35a59cbba73392a086b02a9c6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9cfw-f3f9-7mm7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9cfw-f3f9-7mm7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-31072"
+      }
+    ],
+    "Description": "The JSONSerializer and CBORSerializer in APScheduler (all versions including 3.10.x and 4.0.0a5) are vulnerable to Remote Code Execution (RCE) via Insecure Deserialization. The unmarshal_object function allows for arbitrary class instantiation and state injection by dynamically importing modules and calling __setstate__ on any class available in the Python environment. An attacker can exploit this by submitting a specially crafted JSON or CBOR payload to an application using these serializers",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T18:32:11Z",
+    "Severity": "CRITICAL",
+    "Summary": "APScheduler's JSONSerializer and CBORSerializer are vulnerable to Remote Code Execution (RCE) via Insecure Deserialization",
+    "UpdatedAt": "2026-06-04T21:36:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0a1, \u003c= 4.0.0a6"
+    }
+  ]
+}

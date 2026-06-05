@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-04T19:21:22Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.glassfish.main.admingui:admingui"
+  },
+  "Advisory": {
+    "DatabaseId": 356762,
+    "Id": "GSA_kwCzR0hTQS0yOXd2LWN2N3AteGpjMs4ABXGa",
+    "GhsaId": "GHSA-29wv-cv7p-xjc2",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2587"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/issues/86"
+      },
+      {
+        "Url": "https://github.com/eclipse-ee4j/glassfish/releases/tag/8.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-29wv-cv7p-xjc2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-29wv-cv7p-xjc2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2587"
+      }
+    ],
+    "Description": "A critical Remote Code Execution (RCE) vulnerability was identified in the server-side template rendering mechanism used by the Glassfish gadget handler. The application processes .xml files and evaluates user-supplied values within a context where Expression Language (EL) “expressions” are processed without proper sanitization or escaping. By injecting expressions such as #{7*7}, the server returns 49, confirming server-side EL evaluation. This issue allows a remote attacker to fully compromise the underlying host, enabling capabilities as reading/modifying data, executing arbitrary commands, persistence, and lateral movement.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-19T15:31:35Z",
+    "Severity": "CRITICAL",
+    "Summary": "GlassFish's gadget handler is vulnerable to RCE",
+    "UpdatedAt": "2026-06-04T19:21:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.2"
+      },
+      "VulnerableVersionRange": "\u003c 8.0.2"
+    }
+  ]
+}
