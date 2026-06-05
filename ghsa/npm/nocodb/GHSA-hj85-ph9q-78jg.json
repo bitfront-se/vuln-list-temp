@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-05T16:20:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361283,
+    "Id": "GSA_kwCzR0hTQS1oajg1LXBoOXEtNzhqZ84ABYND",
+    "GhsaId": "GHSA-hj85-ph9q-78jg",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-hj85-ph9q-78jg"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hj85-ph9q-78jg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hj85-ph9q-78jg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47387"
+      }
+    ],
+    "Description": "### Summary\n\nThe shared form-view submit handler in NocoDB writes the form's `redirect_url` to `window.location.href` after a same-host check that does not validate the URL scheme. A user with `editor` role (or above) on any base can plant a `javascript:` URL in the form's `redirect_url`; when an authenticated viewer opens the share-link and submits the form, the payload executes in the NocoDB origin and can read the session token from `localStorage[\"nocodb-gui-v2\"]`.\n\n### Details\n\nThe vulnerable sink is in `packages/nc-gui/composables/useSharedFormViewStore.ts`:\n\n- `isValidRedirectUrl` validated only `typeof === 'string'` and non-empty trim — no scheme check.\n- The submit branch built an anchor element, compared `anchor.host` to `window.location.host`, and either pushState-reloaded (same host) or assigned `window.location.href = redirectUrl` (otherwise).\n- For non-network schemes such as `javascript:`, `data:`, `vbscript:`, and `file:`, `anchor.host` is the empty string, so the same-host check is false and the code falls into the external-redirect branch — executing the URL same-origin in the NocoDB tab.\n\nThe `redirect_url` field is writable by any user with `editor` role on the base via the form-view PATCH endpoint, and the value is returned verbatim by the public shared-view meta endpoint, so no further privilege is required to weaponize a public form share.\n\n### Impact\n\n- **Same-origin script execution in the viewer's NocoDB tab.** The payload runs in the NocoDB origin and can read the session token at `localStorage[\"nocodb-gui-v2\"].token`.\n- **Action under the viewer's identity.** With the token, an attacker can call authenticated APIs as the viewer, scoped to whatever workspaces, bases, and operations that viewer is permitted to use.\n- **Single-click viewer flow.** Form share-links are the intended distribution channel for forms, so the phishing surface is on-brand; the form can be configured with a single hidden pre-filled required field to reduce the viewer flow to one click.\n\n### Credit\n\nThis issue was reported by [@kah-ja](https://github.com/kah-ja) ([turingpoint.de](https://turingpoint.de)).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:20:44Z",
+    "Severity": "HIGH",
+    "Summary": "NocoDB: Stored Cross-Site Scripting via Form View Redirect URL",
+    "UpdatedAt": "2026-06-05T16:20:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

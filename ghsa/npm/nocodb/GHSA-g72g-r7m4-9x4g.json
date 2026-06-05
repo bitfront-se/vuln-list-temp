@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T16:43:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361296,
+    "Id": "GSA_kwCzR0hTQS1nNzJnLXI3bTQtOXg0Z84ABYNQ",
+    "GhsaId": "GHSA-g72g-r7m4-9x4g",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-g72g-r7m4-9x4g"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g72g-r7m4-9x4g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g72g-r7m4-9x4g"
+      }
+    ],
+    "Description": "### Summary\nOAuth access and refresh tokens were not revoked when the user changed, reset, or\nrecovered their password, leaving an attacker-issued OAuth grant valid after the user\nbelieved they had locked the attacker out.\n\n### Details\n`revokeAllOAuthTokensByUser` in the users service was an empty stub being called from\n`passwordChange`, `passwordForgot`, and `passwordReset`. It now delegates to\n`OAuthToken.revokeAllByUser(userId)`, which deletes the rows and invalidates the\nrelated auth caches. All three reset/recovery flows now consistently revoke refresh\ntokens (GHSA-r989-7g3j-wjhw), OAuth tokens (this advisory), and rotate\n`token_version`.\n\n### Impact\nPersistent unauthorized access through previously issued OAuth tokens after a\ndocumented security event (password change, forgot, or reset).\n\n### Credit\nThis issue was reported by [@bugbunny-research](https://github.com/bugbunny-research).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:43:09Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: OAuth Tokens Persist Through Security Events",
+    "UpdatedAt": "2026-06-05T16:43:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T15:52:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361270,
+    "Id": "GSA_kwCzR0hTQS05d2doLW0yMnctOXhqOM4ABYM2",
+    "GhsaId": "GHSA-9wgh-m22w-9xj8",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-9wgh-m22w-9xj8"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9wgh-m22w-9xj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9wgh-m22w-9xj8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47279"
+      }
+    ],
+    "Description": "### Summary\nThe public shared-view relation endpoints accepted a caller-supplied column\nID without verifying that the column was visible in the shared view, so\nanyone holding a share UUID could read links from any LTAR column on the\nview's table — including columns the view owner had hidden.\n\n### Details\n`publicMmList`, `publicHmList`, and `relDataList` already ensured that the\nrequested column belonged to the view's model, but did not check the\nview-column entry's `show` flag. All three handlers now also fetch the\nshared view's column entries and reject the request unless the matching\nentry has `show=true`. The four public relation routes covered by the fix\nare:\n\n- `GET /api/v2/public/shared-view/:uuid/rows/:rowId/mm/:columnId` (many-to-many)\n- `GET /api/v2/public/shared-view/:uuid/rows/:rowId/hm/:columnId` (has-many)\n- `GET /api/v2/public/shared-view/:uuid/rows/:rowId/{ln,om}/:columnId`\n  (links / one-to-many — both share the many-to-many handler)\n- `GET /api/v2/public/shared-view/:uuid/nested/:columnId` (form/gallery\n  picker)\n\n### Impact\nAnyone holding a share UUID could enumerate the full set of linked records\nfor any hidden LTAR column on the view's table by calling the relation\nendpoint directly, even when the same column was correctly omitted from the\npublic `/rows` response.\n\n### Credit\nThis issue was reported by [@leduckhuong](https://github.com/leduckhuong).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T15:52:54Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Hidden LTAR Column Exposure in Public Shared-View Relation Endpoints",
+    "UpdatedAt": "2026-06-05T15:52:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

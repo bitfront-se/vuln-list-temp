@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-05T16:19:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361279,
+    "Id": "GSA_kwCzR0hTQS1qZjNnLTRnd2ctNGg2Ns4ABYM_",
+    "GhsaId": "GHSA-jf3g-4gwg-4h66",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-jf3g-4gwg-4h66"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jf3g-4gwg-4h66"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jf3g-4gwg-4h66"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47383"
+      }
+    ],
+    "Description": "### Summary\nAn authenticated commenter could store HTML in row comments that executed as script\nwhen other users hovered over the comment in the expanded form view.\n\n### Details\nThe comment write paths persisted the raw comment body with no server-side sanitisation;\nthe expanded-form sidebar then rendered the stored body and fed its `data-tooltip`\nattribute to Tippy with `allowHTML: true`. Even when the editor stripped script tags\nat write time, attribute-level payloads re-entered the DOM as live HTML on hover.\n\n### Impact\nStored Cross-Site Scripting against any user who views the affected row. Script runs in\nthe NocoDB origin with the victim's session and can read the auth JWT from\n`localStorage`. Authentication and comment permission are required.\n\n### Credit\nThis issue was reported by [@DavidCarliez](https://github.com/DavidCarliez). It was independently reported by [@Mouhebbenelwafi](https://github.com/Mouhebbenelwafi).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:19:22Z",
+    "Severity": "HIGH",
+    "Summary": "NocoDB: Stored Cross-Site Scripting via Row Comments",
+    "UpdatedAt": "2026-06-05T16:19:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

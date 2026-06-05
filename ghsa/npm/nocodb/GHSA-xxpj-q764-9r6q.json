@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-05T16:22:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361284,
+    "Id": "GSA_kwCzR0hTQS14eHBqLXE3NjQtOXI2cc4ABYNE",
+    "GhsaId": "GHSA-xxpj-q764-9r6q",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-xxpj-q764-9r6q"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xxpj-q764-9r6q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xxpj-q764-9r6q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47388"
+      }
+    ],
+    "Description": "### Summary\nA low-privilege MCP token holder with knowledge of an attachment path could read any\nfile in shared storage, including attachments belonging to other bases and workspaces,\nbecause the MCP `readAttachment` tool did not verify the file's ownership.\n\n### Details\nThe MCP `readAttachment` tool accepts caller-supplied `path`/`url` values and streams\nthe file via the storage adapter. The handler now looks up the path in\n`nc_file_references` and requires a non-deleted row whose `base_id` matches the\ncaller's MCP context before streaming; otherwise it returns\n`Attachment is not accessible from this MCP context`. The lookup tolerates both\n`download/uploads/...` and `uploads/...` styles.\n\n### Impact\nArbitrary read against shared storage scoped to attachments the caller's MCP context\nshould not see. Exploitation requires an MCP token and a known attachment path.\n\n### Credit\nThis issue was reported by [@helwor-01](https://github.com/helwor-01).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:22:28Z",
+    "Severity": "LOW",
+    "Summary": "NocoDB: Missing Ownership Check in MCP Attachment Read",
+    "UpdatedAt": "2026-06-05T16:22:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

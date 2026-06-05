@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T15:59:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361272,
+    "Id": "GSA_kwCzR0hTQS02eGN4LTdxbWctdmpmcc4ABYM4",
+    "GhsaId": "GHSA-6xcx-7qmg-vjfq",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-6xcx-7qmg-vjfq"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.04.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6xcx-7qmg-vjfq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6xcx-7qmg-vjfq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47376"
+      }
+    ],
+    "Description": "### Summary\n\nThe password-reset page rendered the URL token directly into a JavaScript string literal in a server-rendered EJS template. EJS `\u003c%= %\u003e` HTML-entity-encodes a fixed set of characters but does not escape single quotes or backslashes, so a crafted token could break out of the JS string context and execute attacker-controlled script in the NocoDB origin. Triggering required only that a victim follow a malicious password-reset link.\n\n### Details\n\nThe vulnerable template embedded the token as:\n\n```ejs\ntoken: '\u003c%= token %\u003e',\n```\n\nA token containing `';alert(document.cookie);//` closes the single-quoted string and runs arbitrary JavaScript. The fix moves the token into an HTML attribute (`data-token=\"…\"`) and reads it from `dataset.token` at runtime, so EJS's HTML-entity escaping is sufficient.\n\n### Impact\n\n- Reflected XSS in the NocoDB origin via a phished password-reset URL.\n- No authentication required to trigger; affects any user who clicks the crafted link.\n- Same-origin script can read auth state and act on the victim's behalf.\n\n### Credit\n\nThis issue was reported by [@fg0x0](https://github.com/fg0x0).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T15:59:53Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Reflected Cross-Site Scripting via Password Reset Token",
+    "UpdatedAt": "2026-06-05T15:59:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.04.1"
+      },
+      "VulnerableVersionRange": "\u003c 2026.04.1"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T16:20:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361280,
+    "Id": "GSA_kwCzR0hTQS1wOHd4LTVmMzktdzN4NM4ABYNA",
+    "GhsaId": "GHSA-p8wx-5f39-w3x4",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-p8wx-5f39-w3x4"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p8wx-5f39-w3x4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p8wx-5f39-w3x4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47384"
+      }
+    ],
+    "Description": "### Summary\nAn authenticated user with column-create permission can inject SQL into the bulk groupBy\nendpoint by setting a column's title to a SQL fragment.\n\n### Details\nThe bulk groupBy path in `group-by.ts` builds three database-specific `knex.raw()`\naggregations that interpolate the request's `column_name` directly into the SQL string.\nColumn lookup in `data-table.service.ts` matches on both the sanitized `column_name`\nfield and the free-text `title`, so a title containing a SQL fragment bypasses the\npublic endpoint's existing column allowlist and reaches the query builder unescaped.\n\n### Impact\nSQL injection against the connected database with read access to any expression an\nattacker can place in a column title. Exploitation requires an authenticated session\nwith permission to create or rename columns.\n\n### Credit\nThis issue was reported by [@geo-chen](https://github.com/geo-chen).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:19:59Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: SQL Injection via Column Title in Bulk GroupBy",
+    "UpdatedAt": "2026-06-05T16:20:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

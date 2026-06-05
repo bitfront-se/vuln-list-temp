@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T16:20:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361281,
+    "Id": "GSA_kwCzR0hTQS13dnFqLTl3djQtN2ZmNc4ABYNB",
+    "GhsaId": "GHSA-wvqj-9wv4-7ff5",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-wvqj-9wv4-7ff5"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wvqj-9wv4-7ff5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wvqj-9wv4-7ff5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47385"
+      }
+    ],
+    "Description": "### Summary\nAn authenticated user with base-create permission can attach a SQLite source pointing at\nan arbitrary file on the NocoDB host, including NocoDB's own internal databases.\n\n### Details\nThe SQLite client and the base/integration create services accepted a caller-supplied\nfilename and passed it to `fs.exists` and `fs.open('w')` without restricting the location.\nA user could point a source at `noco.db`, at a tenant database under `nc_minimal_dbs/`,\nor at any writable path the NocoDB process can reach, and then read or overwrite its\ncontents through the regular table APIs.\n\n### Impact\nDisclosure and modification of NocoDB internal state, of other tenants' databases, and\nof any file the NocoDB process can read or write. Authentication and base-create\npermission are required.\n\n### Credit\nThis issue was reported by [@Mouhebbenelwafi](https://github.com/Mouhebbenelwafi).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:20:20Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Path Traversal via SQLite Source Filename",
+    "UpdatedAt": "2026-06-05T16:20:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

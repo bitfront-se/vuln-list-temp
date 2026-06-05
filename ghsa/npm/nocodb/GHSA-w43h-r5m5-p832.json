@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T16:19:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361278,
+    "Id": "GSA_kwCzR0hTQS13NDNoLXI1bTUtcDgzMs4ABYM-",
+    "GhsaId": "GHSA-w43h-r5m5-p832",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-w43h-r5m5-p832"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w43h-r5m5-p832"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w43h-r5m5-p832"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47382"
+      }
+    ],
+    "Description": "### Summary\nThe connection-test endpoint opened a raw TCP socket to the user-supplied database\nhost without resolving and range-checking the destination, so private and link-local\naddresses (including IPv4-mapped IPv6 forms and `localhost`) reached the driver.\n\n### Details\nA new `validateDbConnectionHost` helper resolves hostnames through DNS, parses each\naddress with `ipaddr.js`, normalises IPv4-mapped IPv6, and rejects addresses in the\nprivate, loopback, link-local, unique-local, reserved, unspecified, broadcast, and\ncarrier-grade-NAT ranges. `0.0.0.0`, `::`, and the literal `localhost` are special-cased.\nThe check runs before the existing SSL block in the connection-test controller and\ngates the driver invocation.\n\n### Impact\nAuthenticated users with connection-test permission could probe internal services\n(Redis, the cloud metadata endpoint, internal databases) reachable from the NocoDB\nprocess. A DNS rebinding attacker could still race the resolve-vs-connect window.\n\n### Credit\nThis issue was reported by [@helwor-01](https://github.com/helwor-01).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:19:01Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Server-Side Request Forgery via Database Connection Host",
+    "UpdatedAt": "2026-06-05T16:19:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T16:04:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 361277,
+    "Id": "GSA_kwCzR0hTQS05NmZoLW00cjgtNnY5ds4ABYM9",
+    "GhsaId": "GHSA-96fh-m4r8-6v9v",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-96fh-m4r8-6v9v"
+      },
+      {
+        "Url": "https://github.com/nocodb/nocodb/releases/tag/2026.05.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-96fh-m4r8-6v9v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-96fh-m4r8-6v9v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47381"
+      }
+    ],
+    "Description": "### Summary\nA user in one workspace could exercise another workspace's integration through the\n`testConnection` endpoint by supplying its ID, because the integration was fetched in\na bypass scope and the caller's permission check matched any base in any workspace.\n\n### Details\nThe connection-test endpoint fetched the integration in `RootScopes.BYPASS` scope and\nchecked only that the integration was non-private and that the caller held an\nowner/creator role on any base in any workspace. The permission lookup is now scoped\nto the integration's workspace by joining on `fk_workspace_id`, and the controller\nrejects requests where the integration's workspace differs from the request's workspace.\n\n### Impact\nCross-tenant access to integration configuration through the connection-test endpoint,\nincluding the ability to drive the resolved database with the other workspace's\ncredentials. Authentication with creator-or-owner role on any base in any workspace\nwas sufficient.\n\n### Credit\nThis issue was reported by [@DongyangLyu](https://github.com/DongyangLyu).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T16:04:32Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Cross-Workspace Integration Use in Connection Test",
+    "UpdatedAt": "2026-06-05T16:04:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.05.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.05.0"
+    }
+  ]
+}
