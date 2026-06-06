@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-05T21:43:57Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "bugsink"
+  },
+  "Advisory": {
+    "DatabaseId": 361347,
+    "Id": "GSA_kwCzR0hTQS1nNXZjLXE3cWMtdjkzOc4ABYOD",
+    "GhsaId": "GHSA-g5vc-q7qc-v939",
+    "References": [
+      {
+        "Url": "https://github.com/bugsink/bugsink/security/advisories/GHSA-g5vc-q7qc-v939"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47716"
+      },
+      {
+        "Url": "https://github.com/bugsink/bugsink/releases/tag/2.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g5vc-q7qc-v939"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g5vc-q7qc-v939"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47716"
+      }
+    ],
+    "Description": "### Description\nBugsink’s issue list supports bulk actions such as resolving or muting selected issues. In affected versions, the issue list view authorizes access through the project in the URL, but applies the requested bulk action to the submitted issue IDs without also requiring those issues to belong to that project.\n\nThis is a project-boundary authorization issue: a logged-in user with access to one project can change the state of an issue in another project. However, the issue is mitigated by two factors. First, the attacker needs to already know a valid target issue UUID; there is no issue enumeration path here, and guessing UUIDs is not practical. Second, Bugsink is commonly self-hosted within a single trust domain, and Hosted Bugsink gives each tenant a separate Bugsink instance, so cross-project access does not normally imply cross-tenant access.\n\nThis has been fixed by requiring bulk issue actions to operate only on issues belonging to the authorized project.\n\n### Impact\n\nLow-severity cross-project issue state modification, requiring authentication and prior knowledge of a valid issue UUID.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T21:43:56Z",
+    "Severity": "LOW",
+    "Summary": "Bugsink: Issue bulk actions can affect another project’s issue if its UUID is known",
+    "UpdatedAt": "2026-06-05T21:43:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.2.0"
+    }
+  ]
+}

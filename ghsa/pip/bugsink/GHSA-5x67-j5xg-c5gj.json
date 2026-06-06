@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-05T21:45:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "bugsink"
+  },
+  "Advisory": {
+    "DatabaseId": 361349,
+    "Id": "GSA_kwCzR0hTQS01eDY3LWo1eGctYzVnas4ABYOF",
+    "GhsaId": "GHSA-5x67-j5xg-c5gj",
+    "References": [
+      {
+        "Url": "https://github.com/bugsink/bugsink/security/advisories/GHSA-5x67-j5xg-c5gj"
+      },
+      {
+        "Url": "https://github.com/bugsink/bugsink/releases/tag/2.2.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5x67-j5xg-c5gj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5x67-j5xg-c5gj"
+      }
+    ],
+    "Description": "### Summary\n\nIn affected versions, Bugsink stores every tag supplied with an incoming event. An event with an unusually large number\nof custom (i.e. supplied by an attacker) tags can therefore make ingestion spend more time than intended writing tag rows.\n\nBugsink uses a single-writer database architecture. That keeps the implementation simple, but it also means one\nexpensive write transaction can delay other event digestion while it is running. In this case, it makes ingestion of\nother events wait until the transaction that writes the tags finishes, which effectively causes a temporary denial of\nservice for other events.\n\n### Impact\n\nSubmitting such an event requires a valid project DSN. DSNs are sometimes visible in client-side applications, so they\nshould not be treated as a strong security boundary, but the issue is still limited to ingestion for a Bugsink instance\nthat accepts the event.\n\nThe impact is availability-only. The issue does not expose stored data, modify existing events, or allow code execution.\n\n### Mitigation\n\nUpdate to version 2.2.2, which caps the number of tags stored for a single event. The default cap is 100 tags and can\nbe changed with `MAX_EVENT_TAGS`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T21:45:40Z",
+    "Severity": "MODERATE",
+    "Summary": "Bugsink: DOS using large numbers of event tags",
+    "UpdatedAt": "2026-06-05T21:45:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2.2.1"
+    }
+  ]
+}
