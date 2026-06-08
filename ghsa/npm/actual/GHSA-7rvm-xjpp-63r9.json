@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-08T18:21:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "actual"
+  },
+  "Advisory": {
+    "DatabaseId": 361541,
+    "Id": "GSA_kwCzR0hTQS03cnZtLXhqcHAtNjNyOc4ABYRF",
+    "GhsaId": "GHSA-7rvm-xjpp-63r9",
+    "References": [
+      {
+        "Url": "https://github.com/actualbudget/actual/security/advisories/GHSA-7rvm-xjpp-63r9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7rvm-xjpp-63r9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7rvm-xjpp-63r9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42890"
+      }
+    ],
+    "Description": "## Summary\n\nA electron run as node vulnerability was identified in `actual` (macOS application, version `25.x (Electron 39.2.7)`).\n\n**Vulnerability Type:** Electron Run As Node\n\n## Description\n\nELECTRON_RUN_AS_NODE fuse enabled (Electron 39.2.7) — app can be converted to Node.js REPL for arbitrary code execution\n\n## Impact\n\nAn attacker who can place a file on disk or control command-line arguments can invoke the signed Actual.app binary with ELECTRON_RUN_AS_NODE=1 to execute arbitrary Node.js code inheriting the apps entitlements and code signature. This bypasses macOS Gatekeeper review of the payload: the Node.js script runs as Actual, under Actuals bundle ID and signed identity, and has access to any entitlements the app carries (network, file access, keychain, automation). Combined with any downloader (browser, mail attachment, Slack link) this becomes a signed-binary-abuse primitive on every Mac with Actual installed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T18:21:26Z",
+    "Severity": "MODERATE",
+    "Summary": "actual Allows Electron to Run As Node",
+    "UpdatedAt": "2026-06-08T18:21:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.5.0"
+      },
+      "VulnerableVersionRange": "\u003c 26.5.0"
+    }
+  ]
+}
