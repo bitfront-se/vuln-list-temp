@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-08T19:02:13Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-redis"
+  },
+  "Advisory": {
+    "DatabaseId": 361627,
+    "Id": "GSA_kwCzR0hTQS02Z2hqLWZycmotampqM84ABYSb",
+    "GhsaId": "GHSA-6ghj-frrj-jjj3",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-6ghj-frrj-jjj3"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.135.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6ghj-frrj-jjj3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6ghj-frrj-jjj3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44890"
+      }
+    ],
+    "Description": "### Summary\nAn attacker can cause DoS by sending crafted Redis payloads across multiple connections without `\\r\\n`. This exhausts the server's direct memory pool (OutOfDirectMemoryError), preventing legitimate connections from being processed.\n\n### Details\nio.netty.handler.codec.redis.RedisDecoder decodes the length of bulk strings and array headers using the `decodeLength` method. This method reads bytes from the network until it encounters a `\\n` character. However, it does not enforce any maximum length check while buffering the bytes if the `\\n` character is not found. An attacker can exploit this by sending a continuous stream of digits (e.g., `$1111...`) without ever sending a `\\n`.\n\nTo cause a true Denial of Service, an attacker must open multiple concurrent connections and distribute the unbounded payloads among them.\n\nAccording to the RESP specification (https://redis.io/docs/latest/develop/reference/protocol-spec/), all parts of the protocol are strictly terminated with `\\r\\n`. Furthermore, the length prefix itself is an integer representation that must fit within standard numeric limits (e.g., a 64-bit signed integer). Therefore, a stream of digits exceeding these bounds without `\\r\\n` is a protocol violation and should be rejected immediately rather than buffered indefinitely.\n\n### Impact\nDenial of Service due to memory exhaustion. Any application using Netty's RedisDecoder to handle untrusted Redis traffic is vulnerable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T19:02:09Z",
+    "Severity": "HIGH",
+    "Summary": "Netty has Unbounded Direct Memory Consumption in its RedisDecoder",
+    "UpdatedAt": "2026-06-08T19:02:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}

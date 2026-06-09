@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-08T19:02:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-haproxy"
+  },
+  "Advisory": {
+    "DatabaseId": 361629,
+    "Id": "GSA_kwCzR0hTQS1jYzM3LTlxMmotM2hmds4ABYSd",
+    "GhsaId": "GHSA-cc37-9q2j-3hfv",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-cc37-9q2j-3hfv"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.135.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cc37-9q2j-3hfv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cc37-9q2j-3hfv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44893"
+      }
+    ],
+    "Description": "When decoding a PP2_TYPE_SSL TLV, HAProxyMessage.readNextTLV() first calls `header.retainedSlice(header.readerIndex(), length)` and only then reads the 1-byte client field and 4-byte verify field. If the attacker sets the TLV length below 5, the subsequent readByte/readInt throws IndexOutOfBoundsException. HAProxyMessageDecoder only catches HAProxyProtocolException around this call, so the IOOBE propagates and the retained slice on the pooled cumulation buffer is never released.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T19:02:21Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: HAProxy SSL TLV parsing leaks retained slice on invalid TLV length",
+    "UpdatedAt": "2026-06-08T19:02:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}

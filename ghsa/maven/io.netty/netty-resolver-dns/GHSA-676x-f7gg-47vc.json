@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-08T23:02:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-resolver-dns"
+  },
+  "Advisory": {
+    "DatabaseId": 361649,
+    "Id": "GSA_kwCzR0hTQS02NzZ4LWY3Z2ctNDd2Y84ABYSx",
+    "GhsaId": "GHSA-676x-f7gg-47vc",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-676x-f7gg-47vc"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.135.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-676x-f7gg-47vc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-676x-f7gg-47vc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45674"
+      }
+    ],
+    "Description": "### Summary\nNetty's DnsResolveContext fails to validate the origin (bailiwick) of CNAME records in DNS responses.\n\n### Details\nIn `io.netty.resolver.dns.DnsResolveContext#buildAliasMap`, the resolver processes the ANSWER section of a DNS response and blindly caches all CNAME records it finds.\n\nAccording to https://datatracker.ietf.org/doc/html/rfc5452#section-6 \n\n```\nCare must be taken to only accept\n   data if it is known that the originator is authoritative for the\n   QNAME or a parent of the QNAME.\n   One very simple way to achieve this is to only accept data if it is\n   part of the domain for which the query was intended.\n```\n\n### Impact\nDNS Cache Poisoning (Bailiwick Bypass). Any application using Netty's DNS resolver is impacted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T23:02:26Z",
+    "Severity": "HIGH",
+    "Summary": "Netty Vulnerable to DNS Cache Poisoning via Missing Bailiwick Checks in CNAME Records",
+    "UpdatedAt": "2026-06-08T23:02:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-08T19:02:18Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http3"
+  },
+  "Advisory": {
+    "DatabaseId": 361628,
+    "Id": "GSA_kwCzR0hTQS1jMnJ4LTVyOHctOHhyMs4ABYSc",
+    "GhsaId": "GHSA-c2rx-5r8w-8xr2",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-c2rx-5r8w-8xr2"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c2rx-5r8w-8xr2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c2rx-5r8w-8xr2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44892"
+      }
+    ],
+    "Description": "### Summary\nThe default configuration of the `Http3ConnectionHandler` in the Netty HTTP/3 codec lacks an enforced maximum header size limit. When a peer does not explicitly specify `HTTP3_SETTINGS_MAX_FIELD_SECTION_SIZE`, the implementation defaults to an unbounded limit. This insecure default configuration allows a malicious client or server to send an enormous number of headers, leading to a memory exhaustion Denial of Service via an `OutOfMemoryError`.\n\n### Details\nNetty securely limits header sizes for older protocols. In HTTP/1.1, Netty strictly enforces an `8192`-byte limit out-of-the-box via `HttpObjectDecoder`. For HTTP/2, while RFC 9113 specifies that `SETTINGS_MAX_HEADER_LIST_SIZE` defaults to `unlimited`, Netty securely overrides this RFC default by enforcing an `8192`-byte limit (`Http2CodecUtil.DEFAULT_HEADER_LIST_SIZE`).\n\nHowever, this secure-by-default configuration is missing in the HTTP/3 implementation. While Netty provides a mechanism to configure the maximum header field section size via `Http3Settings`, its out-of-the-box behaviour strictly follows RFC 9114's unlimited default.\n\nBecause many developers rely on the framework's default configurations and basic constructors, their applications are unknowingly left vulnerable. This nearly infinite default limit is passed into `Http3FrameCodec#newFactory` and stored as `maxHeaderListSize` inside `Http3FrameCodec`.\n\nA bad actor can continuously send HTTP/3 headers within a connection, exploiting the insecure default configuration to consume server memory unconditionally until the application crashes with an `OutOfMemoryError`.\n\n### Impact\nDenial of Service via memory exhaustion. All applications using Netty's HTTP/3 codec with its default configuration are impacted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T19:02:16Z",
+    "Severity": "HIGH",
+    "Summary": "Netty has a Vulnerable Default Configuration Which Leads to Denial of Service via Unbounded HTTP/3 Header Size",
+    "UpdatedAt": "2026-06-08T19:02:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}

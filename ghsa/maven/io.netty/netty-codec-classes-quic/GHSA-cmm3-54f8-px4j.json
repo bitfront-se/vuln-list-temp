@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-08T22:59:43Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-classes-quic"
+  },
+  "Advisory": {
+    "DatabaseId": 361644,
+    "Id": "GSA_kwCzR0hTQS1jbW0zLTU0ZjgtcHg0as4ABYSs",
+    "GhsaId": "GHSA-cmm3-54f8-px4j",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-cmm3-54f8-px4j"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cmm3-54f8-px4j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cmm3-54f8-px4j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44894"
+      }
+    ],
+    "Description": "NoQuicTokenHandler is the tokenHandler used when the application does not set one. Its writeToken() returns false (server will not send Retry — acceptable), but validateToken() unconditionally `return 0`. In QuicheQuicServerCodec.handlePacket(), a non-negative return from validateToken() is interpreted as 'token is valid, ODCID starts at offset 0', causing the server to call quiche_accept as if the client's address had been validated by a Retry round-trip. Per RFC 9000 §8.1, a validated address lifts the 3× anti-amplification send limit. Thus any attacker who includes ANY non-empty token bytes in an Initial packet — with a spoofed victim source IP — causes the Netty server to treat the victim as validated and reflect full-size handshake flights (certificates, etc.) toward it without the 3× cap. The correct 'no token handler' semantics would be to return -1 (invalid) so the normal un-validated path and amplification limit apply.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T22:59:43Z",
+    "Severity": "HIGH",
+    "Summary": "Netty's Default QUIC token handler accepts any client-supplied token",
+    "UpdatedAt": "2026-06-08T22:59:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}

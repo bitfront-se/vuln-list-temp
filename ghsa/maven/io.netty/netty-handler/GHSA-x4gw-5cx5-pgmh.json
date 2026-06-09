@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-08T23:01:07Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-handler"
+  },
+  "Advisory": {
+    "DatabaseId": 361646,
+    "Id": "GSA_kwCzR0hTQS14NGd3LTVjeDUtcGdtaM4ABYSu",
+    "GhsaId": "GHSA-x4gw-5cx5-pgmh",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-x4gw-5cx5-pgmh"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.135.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x4gw-5cx5-pgmh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x4gw-5cx5-pgmh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45416"
+      }
+    ],
+    "Description": "SslClientHelloHandler.decode() reads the 24-bit TLS handshake length and, when the ClientHello does not fit in the first record, eagerly allocates `ctx.alloc().buffer(handshakeLength)` (line 161). The guard at line 140 is `handshakeLength \u003e maxClientHelloLength \u0026\u0026 maxClientHelloLength != 0`, and the commonly-used SniHandler/AbstractSniHandler constructors (SniHandler(Mapping), SniHandler(AsyncMapping), AbstractSniHandler()) pass maxClientHelloLength=0 and handshakeTimeoutMillis=0, so the length guard is disabled and no timeout is scheduled. A 16 MiB request exceeds the default pooled chunk size and becomes a huge/unpooled allocation performed immediately. The buffer is retained in the handler until the channel closes.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-08T23:01:04Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: SNI handler pre-allocates up to 16 MiB from nine attacker bytes",
+    "UpdatedAt": "2026-06-08T23:01:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}
