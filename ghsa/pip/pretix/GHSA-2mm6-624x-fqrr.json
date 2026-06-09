@@ -1,0 +1,74 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-09T16:12:34Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pretix"
+  },
+  "Advisory": {
+    "DatabaseId": 323665,
+    "Id": "GSA_kwCzR0hTQS0ybW02LTYyNHgtZnFycs4ABPBR",
+    "GhsaId": "GHSA-2mm6-624x-fqrr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-13742"
+      },
+      {
+        "Url": "https://pretix.eu/about/en/blog/20251126-release-2025-9-1"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/pretix/PYSEC-2025-154.yaml"
+      },
+      {
+        "Url": "https://pretix.eu/about/en/security"
+      },
+      {
+        "Url": "https://web.archive.org/web/20251129201933/https://pretix.eu/about/en/blog/20251127-release-2025-9-2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2mm6-624x-fqrr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2mm6-624x-fqrr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-13742"
+      }
+    ],
+    "Description": "Emails sent by pretix can utilize placeholders that will be filled with customer data. For example, when {name} is used in an email template, it will be replaced with the buyer's name for the final email. If the name of the attendee contained HTML or Markdown formatting, this was rendered as HTML in the resulting email. This way, a user could inject links or other formatted text through a maliciously formatted name. Since pretix applies a strict allow list approach to allowed HTML tags, this could not be abused for XSS or similarly dangerous attack chains. However, it can be used to manipulate emails in a way that makes user-provided content appear in a trustworthy and credible way, which can be abused for phishing.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2025-11-27T12:30:28Z",
+    "Severity": "LOW",
+    "Summary": "pretix has Email Content Injection Through Maliciously Formatted Names",
+    "UpdatedAt": "2026-06-09T16:12:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.9.0, \u003c 2025.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.8.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.8.0, \u003c 2025.8.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.7.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 2025.7.3"
+    }
+  ]
+}
