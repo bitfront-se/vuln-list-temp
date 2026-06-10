@@ -1,0 +1,83 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-10T16:46:31Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.cometd.java:cometd-java-server-common"
+  },
+  "Advisory": {
+    "DatabaseId": 362572,
+    "Id": "GSA_kwCzR0hTQS1jcWdqLWg4dmYtNHc1Oc4ABYhM",
+    "GhsaId": "GHSA-cqgj-h8vf-4w59",
+    "References": [
+      {
+        "Url": "https://github.com/cometd/cometd/security/advisories/GHSA-cqgj-h8vf-4w59"
+      },
+      {
+        "Url": "https://github.com/cometd/cometd/issues/2117"
+      },
+      {
+        "Url": "https://github.com/cometd/cometd/pull/2118"
+      },
+      {
+        "Url": "https://github.com/cometd/cometd/pull/2168"
+      },
+      {
+        "Url": "https://github.com/cometd/cometd/pull/2169"
+      },
+      {
+        "Url": "https://github.com/cometd/cometd/discussions/2116"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cqgj-h8vf-4w59"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cqgj-h8vf-4w59"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-53114"
+      }
+    ],
+    "Description": "### Impact\nBad clients that always send a fixed batch value while the server is using the acknowledgement extension can cause the unacknowledged message queue to grow indefinitely, eventually resulting in an OutOfMemoryError.\n\nSuch bad clients would always send:\n\n```json\n{\n  \"channel\": \"/meta/connect\",\n  ...\n  \"ext\": { \"ack\": 1 }\n}\n```\n\nThe server would never clear the unacknowledged message queue, and one bad client can cause a server outage.\n\n### Patches\n5.0.x - https://github.com/cometd/cometd/pull/2168\n6.0.x - https://github.com/cometd/cometd/pull/2169\n8.0.x - https://github.com/cometd/cometd/pull/2118\n\n### Workarounds\nDisable the acknowledgement extension.\n\n### Resources\nhttps://github.com/cometd/cometd/discussions/2116\nhttps://github.com/cometd/cometd/issues/2117",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-10T16:46:28Z",
+    "Severity": "HIGH",
+    "Summary": "Acknowledgement extension out of memory",
+    "UpdatedAt": "2026-06-10T16:46:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.9"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.0.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.19"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c= 7.0.18"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.19"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c= 6.0.18"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.23"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.0.22"
+    }
+  ]
+}
