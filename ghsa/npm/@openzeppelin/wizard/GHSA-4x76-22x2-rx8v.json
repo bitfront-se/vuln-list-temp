@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-11T13:27:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@openzeppelin/wizard"
+  },
+  "Advisory": {
+    "DatabaseId": 362718,
+    "Id": "GSA_kwCzR0hTQS00eDc2LTIyeDItcng4ds4ABYje",
+    "GhsaId": "GHSA-4x76-22x2-rx8v",
+    "References": [
+      {
+        "Url": "https://github.com/OpenZeppelin/contracts-wizard/security/advisories/GHSA-4x76-22x2-rx8v"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/contracts-wizard/commit/ec12c44f8d9e0491eba31037f95b36e98ec58b5f"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/contracts-wizard/releases/tag/%40openzeppelin%2Fwizard%400.10.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4x76-22x2-rx8v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4x76-22x2-rx8v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48054"
+      }
+    ],
+    "Description": "## Summary\n\nThe OpenZeppelin Contracts Wizard generated Hardhat (`test/test.ts`) and Foundry (`test/\u003cName\u003e.t.sol`) example test files that interpolated user-supplied strings (`opts.name`, `opts.uri`) into the test source without escaping. A crafted input could produce a generated test file in which the input string broke out of its surrounding literal and was parsed as code, executing when a developer ran `npm test` or `forge test` on the downloaded project.\n\n## Impact\n\n- **Users of the hosted Wizard at https://wizard.openzeppelin.com:** no action required. The site has been redeployed with the fix.\n- **Users of `@openzeppelin/wizard` via the documented public API:** not affected. The vulnerable functions (`zipHardhat`, `zipFoundry`) are not part of the package's documented public exports.\n- **Callers of `zipHardhat` / `zipFoundry` who forward externally-controlled strings into `opts.name` / `opts.uri`:** upgrade to `0.10.9`.\n\n## Patches\n\nFixed in `@openzeppelin/wizard@0.10.9`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T13:27:24Z",
+    "Severity": "HIGH",
+    "Summary": "OpenZeppelin Contracts Wizard has Code Injection in Generated Hardhat and Foundry Tests via Unsanitized opts.name / opts.uri",
+    "UpdatedAt": "2026-06-11T13:27:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.10.9"
+      },
+      "VulnerableVersionRange": "\u003c= 0.10.8"
+    }
+  ]
+}

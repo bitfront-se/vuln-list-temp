@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-11T13:28:57Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "zeroconf"
+  },
+  "Advisory": {
+    "DatabaseId": 362725,
+    "Id": "GSA_kwCzR0hTQS05NjYzLW1xbXAtcDltbc4ABYjl",
+    "GhsaId": "GHSA-9663-mqmp-p9mm",
+    "References": [
+      {
+        "Url": "https://github.com/python-zeroconf/python-zeroconf/security/advisories/GHSA-9663-mqmp-p9mm"
+      },
+      {
+        "Url": "https://github.com/python-zeroconf/python-zeroconf/pull/1751"
+      },
+      {
+        "Url": "https://github.com/python-zeroconf/python-zeroconf/commit/b22c8ff19c66c68907d220a4823c0950f4fa93f7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9663-mqmp-p9mm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9663-mqmp-p9mm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48045"
+      }
+    ],
+    "Description": "### Impact\n\n`AsyncListener.handle_query_or_defer` retained every truncated (TC-bit) incoming query in `self._deferred[addr]` and armed a per-addr timer in `self._timers[addr]` that flushed the reassembled query within ~500 ms (RFC 6762 §18.5). Neither the per-addr list nor the number of distinct `addr` keys was capped, and the dedup check (`for incoming in reversed(deferred): if incoming.data == msg.data`) ran O(N) over the per-addr list on every arrival.\n\nAny unauthenticated host on the local link (UDP/5353, `224.0.0.251` / `ff02::fb`) can stream byte-distinct TC-flagged mDNS queries — each up to `_MAX_MSG_ABSOLUTE = 8966` bytes, with `DNSIncoming` retaining the raw `data` buffer plus parsed-record state. Trivially spoofed source IPs multiply the effect across `_deferred` / `_timers`, and the O(N) data compare burns CPU quadratically as each per-addr queue grows. On memory-constrained deployments (Home Assistant on Raspberry-Pi-class hardware is the canonical victim) sustained traffic OOM-kills the process; under lighter load, the per-arrival scan and event-loop scheduler starvation break unrelated zeroconf consumers (discovery, registration, ServiceBrowser callbacks).\n\n### Patches\n\nFixed in `zeroconf` 0.149.12 ([PR #1751](https://github.com/python-zeroconf/python-zeroconf/pull/1751)). Upgrade to `\u003e= 0.149.12`.\n\n### Workarounds\n\nThere is no in-process workaround; upgrading is the fix. Otherwise, restrict mDNS (UDP/5353) to trusted Layer-2 segments via AP client isolation, guest-network separation, or host firewall rules.\n\n### Resources\n\n- [PR #1751](https://github.com/python-zeroconf/python-zeroconf/pull/1751), fix\n- [RFC 6762 §18.5](https://www.rfc-editor.org/rfc/rfc6762#section-18.5), [CWE-400](https://cwe.mitre.org/data/definitions/400.html)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T13:28:55Z",
+    "Severity": "MODERATE",
+    "Summary": "python-zeroconf: Unbounded TC-deferred queue allows LAN-local memory exhaustion via spoofed-source flood",
+    "UpdatedAt": "2026-06-11T13:28:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.149.12"
+      },
+      "VulnerableVersionRange": "\u003c 0.149.12"
+    }
+  ]
+}

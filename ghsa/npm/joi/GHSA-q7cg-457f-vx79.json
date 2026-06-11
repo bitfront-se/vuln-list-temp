@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-11T13:27:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "joi"
+  },
+  "Advisory": {
+    "DatabaseId": 362719,
+    "Id": "GSA_kwCzR0hTQS1xN2NnLTQ1N2Ytdng3Oc4ABYjf",
+    "GhsaId": "GHSA-q7cg-457f-vx79",
+    "References": [
+      {
+        "Url": "https://github.com/hapijs/joi/security/advisories/GHSA-q7cg-457f-vx79"
+      },
+      {
+        "Url": "https://github.com/hapijs/joi/pull/3113"
+      },
+      {
+        "Url": "https://github.com/hapijs/joi/commit/2392713d3e9dd91ba752ac0c96e0eaf3d24b9a11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q7cg-457f-vx79"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q7cg-457f-vx79"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48038"
+      }
+    ],
+    "Description": "### Impact\nDenial of service via untrapped exception in services validating user-supplied JSON / object input with recursive link schemas. \n\nThe blast radius depends on how the application invokes joi:\n- Highest impact: `validate()` called without `try/catch` in a request handler would cause an unhandled exception, potentially crashing the process.\n- Lower impact: `validateAsync()` or `validate()` inside a `try/catch`, the validation fails, but the error type is `RangeError` rather than a structured `ValidationError`, complicating error handling.\n\n### Patches\nUpgrade to version \u003e= 18.2.1.\n\n### Workarounds\nTry/catch the validation to avoid uncaught exceptions.\n\n### Resources\n- Pull request: hapijs/joi#3113",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T13:27:32Z",
+    "Severity": "MODERATE",
+    "Summary": "joi has an uncaught RangeError on deeply nested input through recursive `link()` schemas",
+    "UpdatedAt": "2026-06-11T13:27:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "18.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 18.2.1"
+    }
+  ]
+}

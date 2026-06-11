@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-11T13:28:47Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http2"
+  },
+  "Advisory": {
+    "DatabaseId": 362724,
+    "Id": "GSA_kwCzR0hTQS1jMmdmLXY4NzktMjU3as4ABYjk",
+    "GhsaId": "GHSA-c2gf-v879-257j",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-c2gf-v879-257j"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c2gf-v879-257j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c2gf-v879-257j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48043"
+      }
+    ],
+    "Description": "### Impact\n\nThe `DelegatingDecompressorFrameListener` class orchestrates HTTP/2 decompression by embedding a per-stream `EmbeddedChannel` that runs the appropriate decompression codec (gzip, deflate, zstd) and forwards decompressed chunks to a wrapped listener. Each decompressed chunk is a pooled `ByteBuf` handed to an anonymous `ChannelInboundHandlerAdapter` tail handler, which becomes the sole owner responsible for releasing it.\n\nA remote peer could send frames that would result in the flow-controller throwing and so trigger a resource leak which at the end might take down the whole JVM due OOME.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T13:28:46Z",
+    "Severity": "MODERATE",
+    "Summary": "netty-codec-http2: ByteBuf Reference-Count Leak in DelegatingDecompressorFrameListener Leads to Memory Exhaustion",
+    "UpdatedAt": "2026-06-11T13:28:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Alpha1, \u003c= 4.2.14.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    }
+  ]
+}
