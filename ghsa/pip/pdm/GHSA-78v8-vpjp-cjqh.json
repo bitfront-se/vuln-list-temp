@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-10T20:33:14Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pdm"
+  },
+  "Advisory": {
+    "DatabaseId": 362601,
+    "Id": "GSA_kwCzR0hTQS03OHY4LXZwanAtY2pxaM4ABYhp",
+    "GhsaId": "GHSA-78v8-vpjp-cjqh",
+    "References": [
+      {
+        "Url": "https://github.com/pdm-project/pdm/security/advisories/GHSA-78v8-vpjp-cjqh"
+      },
+      {
+        "Url": "https://github.com/pdm-project/pdm/pull/3787"
+      },
+      {
+        "Url": "https://github.com/pdm-project/pdm/releases/tag/2.27.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-78v8-vpjp-cjqh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-78v8-vpjp-cjqh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47764"
+      }
+    ],
+    "Description": "InstallDestination.write_to_fs() in src/pdm/installers/installers.py overrides the base class to add symlink/hardlink support but replaces the safe _path_with_destdir() (which validates via Path.resolve() + is_relative_to()) with a bare os.path.join() that performs no path validation. A malicious wheel with traversal entries can write arbitrary files. Same class as Poetry CVE-2026-34591. Fix ready at: https://github.com/pdm-project/pdm/pull/3787.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-10T20:33:13Z",
+    "Severity": "HIGH",
+    "Summary": "PDM  wheel installation leads to Path Traversal via overridden write_to_fs",
+    "UpdatedAt": "2026-06-10T20:33:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.27.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.22.4"
+    }
+  ]
+}
