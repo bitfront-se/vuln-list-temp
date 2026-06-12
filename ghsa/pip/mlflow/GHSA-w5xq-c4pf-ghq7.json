@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-12T15:05:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mlflow"
+  },
+  "Advisory": {
+    "DatabaseId": 357094,
+    "Id": "GSA_kwCzR0hTQS13NXhxLWM0cGYtZ2hxN84ABXLm",
+    "GhsaId": "GHSA-w5xq-c4pf-ghq7",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2734"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/commit/6989066af33fdcb03588fd71a1a67f8fc5ef12c9"
+      },
+      {
+        "Url": "https://huntr.com/bounties/d632f783-b2c7-4a3b-af5e-1d693e841c08"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w5xq-c4pf-ghq7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w5xq-c4pf-ghq7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2734"
+      }
+    ],
+    "Description": "In mlflow/mlflow versions up to 3.9.0, the `SearchModelVersions` REST API endpoint and the `mlflowSearchModelVersions` GraphQL query lack proper per-model authorization checks when basic authentication is enabled. This allows any authenticated user to enumerate all model versions across all registered models, regardless of their permission level. The issue arises due to the absence of `SearchModelVersions` in the `BEFORE_REQUEST_VALIDATORS` and `AFTER_REQUEST_HANDLERS` for the REST API, and its omission from `GraphQLAuthorizationMiddleware.PROTECTED_FIELDS` for GraphQL. This vulnerability can expose sensitive information such as model names, version descriptions, source URIs, tags, and other metadata, potentially revealing proprietary or confidential details in multi-tenant environments. The issue is resolved in version 3.10.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-21T06:31:31Z",
+    "Severity": "MODERATE",
+    "Summary": "MLflow authenticated users can enumerate any registered model versions due to lack of per-model permissions checks",
+    "UpdatedAt": "2026-06-12T15:05:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.10.0"
+    }
+  ]
+}
