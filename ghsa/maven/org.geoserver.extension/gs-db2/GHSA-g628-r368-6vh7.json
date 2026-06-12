@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-11T20:34:00Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.geoserver.extension:gs-db2"
+  },
+  "Advisory": {
+    "DatabaseId": 362790,
+    "Id": "GSA_kwCzR0hTQS1nNjI4LXIzNjgtNnZoN84ABYkm",
+    "GhsaId": "GHSA-g628-r368-6vh7",
+    "References": [
+      {
+        "Url": "https://github.com/geoserver/geoserver/security/advisories/GHSA-g628-r368-6vh7"
+      },
+      {
+        "Url": "https://github.com/geoserver/geoserver/releases/tag/2.27.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g628-r368-6vh7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g628-r368-6vh7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-27511"
+      }
+    ],
+    "Description": "## Summary\n\nAdministrator can perform JNDI attack through specially crafted DB2 jdbc url leading to Remote Code Execution (RCE).\n\n## Impact\n\nIf GeoServer has DB2 extension installed, this vulnerability can lead to executing arbitrary code.\n\n## Details\n\nAuthenticated users can access Vector Data Sources page to creating a new data store through db2 jdbc connection, performing JNDI attack due to unrestricted connection parameters, and then achieve RCE with deserialization of untrusted data.\n\n### Remediation\n\nThis issue has been fixed in this release: https://github.com/geoserver/geoserver/releases/tag/2.27.0.\n\n## References\n\n* https://osgeo-org.atlassian.net/browse/GEOT-7725\n* https://nvd.nist.gov/vuln/detail/cve-2023-27867",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T20:34:00Z",
+    "Severity": "HIGH",
+    "Summary": "GeoServer DB2 DataStore Extension has a JNDI Vulnerability via Store Connection",
+    "UpdatedAt": "2026-06-11T20:34:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.27.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.27.0"
+    }
+  ]
+}

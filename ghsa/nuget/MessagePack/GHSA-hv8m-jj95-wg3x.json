@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-11T20:34:10Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 362791,
+    "Id": "GSA_kwCzR0hTQS1odjhtLWpqOTUtd2czeM4ABYkn",
+    "GhsaId": "GHSA-hv8m-jj95-wg3x",
+    "References": [
+      {
+        "Url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/security/advisories/GHSA-hv8m-jj95-wg3x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hv8m-jj95-wg3x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hv8m-jj95-wg3x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48109"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability exists in the optional LZ4 decompression path used by MessagePack compression modes `Lz4Block` and `Lz4BlockArray`.\n\nThe decoder implementation is based on a deprecated fast-decompression algorithm that does not take a source-length bound. A remote attacker can send a crafted MessagePack payload with manipulated LZ4 token/length fields to force out-of-bounds reads from the compressed input buffer. In affected environments, this can trigger an `AccessViolationException` during decompression, causing process termination (denial of service). Under some conditions, limited unintended memory disclosure from over-read data may also be possible before failure.\n\nThis issue affects applications that deserialize untrusted data while LZ4 compression is enabled.\n\n### Patches\n\nThe v2 versions are patched as of 2.5.301.\nThe v3 versions are patched as of 3.1.7.\n\n### Workarounds\n\nInstead of upgrading, an application may take the following precautions:\n\n1. Disable LZ4 compression for untrusted input paths (`Lz4Block`, `Lz4BlockArray`).\n2. Only accept compressed payloads from strongly trusted producers.\n3. Isolate deserialization in a separate process/container with restart supervision to limit availability impact.\n\n### Resources\n\n- MESSAGEPACKCSHARP-010",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T20:34:10Z",
+    "Severity": "HIGH",
+    "Summary": " MessagePack's LZ4 decompression may fail with AccessViolationException after dereferencing memory from bad input",
+    "UpdatedAt": "2026-06-11T20:34:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.214-rc.1, \u003c 3.1.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.301"
+      },
+      "VulnerableVersionRange": "\u003c 2.5.301"
+    }
+  ]
+}
