@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2026-06-11T13:27:33Z",
+  "UpdatedAt": "2026-06-12T19:28:27Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "joi"
@@ -33,12 +33,12 @@
         "Value": "CVE-2026-48038"
       }
     ],
-    "Description": "### Impact\nDenial of service via untrapped exception in services validating user-supplied JSON / object input with recursive link schemas. \n\nThe blast radius depends on how the application invokes joi:\n- Highest impact: `validate()` called without `try/catch` in a request handler would cause an unhandled exception, potentially crashing the process.\n- Lower impact: `validateAsync()` or `validate()` inside a `try/catch`, the validation fails, but the error type is `RangeError` rather than a structured `ValidationError`, complicating error handling.\n\n### Patches\nUpgrade to version \u003e= 18.2.1.\n\n### Workarounds\nTry/catch the validation to avoid uncaught exceptions.\n\n### Resources\n- Pull request: hapijs/joi#3113",
+    "Description": "### Impact\nDenial of service via untrapped exception in services validating user-supplied JSON / object input with recursive link schemas. \n\nThe blast radius depends on how the application invokes joi:\n- Highest impact: `validate()` called without `try/catch` in a request handler would cause an unhandled exception, potentially crashing the process.\n- Lower impact: `validateAsync()` or `validate()` inside a `try/catch`, the validation fails, but the error type is `RangeError` rather than a structured `ValidationError`, complicating error handling.\n\n### Patches\nUpgrade to version \u003e= 18.2.1.\n\n### Workarounds\nTry/catch the validation to avoid uncaught exceptions.\n\n### References\n- Pull request: hapijs/joi#3113",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-06-11T13:27:32Z",
     "Severity": "MODERATE",
     "Summary": "joi has an uncaught RangeError on deeply nested input through recursive `link()` schemas",
-    "UpdatedAt": "2026-06-11T13:27:33Z",
+    "UpdatedAt": "2026-06-12T19:28:28Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,
@@ -48,9 +48,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "17.13.4"
+      },
+      "VulnerableVersionRange": "\u003c 17.13.4"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "18.2.1"
       },
-      "VulnerableVersionRange": "\u003c 18.2.1"
+      "VulnerableVersionRange": "\u003e= 18.0.0, \u003c 18.2.1"
     }
   ]
 }

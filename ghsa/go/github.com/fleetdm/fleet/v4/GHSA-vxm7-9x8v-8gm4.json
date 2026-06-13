@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-12T21:00:45Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/fleetdm/fleet/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 363004,
+    "Id": "GSA_kwCzR0hTQS12eG03LTl4OHYtOGdtNM4ABYn8",
+    "GhsaId": "GHSA-vxm7-9x8v-8gm4",
+    "References": [
+      {
+        "Url": "https://github.com/fleetdm/fleet/security/advisories/GHSA-vxm7-9x8v-8gm4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vxm7-9x8v-8gm4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vxm7-9x8v-8gm4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46370"
+      }
+    ],
+    "Description": "### Summary\n\nA vulnerability in Fleet's labels host-listing endpoint allowed authenticated users with the lowest-privilege Observer role to extract host enrollment secrets (`node_key`, `orbit_node_key`) through a cursor-based binary search oracle. The endpoint accepted a user-supplied `order_key` parameter that was not validated against a column allowlist, permitting sort order to be driven by sensitive columns in a joined table.\n\n### Impact\n\nThe `GET /api/v1/fleet/labels/{id}/hosts` endpoint constructs its query using a deprecated helper that did not restrict which columns could appear in the `ORDER BY` clause. An attacker with Global Observer or Team Observer credentials could supply a sensitive column name (for example, `h.node_key`) as `order_key` and combine it with the cursor-based `after` parameter to binary-search the values of those columns one character at a time. The targeted values never appeared in the response body, but the presence or absence of results revealed each character.\n\nThe `node_key` and `orbit_node_key` values are the long-lived shared secrets used by osquery and Orbit agents to authenticate to the Fleet server. An attacker who extracted these keys could:\n\n- Impersonate enrolled hosts to Fleet's osquery and Orbit endpoints\n- Submit fabricated query results and host inventory data\n- Retrieve pending scripts and MDM commands queued for the host\n- Poison compliance and policy results across the Fleet deployment\n\nExploitation required authenticated Observer access. Fleet deployments that restrict Observer roles to fully trusted users were at lower practical risk, but the secrets exposed are high-value and long-lived.\n\n### Patches\n\n- v4.85.0\n\n### Workarounds\n\nIf an immediate upgrade is not possible, administrators should:\n\n- Restrict the Observer role to fully trusted users until the patch is applied\n- Rotate `node_key` and `orbit_node_key` for any host suspected of exposure by re-enrolling the affected hosts\n\n### For more information\n\nIf there are any questions or comments about this advisory:\n\nEmail Fleet at [security@fleetdm.com](mailto:security@fleetdm.com)\nJoin #fleet in [osquery Slack](https://join.slack.com/t/osquery/shared_invite/zt-h29zm0gk-s2DBtGUTW4CFel0f0IjTEw)\n\n### Credits\n\nFleet thanks the Security Team at Palantir Technologies for responsibly reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-12T21:00:42Z",
+    "Severity": "MODERATE",
+    "Summary": "Fleet has observer-level enrollment secret extraction via ORDER BY oracle on labels host-listing endpoint",
+    "UpdatedAt": "2026-06-12T21:00:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.84.2"
+      },
+      "VulnerableVersionRange": "\u003c= 4.84.1"
+    }
+  ]
+}

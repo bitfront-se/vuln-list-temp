@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-12T21:51:04Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.springframework.kafka:spring-kafka"
+  },
+  "Advisory": {
+    "DatabaseId": 362429,
+    "Id": "GSA_kwCzR0hTQS14dmZxLTRxNnEtZ3h4N84ABYe9",
+    "GhsaId": "GHSA-xvfq-4q6q-gxx7",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41726"
+      },
+      {
+        "Url": "https://spring.io/security/cve-2026-41726"
+      },
+      {
+        "Url": "https://github.com/spring-projects/spring-kafka/issues/4489"
+      },
+      {
+        "Url": "https://github.com/spring-projects/spring-kafka/commit/ca2337ba789c5778a10197bda17a62915247ff6c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xvfq-4q6q-gxx7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xvfq-4q6q-gxx7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41726"
+      }
+    ],
+    "Description": "When an application opts into DelegatingDeserializer, a producer can grow the consumer's heap without bound by sending records with unique random spring.kafka.serialization.selector header values, eventually causing GC thrash and OutOfMemoryError.\n\nAffected versions:\nSpring for Apache Kafka 4.0.0 through 4.0.5; 3.3.0 through 3.3.15; 3.2.0 through 3.2.13; 2.9.0 through 2.9.13; 2.8.0 through 2.8.11.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-10T00:31:52Z",
+    "Severity": "MODERATE",
+    "Summary": "In Spring for Apache Kafka, unbounded delegate cache keyed on user-controlled, potentially malicious selector header",
+    "UpdatedAt": "2026-06-12T21:51:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.8.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.9.0, \u003c= 2.9.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.2.0, \u003c= 3.2.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.16"
+      },
+      "VulnerableVersionRange": "\u003e= 3.3.0, \u003c= 3.3.15"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 4.0.5"
+    }
+  ]
+}
