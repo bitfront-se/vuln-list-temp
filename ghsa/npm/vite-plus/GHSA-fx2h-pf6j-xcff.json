@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T17:17:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vite-plus"
+  },
+  "Advisory": {
+    "DatabaseId": 363214,
+    "Id": "GSA_kwCzR0hTQS1meDJoLXBmNmoteGNmZs4ABYrO",
+    "GhsaId": "GHSA-fx2h-pf6j-xcff",
+    "References": [
+      {
+        "Url": "https://github.com/vitejs/vite/security/advisories/GHSA-fx2h-pf6j-xcff"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fx2h-pf6j-xcff"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fx2h-pf6j-xcff"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53571"
+      }
+    ],
+    "Description": "### Summary\n\nThe contents of files that are specified by [`server.fs.deny`](https://vite.dev/config/server-options#server-fs-deny) can be returned to the browser on Windows.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host))\n- the sensitive file exists in the allowed directories specified by [`server.fs.allow`](https://vite.dev/config/server-options#server-fs-allow)\n- either of:\n  - the sensitive file exists in an NTFS volume\n  - the dev server is running on Windows and the sensitive file exists in a volume that 8.3 short name generation is enabled (it is enabled by default on system volumes)\n\n### Details\n\nVite’s dev server denies direct access to sensitive files through `server.fs.deny`, including entries such as `.env`, `.env.*`, and `*.{crt,pem}`. However, on Windows, the deny logic does not correctly normalize NTFS ADS path forms before access checks are applied.\nBecause of this, requests such as `/.env::$DATA?raw` are treated as allowed paths, while Windows resolves them to the original file's default data stream.\n\nSimilar to that, Windows allows accessing a file using a different name with the 8.3 short name compatibility feature. Vite did not reject accessing files via them.\n\n### PoC\n```bash\n$ npm create vite@latest\n$ cd vite-project/\n$ npm install\n$ npm run dev\n```\nAccess via browser at `http://localhost:5173/.env::$DATA?raw`\n\u003cimg width=\"388\" height=\"129\" alt=\"deecc1315123883cfd0f9c26a002845a\" src=\"https://github.com/user-attachments/assets/895c6012-4e2e-4a35-babb-69bbf3ee7170\" /\u003e\n\nExample expected result:\n- `/.env::$DATA?raw` returns the contents of `.env`\n- `/tls.pem::$DATA?raw` returns the contents of `tls.pem`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T17:17:45Z",
+    "Severity": "HIGH",
+    "Summary": "vite: `server.fs.deny` bypass on Windows alternate paths",
+    "UpdatedAt": "2026-06-15T17:17:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.24"
+      },
+      "VulnerableVersionRange": "\u003c= 0.1.23"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-15T17:14:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@babel/core"
+  },
+  "Advisory": {
+    "DatabaseId": 363212,
+    "Id": "GSA_kwCzR0hTQS00eDVyLXB4ZngtNmpmOM4ABYrM",
+    "GhsaId": "GHSA-4x5r-pxfx-6jf8",
+    "References": [
+      {
+        "Url": "https://github.com/babel/babel/security/advisories/GHSA-4x5r-pxfx-6jf8"
+      },
+      {
+        "Url": "https://babeljs.io/docs/options#inputsourcemap"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4x5r-pxfx-6jf8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4x5r-pxfx-6jf8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49356"
+      }
+    ],
+    "Description": "## Impact\n\nUsing `@babel/core` to compile maliciously crafted code can allow ab attacker to read any source map from the system that is running Babel, if these conditions are _all_ true:\n- the attacker controls the input source code\n- the attacker can read the output source code\n- the attacker knows the path of the source map file that they want to read\n\n**Users that only compile trusted code are not impacted.**\n\n## Patches\n\nThe vulnerability has been fixed in `@babel/core@7.29.6` and `@babel/core@8.0.0-rc.6`.\n\n## Workarounds\n\nCallers can mitigate the issue without upgrading by setting [`inputSourceMap: false`](https://babeljs.io/docs/options#inputsourcemap) in their Babel options.\n\nCallers can also manually extract the `#sourceMappingURL` comment from the input source code, validate whether the source map that it links to is allowed to be read, and if it is pass an object to `inputSourceMap` (passing `false` when it's not).\n\n## Credits\n\nThanks Teodor-Cristian Radoi for reporting the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T17:14:14Z",
+    "Severity": "LOW",
+    "Summary": "@babel/core: Arbitrary File Read via sourceMappingURL Comment",
+    "UpdatedAt": "2026-06-15T17:14:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.29.6"
+      },
+      "VulnerableVersionRange": "\u003c= 7.29.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.0-rc.6"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0-alpha.0, \u003c 8.0.0-rc.5"
+    }
+  ]
+}

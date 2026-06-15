@@ -1,0 +1,80 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T17:21:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/platform-server"
+  },
+  "Advisory": {
+    "DatabaseId": 363218,
+    "Id": "GSA_kwCzR0hTQS1neHg0LTN4Y3YtZjhxeM4ABYrS",
+    "GhsaId": "GHSA-gxx4-3xcv-f8qx",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-gxx4-3xcv-f8qx"
+      },
+      {
+        "Url": "https://github.com/angular/angular/issues/68903"
+      },
+      {
+        "Url": "https://github.com/angular/domino/pull/29"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gxx4-3xcv-f8qx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gxx4-3xcv-f8qx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50556"
+      }
+    ],
+    "Description": "A Cross-Site Scripting (XSS) vulnerability exists in `@angular/platform-server`'s DOM emulation dependency (`domino`) when serializing the content of `\u003cnoscript\u003e` elements.\n\nWhen rendering dynamic text content inside a `\u003cnoscript\u003e` element via template bindings (such as `{{ value }}` or `[textContent]`), the template engine expects the browser to render the content safely. Under Server-Side Rendering (SSR), `domino` is configured with scripting enabled, meaning `\u003cnoscript\u003e` is treated as a raw-text element.\n\nHowever, `domino`'s serializer completely omitted `\u003cnoscript\u003e` from the list of raw-text elements requiring closing-tag escaping during DOM serialization. As a result, any occurrence of `\u003c/noscript\u003e` in the bound dynamic text was **never escaped under any circumstances**.\n\nThe unescaped closing tag was serialized directly into the output HTML (e.g. `\u003cnoscript\u003e\u003c/noscript\u003e\u003cscript\u003ealert(1)\u003c/script\u003e\u003c/noscript\u003e`). When parsed by a browser, it closes the `\u003cnoscript\u003e` block early, allowing the injected `\u003cscript\u003e` block to execute in the user's browser context, causing same-origin Cross-Site Scripting (XSS).\n\n### Impact\n\nThis vulnerability allows an attacker to perform same-origin Cross-Site Scripting (XSS) attacks against any user visiting an SSR-rendered page that binds user-controlled data inside a `\u003cnoscript\u003e` element. This can lead to session hijacking, credentials theft, unauthorized actions on behalf of users, and defacement.\n\n### Patched Versions\n\n- 22.0.0-rc.2\n- 21.2.16\n- 20.3.24\n- 19.2.25\n\n### Workarounds\n\nIf you cannot immediately update your dependencies, you can:\n\n- Avoid binding user-controlled values inside `\u003cnoscript\u003e` elements.\n- Sanitize any user input placed inside `\u003cnoscript\u003e` to explicitly strip closing `\u003c/noscript\u003e` tags before passing it to the template.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T17:21:03Z",
+    "Severity": "HIGH",
+    "Summary": "@angular/platform-server: Missing `\u003cnoscript\u003e` Raw-Text Serialization Escaping leads to Cross-Site Scripting (XSS) in Angular SSR",
+    "UpdatedAt": "2026-06-15T17:21:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 18.2.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "19.2.25"
+      },
+      "VulnerableVersionRange": "\u003e= 19.0.0-next.0, \u003c 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.24"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.24"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.16"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.2.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.0-rc.2"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.0-rc.2"
+    }
+  ]
+}

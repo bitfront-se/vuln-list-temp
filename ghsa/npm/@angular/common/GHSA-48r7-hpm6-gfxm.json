@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T17:24:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/common"
+  },
+  "Advisory": {
+    "DatabaseId": 363222,
+    "Id": "GSA_kwCzR0hTQS00OHI3LWhwbTYtZ2Z4bc4ABYrW",
+    "GhsaId": "GHSA-48r7-hpm6-gfxm",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-48r7-hpm6-gfxm"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/69197"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/eeb03f4ea310e2e51ba5d53a421ec7b418e186cd"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-48r7-hpm6-gfxm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-48r7-hpm6-gfxm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54268"
+      }
+    ],
+    "Description": "A Denial of Service (DoS) vulnerability exists in the `@angular/common` package of the Angular framework. The `formatDate` function, which is also utilized by the standard Angular `DatePipe`, does not properly limit or validate the length of the `format` parameter. \n\nWhen parsing a maliciously crafted, excessively long date format string (e.g., a repeating pattern or very large string), the internal parser splits the string iteratively using a regular expression loop. This results in uncontrolled resource consumption (high CPU utilization and excessive memory allocations), leading to a Denial of Service (DoS).\n\n\n### Impact\n\n#### 1. Server-Side Rendering (SSR)\nIn Angular applications that leverage Server-Side Rendering, an attacker can supply a malicious payload with an excessively long date format string. Processing this on the server causes high CPU usage and triggers a `JavaScript heap out of memory` crash, rendering the application unavailable to all users.\n\n#### 2. Client-Side Rendering (CSR)\nIn standard client-side applications, executing the vulnerable function with an excessively long format string blocks the browser's main thread, causing the browser tab to freeze and become completely unresponsive.\n\n### Patched Versions\n* 22.0.1  \n* 21.2.17  \n* 20.3.25\n\n### Attack Preconditions\nFor this vulnerability to be exploitable, both of the following conditions must be met:\n1. **Vulnerable Component Usage:** The application must format dates using the `formatDate` utility or the `DatePipe`.\n2. **Attacker-Controlled Parameter:** The date format string passed to these utilities must be customizable or directly controlled by untrusted user input (e.g., parsed from query parameters, user preferences, or API responses).\n\n*If the date format is hardcoded (e.g., `'mediumDate'`, `'shortTime'`, or static strings) or properly validated to be within a reasonable length limit, the application is not vulnerable.*",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T17:24:52Z",
+    "Severity": "HIGH",
+    "Summary": "@angular/common: Denial of Service (DoS) via OOM in Date Formatting (formatDate)",
+    "UpdatedAt": "2026-06-15T17:24:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.25"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.17"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.2.17"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.1"
+    }
+  ]
+}

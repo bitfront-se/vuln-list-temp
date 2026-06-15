@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T16:51:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/common"
+  },
+  "Advisory": {
+    "DatabaseId": 363209,
+    "Id": "GSA_kwCzR0hTQS1xNmY0LXFxcmctanY2eM4ABYrJ",
+    "GhsaId": "GHSA-q6f4-qqrg-jv6x",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-q6f4-qqrg-jv6x"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/67964"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6f4-qqrg-jv6x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6f4-qqrg-jv6x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50170"
+      }
+    ],
+    "Description": "A vulnerability was discovered in `@angular/common` when Server-Side Rendering (SSR) and hydration are enabled. The `HttpTransferCache` utility optimizes hydration by caching outgoing HTTP requests performed during SSR and transferring the cached state to the client-side application via `TransferState`.\n\nHowever, the caching mechanism fails to inspect the `withCredentials` flag or the `Cookie` header of outgoing requests. As a result, credentialed, user-specific responses may be cached by default in the shared `TransferState` payload. When these responses are serialized into the HTML, any caching layer (such as a CDN, reverse proxy, or shared server cache) that caches the SSR-rendered HTML page could inadvertently cache and leak one user's private data to other users, leading to a high-severity information disclosure vulnerability.\n\n### Impact\n\nSuccessful exploitation allows an unauthenticated attacker to obtain sensitive, user-specific information of other authenticated users. This occurs when:\n\n* The SSR-rendered HTML containing the cached private data is stored in a shared cache (e.g., CDN, reverse proxy).  \n* Subsequent requests for the same page receive the cached HTML containing the first user's private data.\n\n### Attack Preconditions\n\n* **SSR and Hydration Enabled:** The Angular application must be configured to use Server-Side Rendering and hydration (e.g., using `provideClientHydration()`).  \n* **Credentialed Requests during SSR:** The application must perform HTTP requests that require user-specific authentication (using cookies or `withCredentials: true`) during the initial server-side render.  \n* **Shared Caching:** The application's HTML responses must be cached by a shared caching layer (CDN, reverse proxy, or server-side cache) without proper cache-control headers to distinguish authenticated users.\n\n### Patches\n- 22.0.0-rc.2\n- 21.2.15\n- 20.3.22\n- 19.2.23",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T16:51:53Z",
+    "Severity": "HIGH",
+    "Summary": "@angular/common: Information Leak via Default Caching of Credentialed Requests in HttpTransferCache",
+    "UpdatedAt": "2026-06-15T16:51:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.15"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.2.15"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 18.2.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "19.2.23"
+      },
+      "VulnerableVersionRange": "\u003e= 19.0.0-next.0, \u003c 19.2.23"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.22"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.22"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.0-rc.2"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.0-rc.2"
+    }
+  ]
+}
