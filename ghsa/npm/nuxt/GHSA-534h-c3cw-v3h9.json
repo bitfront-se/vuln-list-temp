@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T13:49:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 363702,
+    "Id": "GSA_kwCzR0hTQS01MzRoLWMzY3ctdjNoOc4ABYy2",
+    "GhsaId": "GHSA-534h-c3cw-v3h9",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-534h-c3cw-v3h9"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/1f9f4767a8725104da9bee872bb8d35246f25ae5"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/c293bf9503ccb3bc9559bff4a1f592f99063c9ea"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-534h-c3cw-v3h9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-534h-c3cw-v3h9"
+      }
+    ],
+    "Description": "### Impact\n\nWhen running `nuxt dev` on Linux (Node.js 20+, outside Docker / StackBlitz), Nuxt's internal vite-node IPC server binds to a Linux abstract-namespace Unix socket (`\\0nuxt-vite-node-\u003cpid\u003e-\u003cts\u003e.sock`). Abstract sockets have no filesystem inode and therefore no permission bits: any local UID on the host that can read `/proc/net/unix` can enumerate the socket and connect to it.\n\nThe IPC server does not perform any peer-credential or shared-secret check before dispatching requests. The `module` request type passes its `moduleId` field straight into Vite's SSR `fetchModule()`, which is not gated by Vite's HTTP-layer `server.fs.allow` deny-list. A co-resident unprivileged local user can therefore request paths like `/home/\u003cdev\u003e/project/.env?raw` or `~/.ssh/id_rsa?raw` and read the developer's secrets through the dev server's SSR plugin pipeline. The `resolve` request type additionally enables filesystem probing.\n\nThis affects developers running `nuxt dev` on shared multi-tenant Linux hosts (lab machines, shared bastions, CI runners shared between jobs without per-job container isolation). It does not affect:\n\n- Production builds (`nuxt build` / `nuxt start`). The IPC server only runs in development.\n- macOS or Windows developers.\n- Docker / StackBlitz environments, which already fall back to a filesystem socket.\n- Single-user laptops or per-job containerised CI.\n\n### Patches\n\nFixed in `nuxt@4.4.7` (commit [`1f9f4767`](https://github.com/nuxt/nuxt/commit/1f9f4767a8725104da9bee872bb8d35246f25ae5)) and backported to `nuxt@3.21.7` (commit [`c293bf95`](https://github.com/nuxt/nuxt/commit/c293bf9503ccb3bc9559bff4a1f592f99063c9ea)).\n\nThe fix removes the abstract-namespace branch entirely. The IPC server now always binds to a filesystem Unix socket under the OS temp directory and explicitly `chmod 0600`s it after `listen()`, restricting connections to the owning UID. If the chmod fails for any reason, the server closes rather than serve requests on an unrestricted channel.\n\n### Workarounds\n\nIf you cannot upgrade immediately on an affected host:\n\n- Run `nuxt dev` inside a container or VM with no other tenants. Docker already triggers the filesystem-socket fallback in vulnerable versions and that fallback is unaffected.\n- Bind the dev process to a single-user namespace (`unshare -U`, rootless containers).\n- Restrict `/proc/net/unix` visibility via `hidepid=2` mount options where applicable, though this is partial mitigation only.\n\n### References\n\n- Affected file: `packages/vite/src/plugins/vite-node.ts`\n- CWE-276: Incorrect Default Permissions\n\n### Credit\n\nReported by Anthropic / Claude as part of Anthropic's coordinated vulnerability disclosure programme, reference ANT-2026-MSNKZFAT. Thanks to the Anthropic security team for the report and the detailed reproduction.\n\nIndependently reported by [@alcls01111](https://github.com/alcls01111) via GitHub's coordinated disclosure flow (`GHSA-5gvc-46gq-948j`), closed as a duplicate of this advisory.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T13:49:10Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt dev server vite-node IPC socket is world-connectable on Linux",
+    "UpdatedAt": "2026-06-16T13:49:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.21.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.18.0, \u003c 3.21.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.7"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.4.7"
+    }
+  ]
+}
