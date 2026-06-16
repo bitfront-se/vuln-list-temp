@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T20:36:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nestjs/platform-fastify"
+  },
+  "Advisory": {
+    "DatabaseId": 363285,
+    "Id": "GSA_kwCzR0hTQS02djMyLWZqYzktOXFmNs4ABYsV",
+    "GhsaId": "GHSA-6v32-fjc9-9qf6",
+    "References": [
+      {
+        "Url": "https://github.com/nestjs/nest/security/advisories/GHSA-6v32-fjc9-9qf6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6v32-fjc9-9qf6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6v32-fjc9-9qf6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54281"
+      }
+    ],
+    "Description": "### Impact\n\nAn authentication bypass vulnerability exists in `@nestjs/platform-fastify` (confirmed on version `11.1.24`, the latest available release at time of report). When middleware is registered through NestJS's `MiddlewareConsumer.forRoutes()` API on the Fastify adapter, an unauthenticated client can bypass the Nest middleware registered for that route by simply appending a trailing slash (`/`) to the request URL.\n\nThis bypass works on the **default Fastify adapter configuration** — no special router options need to be enabled. Applications using the standard CRUD route shape (`GET /resource` and `GET /resource/:id`) are affected when they protect those routes with `MiddlewareConsumer.forRoutes()` middleware.\n\n### Patches\n\nFixed in `@nestjs/platform-fastify@11.1.24`\n\n### References\n\nKudos goes to @a-tt-om",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:36:43Z",
+    "Severity": "HIGH",
+    "Summary": "Nest: Middleware Bypass on Fastify via Trailing Slash",
+    "UpdatedAt": "2026-06-15T20:36:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.1.24"
+      },
+      "VulnerableVersionRange": "\u003c= 11.1.23"
+    }
+  ]
+}

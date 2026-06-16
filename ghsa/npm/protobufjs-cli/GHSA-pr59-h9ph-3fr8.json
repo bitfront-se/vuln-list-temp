@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T20:13:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "protobufjs-cli"
+  },
+  "Advisory": {
+    "DatabaseId": 363274,
+    "Id": "GSA_kwCzR0hTQS1wcjU5LWg5cGgtM2ZyOM4ABYsK",
+    "GhsaId": "GHSA-pr59-h9ph-3fr8",
+    "References": [
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-pr59-h9ph-3fr8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pr59-h9ph-3fr8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pr59-h9ph-3fr8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54271"
+      }
+    ],
+    "Description": "## Summary\n\nA previous fix for unsafe name handling in `pbjs` static / static-module code generation was incomplete. Affected versions of `protobufjs-cli` could still emit unsafe JavaScript references when generating static output from crafted JSON descriptor input. The common case of parsing schemas from `.proto` files is not affected.\n\nThis is a bypass of GHSA-6r35-46g8-jcw9 / CVE-2026-44295.\n\n## Impact\n\nAn attacker who can provide or influence pre-parsed JSON descriptors passed to `pbjs` static code generation may be able to cause generated JavaScript output to contain attacker-controlled code.\n\nThe injected code may execute if the generated file is later executed or imported and an affected generated API path is invoked.\n\n## Preconditions\n\n* The application or build process must run `pbjs` static code generation on a pre-parsed JSON descriptor influenced by an attacker.\n* The generated JavaScript file must subsequently be executed or imported.\n* An affected generated API path must be invoked.\n\n## Workarounds\n\nDo not run affected versions of `pbjs` static or static-module generation on untrusted JSON descriptors. If untrusted JSON descriptors must be accepted, validate descriptor-derived names before code generation and reject names that could not have been produced by parsing a valid `.proto` file. Running code generation in an isolated environment can reduce impact.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:13:54Z",
+    "Severity": "HIGH",
+    "Summary": "protobufjs-cli: Code injection in pbjs static output from crafted JSON descriptor names",
+    "UpdatedAt": "2026-06-15T20:13:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.3.1"
+    }
+  ]
+}

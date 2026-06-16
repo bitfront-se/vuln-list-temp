@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T20:45:47Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-handler"
+  },
+  "Advisory": {
+    "DatabaseId": 363293,
+    "Id": "GSA_kwCzR0hTQS1jNjUzLTk3bTktcmNnOc4ABYsd",
+    "GhsaId": "GHSA-c653-97m9-rcg9",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-c653-97m9-rcg9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50010"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.135.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c653-97m9-rcg9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c653-97m9-rcg9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50010"
+      }
+    ],
+    "Description": "SimpleTrustManagerFactory.engineGetTrustManagers() and related paths wrap any user-supplied plain X509TrustManager in X509TrustManagerWrapper, which extends X509ExtendedTrustManager but implements the 3-arg checkServerTrusted(chain, authType, SSLEngine) by discarding the SSLEngine and calling the 2-arg delegate. Because the object now IS an X509ExtendedTrustManager, neither SunJSSE's internal AbstractTrustManagerWrapper nor Netty's own OpenSslX509TrustManagerWrapper will re-wrap it to add endpoint-identification. Consequently, even though Netty 4.2 sets endpointIdentificationAlgorithm=\"HTTPS\" by default, a client built with `SslContextBuilder.forClient().trustManager(somePlainX509TrustManager)` performs no hostname verification at all.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:45:45Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: Wrapping plain trust manager silently disables hostname verification",
+    "UpdatedAt": "2026-06-15T20:45:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c 4.2.15.Final"
+    }
+  ]
+}

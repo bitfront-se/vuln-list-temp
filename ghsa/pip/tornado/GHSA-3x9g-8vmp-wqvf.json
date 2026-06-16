@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T20:20:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "tornado"
+  },
+  "Advisory": {
+    "DatabaseId": 363278,
+    "Id": "GSA_kwCzR0hTQS0zeDlnLTh2bXAtd3F2Zs4ABYsO",
+    "GhsaId": "GHSA-3x9g-8vmp-wqvf",
+    "References": [
+      {
+        "Url": "https://github.com/tornadoweb/tornado/security/advisories/GHSA-3x9g-8vmp-wqvf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3x9g-8vmp-wqvf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3x9g-8vmp-wqvf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49853"
+      }
+    ],
+    "Description": "## Summary\n\nWhen SimpleAsyncHTTPClient follows a 3xx redirect, it shallow-copies the original HTTPRequest, rewrites the URL, decrements max_redirects, and removes only the Host header. It does not clear Authorization, auth_username, auth_password, or auth_mode when the redirect target changes origin.\n\nAs a result, credentials intended for one origin can be forwarded to a different origin when follow_redirects=True, which is the default.\n\nBeginning in Tornado 6.5.6, `SimpleAsyncHTTPClient` matches the default behavior of `libcurl` (and therefore `CurlAsyncHTTPClient`): When a redirect changes the scheme, host, or port of the url, the `Authorization` and `Cookie` headers will be removed when following the redirect.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:20:00Z",
+    "Severity": "HIGH",
+    "Summary": "Tornado: Authorization header forwarded across cross-origin redirects in SimpleAsyncHTTPClient",
+    "UpdatedAt": "2026-06-15T20:20:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.5.6"
+      },
+      "VulnerableVersionRange": "\u003c 6.5.6"
+    }
+  ]
+}

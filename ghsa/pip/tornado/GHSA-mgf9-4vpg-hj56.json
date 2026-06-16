@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T20:20:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "tornado"
+  },
+  "Advisory": {
+    "DatabaseId": 363279,
+    "Id": "GSA_kwCzR0hTQS1tZ2Y5LTR2cGctaGo1Ns4ABYsP",
+    "GhsaId": "GHSA-mgf9-4vpg-hj56",
+    "References": [
+      {
+        "Url": "https://github.com/tornadoweb/tornado/security/advisories/GHSA-mgf9-4vpg-hj56"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mgf9-4vpg-hj56"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mgf9-4vpg-hj56"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49855"
+      }
+    ],
+    "Description": "Tornado's gzip decompression routines work in limited-size chunks, but have no overall limit for the total size of decompressed chunks that they will accumulate (There has always been a limit for the total *compressed* size). This allows a malicious server to consume effectively unlimited amounts of memory if it is accessed via SimpleAsyncHTTPClient in its default configuration. `HTTPServer` is not affected in its default configuration, but it is if `decompress_request=True` is set.\n\nThis bug is fixed in Tornado 6.5.6. `max_body_size` is now checked both for the compressed and cumulative decompressed size of the response.\n\nPrior to upgrading, this issue can be mitigated by setting `decompress_response=False` or using `CurlAsyncHTTPClient`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:19:28Z",
+    "Severity": "HIGH",
+    "Summary": "tornado AsyncHTTPClient accumulates decompressed chunks without size limit (gzip bomb)",
+    "UpdatedAt": "2026-06-15T20:20:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.5.6"
+      },
+      "VulnerableVersionRange": "\u003c 6.5.6"
+    }
+  ]
+}

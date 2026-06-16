@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-15T20:07:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 363261,
+    "Id": "GSA_kwCzR0hTQS1tNnF3LTRjdzItaG00bc4ABYr9",
+    "GhsaId": "GHSA-m6qw-4cw2-hm4m",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-m6qw-4cw2-hm4m"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/bf88077ebb14f4c29924b8e8904cba20c55c28b8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m6qw-4cw2-hm4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m6qw-4cw2-hm4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50269"
+      }
+    ],
+    "Description": "### Summary\n\nAttacker-controlled input included into multipart/payload headers can be used to modify a request to inject additional headers or similar.\n\n### Impact\n\nIn the unlikely situation that an application is passing user-controlled strings into `MultipartWriter.append(headers=...)` or `Payload.headers`, then an attacker may be able to modify the request to inject headers or change the contents of the request.\n\n### Workaround\n\nSanitise such user input.\n\n-----\n\nPatch: https://github.com/aio-libs/aiohttp/commit/bf88077ebb14f4c29924b8e8904cba20c55c28b8",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:07:26Z",
+    "Severity": "LOW",
+    "Summary": "aiohttp: CRLF injection in multipart headers",
+    "UpdatedAt": "2026-06-15T20:07:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.13.5"
+    }
+  ]
+}

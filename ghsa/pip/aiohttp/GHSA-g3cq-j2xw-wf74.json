@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-15T20:09:53Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 363265,
+    "Id": "GSA_kwCzR0hTQS1nM2NxLWoyeHctd2Y3NM4ABYsB",
+    "GhsaId": "GHSA-g3cq-j2xw-wf74",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-g3cq-j2xw-wf74"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g3cq-j2xw-wf74"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g3cq-j2xw-wf74"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54278"
+      }
+    ],
+    "Description": "### Summary\n\nDuring cleanup it is possible for a compressed request body to be decompressed into memory in one chunk.\n\n### Impact\n\nAn attacker may be able to send a compressed payload in specific situations that could be decompressed into memory, potentially leading to DoS (a zip bomb edge case).\n\n### Workaround\n\nDisable compression if unable to upgrade.\n\n-----\n\nPatch: https://github.com/aio-libs/aiohttp/commit/4f7480e474cccc6a8cc2c92ad3f17a31dedf8232",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:09:51Z",
+    "Severity": "MODERATE",
+    "Summary": "aiohttp: Unread Compressed Request Bodies Bypass client_max_size During Cleanup",
+    "UpdatedAt": "2026-06-15T20:09:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.1"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.0"
+    }
+  ]
+}

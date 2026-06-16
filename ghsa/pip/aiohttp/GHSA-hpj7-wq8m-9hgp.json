@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-15T20:09:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 363263,
+    "Id": "GSA_kwCzR0hTQS1ocGo3LXdxOG0tOWhncM4ABYr_",
+    "GhsaId": "GHSA-hpj7-wq8m-9hgp",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-hpj7-wq8m-9hgp"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/38d16060037e1bfcd6d677abababa3c2a4bb58fa"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hpj7-wq8m-9hgp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hpj7-wq8m-9hgp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54276"
+      }
+    ],
+    "Description": "### Summary\n\n``DigestAuthMiddleware`` can send an authentication response after following a cross-origin redirect.\n\n### Impact\n\nIf the client follows a redirect (the default option) to an attacker controlled domain, the attacker may be able to extract the auth digest.\n\nThis likely requires an open redirect vulnerability or similar on the target domain for an attacker to be able to execute. Further, the attacker is only receiving the digest, so should only be able to extract the user's credentials if the cryptography is weak or there is some kind of password reuse.\n\n### Workaround\n\nDisable ``follow_redirects`` if this is a concern.\n\n-----\n\nPatch: https://github.com/aio-libs/aiohttp/commit/38d16060037e1bfcd6d677abababa3c2a4bb58fa",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:09:06Z",
+    "Severity": "MODERATE",
+    "Summary": "aiohttp: DigestAuthMiddleware Applies Credentials to Cross-Origin Redirect Challenges",
+    "UpdatedAt": "2026-06-15T20:09:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.1"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.0"
+    }
+  ]
+}

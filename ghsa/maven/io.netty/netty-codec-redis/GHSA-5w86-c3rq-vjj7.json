@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-15T20:46:17Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-redis"
+  },
+  "Advisory": {
+    "DatabaseId": 363294,
+    "Id": "GSA_kwCzR0hTQS01dzg2LWMzcnEtdmpqN84ABYse",
+    "GhsaId": "GHSA-5w86-c3rq-vjj7",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-5w86-c3rq-vjj7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50011"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.135.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.15.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5w86-c3rq-vjj7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5w86-c3rq-vjj7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50011"
+      }
+    ],
+    "Description": "### Summary\nRedisArrayAggregator pre-allocates ArrayList with initial capacity equal to the RESP array element count declared in an array header. That count is taken from the wire before the corresponding child messages exist. A small malicious header can claim a huge initial capacity.\n\n### Details\nThe aggregator starts a new aggregation level when it receives an ArrayHeaderRedisMessage. For positive lengths it pushes AggregateState, whose constructor runs `new ArrayList\u003c\u003e(length)`. No configurable maximum is applied in this handler, and the peer does not need to supply the array elements for the backing array allocation to occur.\n\nIn the same pipeline, RedisDecoder enforces RedisConstants.REDIS_MESSAGE_MAX_LENGTH for bulk string lengths but does not apply that cap to array header lengths. Declared array sizes can therefore be extremely large while still passing decoding, and the aggregator immediately attempts Object[] reservation.\n\nio.netty.handler.codec.redis.RedisDecoder#decodeLength\nio.netty.handler.codec.redis.RedisArrayAggregator#decodeRedisArrayHeader\n\n### Impact\nAvailability / resource exhaustion via unbounded pre-allocation from untrusted RESP array headers.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-15T20:46:16Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: Unbounded pre-allocation in RedisArrayAggregator from RESP array length",
+    "UpdatedAt": "2026-06-15T20:46:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.135.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.134.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.15.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.14.Final"
+    }
+  ]
+}
