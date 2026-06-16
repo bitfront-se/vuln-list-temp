@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T19:00:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363804,
+    "Id": "GSA_kwCzR0hTQS1odjd4LTN4NzgtZ3g1M84ABY0c",
+    "GhsaId": "GHSA-hv7x-3x78-gx53",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-hv7x-3x78-gx53"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hv7x-3x78-gx53"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hv7x-3x78-gx53"
+      }
+    ],
+    "Description": "## Impact\nThe `POST /workflows/{workflowId}/test-runs/new` endpoint authorized access using `workflow:read` rather than `workflow:execute`. An authenticated user with read-only access to a workflow could trigger a real evaluation test run, causing the workflow to execute via the internal workflow runner. This could result in unintended outbound API calls, data mutations, or other side effects in downstream systems connected to the workflow.\n\nThis issue primarily affects instances where the Evaluations feature is in use and where users may have `workflow:read` access without `workflow:execute` access, such as deployments using RBAC project roles.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.55, 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict workflow access to fully trusted users only.\n- Audit project role assignments and limit `workflow:read` access on sensitive workflows to users who should also be permitted to execute them.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T18:59:58Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Wrong OAuth Scope On Evaluations Test Run Creation Endpoint",
+    "UpdatedAt": "2026-06-16T19:00:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.55"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.55"
+    }
+  ]
+}

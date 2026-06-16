@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T19:01:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363808,
+    "Id": "GSA_kwCzR0hTQS05YzM4LTJtY20tcTdmN84ABY0g",
+    "GhsaId": "GHSA-9c38-2mcm-q7f7",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-9c38-2mcm-q7f7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9c38-2mcm-q7f7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9c38-2mcm-q7f7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54311"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could pollute the sandbox used by the Merge node's SQL Query mode. Because the sandbox context was cached and reused across all workflow executions on the instance, prototype mutations introduced by one user's workflow persist into subsequent Merge SQL executions belonging to other users or projects. This allowed a low-privileged attacker to intercept workflow data processed by other users on the same instance.\n\nThis issue only affects multi-user n8n instances where more than one user has permission to create and execute workflows containing the Merge node in SQL Query mode.\n\n## Patches\nThe issue has been fixed in n8n versions 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Merge node by adding `n8n-nodes-base.merge` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T19:01:16Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Merge Node SQL Mode Prototype Pollution",
+    "UpdatedAt": "2026-06-16T19:01:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    }
+  ]
+}

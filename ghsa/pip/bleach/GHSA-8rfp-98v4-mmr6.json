@@ -1,0 +1,49 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-16T14:06:31Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "bleach"
+  },
+  "Advisory": {
+    "DatabaseId": 363707,
+    "Id": "GSA_kwCzR0hTQS04cmZwLTk4djQtbW1yNs4ABYy7",
+    "GhsaId": "GHSA-8rfp-98v4-mmr6",
+    "References": [
+      {
+        "Url": "https://github.com/mozilla/bleach/security/advisories/GHSA-8rfp-98v4-mmr6"
+      },
+      {
+        "Url": "https://bugzilla.mozilla.org/show_bug.cgi?id=2023812"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8rfp-98v4-mmr6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8rfp-98v4-mmr6"
+      }
+    ],
+    "Description": "### Impact\n\nA possible XSS bypass affects users calling `bleach.clean` with all of:\n\n* `a` in the allowed tags\n* `href` in allowed attributes\n\nThe `bleach.clean` sanitizer outputs URIs containing disallowed scheme patterns that it should be stripping. However, because the inserted Unicode characters make the scheme invalid per RFC 3986, modern browsers do not execute these as javascript: URIs. The practical security impact is limited to:\n\n- Bleach's output contains URI values that violate the caller's protocol allowlist, breaking the sanitizer's contract.\n- If a downstream system performs its own Unicode normalization on bleach's output (stripping invisible characters before rendering), the javascript: scheme could become valid. This is a non-standard processing chain but represents a theoretical secondary risk.\n\nThis is not a direct XSS vulnerability.\n\nPython code example from reporter with Bleach v6.3.0 and Python 3.13:\n\n```\nimport bleach\npayload1 = '\u003ca href=\"javascript\\u200b:alert(document.cookie)\"\u003eClick me\u003c/a\u003e'\nresult1 = bleach.clean(payload1)\nprint(f\"(ZWSP): {repr(result1)}\")\n```\n\nOutput:\n\n```\n(ZWSP): '\u003ca href=\"javascript\\u200b:alert(document.cookie)\"\u003eClick me\u003c/a\u003e'\n```\n\n### Patches\n\nUsers should upgrade to Bleach 6.4.0.\n\n### Workarounds\n\nPre-process content removing non-ASCII characters from URI schemes before sanitizing with `bleach.clean`.\n\nA strong[ Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) without unsafe-inline and unsafe-eval[ script-srcs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src) will also help mitigate the risk.\n\n### References\n\n* https://bugzilla.mozilla.org/show_bug.cgi?id=2023812\n* RFC 3986, Section 3.1 (URI Scheme syntax): scheme characters are restricted to ALPHA *( ALPHA / DIGIT / \"+\" / \"-\" / \".\" )\n\n### Reported by \n\nReported by codeant from CodeAnt AI.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T14:06:29Z",
+    "Severity": "LOW",
+    "Summary": "Bleach: URI sanitization allows disallowed URI schemes with Unicode \u003e U+00A0 in output",
+    "UpdatedAt": "2026-06-16T14:06:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.4.0"
+      },
+      "VulnerableVersionRange": "\u003c= 6.3.0"
+    }
+  ]
+}

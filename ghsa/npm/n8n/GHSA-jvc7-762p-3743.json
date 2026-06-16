@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T19:00:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363805,
+    "Id": "GSA_kwCzR0hTQS1qdmM3LTc2MnAtMzc0M84ABY0d",
+    "GhsaId": "GHSA-jvc7-762p-3743",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-jvc7-762p-3743"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jvc7-762p-3743"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jvc7-762p-3743"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54308"
+      }
+    ],
+    "Description": "## Impact\nThe `MicrosoftAgent365Trigger` and `StripeTrigger` node did not validate that inbound requests. As a result, an unauthenticated attacker who knows the webhook URL could submit a forged payload and cause the workflow to execute with attacker-controlled data.\n\n## Patches\nThe issue has been fixed in n8n versions 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Deactivate any workflows using the Microsoft Agent 365 Trigger node or Stripe Trigger node until the instance can be upgraded.\n- Restrict network access to the n8n webhook endpoint to trusted sources only.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T19:00:13Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Missing Token Validation on Microsoft Agent 365 Trigger and Stripe Nodes",
+    "UpdatedAt": "2026-06-16T19:00:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    }
+  ]
+}

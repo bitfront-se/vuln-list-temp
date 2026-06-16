@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T14:32:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 363713,
+    "Id": "GSA_kwCzR0hTQS13Z3BmLWp3cWotOGg4cM4ABYzB",
+    "GhsaId": "GHSA-wgpf-jwqj-8h8p",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-wgpf-jwqj-8h8p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wgpf-jwqj-8h8p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wgpf-jwqj-8h8p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54289"
+      }
+    ],
+    "Description": "### Summary\n\nOn AWS Lambda@Edge, CloudFront delivers a request header that appears more than once as several separate entries. The adapter writes each value with `Headers.set` instead of `Headers.append`, so every value overwrites the previous one and only the last reaches the application. Repeated request headers such as `X-Forwarded-For`, `Forwarded`, and `Via` are silently truncated to a single value.\n\n### Details\n\nA repeated request header carries an ordered list of values. The adapter iterates the list but overwrites on each step, keeping only the final value. Middleware that depends on the full list — for example IP restriction that walks the `X-Forwarded-For` chain, or auditing based on `Forwarded`/`Via` hops — receives incomplete data. The API Gateway adapter already appends repeated values and is not affected.\n\nThis issue arises only on Lambda@Edge deployments, for requests that contain the same header more than once.\n\n### Impact\n\nRequest middleware sees only the last value of a repeated header instead of the full chain. For applications that base access control on the `X-Forwarded-For` chain, this can weaken or alter that decision; for auditing, hop history is lost. This affects applications deployed on AWS Lambda@Edge that rely on multi-value request headers.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T14:32:31Z",
+    "Severity": "MODERATE",
+    "Summary": "hono: Lambda@Edge adapter keeps only the last value of a repeated request header, dropping the rest",
+    "UpdatedAt": "2026-06-16T14:32:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.25"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.25"
+    }
+  ]
+}

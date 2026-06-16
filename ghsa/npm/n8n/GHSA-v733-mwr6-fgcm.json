@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-16T19:00:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363806,
+    "Id": "GSA_kwCzR0hTQS12NzMzLW13cjYtZmdjbc4ABY0e",
+    "GhsaId": "GHSA-v733-mwr6-fgcm",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-v733-mwr6-fgcm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v733-mwr6-fgcm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v733-mwr6-fgcm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54301"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with workflow edit access could configure a `Respond to Webhook` node to serve binary content with an attacker-controlled `Content-Type`. The binary response path bypassed the central `Content-Security-Policy` sandbox header, allowing a public webhook to execute JavaScript in the n8n origin when visited by an authenticated user, with access to that user's session.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.55, 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Respond to Webhook node by adding `n8n-nodes-base.respondToWebhook` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T19:00:31Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Same-Origin XSS in Respond to Webhook Node",
+    "UpdatedAt": "2026-06-16T19:00:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.55"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.55"
+    }
+  ]
+}

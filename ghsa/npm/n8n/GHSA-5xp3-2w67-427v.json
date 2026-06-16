@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T17:37:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363789,
+    "Id": "GSA_kwCzR0hTQS01eHAzLTJ3NjctNDI3ds4ABY0N",
+    "GhsaId": "GHSA-5xp3-2w67-427v",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-5xp3-2w67-427v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5xp3-2w67-427v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5xp3-2w67-427v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49465"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could supply a local filesystem path as the source repository in the Git node's Clone operation, or as the target repository in the Push operation, bypassing the `N8N_RESTRICT_FILE_ACCESS_TO` file sandbox. This allowed the contents of any local git repository accessible to the n8n process to be cloned into an allowed path and read, circumventing the access restrictions that correctly blocked direct file reads to the same paths.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.48, 2.21.8, and 2.22.4. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Git node by adding `n8n-nodes-base.git` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T17:37:54Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Git Node Clone and Push Operations Bypass File Sandbox",
+    "UpdatedAt": "2026-06-16T17:37:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.21.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.21.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.22.0, \u003c 2.22.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.48"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.48"
+    }
+  ]
+}

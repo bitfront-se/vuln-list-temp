@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T14:32:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 363714,
+    "Id": "GSA_kwCzR0hTQS1ydjYzLTRtd2YtcXFjMs4ABYzC",
+    "GhsaId": "GHSA-rv63-4mwf-qqc2",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-rv63-4mwf-qqc2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rv63-4mwf-qqc2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rv63-4mwf-qqc2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54288"
+      }
+    ],
+    "Description": "### Summary\n\nThe Body Limit Middleware trusts the request's `Content-Length` header to decide whether a body is within the limit. On AWS Lambda (API Gateway v1/v2, ALB, VPC Lattice, and Lambda@Edge) the body is delivered fully buffered and the adapter builds the request with the client-declared `Content-Length`, which need not match the actual payload. A client can declare a tiny `Content-Length` while sending a much larger body, slipping past the limit.\n\n### Details\n\nWhen `Content-Length` is present and `Transfer-Encoding` is absent, the middleware compares the declared value against the limit and passes the request through if it is small enough. On standards-based runtimes the transport enforces that `Content-Length` matches the body, so this is safe. The Lambda adapters instead reconstruct the request from a buffered payload and copy the client's `Content-Length` verbatim, so the declared length and the real body size are decoupled.\n\nThis issue affects applications deployed on AWS Lambda that rely on the Body Limit Middleware to cap request body size.\n\n### Impact\n\nThe declared body-size limit can be bypassed: a handler reads a payload larger than the configured maximum. Processing the oversized payload (large JSON, multipart, etc.) consumes additional CPU and memory per request. The payload remains bounded by the platform's request size limits, and Lambda isolates invocations, so the impact is increased per-request resource usage rather than full denial of service. This affects applications deployed on AWS Lambda that use the Body Limit Middleware.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T14:32:49Z",
+    "Severity": "MODERATE",
+    "Summary": "hono: Body Limit Middleware can be bypassed on AWS Lambda by understating `Content-Length`",
+    "UpdatedAt": "2026-06-16T14:32:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.25"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.25"
+    }
+  ]
+}
