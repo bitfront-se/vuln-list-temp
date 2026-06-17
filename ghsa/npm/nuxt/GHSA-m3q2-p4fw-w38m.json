@@ -1,0 +1,58 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-16T23:38:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 363933,
+    "Id": "GSA_kwCzR0hTQS1tM3EyLXA0ZnctdzM4bc4ABY2d",
+    "GhsaId": "GHSA-m3q2-p4fw-w38m",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-m3q2-p4fw-w38m"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/4b054e9d95f8daf366cb144b52782047c511a66e"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/7fea9fd687f1dacbfb63db5fae5839896b017a0e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m3q2-p4fw-w38m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m3q2-p4fw-w38m"
+      }
+    ],
+    "Description": "### Impact\n\nNuxt's globally registered `\u003cNoScript\u003e` component (from `@unhead/vue` head components, re-exported by Nuxt) wrote its default-slot content to the `innerHTML` of the `\u003cnoscript\u003e` head tag, bypassing the HTML escaping that `{{ }}` interpolation normally applies in Vue templates.\n\nApplications that placed untrusted, attacker-controllable data inside a `\u003cNoScript\u003e` slot, for example:\n\n```vue\n\u003cNoScript\u003e{{ route.query.banner }}\u003c/NoScript\u003e\n```\n\nwould emit that value unescaped inside `\u003cnoscript\u003e` in the server-rendered HTML. With scripting enabled, the HTML parser treats `\u003cnoscript\u003e` content in `\u003chead\u003e` under the \"in head noscript\" insertion mode: any tag other than `link`, `meta`, `noframes`, or `style` implicitly closes `\u003cnoscript\u003e` and is re-processed in the head. A payload such as `\u003cscript\u003e...\u003c/script\u003e` therefore escapes the element and executes in the document context.\n\nSibling head components (`\u003cStyle\u003e`, `\u003cTitle\u003e`) were not affected because they already routed slot text through the safe `textContent` path.\n\n### Affected versions\n\nAll currently supported versions of `nuxt` that ship the `\u003cNoScript\u003e` global component.\n\n### Patches\n\nFixed in `nuxt@4.4.7` (commit [`4b054e9d`](https://github.com/nuxt/nuxt/commit/4b054e9d95f8daf366cb144b52782047c511a66e)) and backported to `nuxt@3.21.7` (commit [`7fea9fd6`](https://github.com/nuxt/nuxt/commit/7fea9fd687f1dacbfb63db5fae5839896b017a0e)). The fix escapes `\u003cNoScript\u003e` slot content with `escapeHtml` from `@vue/shared` and writes it to `textContent` rather than `innerHTML`. Slot content is now rendered as text; intentional markup inside `\u003cNoScript\u003e` is no longer parsed as HTML.\n\n### Workarounds\n\nUntil you can upgrade:\n\n- Do not interpolate untrusted input into `\u003cNoScript\u003e` slots. Replace `\u003cNoScript\u003e{{ x }}\u003c/NoScript\u003e` with a static string, or sanitise / HTML-escape `x` at the source.\n- If you must render dynamic noscript content, write the tag yourself via `useHead({ noscript: [{ textContent: escapedValue }] })` after escaping `escapedValue`.\n\n### Credit\n\nReported to Anthropic's coordinated vulnerability disclosure pipeline by Claude (Anthropic's AI assistant) and triaged by the Anthropic security team. Reference: ANT-2026-4NJYDFFM.\n\nIndependently reported by [@alcls01111](https://github.com/alcls01111) via GitHub's coordinated disclosure flow (`GHSA-8grp-wcq9-925q`), closed as a duplicate of this advisory.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T23:38:47Z",
+    "Severity": "LOW",
+    "Summary": "Cross-site scripting via \u003cNoScript\u003e slot content in Nuxt's head components",
+    "UpdatedAt": "2026-06-16T23:38:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.21.7"
+      },
+      "VulnerableVersionRange": "\u003c 3.21.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.7"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.4.7"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-16T23:43:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@earendil-works/pi-coding-agent"
+  },
+  "Advisory": {
+    "DatabaseId": 363942,
+    "Id": "GSA_kwCzR0hTQS03djVtLXByM3EtNjQ1M84ABY2m",
+    "GhsaId": "GHSA-7v5m-pr3q-6453",
+    "References": [
+      {
+        "Url": "https://github.com/earendil-works/pi/security/advisories/GHSA-7v5m-pr3q-6453"
+      },
+      {
+        "Url": "https://github.com/earendil-works/pi/commit/6cb23f9b5d5b6d1747672f535b167d0d809ac010"
+      },
+      {
+        "Url": "https://github.com/earendil-works/pi/releases/tag/v0.78.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7v5m-pr3q-6453"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7v5m-pr3q-6453"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54326"
+      }
+    ],
+    "Description": "# Potential XSS in HTML session exports via Markdown URL handling\n\nPi HTML exports render session Markdown into a static HTML file. Affected versions did not consistently reject unsafe Markdown link and image URL schemes. In versions with scheme filtering, C0 control characters in the URL scheme could bypass the check because browsers normalize those characters before navigation.\n\n## Impact\n\nThe realistic attack path is indirect. An attacker would need to get suitable Markdown into a session, for example through prompt injection that causes the model to include an unsafe link, or through other untrusted session content. The user would then need to export the session as HTML, open or share that file, and click the link.\n\nIf triggered, script runs in the exported document, not in pi or the user's shell. The main risk is limited disclosure of data embedded in that exported session file.\n\n## Affected versions\n\n- Affected: `@mariozechner/pi-coding-agent \u003e= 0.27.5, \u003c= 0.73.1`\n- Affected: `@earendil-works/pi-coding-agent \u003e= 0.74.0, \u003c 0.78.1`\n- Patched: `@earendil-works/pi-coding-agent 0.78.1`\n\nThe old `@mariozechner/pi-coding-agent` package scope has no patched release. It was renamed to `@earendil-works/pi-coding-agent`; users of the old scope should migrate to the new package and upgrade to version 0.78.1 or later.\n\n## Resolution\n\nVersion 0.78.1 sanitizes Markdown link and image URLs with an allow-list after stripping C0 control characters.\n\n## Recommendations\n\nUpgrade `@earendil-works/pi-coding-agent` to version 0.78.1 or later. Regenerate shared HTML exports after upgrading if the underlying sessions contained untrusted content.\n\n## Timeline\n\n- 2026-05-29: Report received through GitHub Security Advisories\n- 2026-06-02: Fix committed\n- 2026-06-04: Fixed version 0.78.1 released\n- 2026-06-08: Advisory prepared for publication\n\n## Credits\n\nReported by Paul Urian and Cosmin Alexa of CrowdStrike.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T23:43:15Z",
+    "Severity": "LOW",
+    "Summary": "Pi Agent: Potential XSS in HTML session exports via Markdown URL sanitization bypass",
+    "UpdatedAt": "2026-06-16T23:43:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.78.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.74.0, \u003c 0.78.1"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-16T23:02:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363926,
+    "Id": "GSA_kwCzR0hTQS1wbXF3LTcyY2ctd3g4Nc4ABY2W",
+    "GhsaId": "GHSA-pmqw-72cg-wx85",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-pmqw-72cg-wx85"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pmqw-72cg-wx85"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pmqw-72cg-wx85"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54307"
+      }
+    ],
+    "Description": "## Impact\nA member-level user with editor access to a shared workflow could reference credentials they do not own via specific public API endpoints. Credential ownership checks were only enforced partially leading to cross-user credential access.\n\nThis issue affects instances where workflow sharing is enabled and at least one workflow has been shared with a member-level user as an Editor.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.55, 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict workflow sharing to fully trusted users only.\n- Audit shared workflows for unexpected credential references or recent modifications.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n\n**Credits:** Momen Elkhouli",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T23:02:05Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Credential Exfiltration via Permission Bypass",
+    "UpdatedAt": "2026-06-16T23:02:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.55"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.55"
+    }
+  ]
+}

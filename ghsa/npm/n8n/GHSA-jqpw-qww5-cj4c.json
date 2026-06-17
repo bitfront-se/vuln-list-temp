@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-16T23:01:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363925,
+    "Id": "GSA_kwCzR0hTQS1qcXB3LXF3dzUtY2o0Y84ABY2V",
+    "GhsaId": "GHSA-jqpw-qww5-cj4c",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-jqpw-qww5-cj4c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jqpw-qww5-cj4c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jqpw-qww5-cj4c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54314"
+      }
+    ],
+    "Description": "## Impact\nThe Compression node's Decompress operation expanded attacker-controlled archives into memory without enforcing limits on decompressed output size. An unauthenticated attacker could send a small compressed archive to a public webhook workflow using this node, causing the n8n process to terminate due to memory exhaustion and disrupting all workflows in the same instance. \n\n## Patches\nThe issue has been fixed in n8n version 2.24.0. Users should upgrade to this version or later to remediate the vulnerability. The fix introduces configurable limits on decompressed output size (`N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES`) and ZIP entry count (`N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES`).\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Disable the Compression node by adding `n8n-nodes-base.compression` to the `NODES_EXCLUDE` environment variable.\n- Restrict public webhook workflows that accept archive file uploads to authenticated endpoints only.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T23:01:51Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Denial of Service via ZIP decompression in webhook workflow",
+    "UpdatedAt": "2026-06-16T23:01:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.24.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.24.0"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-16T22:38:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363920,
+    "Id": "GSA_kwCzR0hTQS14NnAzLW02aDktZng3cs4ABY2Q",
+    "GhsaId": "GHSA-x6p3-m6h9-fx7r",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-x6p3-m6h9-fx7r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x6p3-m6h9-fx7r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x6p3-m6h9-fx7r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54312"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create or modify workflows could achieve global prototype pollution via the Microsoft SQL node by supplying a crafted value as the table parameter. This pollutes `Object.prototype` process-wide for the lifetime of the n8n server process, causing application-wide validation failures and rendering the n8n instance completely non-functional until restarted.\n\n## Patches\nThe issue has been fixed in n8n version 2.24.0. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Microsoft SQL node by adding `n8n-nodes-base.microsoftSql` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T22:38:52Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Microsoft SQL Node Prototype Pollution",
+    "UpdatedAt": "2026-06-16T22:38:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:N/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.24.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.24.0"
+    }
+  ]
+}

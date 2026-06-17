@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-16T23:32:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363928,
+    "Id": "GSA_kwCzR0hTQS1xcng4LTI1cXItNXI3ds4ABY2Y",
+    "GhsaId": "GHSA-qrx8-25qr-5r7v",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-qrx8-25qr-5r7v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qrx8-25qr-5r7v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qrx8-25qr-5r7v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54309"
+      }
+    ],
+    "Description": "## Impact\nWhen `@n8n/mcp-browser` is run in HTTP transport mode, the MCP endpoint accepts session initialization and tool invocation requests without any authentication. Any network-reachable client, or any website visited by the user, can establish an MCP session and invoke browser-control tools.\n\nWhere the n8n AI Browser Bridge extension is installed and a browser connection is active, an unauthenticated caller can access browser-control capabilities including navigation, JavaScript evaluation, and cookie and storage access against the user's real browser profile.\n\nThis issue only affects instances where `@n8n/mcp-browser` is run with the HTTP transport (`--transport http`). The default transport is stdio, which is not affected.\n\n## Patches\nThe issue has been fixed in n8n versions 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Avoid running `@n8n/mcp-browser` with the HTTP transport; use the default stdio transport instead.\n- If HTTP transport is required, restrict network access to the listening port to trusted clients only using host-based firewall rules.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T23:32:31Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: MCP Browser HTTP Transport Exposes Unauthenticated Browser-Control Sessions",
+    "UpdatedAt": "2026-06-16T23:32:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    }
+  ]
+}

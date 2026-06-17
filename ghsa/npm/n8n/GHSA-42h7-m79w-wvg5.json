@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-16T22:39:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 363922,
+    "Id": "GSA_kwCzR0hTQS00Mmg3LW03OXctd3ZnNc4ABY2S",
+    "GhsaId": "GHSA-42h7-m79w-wvg5",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-42h7-m79w-wvg5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-42h7-m79w-wvg5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-42h7-m79w-wvg5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54302"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with workflow edit access could inject arbitrary JavaScript into the Chat Trigger's generated page by setting a malicious `webhookId`. When a logged-in user visited the chat URL, the injected code executed in the n8n origin with that user's session privileges.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.55, 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the Chat Trigger node by adding `@n8n/n8n-nodes-langchain.chatTrigger` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T22:39:32Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Stored XSS in Chat Trigger Node",
+    "UpdatedAt": "2026-06-16T22:39:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.55"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.55"
+    }
+  ]
+}
