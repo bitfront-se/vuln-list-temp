@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-17T13:56:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 364044,
+    "Id": "GSA_kwCzR0hTQS02NjRoLWdwZ3EtaDZ4eM4ABY4M",
+    "GhsaId": "GHSA-664h-gpgq-h6xx",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-664h-gpgq-h6xx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-664h-gpgq-h6xx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-664h-gpgq-h6xx"
+      }
+    ],
+    "Description": "## Impact\nThree mutating endpoints in the evaluation test runs controller authorized state-changing actions using `workflow:read` instead of the action-appropriate `workflow:execute` scope. An authenticated user with `project:viewer` role on a project could start new evaluation test runs, cancel in-flight runs, and delete run records for workflows they only had read access to.\n\nThis issue only affects instances with Advanced Permissions (Enterprise/Cloud) where projects and viewer roles are in use.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.55, 2.25.7, and 2.26.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict project membership to fully trusted users only.\n- Avoid granting viewer access to projects containing sensitive workflows.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T13:55:59Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Wrong OAuth Scope on Evaluation Test Runs Endpoints",
+    "UpdatedAt": "2026-06-17T13:56:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.25.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.25.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.26.0, \u003c 2.26.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.55"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.55"
+    }
+  ]
+}

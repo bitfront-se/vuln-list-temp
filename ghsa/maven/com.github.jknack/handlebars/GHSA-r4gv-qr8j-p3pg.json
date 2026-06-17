@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-17T18:42:12Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.github.jknack:handlebars"
+  },
+  "Advisory": {
+    "DatabaseId": 364742,
+    "Id": "GSA_kwCzR0hTQS1yNGd2LXFyOGotcDNwZ84ABZDG",
+    "GhsaId": "GHSA-r4gv-qr8j-p3pg",
+    "References": [
+      {
+        "Url": "https://github.com/jknack/handlebars.java/security/advisories/GHSA-r4gv-qr8j-p3pg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4gv-qr8j-p3pg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4gv-qr8j-p3pg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55760"
+      }
+    ],
+    "Description": "### Impact\nAny application that passes user-controlled input to Handlebars.compile() using a FileTemplateLoader (or ClassPathTemplateLoader) is vulnerable to arbitrary file read. This is a realistic attack surface for web applications that use template names from URL path parameters, request parameters, or other user-controlled sources.\n\n### Patches\ncom.github.jknack:handlebars:4.5.2\n\n### Workarounds\n\nValidate template name is derived from user input. \n\n```java\nif (!file.getPath().startsWith(new File(prefix).getCanonicalPath())) {\n        throw new IOException(\"Path traversal attempt detected: \" + location);\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T18:42:09Z",
+    "Severity": "HIGH",
+    "Summary": "handlebars.java FileTemplateLoader Path Traversal",
+    "UpdatedAt": "2026-06-17T18:42:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.5.2"
+    }
+  ]
+}

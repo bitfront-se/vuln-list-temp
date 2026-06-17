@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-17T17:55:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 364069,
+    "Id": "GSA_kwCzR0hTQS1yanhxLXFxaGYtOGh3aM4ABY4l",
+    "GhsaId": "GHSA-rjxq-qqhf-8hwh",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rjxq-qqhf-8hwh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53840"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-custom-header-leakage-via-mcp-streamable-http-cross-origin-redirects"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rjxq-qqhf-8hwh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rjxq-qqhf-8hwh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53840"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw supports remote MCP Streamable HTTP servers with operator-configured custom headers. In affected releases, those headers could be forwarded when the MCP endpoint responded with a cross-origin redirect.\n\nThis issue is limited to configured MCP Streamable HTTP servers that use custom headers. It does not expose unrelated OpenClaw credentials.\n\n### Affected configurations\n\nThis affects deployments where an MCP server is configured with:\n\n- `transportType: \"streamable-http\"`\n- sensitive custom headers under `mcp.servers.*.headers`\n- an MCP endpoint that is malicious, compromised, or able to redirect to another origin\n\n### Impact\n\nCustom MCP headers, such as API keys or tenant-routing headers, could be sent to the redirect target. The exposed credential scope depends on the header the operator configured for that MCP server.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.12`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.8` or later. Before upgrading, avoid custom MCP headers with servers you do not fully trust, and rotate any MCP-specific credentials that may have been exposed by a redirecting endpoint.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T17:55:06Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: MCP Streamable HTTP redirects could forward configured custom headers to another origin",
+    "UpdatedAt": "2026-06-17T17:55:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.12"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.12"
+    }
+  ]
+}

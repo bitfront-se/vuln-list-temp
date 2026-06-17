@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-17T14:07:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 364055,
+    "Id": "GSA_kwCzR0hTQS02bWhyLTc0eDItOTh2Oc4ABY4X",
+    "GhsaId": "GHSA-6mhr-74x2-98v9",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-6mhr-74x2-98v9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6mhr-74x2-98v9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6mhr-74x2-98v9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53929"
+      }
+    ],
+    "Description": "### Summary\nWith `NC_SECURE_ATTACHMENTS=true`, an authenticated uploader could deliver `.html` or\n`.svg` attachments that the browser rendered inline from the NocoDB origin instead of\nforcing a download.\n\n### Details\nThe signed attachment handler stored response-header overrides under PascalCase keys\n(`ResponseContentDisposition`, `ResponseContentType`) while the controller that served\nthe file read them under lowercase-hyphen names (`response-content-disposition`). The\nmismatch dropped the `Content-Disposition: attachment` header, leaving Express to\nauto-render `.html`, `.svg`, and similar inline. The fix corrects the key case and\nadditionally forces `Content-Disposition: attachment` and\n`Content-Type: application/octet-stream` for any MIME type not on the preview\nallowlist.\n\n### Impact\nStored Cross-Site Scripting in the NocoDB origin from inline-rendered uploads. Script\nexecuting in the victim's browser can read the auth JWT from `localStorage`.\nExploitation requires authenticated upload permission and the secure-attachment mode\nto be enabled.\n\n### Credit\nThis issue was reported by [@bugbunny-research](https://github.com/bugbunny-research).\nIt was independently reported by [@DavidCarliez](https://github.com/DavidCarliez).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T14:07:52Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Stored Cross-Site Scripting via Secure Attachment",
+    "UpdatedAt": "2026-06-17T14:07:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.3"
+    }
+  ]
+}

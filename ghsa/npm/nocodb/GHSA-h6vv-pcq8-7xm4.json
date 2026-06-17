@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-17T14:08:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nocodb"
+  },
+  "Advisory": {
+    "DatabaseId": 364056,
+    "Id": "GSA_kwCzR0hTQS1oNnZ2LXBjcTgtN3htNM4ABY4Y",
+    "GhsaId": "GHSA-h6vv-pcq8-7xm4",
+    "References": [
+      {
+        "Url": "https://github.com/nocodb/nocodb/security/advisories/GHSA-h6vv-pcq8-7xm4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h6vv-pcq8-7xm4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h6vv-pcq8-7xm4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53930"
+      }
+    ],
+    "Description": "### Summary\nThe base-migration endpoint accepted a caller-supplied URL that the migration worker\ndereferenced without enforcing protocol or destination, allowing scheme abuse\n(`file:`, `ftp:`, etc.) and probing of internal HTTP destinations.\n\n### Details\nThe `migrate` endpoint is restricted to the workspace owner role by ACL. The remaining\ngaps were (a) protocol validation — the controller now parses `body.migrationUrl` as a\n`URL` and rejects anything whose protocol is not `http:` or `https:` — and (b) private\ndestination filtering — the worker already runs through `useAgent(targetUrl)` from\n`request-filtering-agent`, which blocks RFC 1918, loopback, and link-local at the\nsocket layer.\n\n### Impact\nWith the workspace owner role, a malformed URL could be used to coerce the migration\nworker into reading local files or talking to non-HTTP services; combined with the\nHTTP-only filter, owner-supplied targets could not reach private ranges.\n\n### Credit\nThis issue was reported by Devel Group Security Research Team through [@TREXNEGRO](https://github.com/TREXNEGRO).\nIt was independently reported by [@Lihfdgjr](https://github.com/Lihfdgjr) and [@bugbunny-research (https://github.com/bugbunny-research).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T14:08:04Z",
+    "Severity": "MODERATE",
+    "Summary": "NocoDB: Server-Side Request Forgery via Base Migration URL",
+    "UpdatedAt": "2026-06-17T14:08:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.301.3"
+    }
+  ]
+}

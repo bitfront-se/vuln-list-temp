@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-17T18:39:22Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nova"
+  },
+  "Advisory": {
+    "DatabaseId": 363906,
+    "Id": "GSA_kwCzR0hTQS1tZmczLXA2bTMtZ2pncs4ABY2C",
+    "GhsaId": "GHSA-mfg3-p6m3-gjgr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46448"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/nova/+bug/2151252"
+      },
+      {
+        "Url": "https://www.openwall.com/lists/oss-security/2026/06/16/5"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/06/16/5"
+      },
+      {
+        "Url": "https://review.opendev.org/993601"
+      },
+      {
+        "Url": "https://review.opendev.org/993602"
+      },
+      {
+        "Url": "https://review.opendev.org/993603"
+      },
+      {
+        "Url": "https://review.opendev.org/993604"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mfg3-p6m3-gjgr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mfg3-p6m3-gjgr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46448"
+      }
+    ],
+    "Description": "## Affects\n\n- Nova: \u003e=18.0.0 \u003c31.3.1, \u003e=32.0.0 \u003c32.2.1, \u003e=33.0.0 \u003c33.0.2\n\n\n## Description\nErichen from the Institute of Computing Technology, Chinese Academy of \nSciences reported that Nova's server create API does not strip internal \nscheduler hints. An authenticated user can bypass Placement resource \nclaims and scheduling constraint enforcement, including availability \nzone, host aggregate, and image trait restrictions. The resulting \ninstance has no Placement allocation, which can lead to compute node \nresource exhaustion and cross-tenant data persistence on NVMe devices \nafter instance deletion. Deployments running Nova 18.0.0 or later are \naffected.\n\n\n\n## Patches\n\n- https://review.opendev.org/993604 (2025.1/epoxy)\n- https://review.opendev.org/993603 (2025.2/flamingo)\n- https://review.opendev.org/993602 (2026.1/gazpacho)\n- https://review.opendev.org/993601 (2026.2/hibiscus)\n\n\n## Credits\n- Erichen from Institute of Computing Technology, Chinese Academy of \nSciences (CVE-2026-46448)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T21:32:01Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenStack Nova: Nova scheduler hint injection bypasses Placement resource claims and scheduling constraints",
+    "UpdatedAt": "2026-06-17T18:39:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 33.0.0, \u003c= 33.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "32.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 32.0.0, \u003c 32.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 18.0.0, \u003c= 31.3.0"
+    }
+  ]
+}

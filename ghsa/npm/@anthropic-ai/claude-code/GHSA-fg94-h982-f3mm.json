@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-17T18:06:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 364075,
+    "Id": "GSA_kwCzR0hTQS1mZzk0LWg5ODItZjNtbc4ABY4r",
+    "GhsaId": "GHSA-fg94-h982-f3mm",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-fg94-h982-f3mm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fg94-h982-f3mm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fg94-h982-f3mm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54316"
+      }
+    ],
+    "Description": "Because the hostname huggingface.co was pre-approved as a bare hostname for the WebFetch tool, any path on that domain—including attacker-controlled model repositories—was auto-approved without a permission prompt or being subject to --allowedTools restrictions. An attacker able to inject untrusted content into a Claude Code context could direct it to issue WebFetch requests against attacker-controlled repository files (e.g. /resolve/main/config.json), which HuggingFace counts as downloads server-side, creating a covert out-of-band channel for encoding and exfiltrating data Claude can access such as files, environment variables, or command output. Reliably exploiting this required the ability to add untrusted content into a Claude Code context window. Users on standard Claude Code auto-update have received this fix already; users performing manual updates are advised to update to the latest version.\n\nThank you to hackerone.com/novee for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-17T18:06:06Z",
+    "Severity": "MODERATE",
+    "Summary": "Claude Code: Out-of-Band Data Exfiltration via Pre-Approved HuggingFace Domain in WebFetch",
+    "UpdatedAt": "2026-06-17T18:06:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.163"
+      },
+      "VulnerableVersionRange": "\u003e= 0.2.54, \u003c 2.1.163"
+    }
+  ]
+}
