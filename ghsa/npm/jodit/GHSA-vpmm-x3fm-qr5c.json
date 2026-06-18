@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-18T13:05:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jodit"
+  },
+  "Advisory": {
+    "DatabaseId": 364849,
+    "Id": "GSA_kwCzR0hTQS12cG1tLXgzZm0tcXI1Y84ABZEx",
+    "GhsaId": "GHSA-vpmm-x3fm-qr5c",
+    "References": [
+      {
+        "Url": "https://github.com/xdan/jodit/security/advisories/GHSA-vpmm-x3fm-qr5c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vpmm-x3fm-qr5c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vpmm-x3fm-qr5c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55886"
+      }
+    ],
+    "Description": "### Summary\n`Jodit.modules.Helpers.set(chain, value, obj)` walks the dot-separated `chain`, creating and following each path segment, without filtering prototype-mutating keys. A chain that begins with (or contains) `__proto__`, `constructor`, or `prototype` lets the final assignment reach and mutate `Object.prototype` (prototype pollution).\n\n### Affected\n- Package: `jodit` (npm)\n- Versions: `\u003c 4.12.26`\n- Public API: `Jodit.modules.Helpers.set(chain, value, obj)`\n\n### Proof of Concept\n```js\nconst { Jodit } = require('jodit');\ndelete Object.prototype.polluted;\nJodit.modules.Helpers.set('__proto__.polluted', 'yes', {});\nconsole.log(({}).polluted); // \"yes\" (before the fix)\ndelete Object.prototype.polluted;\n```\n\n### Impact\nApplications that pass a user-controlled or partially user-controlled key path into `Jodit.modules.Helpers.set()` could be vulnerable to prototype pollution (CWE-1321): unexpected property injection, logic bypass, denial of service, or secondary security issues.\n\n### Patch\nFixed in 4.12.26 by rejecting any `chain` whose segments include `__proto__`, `constructor`, or `prototype`, reusing the same guard introduced for `Jodit.configure()` in 4.12.18.\n\n### Credit\nResponsibly reported by Junming Wu.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T13:05:01Z",
+    "Severity": "MODERATE",
+    "Summary": "jodit: Prototype pollution in Jodit via Jodit.modules.Helpers.set()",
+    "UpdatedAt": "2026-06-18T13:05:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.26"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.26"
+    }
+  ]
+}

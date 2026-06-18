@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-18T13:07:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tinacms/mdx"
+  },
+  "Advisory": {
+    "DatabaseId": 364857,
+    "Id": "GSA_kwCzR0hTQS0ydmNjLTV2MzQtOWpjOM4ABZE5",
+    "GhsaId": "GHSA-2vcc-5v34-9jc8",
+    "References": [
+      {
+        "Url": "https://github.com/tinacms/tinacms/security/advisories/GHSA-2vcc-5v34-9jc8"
+      },
+      {
+        "Url": "https://github.com/tinacms/tinacms/pull/7056"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2vcc-5v34-9jc8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2vcc-5v34-9jc8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55661"
+      }
+    ],
+    "Description": "TinaCMS rich-text parsing and the default link/image renderers did not sanitize the `url` field on Slate link/image nodes. Content containing `javascript:` or `data:text/html` URLs — including case-variant, whitespace-padded, and control-character-obfuscated forms — is rendered into `href`/`src` and executes when the content is viewed. Any actor able to author rich-text content (for example a lower-privileged editor, or imported/external content) can achieve stored XSS against editors and site viewers.\n\nFixed in https://github.com/tinacms/tinacms/pull/7056 via a `sanitizeUrl()` helper (case-insensitive, whitespace/control-character-normalized scheme allow-list) applied recursively to Slate trees at parse time and in the default rich-text rendering.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T13:07:05Z",
+    "Severity": "MODERATE",
+    "Summary": "TinaCMS rich-text (slatejson) rendering does not sanitize link/image URLs, allowing stored XSS via dangerous URL schemes",
+    "UpdatedAt": "2026-06-18T13:07:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.7"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.7"
+    }
+  ]
+}

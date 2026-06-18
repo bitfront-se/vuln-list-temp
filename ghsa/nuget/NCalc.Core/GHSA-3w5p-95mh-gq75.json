@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-18T13:05:39Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "NCalc.Core"
+  },
+  "Advisory": {
+    "DatabaseId": 364852,
+    "Id": "GSA_kwCzR0hTQS0zdzVwLTk1bWgtZ3E3Nc4ABZE0",
+    "GhsaId": "GHSA-3w5p-95mh-gq75",
+    "References": [
+      {
+        "Url": "https://github.com/ncalc/ncalc/security/advisories/GHSA-3w5p-95mh-gq75"
+      },
+      {
+        "Url": "https://github.com/ncalc/ncalc/pull/575"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3w5p-95mh-gq75"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3w5p-95mh-gq75"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55254"
+      }
+    ],
+    "Description": "### Impact\n\nA denial-of-service (DoS) vulnerability exists in the factorial operator implementation of NCalc. Specially crafted expressions containing extremely large factorial operands can trigger excessive CPU consumption or cause evaluation to enter a non-terminating loop due to integer overflow in the factorial calculation logic.\n\nApplications that evaluate untrusted expressions using affected versions of NCalc may be vulnerable to resource exhaustion, potentially resulting in service disruption or application unresponsiveness.\n\nThis issue can be triggered with expressions such as:\n\n```text\n99999999999999!\n9223372036854775807!\n1.5e16!\n```\n\n### Patches\n\nThe vulnerability has been fixed by adding bounds validation for factorial operands and rejecting unsupported values before evaluation.\n\nUsers should upgrade to the first release containing the fix from pull request #575. (**v6.1.1+**)\n\n### Workarounds\n\nIf upgrading is not immediately possible:\n\n* Do not evaluate expressions originating from untrusted users.\n* Validate or sanitize expressions before evaluation and reject factorial operations on large values.\n* Implement execution time limits, request timeouts, or cancellation mechanisms around expression evaluation.\n\nThese mitigations may reduce exposure but do not fully address the underlying vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T13:05:37Z",
+    "Severity": "MODERATE",
+    "Summary": "NCalc: Denial of Service via Unbounded and Non-Terminating Factorial Evaluation",
+    "UpdatedAt": "2026-06-18T13:05:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:A/AC:H/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.1"
+    }
+  ]
+}

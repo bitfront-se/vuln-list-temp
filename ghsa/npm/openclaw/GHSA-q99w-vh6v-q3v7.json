@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T13:03:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 364842,
+    "Id": "GSA_kwCzR0hTQS1xOTl3LXZoNnYtcTN2N84ABZEq",
+    "GhsaId": "GHSA-q99w-vh6v-q3v7",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-q99w-vh6v-q3v7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53843"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-node-token-revocation-bypass-via-pairing-scoped-device-session"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q99w-vh6v-q3v7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q99w-vh6v-q3v7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53843"
+      }
+    ],
+    "Description": "### Summary\n\nIn affected releases, a surviving pairing-scoped session for a device could re-establish node token authority after that node token had been revoked. Revocation should require the device to lose that authority unless it is approved again through the normal pairing flow.\n\nThis issue affects token revocation and device-role containment. It does not allow unauthenticated device creation.\n\n### Affected configurations\n\nThis affects deployments where an already paired device keeps a same-device session with pairing-related scope after its node token is revoked.\n\n### Impact\n\nA device that should have lost node WebSocket authority could regain it without renewed approval. That weakens revocation as an operator control and can keep node-level access alive longer than intended.\n\nThe impact is limited to devices that already had a legitimate pairing/session foothold.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.26`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.26` or later. If a node token was revoked on an older version, restart the gateway and remove/re-pair the affected device to ensure no stale session remains active.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T13:03:24Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Pairing-scoped device session could restore revoked node token authority",
+    "UpdatedAt": "2026-06-18T13:03:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.26"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.26"
+    }
+  ]
+}

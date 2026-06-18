@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T13:03:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 364843,
+    "Id": "GSA_kwCzR0hTQS1mMzk3LTV2anctdjJjMs4ABZEr",
+    "GhsaId": "GHSA-f397-5vjw-v2c2",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-f397-5vjw-v2c2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53866"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-allowlist-bypass-in-shell-inline-command-parsing"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f397-5vjw-v2c2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f397-5vjw-v2c2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53866"
+      }
+    ],
+    "Description": "### Summary\n\nShell inline-command parsing could miss an allowlist check. In affected versions, a command request using shell inline-command forms could route an inline command through a parser case that did not receive the expected allowlist decision.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run shell content without the intended approval or allowlist prompt. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.12`.\n\n### Mitigations\n\nrequire approval for shell inline-command forms until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T13:03:52Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Shell inline-command parsing could miss an allowlist check",
+    "UpdatedAt": "2026-06-18T13:03:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.10-beta.1"
+    }
+  ]
+}
