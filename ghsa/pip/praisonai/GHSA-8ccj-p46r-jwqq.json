@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T14:27:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonai"
+  },
+  "Advisory": {
+    "DatabaseId": 364909,
+    "Id": "GSA_kwCzR0hTQS04Y2NqLXA0NnItandxcc4ABZFt",
+    "GhsaId": "GHSA-8ccj-p46r-jwqq",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-8ccj-p46r-jwqq"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8ccj-p46r-jwqq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8ccj-p46r-jwqq"
+      }
+    ],
+    "Description": "### Summary\nSetting `PRAISONAI_CALL_AUTH=disabled` completely disables all authentication on the `/api/v1/agents/{id}/invoke` endpoint. This bypass is advertised in the application's own error messages, making it likely to appear in production Docker and Compose configurations.\n\n### Details\n\n```python\n# src/praisonai/praisonai/api/agent_invoke.py:32\n_CALL_AUTH_DISABLED = os.getenv('PRAISONAI_CALL_AUTH', '').lower() == 'disabled'\n\nasync def verify_token(...) -\u003e None:\n    if _CALL_AUTH_DISABLED:\n        return  # all authentication skipped unconditionally\n```\n\nThe application's own error message advertises the bypass:\n\u003e \"Set CALL_SERVER_TOKEN or PRAISONAI_CALL_AUTH=disabled to run without authentication.\"\n\nThis causes the setting to appear in Docker/Compose configurations as a convenience option.\n\n### Proof of Concept\n\n```python\nimport os\nos.environ[\"PRAISONAI_CALL_AUTH\"] = \"disabled\"\n# verify_token() now returns immediately for any request\n# POST /api/v1/agents/any-agent/invoke → 200 OK (no token needed)\n```\n\nCommon vulnerable deployment:\n\n```yaml\n# docker-compose.yml\nenvironment:\n  - PRAISONAI_CALL_AUTH=disabled  # auth completely disabled\n```\n\n### Impact\nFull unauthenticated access to the agent invocation API. Any agent registered on the server can be triggered without credentials, potentially executing arbitrary actions depending on the agent's configured tools.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T14:27:15Z",
+    "Severity": "HIGH",
+    "Summary": "PraisonAI: PRAISONAI_CALL_AUTH=disabled environment variable unconditionally disables authentication",
+    "UpdatedAt": "2026-06-18T14:27:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.61"
+      },
+      "VulnerableVersionRange": "\u003c 4.6.61"
+    }
+  ]
+}

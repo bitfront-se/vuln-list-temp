@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-18T17:22:19Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.linecorp.armeria:armeria-xds"
+  },
+  "Advisory": {
+    "DatabaseId": 364982,
+    "Id": "GSA_kwCzR0hTQS1oZ3c2LThjNzctdjRncc4ABZG2",
+    "GhsaId": "GHSA-hgw6-8c77-v4gq",
+    "References": [
+      {
+        "Url": "https://github.com/line/armeria/security/advisories/GHSA-hgw6-8c77-v4gq"
+      },
+      {
+        "Url": "https://github.com/line/armeria/security/advisories/xds/src/main/java/com/linecorp/armeria/xds/DataSourceStream.java"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hgw6-8c77-v4gq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hgw6-8c77-v4gq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-11752"
+      }
+    ],
+    "Description": "## External Control of File Name or Path in xDS SDS DataSource\n\n### Summary\n\n`DataSourceStream` in the `:xds` module resolves control-plane-supplied `filename` and `environment_variable` fields from SDS Secret resources without any allow-list or base-directory confinement. A semi-trusted or compromised xDS control plane (or an attacker who can MITM SDS responses) can read arbitrary local files and environment variables on the xDS client host.\n\n**Affected component:** `xds/src/main/java/com/linecorp/armeria/xds/DataSourceStream.java`\n**Introduced in:** Armeria 1.38.0 (commit `b199560b10`, \"Add support for SDS\", #6597)\n**Affected versions:** 1.38.0, 1.39.0\n\n### Impact\n\nA semi-trusted or compromised xDS control plane (or an attacker who can inject/MITM SDS responses) can:\n\n- **Read arbitrary files** on the xDS client host — TLS private keys, `/etc/passwd`, mounted Kubernetes service-account tokens, cloud credential files, etc.\n- **Read arbitrary environment variables** — `AWS_SECRET_ACCESS_KEY`, CI tokens, database credentials, etc.\n\nThe read bytes are consumed as TLS key/cert/CA material. Combined with CWE-295 (silent disabling of upstream TLS peer verification), the exfiltrated secret can be presented to an attacker-chosen upstream, enabling data exfiltration. This is a confused-deputy / information-disclosure primitive driven entirely by control-plane-supplied configuration.\n\n**Severity:** High — arbitrary host-level file and environment variable read via control-plane-pushed configuration.\n\n### Patches\n\n1.40.0\n\nThe fix should:\n\n1. **Confine `filename` resolution** to an operator-configured allow-list of base directories. After normalization, reject any path that escapes the allow-listed root.\n2. **Gate `environment_variable`** behind an explicit operator allow-list of permitted variable names.\n3. **Default to denying** both `filename` and `environment_variable` DataSources for control-plane-delivered (SDS) secrets unless explicitly enabled by the operator. This is stricter than upstream Envoy but appropriate when the control plane is not fully trusted.\n4. **Document the trust model** clearly so operators understand that enabling file/env DataSources grants the control plane host-level read capability.\n\n### Workarounds\n\n- Ensure the xDS control plane channel is authenticated and encrypted (mTLS) to prevent MITM injection of malicious SDS responses.\n- Run the xDS client with minimal filesystem permissions and a restricted environment to limit the blast radius of arbitrary reads.\n- If SDS file-based secrets are not needed, consider using inline `DataSource` bytes only (delivered over the SDS stream itself) and auditing control-plane configurations to ensure no `filename` or `environment_variable` DataSources are present.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T17:22:17Z",
+    "Severity": "MODERATE",
+    "Summary": "Armeria: External Control of File Name or Path in xDS SDS DataSource",
+    "UpdatedAt": "2026-06-18T17:22:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.40.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.40.0"
+    }
+  ]
+}

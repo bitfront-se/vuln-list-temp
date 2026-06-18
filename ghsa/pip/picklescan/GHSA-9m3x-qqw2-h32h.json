@@ -23,6 +23,12 @@
         "Url": "https://github.com/mmaitre314/picklescan/releases/tag/v1.0.1"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53874"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/picklescan-arbitrary-code-execution-via-obfuscated-eval-call"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-9m3x-qqw2-h32h"
       }
     ],
@@ -30,6 +36,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-9m3x-qqw2-h32h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53874"
       }
     ],
     "Description": "### Summary\n\nAn unsafe deserialization vulnerability allows any unauthenticated user to execute arbitrary code on the host loading a pickle payload from an untrusted source.\n\n### Details\n\nIt's possible to hide the `eval` call nested under another callable via `getattr`.\n\n### PoC\n\n```python\nimport builtins\n\nclass EvilClass:\n    @staticmethod\n    def _obfuscated_eval(payload):\n        getattr(builtins, \"eval\")(payload)\n\n    def __reduce__(self):\n        payload = \"__import__('os').system('echo \\\"successful attack\\\"')\"\n        return self._obfuscated_eval, (payload,)\n```\n\n\n### Impact\n\nWho is impacted? \nAny organization or individual relying on picklescan to detect malicious pickle files from untrusted sources.\n\nWhat is the impact? \nAttackers can embed malicious code in pickle file that remains undetected but executes when the pickle file is loaded.\n\nSupply Chain Attack: Attackers can distribute infected pickle files to system that load serialized ML models, APIs, or saved Python objects from untrusted sources.",
@@ -37,7 +47,7 @@
     "PublishedAt": "2026-02-02T20:45:20Z",
     "Severity": "HIGH",
     "Summary": "picklescan missing detection by simple obfuscation of a `builtins.eval` call",
-    "UpdatedAt": "2026-02-02T20:45:21Z",
+    "UpdatedAt": "2026-06-18T14:41:55Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
