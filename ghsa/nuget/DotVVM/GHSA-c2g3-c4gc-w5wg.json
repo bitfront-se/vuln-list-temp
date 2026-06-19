@@ -1,0 +1,61 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T15:08:11Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "DotVVM"
+  },
+  "Advisory": {
+    "DatabaseId": 365137,
+    "Id": "GSA_kwCzR0hTQS1jMmczLWM0Z2MtdzV3Z84ABZJR",
+    "GhsaId": "GHSA-c2g3-c4gc-w5wg",
+    "References": [
+      {
+        "Url": "https://github.com/riganti/dotvvm/security/advisories/GHSA-c2g3-c4gc-w5wg"
+      },
+      {
+        "Url": "https://www.dotvvm.com/docs/4.0/pages/concepts/routing/parameters#route-constraints"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c2g3-c4gc-w5wg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c2g3-c4gc-w5wg"
+      }
+    ],
+    "Description": "### Impact\n\nThis impacts users which use multiple unconstrained route parameters not separated by a `/`. For instance, the following code is vulnerable:\n```\nvar route = new DotvvmRoute(\"edit/{a}-{b}-{c}/done\", null, \"testpage\", null, null, configuration);\n\nvar adversarialInput = \"edit/\" + new string('-', 32000);\nroute.IsMatch(adversarialInput, out _);\n```\n\n### Patches\n\nDotVVM versions 4.3.15, 4.2.11 and 5.0.0-preview09 apply a 1 second timeout to route regex operations. When it is triggered, DotVVM permanently switches to using the .NET non-backtracking regex engine for this route.\nIf non-backtracking is not supported by target runtime (\u003c .NET 8.0), DotVVM returns HTTP 503 when the 1 second timeout is reached.\n\n### Workarounds\n\nAvoid multiple unconstrained route parameters in one section not separated by a `/`.\nSee  for documentation of route parameter constraints.\nEven with the patched version we recommend doing this both as security hardening and to avoid ambiguity.\n\nFor instance, when we change the route URL to `\"edit/{a:alpha}-{b:alpha}-{c}/done\"`, the problem disappears.\nIf all available constraints are too restrictive, we can still use `{a:regex([^-]*)}` to forbid the `-`, which is enough to remove the mabiguity",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T15:08:10Z",
+    "Severity": "HIGH",
+    "Summary": "ReDoS in DotVVM routing",
+    "UpdatedAt": "2026-06-19T15:08:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.0-preview09-final"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0-preview01-final, \u003c 5.0.0-preview09-final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.15"
+      },
+      "VulnerableVersionRange": "\u003e 4.3.0-preview01-final, \u003c 4.3.15"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.11"
+      },
+      "VulnerableVersionRange": "\u003c 4.2.11"
+    }
+  ]
+}

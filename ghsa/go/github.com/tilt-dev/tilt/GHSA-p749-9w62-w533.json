@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T13:52:17Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/tilt-dev/tilt"
+  },
+  "Advisory": {
+    "DatabaseId": 365115,
+    "Id": "GSA_kwCzR0hTQS1wNzQ5LTl3NjItdzUzM84ABZI7",
+    "GhsaId": "GHSA-p749-9w62-w533",
+    "References": [
+      {
+        "Url": "https://github.com/tilt-dev/tilt/security/advisories/GHSA-p749-9w62-w533"
+      },
+      {
+        "Url": "https://github.com/tilt-dev/tilt/pull/6776"
+      },
+      {
+        "Url": "https://github.com/tilt-dev/tilt/releases/tag/v0.37.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p749-9w62-w533"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p749-9w62-w533"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55882"
+      }
+    ],
+    "Description": "## Summary\nThe Tilt HUD server mounts Go's `net/http/pprof` handlers under `/debug` with no access control. When the HUD is network-exposed, an attacker can read process memory — including session and apiserver tokens — and hold the process under profiling.\n\n## Details\nA blank import of `net/http/pprof` registers its handlers on `http.DefaultServeMux`, which the HUD controller mounts under `/debug` on both the web router and the apiserver listener. `/debug/pprof/heap` and `/goroutine` expose process memory, including the session token (also issued in the `Tilt-Token` cookie) and the apiserver loopback bearer token; `/profile` and `/trace` let a caller sample the process for an arbitrary duration.\n\n## Impact\nAn unauthenticated caller who can reach the listener can extract process memory — including the session and apiserver tokens — and degrade performance by holding the process under CPU profiling or tracing. The leaked tokens compound the missing-authentication finding on the same server.\n\n### Conditions for exploitation\n- Affected version in `\u003e= 0.19.5, \u003c= 0.37.3`.\n- HUD (or apiserver) listener bound to a non-loopback address (`tilt up --host 0.0.0.0`, or `TILT_HOST` set).\n- Network reachability to the listener (default port `10350`).\n\n### Not affected\n- The default loopback-only bind is not reachable from the network.\n\n## Workarounds\nUse the default loopback bind (omit `--host`, unset `TILT_HOST`) so `/debug` is not remotely reachable. No complete workaround short of upgrading for non-loopback deployments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T13:52:17Z",
+    "Severity": "HIGH",
+    "Summary": "Tilt: Unauthenticated pprof debug endpoints on the Tilt HUD server",
+    "UpdatedAt": "2026-06-19T13:52:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.37.4"
+      },
+      "VulnerableVersionRange": "\u003e= 0.19.5, \u003c= 0.37.3"
+    }
+  ]
+}

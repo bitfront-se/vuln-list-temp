@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T14:39:26Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.cedarpolicy:cedar-java"
+  },
+  "Advisory": {
+    "DatabaseId": 365131,
+    "Id": "GSA_kwCzR0hTQS1xbWNoLXYycTktd2c0cM4ABZJL",
+    "GhsaId": "GHSA-qmch-v2q9-wg4p",
+    "References": [
+      {
+        "Url": "https://github.com/cedar-policy/cedar-java/security/advisories/GHSA-qmch-v2q9-wg4p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qmch-v2q9-wg4p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qmch-v2q9-wg4p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55773"
+      }
+    ],
+    "Description": "### Summary\n\nCedarJava is an open source Java implementation of the Cedar policy language, used for fine-grained authorization decisions. Under certain circumstances, improper input handling could allow policy injection.\n\n### Impact\n\n**Cedar-expression injection via unescaped `toCedarExpr()`**\n\nThe `toCedarExpr()` method on Cedar Value types does not escape special characters (`\"` or `\\`) when converting values to Cedar source code. If an integrator uses `toCedarExpr()` to build policy text at runtime from user-controlled values, an actor could inject arbitrary Cedar expressions. For example, injecting `|| true` into a `permit ... when { ... }` clause could make the permit unconditional, or injecting `\u0026\u0026 false` into a `forbid` clause could prevent the `forbid` from triggering.\n\nThis issue requires the integrator to use `toCedarExpr()` to build policy text at runtime from user-controlled input.\n\n### Impacted versions: \n\u003c 4.9\n\n### Patches\nAddressed in CedarJava version 2.3.6, 3.4.1, and 4.9 and above. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes.\n\n### Workarounds\nValidate and sanitize all user-supplied input before passing it to `toCedarExpr()`. Avoid building policy text at runtime from user-controlled values.\n\n### References\nIf you have any questions or comments about this advisory, we ask that you contact us directly via email to [cedar-policy-security@lists.cncf.io](mailto:cedar-policy-security@lists.cncf.io). Please do not create a public GitHub issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T14:39:25Z",
+    "Severity": "HIGH",
+    "Summary": "CedarJava has policy injection vulnerability",
+    "UpdatedAt": "2026-06-19T14:39:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.9.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.2, \u003c 3.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.6"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.6"
+    }
+  ]
+}

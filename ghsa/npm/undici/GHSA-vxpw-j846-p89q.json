@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T14:23:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 365124,
+    "Id": "GSA_kwCzR0hTQS12eHB3LWo4NDYtcDg5cc4ABZJE",
+    "GhsaId": "GHSA-vxpw-j846-p89q",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-vxpw-j846-p89q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-12151"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vxpw-j846-p89q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vxpw-j846-p89q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-12151"
+      }
+    ],
+    "Description": "## Impact\n\nThe undici WebSocket client enforces `maxPayloadSize` on the cumulative byte count of fragments in a message but does not enforce a limit on the number of fragments. A malicious WebSocket server can stream many small or empty continuation frames that each pass per-frame and cumulative-size validation, collectively causing unbounded memory growth in the client process. The result is memory exhaustion and a denial of service.\n\nAffected applications are those using the undici WebSocket client (`new WebSocket(...)`) or the `WebSocketStream` API that can be induced to connect to an attacker-controlled or compromised WebSocket endpoint.\n\nAll releases starting at undici 6.17.0 are affected.\n\n## Patches\n\nUpgrade to undici v6.27.0, v7.28.0 or v8.5.0.\n\n## Workarounds\n\nNo workaround is available. The fix must be applied through an upgrade.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T14:22:01Z",
+    "Severity": "HIGH",
+    "Summary": "undici WebSocket client vulnerable to denial of service via fragment count bypass",
+    "UpdatedAt": "2026-06-19T14:23:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.5.0"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.5.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.28.0"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.28.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.27.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.27.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T14:38:43Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.cedarpolicy:cedar-java"
+  },
+  "Advisory": {
+    "DatabaseId": 365130,
+    "Id": "GSA_kwCzR0hTQS05M2c0LW02eHYtY212cs4ABZJK",
+    "GhsaId": "GHSA-93g4-m6xv-cmvr",
+    "References": [
+      {
+        "Url": "https://github.com/cedar-policy/cedar-java/security/advisories/GHSA-93g4-m6xv-cmvr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-93g4-m6xv-cmvr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-93g4-m6xv-cmvr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55772"
+      }
+    ],
+    "Description": "### Summary\n\nCedarJava is an open source Java implementation of the Cedar policy language, used for fine-grained authorization decisions. Under certain circumstances, improper input handling could allow type confusion across the Java-Rust FFI boundary.\n\n### Impact\n\n**Record-to-Entity type confusion across the Java-Rust FFI boundary**\n\nCedarJava sends authorization requests to the Rust cedar-policy evaluator as JSON. The JSON protocol reserves magic single-key object shapes (`__entity` and `__extn`) for entity references and extension values. When serializing a `CedarMap`, there is no validation preventing these reserved keys from being used. If an integrating service builds a `CedarMap` from caller-supplied key/value data (such as request headers, user-defined metadata, or resource tags), an actor who controls those keys could cause the Rust evaluator to interpret a record as an entity reference.\n\nThis issue requires the integrating service to build a `CedarMap` where the an actor controls the keys, and a policy must reference that value in a when/unless clause.\n\n### Impacted versions: \n\u003c 4.9\n\n### Patches\nAddressed in CedarJava version 2.3.6, 3.4.1, and 4.9 and above. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes.\n\n### Workarounds\nEnable schema-based request validation to catch type mismatches. Validate that user-controlled data does not contain reserved keys (`__entity` or `__extn`) before building `CedarMap` objects.\n\n### References\nIf you have any questions or comments about this advisory, we ask that you contact us directly via email to [cedar-policy-security@lists.cncf.io](mailto:cedar-policy-security@lists.cncf.io). Please do not create a public GitHub issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T14:38:43Z",
+    "Severity": "HIGH",
+    "Summary": "CedarJava has type confusion vulnerability ",
+    "UpdatedAt": "2026-06-19T14:38:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.9.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.2, \u003c 3.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.6"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.6"
+    }
+  ]
+}

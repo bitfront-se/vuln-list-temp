@@ -1,0 +1,58 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T14:50:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 365134,
+    "Id": "GSA_kwCzR0hTQS1jZ3htLXZyMmYtNmZqOM4ABZJO",
+    "GhsaId": "GHSA-cgxm-vr2f-6fj8",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-cgxm-vr2f-6fj8"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10511"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10512"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cgxm-vr2f-6fj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cgxm-vr2f-6fj8"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server is vulnerable to denial of service. A remote attacker can send a single, small query (~1 KB) containing deeply nested query condition operators. Parse Server processes the nested structure with exponential time complexity, which blocks the Node.js event loop and makes the server unresponsive to all clients for the duration of processing. A single request can occupy the event loop for many seconds, and the request is repeatable. The issue affects the REST API and LiveQuery query handling and is reachable in the default configuration. Exploitation requires only the public application identifier; no user authentication is needed.\n\n### Patches\n\nThe internal query-traversal helper that previously re-walked nested arrays — causing exponential-time processing of nested `$or`/`$and`/`$nor` operators — was corrected to traverse queries in linear time. Additionally, the optional `requestComplexity.queryDepth` limit was generalized so that nested logical operators are counted even when wrapped inside field-level operators (e.g. `$elemMatch`, `$not`) or plain field names, closing a bypass of the limit on both the REST API and LiveQuery.\n\n### Workarounds\n\nThere is no complete configuration-only workaround on affected versions. Setting `requestComplexity.queryDepth` to a small positive integer reduces exposure but does not fully prevent the issue, because the limit can be bypassed by nesting the operators inside a field-level operator. Upgrading is strongly recommended.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T14:50:14Z",
+    "Severity": "HIGH",
+    "Summary": "parse-server: Denial of service via exponential-time processing of deeply nested query operators",
+    "UpdatedAt": "2026-06-19T14:50:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.82"
+      },
+      "VulnerableVersionRange": "\u003c 8.6.82"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.9.1-alpha.12"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.9.1-alpha.12"
+    }
+  ]
+}

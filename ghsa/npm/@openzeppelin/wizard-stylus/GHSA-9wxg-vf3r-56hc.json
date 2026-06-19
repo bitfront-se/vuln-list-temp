@@ -1,0 +1,46 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-19T17:45:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@openzeppelin/wizard-stylus"
+  },
+  "Advisory": {
+    "DatabaseId": 365197,
+    "Id": "GSA_kwCzR0hTQS05d3hnLXZmM3ItNTZoY84ABZKN",
+    "GhsaId": "GHSA-9wxg-vf3r-56hc",
+    "References": [
+      {
+        "Url": "https://github.com/OpenZeppelin/contracts-wizard/security/advisories/GHSA-9wxg-vf3r-56hc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9wxg-vf3r-56hc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9wxg-vf3r-56hc"
+      }
+    ],
+    "Description": "## Summary\n\nThe Contracts Wizard generators printed `info.securityContact` and `info.license` verbatim into a single-line comment of the generated Solidity, Cairo, Stellar/Soroban, and Stylus source without rejecting line terminators. A newline (`\\n` or `\\r\\n`) in either field ends the comment, so the text after it is emitted as source rather than remaining inside the comment — allowing arbitrary declarations to be injected into the generated contract.\n\n## Impact\n\nThis only matters when these fields are filled from input other than the user who will use the generated contract. Normal self-service use does not meet that condition:\n\n- **Web app, AI assistant, and CLI:** the user supplies these fields and uses their own output, so a line break only affects their own contract. (These fields are not URL-derived, so shared links cannot set them.)\n- **Self-hosted API:** same — the end user supplies the options and consumes the result.\n\nThe case that matters is an integration that fills these fields from untrusted input — for example, an MCP agent whose tool arguments are derived from content it processed. There, a newline in the value can add lines to output that otherwise looks like normal Wizard source. Impact is integrity-only; there is no execution on any Wizard service.\n\n## Patches\n\nFixed by rejecting line terminators in `setInfo` — the single code path all surfaces use — so the value can no longer break out of the comment. Upgrade to the patched versions. `@openzeppelin/wizard-confidential` and `@openzeppelin/wizard-uniswap-hooks` reuse this `setInfo` through their `@openzeppelin/wizard` dependency and receive the fix once that dependency is updated to a patched version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T17:45:15Z",
+    "Severity": "LOW",
+    "Summary": "OpenZeppelin Contracts Wizard: Line terminators in info.securityContact / info.license can inject lines into generated source",
+    "UpdatedAt": "2026-06-19T17:45:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.3.0"
+    }
+  ]
+}

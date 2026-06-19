@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T13:53:37Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/tilt-dev/tilt"
+  },
+  "Advisory": {
+    "DatabaseId": 365116,
+    "Id": "GSA_kwCzR0hTQS02bTY4LXI2OTMtNzhxeM4ABZI8",
+    "GhsaId": "GHSA-6m68-r693-78qx",
+    "References": [
+      {
+        "Url": "https://github.com/tilt-dev/tilt/security/advisories/GHSA-6m68-r693-78qx"
+      },
+      {
+        "Url": "https://github.com/tilt-dev/tilt/pull/6776"
+      },
+      {
+        "Url": "https://github.com/tilt-dev/tilt/releases/tag/v0.37.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6m68-r693-78qx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6m68-r693-78qx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55883"
+      }
+    ],
+    "Description": "## Summary\nThe Tilt HUD WebSocket (`/ws/view`) is gated by a CSRF token, but the token is served by an unauthenticated endpoint and the upgrader accepts any client that omits an `Origin` header. When the HUD is network-exposed, an attacker can open the HUD stream and read the developer's session state.\n\n## Details\nThe upgrader accepts a connection when the `csrf` query parameter matches a process-wide token (`websocketCSRFToken`). That token is served as `text/plain` by an unauthenticated handler (`WebsocketToken`, mounted at `/api/websocket_token`), so any reachable caller can fetch it and connect to `/ws/view?csrf=\u003ctoken\u003e`. When the parameter does not match, the upgrader falls back to a same-origin check that returns true when the `Origin` header is absent, so a non-browser client that omits `Origin` is accepted anyway. The token has no per-session binding.\n\n## Impact\nAn attacker who can reach the HUD listener can open the HUD WebSocket and receive the full view stream — session state, Tiltfile contents, resource statuses, and continued updates — defeating the intended anti-CSWSH protection.\n\n### Conditions for exploitation\n- Affected version in `\u003e= 0.24.0, \u003c= 0.37.3`.\n- HUD bound to a non-loopback address (`tilt up --host 0.0.0.0`, or `TILT_HOST` set).\n- Network reachability to the listener (default port `10350`).\n\n### Not affected\n- The default loopback-only bind is not reachable from the network.\n\n## Workarounds\nUse the default loopback bind (omit `--host`, unset `TILT_HOST`). No complete workaround short of upgrading for non-loopback deployments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T13:53:35Z",
+    "Severity": "HIGH",
+    "Summary": "Tilt: Cross-site WebSocket hijacking of the Tilt HUD stream",
+    "UpdatedAt": "2026-06-19T13:53:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.37.4"
+      },
+      "VulnerableVersionRange": "\u003e= 0.24.0, \u003c= 0.37.3"
+    }
+  ]
+}
