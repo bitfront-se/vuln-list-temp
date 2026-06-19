@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-05-06T18:13:33Z",
+  "UpdatedAt": "2026-06-18T22:54:16Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "dssrf"
@@ -12,6 +12,9 @@
     "References": [
       {
         "Url": "https://github.com/HackingRepo/dssrf-js/security/advisories/GHSA-8p33-q827-ghj5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44232"
       },
       {
         "Url": "https://github.com/advisories/GHSA-8p33-q827-ghj5"
@@ -27,12 +30,12 @@
         "Value": "CVE-2026-44232"
       }
     ],
-    "Description": "A vulnerability in dssrf allows an attacker to bypass its SSRF protections by supplying one of the following IPv6 addresses, resulting in a successful SSRF. This contradicts dssrf documentation, which incorrectly claims that IPv6 is disabled entirely. See below:\n\n```rust\nInput\tCategory\nhttp://[::1]/\tIPv6 loopback\nhttp://[fc00::1]/\tIPv6 ULA\nhttp://[fe80::1]/\tIPv6 link-local\nhttp://[::ffff:127.0.0.1]/\tIPv4-mapped loopback\nhttp://[::ffff:169.254.169.254]/\tIPv4-mapped IMDS\nhttp://[::ffff:100.64.0.1]/\tIPv4-mapped CGNAT\nhttp://[64:ff9b::7f00:1]/\tNAT64 well-known prefix\nhttp://[64:ff9b:1::1]/\tNAT64 local-use (RFC 8215)\nhttp://[5f00::1]/\tSRv6 SID (RFC 9602)\nhttp://[3fff::1]/\tIPv6 documentation (RFC 9637)\nhttp://[fec0::1]/\tIPv6 site-local (deprecated, RFC 3879)\nhttp://[::127.0.0.1]/\tIPv4-compatible IPv6\n```\n\n### POC\n\n```bash\nmkdir dssrf-poc \u0026\u0026 cd dssrf-poc\nnpm init -y \u003e/dev/null\nnpm install dssrf@^1.0.2\ncat \u003e audit.js \u003c\u003c'EOF'\nconst dssrf = require('dssrf');\nconst cases = [\n  ['http://[::1]/',                         'IPv6 loopback'],\n  ['http://[fc00::1]/',                     'IPv6 ULA'],\n  ['http://[fe80::1]/',                     'IPv6 link-local'],\n  ['http://[::ffff:127.0.0.1]/',            'IPv4-mapped loopback'],\n  ['http://[::ffff:169.254.169.254]/',      'IPv4-mapped IMDS'],\n  ['http://[64:ff9b::7f00:1]/',             'NAT64 well-known + 127.0.0.1'],\n  ['http://[64:ff9b:1::1]/',                'NAT64 local-use (RFC 8215)'],\n  ['http://[5f00::1]/',                     'SRv6 SID (RFC 9602)'],\n  ['http://[fec0::1]/',                     'IPv6 site-local deprecated'],\n  ['http://127.0.0.1/',                     'IPv4 loopback (control)'],\n  ['http://10.0.0.1/',                      'IPv4 RFC1918 (control)'],\n  ['http://8.8.8.8/',                       'PUBLIC IPv4 (control)'],\n];\n(async () =\u003e {\n  for (const [url, label] of cases) {\n    const safe = await dssrf.is_url_safe(url);\n    console.log(`${safe ? '✓ALLOW' : '·block'}  ${url.padEnd(40)}  ${label}`);\n  }\n})();\nEOF\nnode audit.js\n```\n\n### Credit\ndssrf thanks \u003cbrmenna@gmail.com\u003e for reporting this issue responsibly.\n\n### Update\nUsers should immediately update to dssrf 1.3.0.\n\n### Lessons Learned\nAs seen both in the past and today, many advisories and CVE bypasses leverage IPv6. IPv6 remains the weakest link, as it is rarely configured correctly and seldom tested. In this case, while IPv4 was properly blocked, the corresponding IPv6 blocking logic was completely broken and never actually worked.,",
+    "Description": "A vulnerability on dssrf allow, an attacker to use, one of them following ipv6\n\n```rust\nInput\tCategory\nhttp://[::1]/\tIPv6 loopback\nhttp://[fc00::1]/\tIPv6 ULA\nhttp://[fe80::1]/\tIPv6 link-local\nhttp://[::ffff:127.0.0.1]/\tIPv4-mapped loopback\nhttp://[::ffff:169.254.169.254]/\tIPv4-mapped IMDS\nhttp://[::ffff:100.64.0.1]/\tIPv4-mapped CGNAT\nhttp://[64:ff9b::7f00:1]/\tNAT64 well-known prefix\nhttp://[64:ff9b:1::1]/\tNAT64 local-use (RFC 8215)\nhttp://[5f00::1]/\tSRv6 SID (RFC 9602)\nhttp://[3fff::1]/\tIPv6 documentation (RFC 9637)\nhttp://[fec0::1]/\tIPv6 site-local (deprecated, RFC 3879)\nhttp://[::127.0.0.1]/\tIPv4-compatible IPv6\n```\n\none of those to bypass dssrf and the attacker get **SSRF**, we claim that ipv6 disabled entirely that is wrong on our documentation\n\n### POC\n\n```bash\nmkdir dssrf-poc \u0026\u0026 cd dssrf-poc\nnpm init -y \u003e/dev/null\nnpm install dssrf@^1.0.2\ncat \u003e audit.js \u003c\u003c'EOF'\nconst dssrf = require('dssrf');\nconst cases = [\n  ['http://[::1]/',                         'IPv6 loopback'],\n  ['http://[fc00::1]/',                     'IPv6 ULA'],\n  ['http://[fe80::1]/',                     'IPv6 link-local'],\n  ['http://[::ffff:127.0.0.1]/',            'IPv4-mapped loopback'],\n  ['http://[::ffff:169.254.169.254]/',      'IPv4-mapped IMDS'],\n  ['http://[64:ff9b::7f00:1]/',             'NAT64 well-known + 127.0.0.1'],\n  ['http://[64:ff9b:1::1]/',                'NAT64 local-use (RFC 8215)'],\n  ['http://[5f00::1]/',                     'SRv6 SID (RFC 9602)'],\n  ['http://[fec0::1]/',                     'IPv6 site-local deprecated'],\n  ['http://127.0.0.1/',                     'IPv4 loopback (control)'],\n  ['http://10.0.0.1/',                      'IPv4 RFC1918 (control)'],\n  ['http://8.8.8.8/',                       'PUBLIC IPv4 (control)'],\n];\n(async () =\u003e {\n  for (const [url, label] of cases) {\n    const safe = await dssrf.is_url_safe(url);\n    console.log(`${safe ? '✓ALLOW' : '·block'}  ${url.padEnd(40)}  ${label}`);\n  }\n})();\nEOF\nnode audit.js\n```\n\n### Credit\nMillion Thank's to \u003cbrmenna@gmail.com\u003e for reporting that responsibly.\n\n### Update\nUsers need to update from now to dssrf 1.0.3\n\n### Lessons Learned\nAS we see in the past and today, a lot of advisories or cves bypasses uses IPv6, and IPv6 is the weakest link to be configured correctly and rarely properly tested, Since we blocked ipv4, our ipv6 blocking logic completly broken and never works",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-06T18:13:32Z",
     "Severity": "HIGH",
     "Summary": "dssrf: every IPv6 category bypasses is_url_safe",
-    "UpdatedAt": "2026-05-06T18:13:33Z",
+    "UpdatedAt": "2026-06-18T22:54:16Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -42,9 +45,9 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": "1.3.0"
+        "Identifier": "1.0.3"
       },
-      "VulnerableVersionRange": "\u003c 1.3.0"
+      "VulnerableVersionRange": "\u003c 1.0.3"
     }
   ]
 }

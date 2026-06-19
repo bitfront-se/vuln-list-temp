@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T20:12:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 365015,
+    "Id": "GSA_kwCzR0hTQS01Y2oyLTNqcjItNWg3N84ABZHX",
+    "GhsaId": "GHSA-5cj2-3jr2-5h77",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-5cj2-3jr2-5h77"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53855"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-shell-positional-parameters-bypass-in-inline-eval-checks"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5cj2-3jr2-5h77"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5cj2-3jr2-5h77"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53855"
+      }
+    ],
+    "Description": "### Summary\n\nShell positional parameters could weaken strict inline-eval checks. In affected versions, a command request that combines allowlisted tools with shell positional arguments could place inline-eval content in a shell carrier not covered by the strict check.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run shell-provided content outside the intended allowlist rule. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.2`.\n\n### Mitigations\n\navoid allowlisting shell carrier patterns and require approval for shell wrappers until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:12:12Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Shell positional parameters could weaken strict inline-eval checks",
+    "UpdatedAt": "2026-06-18T20:12:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.2"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.2"
+    }
+  ]
+}

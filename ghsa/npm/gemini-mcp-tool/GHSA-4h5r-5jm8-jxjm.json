@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-18T20:44:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "gemini-mcp-tool"
+  },
+  "Advisory": {
+    "DatabaseId": 365033,
+    "Id": "GSA_kwCzR0hTQS00aDVyLTVqbTgtanhqbc4ABZHp",
+    "GhsaId": "GHSA-4h5r-5jm8-jxjm",
+    "References": [
+      {
+        "Url": "https://github.com/jamubc/gemini-mcp-tool/security/advisories/GHSA-4h5r-5jm8-jxjm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0755"
+      },
+      {
+        "Url": "https://www.zerodayinitiative.com/advisories/ZDI-26-021"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4h5r-5jm8-jxjm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4h5r-5jm8-jxjm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-0755"
+      }
+    ],
+    "Description": "Untrusted prompt input could reach the Gemini CLI @file parser, allowing read/exfiltration of arbitrary local files (@/etc/passwd, @~/.ssh/id_rsa, @../../secret). On Windows, unquoted cmd.exe metacharacters could break out into OS command injection.\n\nFix (1.1.6): removed the broken shell:false double-quote wrapping; added assertSafeFileReferences() to contain @file refs to the working directory; hardened Windows cmd.exe argument quoting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:44:58Z",
+    "Severity": "CRITICAL",
+    "Summary": "gemini-mcp-tool vulnerable to OS command injection and @file exfiltration via prompt quoting (CVE-2026-0755)",
+    "UpdatedAt": "2026-06-18T20:44:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 1.1.2, \u003c 1.1.6"
+    }
+  ]
+}

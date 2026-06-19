@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T20:41:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 365030,
+    "Id": "GSA_kwCzR0hTQS1yeDc4LTI5cXItNWhxOM4ABZHm",
+    "GhsaId": "GHSA-rx78-29qr-5hq8",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rx78-29qr-5hq8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53865"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-arbitrary-command-execution-via-workspace-derived-service-path"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rx78-29qr-5hq8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rx78-29qr-5hq8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53865"
+      }
+    ],
+    "Description": "### Summary\n\nWorkspace-derived service PATH could influence trash command selection. In affected versions, a workspace-derived environment path could select an unintended `trash` executable during maintenance.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run a local executable from a path the operator did not intend for maintenance tasks. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.2`.\n\n### Mitigations\n\nkeep maintenance flows on trusted workspaces and fixed service paths until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:41:36Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Workspace-derived service PATH could influence trash command selection",
+    "UpdatedAt": "2026-06-18T20:41:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.2"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.2"
+    }
+  ]
+}

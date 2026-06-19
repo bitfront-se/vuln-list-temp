@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-18T20:29:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 365022,
+    "Id": "GSA_kwCzR0hTQS1yd3A2LTd3M3EtNzVmcc4ABZHe",
+    "GhsaId": "GHSA-rwp6-7w3q-75fq",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-rwp6-7w3q-75fq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53856"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-insecure-file-permissions-in-config-recovery-via-openclaw-json"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rwp6-7w3q-75fq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rwp6-7w3q-75fq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53856"
+      }
+    ],
+    "Description": "### Summary\n\nConfig recovery could restore openclaw.json with broad file permissions. In affected versions, a local recovery path after configuration repair could leave the restored config file more readable than intended.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could expose local configuration to other same-host users where OS permissions allow it. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.24`.\n\n### Mitigations\n\ncheck `openclaw.json` permissions after recovery on shared hosts until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:29:50Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Config recovery could restore openclaw.json with broad file permissions",
+    "UpdatedAt": "2026-06-18T20:29:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.24"
+      },
+      "VulnerableVersionRange": "= 2026.4.23"
+    }
+  ]
+}

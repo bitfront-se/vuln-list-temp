@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-18T20:36:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 365028,
+    "Id": "GSA_kwCzR0hTQS1jdzRxLWdxZzUtZzM4aM4ABZHk",
+    "GhsaId": "GHSA-cw4q-gqg5-g38h",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cw4q-gqg5-g38h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53849"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-privilege-escalation-via-mutable-discord-display-names-in-allowfrom"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cw4q-gqg5-g38h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cw4q-gqg5-g38h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53849"
+      }
+    ],
+    "Description": "### Summary\n\nDiscord allowFrom could bind to mutable display names. In affected versions, a Discord account able to change display or global name metadata could match a policy entry through mutable display metadata.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could receive agent access intended for another Discord identity. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.7`.\n\n### Mitigations\n\nuse stable Discord user IDs in allowlists until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:36:31Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Discord allowFrom could bind to mutable display names",
+    "UpdatedAt": "2026-06-18T20:36:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.7"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.6"
+    }
+  ]
+}

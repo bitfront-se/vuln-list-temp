@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-18T20:10:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 365013,
+    "Id": "GSA_kwCzR0hTQS1jd3BwLTU5NjItcTRmNs4ABZHV",
+    "GhsaId": "GHSA-cwpp-5962-q4f6",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cwpp-5962-q4f6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53848"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-exec-allowlist-bypass-via-transparent-command-wrappers"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cwpp-5962-q4f6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cwpp-5962-q4f6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53848"
+      }
+    ],
+    "Description": "### Summary\n\nExec allowlist could miss side effects from transparent command wrappers. In affected versions, a command request that reaches the exec allowlist path could be evaluated against the inner command while the wrapper invocation still executed.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could perform wrapper-level side effects outside the intent of the allowlisted command. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.26`.\n\n### Mitigations\n\nreview wrapper commands carefully and require approval for shell-like wrapper usage until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:10:30Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Exec allowlist could miss side effects from transparent command wrappers",
+    "UpdatedAt": "2026-06-18T20:10:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.22"
+    }
+  ]
+}

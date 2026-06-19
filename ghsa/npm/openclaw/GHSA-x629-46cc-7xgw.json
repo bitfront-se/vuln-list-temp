@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-18T20:15:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 365019,
+    "Id": "GSA_kwCzR0hTQS14NjI5LTQ2Y2MtN3hnd84ABZHb",
+    "GhsaId": "GHSA-x629-46cc-7xgw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-x629-46cc-7xgw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53847"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-privilege-escalation-via-active-memory-write-scope"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x629-46cc-7xgw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x629-46cc-7xgw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53847"
+      }
+    ],
+    "Description": "### Summary\n\nActive Memory write scope could mutate global config. In affected versions, a Gateway caller with `operator.write` access to the affected command could change global configuration without requiring `operator.admin`.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could apply configuration changes beyond the intended write scope. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.6`.\n\n### Mitigations\n\nlimit Active Memory write access to trusted operators until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-18T20:15:20Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Active Memory write scope could mutate global config",
+    "UpdatedAt": "2026-06-18T20:15:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.5"
+    }
+  ]
+}
