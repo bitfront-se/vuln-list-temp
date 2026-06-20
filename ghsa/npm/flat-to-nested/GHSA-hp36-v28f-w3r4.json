@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T20:47:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flat-to-nested"
+  },
+  "Advisory": {
+    "DatabaseId": 365318,
+    "Id": "GSA_kwCzR0hTQS1ocDM2LXYyOGYtdzNyNM4ABZMG",
+    "GhsaId": "GHSA-hp36-v28f-w3r4",
+    "References": [
+      {
+        "Url": "https://github.com/joaonuno/flat-to-nested-js/security/advisories/GHSA-hp36-v28f-w3r4"
+      },
+      {
+        "Url": "https://github.com/joaonuno/flat-to-nested-js/commit/680a5ebe1194edda16fa93baaa56ff14fe0e3d7f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hp36-v28f-w3r4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hp36-v28f-w3r4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55091"
+      }
+    ],
+    "Description": "### Summary\n  `convert()` builds the nested tree by using each flat record's `id` and `parent` field values directly as object keys, with no guard against `__proto__` / `constructor` / `prototype`. A record whose `parent` is the string `\"__proto__\"` makes `temp[parent]` resolve to `Object.prototype`, and the following `initPush(...)` writes attacker-controlled data onto the global prototype. Any application that passes attacker-influenced records to `convert()` is affected, and the base prototype methods stay intact so the pollution is stealthy.\n\n  ### Details\n  In `index.js`, `convert()` (`FlatToNested.prototype.convert`):\n\n  - `temp = {}` (line 45) and `pendingChildOf = {}` (line 46) are plain objects, so they inherit from `Object.prototype`.\n  - For each record, `parent = flatEl[this.config.parent]` (line 51) is taken verbatim from input.\n  - Line 57: `if (temp[parent] !== undefined)` — when `parent === \"__proto__\"`, `temp[\"__proto__\"]` resolves via the prototype chain to `Object.prototype`, which is `!== undefined`, so the\n  branch is taken.\n  - Line 59: `initPush(this.config.children, temp[parent], flatEl)` → effectively `initPush(\"children\", Object.prototype, flatEl)`.\n  - `initPush` (lines 4-9): `Object.prototype[\"children\"] = []` then `Object.prototype[\"children\"].push(flatEl)` — **attacker-controlled data is written onto the global `Object.prototype`.**\n\n  There is no sanitization of `id` / `parent` anywhere; they flow straight into `temp[id]`, `temp[parent]`, and `pendingChildOf[parent]` as dynamic keys.\n\n  ### PoC\n  ```js\n  const FlatToNested = require('flat-to-nested');\n\n  new FlatToNested().convert([\n    { id: 1, parent: '__proto__', polluted: 'PWNED' }\n  ]);\n\n  console.log(({}).children); // =\u003e [ { id: 1, polluted: 'PWNED' } ]\n  A freshly-created, unrelated object {} now carries an attacker-controlled children property. ({}).toString === Object.prototype.toString remains true, so existing methods are untouched (stealthy). If the consumer configures a custom children key, that arbitrary prototype property is polluted instead.\n ```\n \n  ### Impact\n\n  Prototype pollution (CWE-1321). Any service that builds a tree from attacker-influenced flat records (the package's core purpose — e.g. records derived from a DB/REST/user input) can have Object.prototype polluted. Consequences range from application-logic corruption and denial of service to serving as a gadget toward privilege escalation or RCE depending on downstream sinks. No special privileges or user interaction required; the malicious value is ordinary input data.\n\n  ### Suggested fix\n\n  Use prototype-less lookup tables so inherited keys like __proto__ cannot be reached:\n  var temp = Object.create(null);\n  var pendingChildOf = Object.create(null);\n  (Optionally also reject id/parent values equal to __proto__, constructor, or prototype.) Verified: with Object.create(null) for both temp and pendingChildOf, the PoC no longer pollutes Object.prototype and normal nesting output is unchanged. A patch with a regression test is ready.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:47:52Z",
+    "Severity": "HIGH",
+    "Summary": "flat-to-nested: Prototype pollution in flat-to-nested convert() via __proto__ parent/id key",
+    "UpdatedAt": "2026-06-19T20:47:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.1"
+    }
+  ]
+}

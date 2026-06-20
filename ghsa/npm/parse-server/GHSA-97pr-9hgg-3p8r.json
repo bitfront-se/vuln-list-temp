@@ -1,0 +1,58 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-19T21:42:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 365377,
+    "Id": "GSA_kwCzR0hTQS05N3ByLTloZ2ctM3A4cs4ABZNB",
+    "GhsaId": "GHSA-97pr-9hgg-3p8r",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-97pr-9hgg-3p8r"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10515"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10516"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-97pr-9hgg-3p8r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-97pr-9hgg-3p8r"
+      }
+    ],
+    "Description": "### Impact\n\nA Parse Server LiveQuery subscriber can receive object field values they are not authorized to read when a single `save` changes both an object field and the subscriber's ACL read access to that object. When such a save removes the subscriber's read access, the resulting `leave` event still carries the post-update object body, disclosing the new field values the subscriber is no longer permitted to read. The symmetric case applies to the `enter` event: when a save grants read access, the event includes the pre-grant object state the subscriber was not previously permitted to read. The disclosure is bounded to the single object affected by that save and is delivered only to the subscriber whose access changed. Applications that combine content changes with access-control changes in the same save on LiveQuery-enabled classes are affected.\n\n### Patches\n\nParse Server now verifies the subscriber's authorization for the specific object state included in `leave` and `enter` events. For a `leave` caused by the subscriber losing read access, the event delivers the last object state the subscriber was authorized to see instead of the post-update body. For an `enter` caused by the subscriber gaining read access, the previously unauthorized original object state is omitted. Events caused by a normal query-match change, where the subscriber keeps read access, are unaffected, as are master-key subscribers.\n\n### Workarounds\n\nDo not change an object's field values and a subscriber's ACL read access in the same `save` on LiveQuery-enabled classes; perform the access-control change in a separate save before or after the content change. Alternatively, limit which classes are enabled for LiveQuery.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:42:48Z",
+    "Severity": "LOW",
+    "Summary": "parse-server: LiveQuery discloses object data to a subscriber across an ACL read-access change",
+    "UpdatedAt": "2026-06-19T21:42:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.83"
+      },
+      "VulnerableVersionRange": "\u003c= 8.6.82"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.9.1-alpha.13"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.9.1-alpha.13"
+    }
+  ]
+}

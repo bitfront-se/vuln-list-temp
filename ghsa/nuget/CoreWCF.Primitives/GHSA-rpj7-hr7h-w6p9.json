@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T20:46:48Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.Primitives"
+  },
+  "Advisory": {
+    "DatabaseId": 365296,
+    "Id": "GSA_kwCzR0hTQS1ycGo3LWhyN2gtdzZwOc4ABZLw",
+    "GhsaId": "GHSA-rpj7-hr7h-w6p9",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-rpj7-hr7h-w6p9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rpj7-hr7h-w6p9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rpj7-hr7h-w6p9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54774"
+      }
+    ],
+    "Description": "### Impact\nWhen a service is configured to validate SAML tokens using a method other than X.509 certificate signing, the final signature verification is skipped.\n\n#### Preconditions\nThe service is configured to authenticate using SAML tokens and an out of band token resolver (commonly the IssuerTokenResolver of IssuedTokenServiceCredential) holds a non-X.509 SecurityToken whose key identifier the attacker can reference in the assertion’s `\u003cKeyInfo\u003e` - for example a `BinarySecretSecurityToken` representing the symmetric proof key issued by a WS-Trust symmetric-key holder-of-key STS.\n\n### Patches\nFixed in CoreWCF v1.8.1 and v1.9.1\n\n### Workarounds\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:46:46Z",
+    "Severity": "HIGH",
+    "Summary": "CoreWCF: SamlSerializer skips SignatureValue verification when SAML signing token is not an X.509 certificate",
+    "UpdatedAt": "2026-06-19T20:46:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.1"
+    }
+  ]
+}

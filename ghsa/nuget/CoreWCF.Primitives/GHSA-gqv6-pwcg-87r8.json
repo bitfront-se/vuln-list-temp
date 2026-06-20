@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T20:47:15Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.Primitives"
+  },
+  "Advisory": {
+    "DatabaseId": 365305,
+    "Id": "GSA_kwCzR0hTQS1ncXY2LXB3Y2ctODdyOM4ABZL5",
+    "GhsaId": "GHSA-gqv6-pwcg-87r8",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-gqv6-pwcg-87r8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gqv6-pwcg-87r8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gqv6-pwcg-87r8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54783"
+      }
+    ],
+    "Description": "### Impact\nThe attacker, with one captured signed SOAP envelope from a victim and no other privileges, can invoke arbitrary operations on the service as the victim principal for the lifetime of the captured signing key. There is no rate limit on replays. The DetectReplays setting on transport-security bindings does not mitigate the issue because the attack does not reuse the original timestamp — the fresh timestamp in the wsse:Security header is what the replay-detection logic inspects.\n\n### Patches\nFixed in CoreWCF v1.8.1 and v1.9.1\n\n### Workarounds\nEnsure communication is protected by SSL/TLS to prevent capturing of signed SOAP envelope.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:47:14Z",
+    "Severity": "HIGH",
+    "Summary": "CoreWCF: XML Signature Wrapping in WS-Security endorsing/supporting signature verification allows replay of captured signed messages",
+    "UpdatedAt": "2026-06-19T20:47:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.1"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T21:16:10Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-security-digest"
+  },
+  "Advisory": {
+    "DatabaseId": 365339,
+    "Id": "GSA_kwCzR0hTQS1jN2ptLTM4Z3EtaDY3aM4ABZMb",
+    "GhsaId": "GHSA-c7jm-38gq-h67h",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-c7jm-38gq-h67h"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/4f904b4692"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/8a52b615b1"
+      },
+      {
+        "Url": "https://datatracker.ietf.org/doc/html/rfc7616#section-3.4"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.48.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c7jm-38gq-h67h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c7jm-38gq-h67h"
+      }
+    ],
+    "Description": "### Impact\n\n`ServerFilters.DigestAuth` and the underlying `DigestAuthProvider` both defaulted their `nonceVerifier` parameter to `{ true }` — i.e. every nonce was accepted regardless of value, age, or prior use. Any deployment using the default configuration had **no replay protection** on Digest authentication; a captured `Authorization: Digest …` response could be replayed indefinitely against the same protected resource.\n\nThe nonce-verification mechanism in Digest auth is the primary anti-replay control — without it, Digest reduces to a credential bound only to a stale nonce string.\n\n**Who is affected:** any application using `ServerFilters.DigestAuth` or `DigestAuthProvider` with the default `nonceVerifier`. The broken default has been present since `DigestAuthProvider` was introduced (2021). Exploitation requires the attacker to first capture a valid Digest response (network observation, log access, etc.) — non-trivial in modern TLS deployments but not impossible. Anyone running Digest auth with default config should treat upgrade as urgent.\n\n### Patches\n\n| Line | Fixed in | Edition |\n|------|----------|---------|\n| v6.x (Community) | **6.48.0.0** | Community |\n| v5.x (LTS) | **5.42.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if Digest auth is present in your v5.x line) |\n| v4.x (LTS) | **4.51.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if Digest auth is present in your v4.x line) |\n\nThe fix (`[Break]`) removes the default value for `nonceVerifier` from both `ServerFilters.DigestAuth` and `DigestAuthProvider`. Callers must now supply a real verifier explicitly — the broken default cannot be silently inherited.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately: explicitly supply a `nonceVerifier` that tracks issued nonces, enforces a TTL, and rejects re-use. Do not rely on the default.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:16:09Z",
+    "Severity": "MODERATE",
+    "Summary": "http4k: `ServerFilters.DigestAuth` / `DigestAuthProvider` defaulted to an always-true nonce verifier, disabling replay protection in default deployments",
+    "UpdatedAt": "2026-06-19T21:16:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.51.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.51.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.42.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0.0, \u003c 5.42.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.48.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0.0, \u003c 6.48.0.0"
+    }
+  ]
+}

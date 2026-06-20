@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T21:43:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "stigmem-node"
+  },
+  "Advisory": {
+    "DatabaseId": 365382,
+    "Id": "GSA_kwCzR0hTQS14aHYzLXE0eHgtMzQ5cs4ABZNG",
+    "GhsaId": "GHSA-xhv3-q4xx-349r",
+    "References": [
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/security/advisories/GHSA-xhv3-q4xx-349r"
+      },
+      {
+        "Url": "https://github.com/eidetic-labs/stigmem/pull/728"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xhv3-q4xx-349r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xhv3-q4xx-349r"
+      }
+    ],
+    "Description": "### Summary\nOn a multi-tenant stigmem node, a tenant administrator could list, read, and **admit or reject** quarantined facts belonging to **other** tenants. The list/count queries and `_get_quarantined_fact` in `routes/quarantine.py` lacked an `f.tenant_id = identity.tenant_id` predicate, and the garden lookup was not tenant-scoped — reached via the `/v1/quarantine` list and admit/reject endpoints.\n\n### Impact\nCross-tenant confidentiality (reading another tenant's quarantined content) and cross-tenant integrity (moderating — admitting or rejecting — another tenant's facts), gated only by a plain tenant `write` capability rather than a node-level admin authority.\n\n### Affected configurations\nThis is a cross-**tenant** break. It is exploitable **only** on deployments running the opt-in `stigmem-plugin-multi-tenant` (multiple tenants on one node). A default single-tenant node has only `tenant=\"default\"` — there is no second tenant to cross — so it is **not exploitable** on default deployments. The rating is HIGH for the multi-tenant deployments the plugin exists to isolate.\n\n### Patches\nFixed in `0.9.0a12` (PR #728): `AND f.tenant_id = identity.tenant_id` was added to the list/count queries and `_get_quarantined_fact`; the garden lookup is now tenant-scoped; and any genuinely cross-tenant moderation is gated behind `can_admin_federation()` (node superadmin), not a tenant `write` capability. A tenant-B admin can no longer list, admit, or reject tenant-A's quarantined facts.\n\n### Workarounds\nNone other than upgrading to `0.9.0a12`. Single-tenant deployments are unaffected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:43:00Z",
+    "Severity": "HIGH",
+    "Summary": "stistigmem-node: quarantine review surface exposes and mutates other tenants' quarantined facts (cross-tenant BOLA)",
+    "UpdatedAt": "2026-06-19T21:43:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.0a12"
+      },
+      "VulnerableVersionRange": "\u003c 0.9.0a12"
+    }
+  ]
+}

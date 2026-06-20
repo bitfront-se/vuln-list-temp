@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T21:16:03Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-core"
+  },
+  "Advisory": {
+    "DatabaseId": 365337,
+    "Id": "GSA_kwCzR0hTQS1tNHc5LWhqZnctdndqNM4ABZMZ",
+    "GhsaId": "GHSA-m4w9-hjfw-vwj4",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-m4w9-hjfw-vwj4"
+      },
+      {
+        "Url": "https://datatracker.ietf.org/doc/html/rfc2104"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.49.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m4w9-hjfw-vwj4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m4w9-hjfw-vwj4"
+      }
+    ],
+    "Description": "### Impact\n\nThe `HmacSha256` class contained two functions:\n- `hash(payload)` — a plain unkeyed SHA-256 digest. The `Hmac` prefix in the class name was misleading; this function has no key parameter, so it could never have been an HMAC.\n- `hmacSHA256(key, data)` — a properly keyed HMAC-SHA256.\n\nA reader who didn't engage with the function signature could in principle have assumed `HmacSha256.hash(payload)` was somehow keyed, but the absence of any key parameter made that misuse unlikely in practice.\n\n**Who is affected:** any downstream caller who read the class name and used `HmacSha256.hash` as a message authentication code without noticing it takes no key. **Verified at v6.47.2.0: zero internal misuse in http4k itself.** Both production usages of `HmacSha256.hash` (AWS SigV4 canonical-request hashing in `AwsSignatureV4Signer.kt` and `x-amz-content-sha256` in `awsExtensions.kt`) are AWS-spec-correct uses of plain SHA-256; every keyed `hmacSHA256(key, data)` call passes a real key. The advisory exists so any downstream caller relying on the misleadingly-named API knows to migrate.\n\n### Patches\n\nUpgrade to **6.49.0.0** or later. The fix introduces:\n- `Sha256.hash(input)` — unkeyed digest (the actual behaviour `HmacSha256.hash` provided).\n- `Sha256.hmac(key, input)` — keyed HMAC-SHA256 (the behaviour the name implied).\n\n`HmacSha256` is deprecated. Existing callers continue to work via deprecation shims; migrate to `Sha256.hash` or `Sha256.hmac` per intent.\n\n### Workarounds\n\nIf you cannot upgrade and you need a real HMAC-SHA256, use `javax.crypto.Mac.getInstance(\"HmacSHA256\")` with a `SecretKeySpec`. For an unkeyed SHA-256 digest, use `java.security.MessageDigest.getInstance(\"SHA-256\")`. The keyed `hmacSHA256(key, data)` was always correctly implemented and is safe to use as-is.\n\n### References\n\n- Fix release: [v6.49.0.0](https://github.com/http4k/http4k/releases/tag/6.49.0.0)\n- Background: [RFC 2104 — HMAC: Keyed-Hashing for Message Authentication](https://datatracker.ietf.org/doc/html/rfc2104)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:16:03Z",
+    "Severity": "HIGH",
+    "Summary": "http4k: `HmacSha256.hash` (despite the `Hmac` naming) computed a plain unkeyed digest; clarified by deprecation in favour of `Sha256.hash` / `Sha256.hmac`",
+    "UpdatedAt": "2026-06-19T21:16:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.49.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.49.0.0"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T20:48:07Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "galaxy-ng"
+  },
+  "Advisory": {
+    "DatabaseId": 363776,
+    "Id": "GSA_kwCzR0hTQS02aHc3LWo0anctd3BmZs4ABY0A",
+    "GhsaId": "GHSA-6hw7-j4jw-wpff",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-12398"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-12398"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2489180"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6hw7-j4jw-wpff"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6hw7-j4jw-wpff"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-12398"
+      }
+    ],
+    "Description": "A command injection vulnerability was found in galaxy_ng. The do_git_checkout() function in the legacy role import API (v1) interpolates unsanitized git ref names (branch/tag names) into shell commands executed via subprocess.run() with shell=True. An authenticated user who controls a git repository can create a branch or tag with shell metacharacters in the name to achieve remote code execution on the pulp worker. The vulnerable endpoint is only reachable when GALAXY_ENABLE_LEGACY_ROLES is set to True, which is not the default configuration.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-16T15:33:51Z",
+    "Severity": "HIGH",
+    "Summary": "Galaxy NG: command injection vulnerability",
+    "UpdatedAt": "2026-06-19T20:48:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.9.2"
+    }
+  ]
+}

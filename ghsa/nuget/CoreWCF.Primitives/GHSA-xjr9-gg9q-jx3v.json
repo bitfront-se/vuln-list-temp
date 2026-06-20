@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-19T20:47:13Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.Primitives"
+  },
+  "Advisory": {
+    "DatabaseId": 365304,
+    "Id": "GSA_kwCzR0hTQS14anI5LWdnOXEtangzds4ABZL4",
+    "GhsaId": "GHSA-xjr9-gg9q-jx3v",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-xjr9-gg9q-jx3v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xjr9-gg9q-jx3v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xjr9-gg9q-jx3v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54782"
+      }
+    ],
+    "Description": "### Impact\nFull impersonation of any principal the trusted STS could have issued an assertion for — including administrative principals when the relying party grants them via SAML claims. Affects both SAML 1.1 and SAML 2.0.\n\n#### Preconditions\nRelying-party service is hosted with WSFederationHttpBinding or WS2007FederationHttpBinding (or any binding that triggers FederatedSecurityTokenManager for issued-token validation), and IdentityConfiguration is wired (UseIdentityConfiguration = true).\nAttacker can reach the service over the network and knows the trusted STS’s public certificate (public certs are by design discoverable).\n\n### Patches\nFixed in CoreWCF v1.8.1 and v1.9.1\n\n### Workarounds\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:47:11Z",
+    "Severity": "CRITICAL",
+    "Summary": "CoreWCF: Authentication bypass in CoreWCF SAML 1.1 / 2.0 token signature validation",
+    "UpdatedAt": "2026-06-19T20:47:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.1"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T20:47:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@cyclonedx/cyclonedx-npm"
+  },
+  "Advisory": {
+    "DatabaseId": 365317,
+    "Id": "GSA_kwCzR0hTQS12NzVyLXZ4NzMtODJwas4ABZMF",
+    "GhsaId": "GHSA-v75r-vx73-82pj",
+    "References": [
+      {
+        "Url": "https://github.com/CycloneDX/cyclonedx-node-npm/security/advisories/GHSA-v75r-vx73-82pj"
+      },
+      {
+        "Url": "https://github.com/CycloneDX/cyclonedx-node-npm/pull/1476"
+      },
+      {
+        "Url": "https://github.com/CycloneDX/cyclonedx-node-npm/releases/tag/v5.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v75r-vx73-82pj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v75r-vx73-82pj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55849"
+      }
+    ],
+    "Description": "## Summary\nA command injection vulnerability exists in `@cyclonedx/cyclonedx-npm` when the CLI is invoked with the `--workspace \u003cvalue\u003e` option while the environment variable `npm_execpath` is unset or empty.  \nUser‑supplied `--workspace` values are passed to a subshell without proper sanitization, enabling attackers to inject arbitrary OS commands.  \nThis issue corresponds to **CWE‑78**: Improper Neutralization of Special Elements used in an OS Command.\n\nThe vulnerability was fixed in version [5.0.0][v5.0.0].\n\n## Vulnerability Details\n\nWhen `cyclonedx-npm` is executed with the `--workspace` option, the provided argument is incorporated into an internal shell command.  \nIf the environment variable `npm_execpath` is set, the tool uses the npm executable directly and no injection occurs.  \nHowever, when `npm_execpath` is unset or empty, the tool falls back to spawning a subshell and interpolating the `--workspace` value directly into the command string without proper escaping or neutralization.\n\nAs a result, specially crafted workspace names can break out of the intended command context and execute arbitrary commands with the privileges of the invoking user.\n\n## Impact\n\nAn attacker who can influence the value passed to `--workspace` can execute arbitrary OS commands.  \nThis may lead to:\n\n* Arbitrary command execution\n* Data exfiltration\n* Local privilege escalation (depending on how the tool is used)\n* Modification or destruction of files accessible to the user running the CLI\n\nThe vulnerability affects only scenarios where:\n* The user invokes `cyclonedx-npm` with `--workspace \u003cvalue\u003e`, and\n* The environment variable `npm_execpath` is unset or empty\n\n## Exploitation Conditions (High‑Level)\n\nExploitation requires the attacker to supply or influence the `--workspace` value passed to the CLI.  \nIf the tool falls back to its subshell execution path, specially crafted workspace identifiers can cause unintended command execution.  \nNo exploit code is included here to avoid providing weaponizable examples.\n\n## Root Cause\n\nThe CLI constructs a shell command using untrusted input from the `--workspace` option.  \nBecause the fallback code path does not sanitize or escape the workspace value, special shell metacharacters (e.g., `;`, `\u0026\u0026`, `|`) are interpreted by the shell, enabling command injection.\n\nThis behavior matches **CWE‑78**.\n\n## Fix\n\nThe vulnerability was resolved in [PR #1476], which ensures that workspace values are handled safely and are no longer passed to a subshell in an unsafe manner.\n\nThe fix is included in `@cyclonedx/cyclonedx-npm` version [5.0.0][v5.0.0].\n\n## Remediation\n\n* Upgrade to version [5.0.0][v5.0.0] or later, which contains the complete fix.\n* As a temporary mitigation for older versions, ensure that the environment variable `npm_execpath` is set before invoking the tool.\n* Avoid passing untrusted or user‑controlled values to the `--workspace` option.\n\n[v5.0.0]: https://github.com/CycloneDX/cyclonedx-node-npm/releases/tag/v5.0.0\n[PR #1476]: https://github.com/CycloneDX/cyclonedx-node-npm/pull/1476",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:47:48Z",
+    "Severity": "HIGH",
+    "Summary": "@cyclonedx/cyclonedx-npm: Shell Injection via Unsanitized --workspace Argument",
+    "UpdatedAt": "2026-06-19T20:47:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.1.0, \u003c 5.0.0"
+    }
+  ]
+}

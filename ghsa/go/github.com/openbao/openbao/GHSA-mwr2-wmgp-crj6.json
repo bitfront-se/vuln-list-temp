@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-19T21:42:10Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/openbao/openbao"
+  },
+  "Advisory": {
+    "DatabaseId": 365364,
+    "Id": "GSA_kwCzR0hTQS1td3IyLXdtZ3AtY3JqNs4ABZM0",
+    "GhsaId": "GHSA-mwr2-wmgp-crj6",
+    "References": [
+      {
+        "Url": "https://github.com/openbao/openbao/security/advisories/GHSA-mwr2-wmgp-crj6"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/commit/d3c1cc64b1ae7f9868b5c3e80b8b11671f0d97ae"
+      },
+      {
+        "Url": "https://github.com/openbao/openbao/releases/tag/v2.5.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mwr2-wmgp-crj6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mwr2-wmgp-crj6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55775"
+      }
+    ],
+    "Description": "### Summary\n\nA user that is granted namespace management (`/sys/namespaces`) capabilities within a non-root namespace (\"the victim namespace\") can abuse special handling of the literal path `\"root\"` in namespace path canonicalization to manage the victim namespace itself. \n\n### Details\n\nSeveral endpoints under `/sys/namespaces/*` accept a namespace path segment that is canonicalized and then appended to the path of the sys mount's containing namespace (set via path prefix or `X-Vault-Namespace` header) to determine the absolute path of the namespace to operate on.\n\nGiven the special namespace path `\"root\"` canonicalizes to en empty path (`\"\"`), when passed as `/sys/namespaces/root`, the resulting absolute namespace path remains equal to the sys mount's containing namespace. Given ACLs are evaluated before namespace path canonicalization, this allows users with capabilities on `/sys/namespaces/root` within any given namespace to operate on the namespace itself instead.\n\n### Impact\n\nUsers that were granted the required capabilities can abuse this vulnerability to:\n\n- Look up\n- Delete\n- Lock\n- Patch custom metadata\n\nagainst the namespace containing the system backend they can manage `sys/namespaces/root` in. The exact range of operations that can be performed depends on the specific capabilities granted on said path and any sub-paths such as `/api-lock`.\n\nNotably, the root namespace is immutable and cannot be modified, deleted or locked, and is thus unaffected. Also note that users can only abuse this vulnerability to operate on the direct parent or \"containing\" namespace relative to their capabilities, not arbitrary namespaces.\n\n### Patch\n\nThis will be fixed in OpenBao v2.5.5.\n\n### PoC\n\nStart a development server:\n\n```sh\nbao server -dev\n```\n\nCreate a namespace:\n\n```sh\nbao namespace create victim\n```\n\nThis will be the namespace we gain unauthorized management of.\n\nCreate a policy that allows management of namespaces, _inside_ of the victim\nnamespace.\n\n```sh\nbao policy write -namespace=victim namespace-management - \u003c\u003cEOF\npath \"sys/namespaces/*\" {\n\tcapabilities = [\"read\", \"update\", \"patch\", \"delete\"]\n}\nEOF\n```\n\nThen create a token with above policy attached:\n\n```sh\nexport BAO_TOKEN=$(bao token create -namespace=victim -policy=namespace-management -field=token)\n```\n\nOperate on the victim's namespace using the token, for example by outright deleting it:\n\n```sh\nbao namespace delete -namespace=victim root\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:42:06Z",
+    "Severity": "LOW",
+    "Summary": "OpenBao's System Backend allows Unauthorized Management of the containing Namespace",
+    "UpdatedAt": "2026-06-19T21:42:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.1.0, \u003c= 2.5.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260617103935-d3c1cc64b1ae"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260617103935-d3c1cc64b1ae"
+    }
+  ]
+}

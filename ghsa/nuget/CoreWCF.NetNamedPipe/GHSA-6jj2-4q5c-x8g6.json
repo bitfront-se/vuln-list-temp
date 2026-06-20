@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T20:46:56Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.NetNamedPipe"
+  },
+  "Advisory": {
+    "DatabaseId": 365299,
+    "Id": "GSA_kwCzR0hTQS02amoyLTRxNWMteDhnNs4ABZLz",
+    "GhsaId": "GHSA-6jj2-4q5c-x8g6",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-6jj2-4q5c-x8g6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6jj2-4q5c-x8g6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6jj2-4q5c-x8g6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54777"
+      }
+    ],
+    "Description": "### Impact\nCoreWCF NetNamedPipe transport accepts attach to a pre-existing named pipe instance, allowing local interception of NetNamedPipe traffic. NetNamedPipe creates a shared memory object based on the listening url, then generated a unique GUID for the named pipe it will be using and saves this to the shared memory object. Then it creates the named pipe to listen for clients. This requires an attacker to race the service and create the named pipe between the service publishing the GUID to the shared memory location (which the attacker needs to read) and the service creating the named pipe itself.\n\n### Patches\nFixed in CoreWCF v1.8.1 and v1.9.1\n\n### Workarounds\nNone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:46:55Z",
+    "Severity": "MODERATE",
+    "Summary": "CoreWCF NetNamedPipe transport accepts attach to a pre-existing named pipe instance",
+    "UpdatedAt": "2026-06-19T20:46:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.1"
+    }
+  ]
+}

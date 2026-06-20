@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T19:35:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 365275,
+    "Id": "GSA_kwCzR0hTQS03NXY0LW0yNzMtNWo0Oc4ABZLb",
+    "GhsaId": "GHSA-75v4-m273-5j49",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-75v4-m273-5j49"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53725"
+      },
+      {
+        "Url": "https://github.com/parse-community/parse-server/pull/10492"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-75v4-m273-5j49"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-75v4-m273-5j49"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53725"
+      }
+    ],
+    "Description": "### Impact\n\nApps that enable MFA and deny `get` on the `_User` class via Class-Level Permissions could expose sensitive user data through the `/login` and `/verifyPassword` endpoints.\n\nThese endpoints re-fetch the user through the access-controlled query pipeline (CLP, `protectedFields`, auth-adapter sanitizers) before responding. When that re-fetch was denied by the `_User` `get` permission, the server fell back to the raw database row, exposing raw `authData` (including MFA TOTP secrets and recovery codes) and fields hidden by `protectedFields` (when `protectedFieldsOwnerExempt` is `false`).\n\n`/verifyPassword` is the most severe: with only a username and password (no session or MFA token), an attacker who knows a victim's password could retrieve their MFA secret and recovery codes, defeating the second factor.\n\nOnly Parse Server 9.8.0 and later are affected; 8.x and earlier are not. Master and maintenance key requests are unaffected, as they bypass these controls by design.\n\n### Patches\n\nOn a denied re-fetch, `/login` and `/verifyPassword` no longer fall back to the raw row; they return only the user's identity (plus the session token for `/login`). Master and maintenance key callers still receive the full record.\n\n### Workarounds\n\nNone that preserve the intended `_User` `get` restriction. Upgrade to a patched version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T19:35:15Z",
+    "Severity": "MODERATE",
+    "Summary": "parse-server: Endpoints `/login` and `/verifyPassword` disclose MFA secrets and protected fields when `_User` get is denied",
+    "UpdatedAt": "2026-06-19T19:35:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.9.1-alpha.5"
+      },
+      "VulnerableVersionRange": "\u003e= 9.8.0, \u003c 9.9.1-alpha.5"
+    }
+  ]
+}

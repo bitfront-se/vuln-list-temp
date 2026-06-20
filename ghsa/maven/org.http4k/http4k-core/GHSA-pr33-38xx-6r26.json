@@ -1,0 +1,67 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T21:16:07Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-core"
+  },
+  "Advisory": {
+    "DatabaseId": 365338,
+    "Id": "GSA_kwCzR0hTQS1wcjMzLTM4eHgtNnIyNs4ABZMa",
+    "GhsaId": "GHSA-pr33-38xx-6r26",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-pr33-38xx-6r26"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/6a9b44d743"
+      },
+      {
+        "Url": "https://datatracker.ietf.org/doc/html/rfc6265"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.48.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pr33-38xx-6r26"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pr33-38xx-6r26"
+      }
+    ],
+    "Description": "### Impact\n\nThe previous `BasicCookieStorage` did not enforce RFC 6265 scoping rules around cookie domain, path, and `Secure` attribute. A client using a single storage instance to talk to multiple origins could have cookies leak across domains, or have `Secure` cookies sent over plain HTTP — the deprecation message states it bluntly: *\"BasicCookieStorage has no domain/path/scheme scoping and leaks cookies across origins. Use DefaultCookieStorage instead.\"*\n\n**Who is affected:** any client using `BasicCookieStorage` directly with cookies for more than one origin or scheme. Single-origin uses are unaffected.\n\n### Patches\n\n| Line | Fixed in | Edition |\n|------|----------|---------|\n| v6.x (Community) | **6.48.0.0** | Community |\n| v5.x (LTS) | **5.42.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) |\n| v4.x (LTS) | **4.51.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) |\n\nThe fix introduces `DefaultCookieStorage` (RFC 6265 compliant) as the drop-in default; `BasicCookieStorage` is renamed `InsecureCookieStorage` and remains available for callers with a deliberate need for the old behaviour.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately:\n- Use a dedicated `BasicCookieStorage` instance per origin / scheme, or\n- Switch to a separate RFC 6265-compliant cookie store implementation.\n\n### References\n\n- Fix release: [v6.48.0.0](https://github.com/http4k/http4k/releases/tag/6.48.0.0)\n- Cookie storage rewrite: [`6a9b44d743`](https://github.com/http4k/http4k/commit/6a9b44d743)\n- Background: [RFC 6265 — HTTP State Management Mechanism](https://datatracker.ietf.org/doc/html/rfc6265)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:16:07Z",
+    "Severity": "MODERATE",
+    "Summary": "http4k: BasicCookieStorage` (renamed `InsecureCookieStorage`) did not enforce RFC 6265 cookie scoping; new `DefaultCookieStorage` is now the default",
+    "UpdatedAt": "2026-06-19T21:16:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.51.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.51.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.42.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0.0, \u003c 5.42.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.48.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0.0, \u003c 6.48.0.0"
+    }
+  ]
+}

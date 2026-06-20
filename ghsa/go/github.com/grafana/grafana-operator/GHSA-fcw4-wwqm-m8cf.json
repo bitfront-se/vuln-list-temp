@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T20:51:17Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/grafana/grafana-operator"
+  },
+  "Advisory": {
+    "DatabaseId": 365320,
+    "Id": "GSA_kwCzR0hTQS1mY3c0LXd3cW0tbThjZs4ABZMI",
+    "GhsaId": "GHSA-fcw4-wwqm-m8cf",
+    "References": [
+      {
+        "Url": "https://github.com/grafana/grafana-operator/security/advisories/GHSA-fcw4-wwqm-m8cf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-11769"
+      },
+      {
+        "Url": "https://grafana.com/security/security-advisories/cve-2026-11769"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fcw4-wwqm-m8cf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fcw4-wwqm-m8cf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-11769"
+      }
+    ],
+    "Description": "We have released version 5.24.0 of the Grafana Operator. This patch includes a MODERATE severity security fix for a path traversal/privilege escalation vulnerability in the Grafana Operator.\n\n\n### Summary\n\nThe Grafana Operator supports loading dashboards \u0026 library panels using the jsonnet data templating language. The jsonnet expression is evaluated in the context of the operator manager pod.\n### Impact\n\nIt is possible for a malicious user who can create `Dashboard` or `LibraryPanel` resources for a `Grafana` instance to obtain the Kubernetes service account token of the Grafana Operator manager.\n\n### Affected versions\n\nAll Grafana Operator versions \u003c= 5.23\n\n### Solutions and mitigations\n\nAll installations should be upgraded as soon as possible.\n\nAs a workaround, the following ValidatingAdmissionPolicy prevent the creation or modification of jsonnet based resources:\n```\napiVersion: admissionregistration.k8s.io/v1\nkind: ValidatingAdmissionPolicy\nmetadata:\n  name: \"prevent-jsonnet-dashboards\"\nspec:\n  failurePolicy: Fail\n  matchConstraints:\n    resourceRules:\n      - apiGroups: [\"grafana.integreatly.org\"]\n        apiVersions: [\"v1beta1\"]\n        operations: [\"CREATE\", \"UPDATE\"]\n        resources: [\"grafanadashboards\", \"grafanalibrarypanels\"]\n  validations:\n    - expression: \"!has(object.spec.jsonnetLib)\"\n---\napiVersion: admissionregistration.k8s.io/v1\nkind: ValidatingAdmissionPolicyBinding\nmetadata:\n  name: \"prevent-jsonnet-dashboards-clusterwide\"\nspec:\n  policyName: \"prevent-jsonnet-dashboards\"\n  validationActions: [Deny]\n```\n\n\n### Acknowledgement\n\nWe would like to thank [Artem Cherezov](https://github.com/cherez0ff) for responsibly disclosing the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:51:16Z",
+    "Severity": "MODERATE",
+    "Summary": "Grafana Operator: Privilege escalation from namespace admin to cluster admin via GrafanaDashboard jsonnetLib fileName",
+    "UpdatedAt": "2026-06-19T20:51:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.0.0"
+    }
+  ]
+}

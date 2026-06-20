@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T20:46:49Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.Kafka"
+  },
+  "Advisory": {
+    "DatabaseId": 365297,
+    "Id": "GSA_kwCzR0hTQS1tNzQ0LWpocTktcHB3Ns4ABZLx",
+    "GhsaId": "GHSA-m744-jhq9-ppw6",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-m744-jhq9-ppw6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m744-jhq9-ppw6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m744-jhq9-ppw6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54775"
+      }
+    ],
+    "Description": "### Impact\nA CoreWCF service is running and listening on a Kafka topic receiving a null-value record will stop processing new records from that topic.\n\n#### Preconditions\nThe attacker has produce/write permission on a topic that CoreWCF is consuming from. If the broker permits anonymous publishes, no authentication is required. \n\n### Patches\nFixed in CoreWCF v1.8.1 and v1.9.1\n\n### Workarounds\nOnly allow authenticated writes to a topic",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:46:49Z",
+    "Severity": "MODERATE",
+    "Summary": "CoreWCF: Kafka consume pump halts permanently on a Kafka tombstone (null-value record), causing persistent endpoint denial of service.",
+    "UpdatedAt": "2026-06-19T20:46:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.1"
+    }
+  ]
+}

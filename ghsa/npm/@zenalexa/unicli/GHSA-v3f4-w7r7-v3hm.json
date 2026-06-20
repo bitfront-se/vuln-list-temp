@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T21:43:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@zenalexa/unicli"
+  },
+  "Advisory": {
+    "DatabaseId": 365384,
+    "Id": "GSA_kwCzR0hTQS12M2Y0LXc3cjctdjNobc4ABZNI",
+    "GhsaId": "GHSA-v3f4-w7r7-v3hm",
+    "References": [
+      {
+        "Url": "https://github.com/olo-dot-io/Uni-CLI/security/advisories/GHSA-v3f4-w7r7-v3hm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v3f4-w7r7-v3hm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v3f4-w7r7-v3hm"
+      }
+    ],
+    "Description": "## Impact\n\nUni-CLI versions before 0.225.2 exposed the legacy JSON-RPC-over-HTTP MCP transport on loopback without validating browser Origin headers before routing requests. A malicious web page could send a CORS simple POST request, such as text/plain, to the local /mcp endpoint and deliver a JSON-RPC body to the dispatcher. If the user had started the local MCP HTTP transport, that page could drive tools/call requests against the user's local Uni-CLI server.\n\nThe Streamable HTTP transport already enforced this browser-to-localhost boundary. The legacy stateless HTTP path did not, so the two HTTP transports had drifted. This issue is about the browser-to-localhost boundary; it does not change Uni-CLI's local-code-execution trust model.\n\n## Patches\n\nVersion 0.225.2 fixes the issue by moving the Origin policy into a shared guard and applying it before routing in both HTTP transports. Non-loopback browser Origins are rejected with HTTP 403 before health, OAuth, or /mcp dispatch runs. Non-browser clients that omit Origin remain supported.\n\n## Workarounds\n\nUpgrade to 0.225.2 or later. If upgrading is not immediately possible, do not expose the legacy HTTP MCP transport to browser-originated traffic; use the default stdio transport or the Streamable HTTP transport instead.\n\n## Credits\n\nReported privately by Ryan Vonbrubeck ([@dodge1218](https://github.com/dodge1218)).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:43:09Z",
+    "Severity": "HIGH",
+    "Summary": "Uni-CLI: Legacy HTTP MCP transport accepted browser-originated localhost requests",
+    "UpdatedAt": "2026-06-19T21:43:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.225.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.225.2"
+    }
+  ]
+}

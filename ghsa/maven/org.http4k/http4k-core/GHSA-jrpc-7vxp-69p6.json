@@ -1,0 +1,67 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T21:16:00Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-core"
+  },
+  "Advisory": {
+    "DatabaseId": 365336,
+    "Id": "GSA_kwCzR0hTQS1qcnBjLTd2eHAtNjlwNs4ABZMY",
+    "GhsaId": "GHSA-jrpc-7vxp-69p6",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-jrpc-7vxp-69p6"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/0121b05537"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/54c6385615"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.49.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jrpc-7vxp-69p6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jrpc-7vxp-69p6"
+      }
+    ],
+    "Description": "### Impact\n\n`reverseProxy()` and `reverseProxyRouting()` matched configured vhosts by substring on the `Host` header (`Contains` matcher) by default. The intended use of these functions in http4k is **outbound dispatch** (e.g. matching AWS service subdomains, per the `Contains` docstring) and **test-time composition** of fake backend networks. In either of those contexts the matched `Host` is set by the calling application, not by an external attacker, so the loose match has no exploit surface.\n\nIf, however, `reverseProxy()` was deployed as a public-facing inbound HTTP handler — which the function technically supports but is not the documented intent — an external attacker could send `Host: admin.evil.com` and reach a vhost configured as `admin`, bypassing routing-based authorization.\n\nThe `Contains` matcher's docstring explicitly documented this loose behaviour, but because `Contains` was the default, callers who never read the matcher docs would still get the loose behaviour.\n\n**Who is affected:** only deployments using `reverseProxy()` / `reverseProxyRouting()` as a public-facing inbound HTTP handler with two or more configured virtual hosts. The intended outbound / test-time usage is unaffected. If you *did* deploy `reverseProxy()` inbound and rely on multi-vhost routing for authorization, treat upgrade as urgent.\n\n### Patches\n\n| Line | Fixed in | Edition |\n|------|----------|---------|\n| v6.x (Community) | **6.49.0.0** | Community |\n| v5.x (LTS) | **5.42.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if `reverseProxy()` is present in your v5.x line) |\n| v4.x (LTS) | **4.51.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if `reverseProxy()` is present in your v4.x line) |\n\nThe fix changes the default matcher to `Exact`. Existing callers that genuinely need substring matching (e.g. AWS subdomain dispatch) must explicitly pass `matcher = Contains`.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately: wrap your `reverseProxy()` with a host-allow-list filter that requires an exact match against expected vhost names before delegating.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:15:59Z",
+    "Severity": "MODERATE",
+    "Summary": "http4k: `reverseProxy()` defaulted to substring (`Contains`) matching on `Host`; tightened to `Exact`",
+    "UpdatedAt": "2026-06-19T21:16:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.51.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.51.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.42.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0.0, \u003c 5.42.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.49.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0.0, \u003c 6.48.0.0"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T20:46:35Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "python-liquid"
+  },
+  "Advisory": {
+    "DatabaseId": 365293,
+    "Id": "GSA_kwCzR0hTQS12cTJmLXZjYzktajhtds4ABZLt",
+    "GhsaId": "GHSA-vq2f-vcc9-j8mv",
+    "References": [
+      {
+        "Url": "https://github.com/jg-rp/liquid/security/advisories/GHSA-vq2f-vcc9-j8mv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vq2f-vcc9-j8mv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vq2f-vcc9-j8mv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55865"
+      }
+    ],
+    "Description": "### Impact\nGiven a malformed `{% case %}` tag without associated `{% when %}` or `{% else %}` block, and no terminating `{% endcase %}` tag, Python Liquid hangs in an infinite loop at parse time. This allows malicious template authors to craft templates for a denial of service attack.\n\n### Patches\nThe issue is fixed in version 2.2.1 with the correction of the `liquid.TokenStream.eof` attribute. The `kind` and `value` of the special EOF token are now the same, so either can be tested against `liquid.token.TOKEN_EOF`.\n\n### Workarounds\nManually correct the definition of `liquid.TokenStream.eof` before parsing any templates.\n\n```python\nimport liquid\nfrom liquid.token import TOKEN_EOF\n\nliquid.stream.TokenStream.eof = liquid.Token(TOKEN_EOF, TOKEN_EOF, -1, \"\")\n\n# ...\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:46:34Z",
+    "Severity": "MODERATE",
+    "Summary": "Python Liquid: Infinite loop when parsing malformed `{% case %}` tags",
+    "UpdatedAt": "2026-06-19T20:46:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.2.1"
+    }
+  ]
+}

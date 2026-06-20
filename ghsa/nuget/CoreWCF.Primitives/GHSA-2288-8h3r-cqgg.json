@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T20:47:18Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.Primitives"
+  },
+  "Advisory": {
+    "DatabaseId": 365306,
+    "Id": "GSA_kwCzR0hTQS0yMjg4LThoM3ItY3FnZ84ABZL6",
+    "GhsaId": "GHSA-2288-8h3r-cqgg",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-2288-8h3r-cqgg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2288-8h3r-cqgg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2288-8h3r-cqgg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54784"
+      }
+    ],
+    "Description": "### Impact\nWhen the proof key recovered from the RSTR can be observed by a party that is not the legitimate client, that party can impersonate the authenticated Windows principal for the lifetime of the SCT (default ~10 hours) and decrypt or forge any subsequent WS‑SecureConversation traffic that uses keys derived from the SCT.\n\n#### Preconditions\nUsing security mode TransportWithMessageCredential with client credential type Windows, along with session establishment (which triggers use of WS-SecureConversation).\n\n### Patches\nFixed in CoreWCF v1.9.1\n\n### Workarounds\nEnsure communication is protected by SSL/TLS to prevent capturing of SCT negotiation handshake.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:47:17Z",
+    "Severity": "HIGH",
+    "Summary": "CoreWCF: SPNEGO SecurityContextToken proof key wrapped without confidentiality",
+    "UpdatedAt": "2026-06-19T20:47:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    }
+  ]
+}

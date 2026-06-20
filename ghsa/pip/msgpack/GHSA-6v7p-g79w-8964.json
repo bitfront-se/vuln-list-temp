@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T21:42:55Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "msgpack"
+  },
+  "Advisory": {
+    "DatabaseId": 365379,
+    "Id": "GSA_kwCzR0hTQS02djdwLWc3OXctODk2NM4ABZND",
+    "GhsaId": "GHSA-6v7p-g79w-8964",
+    "References": [
+      {
+        "Url": "https://github.com/msgpack/msgpack-python/security/advisories/GHSA-6v7p-g79w-8964"
+      },
+      {
+        "Url": "https://github.com/msgpack/msgpack-python/commit/2c56ddb5d0025ed481d962c0f5d62d19dec7476d"
+      },
+      {
+        "Url": "https://github.com/msgpack/msgpack-python/releases/tag/v1.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6v7p-g79w-8964"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6v7p-g79w-8964"
+      }
+    ],
+    "Description": "### Impact\n\nIf the Unpacker is used repeatedly after an error occurs, the process may crash with a SEGV.\n\nIf the Unpacker is used repeatedly to unpack untrusted input from external sources, it may be vulnerable to a DoS attack.\n\n### Patches\n\nv1.2.1\n\n### Workarounds\n\nUsers should create a new Unpacker instead of reusing the same Unpacker after an error occurs.\n\nApplying the above patch can prevent SEGV, but reusing the Streaming Unpacker after it has encountered an error will not yield correct data. If an error occurs during Streaming Unpacking, the Stream and Streaming Unpacker should be discarded.\n\nTherefore, this is not just a workaround but the correct solution. The above patch only prevents crashes from incorrect usage.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:42:55Z",
+    "Severity": "HIGH",
+    "Summary": "MessagePack for Python: Out-of-bounds read / crash on Unpacker reuse after a caught error",
+    "UpdatedAt": "2026-06-19T21:42:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.2.0"
+    }
+  ]
+}

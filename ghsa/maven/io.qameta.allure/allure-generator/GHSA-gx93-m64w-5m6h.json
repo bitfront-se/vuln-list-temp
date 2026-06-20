@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T21:15:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.qameta.allure:allure-generator"
+  },
+  "Advisory": {
+    "DatabaseId": 365334,
+    "Id": "GSA_kwCzR0hTQS1neDkzLW02NHctNW02aM4ABZMW",
+    "GhsaId": "GHSA-gx93-m64w-5m6h",
+    "References": [
+      {
+        "Url": "https://github.com/allure-framework/allure2/security/advisories/GHSA-gx93-m64w-5m6h"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gx93-m64w-5m6h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gx93-m64w-5m6h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55847"
+      }
+    ],
+    "Description": "## Summary\n\nThe `ansi.js` Handlebars helper in allure-generator passes user-controlled `statusMessage` and `statusTrace` values from test result files through the `ansi-to-html` library and wraps the output in Handlebars `SafeString` without HTML escaping. Since `ansi-to-html` does not escape HTML entities by default, an attacker who can influence test result content (e.g., via crafted JUnit XML failure messages) can inject arbitrary JavaScript that executes when anyone views the generated Allure report.\n\n## Details\n\nThe vulnerability is an incomplete fix — commit `4c64b19` (PR #3271) fixed XSS in `linky.js` and `text-with-links.js` by adding `escapeExpression()`, but the same pattern in `ansi.js` was not addressed.\n\n**Vulnerable sink** — `allure-generator/src/main/javascript/helpers/ansi.js:10-11`:\n```javascript\nexport default function (input) {\n    return new SafeString(ansiConverter.toHtml(input));\n};\n```\n\nThe `AnsiToHtml` constructor at line 4 does not set `escapeForHtml: true`:\n```javascript\nconst ansiConverter = new AnsiToHtml({\n    fg: \"black\",\n    bg: \"black\",\n    newline: true,\n});\n```\n\nThe `ansi-to-html` library (v0.7.2) defaults `escapeForHtml` to `false`, meaning HTML entities in the input pass through unchanged. Wrapping the result in `SafeString` tells Handlebars to skip its auto-escaping, so the raw HTML reaches the browser.\n\n**Template usage** — `allure-generator/src/main/javascript/blocks/status-details/status-details.hbs:7,10`:\n```handlebars\n\u003cpre class=\"status-details__message\"\u003e\u003ccode\u003e{{ansi statusMessage}}\u003c/code\u003e\u003c/pre\u003e\n...\n\u003cpre class=\"{{b 'status-details' 'trace'}}\"\u003e\u003ccode\u003e{{ansi statusTrace}}\u003c/code\u003e\u003c/pre\u003e\n```\n\n**Source** — `plugins/junit-xml-plugin/src/main/java/io/qameta/allure/junitxml/JunitXmlPlugin.java:307-308`:\n```java\nresult.setStatusMessage(element.getAttribute(MESSAGE_ATTRIBUTE_NAME));\nresult.setStatusTrace(element.getValue());\n```\n\nThese values are read directly from XML attributes with no sanitization. The same pattern exists in TRX, xUnit XML, xctest, and Allure1/2 plugins.\n\n**Contrast with the fixed helper** — `linky.js` (post-fix) correctly escapes before wrapping in `SafeString`:\n```javascript\nconst safeText = escapeExpression(text);\nreturn new SafeString(`\u003ca href=\"${safeText}\" ...\u003e${safeText}\u003c/a\u003e`);\n```\n\n## PoC\n\n1. Create a malicious JUnit XML test result file:\n\n```xml\n\u003c?xml version=\"1.0\" encoding=\"UTF-8\"?\u003e\n\u003ctestsuite name=\"XSSTest\" tests=\"1\" failures=\"1\"\u003e\n  \u003ctestcase name=\"xssPayload\" classname=\"com.example.Test\"\u003e\n    \u003cfailure message=\"\u0026lt;img src=x onerror=alert(document.cookie)\u0026gt;\"\u003e\n      Stack trace: \u0026lt;img src=x onerror=alert('statusTrace_XSS')\u0026gt;\n    \u003c/failure\u003e\n  \u003c/testcase\u003e\n\u003c/testsuite\u003e\n```\n\n2. Generate an Allure report:\n\n```bash\nallure generate /path/to/results-with-malicious-xml -o /tmp/allure-report\n```\n\n3. Open the report and navigate to the failed test case:\n\n```bash\nallure open /tmp/allure-report\n```\n\n4. When viewing the test's status details, the `\u003cimg onerror\u003e` payloads execute JavaScript in the viewer's browser.\n\n## Impact\n\n- **Arbitrary JavaScript execution** in the browser of anyone viewing the generated Allure report\n- **Cookie theft, session hijacking** if the report is served from a domain with active sessions (e.g., CI dashboards)\n- **Data exfiltration** — the injected script can read the full report content and send it to an attacker-controlled server\n- **Attack vectors**: A malicious dependency that throws crafted exception messages, a CI pipeline processing test results from untrusted pull requests, or a contributor submitting test files containing XSS payloads\n- Allure reports are commonly hosted on CI/CD platforms (Jenkins, GitLab, GitHub Actions artifacts) where session cookies may be present\n\n## Recommended Fix\n\nConfigure `AnsiToHtml` with `escapeForHtml: true` to escape HTML entities while preserving ANSI-to-HTML conversion:\n\n```javascript\nimport AnsiToHtml from \"ansi-to-html\";\nimport {SafeString} from \"handlebars/runtime\";\n\nconst ansiConverter = new AnsiToHtml({\n    fg: \"black\",\n    bg: \"black\",\n    newline: true,\n    escapeForHtml: true,  // Escape HTML entities in non-ANSI input\n});\n\nexport default function (input) {\n    return new SafeString(ansiConverter.toHtml(input));\n};\n```\n\nThis is the correct approach because it preserves the ANSI escape sequence → HTML conversion (colored output) while ensuring that any non-ANSI HTML in the input is safely escaped. The alternative of using `escapeExpression()` on the input would destroy ANSI sequences before they could be converted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:15:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Allure Report: Stored XSS via unescaped ANSI helper in status message/trace rendering",
+    "UpdatedAt": "2026-06-19T21:15:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.39.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.38.1"
+    }
+  ]
+}

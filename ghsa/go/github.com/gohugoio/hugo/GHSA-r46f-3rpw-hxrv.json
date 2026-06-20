@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T19:18:16Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/gohugoio/hugo"
+  },
+  "Advisory": {
+    "DatabaseId": 365261,
+    "Id": "GSA_kwCzR0hTQS1yNDZmLTNycHctaHhyds4ABZLN",
+    "GhsaId": "GHSA-r46f-3rpw-hxrv",
+    "References": [
+      {
+        "Url": "https://github.com/gohugoio/hugo/security/advisories/GHSA-r46f-3rpw-hxrv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r46f-3rpw-hxrv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r46f-3rpw-hxrv"
+      }
+    ],
+    "Description": "### Impact\n\n  The default `security.http.urls` policy denies requests to loopback, internal,\n  and cloud-metadata IPv4 literals (e.g. `http://127.0.0.1/`,\n  `http://169.254.169.254/`). The deny rule only matched dotted-decimal notation,\n  so alternate IPv4 encodings of the same addresses — integer, hex, or octal,\n  which contain no dot — passed the policy:\n\n  - `http://2130706433/` → `127.0.0.1`\n  - `http://2852039166/` → `169.254.169.254` (cloud metadata)\n  - `http://0x7f000001/`, `http://017700000001/`, `http://0/`\n\n  When a template passes an untrusted or data-derived URL to\n  `resources.GetRemote` and the host platform uses the\n  cgo system resolver, these encodings resolve to the blocked address — allowing\n  build-time server-side requests to loopback and internal services, including the\n  cloud-metadata endpoint in hosted/CI builds. The same check is reused on\n  redirects, so the gap also applies to each redirect hop.\n\n  This affects sites that rely on `security.http.urls` as a security boundary\n  while fetching attacker-influenced remote URLs; it does not affect sites that\n  fully trust the URLs they fetch.\n\n  ### Patches\n\n  Fixed in **v0.163.1**. Integer/hex/octal IPv4 hosts are now canonicalized to\n  dotted-decimal before the policy is applied, so every encoding of an address is\n  treated alike. No configuration change is required.\n\n  ### Workarounds\n\n  Avoid passing untrusted URLs to `resources.GetRemote`, or\n  tighten `security.http.urls` to an explicit allow-list of trusted hosts.\n\n  ### Affected versions\n\n  v0.162.0 – v0.163.0 (patched in v0.163.1).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T19:18:14Z",
+    "Severity": "HIGH",
+    "Summary": "Hugo: security.http.urls deny rules bypassed by alternate IPv4 encodings (SSRF)",
+    "UpdatedAt": "2026-06-19T19:18:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.163.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.162.0, \u003c 0.163.1"
+    }
+  ]
+}

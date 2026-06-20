@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-19T21:15:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tinacms/app"
+  },
+  "Advisory": {
+    "DatabaseId": 365327,
+    "Id": "GSA_kwCzR0hTQS1nNXF4LWg1ZjMtbXAyZs4ABZMP",
+    "GhsaId": "GHSA-g5qx-h5f3-mp2f",
+    "References": [
+      {
+        "Url": "https://github.com/tinacms/tinacms/security/advisories/GHSA-g5qx-h5f3-mp2f"
+      },
+      {
+        "Url": "https://github.com/tinacms/tinacms/pull/7056"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g5qx-h5f3-mp2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g5qx-h5f3-mp2f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55660"
+      }
+    ],
+    "Description": "TinaCMS registers window message listeners — the useTina overlay handler, the OAuth authentication popup handler, and the admin↔preview iframe GraphQL reducer — that act on event.data without verifying event.origin or event.source, and post messages using non-specific target origins. A page the victim visits (or a window in an opener/iframe relationship with a Tina admin) can forge messages to drive the editor, inject preview content, or observe/forge the OAuth popup channel to take over an authenticated editing session.\n\nFixed in [#7056](https://github.com/tinacms/tinacms/pull/7056) by allow-listing trusted origins and verifying event.source (isFromAdmin, isFromTrustedPreviewOrigin), and by posting only to explicit target origins (never \"*\").\n\nNote: the rich-text URL-sanitization issue previously bundled here has been split into its own advisory (GHSA-2vcc-5v34-9jc8) so each vulnerability can receive a distinct CVE.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T21:15:29Z",
+    "Severity": "HIGH",
+    "Summary": "TinaCMS: Cross-origin postMessage handlers and rich-text URL-sanitization bypass enable stored XSS and session takeover",
+    "UpdatedAt": "2026-06-19T21:15:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.6"
+      },
+      "VulnerableVersionRange": "\u003c 2.5.6"
+    }
+  ]
+}

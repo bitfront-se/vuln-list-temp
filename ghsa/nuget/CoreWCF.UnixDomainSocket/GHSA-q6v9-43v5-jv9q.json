@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-19T20:46:59Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CoreWCF.UnixDomainSocket"
+  },
+  "Advisory": {
+    "DatabaseId": 365300,
+    "Id": "GSA_kwCzR0hTQS1xNnY5LTQzdjUtanY5cc4ABZL0",
+    "GhsaId": "GHSA-q6v9-43v5-jv9q",
+    "References": [
+      {
+        "Url": "https://github.com/CoreWCF/CoreWCF/security/advisories/GHSA-q6v9-43v5-jv9q"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6v9-43v5-jv9q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6v9-43v5-jv9q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54778"
+      }
+    ],
+    "Description": "### Impact\nRace condition in POSIX peer identity resolution may attribute one connection’s identity to another (getpwuid/getgrgid non-reentrant) and may crash the host process under contention.\n\n### Patches\nFixed in CoreWCF v1.8.1 and v1.9.1\n\n### Workarounds\nRestrict UDS filesystem permissions so that only trusted local users can connect to the socket path. The race still exists but the attacker pool is constrained.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-19T20:46:58Z",
+    "Severity": "MODERATE",
+    "Summary": "CoreWCF: UnixDomainSocket Non-Reentrant POSIX Identity Resolution",
+    "UpdatedAt": "2026-06-19T20:46:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c 1.9.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.1"
+    }
+  ]
+}
