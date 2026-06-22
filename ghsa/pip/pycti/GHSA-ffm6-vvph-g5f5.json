@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-22T17:01:22Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pycti"
+  },
+  "Advisory": {
+    "DatabaseId": 365580,
+    "Id": "GSA_kwCzR0hTQS1mZm02LXZ2cGgtZzVmNc4ABZQM",
+    "GhsaId": "GHSA-ffm6-vvph-g5f5",
+    "References": [
+      {
+        "Url": "https://github.com/OpenCTI-Platform/opencti/security/advisories/GHSA-ffm6-vvph-g5f5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-21887"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/pycti/PYSEC-2026-118.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ffm6-vvph-g5f5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ffm6-vvph-g5f5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-21887"
+      }
+    ],
+    "Description": "### Summary\nThe OpenCTI platform’s data ingestion feature accepts user-supplied URLs without validation and uses the Axios HTTP client with its default configuration (allowAbsoluteUrls: true). This allows attackers to craft requests to arbitrary endpoints, including internal services, because Axios will accept and process absolute URLs.\n\nThis results in a semi-blind SSRF, as responses may not be fully visible but can still impact internal systems.\n\n### Impact\nOpenCTI’s data ingestion feature can allow an attacker to make the application send HTTP requests to arbitrary internal or external endpoints. This means an attacker could reach internal services that are not exposed publicly, such as Elasticsearch, Redis, or RabbitMQ, and potentially extract sensitive data or manipulate internal components. In cloud environments, the attacker could target metadata services like AWS, Azure, or GCP to obtain credentials and configuration details, which could lead to full compromise of the infrastructure. Even though the SSRF is semi-blind and the attacker may not see the full response, the ability to interact with internal services can enable enumeration, data exfiltration, and in some cases remote code execution if internal APIs expose dangerous functionality.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T17:01:22Z",
+    "Severity": "HIGH",
+    "Summary": "OpenCTI has Semi-Blind SSRF via Unvalidated External URL in Data Ingestion Feature",
+    "UpdatedAt": "2026-06-22T17:01:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.8.16"
+      },
+      "VulnerableVersionRange": "\u003c 6.8.16"
+    }
+  ]
+}
