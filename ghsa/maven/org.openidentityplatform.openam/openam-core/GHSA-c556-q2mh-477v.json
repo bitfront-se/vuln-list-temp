@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-22T20:10:56Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-core"
+  },
+  "Advisory": {
+    "DatabaseId": 365628,
+    "Id": "GSA_kwCzR0hTQS1jNTU2LXEybWgtNDc3ds4ABZQ8",
+    "GhsaId": "GHSA-c556-q2mh-477v",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-c556-q2mh-477v"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c556-q2mh-477v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c556-q2mh-477v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44202"
+      }
+    ],
+    "Description": "OpenAM (Open Identity Platform) is an open-source Identity and Access Management (IAM) platform derived from ForgeRock OpenAM, providing SSO, OAuth2, SAML, and OpenID Connect capabilities. It is widely deployed in enterprise environments as a central authentication gateway.\n\nThe `/sessionservice` endpoint, used for internal session management operations, does not sufficiently restrict the URLs that authenticated users may register for session event notifications. Under certain conditions, this may result in outbound server-side requests to attacker-controlled destinations, potentially exposing session-related data.\n\nThis behavior results in a **server-side request forgery (SSRF)** vulnerability, where an authenticated attacker can trigger outbound requests to arbitrary destinations.\n\n## Credit\n\nDiscovered by **JD-Security SHENYI Team**",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T20:10:55Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenAM Authenticated Server-Side Request Forgery (SSRF) via `/sessionservice`",
+    "UpdatedAt": "2026-06-22T20:10:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}

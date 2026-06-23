@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-22T23:58:20Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "gogs.io/gogs"
+  },
+  "Advisory": {
+    "DatabaseId": 365670,
+    "Id": "GSA_kwCzR0hTQS00ajg5LTJjNGYtNDRjNs4ABZRm",
+    "GhsaId": "GHSA-4j89-2c4f-44c6",
+    "References": [
+      {
+        "Url": "https://github.com/gogs/gogs/security/advisories/GHSA-4j89-2c4f-44c6"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/pull/8312"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/commit/0529d95fc39f2b6d2997b19a2a12e24522684722"
+      },
+      {
+        "Url": "https://github.com/gogs/gogs/releases/tag/v0.14.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4j89-2c4f-44c6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4j89-2c4f-44c6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-52796"
+      }
+    ],
+    "Description": "### Summary\nSpecial template of issue index pattern may cause panic.\n\n### Details\n\nin internal/markup/markup.go\n\n```go\nlink = fmt.Sprintf(`\u003ca href=\"%s\"\u003e%s\u003c/a\u003e`, com.Expand(metas[\"format\"], metas), m)\n```\n\nIssue index pattern is rendered to link with `com.Expand`.\n\nHowever, `com.Expand` is not safe.\n\n```go\ni = strings.Index(template, \"}\")\nif s, ok := match[template[:i]]; ok {\n```\n\nwhen `{` is found but `}` not found, i comes to 1, template[:-1] will be called, and then panicked\n\n![image](https://user-images.githubusercontent.com/38121125/285883766-64873c44-d325-44ce-96a8-badbaadab178.png)\n\nfinally, all pages than contains issue index are unavailable.\n\n### PoC\n\n1. set issue index pattern as follow\n\n![image](https://user-images.githubusercontent.com/38121125/285878157-c5fe848e-0fbd-4fdb-92d4-5eb01df2b8ca.png)\n\n2. add a commit which point to an issue in its msg\n\n![image](https://user-images.githubusercontent.com/38121125/285879545-bc360503-49b9-453f-aa24-9a5c5a45cf10.png)\n\nusing `#1` above\n\n### Impact\n\nDoS that cause part of pages of the specify repo unavailable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T23:58:17Z",
+    "Severity": "LOW",
+    "Summary": "Gogs has DoS in rendering issue index pattern",
+    "UpdatedAt": "2026-06-22T23:58:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.14.3"
+      },
+      "VulnerableVersionRange": "\u003c= 0.14.2"
+    }
+  ]
+}

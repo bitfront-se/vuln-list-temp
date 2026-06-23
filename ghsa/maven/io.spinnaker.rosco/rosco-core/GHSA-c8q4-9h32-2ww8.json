@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-22T20:43:39Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.spinnaker.rosco:rosco-core"
+  },
+  "Advisory": {
+    "DatabaseId": 365636,
+    "Id": "GSA_kwCzR0hTQS1jOHE0LTloMzItMnd3OM4ABZRE",
+    "GhsaId": "GHSA-c8q4-9h32-2ww8",
+    "References": [
+      {
+        "Url": "https://github.com/spinnaker/spinnaker/security/advisories/GHSA-c8q4-9h32-2ww8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c8q4-9h32-2ww8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c8q4-9h32-2ww8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44795"
+      }
+    ],
+    "Description": "### Impact\nThere's an unsafe YAML processing vulnerability that bypasses safe deserialization. This impacts users when when performing:\n* CloudFormation deployments\n* CloudFoundry Baking\n\nThe usage of a non-safe constructor use allows arbitrary loading of Java classes leading to RCE.\n\n### Patches\n 2025.3.3, 2026.0.3 and 2025.4.4.\n\n### Workarounds\nDisable the CloudFormation system and cloudfoundry baking operations.\n\n### Resources\nJoin Spinnaker on Slack for more information!",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T20:43:37Z",
+    "Severity": "HIGH",
+    "Summary": "Spinnaker has uon-safe yaml deserialization, allowing RCE when using specific types",
+    "UpdatedAt": "2026-06-22T20:43:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.0.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.0.0, \u003c 2026.0.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.4.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2025.4.0, \u003c 2025.4.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.3.3"
+      },
+      "VulnerableVersionRange": "\u003c 2025.3.3"
+    }
+  ]
+}

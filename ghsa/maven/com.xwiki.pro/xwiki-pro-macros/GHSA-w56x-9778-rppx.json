@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-22T20:10:00Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.xwiki.pro:xwiki-pro-macros"
+  },
+  "Advisory": {
+    "DatabaseId": 365627,
+    "Id": "GSA_kwCzR0hTQS13NTZ4LTk3NzgtcnBweM4ABZQ7",
+    "GhsaId": "GHSA-w56x-9778-rppx",
+    "References": [
+      {
+        "Url": "https://github.com/xwikisas/xwiki-pro-macros/security/advisories/GHSA-w56x-9778-rppx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w56x-9778-rppx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w56x-9778-rppx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44179"
+      }
+    ],
+    "Description": "### Summary\nThe excerpt-include macro does not properly escape the title of the included page and executes the content of the excerpt with the macro's rights. Therefore, it is vulnerable to XWiki syntax injection via the included page's title and content, allowing remote code execution for any user who can edit a page.\n\n### Details\nThe title of the included page isn't escaped in [ExcerptInclude.xml#L277](https://github.com/xwikisas/xwiki-pro-macros/blob/main/xwiki-pro-macros-ui/src/main/resources/Confluence/Macros/ExcerptInclude.xml#L277). Further, the content of the excerpt macro is rendered to XWiki syntax and output into the macro's content such that it is executed with the macro's rights.\n\n### PoC\n1. As a user without script or programming right, create a page named `Exploit`.\n2. In the edit screen, change the title to `{{async}}{{groovy}}println(\"Hello from Groovy Title!\"){{/groovy}}{{/async}}`.\n3. Set the content to\n```\n{{excerpt-include 0=\"Exploit.WebHome\"}}{{/excerpt-include}}\n\n{{excerpt}}\n  {{async}}{{groovy}}println(\"Hello from Groovy content!\"){{/groovy}}{{/async}}\n{{/excerpt}}\n```\n4. Save and view the page.\n5. If this displays \"Hello from Groovy Title!\" without the surrounding macro code or \"Hello from Groovy content!\", the attack succeeded.\n\n### Impact\nRemote code execution impacts the confidentiality, integrity and availability of the whole XWiki installation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T20:09:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "xwiki-pro-macros has remote code execution from page title and content via excerpt-include macro",
+    "UpdatedAt": "2026-06-22T20:10:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.14.5"
+      },
+      "VulnerableVersionRange": "\u003e= 1.13, \u003c 1.14.5"
+    }
+  ]
+}

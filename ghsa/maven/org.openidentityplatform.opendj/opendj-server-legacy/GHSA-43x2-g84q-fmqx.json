@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-22T21:10:32Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.opendj:opendj-server-legacy"
+  },
+  "Advisory": {
+    "DatabaseId": 365638,
+    "Id": "GSA_kwCzR0hTQS00M3gyLWc4NHEtZm1xeM4ABZRG",
+    "GhsaId": "GHSA-43x2-g84q-fmqx",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenDJ/security/advisories/GHSA-43x2-g84q-fmqx"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-43x2-g84q-fmqx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-43x2-g84q-fmqx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46495"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nA Deserialization of Untrusted Data (CWE-502) issue in OpenDJ's JMX RMI connector allows an unauthenticated remote attacker to deserialize arbitrary Java objects on the server. The vulnerability exists because the platform reads and processes attacker-controlled bytes prior to authentication. This affects OpenDJ Community Edition through 5.1.0. This has been patched in version 5.1.1.\n\n## Impact\nThis impacts all current OpenDJ releases where the JMX Connection Handler is enabled. While disabled by default, it is frequently enabled in practice for monitoring integrations. Exploitation requires TCP reachability to the configured listener and does not require authentication, prior privileges, or client certificates. Successful exploitation results in unauthenticated Remote Code Execution (RCE), with the severity depending on the runtime classpath and Java version. Unauthenticated RCE was demonstrated on the OpenDJ 4.4.15 (JDK 11 + Jackson 2.12.6.1).\n\n## Patch\nThis has been patched in OpenDJ Community Edition version 5.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T21:10:31Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenDJ Pre-Auth RCE via Java Deserialization in JMX RMI",
+    "UpdatedAt": "2026-06-22T21:10:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 5.1.0"
+    }
+  ]
+}

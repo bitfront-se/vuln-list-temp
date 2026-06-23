@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-22T19:59:36Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-core-rest"
+  },
+  "Advisory": {
+    "DatabaseId": 365625,
+    "Id": "GSA_kwCzR0hTQS0ydmc4LXE0YzItNWN3M84ABZQ5",
+    "GhsaId": "GHSA-2vg8-q4c2-5cw3",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-2vg8-q4c2-5cw3"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8984-9gww-h52x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2vg8-q4c2-5cw3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2vg8-q4c2-5cw3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41573"
+      }
+    ],
+    "Description": "OpenAM (Open Identity Platform) is an open-source IAM platform providing SSO, OAuth2, SAML, and OpenID Connect capabilities. The CREST REST API layer exposes user query endpoints under `/json/{realm}/users`. In `IdentityResourceV1.queryCollection()`, the HTTP query parameter `_queryId` is passed to a `CrestQuery` object with `escapeQueryId` **explicitly set to `false`**, bypassing the escape protection introduced as part of the CVE-2021-29156 fix. The unescaped value flows directly to `DJLDAPv3Repo.getFilter()` where it is concatenated into an LDAP filter string without sanitization, enabling authenticated attackers to inject arbitrary LDAP metacharacters for user enumeration and blind LDAP injection.\n\n\n## Affected Endpoint\n\n| Endpoint | Auth Required | Injection Parameter |\n|----------|--------------|---------------------|\n| `GET /openam/json/{realm}/users?_queryId=\u003cINJECTION\u003e` | SSO Token | `_queryId` |\n| `GET /openam/json/{realm}/groups?_queryId=\u003cINJECTION\u003e` | SSO Token (TBD) | `_queryId` |\n\n## Background: CVE-2021-29156\n\nCVE-2021-29156 was a pre-authentication LDAP injection in OpenAM's Webfinger endpoint, where user-supplied input reached `DJLDAPv3Repo.getFilter()` unescaped. The fix introduced the `escapeQueryId` flag in `CrestQuery` (defaulting to `true`) and added `Filter.escapeAssertionValue()` in the filter-building path:\n\n## Credit\n\nDiscovered by **JD-Security SHENYI Team**",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T19:59:33Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM has LDAP Injection via `_queryId` Parameter",
+    "UpdatedAt": "2026-06-22T19:59:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}
