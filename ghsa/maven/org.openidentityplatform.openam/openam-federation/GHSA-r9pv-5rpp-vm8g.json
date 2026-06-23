@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-23T17:33:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-federation"
+  },
+  "Advisory": {
+    "DatabaseId": 365784,
+    "Id": "GSA_kwCzR0hTQS1yOXB2LTVycHAtdm04Z84ABZTY",
+    "GhsaId": "GHSA-r9pv-5rpp-vm8g",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-r9pv-5rpp-vm8g"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r9pv-5rpp-vm8g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r9pv-5rpp-vm8g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45049"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nAn Information Exposure Through Sent Data (CWE-201) issue in OpenAM's Cross-Domain Single Sign-On (CDSSO) servlet allows a logged-in user's raw OpenAM session token to be POSTed to an attacker-controlled URL. This impacts OpenAM Community Edition through version 16.0.6. This issue was patched in version 16.1.1.\n\nAn attacker who can induce a logged-in victim to visit a crafted URL may receive the victim's session credential, which could enable session hijacking.\n\n## Impact\nOpenAM deployments through version 16.0.6 that have CDSSO enabled are potentially affected. The CDSSO component is commonly enabled in multi-domain deployments. Exploitation requires user interaction — an authenticated user must be induced to visit an attacker-crafted URL — and is further gated on a non-default configuration being absent.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T17:33:14Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM Unauthenticated Session Hijacking via Information Exposure in CDCServlet",
+    "UpdatedAt": "2026-06-23T17:33:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}

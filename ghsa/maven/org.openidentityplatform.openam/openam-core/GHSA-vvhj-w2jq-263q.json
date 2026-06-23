@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-23T17:33:02Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-core"
+  },
+  "Advisory": {
+    "DatabaseId": 365783,
+    "Id": "GSA_kwCzR0hTQS12dmhqLXcyanEtMjYzcc4ABZTX",
+    "GhsaId": "GHSA-vvhj-w2jq-263q",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-vvhj-w2jq-263q"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vvhj-w2jq-263q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vvhj-w2jq-263q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45048"
+      }
+    ],
+    "Description": "## Summary\n\nDescription\n\nAn insufficient authorization (CWE-285) and information exposure (CWE-200) issue in OpenAM's session management endpoint allows a low-privileged authenticated user to retrieve active session credentials belonging to other users, including those with higher privileges. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\nThis may be related to CVE-2021-4201, a similar issue patched in ForgeRock Access Management, a separate product sharing a common codebase ancestry.\n\n## Impact\n\nOpenAM Community Edition deployments through version 16.0.6 using stateful session storage and exposing the session management endpoint are potentially affected. The endpoint does not enforce ownership or privilege checks when querying session information, meaning an authenticated user may retrieve active session credentials for arbitrary users. Successful exploitation requires a valid low-privilege session and knowledge of a target user's identity identifier, which may be obtainable through normal platform functionality.\n\nIf credentials belonging to a highly privileged account are obtained, this could enable further administrative actions within the platform\n\n## Patch\n\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T17:33:00Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM Authenticated Privilege Escalation via Raw Token Disclosure Session RPC",
+    "UpdatedAt": "2026-06-23T17:33:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}
