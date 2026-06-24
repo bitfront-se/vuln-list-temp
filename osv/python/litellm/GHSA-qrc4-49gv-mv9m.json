@@ -1,15 +1,12 @@
 {
-  "id": "GHSA-4xpc-pv4p-pm3w",
-  "modified": "2026-06-23T18:29:29.402990456Z",
-  "published": "2026-06-16T23:38:26Z",
+  "id": "GHSA-qrc4-49gv-mv9m",
+  "modified": "2026-06-23T23:00:14.810889713Z",
+  "published": "2026-05-21T21:30:36Z",
   "aliases": [
-    "CVE-2026-49468"
+    "CVE-2026-47101"
   ],
-  "related": [
-    "CGA-g6cx-6c7p-wp3m"
-  ],
-  "summary": "LiteLLM: Authentication Bypass via Host Header Injection",
-  "details": "### Impact\n\nA Host-header parsing flaw in the LiteLLM proxy could, under specific conditions, allow unauthenticated access to protected management routes.\n\nThe auth layer derived the effective route from `request.url.path` in `litellm/proxy/auth/auth_utils.py::get_request_route()`, which Starlette reconstructs from the `Host` header. A crafted `Host` could therefore make the auth gate evaluate a different route from the one FastAPI dispatched.\n\n**Most deployments are not affected.** The bypass is blocked by any upstream layer that validates or normalizes `Host`, such as:\n\n- a CDN or WAF, such as Cloudflare\n- a reverse proxy with `server_name` allowlists\n- a host-based load balancer\n\n**LiteLLM Cloud customers are not affected.**\n\n### Patches\n\nFixed in **`1.84.0`**. Upgrade to `1.84.0` or later. No configuration change is required.\n\n### Workarounds\n\nIf upgrading is not immediately possible, place the proxy behind an upstream component that validates or normalizes the `Host` header before forwarding (a CDN/WAF, a reverse proxy with explicit `server_name` allowlists, or a cloud load balancer with host-based routing rules), or otherwise restrict network access to the proxy listener.\n\n### References\n\n- Patched release: [`v1.84.0`](https://github.com/BerriAI/litellm/releases/tag/v1.84.0)\n\n**Discovery Credit**: Le The Thang (KCSC) and Kim Ngoc Chung (One Mount Group)",
+  "summary": "LiteLLM allows an authenticated internal_user to create API keys with access to routes that their role does not permit",
+  "details": "LiteLLM prior to 1.83.14 allows an authenticated internal_user to create API keys with access to routes that their role does not permit. When generating a key, the allowed_routes field is stored without verifying that the specified routes fall within the user's own permissions. A key created with access to admin-only routes can then be used to reach those routes successfully, bypassing the role-based access controls that would otherwise block the request, enabling full privilege escalation from internal_user to proxy_admin.",
   "affected": [
     {
       "package": {
@@ -25,7 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.84.0"
+              "fixed": "1.83.14"
             }
           ]
         }
@@ -1131,7 +1128,6 @@
         "1.83.11",
         "1.83.12",
         "1.83.13",
-        "1.83.14",
         "1.83.2",
         "1.83.3",
         "1.83.4",
@@ -1140,9 +1136,6 @@
         "1.83.7",
         "1.83.8",
         "1.83.9",
-        "1.84.0.dev1",
-        "1.84.0.dev2",
-        "1.84.0rc1",
         "1.9.0",
         "1.9.1",
         "1.9.2",
@@ -1152,14 +1145,30 @@
         "1.9.dev0"
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/06/GHSA-4xpc-pv4p-pm3w/GHSA-4xpc-pv4p-pm3w.json"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/05/GHSA-qrc4-49gv-mv9m/GHSA-qrc4-49gv-mv9m.json"
       }
     }
   ],
   "references": [
     {
+      "type": "ADVISORY",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47101"
+    },
+    {
       "type": "WEB",
-      "url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-4xpc-pv4p-pm3w"
+      "url": "https://github.com/BerriAI/litellm/commit/2220f3076ac89bd2a2e3439acf57dcfbec2434c9"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/BerriAI/litellm/commit/5190bd07eb23a037745d86328096f54378f1614a"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/BerriAI/litellm/commit/d910a95661fce3cdd36f3b06c03ecf9c46c6457c"
+    },
+    {
+      "type": "WEB",
+      "url": "https://gist.github.com/13ph03nix/9ec616e1fdc77b3673509c60206e827f"
     },
     {
       "type": "PACKAGE",
@@ -1167,7 +1176,19 @@
     },
     {
       "type": "WEB",
-      "url": "https://github.com/BerriAI/litellm/releases/tag/v1.84.0"
+      "url": "https://github.com/BerriAI/litellm/releases/tag/v1.83.14-stable"
+    },
+    {
+      "type": "WEB",
+      "url": "https://huntr.com/bounties/8e75edfb-ff05-4e63-bfca-2d93d03fb3b9"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.obsidiansecurity.com/blog/litellm-privilege-escalation-rce"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.vulncheck.com/advisories/litellm-privilege-escalation-via-api-key-generation"
     }
   ]
 }
