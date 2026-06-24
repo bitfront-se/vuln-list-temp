@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-458j-xx4x-4375"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-56761"
       }
     ],
     "Description": "## Summary\n\nImproper handling of JSX attribute names in hono/jsx allows malformed attribute keys to corrupt the generated HTML output.\n\nWhen untrusted input is used as attribute keys during server-side rendering, specially crafted keys can break out of attribute or tag boundaries and inject unintended HTML.\n\n## Details\n\nWhen rendering JSX elements to HTML strings, attribute values are escaped, but attribute names (keys) were previously inserted into the output without validation.\n\nIf an attribute name contains characters such as `\"`, `\u003e`, or whitespace, it can alter the structure of the generated HTML.\n\nFor example, malformed attribute names can:\n\n* Break out of the current attribute and introduce unintended additional attributes\n* Break out of the current HTML tag and inject new elements into the output\n\nThis issue arises when untrusted input (such as query parameters or form data) is used as JSX attribute keys during server-side rendering.\n\n## Impact\n\nAn attacker who can control attribute keys used in JSX rendering may inject unintended attributes or HTML elements into the generated output.\n\nThis may lead to:\n\n* Injection of unexpected HTML attributes\n* Corruption of the HTML structure\n* Potential cross-site scripting (XSS) if combined with unsafe usage patterns\n\nThis issue affects applications that pass untrusted input as JSX attribute keys during server-side rendering.",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-04-16T01:02:24Z",
     "Severity": "MODERATE",
     "Summary": "hono Improperly Handles JSX Attribute Names Allows HTML Injection in hono/jsx SSR",
-    "UpdatedAt": "2026-04-16T01:02:26Z",
+    "UpdatedAt": "2026-06-24T13:10:58Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 4.3,

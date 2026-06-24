@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-24T17:25:29Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-auth-webauthn"
+  },
+  "Advisory": {
+    "DatabaseId": 366049,
+    "Id": "GSA_kwCzR0hTQS02Yzk5LTg3ZnItNnE3cs4ABZXh",
+    "GhsaId": "GHSA-6c99-87fr-6q7r",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-6c99-87fr-6q7r"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6c99-87fr-6q7r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6c99-87fr-6q7r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45051"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nA deserialization of untrusted data vulnerability (CWE-502) exists in OpenAM's WebAuthn authentication module. Under certain conditions, this may allow an attacker to achieve arbitrary code execution in the context of the application server. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\nThis is not the default configuration. Exploitation requires that an attacker has previously been able to write attacker-controlled data to a storage attribute read by the WebAuthn module, and that the WebAuthn authentication flow is reachable.\n\n## Impact\nWebAuthn is a modern shipped module, but the vulnerable configuration requires either the default storage attribute to become attacker-writable, or the WebAuthn userAttribute to be set to an attacker-writable string attribute. That is not the default, but it is feasible in deployments because the product exposes the storage attribute as a free-form admin setting and does not warn or enforce that it must be server-managed and non-user-writable. This may exist through delegated administration, provisioning, write access to the backing LDAP/directory user record, legacy REST self-registration, or unsafe reconfiguration of `userAttribute`.\n\nIn any deployment where the attribute becomes user writable, an attacker can execute arbitrary code as the application server user. \n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-24T17:25:28Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenAM: Pre-auth RCE via Java Deserialization in WebAuthn Authenticator Storage",
+    "UpdatedAt": "2026-06-24T17:25:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}

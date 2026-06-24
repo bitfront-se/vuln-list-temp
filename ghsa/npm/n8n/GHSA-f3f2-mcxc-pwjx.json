@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-f3f2-mcxc-pwjx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-56351"
       }
     ],
     "Description": "## Impact\nAn authenticated user with permission to create or modify workflows and access to a database credential could unknowingly create a workflow that was vulnerable to SQL injection, even while expecting inputs to be handled safely through escaped parameters. By supplying specially crafted table or column names, an attacker could inject arbitrary SQL because the MySQL, PostgreSQL, and Microsoft SQL nodes did not escape identifier values when constructing queries, enabling injection through node configuration parameters.\n\n## Patches\nThe issue has been fixed in n8n version 2.4.0. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Limit workflow creation and editing permissions to fully trusted users only.\n- Disable the MySQL, PostgreSQL, and Microsoft SQL nodes by adding `n8n-nodes-base.mySql`, `n8n-nodes-base.postgres`, and `n8n-nodes-base.microsoftSql` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.\n\n## Credit\n\nReporter: Pawel Bednarz from the NATO Cyber Security Centre (NCSC)",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-02-26T15:56:31Z",
     "Severity": "MODERATE",
     "Summary": "n8n: SQL Injection in MySQL, PostgreSQL, and Microsoft SQL nodes",
-    "UpdatedAt": "2026-02-26T15:56:31Z",
+    "UpdatedAt": "2026-06-24T13:09:00Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 8.2,
