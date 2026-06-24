@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-23T21:22:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "tools.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 365852,
+    "Id": "GSA_kwCzR0hTQS1oZ2o2LTc4MjYtcjdtNc4ABZUc",
+    "GhsaId": "GHSA-hgj6-7826-r7m5",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-hgj6-7826-r7m5"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/pull/5951"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/1f5a1037b1e9e05920e755cb35f198bcd46667e4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hgj6-7826-r7m5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hgj6-7826-r7m5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54514"
+      }
+    ],
+    "Description": "## Summary\n`JDKFromStringDeserializer` constructed `InetSocketAddress` with `new InetSocketAddress(host, port)`, which performs eager DNS name resolution for hostname inputs at deserialization time. An application that binds untrusted JSON into a type containing an `InetSocketAddress` field issues an attacker-chosen DNS query during `readValue`, before any application-level validation or connect logic. The fix uses `InetSocketAddress.createUnresolved(host, port)`, deferring DNS to an explicit connect.\n\n## Impact\nAn attacker controlling JSON deserialized into an `InetSocketAddress`-bearing type can force outbound DNS lookups for attacker-chosen hostnames at deserialization time (SSRF / DNS-based out-of-band interaction / internal-resolver probing), purely from binding.\n\n## Affected / Patched (verified via `git tag --contains` on `1f5a103`)\n- 2.18 line: `\u003e= 2.18.0, \u003c 2.18.8` -\u003e fixed in **2.18.8**\n- 2.19-2.21 line: `\u003e= 2.19.0, \u003c 2.21.4` -\u003e fixed in **2.21.4**\n- 3.x line: `\u003e= 3.0.0, \u003c 3.1.4` -\u003e fixed in **3.1.4**\n\n## Severity / CWE\nMaintainer: minor. Reporter: LOW. CWE-918 (SSRF).\n\n## Upstream fix\nFasterXML/jackson-databind#5951 (\"Improve InetSocketAddress deserialization\"). Released 2026-06-04 in 2.18.8 / 2.21.4 / 3.1.4.\n\n## Credits\nOmkhar Arasaratnam (@omkhar) - finder.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T21:22:54Z",
+    "Severity": "MODERATE",
+    "Summary": "jackson-databind: InetSocketAddress deserialization triggers eager DNS resolution (SSRF)",
+    "UpdatedAt": "2026-06-23T21:22:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.1.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.21.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.19.0, \u003c 2.21.4"
+    }
+  ]
+}

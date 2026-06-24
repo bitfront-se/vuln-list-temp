@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-23T21:22:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "tools.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 365851,
+    "Id": "GSA_kwCzR0hTQS1ybWo3LTJ2eHEtM2c5Zs4ABZUb",
+    "GhsaId": "GHSA-rmj7-2vxq-3g9f",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-rmj7-2vxq-3g9f"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/issues/5981"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/issues/5983"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/pull/5984"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/01d1692c8d0ed03e51a0e3c4f8a9e6908e4931e5"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/24529da29fdf46ff94ca38de9ebf31cd188f5e8e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rmj7-2vxq-3g9f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rmj7-2vxq-3g9f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54513"
+      }
+    ],
+    "Description": "## Summary\n`BasicPolymorphicTypeValidator.Builder.allowIfSubTypeIsArray()` allowlists any array type based only on `clazz.isArray()`, without validating the array's component (element) type against the configured allowlist. A PTV built with `allowIfSubTypeIsArray()` plus an explicit concrete-type allowlist therefore still permits `EvilType[]` even though `EvilType` is not allowlisted. When Jackson deserializes the elements and no per-element type IDs are present, it instantiates the component type directly with no further PTV check, bypassing the allowlist.\n\n## Impact\nApplications using `BasicPolymorphicTypeValidator` with `allowIfSubTypeIsArray()` as a safeguard get no protection for concrete array component types; an attacker controlling JSON can instantiate non-allowlisted types via an array wrapper, re-opening the gadget-instantiation risk PTV is meant to prevent.\n\n## Affected / Patched (verified via `git tag --contains`)\n- 2.18 line: `\u003e= 2.10.0, \u003c 2.18.8` -\u003e fixed in **2.18.8**\n- 2.19-2.21 line: `\u003e= 2.19.0, \u003c 2.21.4` -\u003e fixed in **2.21.4**\n- 3.x line: `\u003e= 3.0.0, \u003c 3.1.4` -\u003e fixed in **3.1.4**\n\n`PolymorphicTypeValidator` was added in 2.10.0 so vulnerability N/A for versions prior to that.\n\n## Severity / CWE\nMaintainer: significant. Reporter: HIGH. CWE-184 (Incomplete List of Disallowed Inputs); related CWE-502.\n\n## Upstream fix\nFasterXML/jackson-databind#5981; fix PR #5983 (`24529da`), 2.18 backport PR #5984 (`01d1692`). Released 2026-06-04 in 2.18.8 / 2.21.4 / 3.1.4.\n\n## Credits\nOmkhar Arasaratnam (@omkhar) - finder.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T21:22:15Z",
+    "Severity": "HIGH",
+    "Summary": "jackson-databind has an array subtype allowlist bypass in BasicPolymorphicTypeValidator (allowIfSubTypeIsArray)",
+    "UpdatedAt": "2026-06-23T21:22:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.1.4"
+    }
+  ]
+}

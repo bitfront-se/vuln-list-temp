@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-23T21:59:04Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty.incubator:netty-incubator-codec-ohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 365870,
+    "Id": "GSA_kwCzR0hTQS1yNmZqLTg2OWgtNGY2cc4ABZUu",
+    "GhsaId": "GHSA-r6fj-869h-4f6q",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/security/advisories/GHSA-r6fj-869h-4f6q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48480"
+      },
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/commit/28f977f293591a4e837bd59ceb441f9f70349915"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r6fj-869h-4f6q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r6fj-869h-4f6q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48480"
+      }
+    ],
+    "Description": "The codec-ohttp implementation of draft-ietf-ohai-chunked-ohttp does not verify that a cryptographically-signed final chunk was received before the outer HTTP body terminates. An on-path adversary (the OHTTP relay itself, or any MITM on the relay↔gateway or relay↔client transport) can forward a prefix of a legitimate chunked-OHTTP message—cut at a non-final chunk boundary—and close the outer body cleanly, producing no decryption error and no exception in the receiving application.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T21:59:03Z",
+    "Severity": "MODERATE",
+    "Summary": "OHttpVersionChunkDraft: Missing Final-Chunk Enforcement Leads to Undetected Stream Truncation",
+    "UpdatedAt": "2026-06-23T21:59:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.22.Final"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.22.Final"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-23T21:21:13Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.fasterxml.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 365849,
+    "Id": "GSA_kwCzR0hTQS0zd3JyLTdxcGYtMnByaM4ABZUZ",
+    "GhsaId": "GHSA-3wrr-7qpf-2prh",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-3wrr-7qpf-2prh"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/issues/3447"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/a1fa4ae4ecf5cee16da465985f135f3e81816f8c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3wrr-7qpf-2prh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3wrr-7qpf-2prh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50193"
+      }
+    ],
+    "Description": "### Impact\n\nPotential Denial-of-Service when attacker sends deeply nested JSON if (and only if) service:\n\n1. Reads deeply nested (1000s of levels) JSON as `JsonNode` (ObjectMapper.readTree())\n2. Writes out same (or modifided) node using `JsonNode.toString()`\n\nwhich can consume significant amount of resources with concurrent relatively small requests (1000 nested arrays is 2kB).\n\n### Patches\n\nFixed in 2.14.0 via https://github.com/FasterXML/jackson-databind/issues/3447.\n\n### Workarounds\n\nAvoid serializing `JsonNode` using `toString()`: use ObjectMapper.writeValueAsString(node)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T21:21:12Z",
+    "Severity": "MODERATE",
+    "Summary": "jackson-databind: Deeply nested JsonNode throws StackOverflowError for toString()",
+    "UpdatedAt": "2026-06-23T21:21:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.14.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c= 2.13.5"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-23T21:21:40Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "tools.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 365850,
+    "Id": "GSA_kwCzR0hTQS1qM3J2LTQzajQtYzdxbc4ABZUa",
+    "GhsaId": "GHSA-j3rv-43j4-c7qm",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-j3rv-43j4-c7qm"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/issues/5988"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/434d6c511de7fdd9872f29157aafb6162d12d8d5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j3rv-43j4-c7qm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j3rv-43j4-c7qm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54512"
+      }
+    ],
+    "Description": "`jackson-databind`'s `PolymorphicTypeValidator` (PTV) is the primary safety mechanism guarding polymorphic deserialization. When polymorphic typing is enabled and a type identifier contains generic parameters (i.e. the type ID string contains `\u003c`), `DatabindContext._resolveAndValidateGeneric()` validates **only the raw container class name** (the substring before `\u003c`) against the configured PTV.\n\nIf the container type is approved, the method parses the full canonical type string via `TypeFactory.constructFromCanonical()` and returns the fully parameterized type **without ever validating the nested type arguments** against the PTV. The nested type arguments are then resolved, instantiated, and populated as beans during deserialization.\n\nAn attacker who controls the type ID can therefore place a denied class as a generic type parameter of an allowed container — for example `java.util.ArrayList\u003ccom.evil.Gadget\u003e` when only `java.util.ArrayList` is allow-listed. The container passes the PTV check; `com.evil.Gadget` is loaded via `Class.forName(name, true, loader)`, instantiated, and its properties are set from attacker-controlled JSON. This completely bypasses an explicitly configured PTV allow-list.\n\nThis is the same vulnerability class responsible for the historical sequence of jackson-databind deserialization CVEs; here it manifests as a validator bypass rather than a missing deny-list entry.\n\n\n## Impact\n\n- **Bypass of the PTV allow-list**, including the recommended `BasicPolymorphicTypeValidator` configured with name-prefix allow rules.\n- **Arbitrary class instantiation** of any type assignable to the container's element/parameter position, with attacker-controlled property values (setter/field injection).\n- **Potential unauthenticated remote code execution** when a class with exploitable side effects (JNDI lookup, JDBC/connection-pool gadgets,`TemplatesImpl`-style loaders, etc.) is present on the classpath.\n\nApplications that accept untrusted JSON and rely on a configured PTV — the documented, security-conscious configuration — are affected.\n\n\n## Proof of Concept\n\nConfiguration restricting polymorphic deserialization to a single safe container:\n\n```java\nBasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()\n        .allowIfSubType(\"java.util.ArrayList\")\n        .build();\n\nObjectMapper mapper = JsonMapper.builder()\n        .polymorphicTypeValidator(ptv)\n        .build();\n```\n\nMalicious payload (`Wrapper.value` is `Object` with `@JsonTypeInfo(use = Id.CLASS, include = As.WRAPPER_ARRAY)`):\n\n```json\n{\"value\":[\"java.util.ArrayList\u003ccom.evil.EvilGadget\u003e\",[{\"cmd\":\"calc.exe\"}]]}\n```\n\nOn vulnerable versions, `com.evil.EvilGadget` is instantiated and its `cmd` property is set, despite only `java.util.ArrayList` being allow-listed. On `2.18.8` / `2.21.4` / `3.1.4` the deserialization throws `InvalidTypeIdException` before instantiation.\n\n**Variant payloads** (all bypass an `ArrayList`/`HashMap` allow-list):\n\n| Type ID | Smuggled type position |\n|---|---|\n| `java.util.ArrayList\u003cEvil\u003e` | list element |\n| `java.util.HashMap\u003cEvil,String\u003e` | map key |\n| `java.util.HashMap\u003cString,Evil\u003e` | map value |\n| `java.util.ArrayList\u003cjava.util.ArrayList\u003cEvil\u003e\u003e` | nested element |\n| `java.util.ArrayList\u003cEvil[]\u003e` | array element |\n\n---\n\n## Patches\n\nFixed in **2.18.8**, **2.21.4** and **3.1.4** via the changes for [FasterXML/jackson-databind#5988](https://github.com/FasterXML/jackson-databind/issues/5988), commit `434d6c511`. The fix adds recursive validation of each non-trivial type parameter (and array element types appearing as parameters) through the full PTV chain, with documented exemptions for `Object` (wildcard resolution) and `Enum` types.\n\n`PolymorphicTypeValidator` was added in 2.10.0 so vulnerability N/A for versions prior to that.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T21:21:38Z",
+    "Severity": "HIGH",
+    "Summary": "jackson-databind has a PolymorphicTypeValidator bypass via generic type parameters that allows arbitrary class instantiation",
+    "UpdatedAt": "2026-06-23T21:21:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.1.3"
+    }
+  ]
+}
