@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-25T17:22:26Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-radius"
+  },
+  "Advisory": {
+    "DatabaseId": 366623,
+    "Id": "GSA_kwCzR0hTQS0zODZqLTZtODYtNzhmOc4ABZgf",
+    "GhsaId": "GHSA-386j-6m86-78f9",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-386j-6m86-78f9"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-386j-6m86-78f9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-386j-6m86-78f9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46560"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nAn Improper Verification of Cryptographic Signature (CWE-347) issue in OpenAM's RADIUS authentication module allows an unauthenticated network attacker to spoof an Access-Accept response and obtain an OpenAM session for any RADIUS username, without knowing the configured shared secret. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\nThe RADIUS client opens an unconnected datagram socket and treats the first UDP datagram delivered to its source port as authoritative. The receive path does not check the source IP/port, does not match the response identifier to the outstanding request, and does not verify the Response Authenticator (RFC 2865 §3); the RFC 2869 Message-Authenticator is neither sent nor required. Any non-Reject/non-Challenge packet is treated as success, so a forged Access-Accept is accepted as a valid login.\n\n## Impact\nOpenAM Community Edition deployments through version 16.0.6 where an administrator has enabled a RADIUS module instance on a login chain are potentially affected. An attacker either races the real server on-path, or off-path sprays forged Access-Accept packets at the OpenAM client port. Because the client performs no verification of the response authenticator, no MD5 chosen-prefix forgery is required, which is is materially stronger than the BlastRADIUS family (CVE-2024-3596), in which an attacker must still forge a valid authenticator.\n\nSuccessful exploitation yields pre-authentication impersonation of any RADIUS-mapped user in any affected realm. The resulting session is indistinguishable from a legitimate RADIUS login and carries the named principal's privileges.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T17:22:24Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM: Unauthenticated Authentication Bypass via RADIUS Spoofing",
+    "UpdatedAt": "2026-06-25T17:22:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 16.1.1"
+    }
+  ]
+}

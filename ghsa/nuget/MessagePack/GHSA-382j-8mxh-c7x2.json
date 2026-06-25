@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-25T18:35:49Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 366664,
+    "Id": "GSA_kwCzR0hTQS0zODJqLThteGgtYzd4Ms4ABZhI",
+    "GhsaId": "GHSA-382j-8mxh-c7x2",
+    "References": [
+      {
+        "Url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/security/advisories/GHSA-382j-8mxh-c7x2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48502"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-382j-8mxh-c7x2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-382j-8mxh-c7x2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48502"
+      }
+    ],
+    "Description": "## Summary\n\n`MessagePackReader.ReadDateTime()` can allocate stack memory based on an attacker-controlled MessagePack extension length. In the slow path for timestamp extension parsing, the computed `tokenSize` includes the extension body length from the wire and is used in a `stackalloc` operation before the extension length is validated as one of the valid timestamp sizes.\n\nA very small payload can claim a large timestamp extension body and cause a stack allocation large enough to trigger an uncatchable `StackOverflowException`, terminating the host process.\n\n## Impact\n\nApplications are affected when they deserialize untrusted payloads into types containing `DateTime` values. This path is available through the standard formatter set and does not require opting into typeless serialization, LZ4 compression, Unity-specific resolvers, or other specialized features.\n\n`MessagePackSecurity.UntrustedData` and `MaximumObjectGraphDepth` do not mitigate this issue because the crash is caused by a single-frame stack allocation, not by object graph recursion.\n\nAn attacker can send a MessagePack timestamp extension header with an oversized body length and insufficient body bytes. The reader enters the slow path, attempts to stack-allocate a buffer sized from that declared length, and can terminate the process before a catchable serialization exception is thrown.\n\n## Affected components\n\n- Package: `MessagePack`\n- API: `MessagePackReader.ReadDateTime`\n- Data types: `DateTime` and formatter paths that call `ReadDateTime`\n- Finding IDs: `MESSAGEPACKCSHARP-020`, related stack allocation finding `MESSAGEPACKCSHARP-CROW-MEM-001`\n\n## Patches\n\nFixes are prepared and will be released in coordinated patch versions.\n\nUpgrade guidance:\n\n1. Upgrade `MessagePack` to the patched version for your release line.\n2. Upgrade companion MessagePack packages in the same dependency graph to the coordinated patched versions.\n\nThe fix should validate timestamp extension lengths before any stack allocation. Valid MessagePack timestamp payload lengths are limited to the supported timestamp encodings, so oversized extension lengths should fail with a catchable MessagePack serialization exception before the slow path allocates a buffer.\n\n## Workarounds\n\nPatching is recommended.\n\nUntil a patched version is available, avoid deserializing untrusted MessagePack payloads into schemas that contain `DateTime` or `DateTimeOffset` values. Where possible, enforce strict maximum message sizes and reject malformed extension payloads before they reach MessagePack-CSharp.\n\nThere is no complete workaround for applications that must deserialize attacker-controlled MessagePack data containing date/time fields with affected versions.\n\n## Resources\n\n- `MESSAGEPACKCSHARP-020`: `ReadDateTime` stack allocation from attacker-controlled extension length\n- `MESSAGEPACKCSHARP-CROW-MEM-001`: related attacker-controlled stack allocation finding in `MessagePackReader`\n- CWE-770: Allocation of Resources Without Limits or Throttling\n\n## CVE split rationale\n\nThis vulnerability is independently fixable in the DateTime extension parsing path by validating extension lengths before stack allocation. It is separate from recursive stack overflows, LZ4 issues, and collection allocation bugs.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T18:35:48Z",
+    "Severity": "HIGH",
+    "Summary": "MessagePack-CSharp: Denial of service vulnerabilities can swamp the CPU or crash the process with stack and heap overflows",
+    "UpdatedAt": "2026-06-25T18:35:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0, \u003c 3.1.7"
+    }
+  ]
+}
