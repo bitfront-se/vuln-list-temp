@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T17:33:37Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-auth-oauth2"
+  },
+  "Advisory": {
+    "DatabaseId": 367024,
+    "Id": "GSA_kwCzR0hTQS1nZjU3LTRtcDYtbTg1eM4ABZmw",
+    "GhsaId": "GHSA-gf57-4mp6-m85x",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-gf57-4mp6-m85x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gf57-4mp6-m85x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gf57-4mp6-m85x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46623"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nAn Unverified Password Change (CWE-620) and Use of Weak Credentials (CWE-1391) issue in OpenAM's OAuth2 authentication module silently rewrites a local user's password to the literal string of their username on OAuth2 re-login of an existing account. The default ldapService chain then accepts the username as the password for that user, allowing an unauthenticated attacker to obtain a session via the standard authenticate endpoint with both username and password set to the username, without any IdP interaction. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\n## Impact\nOpenAM Community Edition deployments through version 16.0.6 that use the OAuth2 authentication module with account creation enabled (the default) are potentially affected. After two OAuth logins of a given user, that user's local password becomes their username, and the account is reachable through the default ldapService chain with username as both identifier and password. For pre-existing users whose IdP profile resolves against an existing local identifier, the rewrite fires on the very first re-login.\n\nUsernames shorter than the default minimum password length have the rewrite silently denied (so very short administrative accounts are not affected), and the same update path marks accounts active on every OAuth login, silently reactivating disabled accounts. \n\nSuccessful exploitation grants an unauthenticated attacker a session carrying the victim principal's privileges.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T17:33:35Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM Account Takeover via Unverified Password Change in OAuth2 Module",
+    "UpdatedAt": "2026-06-26T17:33:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 16.1.1"
+    }
+  ]
+}

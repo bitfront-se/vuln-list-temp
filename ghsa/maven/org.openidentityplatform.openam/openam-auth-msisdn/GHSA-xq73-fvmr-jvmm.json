@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T17:32:19Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-auth-msisdn"
+  },
+  "Advisory": {
+    "DatabaseId": 367023,
+    "Id": "GSA_kwCzR0hTQS14cTczLWZ2bXItanZtbc4ABZmv",
+    "GhsaId": "GHSA-xq73-fvmr-jvmm",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-xq73-fvmr-jvmm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xq73-fvmr-jvmm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xq73-fvmr-jvmm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46619"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nAn LDAP Injection (CWE-90) vulnerability in the MSISDN authentication module allows an unauthenticated, remote attacker to obtain an arbitrary OpenAM session without a password in the default trusted gateway configuration. This impacts OpenAM Community Edition through version 16.0.6. This issue was patched in version 16.1.1.\n\n## Impact\nOpenAM deployments through version 16.0.6 that have MSISDN enabled are potentially affected. This enables a pre-authentication login bypass for any realm where an MSISDN module instance is enabled in an authentication chain and reachable through the trusted-gateway list, which allows all traffic by default. The request-supplied MSISDN value was concatenated directly into an LDAP search filter. The resulting OpenAM session is a normal authenticated session for the matched user.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T17:32:18Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM Authentication Bypass via MSISDN LDAP Injection",
+    "UpdatedAt": "2026-06-26T17:32:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 16.1.1"
+    }
+  ]
+}
