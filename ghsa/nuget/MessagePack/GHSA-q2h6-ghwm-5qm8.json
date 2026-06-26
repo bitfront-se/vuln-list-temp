@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-25T21:29:40Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 366677,
+    "Id": "GSA_kwCzR0hTQS1xMmg2LWdod20tNXFtOM4ABZhV",
+    "GhsaId": "GHSA-q2h6-ghwm-5qm8",
+    "References": [
+      {
+        "Url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/security/advisories/GHSA-q2h6-ghwm-5qm8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48516"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q2h6-ghwm-5qm8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q2h6-ghwm-5qm8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48516"
+      }
+    ],
+    "Description": "## Summary\n\n`InterfaceLookupFormatter\u003cTKey,TElement\u003e` constructs an internal `Dictionary\u003cTKey, IGrouping\u003cTKey,TElement\u003e\u003e` with the default equality comparer instead of the security-aware comparer supplied by `options.Security.GetEqualityComparer\u003cTKey\u003e()`.\n\nOther hash-based collection formatters use the security-aware comparer when `MessagePackSecurity.UntrustedData` is configured. This formatter omission allows hash-collision CPU denial of service against `ILookup\u003cTKey,TElement\u003e` even when the application has opted into the untrusted-data security posture.\n\n## Impact\n\nApplications are affected when they deserialize untrusted payloads into schemas containing `ILookup\u003cTKey,TElement\u003e` with a key type for which attacker-controlled hash collisions are feasible.\n\nUnder the default comparer, many colliding keys can degrade dictionary insertion from amortized constant time to quadratic behavior. A payload of colliding keys can consume CPU for a disproportionate amount of time. This bypasses the mitigation that developers intentionally enabled by using `MessagePackSecurity.UntrustedData`.\n\n## Affected components\n\n- Package: `MessagePack`\n- API: `InterfaceLookupFormatter\u003cTKey,TElement\u003e.Create`\n- Data type: `ILookup\u003cTKey,TElement\u003e`\n- Finding ID: `MESSAGEPACKCSHARP-041`\n\n## Patches\n\nFixes are prepared and will be released in coordinated patch versions.\n\nUpgrade guidance:\n\n1. Upgrade `MessagePack` to the patched version for your release line.\n2. Upgrade companion MessagePack packages in the same dependency graph to the coordinated patched versions.\n\nThe fix should create the internal dictionary with `options.Security.GetEqualityComparer\u003cTKey\u003e()`, matching the sibling dictionary and lookup formatter behavior.\n\n## Workarounds\n\nPatching is recommended.\n\nUntil a patched version is available, avoid exposing `ILookup\u003cTKey,TElement\u003e` in DTOs that deserialize untrusted data. Use collection shapes that are already protected by the security-aware comparer path, or validate and cap collection sizes at the transport boundary.\n\n## Resources\n\n- `MESSAGEPACKCSHARP-041`: `InterfaceLookupFormatter` missing security comparer\n- CWE-407: Inefficient Algorithmic Complexity",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T21:29:39Z",
+    "Severity": "MODERATE",
+    "Summary": "MessagePack-CSharp: InterfaceLookupFormatter bypasses collision-resistant comparer settings",
+    "UpdatedAt": "2026-06-25T21:29:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0, \u003c 3.1.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.301"
+      },
+      "VulnerableVersionRange": "\u003c 2.5.301"
+    }
+  ]
+}

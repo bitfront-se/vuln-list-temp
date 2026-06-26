@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-25T22:14:01Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "golang.org/x/crypto/ssh/agent"
+  },
+  "Advisory": {
+    "DatabaseId": 366746,
+    "Id": "GSA_kwCzR0hTQS1mNXdjLWMzYzctMzZtY84ABZia",
+    "GhsaId": "GHSA-f5wc-c3c7-36mc",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39832"
+      },
+      {
+        "Url": "https://go.dev/cl/778642"
+      },
+      {
+        "Url": "https://go.dev/issue/79435"
+      },
+      {
+        "Url": "https://groups.google.com/g/golang-announce/c/a082jnz-LvI"
+      },
+      {
+        "Url": "https://pkg.go.dev/vuln/GO-2026-5006"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f5wc-c3c7-36mc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f5wc-c3c7-36mc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39832"
+      }
+    ],
+    "Description": "When adding a key to a remote agent constraint extensions such as restrict-destination-v00@openssh.com were not serialized in the request. Destination restrictions were silently stripped when forwarding keys, allowing unrestricted use of the key on the remote host. The client now serializes all constraint extensions. Additionally, the in-memory keyring returned by NewKeyring() now rejects keys with unsupported constraint extensions instead of silently ignoring them.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T22:14:00Z",
+    "Severity": "CRITICAL",
+    "Summary": "golang.org/x/crypto/ssh/agent doesn't drop invoking agent constraints when forwarding keys",
+    "UpdatedAt": "2026-06-25T22:14:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.52.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.52.0"
+    }
+  ]
+}

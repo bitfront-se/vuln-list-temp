@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-25T21:45:56Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.nextflow:nextflow"
+  },
+  "Advisory": {
+    "DatabaseId": 366730,
+    "Id": "GSA_kwCzR0hTQS05MnFmLWZjcGgtdjV3cs4ABZiK",
+    "GhsaId": "GHSA-92qf-fcph-v5wr",
+    "References": [
+      {
+        "Url": "https://github.com/nextflow-io/nextflow/security/advisories/GHSA-92qf-fcph-v5wr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92qf-fcph-v5wr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92qf-fcph-v5wr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48722"
+      }
+    ],
+    "Description": "### Impact\n\n`nextflow auth login` persists Seqera Platform OIDC tokens to `${NXF_HOME:-~/.nextflow}/seqera-auth.config`. The file is created via Java NIO without specifying file permissions, so under the default `umask 022` it lands at mode `0644` (world-readable).\n\nOn a multi-user POSIX host — typically an HPC login node, shared workstation, or jump host — any local user able to traverse the victim's home directory can read the file and obtain a valid Platform bearer token, enabling impersonation against Seqera Platform within the token's scope.\n\nSingle-user systems and headless CI runners, which do not invoke the interactive login flow, are not affected.\n\nAffected versions:  `25.09.2-edge` through `26.04.1`.\n  \n### Patches\n\nFixed in `\u003cPATCHED_VERSION\u003e`. The patched code applies mode `0600` to `seqera-auth.config` immediately after writing it, and re-applies on every subsequent login so any pre-existing world-readable copy left by an earlier version is tightened.\n\nTokens previously stored in the file must be treated as disclosed. After upgrading, run `nextflow auth logout`, revoke the token in the Seqera Platform UI, and run `nextflow auth login` again.\n\n### Workarounds\n  \nRestrict the file and its parent directory:\n\n`chmod 600 \"${NXF_HOME:-$HOME/.nextflow}/seqera-auth.config\"`\n`chmod 700 \"${NXF_HOME:-$HOME/.nextflow}\"`\n\nAlternatively, supply the Platform token via the `TOWER_ACCESS_TOKEN` environment variable instead of running `nextflow auth login`.\n\n### References\n  \n  - https://cwe.mitre.org/data/definitions/276.html",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T21:45:55Z",
+    "Severity": "MODERATE",
+    "Summary": "nextflow auth login command has incorrect default permissions",
+    "UpdatedAt": "2026-06-25T21:45:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.04.3"
+      },
+      "VulnerableVersionRange": "\u003e= 26.00.0-edge, \u003c 26.04.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "25.10.6"
+      },
+      "VulnerableVersionRange": "\u003e= 25.09.2-edge, \u003c 25.10.6"
+    }
+  ]
+}

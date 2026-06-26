@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-25T21:25:22Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 366675,
+    "Id": "GSA_kwCzR0hTQS13NTY3LWdqcjItaG01as4ABZhT",
+    "GhsaId": "GHSA-w567-gjr2-hm5j",
+    "References": [
+      {
+        "Url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/security/advisories/GHSA-w567-gjr2-hm5j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48514"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w567-gjr2-hm5j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w567-gjr2-hm5j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48514"
+      }
+    ],
+    "Description": "## Summary\n\n`UnsafeBlitFormatterBase\u003cT\u003e.Deserialize` reads an attacker-controlled `byteLength` from an extension payload and allocates an array based on that value before validating it against the extension header length or remaining payload bytes.\n\nThe outer extension header is bounded by available input, but that bound is not used to constrain the inner `byteLength` before allocation. A very small payload can therefore request a very large `T[]` allocation.\n\n## Impact\n\nApplications are affected when they deserialize untrusted payloads using Unity blit resolvers such as `UnityBlitResolver` or `UnityBlitWithPrimitiveArrayResolver`.\n\nThis is especially relevant to Unity multiplayer clients or servers that use MessagePack-CSharp for networked values such as vectors, matrices, or primitive arrays. A hostile peer can send an extension payload with a large declared byte length and cause an out-of-memory exception or process termination on memory-constrained platforms.\n\nThe resolver is opt-in, but the vulnerable value is pure wire input and the allocation happens before the formatter verifies that the declared bytes are actually present in the extension body.\n\n## Affected components\n\n- Package: `MessagePack.UnityClient`\n- Resolvers: `UnityBlitResolver`, `UnityBlitWithPrimitiveArrayResolver`\n- API: `UnsafeBlitFormatterBase\u003cT\u003e.Deserialize`\n- Finding IDs: `MESSAGEPACKCSHARP-080`, duplicate/open variant `MESSAGEPACKCSHARP-OPEN-010`\n\n## Patches\n\nFixes are prepared and will be released in coordinated patch versions.\n\nUpgrade guidance:\n\n1. Upgrade `MessagePack.UnityClient` to the patched version for your release line.\n2. Upgrade companion MessagePack packages in the same dependency graph to the coordinated patched versions.\n\nThe fix should validate `byteLength` before allocation. It should reject negative lengths, lengths greater than the extension body length after metadata, and lengths that are not a valid multiple of the element size.\n\n## Workarounds\n\nPatching is recommended.\n\nUntil a patched version is available, do not use Unity blit resolvers on data received from untrusted peers. Use safer resolvers or explicitly validate and size-limit messages before deserialization.\n\n## Resources\n\n- `MESSAGEPACKCSHARP-080`: unsafe blit formatter allocation from unbounded byte length\n- `MESSAGEPACKCSHARP-OPEN-010`: duplicate/open finding for the same root cause\n- CWE-770: Allocation of Resources Without Limits or Throttling",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T21:25:21Z",
+    "Severity": "MODERATE",
+    "Summary": "MessagePack-CSharp: Unity unsafe blit formatter allocates from unbounded byte length",
+    "UpdatedAt": "2026-06-25T21:25:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0, \u003c 3.1.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.301"
+      },
+      "VulnerableVersionRange": "\u003c 2.5.301"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-25T21:26:44Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 366676,
+    "Id": "GSA_kwCzR0hTQS1jeG1qLTgzZ2gtZnA0Oc4ABZhU",
+    "GhsaId": "GHSA-cxmj-83gh-fp49",
+    "References": [
+      {
+        "Url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/security/advisories/GHSA-cxmj-83gh-fp49"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48515"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cxmj-83gh-fp49"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cxmj-83gh-fp49"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48515"
+      }
+    ],
+    "Description": "## Summary\n\nMessagePack-CSharp's multi-dimensional array formatters read dimension lengths directly from the payload and allocate `T[,]`, `T[,,]`, or `T[,,,]` before validating that the dimension product matches the encoded element count.\n\nThe formatter reads a guarded element array header, but allocation of the target multi-dimensional array happens before the dimensions are checked against that element count. A small payload can therefore declare large dimensions, provide an empty or tiny inner array, and cause a large heap allocation before element data is validated.\n\n## Impact\n\nApplications are affected when they deserialize untrusted MessagePack payloads into models containing multi-dimensional arrays such as `T[,]`, `T[,,]`, or `T[,,,]`.\n\nAn attacker can encode large dimension integers and a small guarded element array. The formatter allocates the target array from the dimensions before confirming that the product of dimensions is consistent with the element count.\n\nThe result can be out-of-memory exceptions, container termination on memory-constrained hosts, large object heap pressure, or severe CPU cost from zero-initializing oversized arrays. `MessagePackSecurity.UntrustedData` does not provide a general allocation cap for this path.\n\n## Affected components\n\n- Package: `MessagePack`\n- APIs: `TwoDimensionalArrayFormatter\u003cT\u003e.Deserialize`, `ThreeDimensionalArrayFormatter\u003cT\u003e.Deserialize`, `FourDimensionalArrayFormatter\u003cT\u003e.Deserialize`\n- Data shapes: `T[,]`, `T[,,]`, and `T[,,,]`\n- Finding IDs: `MESSAGEPACKCSHARP-040`, duplicate/open variant `MESSAGEPACKCSHARP-OPEN-003`\n\n## Patches\n\nFixes are prepared and will be released in coordinated patch versions.\n\nUpgrade guidance:\n\n1. Upgrade `MessagePack` to the patched version for your release line.\n2. Upgrade companion MessagePack packages in the same dependency graph to the coordinated patched versions.\n\nThe fix should validate dimensions before allocation. Dimension values should be non-negative, their checked product should match the encoded element count, and the product should be bounded by the available payload and any configured security limits before `new T[...]` is executed.\n\n## Workarounds\n\nPatching is recommended.\n\nUntil a patched version is available, avoid deserializing untrusted payloads into schemas containing multi-dimensional arrays. Prefer schema shapes that can be validated before allocation, such as bounded lists, dictionaries with application-level count limits, or jagged arrays with application-level limits.\n\nMessage-size limits reduce the blast radius but do not fully address allocation amplification where a small payload can encode disproportionate array dimensions.\n\n## Resources\n\n- `MESSAGEPACKCSHARP-040`: unchecked multi-dimensional array dimensions\n- `MESSAGEPACKCSHARP-OPEN-003`: duplicate/open finding for the multi-dimensional array issue\n- CWE-770: Allocation of Resources Without Limits or Throttling",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T21:26:43Z",
+    "Severity": "MODERATE",
+    "Summary": "MessagePack-CSharp: Multi-dimensional array formatters allocate from unchecked dimensions",
+    "UpdatedAt": "2026-06-25T21:26:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0, \u003c 3.1.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.301"
+      },
+      "VulnerableVersionRange": "\u003c 2.5.301"
+    }
+  ]
+}

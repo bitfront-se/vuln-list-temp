@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-25T21:22:53Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MessagePack"
+  },
+  "Advisory": {
+    "DatabaseId": 366674,
+    "Id": "GSA_kwCzR0hTQS13ZnIzLXhqNzUtcGZ3aM4ABZhS",
+    "GhsaId": "GHSA-wfr3-xj75-pfwh",
+    "References": [
+      {
+        "Url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/security/advisories/GHSA-wfr3-xj75-pfwh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48513"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wfr3-xj75-pfwh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wfr3-xj75-pfwh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48513"
+      }
+    ],
+    "Description": "## Summary\n\nRuntime-generated union deserializers emitted by `DynamicUnionResolver` do not call `MessagePackSecurity.DepthStep(ref reader)` and do not decrement `reader.Depth` around recursive deserialization and skip paths.\n\nThis means union deserialization does not consistently participate in the maximum object graph depth enforcement that protects other recursive formatter paths. For unknown union keys, the emitted deserializer calls `reader.Skip()` on attacker-controlled data without an enclosing depth step.\n\n## Impact\n\nApplications are affected when they deserialize untrusted payloads into object graphs containing `[Union]`-decorated interfaces or abstract classes handled by `DynamicUnionResolver`.\n\nAn attacker can provide a union payload with an unknown key and a deeply nested value. Because the generated union formatter does not enter the depth accounting scope before skipping or recursively processing the value, configured depth limits can be bypassed. In combination with recursive skip behavior, this can terminate the process with an uncatchable `StackOverflowException`.\n\nThis issue is narrower than the general `TrySkip()` recursion issue because it specifically concerns a formatter-generation path that fails to count union nesting. It remains independently fixable because the emitted IL should mirror the depth-step behavior used by source-generated union formatters and dynamic object formatters.\n\n## Affected components\n\n- Package: `MessagePack`\n- API: `DynamicUnionResolver.BuildDeserialize`\n- Data types: `[Union]`-decorated interface and abstract class hierarchies handled by the dynamic resolver\n- Finding ID: `MESSAGEPACKCSHARP-070`\n\n## Patches\n\nFixes are prepared and will be released in coordinated patch versions.\n\nUpgrade guidance:\n\n1. Upgrade `MessagePack` to the patched version for your release line.\n2. Upgrade companion MessagePack packages in the same dependency graph to the coordinated patched versions.\n\nThe fix should emit `DepthStep` and matching `reader.Depth--` cleanup in dynamic union deserializers, consistent with other recursive formatter implementations.\n\n## Workarounds\n\nPatching is recommended.\n\nUntil a patched version is available, avoid deserializing untrusted payloads into dynamically resolved `[Union]` types. Prefer source-generated formatters that include depth checks, where applicable, and enforce outer message-size and schema constraints.\n\n## Resources\n\n- `MESSAGEPACKCSHARP-070`: dynamic union deserializer missing depth-step enforcement\n- CWE-674: Uncontrolled Recursion",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-25T21:22:52Z",
+    "Severity": "MODERATE",
+    "Summary": "MessagePack-CSharp: DynamicUnionResolver-generated deserializers miss depth enforcement",
+    "UpdatedAt": "2026-06-25T21:22:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0, \u003c 3.1.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.301"
+      },
+      "VulnerableVersionRange": "\u003c 2.5.301"
+    }
+  ]
+}
