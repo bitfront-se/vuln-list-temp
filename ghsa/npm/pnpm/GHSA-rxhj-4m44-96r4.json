@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T22:59:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "pnpm"
+  },
+  "Advisory": {
+    "DatabaseId": 367176,
+    "Id": "GSA_kwCzR0hTQS1yeGhqLTRtNDQtOTZyNM4ABZpI",
+    "GhsaId": "GHSA-rxhj-4m44-96r4",
+    "References": [
+      {
+        "Url": "https://github.com/pnpm/pnpm/security/advisories/GHSA-rxhj-4m44-96r4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50015"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rxhj-4m44-96r4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rxhj-4m44-96r4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50015"
+      }
+    ],
+    "Description": "## Summary\n\npnpm's patch application pipeline (`@pnpm/patch-package`) performs no path validation on file paths extracted from `.patch` files. An attacker who contributes a malicious patch file via a pull request can write attacker-controlled content to or delete arbitrary files on the filesystem during `pnpm install`, as the user running the install. The `diff --git` header paths containing `../../` sequences traverse out of the package directory, and the traversal is difficult to catch in code review because patch file diff headers are opaque to most reviewers.\n\n## Vulnerability Details\n\nDuring `pnpm install`, when a `patchedDependencies` entry is present in `pnpm-workspace.yaml`, pnpm reads the referenced `.patch` file and applies it via the embedded `@pnpm/patch-package` library. The `applyPatchToDir` function at `patching/apply-patch/src/index.ts:12-13` calls `process.chdir(opts.patchedDir)`, setting the working directory to the installed package location deep inside `node_modules/.pnpm/`.\n\nThe patch parser at `@pnpm/patch-package/dist/patch/parse.js:88` extracts file paths from `diff --git a/(.*?) b/(.*?)` headers using a regex with no path sanitization. The `executeEffects` function in `apply.js` then operates on these unsanitized paths:\n\n**File write** (`apply.js:35-49`):\n```javascript\ncase 'file creation': {\n  const eff = effect\n  fs.ensureDirSync(dirname(eff.path))\n  fs.writeFileSync(eff.path, fileContents, { mode: eff.mode })\n  break\n}\n```\n\n**File delete** (`apply.js:13-22`):\n```javascript\ncase 'file deletion': {\n  const eff = effect\n  // TODO: integrity checks\n  if (!opts.dryRun) {\n    fs.unlinkSync(eff.path)\n  }\n  break\n}\n```\n\nA path like `../../../../../../../../../../home/user/.ssh/authorized_keys` in the patch header traverses out of the package directory to an arbitrary location.\n\n## Proof of Concept\n\n```bash\n# Write variant:\nbash autofyn_audit/exploits/vuln6_patch_traversal_write/exploit.sh\n# Result: PASS -- /tmp/vuln6_pwned created with attacker-controlled content\n\n# Delete variant:\nbash autofyn_audit/exploits/vuln7_patch_traversal_delete/exploit.sh\n# Result: PASS -- /tmp/vuln7_target deleted by malicious patch\n\n# Combined chain (delete + replace SSH authorized_keys):\nbash autofyn_audit/exploits/chain2_patch_ssh_backdoor/exploit.sh\n# Result: PASS -- authorized_keys replaced with attacker's public key\n```\n\n## Impact\n\nArbitrary file write and delete as the user running `pnpm install`, limited to paths writable by that user. An attacker who submits a PR adding a `.patch` file and `patchedDependencies` config can target SSH authorized_keys, shell configuration, CI/CD files, or other writable files. Patch files may receive less review scrutiny than `package.json` changes because the `../` traversal sequences are in `diff --git` headers that look like patch metadata.\n\n## Suggested Remediation\n\nValidate parsed patch file paths against the package root directory. Reject any path that resolves outside the patched package directory via `path.resolve` + prefix check. Alternatively, sanitize at parse time by rejecting paths containing `..` components in `parse.js`.\n\n---\n\n\u003e Discovered by [AutoFyn](https://github.com/SignalPilot-Labs/AutoFyn)\n\u003e Full audit report: [audit_report.md](https://github.com/tempcollab/pnpm/blob/main/autofyn_audit/audit_report.md)\n\u003e Exploit script: [exploit.sh](https://github.com/tempcollab/pnpm/blob/main/autofyn_audit/exploits/vuln6_patch_traversal_write/exploit.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T22:59:48Z",
+    "Severity": "HIGH",
+    "Summary": "pnpm Vulnerable to Arbitrary File Write/Delete via Malicious Patch File (Path Traversal)",
+    "UpdatedAt": "2026-06-26T22:59:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0, \u003c 11.4.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.34.0"
+      },
+      "VulnerableVersionRange": "\u003c 10.34.0"
+    }
+  ]
+}

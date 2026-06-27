@@ -1,0 +1,50 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-26T20:52:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "flawfinder"
+  },
+  "Advisory": {
+    "DatabaseId": 367066,
+    "Id": "GSA_kwCzR0hTQS00YzNjLXI2cDgtYzg2M84ABZna",
+    "GhsaId": "GHSA-4c3c-r6p8-c863",
+    "References": [
+      {
+        "Url": "https://github.com/david-a-wheeler/flawfinder/security/advisories/GHSA-4c3c-r6p8-c863"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4c3c-r6p8-c863"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4c3c-r6p8-c863"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48813"
+      }
+    ],
+    "Description": "### Impact\n\nThis vulnerability is an improper input neutralization issue leading to output manipulation, specifically, Terminal/ANSI Escape Sequence Injection and XML Injection:\n\n* Terminal Output Spoofing: A malicious file whose name contains ANSI escape sequences can end up being included in flawfinder's standard terminal output, with many effects. For example, this might allow an attacker to hide critical scan results, falsely making it appear to a human reviewer that no security issues were found.\n\n* CSV and XML Injection: Untrusted fields (such as filenames, categories, or code context text) were not properly sanitized when generating structured reports. An attacker could exploit this to corrupt CSV formats or inject arbitrary XML attributes into SonarQube outputs via output_sonar().\n\nIt impacts those who use flawfinder to evaluate intentionally malicious filenames or file contents.\n\nThe initial filename injection problem was reported by Dan Lenz https://www.linkedin.com/in/dan-lenz/\n\nThe other vulnerabilities were found by flawfinder project leader David A. Wheeler, GitHub david-a-wheeler, https://dwheeler.com/\n\n### Patches\n\nThis issue has been fully patched in Version 2.0.20 (released 2026-05-16). All users should upgrade to version 2.0.20 or later immediately. If you use Python's package manager, you can upgrade using `pip install --upgrade flawfinder`. If you are consuming flawfinder via GitHub Actions, ensure your workflow points to david-a-wheeler/flawfinder@2.0.20 or later.\n\n### Workarounds\n\nThere is no configuration-based workaround within older versions of flawfinder. If an immediate upgrade is not possible, users can mitigate the risk by:\n\n* Pre-scanning filenames: Manually or programmatically verifying that target repositories do not contain filenames with control characters (including ANSI escape sequences) before passing them to flawfinder.\n\n* Inspecting raw output: Reviewing flawfinder outputs in a text editor or logging mechanism that explicitly displays or strips raw escape sequences, rather than relying on live terminal rendering.\n\n* Restricting untrusted inputs: Avoiding the generation of SonarQube or CSV reports from completely untrusted repositories until the tool is updated.\n\n### Resources\n\nSee the flawfinder GitHub Repository: https://github.com/david-a-wheeler/flawfinder",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T20:52:25Z",
+    "Severity": "LOW",
+    "Summary": "Flawfinder output manipulation via untrusted filenames and source text",
+    "UpdatedAt": "2026-06-26T20:52:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.20"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.20"
+    }
+  ]
+}

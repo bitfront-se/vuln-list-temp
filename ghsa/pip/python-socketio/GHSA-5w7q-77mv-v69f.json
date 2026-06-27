@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T20:51:58Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "python-socketio"
+  },
+  "Advisory": {
+    "DatabaseId": 367065,
+    "Id": "GSA_kwCzR0hTQS01dzdxLTc3bXYtdjY5Zs4ABZnZ",
+    "GhsaId": "GHSA-5w7q-77mv-v69f",
+    "References": [
+      {
+        "Url": "https://github.com/miguelgrinberg/python-socketio/security/advisories/GHSA-5w7q-77mv-v69f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5w7q-77mv-v69f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5w7q-77mv-v69f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48804"
+      }
+    ],
+    "Description": "### Impact\nThe python-socketio server stores binary `EVENT` and `ACK` messages in memory while it waits to receive their binary attachments. Once all the attachments are received, these messages are then processed. An attacker can submit a binary message and intentionally omit sending one or more of its attachments to cause the message along with the partial list of received attachments to stay in memory for a long time.\n\n### Patches\nVersion 5.16.2 takes the following measures to address this issue:\n- Binary packets are only accepted from authenticated clients.\n- When a client disconnects, the server checks if there is a partial binary message being held for the client and deletes it.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T20:51:58Z",
+    "Severity": "HIGH",
+    "Summary": "python-socketio: Binary attachment accumulation can cause denial of service",
+    "UpdatedAt": "2026-06-26T20:51:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.16.2"
+      },
+      "VulnerableVersionRange": "\u003c= 5.16.1"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T21:04:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mcp-memory-service"
+  },
+  "Advisory": {
+    "DatabaseId": 367080,
+    "Id": "GSA_kwCzR0hTQS0ycjY4LWc2NzgtN3FyM84ABZno",
+    "GhsaId": "GHSA-2r68-g678-7qr3",
+    "References": [
+      {
+        "Url": "https://github.com/doobidoo/mcp-memory-service/security/advisories/GHSA-2r68-g678-7qr3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49291"
+      },
+      {
+        "Url": "https://pypi.org/project/mcp-memory-service/10.65.3"
+      },
+      {
+        "Url": "https://web.archive.org/web/20260508112116/https://github.com/doobidoo/mcp-memory-service"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2r68-g678-7qr3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2r68-g678-7qr3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49291"
+      }
+    ],
+    "Description": "## Summary\n\nThe HTTP MCP JSON-RPC endpoint at `/mcp` requires only OAuth `read` scope for all requests, then dispatches `tools/call` directly to handlers that include mutating tools. A read-only OAuth client can call `store_memory` and `delete_memory` through MCP even though the corresponding REST endpoints require `write` scope.\n\n## Technical Details\n\n`src/mcp_memory_service/web/api/mcp.py` declares `mcp_endpoint` with `user: AuthenticationResult = Depends(require_read_access)`. For `tools/call`, it extracts the requested tool name and arguments, then calls `handle_tool_call(storage, tool_name, arguments)` without passing the authenticated user or checking a per-tool required scope.\n\nThe MCP tool registry includes both read tools and write tools. In the same handler file, `store_memory` creates a `Memory` object and calls `storage.store(...)`, while `delete_memory` calls `storage.delete(content_hash)`. These operations are reachable with only the `read` scope.\n\nThe REST endpoint demonstrates the intended boundary: `POST /api/memories` uses `Depends(require_write_access)` and rejects a read-only token with 403 `insufficient_scope`.\n\n## Reproduction\n\n1. Enable OAuth and disable anonymous access.\n2. Generate a valid OAuth JWT with only `scope: read`.\n3. Confirm the REST write endpoint rejects it:\n\n```http\nPOST /api/memories\nAuthorization: Bearer \u003cread-only-token\u003e\nContent-Type: application/json\n\n{\"content\":\"rest denied control\"}\n```\n\nExpected and observed: HTTP 403 with `Required scope 'write' not granted`.\n\n4. Send the same read-only token to the MCP endpoint:\n\n```http\nPOST /mcp\nAuthorization: Bearer \u003cread-only-token\u003e\nContent-Type: application/json\n\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"store_memory\",\n    \"arguments\": {\n      \"content\": \"mcp read scope stored this\",\n      \"tags\": [\"poc\"]\n    }\n  }\n}\n```\n\nObserved: HTTP 200 JSON-RPC success and the storage `store` sink is reached.\n\n5. A read-only token can also call `delete_memory` through MCP if it knows a content hash:\n\n```http\nPOST /mcp\nAuthorization: Bearer \u003cread-only-token\u003e\nContent-Type: application/json\n\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"delete_memory\",\n    \"arguments\": {\"content_hash\": \"\u003cknown_hash\u003e\"}\n  }\n}\n```\n\nObserved: HTTP 200 JSON-RPC success and the storage `delete` sink is reached.\n\n## Impact\n\nA client intended to be read-only can inject or delete memories through the MCP API. This can corrupt the memory database, influence future agent context, and destroy stored user memories without the OAuth `write` scope required by the REST API.\n\n## Affected Versions\n\nConfirmed present on current main commit `c99a922477df41f75a44db11182ae48a57311910` and latest release tag `v10.65.0` (`4eb4a62665589f9dd9f8c393afa32de434b4098a`).\n\n## Suggested Fix\n\nEnforce authorization per MCP tool at `tools/call` time. Require `write` for `store_memory` and `delete_memory`, keep `read` only for read-only tools, and add regression tests proving direct `tools/call` to mutating tools is rejected before the handler reaches storage when the caller has only `read` scope.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T21:04:38Z",
+    "Severity": "HIGH",
+    "Summary": "mcp-memory-service: OAuth read-only clients can write and delete memories through MCP tools/call",
+    "UpdatedAt": "2026-06-26T21:04:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.65.3"
+      },
+      "VulnerableVersionRange": "\u003c= 10.65.1"
+    }
+  ]
+}

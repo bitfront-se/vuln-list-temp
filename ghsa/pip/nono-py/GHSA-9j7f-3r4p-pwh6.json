@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-26T20:39:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nono-py"
+  },
+  "Advisory": {
+    "DatabaseId": 367058,
+    "Id": "GSA_kwCzR0hTQS05ajdmLTNyNHAtcHdoNs4ABZnS",
+    "GhsaId": "GHSA-9j7f-3r4p-pwh6",
+    "References": [
+      {
+        "Url": "https://github.com/always-further/nono-py/security/advisories/GHSA-9j7f-3r4p-pwh6"
+      },
+      {
+        "Url": "https://github.com/nolabs-ai/nono-py/commit/163fca083a189967b882d1005bfba099fc9a9d63"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9j7f-3r4p-pwh6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9j7f-3r4p-pwh6"
+      }
+    ],
+    "Description": "The python API made a restrictive-looking configuration unsafe by default. A caller could configure only reverse-\nproxy credential routes, put the child in CapabilitySet.proxy_only, and reasonably expect network access to be limited\nto those routes. Instead, because empty allowed_hosts meant allow-all inside nono-proxy, the child could use the local\nproxy as a transparent CONNECT tunnel to non-route nominated hosts (not including metadata endpoints).\n\nThat is an authorization bypass / policy confusion issue:\n\n- Intended policy: route-only proxy access.\n- Actual policy: route-only plus arbitrary transparent CONNECT.\n- Boundary crossed: sandboxed child gains broader outbound network reach than the Python policy appears to grant.\n- Impact depends on environment, but it can allow exfiltration or access to unintended internet/internal services\n  through the unsandboxed proxy.\n\nThis should be classified as medium severity by default, potentially high if users rely on route-only configs for strict egress\ncontrol around untrusted code or sensitive credentials. The fix is security-relevant because it changes the default from\nimplicit allow-all to explicit opt-in.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T20:39:43Z",
+    "Severity": "MODERATE",
+    "Summary": "nono-py vulnerable to authorization bypass / policy confusion",
+    "UpdatedAt": "2026-06-26T20:39:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.11.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.10.1"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-26T21:49:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "pnpm"
+  },
+  "Advisory": {
+    "DatabaseId": 367143,
+    "Id": "GSA_kwCzR0hTQS1oZzN3LTdmOGMtNjNocM4ABZon",
+    "GhsaId": "GHSA-hg3w-7f8c-63hp",
+    "References": [
+      {
+        "Url": "https://github.com/pnpm/pnpm/security/advisories/GHSA-hg3w-7f8c-63hp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48995"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hg3w-7f8c-63hp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hg3w-7f8c-63hp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48995"
+      }
+    ],
+    "Description": "### Summary\n\nA malicious `codeload.github.com` server can serve whatever tarball it wants and pnpm will install it regardless of the lockfile.\n\n### Details\n\nThe lockfile does not store the hash of the dependencies from https://codeload.github.com\n\nThis means that if this server was compromised or a person's machine configuration was compromised, pnpm would download and install these dependencies.\n\n### PoC\n\n```sh\n\u003e pnpm -v     \n10.28.2\n```\n\nGiven the following package.json:\n\n```json\n{\n  \"dependencies\": {\n    \"add\": \"git://github.com/dsherret/npm-git-dep.git#b3eeb9b\"\n  }\n}\n```\n\nThis produces a lockfile like so:\n\n```yaml\nlockfileVersion: '9.0'\n\nsettings:\n  autoInstallPeers: true\n  excludeLinksFromLockfile: false\n\nimporters:\n\n  .:\n    dependencies:\n      add:\n        specifier: git://github.com/dsherret/npm-git-dep.git#b3eeb9b\n        version: https://codeload.github.com/dsherret/npm-git-dep/tar.gz/b3eeb9b\n\npackages:\n\n  add@https://codeload.github.com/dsherret/npm-git-dep/tar.gz/b3eeb9b:\n    resolution: {tarball: https://codeload.github.com/dsherret/npm-git-dep/tar.gz/b3eeb9b}\n    version: 1.0.0\n\nsnapshots:\n\n  add@https://codeload.github.com/dsherret/npm-git-dep/tar.gz/b3eeb9b: {}\n```\n\nNotice that there is no hash. The `b3eeb9b` is not sufficient because I can configure my machine to resolve a compromised tarball from that url (I tested it out and pnpm just installs it).\n\n### Impact\n\nAnyone relying on github git dependencies.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T21:49:22Z",
+    "Severity": "MODERATE",
+    "Summary": "pnpm: Tarball hash of GitHub git dependencies is not stored in lockfile",
+    "UpdatedAt": "2026-06-26T21:49:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0, \u003c 11.0.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.33.4"
+      },
+      "VulnerableVersionRange": "\u003c 10.33.4"
+    }
+  ]
+}

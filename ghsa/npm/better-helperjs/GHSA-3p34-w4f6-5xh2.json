@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T20:56:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "better-helperjs"
+  },
+  "Advisory": {
+    "DatabaseId": 367071,
+    "Id": "GSA_kwCzR0hTQS0zcDM0LXc0ZjYtNXhoMs4ABZnf",
+    "GhsaId": "GHSA-3p34-w4f6-5xh2",
+    "References": [
+      {
+        "Url": "https://github.com/Rigby-Foundation/BetterHelperjs/security/advisories/GHSA-3p34-w4f6-5xh2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3p34-w4f6-5xh2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3p34-w4f6-5xh2"
+      }
+    ],
+    "Description": "## Summary\nA directory traversal vulnerability exists in the production static file server of `better-helperjs` (`\u003c= 3.0.5`). Attackers can read arbitrary files located in adjacent directory structures that share the same string prefix as the intended static root directory.\n\n## Details\nThe framework utilizes a custom static file server engine used when running in `NODE_ENV=production` (`src/ssr/site-server.ts`). Inside the `safeStaticPath()` method, the requested path is checked against the static root directory to prevent directory traversal out of the designated public folder.\n\nHowever, the validation uses `String.prototype.startsWith()`:\n```typescript\n  const root = path.resolve(rootDir);\n  const resolved = path.resolve(root, `.${decodedPath}`);\n  \n  if (!resolved.startsWith(root)) {\n    return null;\n  }\n```\nThis is logically flawed because `startsWith` evaluates plain strings rather than structural directory paths. If the application's assigned `rootDir` is `/app/dist/client`, and an attacker tries to access `/app/dist/client-secrets/database.sqlite`, the string `\"/app/dist/client-secrets/database.sqlite\"` successfully **starts with** `\"/app/dist/client\"`. \n\nBecause of this bypass, an attacker can read sensitive files stored inside any adjacent directory traversing through the parent, as long as the adjacent directory name begins with the exact same prefix as the target public directory.\n\n## Impact\n- **Severity:** High (7.5)\n- **Vector:** `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N`\n- **Affected Versions:** `\u003c= 3.0.5`\n- **Patched Version:** `\u003e= 3.0.6`\n\n## Proof of Concept\nTo reproduce this locally on a vulnerable installation:\n1. Assume the framework static configuration serves from a `.dist/client` directory.\n2. Build the project and create an adjacent prefix secret simulating sensitive deployment structure:\n   ```bash\n   npm run build\n   mkdir -p dist/client-secrets\n   echo \"EXPOSED_SECRET\" \u003e dist/client-secrets/secret.txt\n   ```\n3. Start the application in Production mode (`NODE_ENV=production tsx server.ts`).\n4. Using an HTTP client that doesn't pre-normalize `/../` paths (e.g., `netcat` or raw sockets), send a GET request spanning into the prefix-sharing adjacent folder:\n   ```http\n   GET /%2e%2e%2fclient-secrets/secret.txt HTTP/1.1\n   Host: localhost:4174\n   Connection: close\n   ```\n5. The server incorrectly validates the path and responds with `HTTP/1.1 200 OK` exposing `EXPOSED_SECRET`.\n\n*(Note: Developer environment `npm run dev` servers are immune as static requests are handled defensively by Vite's Dev Middlewares. This vulnerability only triggers upon `production` starts).*\n\n## Remediation / Patches\nThe path validation block has been updated to mandate exact path separation bounds by enforcing `path.sep` onto the evaluated traversal string.\n```typescript\n  // Enforces separator OR exact root matches preventing prefix extension\n  if (!resolved.startsWith(root + path.sep) \u0026\u0026 resolved !== root) {\n    return null;\n  }\n```\n\n## Workarounds\nIf upgrading is temporarily impossible, users can safeguard their environment by ensuring no sensitive directories are deployed adjacent to their static build `client` directories sharing the identical word-prefix string.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T20:56:26Z",
+    "Severity": "HIGH",
+    "Summary": "better-helperjs Vulnerable to Directory Traversal via String Prefix Bypass in Static Server",
+    "UpdatedAt": "2026-06-26T20:56:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.6"
+      },
+      "VulnerableVersionRange": "\u003c= 3.0.5"
+    }
+  ]
+}

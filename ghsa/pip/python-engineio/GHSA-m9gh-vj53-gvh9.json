@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T20:48:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "python-engineio"
+  },
+  "Advisory": {
+    "DatabaseId": 367062,
+    "Id": "GSA_kwCzR0hTQS1tOWdoLXZqNTMtZ3ZoOc4ABZnW",
+    "GhsaId": "GHSA-m9gh-vj53-gvh9",
+    "References": [
+      {
+        "Url": "https://github.com/miguelgrinberg/python-engineio/security/advisories/GHSA-m9gh-vj53-gvh9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m9gh-vj53-gvh9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m9gh-vj53-gvh9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48809"
+      }
+    ],
+    "Description": "### Impact\nThere are two specific configurations of the python-engineio server in which the size of incoming messages is not checked before the messages are loaded into memory. An attacker can take advantage of these to cause unnecessary memory allocations in the python-engineio server. The two cases are:\n\n- POST requests, when using ASGI with the long polling transport\n- WebSocket messages, when using Aiohttp with the WebSocket transport\n\n### Patches\nVersion 4.13.2 addresses this issue as follows:\n\n- ASGI severs now only load the body of incoming requests into memory after the client is confirmed to be known and authenticated, and the payload size is below the maximum allowed size. Requests that do not comply with these requirements are discarded.\n- Aiohttp servers configure the maximum payload size in the underlying WebSocket layer from Aiohttp, so that large messages are discarded by Aiohttp before they are delivered to python-engineio.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T20:48:18Z",
+    "Severity": "HIGH",
+    "Summary": "python-engineio has possible denial of service due to maximum payload size sometimes not being enforced",
+    "UpdatedAt": "2026-06-26T20:48:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.13.2"
+      },
+      "VulnerableVersionRange": "\u003c= 4.13.1"
+    }
+  ]
+}

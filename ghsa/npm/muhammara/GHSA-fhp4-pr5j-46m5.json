@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-26T20:55:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "muhammara"
+  },
+  "Advisory": {
+    "DatabaseId": 367069,
+    "Id": "GSA_kwCzR0hTQS1maHA0LXByNWotNDZtNc4ABZnd",
+    "GhsaId": "GHSA-fhp4-pr5j-46m5",
+    "References": [
+      {
+        "Url": "https://github.com/julianhille/MuhammaraJS/security/advisories/GHSA-fhp4-pr5j-46m5"
+      },
+      {
+        "Url": "https://github.com/julianhille/MuhammaraJS/commit/a98c07780241353334eb65bfca1df025f14be70b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fhp4-pr5j-46m5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fhp4-pr5j-46m5"
+      }
+    ],
+    "Description": "## Summary\n\nA NULL pointer dereference vulnerability exists in `PDFParser::CreateFilterForStream()` when processing a PDF stream with `/Filter /LZWDecode` and a `/DecodeParms` dictionary that does not contain the `EarlyChange` key. This causes an access violation (0xC0000005) and crashes the process.\n\n## Affected Version\n\nmuhammara \u003c= 6.0.4 (latest)\n\n## Vulnerability Details\n\n**File:** `src/deps/PDFWriter/PDFParser.cpp` line 2107\n\n```cpp\nif (inDecodeParams)\n{\n    PDFObjectCastPtr\u003cPDFInteger\u003e earlyObj(\n        QueryDictionaryObject(inDecodeParams, \"EarlyChange\")\n    );\n    early = earlyObj-\u003eGetValue();  // NULL dereference when EarlyChange key is absent\n}\n```\n\nWhen `inDecodeParams` is non-NULL but lacks the `EarlyChange` key:\n1. `QueryDictionaryObject()` returns NULL\n2. `PDFObjectCastPtr\u003cPDFInteger\u003e(NULL)` wraps NULL\n3. `earlyObj-\u003eGetValue()` dereferences NULL → crash\n\n## PoC\n\n460-byte malicious PDF triggers crash via `startReadingFromStream()`:\n\n- PDF contains `/Filter /LZWDecode` with `/DecodeParms \u003c\u003c \u003e\u003e` (empty, no EarlyChange)\n- Exit code: `0xC0000005` (Access Violation)\n\n## Fix\n\n```cpp\nif (earlyObj)\n    early = earlyObj-\u003eGetValue();\n```\n\n## Impact\n\nAny application accepting untrusted PDFs and using muhammara to read stream contents is vulnerable to DoS.\n\nSimilar to: CVE-2022-41957, CVE-2022-39381\n\n## PoC File\n[poc_muhammara_lzw_null.js](https://github.com/user-attachments/files/27186113/poc_muhammara_lzw_null.js)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T20:55:18Z",
+    "Severity": "HIGH",
+    "Summary": "Muhammara has a NULL pointer dereference in LZWDecode filter when DecodeParms omits EarlyChange key",
+    "UpdatedAt": "2026-06-26T20:55:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.5"
+      },
+      "VulnerableVersionRange": "\u003c= 6.0.4"
+    }
+  ]
+}

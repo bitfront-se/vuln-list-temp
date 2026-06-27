@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-26T22:53:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "pnpm"
+  },
+  "Advisory": {
+    "DatabaseId": 367173,
+    "Id": "GSA_kwCzR0hTQS1wNHhmLXJmNTQtcmozeM4ABZpF",
+    "GhsaId": "GHSA-p4xf-rf54-rj3x",
+    "References": [
+      {
+        "Url": "https://github.com/pnpm/pnpm/security/advisories/GHSA-p4xf-rf54-rj3x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50014"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p4xf-rf54-rj3x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p4xf-rf54-rj3x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50014"
+      }
+    ],
+    "Description": "## Summary\n\npnpm passes the lockfile-controlled git `resolution.commit` value to `git fetch` without a `--` separator or commit-format validation. For git dependencies fetched through the shallow-fetch path, a malicious lockfile can replace the expected 40-character commit hash with a Git option such as `--upload-pack=\u003ccommand\u003e`. For SSH and local transports, `--upload-pack` can execute the supplied command. HTTPS transports ignore `--upload-pack`, so the practical attack surface is primarily SSH or local git dependencies.\n\n## Vulnerability Details\n\nThe vulnerable path is in `fetching/git-fetcher/src/index.ts`. When a git dependency host is configured for shallow fetching, pnpm calls:\n\n```typescript\nawait execGit(['fetch', '--depth', '1', 'origin', resolution.commit], { cwd: tempLocation })\n```\n\nBecause `resolution.commit` is appended before a `--` separator, Git can parse a commit value beginning with `-` as an option. The same file later passes the value to `git checkout` without a separator:\n\n```typescript\nawait execGit(['checkout', resolution.commit], { cwd: tempLocation })\n```\n\n`resolution.commit` comes from the lockfile and is typed as a plain `string`; pnpm does not validate it as a 40-character hexadecimal commit before passing it to Git.\n\n## Proof of Concept\n\n```bash\nbash autofyn_audit/exploits/vuln11_git_upload_pack_rce/exploit.sh\n# Creates a local bare git repo and triggers the shallow-fetch path.\n# Replaces the lockfile commit hash with '--upload-pack=touch /tmp/vuln11_pwned'.\n# Result: PASS -- /tmp/vuln11_pwned created by injected touch command.\n```\n\nThe PoC uses a local `file://githost/...` repository because the injection requires a local or SSH transport. HTTPS transport ignores `--upload-pack`.\n\n## Impact\n\nCode execution as the user running `pnpm install`, under specific transport conditions. The attacker must modify `pnpm-lock.yaml`, and the affected dependency must use SSH or local git transport. HTTPS transport (the common case) is immune.\n\n## Suggested Remediation\n\nAdd a `--` separator before lockfile-controlled git revision values. Validate `resolution.commit` matches `/^[0-9a-f]{40}$/i` before passing to Git.\n\n---\n\n\u003e Discovered by [AutoFyn](https://github.com/SignalPilot-Labs/AutoFyn)\n\u003e Full audit report: [audit_report.md](https://github.com/tempcollab/pnpm/blob/main/autofyn_audit/audit_report.md)\n\u003e Exploit script: [exploit.sh](https://github.com/tempcollab/pnpm/blob/main/autofyn_audit/exploits/vuln11_git_upload_pack_rce/exploit.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T22:53:21Z",
+    "Severity": "MODERATE",
+    "Summary": "pnpm: Git Fetch Argument Injection via Lockfile resolution.commit",
+    "UpdatedAt": "2026-06-26T22:53:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0, \u003c 11.4.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.34.0"
+      },
+      "VulnerableVersionRange": "\u003c 10.34.0"
+    }
+  ]
+}
