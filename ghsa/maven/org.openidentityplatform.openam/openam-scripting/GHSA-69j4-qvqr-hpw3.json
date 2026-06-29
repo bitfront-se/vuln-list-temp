@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-29T17:43:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-scripting"
+  },
+  "Advisory": {
+    "DatabaseId": 367521,
+    "Id": "GSA_kwCzR0hTQS02OWo0LXF2cXItaHB3M84ABZuh",
+    "GhsaId": "GHSA-69j4-qvqr-hpw3",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-69j4-qvqr-hpw3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-69j4-qvqr-hpw3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-69j4-qvqr-hpw3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47424"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nA Protection Mechanism Failure (CWE-693) in OpenAM's server-side scripting sandbox allows an authenticated script author execute operating-system commands from the OpenAM JVM with the default class allow and deny lists. This impacts OpenAM Community Edition through version 16.0.6. This issue was patched in version 16.1.1.\n\n## Impact\nAn authenticated user (for example, a realm admin) who can create or edit server-side scripts for an executed context can run OS commands as the OpenAM application server admin. For a sub-realm `RealmAdmin`, this crosses the documented boundary from realm-scoped administration to JVM/host execution, effectively compromising the whole OpenAM process and every realm it serves. The sandbox is the only code-level defense between a realm script author and arbitrary JVM/OS execution.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-29T17:43:29Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM Authenticated RCE via Groovy Sandbox Escape",
+    "UpdatedAt": "2026-06-29T17:43:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}

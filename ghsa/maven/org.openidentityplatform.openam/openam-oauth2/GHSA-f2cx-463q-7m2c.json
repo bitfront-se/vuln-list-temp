@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-06-29T17:44:38Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-oauth2"
+  },
+  "Advisory": {
+    "DatabaseId": 367522,
+    "Id": "GSA_kwCzR0hTQS1mMmN4LTQ2M3EtN20yY84ABZui",
+    "GhsaId": "GHSA-f2cx-463q-7m2c",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-f2cx-463q-7m2c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f2cx-463q-7m2c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f2cx-463q-7m2c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47426"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nAn Improper Authentication (CWE-287) issue in OpenAM's OAuth2 private_key_jwt client authentication path allows any registered OAuth2 client to mint tokens in the name of any other client whose key is published via a jwks_uri, without knowing the victim's signing key. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\n## Impact\n\nOpenAM Community Edition deployments through version 16.0.6 that have OAuth2 clients configured for private_key_jwt authentication with keys published via jwks_uri are potentially affected. An attacker holding any such client registration, their own, or one obtained through open dynamic client registration where enabled, can mint access tokens in any other such client's name, in any realm hosted by the OpenAM process.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-29T17:44:37Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM OAuth Client Impersonation via JWKS Resolver Cache",
+    "UpdatedAt": "2026-06-29T17:44:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}

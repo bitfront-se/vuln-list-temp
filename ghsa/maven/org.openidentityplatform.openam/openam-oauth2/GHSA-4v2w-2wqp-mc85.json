@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-29T17:46:07Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-oauth2"
+  },
+  "Advisory": {
+    "DatabaseId": 367523,
+    "Id": "GSA_kwCzR0hTQS00djJ3LTJ3cXAtbWM4Nc4ABZuj",
+    "GhsaId": "GHSA-4v2w-2wqp-mc85",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-4v2w-2wqp-mc85"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4v2w-2wqp-mc85"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4v2w-2wqp-mc85"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48717"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nAn Improper Authorization (CWE-285) issue in OpenAM's OAuth2 authorization-code grant allows a PKCE-protected authorization code to be redeemed without the required code_verifier. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\nThe authorize endpoint stores a code_challenge on the issued code, but the token endpoint only requires a code_verifier when the realm-wide codeVerifierEnforced setting is enabled, which ships disabled by default. With that setting off, the stored challenge is checked only if the caller supplies a verifier, so omitting the parameter skips PKCE verification entirely.\n\n## Impact\nOpenAM Community Edition deployments through version 16.0.6 using the default OAuth2 provider configuration are potentially affected. For public clients, an attacker who intercepts an authorization code can exchange it for tokens without knowing the verifier. For confidential clients, the attacker additionally needs client authentication material or an execution context that can redeem the code. A token request supplying an incorrect verifier is still rejected. The bypass is specifically the missing-parameter path.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-29T17:46:06Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenAM OAuth Authorization Bypass via PKCE Challenge",
+    "UpdatedAt": "2026-06-29T17:46:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 16.0.6"
+    }
+  ]
+}
