@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-30T16:55:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "echarts"
+  },
+  "Advisory": {
+    "DatabaseId": 357758,
+    "Id": "GSA_kwCzR0hTQS1mZ21qLWZtOG0tanZ2eM4ABXV-",
+    "GhsaId": "GHSA-fgmj-fm8m-jvvx",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-45249"
+      },
+      {
+        "Url": "https://github.com/apache/echarts/pull/21608"
+      },
+      {
+        "Url": "https://echarts.apache.org/en/option.html#series-lines"
+      },
+      {
+        "Url": "https://echarts.apache.org/handbook/en/best-practices/security/#passing_raw_html_safely"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/1g6xk7gd9vg1c6zyqqt2lnko10zomc3o"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/23/4"
+      },
+      {
+        "Url": "https://github.com/apache/echarts/commit/1e39b00eedda0e4a0b048e099c0e13ce7149d90f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fgmj-fm8m-jvvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fgmj-fm8m-jvvx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45249"
+      }
+    ],
+    "Description": "A cross-site scripting (XSS) vulnerability exists in Apache ECharts in the Lines series tooltip rendering logic.\n\nThis issue affects Apache ECharts: from before 6.1.0.\n\nIn versions prior to 6.1.0, if both Lines series and tooltip are used, and no user-specified tooltip.formatter is provided, and series.data[i].name is specified, raw HTML string series.data[i].name can be rendered through innerHTML sink into tooltip content. Although tooltip is allowed to accept user-provided raw HTML via a custom tooltip.formatter, the built-in tooltip formatters conventionally perform HTML escaping automatically. This case breaks that convention and may unexpectedly lead to script execution when tooltips are displayed.\n\n\nUsers are recommended to upgrade to version 6.1.0 if using the Lines series in this way, which fixes the issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-26T13:30:40Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache ECharts has a cross-site scripting (XSS) vulnerability",
+    "UpdatedAt": "2026-06-30T16:55:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.0"
+    }
+  ]
+}

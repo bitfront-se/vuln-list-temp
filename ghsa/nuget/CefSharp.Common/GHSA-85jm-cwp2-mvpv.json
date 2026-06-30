@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-30T18:36:13Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CefSharp.Common"
+  },
+  "Advisory": {
+    "DatabaseId": 367805,
+    "Id": "GSA_kwCzR0hTQS04NWptLWN3cDItbXZwds4ABZy9",
+    "GhsaId": "GHSA-85jm-cwp2-mvpv",
+    "References": [
+      {
+        "Url": "https://github.com/cefsharp/CefSharp/security/advisories/GHSA-85jm-cwp2-mvpv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-85jm-cwp2-mvpv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-85jm-cwp2-mvpv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48796"
+      }
+    ],
+    "Description": "### Summary\n\n`FolderSchemeHandlerFactory` was intended to restrict served files to a configured `rootFolder`, but its path validation used a raw string prefix check. A request could escape to a sibling directory whose full path starts with the root folder path, allowing files outside the configured root to be served.\n\n### Details\n\nIn affected versions, `FolderSchemeHandlerFactory` canonicalized `rootFolder`, decoded the request path, combined it with the root, and then allowed the file when:\n\n```csharp\nfilePath.StartsWith(rootFolder, StringComparison.OrdinalIgnoreCase)\n```\n\nThis does not enforce a directory boundary. For example, `/tmp/app/www2/secret.txt` starts with `/tmp/app/www`, but `www2` is a sibling of `www`, not a child. The same issue applies on Windows, for example `C:\\app\\www2\\secret.txt` starts with `C:\\app\\www`.\n\nThe affected code was reviewed at commit `b5fef3bb4bc58798c95170078c41de92cfe9066e`, assembly version `147.0.100`.\n\n### PoC\n\nSet `rootFolder` to a directory named `www` and create a sibling directory named `www2`:\n\n```text\n\u003ctemp\u003e/www/index.html\n\u003ctemp\u003e/www2/secret.txt\n```\n\nRegister `FolderSchemeHandlerFactory` for `\u003ctemp\u003e/www`, then request:\n\n```text\nhttps://folderschemehandlerfactory.test/..%2fwww2/secret.txt\n```\n\nThe request path is URL-decoded to `../www2/secret.txt`, combined with `\u003ctemp\u003e/www`, and canonicalized to:\n\n```text\n\u003ctemp\u003e/www2/secret.txt\n```\n\nBecause `\u003ctemp\u003e/www2/secret.txt` starts with `\u003ctemp\u003e/www` as a string prefix, the affected check passes and `secret.txt` is served from outside `rootFolder`.\n\nExpected vulnerable result: HTTP 200 with the contents of `\u003ctemp\u003e/www2/secret.txt`.\n\nExpected fixed result: 404 or equivalent not-found response because the resolved file is outside `rootFolder`.\n\n### Impact\n\nApplications using `FolderSchemeHandlerFactory` for a custom scheme or registered HTTP/HTTPS scheme may expose local files outside the intended served directory. This is most relevant when sensitive sibling directories share the root path prefix, such as `www`/`www2`, `public`/`public_backup`, or `static`/`static-secrets`.\n\nAn attacker must be able to cause the embedded browser to request URLs handled by the affected scheme registration.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-30T18:36:12Z",
+    "Severity": "MODERATE",
+    "Summary": "CefSharp.Common: `FolderSchemeHandlerFactory` path boundary check can expose files outside the configured root folder",
+    "UpdatedAt": "2026-06-30T18:36:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "148.0.90"
+      },
+      "VulnerableVersionRange": "\u003c 148.0.90"
+    }
+  ]
+}
