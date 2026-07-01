@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-01T17:48:34Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openbabel"
+  },
+  "Advisory": {
+    "DatabaseId": 368464,
+    "Id": "GSA_kwCzR0hTQS1mMjloLTJoNTgtNDhyN84ABZ9Q",
+    "GhsaId": "GHSA-f29h-2h58-48r7",
+    "References": [
+      {
+        "Url": "https://github.com/openbabel/openbabel/security/advisories/GHSA-f29h-2h58-48r7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2022-43467"
+      },
+      {
+        "Url": "https://github.com/openbabel/openbabel/commit/2a7d2cda8bd47daade2e555e34b69651a2e132ef"
+      },
+      {
+        "Url": "https://talosintelligence.com/vulnerability_reports/TALOS-2022-1671"
+      },
+      {
+        "Url": "https://www.talosintelligence.com/vulnerability_reports/TALOS-2022-1671"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f29h-2h58-48r7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f29h-2h58-48r7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2022-43467"
+      }
+    ],
+    "Description": "### Summary\n\nA memory-safety vulnerability in Open Babel's PQS parser allowed an\nout-of-bounds write when reading a crafted input file.\n\n### Details\n\nThe flaw was in the `coord_file` parsing path of the PQS reader. A\nmalformed coord file specifier caused the parser to write past the\nend of its destination buffer.\n\n### Impact\n\nOpen Babel is a C++ library and CLI used to read and write chemistry\nfile formats; it is shipped by Linux distributions and embedded in\nservices that may parse untrusted input. Triggering this vulnerability\nrequires the victim to open a malicious PQS file with the `obabel`\ntool, the `OBConversion` API, or any of the language bindings (Python,\nRuby, Java, R, Perl, C#, PHP).\n\n### Affected versions\n\nAll releases up to and including 3.1.1.\n\n### Patched version\n\n3.2.0 (released 2026-05-26).\n\n### Patch\n\nFix commit: https://github.com/openbabel/openbabel/commit/2a7d2cda\n\nA minimized reproducer for this CVE is checked in under\n`test/files/fuzz_regress/` and is exercised on every CI build under\nASAN+UBSAN by the `fuzzregresstest` harness.\n\n### Credit\n\nReported by Cisco TALOS.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-01T17:46:44Z",
+    "Severity": "HIGH",
+    "Summary": "Open Babel has out-of-bounds write in PQS coord_file parser",
+    "UpdatedAt": "2026-07-01T17:48:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.0"
+    }
+  ]
+}

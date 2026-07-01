@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-01T18:14:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@jshookmcp/jshook"
+  },
+  "Advisory": {
+    "DatabaseId": 368476,
+    "Id": "GSA_kwCzR0hTQS1jNXI2LW00bXItOHE1as4ABZ9c",
+    "GhsaId": "GHSA-c5r6-m4mr-8q5j",
+    "References": [
+      {
+        "Url": "https://github.com/vmoranv/jshookmcp/security/advisories/GHSA-c5r6-m4mr-8q5j"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c5r6-m4mr-8q5j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c5r6-m4mr-8q5j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49856"
+      }
+    ],
+    "Description": "## Summary\n\nThe network domain has a central SSRF authorization policy that blocks private, loopback, link-local, and reserved targets unless an explicit authorization object allows private network access. The policy is enforced by raw HTTP/TCP/TLS RTT tools, but the ICMP probe and traceroute tools resolve the target and invoke the native ICMP/traceroute sink directly.\n\nAn MCP client with access to an active network domain can therefore ask the jshookmcp server to probe internal addresses such as 10.0.0.1 even when local SSRF access is disabled for the other raw network tools. This exposes an internal reachability and route mapping primitive from the server network position.\n\n## Affected code\n\nCurrent main https://github.com/vmoranv/jshookmcp/commit/d309c395738638e384c28c0f599b47b2213ab595 and npm package @jshookmcp/jshook 0.3.1 both contain the issue.\n\n- src/server/domains/network/handlers/raw-latency-handlers.ts:61-66: network_rtt_measure parses optional authorization and calls resolveAuthorizedTransportTarget before probing.\n- src/server/domains/network/handlers/raw-latency-handlers.ts:185-190: network_latency_stats uses the same authorization guard.\n- src/server/domains/network/handlers/raw-latency-handlers.ts:123-139: network_traceroute resolves target with resolveHostname and calls traceroute without an authorization policy check.\n- src/server/domains/network/handlers/raw-latency-handlers.ts:240-257: network_icmp_probe resolves target with resolveHostname and calls icmpProbe without an authorization policy check.\n- src/server/domains/network/handlers/raw-latency-handlers.ts:408-416: resolveHostname returns IPv4 literals directly and otherwise performs DNS A lookup without checking private, loopback, link-local, or reserved ranges.\n- src/utils/network/ssrf-policy.ts:244-316: the central policy blocks private targets unless explicit authorization or ALLOW_LOCAL_SSRF=true is set.\n\n## Reproduction\n\nUsed a focused regression test against the real handleCallTool and RawHandlers call path with fake native ICMP and policy sinks. The test does not send external traffic. It proves the denied control and the bypass through the same MCP meta-tool dispatch path.\n\nTest file path in my local checkout:\n\n```text\ntests/server/security/jshookmcp-network-meta-boundary.test.ts\n```\n\nRelevant test body:\n\n```ts\nit('denied control: RTT path consults the SSRF authorization guard for private targets', async () =\u003e {\n  const handler = new RawHandlers();\n  state.resolveAuthorizedTransportTarget.mockRejectedValue(new Error('RTT measurement blocked: target resolves to a private or reserved address.'));\n  await expect(handler.handleNetworkRttMeasure({ url: 'https://10.0.0.1/', probeType: 'tcp' })).rejects.toThrow(/blocked/);\n  expect(state.resolveAuthorizedTransportTarget).toHaveBeenCalled();\n  expect(state.icmpProbe).not.toHaveBeenCalled();\n});\n\nit('bypass proof: call_tool can drive network_icmp_probe to a private IP without the SSRF authorization guard', async () =\u003e {\n  const raw = new RawHandlers();\n  const ctx = {\n    router: { has: vi.fn((name: string) =\u003e name === 'network_icmp_probe') },\n    executeToolWithTracking: vi.fn((name: string, args: Record\u003cstring, unknown\u003e) =\u003e raw.handleNetworkIcmpProbe(args)),\n  } as any;\n\n  const response = await handleCallTool(ctx, { name: 'network_icmp_probe', args: { target: '10.0.0.1', ttl: 64 } });\n  const body = JSON.parse(response.content[0].text);\n\n  expect(body.success).toBe(true);\n  expect(ctx.router.has).toHaveBeenCalledWith('network_icmp_probe');\n  expect(ctx.executeToolWithTracking).toHaveBeenCalledWith('network_icmp_probe', { target: '10.0.0.1', ttl: 64 });\n  expect(state.resolveAuthorizedTransportTarget).not.toHaveBeenCalled();\n  expect(state.icmpProbe).toHaveBeenCalledWith(expect.objectContaining({ target: '10.0.0.1', ttl: 64 }));\n});\n```\n\nCommand run:\n\n```bash\ncorepack pnpm exec vitest run --config vitest.config.ts tests/server/security/jshookmcp-network-meta-boundary.test.ts --reporter=verbose\n```\n\nResult:\n\n```text\nTest Files  1 passed (1)\nTests       4 passed (4)\n```\n\nThe observed vulnerable call sequence is:\n\n```text\ncall_tool(name=network_icmp_probe, args={target: 10.0.0.1, ttl: 64})\n  -\u003e ctx.router.has(network_icmp_probe) == true\n  -\u003e ctx.executeToolWithTracking(network_icmp_probe, validatedArgs)\n  -\u003e RawHandlers.handleNetworkIcmpProbe(validatedArgs)\n  -\u003e resolveHostname(10.0.0.1) returns 10.0.0.1\n  -\u003e icmpProbe({ target: 10.0.0.1, ttl: 64, ... })\n```\n\nresolveAuthorizedTransportTarget is not called on this path. The same missing policy pattern exists for network_traceroute.\n\n## Impact\n\nAn MCP client with access to the active network domain can use the server as a backend-origin internal network probing oracle. The result can reveal whether internal hosts respond, approximate latency, traceroute hops, and ICMP error classes from the server network position.\n\nThe practical impact is strongest when jshookmcp is exposed over Streamable HTTP or another remote transport, multiple clients share one server, or the server runs on Windows or with raw socket capability. This is not code execution and does not by itself exfiltrate response bodies.\n\n## Remediation\n\nApply the same authorization model used by network_rtt_measure and network_latency_stats to network_icmp_probe and network_traceroute. In particular, accept an optional authorization object, resolve the target through the central policy helper or an equivalent host-only policy helper, block private and reserved ranges by default, and pass only the policy-approved resolved address to the native probe. Add regression tests for default-denied private targets, authorized private CIDR access, private hostnames, and call_tool dispatch.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-01T18:14:57Z",
+    "Severity": "MODERATE",
+    "Summary": "@jshookmcp/jshook: ICMP probe and traceroute skip local-network SSRF authorization",
+    "UpdatedAt": "2026-07-01T18:14:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.2"
+      },
+      "VulnerableVersionRange": "= 0.3.1"
+    }
+  ]
+}

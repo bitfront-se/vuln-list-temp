@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-01T18:04:12Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "swift"
+  },
+  "Advisory": {
+    "DatabaseId": 358115,
+    "Id": "GSA_kwCzR0hTQS1nN2pxLWoyNTctcnd3Ms4ABXbj",
+    "GhsaId": "GHSA-g7jq-j257-rww2",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49017"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/bugs/2152205"
+      },
+      {
+        "Url": "https://review.opendev.org/c/openstack/swift/+/987957"
+      },
+      {
+        "Url": "https://review.opendev.org/c/openstack/swift/+/988093"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/27/9"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/06/02/6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g7jq-j257-rww2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g7jq-j257-rww2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49017"
+      }
+    ],
+    "Description": "In OpenStack Swift before 2.36.2 and 2.37.2, s3api middleware enters an infinite loop when processing a truncated aws-chunked PUT request body. The StreamingInput class repeatedly appends an empty buffer and re-reads, causing the proxy-server worker handling the request to become permanently unresponsive with increasing CPU and memory consumption. An authenticated attacker can systematically exhaust all proxy-server workers, resulting in denial of service. The defect was introduced in Swift 2.36.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-27T03:30:31Z",
+    "Severity": "HIGH",
+    "Summary": "OpenStack Swift: s3api middleware enters an infinite loop when processing a truncated aws-chunked PUT request body",
+    "UpdatedAt": "2026-07-01T18:04:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.37.0, \u003c= 2.37.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.36.0, \u003c= 2.36.1"
+    }
+  ]
+}

@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-gfj5-979r-92pw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58399"
       }
     ],
     "Description": "@acastellon/auth v2.2.0 appears to allow an unauthenticated authentication bypass in validateToken() through spoofable auth-user and Host request headers.\n\nThe validateToken middleware contains a service-to-service bypass for auth-user: service-brother when req.get('host').startsWith(getHostName()). Both values involved in the check can be influenced by an unauthenticated HTTP client: auth-user is a request header, and Host is also client-controlled. As a result, a remote unauthenticated attacker can send a request with crafted headers and bypass token validation before the normal legacy/JWT/OIDC validation logic runs.\n\nImpact:\nAn attacker may be able to access routes protected by validateToken() without a valid token. In deployments where downstream services trust auth-user or is-* headers, this may also lead to privilege escalation.\n\nAffected package:\n@acastellon/auth v2.2.0\n\nAffected code:\nauth.js, validateToken()\nThe issue is related to the service-brother bypass and getHostName() check.\n\nExample request:\n```\nGET /protected HTTP/1.1\nHost: \u003cconfigured CNAME or hostname\u003e\nauth-user: service-brother\nis-admin: true\n```\n\nExpected behavior:\nThe request should require a valid authentication token.\n\nActual behavior:\nThe middleware calls next() before token validation.\n\nFix implemented in v2.3.0+:\n\nRemoved the spoofable bypass.\nAlways sanitize incoming auth-user and is-* headers.\nAdded mTLS client certificate based service auth (with optional TRUSTED_MTLS_SERVICES allowlist).\nUpdated consumers (rest, graphql, dns-client) for mTLS support.\nUnit tests added for sanitization + mTLS path.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-06-18T17:22:47Z",
     "Severity": "CRITICAL",
     "Summary": "@acastellon/auth: Authentication bypass via spoofable headers in validateToken()",
-    "UpdatedAt": "2026-06-18T17:22:50Z",
+    "UpdatedAt": "2026-07-01T14:30:32Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
