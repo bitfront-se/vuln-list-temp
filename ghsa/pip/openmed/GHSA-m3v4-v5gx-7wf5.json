@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-06-30T21:42:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openmed"
+  },
+  "Advisory": {
+    "DatabaseId": 360314,
+    "Id": "GSA_kwCzR0hTQS1tM3Y0LXY1Z3gtN3dmNc4ABX96",
+    "GhsaId": "GHSA-m3v4-v5gx-7wf5",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47117"
+      },
+      {
+        "Url": "https://github.com/maziyarpanahi/openmed/pull/59"
+      },
+      {
+        "Url": "https://github.com/maziyarpanahi/openmed/commit/98724f65df98d7518b9006e6356740aa36c2f224"
+      },
+      {
+        "Url": "https://github.com/maziyarpanahi/openmed/releases/tag/v1.5.2"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openmed-remote-code-execution-via-pii-model-loading"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m3v4-v5gx-7wf5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m3v4-v5gx-7wf5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47117"
+      }
+    ],
+    "Description": "OpenMed before 1.5.2 contains a remote code execution vulnerability in the PII privacy-filter model loading path. The privacy-filter dispatcher used broad substring matching on the user-supplied `model_name` parameter, allowing a value such as `attacker/foo-privacy-filter-bar` to route through a path that loads Hugging Face models with `trust_remote_code=True`. An unauthenticated attacker can supply a malicious model repository containing custom Transformers code via auto_map in `config.json` or `tokenizer_config.json`, which is imported and executed with the privileges of the OpenMed service process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-02T18:31:33Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenMed vulnerable to remote code injection through privacy-filter model loading path",
+    "UpdatedAt": "2026-06-30T21:42:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.5.2"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-06-30T18:47:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "openbabel"
+  },
+  "Advisory": {
+    "DatabaseId": 367813,
+    "Id": "GSA_kwCzR0hTQS00dzV3LTRmaG0tcTQ4M84ABZzF",
+    "GhsaId": "GHSA-4w5w-4fhm-q483",
+    "References": [
+      {
+        "Url": "https://github.com/openbabel/openbabel/security/advisories/GHSA-4w5w-4fhm-q483"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-2705"
+      },
+      {
+        "Url": "https://github.com/openbabel/openbabel/issues/2848"
+      },
+      {
+        "Url": "https://github.com/openbabel/openbabel/pull/2862"
+      },
+      {
+        "Url": "https://github.com/VedantMadane/openbabel/commit/e23a224b8fd9d7c2a7cde9ef4ec6afb4c05aa08a"
+      },
+      {
+        "Url": "https://github.com/oneafter/0128/blob/main/ob2/repro.mol2"
+      },
+      {
+        "Url": "https://vuldb.com/?ctiid.346651"
+      },
+      {
+        "Url": "https://vuldb.com/?id.346651"
+      },
+      {
+        "Url": "https://vuldb.com/?submit.754379"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4w5w-4fhm-q483"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4w5w-4fhm-q483"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-2705"
+      }
+    ],
+    "Description": "### Summary\n\nA memory-safety vulnerability in Open Babel's MOL2 file format parser\ncaused a NULL pointer dereference when reading a crafted input file.\n\n### Details\n\nThe flaw was in `OBAtom::SetFormalCharge` as called from the MOL2\nparser. A malformed atom record caused the parser to call the method\non a NULL atom pointer.\n\n### Impact\n\nOpen Babel is a C++ library and CLI used to read and write chemistry\nfile formats; it is shipped by Linux distributions and embedded in\nservices that may parse untrusted input. Triggering this vulnerability\nrequires the victim to open a malicious MOL2 file with the `obabel`\ntool, the `OBConversion` API, or any of the language bindings (Python,\nRuby, Java, R, Perl, C#, PHP).\n\n### Affected versions\n\nAll releases up to and including 3.1.1.\n\n### Patched version\n\n3.2.0 (released 2026-05-26).\n\n### Patch\n\nFix commit: https://github.com/openbabel/openbabel/commit/e23a224b\nTracked in #2862.\n\nA minimized reproducer for this CVE is checked in under\n`test/files/fuzz_regress/` and is exercised on every CI build under\nASAN+UBSAN by the `fuzzregresstest` harness.\n\n### Credit\n\nReported by Vedant Madane (@VedantMadane) via VulDB.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-30T18:47:00Z",
+    "Severity": "LOW",
+    "Summary": "Open Babel has NULL pointer dereference in MOL2 OBAtom::SetFormalCharge",
+    "UpdatedAt": "2026-06-30T18:47:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.0"
+    }
+  ]
+}

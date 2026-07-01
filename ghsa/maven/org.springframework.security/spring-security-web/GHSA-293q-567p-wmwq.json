@@ -1,0 +1,80 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-06-30T21:35:12Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.springframework.security:spring-security-web"
+  },
+  "Advisory": {
+    "DatabaseId": 362447,
+    "Id": "GSA_kwCzR0hTQS0yOTNxLTU2N3Atd213cc4ABYfP",
+    "GhsaId": "GHSA-293q-567p-wmwq",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47838"
+      },
+      {
+        "Url": "https://spring.io/security/cve-2026-47838"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2jrg-rf5x-568g"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-293q-567p-wmwq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-293q-567p-wmwq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47838"
+      }
+    ],
+    "Description": "In Spring Security Web, `SubjectDnX509PrincipalExtractor` does not correctly handle certain malformed X.509 certificate CN values, which can lead to reading the wrong value for the username. In a carefully crafted certificate, this can lead to an attacker impersonating another user.\n\n`SubjectDnX509PrincipalExtractor` is deprecated by this CVE and replaced with `SubjectX500PrincipalExtractor`. As part of updating, you should also migrate to `SubjectX500PrincipalExtractor`.\n\nAffected versions:\nSpring Security Enterprise 5.7.0 through 5.7.24; 5.8.0 through 5.8.26; 6.3.0 through 6.3.17; 6.4.0 through 6.4.17; 6.5.0 through 6.5.10. \nOSS 6.5.0 through 6.5.10.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-10T00:31:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Spring Security Vulnerable to Unauthorized User Impersonation when Using X.509 Client Certificates",
+    "UpdatedAt": "2026-06-30T21:35:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 5.7.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 5.8.0, \u003c= 5.8.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c= 6.3.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 6.4.0, \u003c= 6.4.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.5.11"
+      },
+      "VulnerableVersionRange": "\u003e= 6.5.0, \u003c= 6.5.10"
+    }
+  ]
+}
