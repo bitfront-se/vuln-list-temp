@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T16:38:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368924,
+    "Id": "GSA_kwCzR0hTQS1jcXd2LTlxangtdnh3Ms4ABaEc",
+    "GhsaId": "GHSA-cqwv-9qjx-vxw2",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-cqwv-9qjx-vxw2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cqwv-9qjx-vxw2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cqwv-9qjx-vxw2"
+      }
+    ],
+    "Description": "### Summary\n\nSkill Workshop apply flow could override pending approval. In affected versions, an agent tool call reaching the affected Skill Workshop apply path could set `apply: true` despite `approvalPolicy: pending`.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could apply a workshop change before the expected approval step. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.6`.\n\n### Mitigations\n\nreview Skill Workshop changes manually and keep the tool restricted until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:38:03Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Skill Workshop apply flow could override pending approval",
+    "UpdatedAt": "2026-07-02T16:38:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.5"
+    }
+  ]
+}

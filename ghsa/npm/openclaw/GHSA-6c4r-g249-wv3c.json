@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T17:06:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368936,
+    "Id": "GSA_kwCzR0hTQS02YzRyLWcyNDktd3YzY84ABaEo",
+    "GhsaId": "GHSA-6c4r-g249-wv3c",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-6c4r-g249-wv3c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6c4r-g249-wv3c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6c4r-g249-wv3c"
+      }
+    ],
+    "Description": "### Summary\n\nSandboxed session spawn could expose the real workspace path to child prompts. In affected versions, a child session spawned from a sandboxed parent could forward the host workspace path into the child session prompt.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could reveal host workspace location or related memory context to the child model. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.26`.\n\n### Mitigations\n\navoid spawning child sessions from sensitive sandboxed workspaces until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:06:10Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Sandboxed session spawn could expose the real workspace path to child prompts",
+    "UpdatedAt": "2026-07-02T17:06:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.26"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.25"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T17:30:21Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/projectcalico/calico"
+  },
+  "Advisory": {
+    "DatabaseId": 359007,
+    "Id": "GSA_kwCzR0hTQS1tNjdnLTg3cngtdjQyY84ABXpf",
+    "GhsaId": "GHSA-m67g-87rx-v42c",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41185"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/pull/12502"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/pull/12526"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/pull/12527"
+      },
+      {
+        "Url": "https://www.tigera.io/security-bulletins/tta-2026-002"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/commit/0ca653db0ae7400ea9fb066daa7f45c902482271"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/commit/cd73bc2cea0f4989772f2deb93909e7cfac927e0"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/commit/da9ea3a13927a35e4022b787d17a005b2157d812"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m67g-87rx-v42c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m67g-87rx-v42c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41185"
+      }
+    ],
+    "Description": "When Calico is configured with the Azure IPAM plugin, the Calico CNI binary mutates the incoming CNI configuration to attach subnet information before delegating to the IPAM plugin. After mutating, the Azure IPAM helper logs the entire unmarshaled configuration map (stdinData) at INFO level to /var/log/calico/cni/cni.log on every CNI ADD and DEL invocation — once per pod scheduled or terminated on the node. When the cluster is deployed using token-based Kubernetes authentication, this log entry contains the ServiceAccount token, client key, and certificate authority in plaintext. Any principal with read access to /var/log/calico/cni/cni.log on a node  can read these logs and extract the credentials, which grant cluster-wide Calico networking admin privileges.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-28T18:30:31Z",
+    "Severity": "MODERATE",
+    "Summary": "Calico Inserts Sensitive Information into Log File",
+    "UpdatedAt": "2026-07-02T17:30:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.11.0-cni-plugin.0.20260417001138-cd73bc2cea0f"
+      },
+      "VulnerableVersionRange": "\u003c 1.11.0-cni-plugin.0.20260417001138-cd73bc2cea0f"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.31.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 3.31.6"
+    }
+  ]
+}

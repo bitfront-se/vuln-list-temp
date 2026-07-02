@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:00:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368913,
+    "Id": "GSA_kwCzR0hTQS12NnIyLWpoNTgteHg2d84ABaER",
+    "GhsaId": "GHSA-v6r2-jh58-xx6w",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-v6r2-jh58-xx6w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53810"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-arbitrary-code-execution-via-unscanned-marketplace-runtime-extension-metadata"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v6r2-jh58-xx6w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v6r2-jh58-xx6w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53810"
+      }
+    ],
+    "Description": "### Summary\n\nMarketplace runtime extension metadata could point at unscanned payloads. In affected versions, a package selected for installation by a trusted operator could redirect runtime loading toward hidden package content that was not scanned as expected.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could load plugin code outside the reviewed package entry points. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nInstall only trusted plugins and keep plugin allowlists explicit until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:00:42Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw's marketplace runtime extension metadata could point at unscanned payloads",
+    "UpdatedAt": "2026-07-02T16:00:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.18"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.18"
+    }
+  ]
+}

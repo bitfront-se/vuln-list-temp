@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T19:08:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@asymmetric-effort/specifyjs"
+  },
+  "Advisory": {
+    "DatabaseId": 368971,
+    "Id": "GSA_kwCzR0hTQS1qNXFwLXA0NGctMm00Oc4ABaFL",
+    "GhsaId": "GHSA-j5qp-p44g-2m49",
+    "References": [
+      {
+        "Url": "https://github.com/asymmetric-effort/specifyjs/security/advisories/GHSA-j5qp-p44g-2m49"
+      },
+      {
+        "Url": "https://github.com/asymmetric-effort/specifyjs/commit/25d1fb491d99479efdf501f5f75e0bb80c908f0a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j5qp-p44g-2m49"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j5qp-p44g-2m49"
+      }
+    ],
+    "Description": "## Finding\n\n**Location**: `core/src/shared/secure-fetch.ts`\n\n`assertSecureUrl` validated only the initial request URL. The `fetch()` API follows redirects by default (up to 20 hops). A request to a valid `https://` URL could redirect to `http://internal-service/` or other unvalidated destinations.\n\n## Status\n\n**Fixed in v0.2.136** — `secureFetch` now defaults to `redirect: 'error'` which rejects any redirect. Callers can override with `{ redirect: 'follow' }` if they trust the target.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T19:08:04Z",
+    "Severity": "MODERATE",
+    "Summary": "@asymmetric-effort/specifyjs: No redirect target validation in secureFetch",
+    "UpdatedAt": "2026-07-02T19:08:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.136"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.136"
+    }
+  ]
+}

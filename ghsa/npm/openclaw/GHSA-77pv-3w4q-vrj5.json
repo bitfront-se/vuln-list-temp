@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T16:56:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368932,
+    "Id": "GSA_kwCzR0hTQS03N3B2LTN3NHEtdnJqNc4ABaEk",
+    "GhsaId": "GHSA-77pv-3w4q-vrj5",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-77pv-3w4q-vrj5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-77pv-3w4q-vrj5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-77pv-3w4q-vrj5"
+      }
+    ],
+    "Description": "### Summary\n\nQQBot pre-dispatch slash commands could skip allowFrom checks. In affected versions, a QQBot sender able to invoke slash commands could dispatch the command before applying the configured allowFrom policy.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could trigger command handling from a sender that policy should have blocked. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.27`.\n\n### Mitigations\n\nrestrict QQBot slash command exposure until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:56:24Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: QQBot pre-dispatch slash commands could skip allowFrom checks",
+    "UpdatedAt": "2026-07-02T16:56:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.27"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.26"
+    }
+  ]
+}

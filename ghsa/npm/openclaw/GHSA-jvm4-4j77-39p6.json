@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:34:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368923,
+    "Id": "GSA_kwCzR0hTQS1qdm00LTRqNzctMzlwNs4ABaEb",
+    "GhsaId": "GHSA-jvm4-4j77-39p6",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-jvm4-4j77-39p6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jvm4-4j77-39p6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jvm4-4j77-39p6"
+      }
+    ],
+    "Description": "### Summary\n\nQQBot streaming command could mutate config without explicit allowFrom. In affected versions, a QQBot sender reaching the affected command could change configuration without requiring an explicit non-wildcard allowlist entry.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could modify QQBot streaming configuration outside the intended admin policy. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.29`.\n\n### Mitigations\n\ndisable the command or restrict it to explicit trusted QQBot senders until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:34:39Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: QQBot streaming command could mutate config without explicit allowFrom",
+    "UpdatedAt": "2026-07-02T16:34:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.29"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.27"
+    }
+  ]
+}

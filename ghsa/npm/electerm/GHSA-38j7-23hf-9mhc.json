@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T19:20:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electerm"
+  },
+  "Advisory": {
+    "DatabaseId": 368978,
+    "Id": "GSA_kwCzR0hTQS0zOGo3LTIzaGYtOW1oY84ABaFS",
+    "GhsaId": "GHSA-38j7-23hf-9mhc",
+    "References": [
+      {
+        "Url": "https://github.com/electerm/electerm/security/advisories/GHSA-38j7-23hf-9mhc"
+      },
+      {
+        "Url": "https://github.com/electerm/electerm/commit/fde153d677a170c5816368f6586647f3af4ef284"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-38j7-23hf-9mhc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-38j7-23hf-9mhc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49253"
+      }
+    ],
+    "Description": "### Impact\n\nA path traversal vulnerability exists in the Zmodem and Trzsz file download handlers in electerm. When receiving files via Zmodem or Trzsz protocols, electerm uses the remote-supplied filename directly in `path.join()` with the user-selected download directory without sanitization.\n\nA malicious SSH server or remote shell process can send a specially crafted filename such as `../escaped.txt` to escape the user-selected download directory and write files to arbitrary locations on the user's filesystem, subject to process permissions.\n\n**Attack scenario:**\n1. User connects to a malicious SSH server\n2. Attacker initiates a Zmodem or Trzsz file transfer\n3. Attacker supplies a traversal filename (e.g., `../../.bashrc`, `../escaped.txt`)\n4. User accepts the transfer and selects a download directory\n5. File is written outside the selected directory, potentially overwriting sensitive files\n\n**Affected components:**\n- `src/app/server/zmodem.js` - `prepareReceiveFile()` at line 736\n- `src/app/server/trzsz.js` - `getUniqueFilePath()` at line 559, `openSaveFile()` callback, and `savedFilePaths` mapping\n\n### Patches\n\n- https://github.com/electerm/electerm/commit/fde153d677a170c5816368f6586647f3af4ef284\n\n### Workarounds\n\n\nIf upgrading is not immediately possible, users can mitigate this vulnerability by:\n1. Only connecting to trusted SSH servers\n2. Rejecting or canceling any incoming Zmodem or Trzsz file transfers from untrusted sources\n3. Avoiding the use of Zmodem (`sz`/`rz`) and Trzsz (`trz`/`tsz`) commands on untrusted servers",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T19:20:20Z",
+    "Severity": "HIGH",
+    "Summary": "electerm has Path Traversal in Zmodem and Trzsz Download Filename Handling",
+    "UpdatedAt": "2026-07-02T19:20:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.11"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.0"
+    }
+  ]
+}

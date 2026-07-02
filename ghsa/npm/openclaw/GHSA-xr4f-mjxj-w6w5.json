@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:55:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368931,
+    "Id": "GSA_kwCzR0hTQS14cjRmLW1qeGotdzZ3Nc4ABaEj",
+    "GhsaId": "GHSA-xr4f-mjxj-w6w5",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-xr4f-mjxj-w6w5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xr4f-mjxj-w6w5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xr4f-mjxj-w6w5"
+      }
+    ],
+    "Description": "### Summary\n\nThe bundled device-pair plugin exposed `/pair` on normal chat command surfaces. In affected releases, authorized non-owner chat senders could issue device-pairing bootstrap codes without having owner, admin, or pairing scope.\n\nThis issue does not affect unauthenticated users. The caller must already be allowed to send commands to the agent through a configured chat channel.\n\n### Affected configurations\n\nThis affects deployments where the bundled device-pair plugin is enabled and a non-owner sender is authorized to use normal chat commands, such as in a configured Telegram, Discord, or Slack agent.\n\n### Impact\n\nA non-owner authorized sender could create a setup code and use it before expiry to enroll a device with operator/node capabilities. That device would then retain persistent credentials until removed.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.4`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.4` or later. Review paired devices and remove any unexpected entries. In shared chat channels, keep command access limited to users who should be allowed to manage device pairing.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:55:09Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Non-owner chat senders could issue device-pairing bootstrap codes",
+    "UpdatedAt": "2026-07-02T16:55:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.4"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.4"
+    }
+  ]
+}

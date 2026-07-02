@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T17:12:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368941,
+    "Id": "GSA_kwCzR0hTQS0zYzZqLWhxMzMtM2p2NM4ABaEt",
+    "GhsaId": "GHSA-3c6j-hq33-3jv4",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3c6j-hq33-3jv4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53816"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-exec-lifecycle-event-forgery-via-paired-node"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3c6j-hq33-3jv4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3c6j-hq33-3jv4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53816"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw nodes send lifecycle events back to the gateway. In affected releases, a paired node could send an exec lifecycle event that was accepted without enough provenance tying it to an authorized `system.run` request.\n\nThis issue affects the node event boundary. It does not allow an unauthenticated caller to reach the gateway; the attacker must already control a paired node connection.\n\n### Affected configurations\n\nThis affects deployments with a paired node where that node can send crafted `node.event` messages to the gateway and the target agent/session can process exec lifecycle events.\n\n### Impact\n\nA malicious or compromised paired node could make the gateway treat attacker-supplied event data as an exec lifecycle result. In the vulnerable flow, that could steer the target session into an exec-event path that exposed capabilities the reduced node surface should not have provided.\n\nThe issue is a missing provenance check for node-originated lifecycle events.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.18` or later. Pair nodes only from trusted environments, and remove/re-pair nodes that may have been compromised.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:12:03Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Paired nodes could forge exec lifecycle events without system.run provenance",
+    "UpdatedAt": "2026-07-02T17:12:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.18"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.18"
+    }
+  ]
+}

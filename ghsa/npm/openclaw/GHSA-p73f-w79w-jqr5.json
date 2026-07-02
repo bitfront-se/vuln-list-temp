@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T17:23:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368949,
+    "Id": "GSA_kwCzR0hTQS1wNzNmLXc3OXctanFyNc4ABaE1",
+    "GhsaId": "GHSA-p73f-w79w-jqr5",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-p73f-w79w-jqr5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p73f-w79w-jqr5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p73f-w79w-jqr5"
+      }
+    ],
+    "Description": "### Summary\n\nNative command authorization could skip owner-command enforcement. In affected versions, a sender able to trigger native command handling could authorize a native command without enforcing the configured owner-only command policy.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run an owner-style command from a sender that should not have that command access. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.6`.\n\n### Mitigations\n\nkeep native command surfaces limited to trusted senders until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:23:43Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Native command authorization could skip owner-command enforcement",
+    "UpdatedAt": "2026-07-02T17:23:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.5"
+    }
+  ]
+}

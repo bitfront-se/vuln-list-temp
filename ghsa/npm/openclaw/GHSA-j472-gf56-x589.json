@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T17:22:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368948,
+    "Id": "GSA_kwCzR0hTQS1qNDcyLWdmNTYteDU4Oc4ABaE0",
+    "GhsaId": "GHSA-j472-gf56-x589",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-j472-gf56-x589"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j472-gf56-x589"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j472-gf56-x589"
+      }
+    ],
+    "Description": "### Summary\n\nPowerShell encoded-command aliases could miss exec allowlist checks. In affected versions, a command request using abbreviated encoded-command flags could use an alias form not recognized by the allowlist parser.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run encoded PowerShell content without the intended allowlist decision. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.12`.\n\n### Mitigations\n\nAvoid allowlisting PowerShell wrapper forms and require approval for encoded commands until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:22:52Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: PowerShell encoded-command aliases could miss exec allowlist checks",
+    "UpdatedAt": "2026-07-02T17:22:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.7"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T17:13:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368942,
+    "Id": "GSA_kwCzR0hTQS00bTN2LXE3NDctcGM2aM4ABaEu",
+    "GhsaId": "GHSA-4m3v-q747-pc6h",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-4m3v-q747-pc6h"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4m3v-q747-pc6h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4m3v-q747-pc6h"
+      }
+    ],
+    "Description": "### Summary\n\nMattermost slash token revocation could lag until monitor refresh. In affected versions, a caller with an old Mattermost slash token during the refresh window could continue accepting the old token until the monitor refreshed.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could invoke slash command behavior briefly after token revocation. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.24`.\n\n### Mitigations\n\nrestart or refresh the Mattermost monitor after token rotation until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:13:01Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Mattermost slash token revocation could lag until monitor refresh",
+    "UpdatedAt": "2026-07-02T17:13:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.24"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.23"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:43:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368926,
+    "Id": "GSA_kwCzR0hTQS1xanBjLXFmOW0teHdtcs4ABaEe",
+    "GhsaId": "GHSA-qjpc-qf9m-xwmr",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qjpc-qf9m-xwmr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qjpc-qf9m-xwmr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qjpc-qf9m-xwmr"
+      }
+    ],
+    "Description": "### Summary\n\nIn trusted-proxy Control UI mode, OpenClaw accepted a WebSocket client's declared operator scopes before those scopes were bound to a server-approved pairing or trusted-proxy authorization baseline.\n\nThis issue affects trusted-proxy Control UI deployments. It does not apply to shared-secret Control UI sessions, which are treated as trusted operator sessions by design.\n\n### Affected configurations\n\nThis affects deployments using `gateway.auth.mode: \"trusted-proxy\"` for Control UI access where a restricted trusted-proxy user could open a Control UI WebSocket and present a fresh, unpaired device identity with elevated requested scopes.\n\n### Impact\n\nAn unpaired or restricted trusted-proxy Control UI client could obtain cached `operator.admin` authority on its live WebSocket connection. That authority could then be used for admin-gated Gateway RPCs until the connection was closed or revalidated.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.18` or later. Before upgrading, restrict trusted-proxy Control UI access to users who should have the scopes they can request, and restart the gateway after changing trusted-proxy authorization policy.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:43:53Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Trusted-proxy Control UI WebSocket accepted client-declared scopes before pairing",
+    "UpdatedAt": "2026-07-02T16:43:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.18"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.18"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T16:53:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368929,
+    "Id": "GSA_kwCzR0hTQS1ncmMzLTJqMzQtcDZnbc4ABaEh",
+    "GhsaId": "GHSA-grc3-2j34-p6gm",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-grc3-2j34-p6gm"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-grc3-2j34-p6gm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-grc3-2j34-p6gm"
+      }
+    ],
+    "Description": "### Summary\n\nmessage.action forwarding could send Gateway credentials to model-supplied loopback URLs. In affected versions, model-controlled action metadata that selects a loopback Gateway URL could forward the action payload with Gateway credentials to the supplied loopback URL.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could expose the token and action payload to a local listener chosen through the affected path. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.2`.\n\n### Mitigations\n\nrestrict message action forwarding and avoid model-supplied loopback targets until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:53:15Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: message.action forwarding could send Gateway credentials to model-supplied loopback URLs",
+    "UpdatedAt": "2026-07-02T16:54:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.29"
+    }
+  ]
+}

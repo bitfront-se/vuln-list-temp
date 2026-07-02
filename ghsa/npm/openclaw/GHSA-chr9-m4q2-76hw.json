@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:04:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368915,
+    "Id": "GSA_kwCzR0hTQS1jaHI5LW00cTItNzZod84ABaET",
+    "GhsaId": "GHSA-chr9-m4q2-76hw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-chr9-m4q2-76hw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53817"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-control-ui-locality-spoofing-in-device-pairing"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-chr9-m4q2-76hw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-chr9-m4q2-76hw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53817"
+      }
+    ],
+    "Description": "### Summary\n\nIn affected LAN/shared-token Control UI deployments, a caller could spoof locality information used during Control UI pairing and obtain a durable admin-capable device token.\n\nThis issue is limited to deployments where the caller already has the network/authentication foothold needed to reach the Control UI pairing path. It is not an unauthenticated internet exposure issue.\n\n### Affected configurations\n\nThis affects configurations such as LAN-bound gateways or shared-token Control UI access where locality signals were accepted as sufficient for pairing decisions.\n\n### Impact\n\nA temporary or shared Control UI access path could be turned into a persistent admin device token. That token could remain useful after the shared gateway token was rotated, unless the paired device was removed.\n\nThe issue is a pairing/locality validation problem: locality-derived trust was stronger than it should have been.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.22`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.22` or later. For older deployments, remove unexpected paired devices and avoid exposing Control UI pairing paths on networks with untrusted clients.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:04:35Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Control UI locality spoofing could mint a durable admin device token",
+    "UpdatedAt": "2026-07-02T16:04:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8,
+      "VectorString": "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.22"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.22"
+    }
+  ]
+}

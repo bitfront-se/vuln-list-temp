@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T19:18:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@conform-to/dom"
+  },
+  "Advisory": {
+    "DatabaseId": 368977,
+    "Id": "GSA_kwCzR0hTQS01MjVtLTdmODItMm1mN84ABaFR",
+    "GhsaId": "GHSA-525m-7f82-2mf7",
+    "References": [
+      {
+        "Url": "https://github.com/edmundhung/conform/security/advisories/GHSA-525m-7f82-2mf7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-525m-7f82-2mf7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-525m-7f82-2mf7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49250"
+      }
+    ],
+    "Description": "A CPU exhaustion vulnerability exists in Conform's [`parseSubmission`](https://conform.guide/api/react/future/parseSubmission) future API when parsing `FormData` or `URLSearchParams` submissions with many unique field names. The parser previously looked up values by field name, which could require repeated scans of the submitted entries and cause excessive synchronous CPU work if an attacker supplies a crafted submission.\n\n\u003e [!NOTE]\n\u003e The patched version fixes this by iterating submitted entries directly instead of repeatedly looking up values by field name. Applications that accept untrusted form submissions should still enforce request parsing limits before passing data to Conform. For multipart requests, [@remix-run/form-data-parser](https://www.npmjs.com/package/@remix-run/form-data-parser) provides `maxParts`, `maxTotalSize`, `maxFileSize`, `maxFiles`, and `maxHeaderSize` options.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T19:18:41Z",
+    "Severity": "HIGH",
+    "Summary": "@conform-to/dom parseSubmission vulnerable to CPU exhaustion when parsing many unique form fields",
+    "UpdatedAt": "2026-07-02T19:18:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.19.4"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.0, \u003c 1.19.4"
+    }
+  ]
+}

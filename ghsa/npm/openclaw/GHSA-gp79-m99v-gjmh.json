@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T16:45:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368927,
+    "Id": "GSA_kwCzR0hTQS1ncDc5LW05OXYtZ2ptaM4ABaEf",
+    "GhsaId": "GHSA-gp79-m99v-gjmh",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-gp79-m99v-gjmh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gp79-m99v-gjmh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gp79-m99v-gjmh"
+      }
+    ],
+    "Description": "### Summary\n\nMattermost handlers could fall open when channel type was missing. In affected versions, a Mattermost event missing channel type metadata could continue without applying the intended DM policy decision.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could process a Mattermost event that should have been gated by channel policy. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.6`.\n\n### Mitigations\n\nkeep Mattermost bot access restricted and review channel metadata errors until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:45:14Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Mattermost handlers could fall open when channel type was missing",
+    "UpdatedAt": "2026-07-02T16:45:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.5"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T15:42:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368910,
+    "Id": "GSA_kwCzR0hTQS1xaDJmLTk5bXYtbXJjZs4ABaEO",
+    "GhsaId": "GHSA-qh2f-99mv-mrcf",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-qh2f-99mv-mrcf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qh2f-99mv-mrcf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qh2f-99mv-mrcf"
+      }
+    ],
+    "Description": "### Summary\n\nBundle MCP loopback could miss its exec denylist on session spawn. In affected versions, a caller that can reach the affected bundled MCP session-spawn path could bypass the denylist that was intended for that loopback MCP entry point.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could start a session with broader command reach than that MCP path should provide. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.12`.\n\n### Mitigations\n\nrestrict bundled MCP loopback access to trusted operators until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T15:42:42Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Bundle MCP loopback could miss its exec denylist on session spawn",
+    "UpdatedAt": "2026-07-02T15:42:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.12"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.12"
+    }
+  ]
+}

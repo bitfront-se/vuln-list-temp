@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T17:11:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368938,
+    "Id": "GSA_kwCzR0hTQS0yNzVjLXhwdmMtamdmd84ABaEq",
+    "GhsaId": "GHSA-275c-xpvc-jgfw",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-275c-xpvc-jgfw"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-275c-xpvc-jgfw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-275c-xpvc-jgfw"
+      }
+    ],
+    "Description": "### Summary\n\nSlack and Zalo webhook secrets could remain active after secrets.reload. In affected versions, a caller with an old webhook secret during the stale-secret window could keep accepting the previous secret after `secrets.reload`.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could deliver webhook events briefly after the operator expected revocation. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.22`.\n\n### Mitigations\n\nrestart the affected channel runtime after rotating webhook secrets until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:11:03Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw: Slack and Zalo webhook secrets could remain active after secrets.reload",
+    "UpdatedAt": "2026-07-02T17:11:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.22"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.21"
+    }
+  ]
+}

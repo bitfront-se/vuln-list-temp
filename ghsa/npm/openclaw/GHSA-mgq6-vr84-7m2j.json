@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:05:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368917,
+    "Id": "GSA_kwCzR0hTQS1tZ3E2LXZyODQtN20yas4ABaEV",
+    "GhsaId": "GHSA-mgq6-vr84-7m2j",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mgq6-vr84-7m2j"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mgq6-vr84-7m2j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mgq6-vr84-7m2j"
+      }
+    ],
+    "Description": "### Summary\n\nOpenClaw's QQBot channel can deliver native approval buttons for exec and plugin approvals. In affected releases, the button callback path resolved approvals without enforcing the configured QQBot approver identity.\n\nThe text command approval path used the authorization check; the issue was specific to native QQBot approval buttons.\n\n### Affected configurations\n\nThis affects deployments where QQBot native approval buttons are enabled and an approval message is visible to a QQ user who is not configured as an approver.\n\n### Impact\n\nA non-approver who could see the approval message could click an approval button and resolve the pending request. Depending on the pending approval, this could allow an exec or plugin action that should have required an authorized approver.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.18` or later. Before upgrading, avoid delivering native approval buttons into QQ conversations that include users who should not be able to approve.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:05:20Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: QQBot native approval buttons did not enforce configured approver identity",
+    "UpdatedAt": "2026-07-02T16:05:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.18"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.18"
+    }
+  ]
+}

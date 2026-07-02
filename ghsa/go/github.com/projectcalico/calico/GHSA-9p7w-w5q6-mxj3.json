@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T18:01:03Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/projectcalico/calico"
+  },
+  "Advisory": {
+    "DatabaseId": 359005,
+    "Id": "GSA_kwCzR0hTQS05cDd3LXc1cTYtbXhqM84ABXpd",
+    "GhsaId": "GHSA-9p7w-w5q6-mxj3",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41184"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/pull/12502"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/pull/12526"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/pull/12527"
+      },
+      {
+        "Url": "https://www.tigera.io/security-bulletins/tta-2026-001"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/commit/0ca653db0ae7400ea9fb066daa7f45c902482271"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/commit/cd73bc2cea0f4989772f2deb93909e7cfac927e0"
+      },
+      {
+        "Url": "https://github.com/projectcalico/calico/commit/da9ea3a13927a35e4022b787d17a005b2157d812"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9p7w-w5q6-mxj3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9p7w-w5q6-mxj3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41184"
+      }
+    ],
+    "Description": "In Calico, the install-cni init container logs the rendered CNI configuration to standard output. When the configuration template uses the __SERVICEACCOUNT_TOKEN__ placeholder (Canal/Flannel-Calico deployments), the installer substitutes the live Kubernetes ServiceAccount bearer token before logging, exposing the token to any authenticated user with pods/log permission in the namespace with calico-node. The token holds patch privileges on pods/status, enabling annotation-based attacks against cluster workloads. The default kubeconfig-based authentication path is not affected. This is a direct regression of TTA-2018-001.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-28T18:30:32Z",
+    "Severity": "MODERATE",
+    "Summary": "Calico Inserts Sensitive Information into Log File",
+    "UpdatedAt": "2026-07-02T18:01:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.11.0-cni-plugin.0.20260417001138-cd73bc2cea0f"
+      },
+      "VulnerableVersionRange": "\u003c 1.11.0-cni-plugin.0.20260417001138-cd73bc2cea0f"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.31.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 3.31.6"
+    }
+  ]
+}

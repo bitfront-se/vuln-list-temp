@@ -1,0 +1,46 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-02T17:08:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368937,
+    "Id": "GSA_kwCzR0hTQS0zd3FwLXByZjYtMm03Ms4ABaEp",
+    "GhsaId": "GHSA-3wqp-prf6-2m72",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-3wqp-prf6-2m72"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3wqp-prf6-2m72"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3wqp-prf6-2m72"
+      }
+    ],
+    "Description": "### Summary\n\nFeishu dynamic-agent bindings could miss configWrites enforcement. In affected versions, a Feishu sender using dynamic-agent binding behavior could create or update bindings without honoring the configured config-write control.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could change sender-agent binding state beyond the intended policy. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.6`.\n\n### Mitigations\n\nDisable sender-created Feishu dynamic-agent bindings until patched if not needed. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:08:08Z",
+    "Severity": "LOW",
+    "Summary": "OpenClaw: Feishu dynamic-agent bindings could miss configWrites enforcement",
+    "UpdatedAt": "2026-07-02T17:08:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.6"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.5"
+    }
+  ]
+}

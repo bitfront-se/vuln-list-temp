@@ -1,0 +1,80 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T17:44:06Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "keystone"
+  },
+  "Advisory": {
+    "DatabaseId": 359036,
+    "Id": "GSA_kwCzR0hTQS0ycjIzLTJnNnYtMm01Zs4ABXp8",
+    "GhsaId": "GHSA-2r23-2g6v-2m5f",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42999"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/keystone/+bug/2148398"
+      },
+      {
+        "Url": "https://security.openstack.org/ossa/OSSA-2026-015.html"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-42999"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2482840"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-42999.json"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/keystone/PYSEC-2026-600.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2r23-2g6v-2m5f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2r23-2g6v-2m5f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42999"
+      }
+    ],
+    "Description": "An issue was discovered in OpenStack Keystone before 29.0.2. The Keystone RBAC policy enforcer in enforce_call unconditionally merges the raw JSON request body into the policy enforcement dictionary via policy_dict.update(json_input.copy()), overwriting trusted target data that was previously set from database lookups. Because flask.request.get_json is called with force=True, this works regardless of Content-Type or HTTP method. Any authenticated user can inject arbitrary policy target attributes (e.g., user_id, project_id) into the request body to bypass RBAC checks and perform unauthorized operations on resources belonging to other users or projects. This was introduced in commit 5ea59f52 (Rocky/14.0.0).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-28T21:32:02Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenStack Keystone has an Authorization Bypass",
+    "UpdatedAt": "2026-07-02T17:44:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "29.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 29.0.0, \u003c 29.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "28.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 28.0.0, \u003c 28.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "27.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 14.0.0, \u003c 27.0.2"
+    }
+  ]
+}

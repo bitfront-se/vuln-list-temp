@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T17:11:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368940,
+    "Id": "GSA_kwCzR0hTQS12eHgzLTZoYzktN2NjM84ABaEs",
+    "GhsaId": "GHSA-vxx3-6hc9-7cc3",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-vxx3-6hc9-7cc3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53806"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-shell-option-parsing-bypass-in-exec-revalidation"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vxx3-6hc9-7cc3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vxx3-6hc9-7cc3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53806"
+      }
+    ],
+    "Description": "### Summary\n\nCombined POSIX shell options could confuse exec revalidation. In affected versions, a command request using combined shell flags could parse approval-time and execution-time shell options differently.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run inline shell content without the intended allowlist decision. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.12`.\n\n### Mitigations\n\navoid combined shell option forms in allowlisted commands until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T17:11:43Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Combined POSIX shell options could confuse exec revalidation",
+    "UpdatedAt": "2026-07-02T17:13:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.12"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.7"
+    }
+  ]
+}

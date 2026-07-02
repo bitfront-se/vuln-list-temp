@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T15:57:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "Openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368911,
+    "Id": "GSA_kwCzR0hTQS0yajh2LWh3Z2MteDY5OM4ABaEP",
+    "GhsaId": "GHSA-2j8v-hwgc-x698",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-2j8v-hwgc-x698"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2j8v-hwgc-x698"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2j8v-hwgc-x698"
+      }
+    ],
+    "Description": "### Summary\n\nShell wrapper argv could change between approval and execution. In affected versions, a command request using a shell wrapper form could approve one resolved argv shape and rebuild another for execution.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could run a command shape that was not checked against the allowlist. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nrequire explicit approval for shell wrappers and avoid durable allowlists for wrapper-heavy commands until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T15:57:49Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Shell wrapper argv could change between approval and execution",
+    "UpdatedAt": "2026-07-02T15:57:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.18"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.5.16"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T16:18:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368921,
+    "Id": "GSA_kwCzR0hTQS13djI2LWozN3EtMmc3cM4ABaEZ",
+    "GhsaId": "GHSA-wv26-j37q-2g7p",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-wv26-j37q-2g7p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wv26-j37q-2g7p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wv26-j37q-2g7p"
+      }
+    ],
+    "Description": "### Summary\n\nSlack plugin approvals used the exec approver gate for plugin actions. In affected versions, a Slack user authorized only for exec approvals could resolve a plugin approval through the exec approver gate.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could approve a plugin action outside the operator's intended approval split. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.12`.\n\n### Mitigations\n\nkeep approval allowlists aligned and review Slack approval actions manually until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:18:24Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenClaw's Slack plugin approvals used the exec approver gate for plugin actions",
+    "UpdatedAt": "2026-07-02T16:18:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.5.12"
+      },
+      "VulnerableVersionRange": "\u003c 2026.5.12"
+    }
+  ]
+}

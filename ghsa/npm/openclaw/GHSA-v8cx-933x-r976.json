@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T16:57:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "openclaw"
+  },
+  "Advisory": {
+    "DatabaseId": 368934,
+    "Id": "GSA_kwCzR0hTQS12OGN4LTkzM3gtcjk3Ns4ABaEm",
+    "GhsaId": "GHSA-v8cx-933x-r976",
+    "References": [
+      {
+        "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-v8cx-933x-r976"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53813"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-arbitrary-artifact-loading-via-fake-package-root-resolution"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v8cx-933x-r976"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v8cx-933x-r976"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53813"
+      }
+    ],
+    "Description": "### Summary\n\nFake package roots could influence memory-core artifact loading. In affected versions, a local package root resolution path influenced by workspace state could select a package root that was not the intended bundled artifact root.\n\nThis advisory is scoped to the named feature and configuration. It does not change OpenClaw's trusted-operator model: authenticated Gateway operators, installed plugins, and intentional local execution surfaces remain trusted unless a separate policy, approval, allowlist, sandbox, or auth boundary is crossed.\n\n### Impact\n\nWhen the affected feature is enabled and reachable, this could load memory-core artifacts from an unintended local location. Practical impact depends on the operator's configuration and whether lower-trust input can reach that path.\n\n### Patched Versions\n\nThe first stable patched version is `2026.4.25`.\n\n### Mitigations\n\nrun memory-core flows from trusted workspaces until patched. As general hardening, keep channel and tool allowlists narrow, avoid sharing one Gateway between mutually untrusted users, and disable the affected feature when it is not needed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T16:57:56Z",
+    "Severity": "HIGH",
+    "Summary": "OpenClaw: Fake package roots could influence memory-core artifact loading",
+    "UpdatedAt": "2026-07-02T16:57:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.25"
+      },
+      "VulnerableVersionRange": "\u003c= 2026.4.24"
+    }
+  ]
+}
