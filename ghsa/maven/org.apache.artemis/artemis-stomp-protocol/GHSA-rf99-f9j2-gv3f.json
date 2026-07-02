@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T13:53:05Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.artemis:artemis-stomp-protocol"
+  },
+  "Advisory": {
+    "DatabaseId": 358978,
+    "Id": "GSA_kwCzR0hTQS1yZjk5LWY5ajItZ3YzZs4ABXpC",
+    "GhsaId": "GHSA-rf99-f9j2-gv3f",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40914"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/6q3st8dlorz2q05svqn11k1xl7jkmm4c"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/27/8"
+      },
+      {
+        "Url": "https://github.com/apache/artemis/pull/6395"
+      },
+      {
+        "Url": "https://github.com/apache/artemis/commit/53173375c4d5e4b57890e89d37ed8b666c974474"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/ARTEMIS-5996"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rf99-f9j2-gv3f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rf99-f9j2-gv3f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40914"
+      }
+    ],
+    "Description": "A vulnerability exists in Apache Artemis whereby an application using the STOMP protocol with security credentials that grant either the consume or send permission on an address can augment the routing-type supported by that address even if said user doesn't have the createAddress permission for that particular address. A user could successfully send a message to an address or consume a message from a queue with a routing-type not supported by the corresponding address when that operation should actually be rejected on the basis that the user doesn't have permission to change the routing-type of the address. Even though the user was already granted permission to send and/or consume messages, they should not be able to augment the routing-type of the address without the createAddress permission.\n\nThis issue affects Apache Artemis: from 2.50.0 through 2.53.0; Apache ActiveMQ Artemis: from 2.0.0 through 2.44.0.\n\nUsers are recommended to upgrade to version 2.54.0, which fixes the issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-28T15:39:50Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Artemis has an Incorrect Authorization issue",
+    "UpdatedAt": "2026-07-02T13:53:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.44.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.54.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.50.0, \u003c= 2.53.0"
+    }
+  ]
+}
