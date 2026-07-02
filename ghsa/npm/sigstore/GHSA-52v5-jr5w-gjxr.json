@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-01T19:58:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sigstore"
+  },
+  "Advisory": {
+    "DatabaseId": 368586,
+    "Id": "GSA_kwCzR0hTQS01MnY1LWpyNXctZ2p4cs4ABZ_K",
+    "GhsaId": "GHSA-52v5-jr5w-gjxr",
+    "References": [
+      {
+        "Url": "https://github.com/sigstore/sigstore-js/security/advisories/GHSA-52v5-jr5w-gjxr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-52v5-jr5w-gjxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-52v5-jr5w-gjxr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48815"
+      }
+    ],
+    "Description": "### Summary\n\nThe documented `certificateOIDs` option in `sigstore.verify()` is accepted by the public API but discarded before verification, so required certificate extension OIDs are never checked.\n\n### Details\n\nThe public verify options include `certificateOIDs` and the documentation says those OID/value pairs “must be present in the certificate’s extension list.” The policy-construction path used by `sigstore.verify()` and `createVerifier()` only copies the SAN and issuer settings into the verification policy and completely ignores `certificateOIDs`.\n\nAs a result, callers can believe they are constraining verification to certificates carrying specific Fulcio or workload-identifying OIDs, while the actual verifier never receives those constraints. Any bundle that satisfies the remaining checks is accepted even if the required OID extensions are absent or mismatched.\n\nThis is reachable from supported usage through the documented `certificateOIDs` verify option.\n\n### PoC\n\n```javascript\nconst { createVerificationPolicy } = require(\"sigstore/dist/config\");\n\nconst policy = createVerificationPolicy({\n  certificateIssuer: \"https://issuer.example\",\n  certificateIdentityEmail: \"victim@example.com\",\n  certificateOIDs: {\n    \"1.2.3.4\": \"required-value\",\n  },\n});\n\nconsole.log(\"certificateOIDs\" in policy, JSON.stringify(policy));\n// false {\"subjectAlternativeName\":\"victim@example.com\",\"extensions\":{\"issuer\":\"https://issuer.example\"}}\n```\n\n### Impact\n\nApplications that rely on `certificateOIDs` to restrict which certificates may sign artifacts receive no such protection. Unauthorized certificates that should be rejected on extension policy can be accepted as long as they satisfy the remaining verification checks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-01T19:58:28Z",
+    "Severity": "HIGH",
+    "Summary": "sigstore's `certificateOIDs` verification constraints are silently dropped and never enforced",
+    "UpdatedAt": "2026-07-01T19:58:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.0"
+    }
+  ]
+}

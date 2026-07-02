@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-01T21:58:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ghost"
+  },
+  "Advisory": {
+    "DatabaseId": 368641,
+    "Id": "GSA_kwCzR0hTQS02MnE2LTRodjQtdmpyd84ABaAB",
+    "GhsaId": "GHSA-62q6-4hv4-vjrw",
+    "References": [
+      {
+        "Url": "https://github.com/TryGhost/Ghost/security/advisories/GHSA-62q6-4hv4-vjrw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53943"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-62q6-4hv4-vjrw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-62q6-4hv4-vjrw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53943"
+      }
+    ],
+    "Description": "### Impact\n\nWhen Ghost is behind a shared caching layer that results in cached content being shared between different visitors (e.g., Fastly, Cloudflare, nginx proxy_cache, and others), an unauthenticated user could send an `x-ghost-preview` header that altered the rendered frontend response. In affected cache configurations, that response could be stored and served to subsequent visitors requesting the same page, allowing cache poisoning of request-specific preview output. \n\nWhen running Ghost's frontend and admin panel on the same domain this could be used to take over staff user accounts. When running these on different domains staff accounts have no exposure. \n\n### Vulnerable versions\n\nThis vulnerability is present in Ghost from v4.0 up to v6.36.0.\n\n### Patches\n\nv6.37.0 contains a fix for this issue.\n\n### How to update\n\nFor self-hosters using Docker, find [Docker's official Ghost image here](https://hub.docker.com/_/ghost). Updating a Docker-based Ghost instance [is documented here](https://docs.ghost.org/install/docker#updating-ghost).\n\nIf your Ghost is a Ghost-CLI install see our documentation on [updating it to the latest version here](https://docs.ghost.org/update).\n\nIf you suspect a credential compromise, use the “Reset all authentication” dialogue under Settings / Danger Zone. This is available starting with Ghost v6.41.0. \n\n### Workarounds\n\nAt the caching layer, bypass the cache for `x-ghost-preview` requests. \n\n### References\n\nGhost thanks [CryptoCat](https://linkedin.com/in/cryptocat) for disclosing this vulnerability responsibly.\n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@ghost.org](mailto:security@ghost.org).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-01T21:58:32Z",
+    "Severity": "CRITICAL",
+    "Summary": "Ghost: Cache-poisoning XSS in Ghost frontend via x-ghost-preview header",
+    "UpdatedAt": "2026-07-01T21:58:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.37.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 6.36.0"
+    }
+  ]
+}

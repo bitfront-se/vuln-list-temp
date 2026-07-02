@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-01T19:47:21Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pretix"
+  },
+  "Advisory": {
+    "DatabaseId": 358678,
+    "Id": "GSA_kwCzR0hTQS03MnA5LTZ2djYtZ3ZxaM4ABXkW",
+    "GhsaId": "GHSA-72p9-6vv6-gvqh",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-9712"
+      },
+      {
+        "Url": "https://pretix.eu/about/en/blog/20260527-release-2026-4-2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72p9-6vv6-gvqh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72p9-6vv6-gvqh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-9712"
+      }
+    ],
+    "Description": "When creating an export through the pretix API, API clients are returned an UUID value for their export job (a long, random string like 35742818-c375-4d15-839f-d49aecce94d6). Using this UUID, the API client can then request the actual file for download. The same kind of UUID is used in other places in pretix when temporary files are generated for internal use or download.\n\nOne remaining API endpoint, however, wrongfully did not verify if the UUID used for download actually belongs to a file that is supposed to be downloadable and belongs to the correct user. In reality, this is hard to exploit because an attacker would need to have access to a valid UUID for the file they desire which is unlikely to happen without a separate security problem giving them access to logs etc.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-27T15:33:28Z",
+    "Severity": "LOW",
+    "Summary": "pretix vulnerable to Authorization Bypass Through User-Controlled Key",
+    "UpdatedAt": "2026-07-01T19:47:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.4.2"
+      },
+      "VulnerableVersionRange": "\u003c 2026.4.2"
+    }
+  ]
+}

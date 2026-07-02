@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-01T19:30:25Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.jenkins-ci.plugins:active-directory"
+  },
+  "Advisory": {
+    "DatabaseId": 358635,
+    "Id": "GSA_kwCzR0hTQS13cmhyLTU0cDYtcTk3Zs4ABXjr",
+    "GhsaId": "GHSA-wrhr-54p6-q97f",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48918"
+      },
+      {
+        "Url": "https://www.jenkins.io/security/advisory/2026-05-27/#SECURITY-3659"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wrhr-54p6-q97f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wrhr-54p6-q97f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48918"
+      }
+    ],
+    "Description": "Jenkins Active Directory Plugin 2.41 and earlier follows LDAP referrals from the configured Active Directory server by default. These can forward to an RMI URL that causes Jenkins to deserialize attacker-controlled data, resulting in Remote Code Execution (RCE) on the Jenkins controller if deserialization \"gadgets\" are available on the classpath.\n\nThis allows attackers able to control the configured Active Directory server, or able to perform a machine-in-the-middle attack, to execute code on the Jenkins controller.\n\nActive Directory Plugin 2.41.1 no longer follows LDAP referrals by default.\n\nAdministrators unable to update to a fixed version can start Jenkins with the Java system property `hudson.plugins.active_directory.referral.ignore` set to `true` to mitigate the vulnerability.\n\nAdministrators of Jenkins controllers requiring following LDAP referrals can set the Java system property `hudson.plugins.active_directory.referral.ignore` to `false` to restore the previous behavior.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-05-27T15:33:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Jenkins Active Directory Plugin follows LDAP referrals by default",
+    "UpdatedAt": "2026-07-01T19:30:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.41.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.41.1"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-01T21:51:18Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.ongres.scram:scram-client"
+  },
+  "Advisory": {
+    "DatabaseId": 368638,
+    "Id": "GSA_kwCzR0hTQS1wOWpnLWZjcjYtM21oZs4ABZ_-",
+    "GhsaId": "GHSA-p9jg-fcr6-3mhf",
+    "References": [
+      {
+        "Url": "https://github.com/ongres/scram/security/advisories/GHSA-p9jg-fcr6-3mhf"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p9jg-fcr6-3mhf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p9jg-fcr6-3mhf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53712"
+      }
+    ],
+    "Description": "## Summary\n\nA flaw in `com.ongres.scram:scram-client` allows an attacker capable of performing a TLS man-in-the-middle (MITM) attack to silently downgrade a connection from `SCRAM-SHA-256-PLUS` (with channel binding) to standard `SCRAM-SHA-256` (without channel binding), bypassing strict client-side enforcement policies.\n\n## Component Breakdown\n\nThis occurs due to a two-part failure in `TlsServerEndpoint` when a server presents an `X.509` certificate using a modern signature algorithm that lacks traditional `WITH` naming structures (such as `Ed25519` or post-quantum algorithms):\n\n1. The internal hash derivation method fails to parse the algorithm name, swallows the resulting `NoSuchAlgorithmException, and silently returns an empty byte array via the deprecated `getChannelBindingData()` API.\n2. The client builder mistakenly interprets this empty byte array as an environmental absence of channel binding data rather than a cryptographic failure, falling back to non-channel-bound authentication.\n\n## Impact \u0026 Scope\n\nThis issue only impacts deployments where the downstream application layer explicitly enforces strict channel binding enforcement (e.g., channelBinding=require in pgJDBC).\n\nDrivers operating under a \"prefer\" or \"allow\" policy  (used by default) are structurally insulated from an unhandled exception since a fallback to standard SCRAM is within their expected configuration.\n\n## Remediation\n\nUpdate your project configuration to pull in version 3.3 or later of the SCRAM library, which introduces strict exception propagation and explicit policy controls.\n\nIf you are interacting with the `ScramClient` builder API directly (e.g., writing a custom driver or database extension):\n\n- Migrate Deprecated APIs: Stop using `TlsServerEndpoint.getChannelBindingData()`. Transition immediately to `TlsServerEndpoint.getChannelBindingHash()`, which correctly propagates `NoSuchAlgorithmException` up the stack.\n- Adopt Explicit Policies: Leverage the newly introduced `ChannelBindingPolicy` API during client construction. Do not rely on implicit parameter presence to dictate your security boundaries.\n\n```java\nScramClient client = ScramClient.builder()\n    .advertisedMechanisms(serverMechanisms)\n    .username(user)\n    .password(pass)\n    // Explicitly enforce strict boundaries if needed.\n    .channelBindingPolicy(ChannelBindingPolicy.REQUIRE) \n    .channelBinding(TlsServerEndpoint.TLS_SERVER_END_POINT, certHash)\n    .build();\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-01T21:51:17Z",
+    "Severity": "HIGH",
+    "Summary": "OnGres SCRAM silent channel-binding authentication downgrade via unsupported certificate algorithms",
+    "UpdatedAt": "2026-07-01T21:51:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.2"
+    }
+  ]
+}
