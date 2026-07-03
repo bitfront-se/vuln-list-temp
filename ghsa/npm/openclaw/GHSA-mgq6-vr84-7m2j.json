@@ -14,6 +14,12 @@
         "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mgq6-vr84-7m2j"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35630"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-qqbot-missing-approver-identity-enforcement-in-native-approval-buttons"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-mgq6-vr84-7m2j"
       }
     ],
@@ -21,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mgq6-vr84-7m2j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35630"
       }
     ],
     "Description": "### Summary\n\nOpenClaw's QQBot channel can deliver native approval buttons for exec and plugin approvals. In affected releases, the button callback path resolved approvals without enforcing the configured QQBot approver identity.\n\nThe text command approval path used the authorization check; the issue was specific to native QQBot approval buttons.\n\n### Affected configurations\n\nThis affects deployments where QQBot native approval buttons are enabled and an approval message is visible to a QQ user who is not configured as an approver.\n\n### Impact\n\nA non-approver who could see the approval message could click an approval button and resolve the pending request. Depending on the pending approval, this could allow an exec or plugin action that should have required an authorized approver.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.18` or later. Before upgrading, avoid delivering native approval buttons into QQ conversations that include users who should not be able to approve.",
@@ -28,7 +38,7 @@
     "PublishedAt": "2026-07-02T16:05:20Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw: QQBot native approval buttons did not enforce configured approver identity",
-    "UpdatedAt": "2026-07-02T16:05:21Z",
+    "UpdatedAt": "2026-07-02T20:50:17Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 8,

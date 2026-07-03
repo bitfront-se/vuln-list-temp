@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T20:20:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@asymmetric-effort/nogginlessdom"
+  },
+  "Advisory": {
+    "DatabaseId": 369009,
+    "Id": "GSA_kwCzR0hTQS14NGhnLWhmd2YtcDltd84ABaFx",
+    "GhsaId": "GHSA-x4hg-hfwf-p9mw",
+    "References": [
+      {
+        "Url": "https://github.com/asymmetric-effort/NogginLessDom/security/advisories/GHSA-x4hg-hfwf-p9mw"
+      },
+      {
+        "Url": "https://github.com/asymmetric-effort/NogginLessDom/commit/25a3cbac665fae5663f8b71c073b80c3152dbe7b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x4hg-hfwf-p9mw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x4hg-hfwf-p9mw"
+      }
+    ],
+    "Description": "## Summary\n\nThe `HTMLInputElement.checkValidity()` method constructed a `RegExp` directly from the user-controlled `pattern` property without any sanitization or timeout protection. This allowed an attacker to inject a regex with catastrophic backtracking, freezing the event loop.\n\n## Fix\n\nFixed in commit https://github.com/asymmetric-effort/NogginLessDom/commit/25a3cbac665fae5663f8b71c073b80c3152dbe7b on `main`. Added:\n- Pattern length limit (1024 characters)\n- Nested quantifier detection (`hasNestedQuantifiers`) that rejects patterns like `(a+)+` before constructing the regex\n- Patterns exceeding limits are treated as non-matching (safe default)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T20:20:04Z",
+    "Severity": "MODERATE",
+    "Summary": "@asymmetric-effort/nogginlessdom vulnerable to ReDoS via user-controlled regex in HTMLInputElement pattern validation",
+    "UpdatedAt": "2026-07-02T20:20:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.22"
+      },
+      "VulnerableVersionRange": "\u003c= 0.0.21"
+    }
+  ]
+}

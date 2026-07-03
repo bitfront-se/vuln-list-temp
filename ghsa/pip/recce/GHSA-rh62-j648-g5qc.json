@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T21:14:38Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "recce"
+  },
+  "Advisory": {
+    "DatabaseId": 369034,
+    "Id": "GSA_kwCzR0hTQS1yaDYyLWo2NDgtZzVxY84ABaGK",
+    "GhsaId": "GHSA-rh62-j648-g5qc",
+    "References": [
+      {
+        "Url": "https://github.com/DataRecce/recce/security/advisories/GHSA-rh62-j648-g5qc"
+      },
+      {
+        "Url": "https://github.com/DataRecce/recce/releases/tag/v1.50.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rh62-j648-g5qc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rh62-j648-g5qc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49360"
+      }
+    ],
+    "Description": "### Impact\nRecce OSS server deployments that expose the server to an untrusted network without authentication are vulnerable to unauthenticated SQL execution through the query run API.\n\nWhen Recce is configured with a DuckDB-backed project, an attacker can use DuckDB filesystem primitives to read and write files accessible to the Recce server process. The impact depends on how Recce is deployed, but may include disclosure of local files, tampering with Recce/dbt artifacts, modification of browser-served static files leading to stored XSS, and modification of application files if those paths are writable. If Recce is run as root, file access occurs with root privileges inside that host or container.\n\n### Patches\nThis issue has been patched in Recce `v1.50.0`. Users should upgrade to Recce `v1.50.0` or later.\n\nThe patch restricts unsafe file read/write behavior for DuckDB-backed query execution and hardens the affected query path. Other warehouse adapters have also been reviewed for similar exposure.\n\n### Credits\nThanks to Sitampan ([@hxcbtc](https://x.com/hxcbtc)) for responsibly reporting this issue.\n\n### Workarounds\nUsers who cannot upgrade immediately should avoid exposing `recce server` to the public internet or any untrusted network.\n\nRecommended mitigations include enabling authentication or placing Recce behind an authenticated reverse proxy/VPN, running Recce as a non-root user, using a read-only application filesystem where possible, and ensuring that sensitive files or credentials are not available to the Recce process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T21:14:38Z",
+    "Severity": "HIGH",
+    "Summary": "Recce server has unauthenticated SQL execution that allows local file read/write through DuckDB",
+    "UpdatedAt": "2026-07-02T21:14:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.50.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.49.0"
+    }
+  ]
+}

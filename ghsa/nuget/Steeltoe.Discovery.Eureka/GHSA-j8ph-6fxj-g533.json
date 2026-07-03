@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T20:30:04Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Steeltoe.Discovery.Eureka"
+  },
+  "Advisory": {
+    "DatabaseId": 369015,
+    "Id": "GSA_kwCzR0hTQS1qOHBoLTZmeGotZzUzM84ABaF3",
+    "GhsaId": "GHSA-j8ph-6fxj-g533",
+    "References": [
+      {
+        "Url": "https://github.com/SteeltoeOSS/security-advisories/security/advisories/GHSA-j8ph-6fxj-g533"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50196"
+      },
+      {
+        "Url": "https://github.com/SteeltoeOSS/Steeltoe/commit/b8ed8557bb595863e4f340051d16b26ba40a75f4"
+      },
+      {
+        "Url": "https://github.com/SteeltoeOSS/Steeltoe/commit/c34a7399e808d0d11dd977460e81df1f2722df28"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j8ph-6fxj-g533"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j8ph-6fxj-g533"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50196"
+      }
+    ],
+    "Description": "### Summary\n\n`DataCenterInfo.FromJson` throws `ArgumentException` for any `name` value other than `\"MyOwn\"` or `\"Amazon\"`, despite the Java Eureka specification defining a third valid value: `\"Netflix\"`. The exception propagates through the entire registry deserialization chain and is swallowed by the periodic cache refresh task, leaving the local service registry permanently empty or stale.\n\n### Impact\n\nAny registration with an unrecognized `DataCenterInfo.name` permanently disables service discovery for every Steeltoe Eureka client connected to the same registry. New clients start with an empty registry and running clients stop refreshing. The outage persists until the triggering registration is removed.\n\nBecause `\"Netflix\"` is valid in the Java Eureka specification, a Java or Spring service in the same mesh can trigger this unintentionally.\n\n### Affected configuration\n\n- Application uses the Steeltoe Eureka client (`EurekaDiscoveryClient`).\n- The registry contains at least one registration with a `DataCenterInfo.name` value other than `\"MyOwn\"` or `\"Amazon\"`.\n\n### Mitigations\n\nIf an immediate upgrade is not possible, remove any registrations using unsupported `DataCenterInfo.name` values from the registry. In mixed Java/Spring and Steeltoe environments, audit for the `Netflix` data center type before deploying Steeltoe Eureka clients.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T20:30:03Z",
+    "Severity": "HIGH",
+    "Summary": "Steeltoe.Discovery.Eureka: Unrecognized DataCenterInfo.Name poisons entire registry fetch",
+    "UpdatedAt": "2026-07-02T20:30:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.3.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 4.1.0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-02T20:31:48Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Steeltoe.Security.Authentication.JwtBearer"
+  },
+  "Advisory": {
+    "DatabaseId": 369018,
+    "Id": "GSA_kwCzR0hTQS03ZnFjLXAyNTYtN3B3as4ABaF6",
+    "GhsaId": "GHSA-7fqc-p256-7pwj",
+    "References": [
+      {
+        "Url": "https://github.com/SteeltoeOSS/security-advisories/security/advisories/GHSA-7fqc-p256-7pwj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50202"
+      },
+      {
+        "Url": "https://github.com/SteeltoeOSS/Steeltoe/commit/04db2ace3b806bfe0260bb7d4bda340f241eff48"
+      },
+      {
+        "Url": "https://github.com/SteeltoeOSS/Steeltoe/commit/17b27b8be546ae3f83a2f6e91d45e0c84c5314b7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7fqc-p256-7pwj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7fqc-p256-7pwj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50202"
+      }
+    ],
+    "Description": "### Summary\n\nThe JWT signing key cache in `TokenKeyResolver` uses `kid` as the sole cache key without namespacing by authority. In applications with multiple `JwtBearer` schemes pointing to different identity providers, a key fetched for one scheme can satisfy token validation for another. Additionally, cached keys have no expiration, so rotated or revoked keys remain trusted until the application process restarts.\n\n### Impact\n\nIn multi-scheme deployments, an attacker who controls one identity provider's signing key can forge tokens accepted by other schemes within the same application. For all applications using `TokenKeyResolver`, a signing key removed from the identity provider's JWKS endpoint remains trusted indefinitely.\n\n### Mitigations\n\nIf an immediate upgrade is not possible:\n\n- In multi-scheme deployments, configure only one `JwtBearer` scheme per application when different identity providers are required.\n- Restart the application process after an identity provider signing key rotation to clear stale cached keys.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T20:31:47Z",
+    "Severity": "MODERATE",
+    "Summary": "Steeltoe's static JWKS cache shared across schemes and never invalidated",
+    "UpdatedAt": "2026-07-02T20:31:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.0"
+    }
+  ]
+}

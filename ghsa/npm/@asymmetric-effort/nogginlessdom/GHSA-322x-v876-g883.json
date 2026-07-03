@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-02T20:19:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@asymmetric-effort/nogginlessdom"
+  },
+  "Advisory": {
+    "DatabaseId": 369008,
+    "Id": "GSA_kwCzR0hTQS0zMjJ4LXY4NzYtZzg4M84ABaFw",
+    "GhsaId": "GHSA-322x-v876-g883",
+    "References": [
+      {
+        "Url": "https://github.com/asymmetric-effort/NogginLessDom/security/advisories/GHSA-322x-v876-g883"
+      },
+      {
+        "Url": "https://github.com/asymmetric-effort/NogginLessDom/commit/785e6ac6e124d1a89b3ccf40bbd75fc8e4cb215d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-322x-v876-g883"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-322x-v876-g883"
+      }
+    ],
+    "Description": "## Summary\n\nThe `matchFileSnapshot` function in `src/assertions/snapshots.ts` accepted a `filePath` parameter with zero validation. When snapshot update mode was active (`UPDATE_SNAPSHOTS=1` or `setUpdateMode('all')`), an attacker who controls test input could write arbitrary content to any filesystem path the process has write access to, including creating intermediate directories.\n\n## Affected Code\n\n**File:** `src/assertions/snapshots.ts`, lines 732-769\n\n```typescript\nexport function matchFileSnapshot(actual: unknown, filePath: string): void {\n  const serialized = serialize(actual);\n  const mode = resolveUpdateMode();\n  const fileExists = fs.existsSync(filePath);\n\n  if (!fileExists) {\n    if (mode === 'all' || mode === 'new') {\n      const dir = path.dirname(filePath);\n      if (!fs.existsSync(dir)) {\n        fs.mkdirSync(dir, { recursive: true });\n      }\n      fs.writeFileSync(filePath, serialized, 'utf-8');\n```\n\nThe `filePath` flows from `expect(value).toMatchFileSnapshot(filePath)` at `index.ts:1033-1035` with no sanitization, no check that the path is within an expected directory, and no symlink resolution.\n\n## Proof of Concept\n\n```typescript\nimport { expect, setUpdateMode } from '@asymmetric-effort/nogginlessdom';\n\nsetUpdateMode('all');\n\n// Writes arbitrary content to any writable path\nexpect('malicious content').toMatchFileSnapshot('/tmp/exploit/payload.txt');\n\n// Path traversal via relative components\nexpect('data').toMatchFileSnapshot('../../../tmp/evil.txt');\n\n// In CI environments, could overwrite CI config\nexpect('injected step').toMatchFileSnapshot('/home/runner/.github/workflows/backdoor.yml');\n```\n\n## Impact\n\nIn CI/CD environments where test files may come from untrusted pull requests, this allows writing to any writable filesystem location with directory creation. An attacker could overwrite configuration files, inject code into build artifacts, or modify CI pipeline definitions.\n\n## Fix\n\nFixed in commit https://github.com/asymmetric-effort/NogginLessDom/commit/785e6ac6e124d1a89b3ccf40bbd75fc8e4cb215d on `main`. The `matchFileSnapshot` function now validates that the resolved file path is within the project root directory (defaults to `process.cwd()`, configurable via optional `projectRoot` parameter). Paths that resolve outside the project directory are rejected with a descriptive error.\n\n```typescript\nexport function matchFileSnapshot(\n  actual: unknown,\n  filePath: string,\n  projectRoot?: string,\n): void {\n  const root = projectRoot ?? process.cwd();\n  const resolved = path.resolve(root, filePath);\n  if (!resolved.startsWith(root + path.sep) \u0026\u0026 resolved !== root) {\n    throw new Error(\n      `File snapshot path must be within the project directory: ${filePath}`,\n    );\n  }\n  // ... all subsequent file I/O uses `resolved` instead of `filePath`\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-02T20:19:20Z",
+    "Severity": "HIGH",
+    "Summary": "@asymmetric-effort/nogginlessdom's Path Traversal in matchFileSnapshot allows arbitrary file write",
+    "UpdatedAt": "2026-07-02T20:19:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.22"
+      },
+      "VulnerableVersionRange": "\u003c= 0.0.21"
+    }
+  ]
+}
