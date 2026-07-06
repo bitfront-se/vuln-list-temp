@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-06T17:29:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "weasyprint"
+  },
+  "Advisory": {
+    "DatabaseId": 369502,
+    "Id": "GSA_kwCzR0hTQS1qaGhjLTNoY3AtcWhtNc4ABaNe",
+    "GhsaId": "GHSA-jhhc-3hcp-qhm5",
+    "References": [
+      {
+        "Url": "https://github.com/Kozea/WeasyPrint/security/advisories/GHSA-jhhc-3hcp-qhm5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jhhc-3hcp-qhm5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jhhc-3hcp-qhm5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49452"
+      }
+    ],
+    "Description": "### Summary\nA CSS injection issue exists in WeasyPrint when HTML presentational hints are enabled. Unescaped attribute values are embedded into CSS, allowing injection of arbitrary CSS declarations. This affects applications processing untrusted HTML input.\n\n### Details\nFile: weasyprint/css/__init__.py\n\nThe `background` attribute is used to construct CSS:\n\nbackground-image:url({element.get(\"background\")})\n\nThis string is parsed by `tinycss2.parse_blocks_contents()`.\n\nBecause the value is not escaped, additional CSS declarations can be injected.\n\n### PoC\n\u003cbody background=\"x);background-image:url(http://169.254.169.254/latest/meta-data/)\"\u003e\n\n### Impact\n- CSS injection\n- Server-side requests via injected `url()`\n- Limited to cases where `presentational_hints=True`\n\n### Suggested Fix\n- Escape attribute values before embedding into CSS\n- Restrict allowed values for presentational hints\n[VULN-05_css_injection_presentational_hints.md](https://github.com/user-attachments/files/26370718/VULN-05_css_injection_presentational_hints.md)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T17:29:53Z",
+    "Severity": "MODERATE",
+    "Summary": "WeasyPrint has CSS Injection via Presentational Hints",
+    "UpdatedAt": "2026-07-06T17:29:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 68.1"
+    }
+  ]
+}

