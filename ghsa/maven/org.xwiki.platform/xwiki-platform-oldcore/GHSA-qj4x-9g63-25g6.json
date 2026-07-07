@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-07T13:01:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xwiki.platform:xwiki-platform-oldcore"
+  },
+  "Advisory": {
+    "DatabaseId": 369815,
+    "Id": "GSA_kwCzR0hTQS1xajR4LTlnNjMtMjVnNs4ABaSX",
+    "GhsaId": "GHSA-qj4x-9g63-25g6",
+    "References": [
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/security/advisories/GHSA-qj4x-9g63-25g6"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-commons/pull/1675"
+      },
+      {
+        "Url": "https://jira.xwiki.org/browse/XCOMMONS-3594"
+      },
+      {
+        "Url": "https://jira.xwiki.org/browse/XWIKI-24075"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qj4x-9g63-25g6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qj4x-9g63-25g6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34151"
+      }
+    ],
+    "Description": "### Impact\n\nWith Jetty 12+ a user can craft a URL to access any resource the Jetty instance is allowed to access.\n\nFor example `http://[host]/xwiki/bin/skin/..%252f/..%252f..%252f..%252f..%252f..%252f..%252f..%252fetc/passwd` allows downloading the content of the /etc/passwd file, provided Jetty is allowed to read it, and if your XWiki webapp is located exactly 5 levels below `/` (like `/var/lib/jetty/webapps/xwiki`, which is the case in the docker image, for example).\n\nAnother example which does not go out of the XWiki webapp, but it's still a vulnerability (since users should not be allowed to access Hibernate or XWiki configuration files) is `http://[host]/xwiki/bin/skin/..%252f/..%252fWEB-INF/xwiki.cfg`.\n\n### Patches\n\nThis vulnerability has been patched in XWiki 17.10.5 and 18.2.0.\n\n### Workarounds\n\nA possible workaround is to use a different application server, like Jetty \u003c 12 (in the case of XWiki \u003c 17) or Tomcat, which don't seem to be impacted.\n\n### Resources\n\n* https://jira.xwiki.org/browse/XWIKI-24075\n* https://jira.xwiki.org/browse/XCOMMONS-3594\n\n### For more information\n\nIf there are any questions or comments about this advisory:\n* Open an issue in [Jira XWiki.org](https://jira.xwiki.org/)\n* Send an email to the [Security Mailing List](mailto:security@xwiki.org)\n\n### Attribution\n\n Lê Ngọc Khoa reported the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-07T13:01:21Z",
+    "Severity": "HIGH",
+    "Summary": "XWiki Platform Old Core: Resource path traversal via /skin/ action endpoint in Jetty 12+",
+    "UpdatedAt": "2026-07-07T13:01:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "18.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 18.0.0-rc-1, \u003c 18.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.10.5"
+      },
+      "VulnerableVersionRange": "\u003c 17.10.5"
+    }
+  ]
+}
