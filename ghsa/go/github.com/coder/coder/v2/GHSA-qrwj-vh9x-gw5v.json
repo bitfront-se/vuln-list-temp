@@ -1,0 +1,67 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-06T21:52:32Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/coder/coder/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 369763,
+    "Id": "GSA_kwCzR0hTQS1xcndqLXZoOXgtZ3c1ds4ABaRj",
+    "GhsaId": "GHSA-qrwj-vh9x-gw5v",
+    "References": [
+      {
+        "Url": "https://github.com/coder/coder/security/advisories/GHSA-qrwj-vh9x-gw5v"
+      },
+      {
+        "Url": "https://github.com/coder/coder/pull/26600"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qrwj-vh9x-gw5v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qrwj-vh9x-gw5v"
+      }
+    ],
+    "Description": "### Summary\n\n`agentConn.apiClient()` used the default redirect behavior of `http.Client` while its custom transport dialed the host from the request URL as long as the port was the workspace agent HTTP API port (`4`). Agent tailnet IPs are deterministic from agent UUIDs, so a malicious workspace agent could return a redirect to another agent's tailnet IP and cause the control-plane client to send the follow-up workspace agent API request to the victim agent instead of the intended agent.\n\nRedirects that preserve the method and body, such as HTTP 307 and 308, allow replay of write and process-start requests. HTTP 301, 302 and 303 redirects only convert POST requests to GET requests, so they are sufficient to demonstrate redirected reads but not write or command-execution primitives.\n\n### Impact\n\nAn authenticated user with a running workspace and control of a modified workspace agent can redirect workspace agent API requests made to their agent toward another online workspace agent reachable on the tailnet. If the attacker knows the victim agent UUID, they can derive the victim's tailnet IP and target the victim's file APIs to read or write files as the victim workspace user.\n\nIn affected versions that expose the workspace agent process API, the same primitive can be chained to command execution as the victim workspace user by writing a payload through the redirected file API and then redirecting a process-start request to execute it. This crosses workspace and tenant boundaries.\n\n### Patches\n\nThe fix disables automatic redirect following for workspace agent API clients and pins all workspace agent API dials to the intended agent's deterministic tailnet address. Requests whose URL host does not match the intended agent are rejected instead of being dialed.\n\nThe fix was backported to all supported release lines:\n\n| Release line | Patched version |\n|---|---|\n| 2.34 | [v2.34.4](https://github.com/coder/coder/releases/tag/v2.34.4) |\n| 2.33 | [v2.33.10](https://github.com/coder/coder/releases/tag/v2.33.10) |\n| 2.32 | [v2.32.9](https://github.com/coder/coder/releases/tag/v2.32.9) |\n| 2.29 (ESR) | [v2.29.19](https://github.com/coder/coder/releases/tag/v2.29.19) |\n\n### Workarounds\n\nNone. Upgrading is required.\n\n### Resources\n- Fix: #26600",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T21:52:31Z",
+    "Severity": "HIGH",
+    "Summary": "Coder's workspace agent API insecure redirect handling allowed cross-agent file read and write",
+    "UpdatedAt": "2026-07-06T21:52:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.29.19"
+      },
+      "VulnerableVersionRange": "\u003e= 2.27.0, \u003c 2.29.19"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.9"
+      },
+      "VulnerableVersionRange": "\u003e= 2.30.0, \u003c 2.32.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.33.10"
+      },
+      "VulnerableVersionRange": "\u003e= 2.33.0, \u003c 2.33.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.34.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.34.0, \u003c 2.34.4"
+    }
+  ]
+}

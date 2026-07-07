@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-06T21:49:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "kiwitcms"
+  },
+  "Advisory": {
+    "DatabaseId": 369730,
+    "Id": "GSA_kwCzR0hTQS1obWo1LWptOGgtaDlmaM4ABaRC",
+    "GhsaId": "GHSA-hmj5-jm8h-h9fh",
+    "References": [
+      {
+        "Url": "https://github.com/kiwitcms/Kiwi/security/advisories/GHSA-hmj5-jm8h-h9fh"
+      },
+      {
+        "Url": "https://github.com/kiwitcms/Kiwi/releases/tag/v16.1"
+      },
+      {
+        "Url": "https://kiwitcms.org/blog/kiwi-tcms-team/2026/06/24/kiwi-tcms-161"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hmj5-jm8h-h9fh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hmj5-jm8h-h9fh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54724"
+      }
+    ],
+    "Description": "### Summary\n\nAn open redirect vulnerability in the account confirmation endpoint allows an unauthenticated attacker to craft a URL hosted on a legitimate Kiwi TCMS instance that redirects victims to an arbitrary external domain. The attack surface is particularly relevant for phishing campaigns targeting Kiwi TCMS users, as the malicious link originates from a trusted organizational hostname.\n\n### Impact\n\nThis is an open redirect vulnerability (CWE-601). Any unauthenticated attacker can exploit it against any user of a Kiwi TCMS deployment.\n\nThe primary risk is phishing. Because Kiwi TCMS is typically deployed as an internal tool for engineering and QA teams, a redirect from the organization's own hostname carries high implicit trust. An attacker can use this endpoint to:\n- Redirect victims to a credential-harvesting page styled to match the Kiwi TCMS or corporate SSO login.\n- Bypass email security filters and link-reputation checks that allowlist the organization's domain.\n- Distribute malware via a convincing \"confirm your account\" lure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T21:27:27Z",
+    "Severity": "MODERATE",
+    "Summary": "Kiwi TCMS has an Open Redirect via unvalidated next parameter in account confirmation endpoint",
+    "UpdatedAt": "2026-07-06T21:49:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 12.4"
+    }
+  ]
+}

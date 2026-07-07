@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-06T20:58:31Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/coder/coder/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 369715,
+    "Id": "GSA_kwCzR0hTQS13cnE4LWZjdjUtOGh2cM4ABaQz",
+    "GhsaId": "GHSA-wrq8-fcv5-8hvp",
+    "References": [
+      {
+        "Url": "https://github.com/coder/coder/security/advisories/GHSA-wrq8-fcv5-8hvp"
+      },
+      {
+        "Url": "https://github.com/coder/coder/pull/26144"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wrq8-fcv5-8hvp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wrq8-fcv5-8hvp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55428"
+      }
+    ],
+    "Description": "### Summary\n\nThe tailnet coordinator validates that an agent's `Addresses` derive from its authenticated UUID but applies no equivalent check to `AllowedIPs`. The coordinator forwards agent-supplied `AllowedIPs` verbatim to tunnel peers which install them into the WireGuard peer configuration.\n\n### Impact\n\nA malicious workspace agent can advertise arbitrary `AllowedIPs` prefixes including another agent's tailnet address. Coder's `ServerTailnet` routes to agents by tailnet IP so an agent that claims a victim's prefix can intercept web terminal and workspace app traffic and serve spoofed content. Exploitation requires an authenticated user with a running workspace and a modified agent binary.\n\n### Patches\n\nThe fix validates each `AllowedIPs` prefix against the authenticating agent's UUID just like `Addresses`.\n\nThe fix was backported to all supported release lines:\n\n| Release line | Patched version |\n|---|---|\n| 2.34 | [v2.34.2](https://github.com/coder/coder/releases/tag/v2.34.2) |\n| 2.33 | [v2.33.8](https://github.com/coder/coder/releases/tag/v2.33.8) |\n| 2.32 | [v2.32.7](https://github.com/coder/coder/releases/tag/v2.32.7) |\n| 2.29 (ESR) | [v2.29.17](https://github.com/coder/coder/releases/tag/v2.29.17) |\n\n### Workarounds\n\nOperators who cannot upgrade immediately should monitor coordinator logs for agents advertising unexpected `AllowedIPs` prefixes.\n\n### Resources\n\n- Fix: #26144\n\n### Credits\n\nCoder would like to thank Anthropic's Security Team (ANT-2026-22451) for independently disclosing this issue!",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T20:58:30Z",
+    "Severity": "HIGH",
+    "Summary": "Coder: Route hijacking through lack of validation of agent-supplied AllowedIPs in tailnet coordinator",
+    "UpdatedAt": "2026-07-06T20:58:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.29.17"
+      },
+      "VulnerableVersionRange": "\u003c 2.29.17"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.30.0, \u003c 2.32.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.33.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.33.0, \u003c 2.33.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.34.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.34.0, \u003c 2.34.2"
+    }
+  ]
+}
