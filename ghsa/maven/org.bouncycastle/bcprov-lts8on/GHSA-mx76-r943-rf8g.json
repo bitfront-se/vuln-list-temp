@@ -1,9 +1,9 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2026-05-14T13:06:28Z",
+  "UpdatedAt": "2026-07-07T21:30:16Z",
   "Package": {
     "Ecosystem": "MAVEN",
-    "Name": "org.bouncycastle:bc-fips"
+    "Name": "org.bouncycastle:bcprov-lts8on"
   },
   "Advisory": {
     "DatabaseId": 354014,
@@ -30,12 +30,12 @@
         "Value": "CVE-2026-8149"
       }
     ],
-    "Description": "A vulnerability in Legion of the Bouncy Castle Inc. BC-FJA BC-FIPS on Linux, X86_64, AVX, AVX-512f.\n\nThis vulnerability is associated with program files gcm128w, gcm512w.\n\nThis issue affects BC-FJA: from 2.1.0 through 2.1.2.",
+    "Description": "In Bouncy Castle LTS for Java, the AES/GCM native implementation used on Intel CPUs with AES PAA instruction sets (AVX / VAES / VAESF variants) can intermittently produce an incorrect authentication tag verification result during decryption when the ciphertext is fed in via a mix of `update()` calls followed by `doFinal()`. It is possible to work around it by either using `doFinal()` only (as the BCJSSE does) or by configuring the module to run in pure Java mode, by setting the system property \"org.bouncycastle.native.cpu_variant\" to java.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-08T09:31:30Z",
     "Severity": "MODERATE",
-    "Summary": "Bouncy Castle has a vulnerability in program files gcm128w, gcm512w",
-    "UpdatedAt": "2026-05-19T16:09:21Z",
+    "Summary": "Bouncy Castle LTS native GCM chunking can cause bad-tag exception on decryption",
+    "UpdatedAt": "2026-07-07T21:30:16Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -45,9 +45,9 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": ""
+        "Identifier": "2.73.11"
       },
-      "VulnerableVersionRange": "\u003e= 2.1.0, \u003c= 2.1.2"
+      "VulnerableVersionRange": "\u003e= 2.73.0, \u003c= 2.73.10"
     }
   ]
 }

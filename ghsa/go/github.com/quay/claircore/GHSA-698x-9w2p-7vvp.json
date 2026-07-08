@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-07T23:47:01Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/quay/claircore"
+  },
+  "Advisory": {
+    "DatabaseId": 359893,
+    "Id": "GSA_kwCzR0hTQS02OTh4LTl3MnAtN3Z2cM4ABX3V",
+    "GhsaId": "GHSA-698x-9w2p-7vvp",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10517"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-10517"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2486779"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-698x-9w2p-7vvp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-698x-9w2p-7vvp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-10517"
+      }
+    ],
+    "Description": "A flaw was found in Clair. The fetcher component makes outbound HTTP requests to attacker-supplied URIs from manifest layer descriptors without IP or scheme filtering. When PSK authentication is not configured (opt-in, not enforced by default), an unauthenticated attacker can submit a manifest with a URI pointing to internal services or cloud metadata endpoints. The SSRF is reflective for non-200 responses, leaking up to 256 bytes of error body content via CheckResponse error messages. Operator-managed Red Hat Quay deployments auto-configure PSK and are not exposed to the unauthenticated attack vector.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Claircore: Unauthenticated attackers can submit manifests with URIs pointing to internal services or cloud metadata endpoints",
+    "UpdatedAt": "2026-07-07T23:47:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.5.52"
+    }
+  ]
+}

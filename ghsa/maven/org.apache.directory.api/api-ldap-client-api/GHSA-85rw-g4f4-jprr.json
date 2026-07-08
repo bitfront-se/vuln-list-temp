@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-07T23:46:50Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.directory.api:api-ldap-client-api"
+  },
+  "Advisory": {
+    "DatabaseId": 359881,
+    "Id": "GSA_kwCzR0hTQS04NXJ3LWc0ZjQtanBycs4ABX3J",
+    "GhsaId": "GHSA-85rw-g4f4-jprr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-35563"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/5rc2nzqxp1m9wknyf93r8dnp46fhc1nn"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/06/01/2"
+      },
+      {
+        "Url": "https://github.com/apache/directory-ldap-api/commit/57a7726d8b6436c74945c12f5ba4e12d232d2bac"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-85rw-g4f4-jprr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-85rw-g4f4-jprr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-35563"
+      }
+    ],
+    "Description": "It was identified that the LDAP client implementation in version 2.1.7 does not verify if the server certificate matches the intended LDAP  hostname. While the underlying code validates the certificate chain  against a trusted authority, the absence of endpoint identification  allows a valid certificate issued for an entirely unrelated host to be improperly accepted. This oversight leaves the connection highly vulnerable to server impersonation and complete connection compromise.\n\nThe root cause of this vulnerability lies in the incomplete TLS server identity verification within the LDAP client implementation.\n\nThe attacker requires MITM capability on the network to exploit this vulnerability. This attacker must be able to present a certificate trusted by the client's configured trust store.\n\nThe hostname verification has been enforced in the new version of the LDAP API.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:11Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Directory LDAP API lacks server certificate verification for LDAP hostnames",
+    "UpdatedAt": "2026-07-07T23:46:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.1.8"
+    }
+  ]
+}

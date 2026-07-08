@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-07T23:41:23Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "ha-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 369953,
+    "Id": "GSA_kwCzR0hTQS1xODU1LThyaDUtamZncc4ABaUh",
+    "GhsaId": "GHSA-q855-8rh5-jfgq",
+    "References": [
+      {
+        "Url": "https://github.com/homeassistant-ai/ha-mcp/security/advisories/GHSA-q855-8rh5-jfgq"
+      },
+      {
+        "Url": "https://github.com/homeassistant-ai/ha-mcp/pull/1508"
+      },
+      {
+        "Url": "https://github.com/homeassistant-ai/ha-mcp/commit/9f5b085ad4a7b38b067c9da0dc5b45462c4d796e"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q855-8rh5-jfgq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q855-8rh5-jfgq"
+      }
+    ],
+    "Description": "### Summary\n\nIn add-on mode, the ha-mcp settings UI routes are mounted both under the MCP secret path **and** at the bare root of the published port (`:9583`), so Home Assistant ingress can serve the \"Open Web UI\" button. The root-mounted routes perform no authentication — no secret, no `Origin` check, no CSRF token — so any client that can reach `:9583` without the MCP secret can invoke them.\n\n### Affected configurations\n\nHome Assistant **add-on** installations (`host_network: true` with port `9583` published), v7.6.0 and earlier. Docker and standalone installs are **not** affected — there the settings routes are mounted only under the secret path.\n\nRoot-mounted routes in affected versions: tool visibility (`/api/settings/tools` GET/POST), feature flags (`/api/settings/features` GET/POST), the auto-backup suite (`/api/settings/backups…` incl. restore/delete, and `/api/settings/backup-config`), add-on restart (`/api/settings/restart`), and — when the opt-in Tool Security Policies feature is enabled — the approval-policy API (`/api/policy/config` GET/PUT, `/api/policy/approve`, `/api/policy/deny`, …).\n\n### Impact\n\nWithout authentication, a caller that reaches `:9583` — a peer on the local network, a reverse proxy/tunnel that forwards the bare root path (e.g. a whole-host Cloudflared config), or a CSRF `POST` from a page open in a LAN browser — can read or change which MCP tools are exposed, toggle feature flags, list/view/restore/delete backups, restart the add-on, and (with Tool Security Policies enabled) read and rewrite the approval policy, disabling the human-approval gate on gated tools.\n\nThere is **no** access to Home Assistant data, entities, or credentials, and no code execution. All effects are confined to the add-on's own configuration and lifecycle and are recoverable. The primary (same-LAN) vector is within the add-on's documented trusted-network model; remote reachability requires the operator to have reverse-proxied the bare port.\n\n### Proof of concept\n\nWith the add-on running and reachable on `:9583`, from any host that can reach the port without the secret:\n\n```\nGET  /api/settings/tools                 -\u003e 200   (read tool config, no auth)\nPOST /api/settings/tools  {\"states\":{}}  -\u003e 200   (rewrite tool config, no auth / no CSRF token)\nPOST /api/settings/restart               -\u003e 200   (restart the add-on)\n```\n\nThe MCP endpoint itself remains correctly protected by the secret path.\n\n### Patch\n\nFixed in PR homeassistant-ai/ha-mcp#1508 (merged to `master`): the root-mounted add-on routes are restricted to Home Assistant ingress, which always originates from the Supervisor (`172.30.32.2`); every other caller receives `403`. Direct and remote access continue to use the settings UI under the MCP secret path (`…/\u003csecret\u003e/settings`), so the \"Open Web UI\" button, Cloudflared, and the Webhook Proxy add-on are unaffected.\n\nThe fix will ship in the next stable add-on release. If you'd rather have it now, it is already on the dev channel (add-on dev build ` 7.6.0.dev393` or later) — optional; there's no need to switch channels just for this, it is a fairly low risk surface and only exposes the web UI for addon mode only.\n\n### Severity\n\n`CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L` = 6.4 (Moderate). Confidentiality impact is None — tool config and backups are not secrets or credentials; integrity and availability impacts are Low — configuration changes and an add-on restart are recoverable.\n\n### Credit\n\nReported by @bharat.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-07T23:41:21Z",
+    "Severity": "MODERATE",
+    "Summary": "ha-mcp: Add-on settings and policy routes are reachable without authentication at the bare root path",
+    "UpdatedAt": "2026-07-07T23:41:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.10.0"
+      },
+      "VulnerableVersionRange": "\u003c 7.10.0"
+    }
+  ]
+}

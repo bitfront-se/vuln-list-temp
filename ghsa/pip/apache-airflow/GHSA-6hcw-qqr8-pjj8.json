@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-07T23:47:18Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 359917,
+    "Id": "GSA_kwCzR0hTQS02aGN3LXFxcjgtcGpqOM4ABX3t",
+    "GhsaId": "GHSA-6hcw-qqr8-pjj8",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40961"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/65557"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/qmt8ksh7gty6b8hr9w294t94j36jdv1q"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/31/2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6hcw-qqr8-pjj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6hcw-qqr8-pjj8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40961"
+      }
+    ],
+    "Description": "A bug in the login redirect route in Apache Airflow allowed authenticated users to craft URLs that bypassed the `is_safe_url` check, enabling redirection from a trusted Airflow domain to an attacker-controlled origin. Users are advised to upgrade to `apache-airflow` 3.2.2 or later. As a defense-in-depth mitigation, deployment operators can place Airflow behind a reverse proxy that strips off-domain `next=` query parameters before they reach the login endpoint.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:13Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Airflow: Authenticated users can bypass the `is_safe_url` check",
+    "UpdatedAt": "2026-07-07T23:47:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.2"
+    }
+  ]
+}
