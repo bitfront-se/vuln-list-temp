@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-09T13:43:04Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ca.uhn.hapi.fhir:org.hl7.fhir.r5"
+  },
+  "Advisory": {
+    "DatabaseId": 370355,
+    "Id": "GSA_kwCzR0hTQS03Y21qLXY2eDgtZnJ2ds4ABaaz",
+    "GhsaId": "GHSA-7cmj-v6x8-frvv",
+    "References": [
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/security/advisories/GHSA-7cmj-v6x8-frvv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7cmj-v6x8-frvv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7cmj-v6x8-frvv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49485"
+      }
+    ],
+    "Description": "# Summary\nAll implementations of FHIRPathEngine accept arbitrary FHIRPath expressions and evaluate them without input validation. The utility intended to secure this evaluation did so incorrectly, and did not fully cover all places in which evaluation was being done. An attacker can send a resource containing an evil regex pattern that causes catastrophic backtracking, exhausting system resources, and causing Denial-of-Service.\n\n## Details\nThe vulnerability exists in regex execution in FHIRPathEngine implementations across multiple code modules. The FHIRPath functions matches(), matchesFull(), and replaceMatches() pass user-controlled regular expressions to Java's Pattern.compile() and String.replaceAll() through a utility class designed to time out after a specified interval. That utility correctly cancelled a single executor thread and returned with an exception, but the execution within the thread had no means to listen for this cancellation and would persist. Furthermore, three modules contained method calls in FHIRPathEngine that were not protected by this utility class.\n\n## Why this is exploitable:\n\nJava's Pattern.compile() with a pattern like (a+)+$ against input \"aaaaaaaaaaaaaaaaaaaaaa!\" causes exponential backtracking (O(2^n) time complexity). \n\n## Impact\nCPU Exhaustion: The exponential backtracking in Java's regex engine consumes 100% of a CPU core for the duration of the hang (effectively infinite for sufficiently long input strings) for callers of FHIRPathEngine.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-09T13:43:03Z",
+    "Severity": "HIGH",
+    "Summary": "org.hl7.fhir.core: ReDoS via FHIRPath matches()/replaceMatches() in FHIR Validator HTTP Endpoint",
+    "UpdatedAt": "2026-07-09T13:43:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.9.4.2"
+      },
+      "VulnerableVersionRange": "\u003c 6.9.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.9.9"
+      },
+      "VulnerableVersionRange": "\u003e= 6.9.5, \u003c 6.9.9"
+    }
+  ]
+}

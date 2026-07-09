@@ -1,0 +1,67 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-09T13:36:56Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.micronaut:micronaut-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 370348,
+    "Id": "GSA_kwCzR0hTQS1xNmdoLTZ2MnItaGp2M84ABaas",
+    "GhsaId": "GHSA-q6gh-6v2r-hjv3",
+    "References": [
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/security/advisories/GHSA-q6gh-6v2r-hjv3"
+      },
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/commit/64e539736b8168f201d868b02ace50fe14f57418"
+      },
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/commit/70cab4b44fbf985faba2846091f2356b5bd70719"
+      },
+      {
+        "Url": "https://github.com/micronaut-projects/micronaut-core/commit/9770328999f490bdfbb9e25addd45bf73d4a173a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6gh-6v2r-hjv3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6gh-6v2r-hjv3"
+      }
+    ],
+    "Description": "### Impact\n\n\u003e DefaultHttpClient follows redirects and forwards Authorization, Cookie, and Proxy-Authorization headers to redirect targets across domain boundaries. The blocklist only filters Host/Connection/TE/CT/CL.\n\u003e Additionally, no maximum redirect count exists, enabling infinite loop DoS.\n\u003e Affected: DefaultHttpClient.java lines 231-245, 1591, 2071\n\n\u003e Suggested fix: Strip sensitive headers on cross-domain redirects\n\n### Patches\nIt has been patched for versions: \n\nFor Micronaut 5, versions equal or greater than 5.0.1 \u003e=\nFor Micronaut 4, versions equal or greater than 4.10.24 \u003e=\nFor Micronaut 3, versions equal or greater than 3.10.6 \u003e=\n\n### Workarounds\nNo\n\n### References\nMicronaut 5 Patch: https://github.com/micronaut-projects/micronaut-core/commit/9770328999f490bdfbb9e25addd45bf73d4a173a\nMicronaut 4 Patch: https://github.com/micronaut-projects/micronaut-core/commit/70cab4b44fbf985faba2846091f2356b5bd70719\nMicronaut 3 Patch: https://github.com/micronaut-projects/micronaut-core/commit/64e539736b8168f201d868b02ace50fe14f57418",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-09T13:36:56Z",
+    "Severity": "MODERATE",
+    "Summary": "Micronaut: DefaultHttpClient follows redirects, forwarding Authorization, Cookie, and Proxy-Authorization headers",
+    "UpdatedAt": "2026-07-09T13:36:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0-M1, \u003c 5.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.10.24"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-M1, \u003c 4.10.24"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.6"
+      },
+      "VulnerableVersionRange": "\u003e= 1.2.8, \u003c 3.10.6"
+    }
+  ]
+}

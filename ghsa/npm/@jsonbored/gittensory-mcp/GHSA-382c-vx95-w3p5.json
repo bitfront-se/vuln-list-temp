@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-09T13:44:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@jsonbored/gittensory-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 370360,
+    "Id": "GSA_kwCzR0hTQS0zODJjLXZ4OTUtdzNwNc4ABaa4",
+    "GhsaId": "GHSA-382c-vx95-w3p5",
+    "References": [
+      {
+        "Url": "https://github.com/JSONbored/gittensory/security/advisories/GHSA-382c-vx95-w3p5"
+      },
+      {
+        "Url": "https://github.com/JSONbored/gittensory/commit/811ef5fb9d748170011f8854d88c64627ad666a0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-382c-vx95-w3p5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-382c-vx95-w3p5"
+      }
+    ],
+    "Description": "### Summary\n \n`GET /v1/contributors/:login/profile` and the `gittensory_get_contributor_profile` MCP tool skip the contributor-scoped access check that every sibling endpoint enforces. Any authenticated session/API/MCP token holder can read any contributor's profile; for confirmed Gittensor miners that exposes `alphaPerDay`, `taoPerDay`, `usdPerDay` (and the `hotkey` on the REST path). Authenticated cross-contributor disclosure, CWE-284 / IDOR.\n \n### Details\n \nIn `src/api/routes.ts` the profile handler returns `buildContributorProfile(...)` with no `requireContributorAccess` call. Every sibling (`/decision-pack`, `/repos/:owner/:repo/decision`, etc.) gates and 403s on a cross-contributor request — the profile route is the only omission. `buildContributorProfile` (`src/signals/engine.ts`) embeds `hotkey` and the three `*PerDay` fields for any confirmed miner.\n \nThe MCP tool `getContributorProfile` (`src/mcp/server.ts`) also omits `requireContributorAccess`. Its `redactSensitiveForMcp` filter only strips keys matching `hotkey|coldkey|wallet|private_key|privateKey|mnemonic`, so the hotkey is dropped but `alphaPerDay`/`taoPerDay`/`usdPerDay` pass through.\n \nThe codebase treats these as secret everywhere else — `decision-pack.ts` destructures the hotkey out before serving, and three sanitizers scrub hotkey/wallet from AI/comment output — which is why this is an oversight, not by-design.\n \nExposure: REST → hotkey + 3 financial fields; MCP → 3 financial fields (hotkey redacted).\n \n### PoC\n \n1. Get any valid session/API/MCP token.\n2. Pick a target `login` that is a confirmed miner.\n3. `GET /v1/contributors/{target}/profile` → 200 with `gittensor.hotkey`, `alphaPerDay`, `taoPerDay`, `usdPerDay`.\n4. `GET /v1/contributors/{target}/decision-pack` (same token) → 403, proving the missing gate.\n5. MCP `gittensory_get_contributor_profile` with `{target}` → result includes the three `*PerDay` fields.\n### Impact\n \nAny token holder can enumerate other miners' daily TAO/alpha/USD revenue (plus hotkey via REST) without authorization. All miners with snapshot data are affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-09T13:44:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Gittensory: Missing contributor-scoped access control on profile endpoint and MCP tool leaks miner financial data",
+    "UpdatedAt": "2026-07-09T13:44:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 0.1.0"
+    }
+  ]
+}
