@@ -1,12 +1,13 @@
 {
-  "id": "PYSEC-2026-187",
+  "id": "GHSA-vr7m-c6v4-8cx8",
   "modified": "2026-07-08T20:11:13.710785182Z",
-  "published": "2026-06-01T09:16:20.187Z",
+  "published": "2026-06-01T09:31:15Z",
   "aliases": [
     "BIT-airflow-2026-48726",
     "CVE-2026-48726",
-    "GHSA-vr7m-c6v4-8cx8"
+    "PYSEC-2026-187"
   ],
+  "summary": "Apache Airflow: Auth manager doesn't invalidate JWT tokens after users click logout",
   "details": "A bug in Apache Airflow's auth manager logout handling left previously-issued JWT tokens valid after the user clicked logout in the UI: the logout flow for `FabAuthManager` and `KeycloakAuthManager` did not actually reach the underlying `revoke_token()` call, so the JWT remained accepted by the API server until its natural expiry. An attacker holding a previously-issued JWT for a logged-out user could continue to make authenticated API calls as that user. Affects deployments configured with `FabAuthManager` or `KeycloakAuthManager` (the bug does not affect SimpleAuthManager). This is a residual gap in the fix for CVE-2025-57735, which addressed cookie-side invalidation in PR #57992 / PR #61339 but did not cover the provider-side `revoke_token()` reachability in the FAB / Keycloak code paths. Users who already upgraded for CVE-2025-57735 should additionally upgrade to `apache-airflow` 3.2.2 or later to cover the FAB / Keycloak logout paths.",
   "affected": [
     {
@@ -319,24 +320,35 @@
         "3.2.2rc2",
         "3.2.2rc3"
       ],
-      "ecosystem_specific": {},
       "database_specific": {
-        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/apache-airflow/PYSEC-2026-187.yaml"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/06/GHSA-vr7m-c6v4-8cx8/GHSA-vr7m-c6v4-8cx8.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48726"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/pull/67289"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/apache/airflow"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-187.yaml"
+    },
+    {
+      "type": "WEB",
       "url": "https://lists.apache.org/thread/630jg4z6cjkv4m2yv2ljgmf1zhdj1vqx"
     },
     {
-      "type": "ADVISORY",
+      "type": "WEB",
       "url": "https://www.cve.org/CVERecord?id=CVE-2025-57735"
-    },
-    {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/67289"
     }
   ]
 }
