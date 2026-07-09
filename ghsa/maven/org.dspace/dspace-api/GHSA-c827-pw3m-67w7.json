@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-08T20:25:54Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.dspace:dspace-api"
+  },
+  "Advisory": {
+    "DatabaseId": 370156,
+    "Id": "GSA_kwCzR0hTQS1jODI3LXB3M20tNjd3N84ABaXs",
+    "GhsaId": "GHSA-c827-pw3m-67w7",
+    "References": [
+      {
+        "Url": "https://github.com/DSpace/DSpace/security/advisories/GHSA-c827-pw3m-67w7"
+      },
+      {
+        "Url": "https://github.com/DSpace/DSpace/pull/12541"
+      },
+      {
+        "Url": "https://github.com/DSpace/DSpace/pull/12542"
+      },
+      {
+        "Url": "https://github.com/DSpace/DSpace/pull/12543"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c827-pw3m-67w7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c827-pw3m-67w7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49830"
+      }
+    ],
+    "Description": "## Overview\n\nWhen ingesting an aggregated ORE resource by URI (using the [OAI-ORE Harvester](https://wiki.lyrasis.org/spaces/DSDOC9x/pages/379125906/OAI#OAI-OAI-PMH/OAI-OREHarvester(Client))), the ORE Ingestion Crosswalk does not validate the URI scheme. This may allow for local file inclusion via malicious paths like `file:///etc/passwd`. _This vulnerability impacts DSpace versions \u003c= 7.6.6, 8.0 \u003c= 8.3, 9.0 \u003c= 9.2._ The attacker MUST already have DSpace collection administrator privileges in order to perform the attack.\n\nExpected behaviour : Only external web resources should be ingested as ORE resources, preferably from the trusted endpoint.\n\n## Impact\n\nA remote OAI endpoint configured as a harvest source for a DSpace collection can supply malicious ORE XML that results in a local file from the DSpace server being ingested as a bitstream.\n\nOnly Collection, Community and Site Administrators can configure a collection for OAI harvest, however an attacker may use stolen credentials to escalate into local file/data disclosure, or a compromised OAI endpoint could also supply malicious XML.\n\n## Patches\n\nThe fix is included in DSpace 7.6.7, 8.4, 9.3 and 10.0.  Please upgrade to one of these versions or disable the ORE Crosswalk (see below).\n\nIf users cannot upgrade immediately, it is possible to manually patch their DSpace backend. (No changes are necessary to the frontend.) A pull request exists which can be used to patch systems running DSpace 7.6.x, 8.x or 9.x.\n* Pull request for 9.x: https://github.com/DSpace/DSpace/pull/12541  ([Downloadable patch file](https://github.com/DSpace/DSpace/pull/12541.patch))\n* Pull request for 8.x: https://github.com/DSpace/DSpace/pull/12543  ([Downloadable patch file](https://github.com/DSpace/DSpace/pull/12543.patch))\n* Pull request for 7.x: https://github.com/DSpace/DSpace/pull/12542  ([Downloadable patch file](https://github.com/DSpace/DSpace/pull/12542.patch))\n\n\n### Apply the patch to a user's DSpace\nIf at all possible, we recommend disabling the ORE Crosswalk (see below) or upgrading a user's DSpace site based on the upgrade instructions. However, if they are unable to do so, they can manually apply the above patches to their DSpace backend as follows:\n1. Download the appropriate patch file to the machine where DSpace backend is running\n2. From the `[dspace-src]` folder, apply the patch, e.g. `git apply [name-of-file].patch`\n3. Now, update the DSpace site (based loosely on the Upgrade instructions). This generally involves three steps:\n    1. Rebuild DSpace, e.g. `mvn -U clean package`  (This will recompile all DSpace backend code)\n    2. Redeploy DSpace, e.g. `ant update`  (This will copy all newly built code to their installation directory). Depending on their setup they also may need to copy the updated \"server\" webapp over to their Tomcat webapps folder.\n    3. Restart Tomcat (or runnable JAR)\n\n## Workarounds\n* Disable the ORE ingestion crosswalk in `dspace.cfg` by commenting out or removing it from the list of `plugin.named.org.dspace.content.crosswalk.IngestionCrosswalk` plugins:\n```\n  # Remove or comment out this line\n  org.dspace.content.crosswalk.OREIngestionCrosswalk = ore, \\\n```\n* Once they have patched their site or upgraded, they may safely enable the OREIngestionCrosswalk again.\n\n## Credits\nDiscovered \u0026 reported by Pablo Picurelli Ortiz (@superpegaso2703), cybersecurity student at Universidad Rey Juan Carlos.\nCode fix developed by Kim Shepherd (@kshepherd) of The Library Code",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-08T20:25:54Z",
+    "Severity": "MODERATE",
+    "Summary": "DSpace: ORE resource URI does not validate scheme for non-web resources",
+    "UpdatedAt": "2026-07-08T20:25:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0"
+      },
+      "VulnerableVersionRange": "= 10-rc1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0-rc1, \u003c= 9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.4"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0-rc1, \u003c= 8.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.6.7"
+      },
+      "VulnerableVersionRange": "\u003c= 7.6.6"
+    }
+  ]
+}

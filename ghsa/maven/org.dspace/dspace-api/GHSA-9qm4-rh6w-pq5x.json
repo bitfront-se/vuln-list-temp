@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-08T20:26:16Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.dspace:dspace-api"
+  },
+  "Advisory": {
+    "DatabaseId": 370157,
+    "Id": "GSA_kwCzR0hTQS05cW00LXJoNnctcHE1eM4ABaXt",
+    "GhsaId": "GHSA-9qm4-rh6w-pq5x",
+    "References": [
+      {
+        "Url": "https://github.com/DSpace/DSpace/security/advisories/GHSA-9qm4-rh6w-pq5x"
+      },
+      {
+        "Url": "https://github.com/DSpace/DSpace/pull/12540"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9qm4-rh6w-pq5x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9qm4-rh6w-pq5x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49833"
+      }
+    ],
+    "Description": "## Overview\n\nA path traversal vulnerability is possible via the [COAR Notify / LDN](https://wiki.lyrasis.org/spaces/DSDOC9x/pages/379126679/COAR+Notify) service in DSpace. _This vulnerability impacts DSpace versions 8.0 \u003c= 8.3, 9.0 \u003c= 9.2._  The attacker MUST already have DSpace administrator credentials in order to perform the attack.\n\nWhen reading a file input stream of an  \"inbound pattern\" / \"template\", used to generate an LDN message, the LDN class does not check for path traversal or restrict the templates to a known base path. This could allow an untrusted file from elsewhere in the file system (e.g. an export log, a bitstream path, a temporary file) to be read and interpreted as an Apache Velocity template.\n\nExpected behaviour : Only the trusted templates kept in `$dspace.dir/config/ldn` should be allowed or used by LDN.\n\n## Impact\n\nOn its own this seems a fairly low-impact problem: only DSpace Administrators can set LDN template names in services, and you typically need more access to manipulate files on the server.\n\nHowever, this vulnerability was included as part of an attack chain that demonstrated the ability of a DSpace Administrator to put the malicious Velocity payload in a predictable place (e.g. temporary log file from a running process) and then have that file referenced as the template name in a new service.\n \nThis means it is possible (non-trivial, but proven) for an attacker with DSpace administrator credentials to either disclose information via a specially crafted Velocity template, or exploit another weakness in the DSpace Velocity implementation by executing arbitrary java code.\n\n\n## Patches\n\nThe fix is included in DSpace 8.4, 9.3 and 10.0.  Please upgrade to one of these versions or disable LDN (see below)\n\nIf users cannot upgrade immediately, it is possible to manually patch their DSpace backend. (No changes are necessary to the frontend.) A pull request exists which can be used to patch systems running DSpace 8.x or 9.x. \n* Pull request for 9.x: https://github.com/DSpace/DSpace/pull/12552  ([Downloadable patch file](https://github.com/DSpace/DSpace/pull/12552.patch))\n    * This 9.x patch file also resolves a similar [path traversal vulnerability in the Curation Task reporter](https://github.com/DSpace/DSpace/security/advisories/GHSA-v66x-68f2-pxf5)\n* Pull request for 8.x: https://github.com/DSpace/DSpace/pull/12540  ([Downloadable patch file](https://github.com/DSpace/DSpace/pull/12540.patch))\n    * This 8.x patch file also resolves a similar [path traversal vulnerability in the Curation Task reporter](https://github.com/DSpace/DSpace/security/advisories/GHSA-v66x-68f2-pxf5)\n\n### Apply the patch to a DSpace\nIf at all possible, DSpace recommends disabling LDN (see below) or upgrading the user's DSpace site based on the upgrade instructions. However, if users are unable to do so, they can manually apply the above patches to their DSpace backend as follows:\n1. Download the appropriate patch file to the machine where DSpace backend is running\n2. From the `[dspace-src]` folder, apply the patch, e.g. `git apply [name-of-file].patch`\n3. Now, update the DSpace site (based loosely on the Upgrade instructions). This generally involves three steps:\n    1. Rebuild DSpace, e.g. `mvn -U clean package`  (This will recompile all DSpace backend code)\n    2. Redeploy DSpace, e.g. `ant update`  (This will copy all newly built code to their installation directory). Depending on their setup they also may need to copy the updated \"server\" webapp over to their Tomcat webapps folder.\n    3. Restart Tomcat (or runnable JAR)\n\n## Workarounds\n* In `dspace.cfg` or `local.cfg`, disable LDN (set `ldn.enabled=false`) if it is not crucial to the operation of the repository.  (NOTE: LDN is disabled by default, so many DSpace sites may not use this feature)\n* Once users have patched their site or upgraded, they may safely enable LDN again.\n\n## Credits\nDiscovered \u0026 reported by Pablo Picurelli Ortiz (@superpegaso2703), cybersecurity student at Universidad Rey Juan Carlos.\nCode fix developed by Kim Shepherd (@kshepherd) of The Library Code",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-08T20:26:15Z",
+    "Severity": "MODERATE",
+    "Summary": "DSpace: Path Traversal is possible through LDN message generation",
+    "UpdatedAt": "2026-07-08T20:26:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0"
+      },
+      "VulnerableVersionRange": "= 10.0-rc1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0-rc1, \u003c= 9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.4"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0-rc1, \u003c= 8.3"
+    }
+  ]
+}
