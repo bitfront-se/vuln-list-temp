@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-10T16:05:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "tarteaucitronjs"
+  },
+  "Advisory": {
+    "DatabaseId": 370721,
+    "Id": "GSA_kwCzR0hTQS1qeGo3LWc2Z20tNDlqN84ABagh",
+    "GhsaId": "GHSA-jxj7-g6gm-49j7",
+    "References": [
+      {
+        "Url": "https://github.com/AmauriC/tarteaucitron.js/security/advisories/GHSA-jxj7-g6gm-49j7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jxj7-g6gm-49j7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jxj7-g6gm-49j7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49977"
+      }
+    ],
+    "Description": "### Summary\n\ntarteaucitron provides a list of cookies and buttons to delete them. If an attacker can write HTML with data attributes, they could create an element that silently deletes a cookie when clicked and trick a user to delete this cookie.\n\n### Details\n\n`tarteaucitron.cookie.purge()` is called on any element with the `purgeBtn` class. It does not check if the element is a legitimate tarteaucitron button or if the cookie corresponds to a service handled by tarteaucitron.\n\n### PoC\n\n```html\n\u003ca class=\"purgeBtn\" data-cookie=\"foo\"\u003eClick me!\u003c/a\u003e\n```\n\nIf someone has a cookie with this name and clicks on the link, the cookie is silently deleted.\n\n### Impact\n\nThe impact is limited because this only works on cookies without HttpOnly=true and the attacker has to know the name of the cookie.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-10T16:05:00Z",
+    "Severity": "MODERATE",
+    "Summary": "tarteaucitron: data-cookie attribute can be used to delete arbitrary cookies",
+    "UpdatedAt": "2026-07-10T16:05:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.33.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.33.0"
+    }
+  ]
+}
