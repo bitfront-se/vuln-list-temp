@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-09T20:56:01Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.activemq:apache-activemq"
+  },
+  "Advisory": {
+    "DatabaseId": 359912,
+    "Id": "GSA_kwCzR0hTQS1oZzZjLThtdnItanFjOc4ABX3o",
+    "GhsaId": "GHSA-hg6c-8mvr-jqc9",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42588"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/ns0zktfo16s9ql2mmtqtlb6p6xcs45xm"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/31/18"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hg6c-8mvr-jqc9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hg6c-8mvr-jqc9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-42588"
+      }
+    ],
+    "Description": "Improper Input Validation, Improper Control of Generation of Code ('Code Injection') vulnerability in Apache ActiveMQ Broker, Apache ActiveMQ All, Apache ActiveMQ.\n\nApache ActiveMQ Classic exposes the Jolokia JMX-HTTP bridge at /api/jolokia/ on the web console. The default Jolokia access policy permits exec operations on all ActiveMQ MBeans (org.apache.activemq:*), including\nBrokerService.addNetworkConnector(String).\n\nAn authenticated attacker can invoke these operations with a crafted discovery URI that triggers the VM transport's brokerConfig parameter using the \"masterslave:// \" URL which can allow loading a Spring XML application context using ResourceXmlApplicationContext.\n\nBecause Spring's ResourceXmlApplicationContext instantiates all singleton beans before the BrokerService validates the configuration, arbitrary code execution occurs on the broker's JVM through bean factory methods such as Runtime.exec().\nThis issue affects Apache ActiveMQ Broker: before 5.19.7, from 6.0.0 before 6.2.6; Apache ActiveMQ All: before 5.19.7, from 6.0.0 before 6.2.6; Apache ActiveMQ: before 5.19.7, from 6.0.0 before 6.2.6.\n\nUsers are recommended to upgrade to version 5.19.7 or 6.2.6, which fixes the issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:14Z",
+    "Severity": "HIGH",
+    "Summary": "Apache ActiveMQ Broker, Apache ActiveMQ All, Apache ActiveMQ have a Code Injection issue",
+    "UpdatedAt": "2026-07-09T20:56:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.2.6"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c 6.2.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.19.7"
+      },
+      "VulnerableVersionRange": "\u003c 5.19.7"
+    }
+  ]
+}

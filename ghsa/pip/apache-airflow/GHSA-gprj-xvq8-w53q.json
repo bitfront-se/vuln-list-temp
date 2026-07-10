@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-09T20:50:31Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 359874,
+    "Id": "GSA_kwCzR0hTQS1ncHJqLXh2cTgtdzUzcc4ABX3C",
+    "GhsaId": "GHSA-gprj-xvq8-w53q",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40963"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/65342"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/s907bhsksc37m59f0loqjcp1ryobrr60"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/31/3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gprj-xvq8-w53q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gprj-xvq8-w53q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-40963"
+      }
+    ],
+    "Description": "The structure_data endpoint in the Airflow UI returned external dependency graph nodes for linked Dags without checking whether the caller had read permission on those linked Dags. An authenticated UI/API user authorized for one Dag could enumerate linked Dag IDs and dependency metadata for other Dags they were not authorized to read. Affects deployments that rely on per-Dag read scoping to keep Dag dependency topology private across teams. Users are advised to upgrade to `apache-airflow` 3.2.2 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:13Z",
+    "Severity": "LOW",
+    "Summary": "Apache Airflow has an Improper Authorization issue",
+    "UpdatedAt": "2026-07-09T20:50:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.2.2"
+    }
+  ]
+}

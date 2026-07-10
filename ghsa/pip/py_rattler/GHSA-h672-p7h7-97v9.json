@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-09T23:20:13Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "py_rattler"
+  },
+  "Advisory": {
+    "DatabaseId": 370479,
+    "Id": "GSA_kwCzR0hTQS1oNjcyLXA3aDctOTd2Oc4ABacv",
+    "GhsaId": "GHSA-h672-p7h7-97v9",
+    "References": [
+      {
+        "Url": "https://github.com/conda/rattler/security/advisories/GHSA-h672-p7h7-97v9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h672-p7h7-97v9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h672-p7h7-97v9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53956"
+      }
+    ],
+    "Description": "`rattler_cache` and `py-rattler` were vulnerable to package-cache path traversal when handling package metadata from conda channels.\n\nDuring cache materialization, the `ratter_cache` code used the package record `build` string as part of a cache key that was joined into a filesystem path. A malicious or untrusted channel could publish repodata with path separators or traversal components in that field, causing package contents to be written outside the configured package cache directory.\n\nThe issue requires use of a malicious or otherwise untrusted conda channel. Curated channels that validate package metadata are not expected to allow malformed build strings of this form.\n\nUsers should upgrade to a patched version and avoid untrusted conda channels.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-09T23:20:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Rattler vulnerable to package cache path traversal via conda package build string",
+    "UpdatedAt": "2026-07-09T23:20:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.24.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.2"
+    }
+  ]
+}

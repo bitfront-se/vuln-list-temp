@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-09T20:59:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.solr:solr-core"
+  },
+  "Advisory": {
+    "DatabaseId": 359875,
+    "Id": "GSA_kwCzR0hTQS1xaHI3LWg2NTUtcHc2cs4ABX3D",
+    "GhsaId": "GHSA-qhr7-h655-pw6r",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44825"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/5xg6xr99glocp3zsg9ht2zlbwlrst7ch"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/29/6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qhr7-h655-pw6r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qhr7-h655-pw6r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44825"
+      }
+    ],
+    "Description": "Hardcoded credentials in the Basic Authentication setup tool (bin/solr auth enable) in Apache Solr versions 9.4.0 through 9.10.1 and 10.0.0 allows a remote attacker to gain full administrative access to the cluster via publicly known default credentials installed silently alongside the user-specified account. \n\nAs an immediate workaround without upgrading, delete the template users (superadmin, admin, search, index) from security.json or change their passwords.\nThe future, not yet released, versions 9.11.0 and 10.1.0 will not be vulnerable, and it will be enough to upgrade to solve the issue.\n\nNot affected:\n  *  Clusters where bin/solr auth enable was not used to bootstrap BasicAuth\n  *  Clusters where template users have been assigned strong passwords after bootstrap",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:14Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Solr has hardcoded credentials in the Basic Authentication setup tool",
+    "UpdatedAt": "2026-07-09T20:59:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "= 10.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 9.4.0, \u003c= 9.10.1"
+    }
+  ]
+}

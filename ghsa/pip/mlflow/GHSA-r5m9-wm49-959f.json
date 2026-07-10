@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-09T20:52:00Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mlflow"
+  },
+  "Advisory": {
+    "DatabaseId": 360230,
+    "Id": "GSA_kwCzR0hTQS1yNW05LXdtNDktOTU5Zs4ABX8m",
+    "GhsaId": "GHSA-r5m9-wm49-959f",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3198"
+      },
+      {
+        "Url": "https://huntr.com/bounties/e57db731-97d3-40c3-a429-831ee959807f"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/commit/6989066af33fdcb03588fd71a1a67f8fc5ef12c9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r5m9-wm49-959f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r5m9-wm49-959f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-3198"
+      }
+    ],
+    "Description": "MLflow 3.9.0 with basic-auth (`--app-name basic-auth`) fails to enforce authorization checks for multiple Gateway API 'list' endpoints. Specifically, the `BEFORE_REQUEST_HANDLERS` dictionary in `mlflow/server/auth/__init__.py` does not include entries for `ListGatewaySecretInfos`, `ListGatewayEndpoints`, and `ListGatewayModelDefinitions`. This allows any authenticated user, regardless of their assigned permissions, to enumerate all gateway secrets, endpoints, and model definitions. This vulnerability exposes sensitive information, such as API keys, endpoint configurations, and proprietary model definitions, to unauthorized users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-02T06:30:26Z",
+    "Severity": "MODERATE",
+    "Summary": "MLflow: Any authenticated user can enumerate all gateway secrets, endpoints, and model definitions",
+    "UpdatedAt": "2026-07-09T20:52:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.0rc0"
+      },
+      "VulnerableVersionRange": "\u003c 3.11.0rc0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-09T21:08:01Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.sshd:sshd-git"
+  },
+  "Advisory": {
+    "DatabaseId": 359907,
+    "Id": "GSA_kwCzR0hTQS1tdzRtLXFocGctajgybc4ABX3j",
+    "GhsaId": "GHSA-mw4m-qhpg-j82m",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48827"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/910kq9ghm6js0k1yhhbrdm9sf5tqq9c9"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/30/1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mw4m-qhpg-j82m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mw4m-qhpg-j82m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48827"
+      }
+    ],
+    "Description": "There is a path traversal vulnerability in Apache MINA SSHD bundle sshd-git. Lack of path validation in git-upload-pack, git-receive-pack, and other git operations allows users authenticated over SSH access to git repositories outside the configured git server root directory.\n\nApplications are affected if they use org.apache.sshd:sshd-git. Applications not using sshd-git are not affected.\n\nUsers are advised to upgrade affected applications to Apche MINA SSHD 2.18.0, which fixes the issue.\n\nThe issue also is present in the pre-release milestones 3.0.0-M1 to 3.0.0-M3 for a new upcoming new major version 3.0.0. Again, applications are affected only if they use sshd-git. Upgrade affected applications to 3.0.0-M4.\n\nApache MINA SSHD bundle sshd-git would like to point out that a professional git server should not rely solely on file system layout and permissions, but should implement additional security controls to govern access to git repositories and operations allowed on particular git repositories.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:15Z",
+    "Severity": "HIGH",
+    "Summary": "Apache MINA SSHD bundle sshd-git has a path traversal vulnerability",
+    "UpdatedAt": "2026-07-09T21:08:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.0-M4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0-M1, \u003c 3.0.0-M4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.18.0"
+    }
+  ]
+}

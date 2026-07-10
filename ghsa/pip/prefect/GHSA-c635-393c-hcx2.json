@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-09T20:53:14Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "prefect"
+  },
+  "Advisory": {
+    "DatabaseId": 360235,
+    "Id": "GSA_kwCzR0hTQS1jNjM1LTM5M2MtaGN4Ms4ABX8r",
+    "GhsaId": "GHSA-c635-393c-hcx2",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-3514"
+      },
+      {
+        "Url": "https://github.com/prefecthq/prefect/commit/e21617125335025b4b27e7d6f0ca028e8e8f3b79"
+      },
+      {
+        "Url": "https://huntr.com/bounties/c540e5e1-f74f-44f4-bfa0-9764ff6daa75"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c635-393c-hcx2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c635-393c-hcx2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-3514"
+      }
+    ],
+    "Description": "In version 3.6.19 of prefecthq/prefect, an authentication bypass vulnerability exists due to the improper handling of URL path exemptions for health check probes. Specifically, the authentication middleware exempts any URL path ending with 'health' or 'ready' from authentication checks. This allows an attacker to create resources with names ending in 'health' or 'ready' and access them without authentication. Affected endpoints include those for variables, flows, work pools, work queues, and deployments. This vulnerability can lead to unauthorized access to sensitive information, such as API keys and database credentials, stored in Prefect Variables.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-02T09:36:15Z",
+    "Severity": "HIGH",
+    "Summary": "Prefect has an Authentication Middleware Bypass when URL paths are appended with 'health' or 'ready'",
+    "UpdatedAt": "2026-07-09T20:53:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.22.dev7"
+      },
+      "VulnerableVersionRange": "\u003c 3.6.22.dev7"
+    }
+  ]
+}

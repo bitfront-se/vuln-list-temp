@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-09T20:53:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 359920,
+    "Id": "GSA_kwCzR0hTQS14Mng3LXAzN2MtNDNjcs4ABX3w",
+    "GhsaId": "GHSA-x2x7-p37c-43cr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-41014"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/65344"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/12nbzwwby7g883w2j13gn7ny1545xob9"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/05/31/4"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-182.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x2x7-p37c-43cr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x2x7-p37c-43cr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-41014"
+      }
+    ],
+    "Description": "The partitioned_dag_runs endpoints in the Airflow UI enforced only asset-level access control, not per-Dag authorization. An authenticated UI/API user with global Asset:read permission could enumerate partition run state, schedule configuration, and asset wiring for Dags they were not authorized to read. Affects deployments that rely on per-Dag read scoping while granting users broader Asset access. Users are advised to upgrade to `apache-airflow` 3.2.2 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-01T09:31:13Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow has a Missing Authorization issue",
+    "UpdatedAt": "2026-07-09T20:53:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.2.0, \u003c 3.2.2"
+    }
+  ]
+}
