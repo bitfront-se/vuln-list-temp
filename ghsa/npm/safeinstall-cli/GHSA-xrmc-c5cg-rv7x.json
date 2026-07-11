@@ -1,0 +1,46 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-10T19:34:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "safeinstall-cli"
+  },
+  "Advisory": {
+    "DatabaseId": 370792,
+    "Id": "GSA_kwCzR0hTQS14cm1jLWM1Y2ctcnY3eM4ABaho",
+    "GhsaId": "GHSA-xrmc-c5cg-rv7x",
+    "References": [
+      {
+        "Url": "https://github.com/Mickdownunder/SafeInstall/security/advisories/GHSA-xrmc-c5cg-rv7x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xrmc-c5cg-rv7x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xrmc-c5cg-rv7x"
+      }
+    ],
+    "Description": "## Summary\n\nSafeInstall CLI through 0.10.1 can fail to recognize some package-manager and registry-runner commands in its agent guard. Case-variant launcher names, leading file-descriptor redirections, and supported shell wrappers with options can cause a raw install command to receive no guard decision. Remote project scaffolding through package-manager create/init commands can also avoid the approval decision used for other registry runners.\n\n## Impact\n\nWhen the SafeInstall guard is installed for a coding agent, a crafted shell command can bypass the intended deny or ask response. The coding agent may then run a package installation or registry-provided scaffolding command without SafeInstall policy evaluation and without SafeInstall enforcing disabled lifecycle scripts.\n\nExploitation requires a coding agent to act on attacker-influenced instructions and issue the crafted shell command. A successful malicious package or runner can execute with the permissions of the developer account, affecting the confidentiality, integrity, and availability of local source code, credentials, and development resources.\n\nThe vulnerability is limited to guard interception. Commands already routed through the SafeInstall CLI continue to receive normal policy evaluation.\n\n## Affected versions\n\n- safeinstall-cli \u003c= 0.10.1\n\n## Patched version\n\n- safeinstall-cli 0.10.2\n\n## Fix\n\nVersion 0.10.2:\n\n- normalizes package-manager and wrapper launcher names for detection and rewriting;\n- parses leading redirections before classifying the command;\n- handles supported wrapper option arity conservatively and fails closed on ambiguous embedded command syntax;\n- routes remote create/init scaffolding through the registry-runner approval path;\n- preserves SafeInstall routing for path-qualified package-manager invocations.\n\nThe patch includes a permanent regression corpus, table-driven parser characterization, an independent reference detector, and deterministic fuzz invariants. The integrated release candidate passed 626 tests, package smoke validation, and a one-million-command fuzz campaign with zero invariant violations.\n\n## Mitigation\n\nUpgrade to safeinstall-cli 0.10.2 or later.\n\nUntil an upgrade is possible, manually review every coding-agent shell command and prevent the agent from invoking package managers or registry runners directly. Running an affected guard does not make raw package-manager execution safe.\n\n## Credits\n\nDiscovered, reproduced, and remediated by the SafeInstall maintainer during adversarial parser testing.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-10T19:34:14Z",
+    "Severity": "HIGH",
+    "Summary": "SafeInstall agent guard shell parsing can miss raw package execution",
+    "UpdatedAt": "2026-07-10T19:34:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.10.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.10.2"
+    }
+  ]
+}
