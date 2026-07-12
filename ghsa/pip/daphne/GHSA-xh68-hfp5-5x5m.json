@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-11T22:53:36Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "daphne"
+  },
+  "Advisory": {
+    "DatabaseId": 360423,
+    "Id": "GSA_kwCzR0hTQS14aDY4LWhmcDUtNXg1bc4ABX_n",
+    "GhsaId": "GHSA-xh68-hfp5-5x5m",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44546"
+      },
+      {
+        "Url": "https://github.com/django/daphne/blob/main/CHANGELOG.txt"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/daphne/PYSEC-2026-214.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xh68-hfp5-5x5m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xh68-hfp5-5x5m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44546"
+      }
+    ],
+    "Description": "daphne before 4.2.2 reconstructs a raw HTTP request from Twisted's parsed headers and feeds it to autobahn for WebSocket handshake processing. Twisted does not treat \\x0b, \\x0c, \\x1c, \\x1d, \\x1e, or \\x85 as header line separators, but autobahn decodes header values to str and calls splitlines(). An attacker can exploit this parser differential to inject additional headers into the ASGI scope passed to the application. daphne now rejects requests with these bytes in any header value with a 400 response.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T15:30:43Z",
+    "Severity": "LOW",
+    "Summary": "daphne: WebSocket handshake header smuggling through autobahn splitlines() mishandling of non-standard line separators",
+    "UpdatedAt": "2026-07-11T22:53:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.2.2"
+    }
+  ]
+}
