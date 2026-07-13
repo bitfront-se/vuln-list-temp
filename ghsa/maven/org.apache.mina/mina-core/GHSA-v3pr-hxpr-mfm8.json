@@ -1,0 +1,65 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-13T17:24:48Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.mina:mina-core"
+  },
+  "Advisory": {
+    "DatabaseId": 360391,
+    "Id": "GSA_kwCzR0hTQS12M3ByLWh4cHItbWZtOM4ABX_H",
+    "GhsaId": "GHSA-v3pr-hxpr-mfm8",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-47065"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/y7xj1bl8qo47p9bktb11hg5v6k1d4dyj"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v3pr-hxpr-mfm8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v3pr-hxpr-mfm8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47065"
+      }
+    ],
+    "Description": "ZDRES-232: resolveProxyClass Not Overridden - acceptMatchers Filter Bypass via java.lang.reflect.Proxy\n\n\nAssessment: Fully addressed.\n\n\nWhen the serialised stream contains a TC_PROXYCLASSDESC (the marker for a java.lang.reflect.Proxy ), JDK’s ObjectInputStream.readProxyDesc() is dispatched. JDK then calls the default  ObjectInputStream.resolveProxyClass(interfaces) implementation, which performs Class.forName(intf, false, latestUserDefinedLoader()) for EACH interface name and constructs the proxy class â€” bypassing the accepted classes list .\n\n\nZDRES-233: Class.forName(name, initialize=true, classLoader) in readClassDescriptor Triggers Static Initialiser of Allow-Listed Classes\n\n\nAssessment: Fully addressed.\n\n\nFor ANY class on the allow-list, deserialising a stream that names it triggers the class’s (static initialiser) BEFORE any instance is constructed. This means an attacker who supplies a class name on the allow-list (e.g., the developer wrote accept(“com.myapp.*\") , attacker supplies com.myapp.SomeClass ) causes \u003cclinit\u003e of SomeClass â€” and many real-world classes have side-effecting static initialisers\n\n\nBoth issues have been fixed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T12:30:26Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache MINA: Critical Deserialization Allow-list Bypass via resolveProxyClass",
+    "UpdatedAt": "2026-07-13T17:24:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.29"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.29"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.13"
+      },
+      "VulnerableVersionRange": "\u003e= 2.1.0, \u003c 2.1.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.2.0, \u003c 2.2.8"
+    }
+  ]
+}

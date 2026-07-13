@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-13T17:26:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "django"
+  },
+  "Advisory": {
+    "DatabaseId": 360427,
+    "Id": "GSA_kwCzR0hTQS1tbTZ2LXE4cTktcGdjZs4ABX_r",
+    "GhsaId": "GHSA-mm6v-q8q9-pgcf",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-7666"
+      },
+      {
+        "Url": "https://docs.djangoproject.com/en/dev/releases/security"
+      },
+      {
+        "Url": "https://groups.google.com/g/django-announce"
+      },
+      {
+        "Url": "https://www.djangoproject.com/weblog/2026/jun/03/security-releases"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/django/PYSEC-2026-200.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mm6v-q8q9-pgcf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mm6v-q8q9-pgcf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-7666"
+      }
+    ],
+    "Description": "An issue was discovered in Django 6.0 before 6.0.6 and 5.2 before 5.2.15.\n\n`django.core.mail.backends.smtp.EmailBackend` in Django fails to prevent reuse of a partially-initialized connection after a failed `STARTTLS` handshake when `fail_silently=True`, which allows on-path network attackers to read email content via cleartext interception.\n\nEarlier, unsupported Django series (such as 5.0.x, 4.1.x, and 3.2.x) were not evaluated and may also be affected.\nDjango would like to thank Kasper Dupont for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T15:30:43Z",
+    "Severity": "LOW",
+    "Summary": "Django fails to prevent reuse of a partially-initialized connection after a failed `STARTTLS` handshake",
+    "UpdatedAt": "2026-07-13T17:26:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0, \u003c 6.0.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.15"
+      },
+      "VulnerableVersionRange": "\u003e= 5.2, \u003c 5.2.15"
+    }
+  ]
+}
