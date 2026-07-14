@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-14T17:54:15Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/k3s-io/k3s"
+  },
+  "Advisory": {
+    "DatabaseId": 371775,
+    "Id": "GSA_kwCzR0hTQS1qeHI3LW1xaHctOXA5OM4ABaw_",
+    "GhsaId": "GHSA-jxr7-mqhw-9p98",
+    "References": [
+      {
+        "Url": "https://github.com/k3s-io/k3s/security/advisories/GHSA-jxr7-mqhw-9p98"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-54250"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jxr7-mqhw-9p98"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jxr7-mqhw-9p98"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54250"
+      }
+    ],
+    "Description": "#### Summary\n\nA path traversal vulnerability exists in K3s's etcd snapshot decompression functionality. Zip files containing archive members with maliciously crafted names (e.g., `../../../../etc/password`) can be written to arbitrary locations on the filesystem when an administrator restores the archive as a compressed etcd snapshot.\n\n#### Mitigations\n\n* Enable golang's built-in [insecure path protections](https://pkg.go.dev/archive/zip#NewReader) when restoring snapshots by setting the`GODEBUG` environment variable:\n    ```bash\n    GODEBUG=zipinsecurepath=0 k3s server --cluster-reset --cluster-reset-restore-path=/path/to/snapshot.zip\n    ```\n* Manually extract the snapshot from the zip archive before restoring it. If the snapshot to be restored does not end with `.zip`, the vulnerable extraction code will not be executed.\n\n#### Additional Notes\n\nAdministrators should be aware of the cautions noted in the \"Security\" section of the documentation on [Restoring Snapshots](https://docs.k3s.io/cli/etcd-snapshot#security).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-14T17:54:14Z",
+    "Severity": "MODERATE",
+    "Summary": "K3s: ZIP Archive Path Traversal Vulnerability in etcd Snapshot Decompression",
+    "UpdatedAt": "2026-07-14T17:54:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.33.10"
+      },
+      "VulnerableVersionRange": "\u003c 1.33.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.34.6"
+      },
+      "VulnerableVersionRange": "\u003e= 1.34.0-rc1, \u003c 1.34.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.35.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.35.0-rc1, \u003c 1.35.3"
+    }
+  ]
+}

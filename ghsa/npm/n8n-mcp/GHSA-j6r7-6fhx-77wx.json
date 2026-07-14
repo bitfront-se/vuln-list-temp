@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-14T19:07:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 372392,
+    "Id": "GSA_kwCzR0hTQS1qNnI3LTZmaHgtNzd3eM4ABa6o",
+    "GhsaId": "GHSA-j6r7-6fhx-77wx",
+    "References": [
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/security/advisories/GHSA-j6r7-6fhx-77wx"
+      },
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/releases/tag/v2.56.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j6r7-6fhx-77wx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j6r7-6fhx-77wx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54052"
+      }
+    ],
+    "Description": "## Impact\n\nIn multi-tenant HTTP deployments — where a single n8n-mcp server serves several tenants — the locally stored workflow version history (the automatic backups taken before workflow updates) was not isolated per tenant. An authenticated tenant could read workflow version snapshots belonging to other tenants, and could delete or destroy other tenants' stored backups.\n\nA stored snapshot includes full node definitions, so the exposed data can contain credential references and authorization headers configured on nodes. This is therefore a confidentiality issue in addition to an integrity/availability one.\n\n## Affected configurations\n\n- HTTP mode with multi-tenancy enabled (`ENABLE_MULTI_TENANT=true`), where multiple tenants are served by a single shared instance and database.\n\nNot affected:\n\n- stdio / single-user deployments (e.g. Claude Desktop).\n- Single-tenant HTTP deployments (one tenant per instance and database).\n\n## Affected versions\n\n`\u003c= 2.56.0`\n\n## Patched version\n\n`2.56.1`. The stored version history is now isolated per instance, so a tenant can only access its own backups. Upgrading runs a one-time migration that isolates existing history and clears previously stored, un-scoped backups (these are auto-created, short-retention backups).\n\n## Workarounds\n\nIf users cannot upgrade immediately:\n\n- Disable the workflow version tool by setting `DISABLED_TOOLS=n8n_workflow_versions` in the server environment (for example, in your Docker `.env`). This removes the affected tool from the deployment for all tenants; automatic backups are unaffected, but the cross-tenant access path is closed.\n- Alternatively, do not run in multi-tenant mode — serve each tenant from a separate instance with its own database, so no local store is shared between tenants.\n- Restrict network access to the HTTP endpoint to trusted operators.\n\nstdio and single-tenant HTTP deployments are not affected.\n\n## Credit\n\nReported by Francisco Rosales (@0xmagic0) and coordinated by Ax Sharma (@axsharma) of Manifold Security.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-14T19:07:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "n8n-MCP: Cross-tenant access to workflow version backups in multi-tenant HTTP deployments",
+    "UpdatedAt": "2026-07-14T19:07:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.56.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2.56.0"
+    }
+  ]
+}
