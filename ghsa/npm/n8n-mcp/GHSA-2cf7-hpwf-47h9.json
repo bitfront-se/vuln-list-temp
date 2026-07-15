@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-14T20:26:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 372409,
+    "Id": "GSA_kwCzR0hTQS0yY2Y3LWhwd2YtNDdoOc4ABa65",
+    "GhsaId": "GHSA-2cf7-hpwf-47h9",
+    "References": [
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/security/advisories/GHSA-2cf7-hpwf-47h9"
+      },
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/commit/c1ca1e73697feaec5ec2a5fb7e6992a2892b62c9"
+      },
+      {
+        "Url": "https://github.com/czlonkowski/n8n-mcp/releases/tag/v2.57.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2cf7-hpwf-47h9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2cf7-hpwf-47h9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55608"
+      }
+    ],
+    "Description": "## Summary\n\nIn multi-tenant HTTP mode (`ENABLE_MULTI_TENANT=true`), an authenticated tenant could, under certain conditions, reach n8n-mcp's local default-scope `workflow_versions` backups instead of being confined to its own tenant scope. This affects n8n-mcp's own local workflow-version storage, not a normal n8n API capability.\n\n## Impact\n\nAn authenticated MCP HTTP tenant could read or delete workflow-version backups stored in the default (single-tenant) scope — for example backups left from a prior single-tenant deployment or a migration period. Workflow snapshots may contain sensitive workflow configuration depending on their contents. Single-tenant and stdio deployments are not affected.\n\n## Affected versions\n\n`\u003c= 2.57.3`\n\n## Patched version\n\n`2.57.4`\n\n## Remediation\n\nUpgrade to n8n-mcp `2.57.4` or later. The fix requires a complete tenant context in multi-tenant mode and fails closed for workflow-version access that cannot be attributed to a specific tenant.\n\n## Workarounds\n\n- Restrict network access to the HTTP endpoint (firewall / reverse proxy / VPN) so only trusted callers can reach it.\n- Run in stdio mode, which has no multi-tenant HTTP surface.\n- If default-scope backups from a prior single-tenant deployment are not needed, removing them eliminates the exposure.\n\n## Credit\n\nReported by @DavidCarliez.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-14T20:26:39Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n-MCP: Incorrect authorization can expose default-scope workflow version backups in multi-tenant HTTP mode",
+    "UpdatedAt": "2026-07-14T20:26:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.57.4"
+      },
+      "VulnerableVersionRange": "\u003c= 2.57.3"
+    }
+  ]
+}

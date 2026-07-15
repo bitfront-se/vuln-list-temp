@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-14T19:40:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@feathersjs/commons"
+  },
+  "Advisory": {
+    "DatabaseId": 372395,
+    "Id": "GSA_kwCzR0hTQS0yOHh2LXBoNzUtNzd3aM4ABa6r",
+    "GhsaId": "GHSA-28xv-ph75-77wh",
+    "References": [
+      {
+        "Url": "https://github.com/feathersjs/feathers/security/advisories/GHSA-28xv-ph75-77wh"
+      },
+      {
+        "Url": "https://github.com/feathersjs/feathers/pull/3690"
+      },
+      {
+        "Url": "https://github.com/feathersjs/feathers/commit/28b3c03c63bdbff53115fdaa46c56980e7942acc"
+      },
+      {
+        "Url": "https://github.com/feathersjs/feathers/releases/tag/v5.0.45"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-28xv-ph75-77wh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-28xv-ph75-77wh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54335"
+      }
+    ],
+    "Description": "### Impact\n\nThe `_.merge(target, source)` utility exported by `@feathersjs/commons` recursively merges `source` into `target` by iterating `Object.keys(source)`. When `source` was produced by `JSON.parse` and contains a `__proto__` (or `constructor` / `prototype`) key, that key is returned as an own-enumerable property. The recursive merge then resolves `target['__proto__']` to `Object.prototype` and writes the attacker-supplied properties onto it, polluting the prototype for all plain objects in the process for the lifetime of the Node process.\n\n**Scope of real-world risk is limited.** No first-party Feathers package routes input — trusted or untrusted — through `commons._.merge`. The `@feathersjs/authentication` package, which does merge request-influenced data, uses `lodash/merge` (prototype-pollution-safe since 4.17.12), not this utility. Exploitation therefore requires a downstream plugin or application to pass JSON-parsed, attacker-controlled input directly through the exported `_.merge`.\n\n### Patches\n\nFixed in `@feathersjs/commons@5.0.45`. The fix skips `__proto__`, `constructor`, and `prototype` keys during iteration — the standard remediation used by lodash and others.\n\n### Workarounds\n\nAvoid passing JSON-parsed untrusted input through `commons._.merge`. Freezing `Object.prototype` or validating/sanitizing keys upstream also mitigates.\n\n### Credit\n\nReported responsibly by Andrew Ridings (@ridingsa).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-14T19:40:05Z",
+    "Severity": "LOW",
+    "Summary": "Prototype pollution in @feathersjs/commons _.merge via JSON-parsed __proto__",
+    "UpdatedAt": "2026-07-14T19:40:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.45"
+      },
+      "VulnerableVersionRange": "\u003c= 5.0.44"
+    }
+  ]
+}

