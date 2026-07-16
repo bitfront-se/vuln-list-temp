@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-15T22:53:17Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.datadoghq:dd-java-agent"
+  },
+  "Advisory": {
+    "DatabaseId": 372824,
+    "Id": "GSA_kwCzR0hTQS03NHhqLXdoNHctdnF4Y84ABbBY",
+    "GhsaId": "GHSA-74xj-wh4w-vqxc",
+    "References": [
+      {
+        "Url": "https://github.com/DataDog/dd-trace-java/security/advisories/GHSA-74xj-wh4w-vqxc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-74xj-wh4w-vqxc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-74xj-wh4w-vqxc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50270"
+      }
+    ],
+    "Description": "### Impact\nDatadog tracing libraries that implement W3C baggage propagation parse incoming baggage HTTP headers without enforcing item-count or byte-size limits on the extract path. The DD_TRACE_BAGGAGE_MAX_ITEMS (default 64) and DD_TRACE_BAGGAGE_MAX_BYTES (default 8192) limits were applied only to baggage injection, not extraction. A remote, unauthenticated attacker can send a request whose baggage header contains an arbitrarily large number of comma-separated key-value pairs (or a single very large value). The tracer allocates a hash-map entry for each pair on every request, causing unbounded CPU and memory consumption and enabling a remote Denial of Service against any HTTP service that has the baggage propagation style enabled. The baggage propagation style is enabled by default in most affected tracers, so any internet-facing service that has been instrumented with an affected tracer version is exposed unless the propagation style has been explicitly narrowed.\n\n\n### Patches\nThis is resolved in version 1.62.0 and later of the `dd-trace-java` library.\n\n### Workarounds\nIf users cannot upgrade immediately:\n1. Disable `baggage` extraction by removing `baggage` from `DD_TRACE_PROPAGATION_STYLE` (or `DD_TRACE_PROPAGATION_STYLE_EXTRACT` if set independently).\n2. Cap the maximum HTTP request header size at an upstream proxy or web server (for example, Apache `LimitRequestFieldSize`, Nginx `large_client_header_buffers`, Envoy `max_request_headers_kb`).\n\n\n### Resources\nRelated upstream advisories:\n[opentelemetry-go GHSA-mh2q-q3fh-2475](https://github.com/open-telemetry/opentelemetry-go/security/advisories/GHSA-mh2q-q3fh-2475)\n[opentelemetry-dotnet GHSA-g94r-2vxg-569j](https://github.com/open-telemetry/opentelemetry-dotnet/security/advisories/GHSA-g94r-2vxg-569j)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-15T22:53:16Z",
+    "Severity": "HIGH",
+    "Summary": "dd-trace-java: Improper parsing of W3C baggage headers may lead to DoS",
+    "UpdatedAt": "2026-07-15T22:53:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.62.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.62.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-15T22:07:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "websocket-driver"
+  },
+  "Advisory": {
+    "DatabaseId": 372817,
+    "Id": "GSA_kwCzR0hTQS14djI2LTZ3NTItY3BoNs4ABbBR",
+    "GhsaId": "GHSA-xv26-6w52-cph6",
+    "References": [
+      {
+        "Url": "https://github.com/faye/websocket-driver-node/security/advisories/GHSA-xv26-6w52-cph6"
+      },
+      {
+        "Url": "https://github.com/faye/websocket-driver-node/releases/tag/0.7.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xv26-6w52-cph6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xv26-6w52-cph6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54466"
+      }
+    ],
+    "Description": "### Impact\n\nThe frame format in draft versions of the WebSocket protocol includes a length header that allows an arbitrarily large integer to be encoded as a sequence of bytes with the high bit set. By sending an indefinite sequence of bytes with values `0x80` or above, a client can make the server parse these bytes into an ever-growing integer. Since JavaScript numbers are 64-bit floating point values, this number will eventually lose precision and lead to the subsequent payload being parsed incorrectly.\n\n### Patches\n\nThe issue has been patched in version 0.7.5 by rejecting the message if the length header exceeds the configured maximum message length. All users should upgrade to this version.\n\n### Workarounds\n\nNo known workarounds exist.\n\n### Acknowledgements\n\nThis issue was discovered and reported by Pranjali Thakur, DepthFirst Security Research Team.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-15T22:07:24Z",
+    "Severity": "CRITICAL",
+    "Summary": "websocket-driver: Message corruption via abuse of protocol length headers",
+    "UpdatedAt": "2026-07-15T22:07:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.5"
+      },
+      "VulnerableVersionRange": "\u003c 0.7.5"
+    }
+  ]
+}

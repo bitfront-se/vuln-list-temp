@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-15T22:30:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "oslo.messaging"
+  },
+  "Advisory": {
+    "DatabaseId": 360689,
+    "Id": "GSA_kwCzR0hTQS03NnFoLXhyN3EtaDM5bc4ABYDx",
+    "GhsaId": "GHSA-76qh-xr7q-h39m",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44393"
+      },
+      {
+        "Url": "https://bugs.launchpad.net/oslo.messaging/+bug/2150316"
+      },
+      {
+        "Url": "https://wiki.openstack.org/wiki/OSSN/OSSN-0096"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-44393"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2484835"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-44393.json"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-76qh-xr7q-h39m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-76qh-xr7q-h39m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44393"
+      }
+    ],
+    "Description": "An issue was discovered in OpenStack oslo.messaging 1.0.0 through 17.3.0. The oslo.messaging RabbitMQ driver does not perform TLS hostname verification when connecting to the message broker. When ssl_ca_file is configured, the driver enables certificate chain validation but does not pass the expected broker hostname into the underlying TLS stack. Any certificate signed by the deployment CA is accepted regardless of hostname, allowing an attacker who can intercept control-plane traffic to impersonate the RabbitMQ broker and perform a man-in-the-middle attack on RPC and notification traffic. All OpenStack services using oslo.messaging with RabbitMQ over TLS are affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-04T18:30:31Z",
+    "Severity": "HIGH",
+    "Summary": "OpenStack oslo.messaging does not verify RabbitMQ broker hostname during TLS handshake",
+    "UpdatedAt": "2026-07-15T22:30:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c= 17.3.0"
+    }
+  ]
+}

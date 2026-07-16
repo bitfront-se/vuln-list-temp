@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-15T21:59:41Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "tensorzero"
+  },
+  "Advisory": {
+    "DatabaseId": 372812,
+    "Id": "GSA_kwCzR0hTQS04MjR3LXg5MzktNmNtY84ABbBM",
+    "GhsaId": "GHSA-824w-x939-6cmc",
+    "References": [
+      {
+        "Url": "https://github.com/tensorzero/tensorzero/security/advisories/GHSA-824w-x939-6cmc"
+      },
+      {
+        "Url": "https://github.com/tensorzero/tensorzero/commit/0abbc838bae3394fe7491dad7009670d4e3b6cf8"
+      },
+      {
+        "Url": "https://github.com/tensorzero/tensorzero/releases/tag/2026.6.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-824w-x939-6cmc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-824w-x939-6cmc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54457"
+      }
+    ],
+    "Description": "### Impact\n\nThe `/internal/object_storage` endpoint accepts a caller-supplied JSON `storage_path` parameter that dynamically overrides the TensorZero `[object_storage]` configuration.\n\nBy abusing the `filesystem` storage type, a caller can read arbitrary files from the gateway filesystem, including files that may contain sensitive credentials. Similarly, by abusing the `s3_compatible` storage type, the caller can coerce the gateway into making outbound object storage requests to attacker-chosen internal/cloud-metadata endpoints.\n\nThis vulnerability only applies when the gateway can be accessed by untrusted callers. If a developer's TensorZero deployment has authentication enabled, only authenticated callers can exploit this vulnerability. If a developer's deployment has authentication disabled, any caller can exploit this vulnerability.\n\n### Remediation\n\nThe vulnerability has been patched in version `2026.6.0`. See PR #7527.\n\n### Workarounds\n\nIf developers are unable to upgrade a gateway that is exposed to untrusted callers, please block external access to the `/internal/object_storage` endpoint.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-15T21:59:40Z",
+    "Severity": "HIGH",
+    "Summary": "TensorZero Gateway: Arbitrary file read and SSRF in internal object storage endpoint",
+    "UpdatedAt": "2026-07-15T21:59:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.6.0"
+      },
+      "VulnerableVersionRange": "\u003c 2026.6.0"
+    }
+  ]
+}
