@@ -1,0 +1,80 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-16T19:12:09Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/kumahq/kuma/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 372968,
+    "Id": "GSA_kwCzR0hTQS12OTV4LXhocTUtNDkyOc4ABbDo",
+    "GhsaId": "GHSA-v95x-xhq5-4929",
+    "References": [
+      {
+        "Url": "https://github.com/kumahq/kuma/security/advisories/GHSA-v95x-xhq5-4929"
+      },
+      {
+        "Url": "https://github.com/kumahq/kuma/pull/16777"
+      },
+      {
+        "Url": "https://github.com/kumahq/kuma/commit/2ecadac1aa2fd8cded4c2ab768949f4c2ec83e2a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v95x-xhq5-4929"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v95x-xhq5-4929"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50166"
+      }
+    ],
+    "Description": "When an operator adds an HTTPS control plane profile to `kumactl` without providing a CA certificate, `kumactl` disables TLS verification and sends API tokens over the unverified connection\n\n## Impact\n\nAn attacker on the network path between the operator and the control plane can intercept user or admin API tokens and then act against the control plane as that user\n\n## Affected configurations\n\n- `kumactl` profiles manually added against an HTTPS control plane endpoint without `--ca-cert-file`\n\n## Not affected\n\n- The default local profile, which uses plain HTTP\n\n## Workarounds\n\nWhen adding an HTTPS control plane profile to `kumactl`, always pass `--ca-cert-file` pointing at the control plane's serving CA. Alternatively, terminate the control plane behind a publicly trusted certificate; the patched releases will verify successfully against the operating system trust store with no further configuration\n\n## Resources\n\n- Fix: https://github.com/kumahq/kuma/pull/16777",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-16T19:12:08Z",
+    "Severity": "MODERATE",
+    "Summary": "kumactl connects to control plane without verifying TLS certificate when no CA is configured",
+    "UpdatedAt": "2026-07-16T19:12:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.13.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.13.0, \u003c 2.13.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.11"
+      },
+      "VulnerableVersionRange": "\u003e= 2.12.0, \u003c 2.12.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.14"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.11.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.16"
+      },
+      "VulnerableVersionRange": "\u003e= 2.8.0, \u003c 2.9.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.7.26"
+      },
+      "VulnerableVersionRange": "\u003c 2.7.26"
+    }
+  ]
+}

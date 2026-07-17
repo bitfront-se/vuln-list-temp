@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-16T19:19:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/envoyproxy/gateway"
+  },
+  "Advisory": {
+    "DatabaseId": 372971,
+    "Id": "GSA_kwCzR0hTQS1tMnY2LTJqbWgtNGM2OM4ABbDr",
+    "GhsaId": "GHSA-m2v6-2jmh-4c68",
+    "References": [
+      {
+        "Url": "https://github.com/envoyproxy/gateway/security/advisories/GHSA-m2v6-2jmh-4c68"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m2v6-2jmh-4c68"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m2v6-2jmh-4c68"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53719"
+      }
+    ],
+    "Description": "Vulnerability report without repro case. Repro case may be added later after harness is complete.\n\n**Preconditions (4):**\n- Tenant has SecurityPolicy + TCPRoute RBAC (baseline)\n- Tenant namespace permitted to attach TCPRoute to a Gateway listener\n- spec.authorization omitted (the trigger)\n- No admission webhook blocks the shape\n\n**Description:**\n\nA namespace-scoped tenant can deterministically panic the gatewayapi runner on every reconcile with a single CRD; the recover() in message/watchutil.go:53 keeps the process alive but unwinds the entire handle() callback in runner/runner.go:192, so xDS/Infra IR publishing stalls controller-wide until an admin deletes the object. Data plane keeps serving last-good config.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-16T19:19:17Z",
+    "Severity": "MODERATE",
+    "Summary": "Envoy Gateway: Nil-dereference when SecurityPolicy targets TCPRoute without spec.authorization",
+    "UpdatedAt": "2026-07-16T19:19:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.0-rc.0, \u003c 1.8.1"
+    }
+  ]
+}

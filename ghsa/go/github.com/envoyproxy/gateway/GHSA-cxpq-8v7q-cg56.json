@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-16T19:18:10Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/envoyproxy/gateway"
+  },
+  "Advisory": {
+    "DatabaseId": 372970,
+    "Id": "GSA_kwCzR0hTQS1jeHBxLTh2N3EtY2c1Ns4ABbDq",
+    "GhsaId": "GHSA-cxpq-8v7q-cg56",
+    "References": [
+      {
+        "Url": "https://github.com/envoyproxy/gateway/security/advisories/GHSA-cxpq-8v7q-cg56"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cxpq-8v7q-cg56"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cxpq-8v7q-cg56"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53716"
+      }
+    ],
+    "Description": "Vulnerability report without repro case. Repro case may be added later after harness is complete.\n\n**Preconditions (4):**\n- Tenant can create EnvoyExtensionPolicy (baseline)\n- Attacker hosts a gzip-bomb at a reachable URL\n- sha256 unset (optional field; check is post-decompression anyway)\n- No operator Wasm-URL allowlist (none exists in code)\n\n**Description**\n\ngetFileFromGZ calls io.ReadAll on a raw gzip.Reader (httpfetcher.go:216) with no output bound, while the compressed input is capped at 256 MiB (httpfetcher.go:139). The bytes originate from a tenant-controlled EnvoyExtensionPolicy.spec.wasm[].code.http.url (envoyextensionpolicy.go:1077 → cache.go:248 → httpfetcher.go:147 → :233), so an untrusted tenant can point at a ~10 MiB gzip-of-zeros and force ~10 GiB allocation in the shared controller process. All candidate guards execute either before the body is buffered or after decompression. OOM-kills, restarts, re-reconciles same CR, crash-loops — persistent cross-tenant control-plane outage with PR:L/AC:L and scope change → HIGH despite availability-only.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-16T19:18:08Z",
+    "Severity": "MODERATE",
+    "Summary": "Envoy Gateway: Wasm HTTP fetch decompresses gzip without output-size limit",
+    "UpdatedAt": "2026-07-16T19:18:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.8.0-rc.0, \u003c 1.8.1"
+    }
+  ]
+}

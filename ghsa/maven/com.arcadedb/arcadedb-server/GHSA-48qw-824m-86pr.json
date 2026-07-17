@@ -1,0 +1,49 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-16T20:13:20Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.arcadedb:arcadedb-server"
+  },
+  "Advisory": {
+    "DatabaseId": 372989,
+    "Id": "GSA_kwCzR0hTQS00OHF3LTgyNG0tODZwcs4ABbD9",
+    "GhsaId": "GHSA-48qw-824m-86pr",
+    "References": [
+      {
+        "Url": "https://github.com/ArcadeData/arcadedb/security/advisories/GHSA-48qw-824m-86pr"
+      },
+      {
+        "Url": "https://github.com/ArcadeData/arcadedb/releases/tag/26.7.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-48qw-824m-86pr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-48qw-824m-86pr"
+      }
+    ],
+    "Description": "### Impact\n\nA user holding only `reader` (read-only) privileges on a single database could execute arbitrary JVM code by sending a `\"language\": \"js\"` command to the `POST /api/v1/command/{database}` HTTP endpoint, and use it to read arbitrary files on the host filesystem (e.g. `/etc/passwd`, configuration files), outside the scope of the database itself.\n\nTwo cooperating defects made this possible:\n\n1. **Missing authorization on the scripting path (CWE-863 / CWE-269).** Polyglot script execution (`js` and other GraalVM languages) never went through the database authorization checks applied to SQL/Cypher, so any authenticated principal - regardless of database role - could run scripts.\n2. **Sandbox whitelist bypass.** The GraalVM sandbox restricts direct class lookups to a configured `allowedPackages` list, but a script could reach arbitrary classes by reflecting off the bound `database` object: `database.getClass().getClassLoader().loadClass(\"java.io.File\")`.\n\nProcess creation was already blocked (`allowCreateProcess(false)`), so the confirmed impact is host **file read**, not OS command execution. Confidentiality: High. Integrity/Availability: None.\n\nThis is a distinct entry point and root cause from CVE-2026-44221, CVE-2026-54076 and CVE-2026-54077, and is reproducible on builds that already contain those fixes.\n\n### Patches\n\nThe fix is applied in the engine so it covers every entry point (HTTP command, HA-forwarded commands, MCP `analyze`), not only the HTTP handler:\n\n- Polyglot script execution now requires the `updateSecurity` database-administrator permission on `command`, `analyze` and `registerFunctions`. The check runs on the request thread that carries the authenticated user and is a no-op in embedded mode and internal/system contexts (schema load, HA replication apply).\n- The GraalVM host-access policy now denies access to `java.lang.Class`, `java.lang.ClassLoader` and `java.lang.reflect` members, closing the reflection escape that bypassed `allowedPackages` - even for authorized administrators - while leaving normal method calls on bound objects and explicit `Java.type(...)` lookups (governed by `allowedPackages`) working.\n\n### Workarounds\n\nUntil upgraded, do not grant command/query access on the HTTP API to untrusted users, and treat any account that can reach `/api/v1/command` as capable of code execution. Note that after the fix, non-administrator accounts can no longer run `js`/polyglot scripts over HTTP.\n\n### Credit\n\nReported by @kyojune76.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-16T20:13:20Z",
+    "Severity": "HIGH",
+    "Summary": "ArcadeDB: Privilege escalation via reader role in /api/v1/command JS scripting language — arbitrary host file read",
+    "UpdatedAt": "2026-07-16T20:13:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.7.1"
+      },
+      "VulnerableVersionRange": "\u003c 26.7.1"
+    }
+  ]
+}

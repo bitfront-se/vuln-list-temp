@@ -1,0 +1,80 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-16T20:09:13Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/kumahq/kuma/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 372986,
+    "Id": "GSA_kwCzR0hTQS13dm1wLTZyNHYtajZjds4ABbD6",
+    "GhsaId": "GHSA-wvmp-6r4v-j6cv",
+    "References": [
+      {
+        "Url": "https://github.com/kumahq/kuma/security/advisories/GHSA-wvmp-6r4v-j6cv"
+      },
+      {
+        "Url": "https://github.com/kumahq/kuma/pull/16777"
+      },
+      {
+        "Url": "https://github.com/kumahq/kuma/commit/2ecadac1aa2fd8cded4c2ab768949f4c2ec83e2a"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wvmp-6r4v-j6cv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wvmp-6r4v-j6cv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-52724"
+      }
+    ],
+    "Description": "When kuma-dp is started against an HTTPS control plane and the operator did not pass a CA certificate, the data plane connects with TLS peer verification disabled. The dataplane authentication token is sent over this unverified connection\n\n## Impact\n\nAn on-path attacker can intercept the dataplane authentication token and impersonate the control plane to the data plane, allowing them to inject a forged bootstrap configuration and take over the proxy\n\n## Affected configurations\n\n- Universal mode `kuma-dp` started against an HTTPS control plane without `--ca-cert-file` (or `KUMA_CONTROL_PLANE_CA_CERT` unset)\n\n## Not affected\n\n- Kubernetes installs done through the standard installers (`kumactl install control-plane` or the official Helm chart). In both cases the control plane's mutating admission webhook injects `KUMA_CONTROL_PLANE_CA_CERT` into every sidecar at pod admission, so each `kuma-dp` starts with the CA already configured\n\n## Workarounds\n\nSet `--ca-cert-file` (or `KUMA_CONTROL_PLANE_CA_CERT`) on every Universal mode data plane and point it at the control plane's serving CA. Alternatively, terminate the control plane behind a publicly trusted certificate; the patched releases will verify successfully against the operating system trust store with no further configuration\n\n## Resources\n\n- Fix: https://github.com/kumahq/kuma/pull/16777",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-16T20:09:12Z",
+    "Severity": "MODERATE",
+    "Summary": "kuma-dp connects to control plane without verifying TLS certificate when no CA is configured",
+    "UpdatedAt": "2026-07-16T20:09:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.13.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.13.0, \u003c 2.13.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.11"
+      },
+      "VulnerableVersionRange": "\u003e= 2.12.0, \u003c 2.12.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.14"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c 2.11.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.16"
+      },
+      "VulnerableVersionRange": "\u003e= 2.8.0, \u003c 2.9.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.7.26"
+      },
+      "VulnerableVersionRange": "\u003c 2.7.26"
+    }
+  ]
+}
