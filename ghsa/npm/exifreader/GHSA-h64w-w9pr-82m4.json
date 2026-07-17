@@ -20,9 +20,6 @@
         "Url": "https://github.com/mattiasw/ExifReader/commit/c9d88b67e127b2dcc7b46e328df468257fb2dc30"
       },
       {
-        "Url": "https://gist.github.com/yuki-matsuhashi/3243ea38e5fbf8cfe19b624f04c9f4b4"
-      },
-      {
         "Url": "https://security.snyk.io/vuln/SNYK-JS-EXIFREADER-16689335"
       },
       {
@@ -39,12 +36,12 @@
         "Value": "CVE-2026-8813"
       }
     ],
-    "Description": "### Impact\n\nWhen parsing an image with an embedded ICC profile that contains a crafted `multiLocalizedUnicodeType` (`mluc`) tag, ExifReader can be made to allocate memory proportional to attacker-controlled fields in the tag rather than to\nthe actual size of the input. Processing such an image causes excessive memory consumption and can terminate the host process (out-of-memory).\n\nAny application that calls `ExifReader.load()` on untrusted images, for example, user uploads in a web service, is affected. ICC profiles are carried in JPEG, TIFF, PNG, HEIC, AVIF, JPEG XL, and WebP, so the issue is reachable from any of those formats.\n\n### Patches\n\nFixed in `exifreader@4.39.0`. Upgrade with:\n\n    npm install exifreader@latest\n\nBower users consume the bundled `dist/` files from this repository, and the same fix is committed there.\n\n### Workarounds\n\nIf upgrading is not immediately possible, configure a [custom build](https://github.com/mattiasw/ExifReader#configure-a-custom-build) that excludes the `icc` module so that ICC parsing (and therefore this code path) is skipped entirely.\n\n### Resources\n\n- Reporter's writeup: https://gist.github.com/yuki-matsuhashi/3243ea38e5fbf8cfe19b624f04c9f4b4\n- Patch: https://github.com/mattiasw/ExifReader/commit/c9d88b67e127b2dcc7b46e328df468257fb2dc30",
+    "Description": "### Impact\n\nWhen parsing an image with an embedded ICC profile that contains a crafted `multiLocalizedUnicodeType` (`mluc`) tag, ExifReader can be made to allocate memory proportional to attacker-controlled fields in the tag rather than to\nthe actual size of the input. Processing such an image causes excessive memory consumption and can terminate the host process (out-of-memory).\n\nAny application that calls `ExifReader.load()` on untrusted images, for example, user uploads in a web service, is affected. ICC profiles are carried in JPEG, TIFF, PNG, HEIC, AVIF, JPEG XL, and WebP, so the issue is reachable from any of those formats.\n\n### Patches\n\nFixed in `exifreader@4.39.0`. Upgrade with:\n\n    npm install exifreader@latest\n\nBower users consume the bundled `dist/` files from this repository, and the same fix is committed there.\n\n### Workarounds\n\nIf upgrading is not immediately possible, configure a [custom build](https://github.com/mattiasw/ExifReader#configure-a-custom-build) that excludes the `icc` module so that ICC parsing (and therefore this code path) is skipped entirely.\n\n### Resources\n\n- Patch: https://github.com/mattiasw/ExifReader/commit/c9d88b67e127b2dcc7b46e328df468257fb2dc30",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-29T17:58:37Z",
     "Severity": "HIGH",
     "Summary": "ExifReader is vulnerable to denial of service via crafted ICC `mluc` tag",
-    "UpdatedAt": "2026-05-29T17:58:38Z",
+    "UpdatedAt": "2026-07-17T16:51:54Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,

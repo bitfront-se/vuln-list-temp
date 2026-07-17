@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-17T18:36:35Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "plone.restapi"
+  },
+  "Advisory": {
+    "DatabaseId": 373218,
+    "Id": "GSA_kwCzR0hTQS04cnFoLXZ4cHIteDc3cM4ABbHi",
+    "GhsaId": "GHSA-8rqh-vxpr-x77p",
+    "References": [
+      {
+        "Url": "https://github.com/plone/plone.app.textfield/security/advisories/GHSA-4r4f-gg25-rmg5"
+      },
+      {
+        "Url": "https://github.com/plone/plone.restapi/security/advisories/GHSA-8rqh-vxpr-x77p"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8rqh-vxpr-x77p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8rqh-vxpr-x77p"
+      }
+    ],
+    "Description": "### Impact\n\nA stored XSS affecting RichText fields. RichTextValue.output returns the raw, unsanitized stored value whenever the stored mimeType equals the outputMimeType. Because the safe-HTML output type (`text/x-html-safe`) is the type that signifies \"already sanitized\", any value whose stored mimeType equals it bypasses the safe_html transform entirely on render. The transform itself is sound — it correctly strips `on*` event-handler attributes and `javascript:/data:` URIs; the defect is that it is never invoked for these values. The unsanitized value is then emitted via `tal:content=\"structure ...\"`, which performs no escaping, so the payload executes in the viewer's browser. \n\nThis can be a problem when a RichText field is wrongly defined in code with a `mimeType` and `outputMimeType` that are the same, or when the REST API is used to the same effect.\n\nThis is the same vulnerability as reported in `plone.app.textfield`:\nhttps://github.com/plone/plone.app.textfield/security/advisories/GHSA-4r4f-gg25-rmg5\n\n### Patches\nThe problem has been patched:\n\n* For Plone 6.0 and 6.2, upgrade `plone.restapi` to 9.15.6.\n* For Plone 6.2, upgrade `plone.restapi` to 10.0.1.\n\nThis will prevent abusing the REST API to store wrong rich text values.\n\nThis will **not** prevent XSS from rich text fields that already have wrong values.  For that, you will need a patched `plone.app.textfield` version. See the `plone.app.textfield` advisory linked above for versions.\n\n### Workarounds\nThere is no known workaround.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-17T18:36:34Z",
+    "Severity": "MODERATE",
+    "Summary": "plone.restapi: Stored XSS by spoofing mime type",
+    "UpdatedAt": "2026-07-17T18:36:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.1"
+      },
+      "VulnerableVersionRange": "= 10.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.15.6"
+      },
+      "VulnerableVersionRange": "\u003c 9.15.6"
+    }
+  ]
+}

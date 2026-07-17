@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-17T16:52:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 373167,
+    "Id": "GSA_kwCzR0hTQS02YzRyLWZtaDMtN3JoOM4ABbGv",
+    "GhsaId": "GHSA-6c4r-fmh3-7rh8",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-6c4r-fmh3-7rh8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34760"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/37058"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/c7f98b4d0a63b32ed939e2b6dfaa8a626e9b46c4"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/vllm/PYSEC-2026-2299.yaml"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/releases/tag/v0.18.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6c4r-fmh3-7rh8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6c4r-fmh3-7rh8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-34760"
+      }
+    ],
+    "Description": "## Issue Description\nLibrosa defaults to using `numpy.mean` for mono downmixing (`to_mono`), while the international standard ITU-R BS.775-4 specifies a weighted downmixing algorithm. This discrepancy results in:\n- Inconsistency between audio heard by humans (e.g., through headphones/regular speakers) and audio processed by AI models (Which infra via Librosa, such as vllm, transformer).\n\nhttps://github.com/librosa/librosa/blob/af8c839fb15317fa2712ea66e7a22da6a9267b32/librosa/core/audio.py#L478\n## Attack Scenario and Impact\n\n### LFE (Low-Frequency Effects) Channel Exploit\nAttackers can craft special multichannel audio files containing:\n1. Normal content in front channels (L/R)\n2. Either interference signals or hidden content in the LFE channel\n\n**Notice:** It is worth noting that not only the LFE channel is excluded, but in fact, channels beyond the 6th (such as rear surround channels, overhead channels, height speakers, etc.) are also not supported.\n\n**Attack Methodology:**\n\nAttackers can create specially engineered multichannel audio with LFE interference, where front channels (L/R) contain normal content while the LFE channel carries interference signals or hidden content. When played on consumer devices that ignore LFE channels, only the normal content is heard. However, when processed by AI systems using Librosa (which mixes all channels), the LFE interference affects speech recognition feature extraction or masks critical detection features. This enables malicious content to bypass AI detection while still reaching end users, potentially compromising voice authentication systems, evading content moderation, or disrupting speech recognition accuracy.\n\n**Potential Exploitation Scenarios:**\n- Voice authentication systems may be tricked into accepting anomalous audio\n- Content moderation systems may fail to detect prohibited content hidden in LFE channels \n- Speech recognition systems may produce incorrect transcriptions\n\n**Note:** `torch.audio` implements this correctly. Failure to do so may lead to inconsistencies between training and test audio, resulting in performance degradation.\n\n\n## Resources\n\n- [ITU-R BS.775-4 Standard](https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.775-4-202212-I!!PDF-E.pdf)\n- [Librosa Source Code](https://github.com/librosa/librosa/blob/af8c839fb15317fa2712ea66e7a22da6a9267b32/librosa/core/audio.py#L478)\n- [Librosa securty report](https://github.com/librosa/librosa/security/advisories/GHSA-vfm7-86xr-5mrh)\n\n## Fixes\n\n- https://github.com/vllm-project/vllm/pull/37058, which removes the librosa dependency from vLLM.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-17T16:52:53Z",
+    "Severity": "MODERATE",
+    "Summary": "vLLM: Processing differential in multi-channel audio downmixing enables hidden-input/moderation bypass for audio models",
+    "UpdatedAt": "2026-07-17T16:52:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.18.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.5.5, \u003c 0.18.0"
+    }
+  ]
+}

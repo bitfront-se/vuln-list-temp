@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-17T18:41:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "sh"
+  },
+  "Advisory": {
+    "DatabaseId": 373220,
+    "Id": "GSA_kwCzR0hTQS1xMzh2LXdwODktMnc1Nc4ABbHk",
+    "GhsaId": "GHSA-q38v-wp89-2w55",
+    "References": [
+      {
+        "Url": "https://github.com/amoffat/sh/security/advisories/GHSA-q38v-wp89-2w55"
+      },
+      {
+        "Url": "https://github.com/amoffat/sh/releases/tag/2.2.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q38v-wp89-2w55"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q38v-wp89-2w55"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54552"
+      }
+    ],
+    "Description": "### Impact\nThe `_uid` option performed an incomplete privilege drop on Linux/Unix-like systems.\n\nWhen `sh` was run from a process with elevated privileges, such as root, and a command was launched with `_uid=\u003cunprivileged user\u003e`, the child process changed its UID and primary GID but did not reset its supplementary groups. As a result, the child process could retain the parent process’s supplementary groups, potentially including privileged groups such as root, docker, disk, shadow, or sudo.\n\nThis could allow a subprocess that was expected to run with reduced privileges to access files or resources available to the original process’s supplementary groups. Users are impacted if they rely on `_uid` as a privilege boundary when launching commands from a privileged parent process.\n\n### Patches\nUpgrade to version \u003e= 2.2.4\n\n### Workarounds\nAvoid using `_uid` when the user represents a less-privileged user.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-17T18:41:38Z",
+    "Severity": "HIGH",
+    "Summary": "sh _uid does not drop supplementary groups (incomplete privilege drop)",
+    "UpdatedAt": "2026-07-17T18:41:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.9,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.4"
+      },
+      "VulnerableVersionRange": "\u003c 2.2.4"
+    }
+  ]
+}
