@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-17T21:50:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "adm-zip"
+  },
+  "Advisory": {
+    "DatabaseId": 370758,
+    "Id": "GSA_kwCzR0hTQS14Y3BjLThoMnctM2o4Nc4ABahG",
+    "GhsaId": "GHSA-xcpc-8h2w-3j85",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39244"
+      },
+      {
+        "Url": "https://github.com/cthackers/adm-zip/issues/568"
+      },
+      {
+        "Url": "https://github.com/cthackers/adm-zip/commit/2450dcf417aa29df49270237d18c5245794da3e2"
+      },
+      {
+        "Url": "https://github.com/cthackers/adm-zip/releases"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xcpc-8h2w-3j85"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xcpc-8h2w-3j85"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-39244"
+      }
+    ],
+    "Description": "adm-zip before 0.5.18 is vulnerable to denial of service via a crafted ZIP file with a manipulated uncompressed size header field. In zipEntry.js line 103, Buffer.alloc(_centralHeader.size) allocates memory based on the declared uncompressed size from the ZIP central directory header without validating it against the actual compressed data size or imposing any upper bound. The size value is read directly from the binary header at entryHeader.js line 266 with no bounds check. An attacker can craft a ~120-byte ZIP file that declares ~4GB uncompressed size, causing a memory allocation amplification ratio of over 33 million to 1. The allocation occurs before CRC validation, so the malicious payload cannot be rejected early. All extraction and read methods are affected: readFile(), readAsText(), extractEntryTo(), extractAllTo(), extractAllToAsync(), test(), and entry.getData(). Any application accepting untrusted ZIP files via adm-zip is vulnerable to immediate process crash.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-10T18:32:19Z",
+    "Severity": "HIGH",
+    "Summary": "adm-zip: Crafted ZIP file triggers 4GB memory allocation",
+    "UpdatedAt": "2026-07-17T21:50:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.6.0"
+    }
+  ]
+}

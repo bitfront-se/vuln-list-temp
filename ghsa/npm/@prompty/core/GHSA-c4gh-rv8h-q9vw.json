@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-17T19:53:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@prompty/core"
+  },
+  "Advisory": {
+    "DatabaseId": 373229,
+    "Id": "GSA_kwCzR0hTQS1jNGdoLXJ2OGgtcTl2d84ABbHt",
+    "GhsaId": "GHSA-c4gh-rv8h-q9vw",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/prompty/security/advisories/GHSA-c4gh-rv8h-q9vw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53597"
+      },
+      {
+        "Url": "https://github.com/microsoft/prompty/commit/c27402da2487075be577f06aa79df627fb9d6853"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c4gh-rv8h-q9vw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c4gh-rv8h-q9vw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53597"
+      }
+    ],
+    "Description": "## Summary\nThe TypeScript Prompty loader used `gray-matter` without overriding executable frontmatter engines. `gray-matter` supports JavaScript frontmatter blocks such as `---js` and evaluates them while parsing. An attacker-controlled `.prompty` file could therefore execute arbitrary JavaScript during prompt loading.\n\n## Affected package\n- npm `@prompty/core` v2 prerelease line: `\u003e= 2.0.0-alpha.1 \u003c 2.0.0-beta.3`\n- Fixed in `@prompty/core@2.0.0-beta.3`\n\nThe legacy v1 JavaScript runtime had a historical hardening change for this issue. During the v2 TypeScript runtime rebuild, the loader again called `gray-matter` directly and the vulnerable behavior was present in the v2 prerelease packages until `2.0.0-beta.3`.\n\n## Impact\nApplications that load untrusted `.prompty` files, user-provided prompt paths, or prompt bundles from less-trusted locations could execute arbitrary JavaScript in the host Node.js process during frontmatter parsing.\n\n## Remediation\nUpgrade `@prompty/core` to `2.0.0-beta.3` or later.\n\nThe fix explicitly overrides the `js` and `javascript` gray-matter engines and rejects JavaScript frontmatter in `.prompty` files. Prompty frontmatter is YAML-only; executable frontmatter is unsupported. A regression test now verifies that `---js` frontmatter is rejected and not evaluated.\n\n## Fix details\nFixed by commit `c27402da2487075be577f06aa79df627fb9d6853` and released via `typescript/2.0.0-beta.3`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-17T19:53:34Z",
+    "Severity": "HIGH",
+    "Summary": "Prompty: Arbitrary code execution via JavaScript frontmatter in TypeScript loader",
+    "UpdatedAt": "2026-07-17T19:53:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.0-beta.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-alpha.1, \u003c 2.0.0-beta.3"
+    }
+  ]
+}
