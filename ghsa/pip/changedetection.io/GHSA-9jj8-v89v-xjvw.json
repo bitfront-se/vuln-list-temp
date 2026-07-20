@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T19:06:58Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "changedetection.io"
+  },
+  "Advisory": {
+    "DatabaseId": 377835,
+    "Id": "GSA_kwCzR0hTQS05amo4LXY4OXYteGp2d84ABcPr",
+    "GhsaId": "GHSA-9jj8-v89v-xjvw",
+    "References": [
+      {
+        "Url": "https://github.com/dgtlmoon/changedetection.io/security/advisories/GHSA-9jj8-v89v-xjvw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25527"
+      },
+      {
+        "Url": "https://github.com/dgtlmoon/changedetection.io/commit/9d38b4517364831889b5b0d7b3465fd060403fd4"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/changedetection-io/PYSEC-2026-2124.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9jj8-v89v-xjvw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9jj8-v89v-xjvw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-25527"
+      }
+    ],
+    "Description": "## Summary\nThe `/static/\u003cgroup\u003e/\u003cfilename\u003e` route accepts `group=\"..\"`, which causes `send_from_directory(\"static/..\", filename)` to execute. This moves the base directory up to `/app/changedetectionio`, enabling **unauthenticated local file read** of application source files (e.g., `flask_app.py`). Severity is **low information disclosure (C:L)**.\n\n### Details\nThe vulnerable code is in `changedetectionio/flask_app.py` inside `static_content()`:\n\n```\ngroup = re.sub(r'[^\\w.-]+', '', group.lower())\nfilename = re.sub(r'[^\\w.-]+', '', filename.lower())\n...\nreturn send_from_directory(f\"static/{group}\", path=filename)\n```\n\nThe `group` sanitization allows dots, so `group=\"..\"` passes validation.  \nThis results in `send_from_directory(\"static/..\", filename)`, effectively shifting the base directory to `/app/changedetectionio` and allowing reads of files in that directory.  \nThe route is unauthenticated, so **any user can retrieve source files** without logging in.\n\n\u003e Limitation: the route only matches `/static/\u003cgroup\u003e/\u003cfilename\u003e` and rejects slashes inside `filename`, so it cannot traverse further to arbitrary system paths like `/etc/passwd`. It is limited to files inside the application package directory.\n\n### PoC\n1) Start an instance (example: Docker on port 5050)\n```\ndocker run -d --name cdio -p 127.0.0.1:5050:5000 -v cdio-data:/datastore cdio-local\n```\n\n2) Reproduce  \n**(URL-encoded traversal)**\n```\ncurl -i http://127.0.0.1:5050/static/%2e%2e/flask_app.py\n```\n\n**(curl path passthrough)**\n```\ncurl --path-as-is -i http://127.0.0.1:5050/static/../flask_app.py\n```\n\n3) Observe that the response body contains Python source code from `flask_app.py`.\n\n### Impact\n- **Vulnerability type:** Directory Traversal / Local File Read\n- **Affected users:** Anyone with network access (no authentication required)\n- **Scope:** Source files under `/app/changedetectionio`\n- **Security impact:** Internal logic exposure can aid further exploitation (Confidentiality: Low)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T19:06:55Z",
+    "Severity": "MODERATE",
+    "Summary": "changedetection.io is vulnerable to unauthenticated static path traversal",
+    "UpdatedAt": "2026-07-20T19:06:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.53.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.53.2"
+    }
+  ]
+}

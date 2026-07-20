@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T18:55:12Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "tornado"
+  },
+  "Advisory": {
+    "DatabaseId": 377832,
+    "Id": "GSA_kwCzR0hTQS1wcjJ2LWp4MmMtd2c5Zs4ABcPo",
+    "GhsaId": "GHSA-pr2v-jx2c-wg9f",
+    "References": [
+      {
+        "Url": "https://github.com/tornadoweb/tornado/security/advisories/GHSA-pr2v-jx2c-wg9f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-67724"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/commit/9c163aebeaad9e6e7d28bac1f33580eb00b0e421"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/tornado/PYSEC-2025-265.yaml"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/releases/tag/v6.5.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pr2v-jx2c-wg9f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pr2v-jx2c-wg9f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-67724"
+      }
+    ],
+    "Description": "# Header injection and XSS via `reason` argument\n\n## Summary\n\nThe `reason` argument (used by both `RequestHandler.set_status` and `tornado.web.HTTPError` is designed to allow applications to pass custom \"reason\" phrases (the \"Not Found\" in `HTTP/1.1 404 Not Found`) to the HTTP status line (mainly for non-standard status codes). Vulnerabilities exist in Tornado versions prior to 6.5.3 if untrusted data is passed as the `reason` argument.\n\n## Details\n\nIn vulnerable versions, the supplied `reason` phrase is used unescaped in HTTP headers (where it could be used for header injection) or in HTML in the default error page (where it could be used for XSS).\n\n## Impact\n\n* **Type:** Reflected Cross-Site Scripting (CWE-79) in default error page, or header injection (CWE-644)\n* **Actors:** Remote attacker who can cause the application to raise `HTTPError`/`set_status` with an attacker-controlled `reason` (e.g., via query parameter used by developer).\n* **Effect:** Execution of arbitrary JavaScript in victims' browsers when they view the error page — possible session token theft, CSRF escalation, UI spoofing, or other client-side attacks depending on context.\n* **Scope:** Only applications that explicitly reflect untrusted input into `reason` are affected.\n\n## Mitigation\n\nAside from upgrading to Tornado 6.5.3 or newer, the vulnerability can be mitigated by not using untrusted data for the `reason` argument. In the intended use case the `reason` argument would generally be a string literal and not derived from user input. Also, the `reason` argument is rarely required (reason phrases are not used at all in HTTP/2) and can generally be omitted.\n\nFor a general-purpose error message in HTTPError, consider using the `log_message` argument instead of `reason`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T18:55:11Z",
+    "Severity": "MODERATE",
+    "Summary": "Tornado vulnerable to Header Injection and XSS via reason argument",
+    "UpdatedAt": "2026-07-20T18:55:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.5.3"
+      },
+      "VulnerableVersionRange": "\u003c 6.5.3"
+    }
+  ]
+}
