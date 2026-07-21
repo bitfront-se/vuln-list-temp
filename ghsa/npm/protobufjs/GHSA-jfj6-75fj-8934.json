@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T22:04:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "protobufjs"
+  },
+  "Advisory": {
+    "DatabaseId": 377921,
+    "Id": "GSA_kwCzR0hTQS1qZmo2LTc1ZmotODkzNM4ABcRB",
+    "GhsaId": "GHSA-jfj6-75fj-8934",
+    "References": [
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-jfj6-75fj-8934"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59876"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/pull/2335"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/commit/9f97fe413072d3beb52c74e62d88ea8adc9444d8"
+      },
+      {
+        "Url": "https://github.com/protobufjs/protobuf.js/releases/tag/protobufjs-v8.6.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jfj6-75fj-8934"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jfj6-75fj-8934"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59876"
+      }
+    ],
+    "Description": "## Summary\n\nThe protobuf.js text format extension parsed string-keyed map entries using ordinary property assignment. A text-format map entry with key `__proto__` could therefore change the prototype of the returned map object instead of creating an own map entry.\n\nThis affected the optional Text Format extension. Other protobufjs input paths, including binary decode, `fromObject`, and ProtoJSON conversion, are not affected.\n\n## Impact\n\nAn attacker who can provide protobuf text-format input parsed by an application using `protobufjs/ext/textformat` may be able to create message objects whose string-keyed map fields have attacker-controlled prototypes.\n\nThis is per-object prototype mutation, not global `Object.prototype` pollution. Impact depends on downstream application logic treating inherited properties as meaningful, for example by using `in`, truthiness checks, or direct property access on parsed map objects instead of own-property checks.\n\nApplications that do not parse untrusted Text Format input, or that do not use inherited properties from parsed map objects in security-relevant logic, are not directly affected.\n\n## Preconditions\n\n* The application must parse attacker-controlled protobuf Text Format input with `protobufjs/ext/textformat`.\n* The target schema must contain a string-keyed map field.\n* The crafted input must provide a map entry with key `__proto__`.\n* Downstream application logic must treat inherited properties on the returned map object as meaningful for impact beyond malformed output.\n\n## Workarounds\n\nUpgrade to protobufjs 8.6.5 or newer.\n\nIf immediate upgrade is not possible, do not parse untrusted protobuf Text Format input with affected versions. Applications can also reject string map keys named `__proto__` before or during Text Format parsing, and should use own-property checks such as `Object.hasOwnProperty.call(map, key)` when consuming parsed map objects.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T22:04:07Z",
+    "Severity": "MODERATE",
+    "Summary": "protobufjs: Text Format string map parsing can mutate returned map object prototype",
+    "UpdatedAt": "2026-07-20T22:04:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.5"
+      },
+      "VulnerableVersionRange": "\u003e= 8.2.0, \u003c= 8.6.4"
+    }
+  ]
+}

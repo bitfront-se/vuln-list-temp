@@ -21,6 +21,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-9c83-rr99-vfwj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57442"
       }
     ],
     "Description": "PathFilter's deny-list glob patterns are anchored, so `.git`, `.obsidian`, and `node_modules` were only blocked at the vault root. Nested copies inside the vault (e.g. `tools/cli/node_modules/...`, `tools/somerepo/.git/config`, a nested `.obsidian/`) were fully traversable via isAllowed/isAllowedForListing. Impact: a nested `.git/config` (remote URLs / embedded tokens) and nested `.obsidian` contents could be read, under the same prompt-injection threat model as GHSA-j99q-93c9-h869 (an attacker influences the path an agent reads). It also caused nested `node_modules` to pollute the tag index (#128, the public symptom). Fixed in 0.11.5 by denying these restricted names at any path depth (matched case-insensitively as any path segment).",
@@ -28,7 +32,7 @@
     "PublishedAt": "2026-06-19T21:42:24Z",
     "Severity": "MODERATE",
     "Summary": "MCPVault: PathFilter restricted directories (.git/.obsidian/node_modules) only denied at vault root, not nested",
-    "UpdatedAt": "2026-06-19T21:42:25Z",
+    "UpdatedAt": "2026-07-20T21:31:22Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

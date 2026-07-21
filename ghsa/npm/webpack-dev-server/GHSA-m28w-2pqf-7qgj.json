@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T22:02:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "webpack-dev-server"
+  },
+  "Advisory": {
+    "DatabaseId": 377918,
+    "Id": "GSA_kwCzR0hTQS1tMjh3LTJwcWYtN3Fnas4ABcQ-",
+    "GhsaId": "GHSA-m28w-2pqf-7qgj",
+    "References": [
+      {
+        "Url": "https://github.com/webpack/webpack-dev-server/security/advisories/GHSA-m28w-2pqf-7qgj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-14631"
+      },
+      {
+        "Url": "https://github.com/webpack/webpack-dev-server/pull/5699"
+      },
+      {
+        "Url": "https://github.com/webpack/webpack-dev-server/commit/f21ed0f44aceb6132abb591ee8b60d770b6e489f"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m28w-2pqf-7qgj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m28w-2pqf-7qgj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-14631"
+      }
+    ],
+    "Description": "### Impact\n\nAn unauthenticated peer that can reach the `webpack-dev-server` process can terminate it by sending either a normal HTTP request with a malformed `Host` header, or a WebSocket upgrade to the default `/ws` endpoint with a malformed `Origin` header. The malformed header triggers an uncaught exception in the host-validation path and crashes the dev server process.\n\n### Patches\n\nFixed in `webpack-dev-server` 5.2.6 by treating malformed `Host` and `Origin` header values as invalid rather than throwing (see [PR #5699](https://github.com/webpack/webpack-dev-server/pull/5699)).\n\n### Workarounds\n\nKeep the dev server bound to `localhost` (the default) and do not expose it to untrusted networks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T22:02:31Z",
+    "Severity": "MODERATE",
+    "Summary": "webpack-dev-server vulnerable to denial of service via a malformed Host or Origin header",
+    "UpdatedAt": "2026-07-20T22:02:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.6"
+      },
+      "VulnerableVersionRange": "\u003c= 5.2.5"
+    }
+  ]
+}

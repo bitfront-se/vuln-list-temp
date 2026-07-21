@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T21:34:18Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mistune"
+  },
+  "Advisory": {
+    "DatabaseId": 377898,
+    "Id": "GSA_kwCzR0hTQS1nOTd4LWd2Y20teDcyaM4ABcQq",
+    "GhsaId": "GHSA-g97x-gvcm-x72h",
+    "References": [
+      {
+        "Url": "https://github.com/lepture/mistune/security/advisories/GHSA-g97x-gvcm-x72h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59926"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/commit/a3cb6e5655308797e8be021d6c7b5bab13cbace2"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/releases/tag/v3.2.1"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/mistune/PYSEC-2026-2214.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g97x-gvcm-x72h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g97x-gvcm-x72h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59926"
+      }
+    ],
+    "Description": "In `src/mistune/directives/admonition.py`, the `render_admonition()` function concatenates the `:class:` option directly into the HTML class attribute without escaping (lines 63-68).\n\nThis allows attribute injection and XSS even when `HTMLRenderer(escape=True)` is used.\n\nThe directive name parameter is safe (validated against whitelist), but the class option comes from raw user input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T21:34:14Z",
+    "Severity": "MODERATE",
+    "Summary": "Mistune: XSS via unescaped class option in Admonition directive",
+    "UpdatedAt": "2026-07-20T21:34:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.0"
+    }
+  ]
+}

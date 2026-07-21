@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-20T23:22:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@astrojs/node"
+  },
+  "Advisory": {
+    "DatabaseId": 377951,
+    "Id": "GSA_kwCzR0hTQS1yNTU3LXdmZnEtd3ZyY84ABcRf",
+    "GhsaId": "GHSA-r557-wffq-wvrc",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-r557-wffq-wvrc"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/pull/17252"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/commit/eb6f97e391ee587747e37609c255c7cd4b9cce3c"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/releases/tag/@astrojs/node@11.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r557-wffq-wvrc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r557-wffq-wvrc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59730"
+      }
+    ],
+    "Description": "### Impact\n\nWith `trailingSlash: 'always'` configured, the `@astrojs/node` standalone server's static file handler appends a trailing slash to request paths and issues a `301` redirect. Paths beginning with `/\\` (slash-backslash) were not recognized as internal paths, so the handler would echo the raw path back in the `Location` header. Because browsers treat `\\` as `/` per the WHATWG URL specification, the resulting redirect could resolve to an external host.\n\n**Preconditions:**\n- `trailingSlash: 'always'` must be set (non-default; the default is `'ignore'`)\n- The request path must not have a file extension in its final segment\n- An attacker must deliver the crafted link to a user\n\n### Patches\n\nFixed by treating backslash-prefixed paths the same as `//`-prefixed paths in `isInternalPath()`, so they are no longer rewritten with a trailing slash.\n\n### Workarounds\n\nUse the default `trailingSlash: 'ignore'` setting, which does not issue trailing-slash redirects in the static file handler.\n\n### References\n\n- [WHATWG URL spec: backslash normalization](https://url.spec.whatwg.org/#url-parsing)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T23:22:22Z",
+    "Severity": "LOW",
+    "Summary": "@astrojs/node: Backslash-prefixed paths not recognized as internal by trailing-slash redirect",
+    "UpdatedAt": "2026-07-20T23:22:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.1.0, \u003c 11.0.2"
+    }
+  ]
+}

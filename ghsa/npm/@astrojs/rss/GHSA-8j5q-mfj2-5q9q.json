@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T23:21:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@astrojs/rss"
+  },
+  "Advisory": {
+    "DatabaseId": 377949,
+    "Id": "GSA_kwCzR0hTQS04ajVxLW1majItNXE5cc4ABcRd",
+    "GhsaId": "GHSA-8j5q-mfj2-5q9q",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-8j5q-mfj2-5q9q"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/pull/17209"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/commit/fbcfa039dfe3d700b239f595a6c55ee35e45bd06"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/releases/tag/@astrojs/rss@4.0.19"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8j5q-mfj2-5q9q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8j5q-mfj2-5q9q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59728"
+      }
+    ],
+    "Description": "## Summary\n\nIn `@astrojs/rss`, the `source.title` and `enclosure.type` item fields are interpolated directly into XML template strings without XML-character escaping before being parsed by `fast-xml-parser`. An attacker who controls these field values can inject arbitrary XML elements into the generated RSS feed.\n\n## Details\n\nTwo fields in `packages/astro-rss/src/index.ts` are affected:\n\n### `source.title`\n\n```typescript\nitem.source = parser.parse(\n  `\u003csource url=\"${result.source.url}\"\u003e${result.source.title}\u003c/source\u003e`,\n).source;\n```\n\n`source.title` is validated only as `z.string()`, with no restriction on XML special characters. A value containing `\u003c/source\u003e` followed by arbitrary XML is parsed as real XML elements, merging injected nodes into the RSS item.\n\n### `enclosure.type`\n\n```typescript\nitem.enclosure = parser.parse(\n  `\u003cenclosure url=\"${enclosureURL}\" length=\"${result.enclosure.length}\" type=\"${result.enclosure.type}\"/\u003e`,\n).enclosure;\n```\n\n`enclosure.type` is also `z.string()` and is interpolated into an XML attribute without escaping. A value containing `\"` followed by additional XML can break out of the attribute and inject extra elements.\n\n## Proof of Concept\n\n`source.title` injection:\n\n```javascript\nsource: {\n  url: 'https://legit.example.com',\n  title: '\u003c/source\u003e\u003citem\u003e\u003ctitle\u003eINJECTED\u003c/title\u003e\u003clink\u003ehttps://evil.com\u003c/link\u003e\u003c/item\u003e\u003csource\u003e',\n}\n// Result: RSS feed contains an injected \u003citem\u003e element with an evil.com link\n```\n\n`enclosure.type` injection:\n\n```javascript\nenclosure: {\n  url: 'https://example.com/a.mp3',\n  length: 0,\n  type: 'audio/mpeg\" /\u003e\u003clink\u003ehttps://evil.example.com\u003c/link\u003e\u003cenclosure fake=\"',\n}\n// Result: RSS feed contains an injected \u003clink\u003e element\n```\n\nBoth injections were confirmed with `fast-xml-parser`: the injected `\"link\": \"https://evil.com\"` appears in the parsed output.\n\n## Impact\n\nAn attacker who can control `source.title` or `enclosure.type` values (e.g., via a CMS, database, or user-submitted content that populates `RSSFeedItem`) can inject arbitrary XML into the generated RSS feed. This corrupts feed structure, injects false metadata (e.g., a fake `\u003clink\u003e` pointing to a malicious URL), and can cause feed readers to misparse or display attacker-controlled content. In SSR mode (`output: 'server'`), the poisoned feed is served on every request to all subscribers.\n\n## Patches\n\nFixed in `@astrojs/rss@4.0.19`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T23:21:47Z",
+    "Severity": "MODERATE",
+    "Summary": "@astrojs/rss: XML Injection via Unescaped RSS Feed Fields",
+    "UpdatedAt": "2026-07-20T23:21:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.19"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 4.0.19"
+    }
+  ]
+}

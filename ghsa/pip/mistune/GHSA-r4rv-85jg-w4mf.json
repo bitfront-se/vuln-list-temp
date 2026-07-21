@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T21:34:58Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mistune"
+  },
+  "Advisory": {
+    "DatabaseId": 377900,
+    "Id": "GSA_kwCzR0hTQS1yNHJ2LTg1amctdzRtZs4ABcQs",
+    "GhsaId": "GHSA-r4rv-85jg-w4mf",
+    "References": [
+      {
+        "Url": "https://github.com/lepture/mistune/security/advisories/GHSA-r4rv-85jg-w4mf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59924"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/commit/1bef343ade163fc3bb95572b15be720084cdb993"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/releases/tag/v3.3.0"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/mistune/PYSEC-2026-2212.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4rv-85jg-w4mf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4rv-85jg-w4mf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59924"
+      }
+    ],
+    "Description": "### Summary\n\nA path traversal issue exists in mistune's `Include` directive when markdown files are processed using `md.read()`. A crafted include path can cause files outside the intended markdown directory to be accessed.\n\n### Details\n\nThe issue occurs in the `Include.parse()` method where user-supplied paths are joined and normalized without verifying that the resulting path remains within an expected directory.\n\n```python\nrelpath = self.parse_title(m)\ndest = os.path.join(os.path.dirname(source_file), relpath)\ndest = os.path.normpath(dest)\n```\n\nBecause the final path is not restricted to a trusted base directory, path traversal sequences such as `../` may reference files outside the intended location.\n\n### Proof of Concept\n\nCreate a markdown file:\n\n```markdown\n.. include:: ../../../example.txt\n```\n\nProcess it using:\n\n```python\nimport mistune\nfrom mistune.directives import RSTDirective, Include\n\nmd = mistune.create_markdown(\n    plugins=[RSTDirective([Include()])]\n)\n\nresult, state = md.read(\"test.md\")\nprint(result)\n```\n\n### Impact\n\nApplications that process untrusted markdown files with the `Include` directive enabled may allow unintended file access. The impact depends on how the feature is used and what files are accessible to the running process.\n\n### Recommended Fix\n\nValidate the resolved path and ensure it remains within an allowed directory before opening the file.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T21:34:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Mistune: Arbitrary File Read via Include directive path traversal",
+    "UpdatedAt": "2026-07-20T21:34:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.0"
+    }
+  ]
+}

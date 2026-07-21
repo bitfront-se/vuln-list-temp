@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-20T21:18:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "js-yaml"
+  },
+  "Advisory": {
+    "DatabaseId": 377853,
+    "Id": "GSA_kwCzR0hTQS03MjRnLW14cmctNHF2bc4ABcP9",
+    "GhsaId": "GHSA-724g-mxrg-4qvm",
+    "References": [
+      {
+        "Url": "https://github.com/nodeca/js-yaml/security/advisories/GHSA-724g-mxrg-4qvm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59870"
+      },
+      {
+        "Url": "https://github.com/nodeca/js-yaml/commit/39f3211a2f01b3c6982710cf21434ab7060acefe"
+      },
+      {
+        "Url": "https://github.com/nodeca/js-yaml/releases/tag/5.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-724g-mxrg-4qvm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-724g-mxrg-4qvm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59870"
+      }
+    ],
+    "Description": "### Summary\n`js-yaml` v5.x introduces `YAML11_SCHEMA` support with the `!!omap` (ordered map) tag. The `omapTag.addItem()` function performs a linear O(n) scan for duplicate key detection on every insertion, resulting in O(n^2) total time to parse a document with n omap entries. An attacker can send a small crafted YAML document to trigger a multi-second CPU stall in any application that uses `yaml.load()` with `{ schema: yaml.YAML11_SCHEMA }`.\n\n### Details\nIn `src/tag/sequence/omap.ts` (compiled: `dist/js-yaml.cjs.js:510-525`):\n```js\nvar omapTag = defineSequenceTag('tag:yaml.org,2002:omap', {\n    create: () =\u003e [],\n    addItem: (container, item) =\u003e {\n        // ...\n        for (const existing of container)   // O(n) per insertion!\n            if (hasOwnProperty(existing, itemKeys[0]))\n                return 'cannot resolve an ordered map item';\n        container.push(object);             // n insertions → O(n^2) total\n        return '';\n    }\n});\n```\nFor a document with `n` unique entries, insertion i scans i−1 existing entries, yielding 1+2+…+n = **O(n²)** total work.\n\n### PoC (runtime-confirmed on v5.2.0)\n```js\nconst yaml = require('js-yaml');\nfunction buildOmapPayload(n) {\n  let p = '!!omap\\n';\n  for (let i = 0; i \u003c n; i++) p += '- key' + i + ': val' + i + '\\n';\n  return p;\n}\n// Timing results on v5.2.0:\n// n=1000:  9ms\n// n=5000:  73ms  (5x n → 8x time)\n// n=10000: 255ms (2x n → 3.5x time — supralinear)\n// n=20000: 997ms (2x n → 3.9x time — O(n²) confirmed)\n// n=50000: 10613ms          ← blocks event loop for \u003e10 seconds\nyaml.load(buildOmapPayload(50000), { schema: yaml.YAML11_SCHEMA });\n```\n\n### Impact\nAny application that parses untrusted YAML using `yaml.load(input, { schema: yaml.YAML11_SCHEMA })` is vulnerable to Denial of Service. A ~2 MB payload of 50,000 entries blocks the Node.js event loop for 10+ seconds. Smaller payloads (5,000 entries, ~100 KB) already cause noticeable slowdowns (73 ms per parse, amplified under concurrent load).\n\nThis affects the newly released 5.x series (first published 2026-06-20) which adds YAML 1.1/1.2 schema support including `!!omap`. The 4.x series is unaffected (no `YAML11_SCHEMA` export).\n\n### Fix\nReplace the O(n) linear scan in `addItem` with an O(1) `Set`-based lookup:\n```js\nvar omapTag = defineSequenceTag('tag:yaml.org,2002:omap', {\n    create: () =\u003e ({ list: [], seen: new Set() }),\n    addItem: (state, item) =\u003e {\n        const key = Object.keys(item)[0];\n        if (state.seen.has(key)) return 'duplicate omap key';\n        state.seen.add(key);\n        state.list.push(item);\n        return '';\n    },\n    resolve: (state) =\u003e state.list\n});\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-20T21:18:51Z",
+    "Severity": "MODERATE",
+    "Summary": "js-yaml: Quadratic-complexity (O(n^2)) DoS via !!omap tag in YAML11_SCHEMA",
+    "UpdatedAt": "2026-07-20T21:18:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.2.0"
+    }
+  ]
+}
