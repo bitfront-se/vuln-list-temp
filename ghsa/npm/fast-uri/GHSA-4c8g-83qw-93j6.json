@@ -1,0 +1,125 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-21T19:03:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-uri"
+  },
+  "Advisory": {
+    "DatabaseId": 389704,
+    "Id": "GSA_kwCzR0hTQS00YzhnLTgzcXctOTNqNs4ABfJI",
+    "GhsaId": "GHSA-4c8g-83qw-93j6",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fast-uri/security/advisories/GHSA-4c8g-83qw-93j6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-13676"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/pull/188"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/2a6d357a18a68e6d812824379fd3388a1ae50d05"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/21ea1f9d70495c931f55dff893a8fa38f4f2e6bd"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/01db48010f594b98f7b323be18b393791c66ed1d"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-13676.json"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v4.0.1"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v3.1.3"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v2.4.2"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2494197"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-13676"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:41929"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:41928"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:41066"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:40945"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:40262"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:40118"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37628"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37585"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37186"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4c8g-83qw-93j6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4c8g-83qw-93j6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-13676"
+      }
+    ],
+    "Description": "### Impact\n\n`fast-uri` versions `\u003e= 2.3.1, \u003c= 4.0.0` fail to canonicalize Unicode/IDN hostnames for HTTP-family URLs. The IDN conversion path calls `URL.domainToASCII(...)` on the global WHATWG `URL` constructor, where that helper does not exist. The resulting `TypeError` is silently routed into `parsed.error`, but `parse()`, `normalize()`, and `equal()` all return with the host left in its original Unicode form.\n\nFor example, `http://127。0。0。1/` is treated by `fast-uri` as host `127。0。0。1`, while Node's WHATWG URL parser and `fetch()` canonicalize the same input to `127.0.0.1`.\n\nApplications that use `fast-uri` to enforce host-based policy (denylists, loopback filtering, redirect validation, outbound proxy routing) before passing the same URL into Node's URL or `fetch()` consumers see a policy/use desync and can be steered to an unintended destination.\n\n### Patches\n\nUpgrade to `fast-uri` v4.0.1, v3.1.3, or v2.4.2\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-21T19:03:11Z",
+    "Severity": "HIGH",
+    "Summary": "fast-uri vulnerable to host confusion via failed IDN canonicalization",
+    "UpdatedAt": "2026-07-21T19:03:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.3.1, \u003c 2.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.1.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.0.1"
+    }
+  ]
+}
