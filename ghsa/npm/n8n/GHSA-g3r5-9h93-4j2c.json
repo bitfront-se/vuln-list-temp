@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T17:56:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391123,
+    "Id": "GSA_kwCzR0hTQS1nM3I1LTloOTMtNGoyY84ABffT",
+    "GhsaId": "GHSA-g3r5-9h93-4j2c",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-g3r5-9h93-4j2c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65598"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.64"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.29.8"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.30.1"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-before-remote-code-execution-via-git-clone"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g3r5-9h93-4j2c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g3r5-9h93-4j2c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65598"
+      }
+    ],
+    "Description": "## Impact\nA TOCTOU race condition in the Git node's `clone` operation lets an authenticated user bypass its path restrictions by swapping a directory for a symlink after the path is validated but before the clone runs. This plants a crafted repository in the community node directory, which n8n loads as a custom node on the next restart, and since nodes execute JavaScript, this yields arbitrary code execution on the server.\n\nBoth self-hosted and cloud instances are affected, where authenticated users can create and run workflows using the Git node.\n\n## Patches\nUsers should upgrade to the patched version once available to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Disable the Git node by adding `n8n-nodes-base.git` to the `NODES_EXCLUDE` environment variable.\n- Restrict network egress from the n8n instance to prevent connections to attacker-controlled git repositories.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T17:56:35Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Race Condition in Git Clone Node Allows Authenticated Users to Achieve Remote Code Execution",
+    "UpdatedAt": "2026-07-22T17:56:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.29.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.29.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.30.0, \u003c 2.30.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.64"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.64"
+    }
+  ]
+}

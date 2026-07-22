@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T17:55:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391122,
+    "Id": "GSA_kwCzR0hTQS14NXZ4LWMyYzgtbTN3Oc4ABffS",
+    "GhsaId": "GHSA-x5vx-c2c8-m3w9",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-x5vx-c2c8-m3w9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65015"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.29.8"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.30.1"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-before-privilege-escalation-via-run-node-tool"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x5vx-c2c8-m3w9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x5vx-c2c8-m3w9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65015"
+      }
+    ],
+    "Description": "## Impact\nIn n8n's AI Agents feature, a user with the read-only Project Viewer role could escalate their privileges by chatting with an agent that has node tools enabled. The agent's node-execution tool was authorized only by the `agent:execute` scope and ran nodes using the project's credentials, without verifying that the requesting user was permitted to execute nodes or to access those credentials.\n\nAs a result, a Project Viewer could execute arbitrary tool nodes on the server and use credential secrets they were not authorized to read, gaining execution capabilities their role is intended to deny. On instances where a command- or file-capable tool node (such as Execute Command or SSH) is enabled, this could be extended to arbitrary command execution on the n8n host.\n\nUsers of the AI Agents feature who share team projects with lower-privileged members are affected.\n\n## Patches\nThe issue has been fixed in n8n versions 2.29.8 and 2.30.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Disable the AI Agents module by removing `agents` from the `N8N_ENABLED_MODULES` environment variable.\n- Restrict project membership to fully trusted users only, and avoid granting Project Viewer access to untrusted users on projects containing agents with node tools enabled.\n- Disable command-execution nodes (e.g. Execute Command, SSH) if they have been re-enabled, to limit the potential impact.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T17:55:55Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: AI Agents Project Viewer Privilege Escalation via run_node_tool",
+    "UpdatedAt": "2026-07-22T17:55:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.29.8"
+      },
+      "VulnerableVersionRange": "\u003c 2.29.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.30.0, \u003c 2.30.1"
+    }
+  ]
+}
