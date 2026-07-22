@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-21T21:49:02Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "gitea.dev"
+  },
+  "Advisory": {
+    "DatabaseId": 389849,
+    "Id": "GSA_kwCzR0hTQS1wcnI5LTltcDQtNWdwMs4ABfLZ",
+    "GhsaId": "GHSA-prr9-9mp4-5gp2",
+    "References": [
+      {
+        "Url": "https://github.com/go-gitea/gitea/security/advisories/GHSA-prr9-9mp4-5gp2"
+      },
+      {
+        "Url": "https://github.com/go-gitea/gitea/releases/tag/v1.27.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-prr9-9mp4-5gp2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-prr9-9mp4-5gp2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58427"
+      }
+    ],
+    "Description": "## Summary\nPR #38145 fixed ListPublicMembers and IsPublicMember but missed \nListMembers. Any authenticated user can enumerate ALL members \n(not just public ones) of a private organization.\n\n## Affected Versions\n\u003c= v1.26.4 (latest) and main branch\n\n## Root Cause\nrouters/api/v1/org/member.go — ListMembers():\n\n// Missing check:\nif !organization.HasOrgOrUserVisible(ctx, \n    ctx.Org.Organization.AsUser(), ctx.Doer) {\n    ctx.APIErrorNotFound()\n    return\n}\n\n## Proof of Concept\n\n# Setup: privateorg (private), alice = member, bob = outsider\n\n# Bob lists ALL members of private org\ncurl -s \"http://gitea/api/v1/orgs/privateorg/members\" \\\n  -H \"Authorization: token BOB_TOKEN\"\n\n# Result: HTTP 200\n[{\"login\":\"alice\",\"email\":\"alice@test.com\",...}]\n# Expected: HTTP 404\n\n## Note\nThis is an incomplete fix variant of PR #38145.\nThat PR fixed public_members endpoints only.\nListMembers (/orgs/{org}/members) remains unpatched.\n\n## Fix\nAdd to ListMembers():\nif !organization.HasOrgOrUserVisible(ctx, \n    ctx.Org.Organization.AsUser(), ctx.Doer) {\n    ctx.APIErrorNotFound()\n    return\n}",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-21T21:49:00Z",
+    "Severity": "MODERATE",
+    "Summary": "Gitea: Private org member list leaked via /members API endpoint — incomplete fix for PR #38145",
+    "UpdatedAt": "2026-07-21T21:49:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.27.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.27.0"
+    }
+  ]
+}

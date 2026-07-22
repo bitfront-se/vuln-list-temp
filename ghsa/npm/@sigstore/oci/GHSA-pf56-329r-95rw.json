@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-21T19:34:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@sigstore/oci"
+  },
+  "Advisory": {
+    "DatabaseId": 389714,
+    "Id": "GSA_kwCzR0hTQS1wZjU2LTMyOXItOTVyd84ABfJS",
+    "GhsaId": "GHSA-pf56-329r-95rw",
+    "References": [
+      {
+        "Url": "https://github.com/sigstore/sigstore-js/security/advisories/GHSA-pf56-329r-95rw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59891"
+      },
+      {
+        "Url": "https://github.com/sigstore/sigstore-js/commit/85c58380758b97ce1b74ef470e55cc21f9d3aa89"
+      },
+      {
+        "Url": "https://github.com/sigstore/sigstore-js/releases/tag/%40sigstore%2Foci%400.7.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pf56-329r-95rw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pf56-329r-95rw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59891"
+      }
+    ],
+    "Description": "### Impact\n\nThis is a credential-exposure / credential-confusion issue.\n\n`getRegistryCredentials()` reads credentials from the Docker config file (`~/.docker/config.json`) and selects an entry by checking whether any configured auth key **contains** the target registry string:\n\n```js\nObject.keys(dockerConfig.auths || {}).find((key) =\u003e key.includes(registry))\n```\n\nBecause this is a **substring match rather than an exact host match**, credentials configured for one registry can be selected for — and transmitted to — a *different* registry whose hostname has a substring relationship with a configured auth key (for example, an attacker-controlled `cr.io` matches a configured `ghcr.io`).\n\n**Who is impacted:** Any consumer of `@sigstore/oci` that uploads artifacts to an OCI registry using credentials from a Docker config, where the destination registry/image reference can be influenced by an untrusted party. This includes `@actions/attest` and the `actions/attest`, `actions/attest-build-provenance`, and `actions/attest-sbom` GitHub Actions when run with `push-to-registry: true`, where the `subject-name` input determines the destination registry.\n\nThis is classified as a **critical** vulnerability given the potential, in a theoretical worst-case scenario, to expose long-lived registry credentials. However, in practice, exploitation requires all of the following:\n\n- The Docker config on the host contains credentials for a registry.\n- The destination registry/image reference is influenced by an untrusted source.\n- The attacker controls a registry whose hostname is a substring of (or is otherwise contained within) a configured Docker auth key.\n\nUnder those conditions, registry credentials present on the host (e.g. a GHCR, Docker Hub, or cloud-registry token) can be sent to an attacker-controlled registry during the authentication exchange.\n\n### Patches\n\nFixed in **`@sigstore/oci@0.7.1`**. Credential selection now requires an **exact host match**: both the target registry and each Docker auth key are canonicalized — stripping any `https?://` scheme and path and normalizing the Docker Hub aliases (`index.docker.io` / `registry-1.docker.io` / `docker.io`) — and compared for equality. When no exact match exists, credential lookup now fails rather than falling back to an unrelated credential.\n\n- **Affected versions:** `\u003c= 0.7.0` (all releases from `0.1.0`).\n- **Patched version:** `0.7.1`.\n\nDownstream consumers should pick up the patched `@sigstore/oci`; subsequent releases of `@actions/attest` and the `actions/attest*` GitHub Actions will bundle the fix.\n\n### Workarounds\n\n- Treat the destination registry/image reference as trusted input — do not allow untrusted sources to influence the registry/image reference passed to `@sigstore/oci` (or the `subject-name` of `actions/attest*` when `push-to-registry: true`).\n- Limit the credentials available in the host's Docker config to only those required for the operation, and avoid authenticating to registries whose hostnames have substring relationships with potential untrusted destinations.\n- Scope registry tokens narrowly and prefer short-lived credentials.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-21T19:34:05Z",
+    "Severity": "CRITICAL",
+    "Summary": "Credential confusion in @sigstore/oci can leak registry credentials to an attacker-controlled registry",
+    "UpdatedAt": "2026-07-21T19:34:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.7.1"
+    }
+  ]
+}

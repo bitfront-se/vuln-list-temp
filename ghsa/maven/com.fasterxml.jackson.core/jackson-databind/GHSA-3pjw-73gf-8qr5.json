@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-21T19:33:07Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.fasterxml.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 389713,
+    "Id": "GSA_kwCzR0hTQS0zcGp3LTczZ2YtOHFyNc4ABfJR",
+    "GhsaId": "GHSA-3pjw-73gf-8qr5",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-3pjw-73gf-8qr5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59888"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/pull/5974"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/baa2cdf5ca2b2717fbb88d91955d69d8651df3e4"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/c7c678360624da5bc7eed2152789fa522880db9d"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3pjw-73gf-8qr5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3pjw-73gf-8qr5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59888"
+      }
+    ],
+    "Description": "## Summary\nFor Java Records, `POJOPropertiesCollector._removeUnwantedIgnorals()` records a `@JsonIgnore`-annotated component under its original implicit name before `_renameUsing()` applies the `PropertyNamingStrategy`. After the rename, `_ignoredPropertyNames` still holds only the pre-rename name, so `_ignorableProps` is built from the stale key. The renamed JSON key passes `IgnorePropertiesUtil.shouldIgnore()` and is assigned to the Record's constructor parameter, defeating the `@JsonIgnore`.\n\n## Impact\nA Record using a naming strategy that relies on `@JsonIgnore` to keep an internal/privileged component out of deserialization can have that component set from the wire via its renamed key (e.g. a role/flag controlled by an untrusted client).\n\n## Affected / Patched (verified via `git tag --contains`)\n- 2.15-2.18 line: `\u003e= 2.15.0, \u003c 2.18.8` -\u003e fixed in **2.18.8** (backport `c7c6783`)\n- 2.19-2.21 line: `\u003e= 2.19.0, \u003c 2.21.4` -\u003e fixed in **2.21.4**\n- 3.x line: `\u003e= 3.0.0, \u003c 3.1.4` -\u003e fixed in **3.1.4** (#5974, `baa2cdf`)\n\n## Severity / CWE\nMaintainer: minor. Reporter: Moderate. CWE-915; related CWE-345.\n\n## Credits\nOmkhar Arasaratnam (@omkhar) - finder.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-21T19:33:06Z",
+    "Severity": "MODERATE",
+    "Summary": "jackson-databind: @JsonIgnore on a Record property is bypassed with a PropertyNamingStrategy",
+    "UpdatedAt": "2026-07-21T19:33:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.21.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.19.0, \u003c 2.21.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.15.0, \u003c 2.18.8"
+    }
+  ]
+}

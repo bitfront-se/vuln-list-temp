@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-21T22:06:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-xml-parser"
+  },
+  "Advisory": {
+    "DatabaseId": 389866,
+    "Id": "GSA_kwCzR0hTQS04cjZtLTMyanEtang2cc4ABfLq",
+    "GhsaId": "GHSA-8r6m-32jq-jx6q",
+    "References": [
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-8r6m-32jq-jx6q"
+      },
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/commit/4e546e03987662de5495d050b5fba26bea65383f"
+      },
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/releases/tag/v5.10.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8r6m-32jq-jx6q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8r6m-32jq-jx6q"
+      }
+    ],
+    "Description": "### Impact\n`fast-xml-parser` processes multiple \"DOCTYPE\" declarations within a single XML document. Each declaration passes its entities to `@nodable/entities` through `addInputEntities()`.\n\n`addInputEntities()` resets the entity expansion counters every time it is called. An attacker can therefore insert additional DOCTYPE declarations to repeatedly reset maxTotalExpansions and maxExpandedLength during one parse operation.\n\nThis allows a crafted XML document to exceed the configured entity-expansion limits and can cause excessive CPU use, event-loop blocking, memory exhaustion, and process termination.\n\n### Workarounds\n- Manually check if multiple DOCTYPEs are not present in input contents\n- Update to v5.10.1\n- Keep `processEntity` flag off",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-21T22:06:36Z",
+    "Severity": "HIGH",
+    "Summary": "fast-xml-parser: Repeated DOCTYPE declarations reset entity expansion limits",
+    "UpdatedAt": "2026-07-21T22:06:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.10.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.9.3, \u003c 5.10.1"
+    }
+  ]
+}
