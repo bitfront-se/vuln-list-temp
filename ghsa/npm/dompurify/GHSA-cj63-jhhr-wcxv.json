@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-cj63-jhhr-wcxv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65913"
       }
     ],
     "Description": "## Summary\nWhen `USE_PROFILES` is enabled, DOMPurify rebuilds `ALLOWED_ATTR` as a plain array before populating it with the requested allowlists. Because the sanitizer still looks up attributes via `ALLOWED_ATTR[lcName]`, any `Array.prototype` property that is polluted also counts as an allowlisted attribute. An attacker who can set `Array.prototype.onclick = true` (or a runtime already subject to prototype pollution) can thus force DOMPurify to keep event handlers such as `onclick` even when they are normally forbidden. The provided PoC sanitizes `\u003cimg onclick=...\u003e` with `USE_PROFILES` and adds the sanitized output to the DOM; the polluted prototype allows the event handler to survive and execute, turning what should be a blocklist into a silent XSS vector.\n\n## Impact\nPrototype pollution makes DOMPurify accept dangerous event handler attributes, which bypasses the sanitizer and results in DOM-based XSS once the sanitized markup is rendered.\n\n## Credits\nIdentified by Cantina’s Apex (https://www.cantina.security).",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-03T03:45:08Z",
     "Severity": "MODERATE",
     "Summary": "DOMPurify USE_PROFILES prototype pollution allows event handlers",
-    "UpdatedAt": "2026-04-03T03:45:08Z",
+    "UpdatedAt": "2026-07-23T14:04:56Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,

@@ -24,6 +24,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-cjmm-f4jc-qw8r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65912"
       }
     ],
     "Description": "## Summary\nDOMPurify allows `ADD_ATTR` to be provided as a predicate function via `EXTRA_ELEMENT_HANDLING.attributeCheck`. When the predicate returns `true`, `_isValidAttribute` short-circuits the attribute check before URI-safe validation runs. An attacker who supplies a predicate that accepts specific attribute/tag combinations can then sanitize input such as `\u003ca href=\"javascript:alert(document.domain)\"\u003e` and have the `javascript:` URL survive, because URI validation is skipped for that attribute while other checks still pass. The provided PoC accepts `href` for anchors and then triggers a click inside an iframe, showing that the sanitized payload executes despite the protocol bypass.\n\n## Impact\nPredicate-based allowlisting bypasses DOMPurify's URI validation, allowing unsafe protocols such as `javascript:` to reach the DOM and execute whenever the link is activated, resulting in DOM-based XSS.\n\n## Credits\nIdentified by Cantina’s Apex (https://www.cantina.security).",
@@ -31,7 +35,7 @@
     "PublishedAt": "2026-04-03T03:46:07Z",
     "Severity": "MODERATE",
     "Summary": "DOMPurify ADD_ATTR predicate skips URI validation",
-    "UpdatedAt": "2026-04-03T03:46:08Z",
+    "UpdatedAt": "2026-07-23T14:04:36Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
