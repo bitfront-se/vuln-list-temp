@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:30:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391030,
+    "Id": "GSA_kwCzR0hTQS01dmZ3LWpjNHAtZmozOc4ABfd2",
+    "GhsaId": "GHSA-5vfw-jc4p-fj39",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-q5xf-xhwf-cwqf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65594"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-before-missing-oauth-authorization-check"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5vfw-jc4p-fj39"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5vfw-jc4p-fj39"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-q5xf-xhwf-cwqf. This link is maintained to preserve external references.\n\n## Original Description\n\nn8n before 2.29.8 and 2.30.x before 2.30.1 (affected from 2.27.0, when the OAuth 2.1 consent and token-issuance flow was introduced) does not verify that the authenticated user has access to the workflow referenced as the OAuth resource. On instances with at least one active MCP Server Trigger workflow configured with n8n OAuth2 authentication, a member-level user can register an OAuth client, self-approve consent for another user's workflow, and obtain a valid token. The workflow then runs in the owner's project context with the owner's stored credentials, and the attacker can set tool inputs and read outputs (potentially including data from the owner's connected integrations), breaking user and project isolation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T12:32:17Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: Member-Level Users Can Execute Other Users' MCP Server Trigger Workflows via Missing OAuth Authorization Check",
+    "UpdatedAt": "2026-07-22T22:30:29Z",
+    "WithdrawnAt": "2026-07-22T22:30:28Z",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c 2.29.8"
+    }
+  ]
+}

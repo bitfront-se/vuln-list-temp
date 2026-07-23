@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T21:49:28Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http2"
+  },
+  "Advisory": {
+    "DatabaseId": 391222,
+    "Id": "GSA_kwCzR0hTQS1jNjlnLTU2ZjgteHdxas4ABfg2",
+    "GhsaId": "GHSA-c69g-56f8-xwqj",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-c69g-56f8-xwqj"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.136.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.16.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c69g-56f8-xwqj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c69g-56f8-xwqj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59900"
+      }
+    ],
+    "Description": "Netty's HTTP/2-to-HTTP/1.x translation layer (`Http2StreamFrameToHttpObjectCodec` and `InboundHttp2ToHttpAdapter`) fails to deduplicate or validate `Host` headers when an HTTP/2 client supplies both the `:authority` pseudo-header and a literal `host` header in a single HEADERS frame. The translator maps `:authority` to `Host` and separately copies the literal `host` header, producing an `HttpRequest` object containing two `Host` headers with attacker-controlled differing values.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T21:49:28Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty: [codec-http2] Lack of Host Header Deduplication in HTTP/2→HTTP/1.x Translation Leads to Request Routing Bypass",
+    "UpdatedAt": "2026-07-22T21:49:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.136.Final"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.136.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.16.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.15.Final"
+    }
+  ]
+}

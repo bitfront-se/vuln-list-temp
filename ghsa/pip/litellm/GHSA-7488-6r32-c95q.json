@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T22:38:34Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 391259,
+    "Id": "GSA_kwCzR0hTQS03NDg4LTZyMzItYzk1cc4ABfhb",
+    "GhsaId": "GHSA-7488-6r32-c95q",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-7488-6r32-c95q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59822"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/pull/26463"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/73869f0faf7d11ee21adcb5f91b8c33a340b6c2c"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.84.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7488-6r32-c95q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7488-6r32-c95q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59822"
+      }
+    ],
+    "Description": "### Impact\n\nLiteLLM's MCP Streamable HTTP endpoint could allow an unauthenticated attacker to establish an authenticated MCP session using an arbitrary Bearer token.\n\nThe MCP auth handler supported OAuth2 passthrough for upstream MCP servers, but the fallback path could replace failed LiteLLM key validation with an empty `UserAPIKeyAuth()` object. This allowed requests with a fabricated `Authorization` header to reach MCP tooling without a valid LiteLLM key.\n\nAn attacker could use this to list and call configured MCP tools and access connected services exposed through MCP.\n\n### Patches\n\nThe issue is fixed in `1.84.0`.\n\nWe recommend upgrading to `1.84.0` or later.\n\n### Workarounds\n\nIf upgrading is not immediately possible, disable MCP routes or block access to `/mcp/` and related MCP endpoints at your reverse proxy or API gateway.\n\n### References\n\n* [v1.84.0](https://github.com/BerriAI/litellm/releases/tag/v1.84.0)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:38:33Z",
+    "Severity": "HIGH",
+    "Summary": "LiteLLM: MCP Authentication Bypass via OAuth2 Passthrough Fallback",
+    "UpdatedAt": "2026-07-22T22:38:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.84.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.84.0"
+    }
+  ]
+}

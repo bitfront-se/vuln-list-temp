@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:36:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391256,
+    "Id": "GSA_kwCzR0hTQS0zM3E5LWY1MmotZ2M3Nc4ABfhY",
+    "GhsaId": "GHSA-33q9-f52j-gc75",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-33q9-f52j-gc75"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65014"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.27.4"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.28.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-before-authentication-bypass-via-test-webhook"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-33q9-f52j-gc75"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-33q9-f52j-gc75"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65014"
+      }
+    ],
+    "Description": "## Impact\nThe `DELETE /${restEndpoint}/test-webhook/:id` route is registered before the authentication middleware is applied, allowing any unauthenticated network caller who knows a workflow ID to cancel that workflow's active test webhook registration. \n\nThe impact is limited to disrupting in-progress test sessions. Production webhooks, persistent workflow state, and stored data are not affected.\n\n## Patches\nUsers should upgrade to the patched version once available to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict network access to the n8n instance to fully trusted users only.\n- Place the n8n instance behind a reverse proxy or firewall that requires authentication before reaching the REST API.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:36:10Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Unauthenticated Endpoint Allows Cancellation of Any User's Active Test Webhook",
+    "UpdatedAt": "2026-07-22T22:36:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.27.4"
+      },
+      "VulnerableVersionRange": "\u003c 2.27.4"
+    }
+  ]
+}

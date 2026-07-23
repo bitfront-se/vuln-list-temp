@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-22T22:38:58Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 391260,
+    "Id": "GSA_kwCzR0hTQS03Mm04LTltN20taDI3OM4ABfhc",
+    "GhsaId": "GHSA-72m8-9m7m-h278",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-72m8-9m7m-h278"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59821"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/e50b4486d0f7aa0497185a1ebcdd2c91f1769eba"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.82.0-stable"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72m8-9m7m-h278"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72m8-9m7m-h278"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59821"
+      }
+    ],
+    "Description": "### Impact\n\nLiteLLM's Custom Code Guardrails production create/update paths did not apply the same sandboxing and validation used by the test endpoint.\n\nA privileged user with access to create or update guardrails could submit custom Python code that executed in the LiteLLM proxy environment. In deployments without a configured master key, callers could be treated as proxy administrators, making this reachable without intended administrative authorization.\n\nThis could allow arbitrary code execution in the LiteLLM proxy container and exposure of secrets available to the process.\n\n### Patches\n\nThe issue is fixed in `1.82.0-stable`.\n\nLiteLLM recommend upgrading to `1.82.0-stable` or later.\n\n### Workarounds\n\nIf upgrading is not immediately possible:\n\n1. Restrict access to `POST /guardrails` and `PUT /guardrails/{guardrail_id}` to trusted administrators only.\n2. Ensure `LITELLM_MASTER_KEY` is configured.\n3. Avoid enabling Custom Code Guardrails for untrusted users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:38:55Z",
+    "Severity": "LOW",
+    "Summary": "LiteLLM: Custom Code Guardrails production endpoints bypass code safety checks",
+    "UpdatedAt": "2026-07-22T22:38:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.82.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.82.0"
+    }
+  ]
+}

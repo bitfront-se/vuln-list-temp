@@ -1,0 +1,70 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T22:11:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391243,
+    "Id": "GSA_kwCzR0hTQS1jajloLXF4OGctcHEyZ84ABfhL",
+    "GhsaId": "GHSA-cj9h-qx8g-pq2g",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-cj9h-qx8g-pq2g"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/f69dfc6dd2178a14ea1624d2e1d403c2e755042f"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.67"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.31.5"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.32.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cj9h-qx8g-pq2g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cj9h-qx8g-pq2g"
+      }
+    ],
+    "Description": "## Impact\n\nn8n's credential-access checks validated only a node's top-level credentials, not credentials referenced inside an Execute Sub-workflow node's inline workflow JSON. A member with editor access to a shared workflow could reference a credential they were not permitted to use inside that inline JSON; it passed both save-time and runtime validation and resolved in the parent workflow's project context, letting the member use or exfiltrate a credential they could not otherwise access.\n\nExploitation requires workflow sharing to be enabled and the attacker to have been explicitly granted Editor access to a shared workflow. The attacker must also know the target credential's ID.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.67, 2.31.5, and 2.32.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict workflow sharing to fully trusted users only, and avoid granting Editor access to untrusted members on workflows that use sensitive credentials.\n- Audit shared workflows for Execute Sub-workflow nodes with Source = \"Parameter\" and review their inline workflow definitions for unexpected credential references.\n- Restrict network egress from the n8n instance to prevent connections to attacker-controlled endpoints.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:11:22Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Shared-Workflow Editor Can Exfiltrate Credentials via Inline Sub-Workflow JSON",
+    "UpdatedAt": "2026-07-22T22:11:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.31.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.32.0, \u003c 2.32.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.67"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.67"
+    }
+  ]
+}

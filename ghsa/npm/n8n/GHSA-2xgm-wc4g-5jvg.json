@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:24:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391251,
+    "Id": "GSA_kwCzR0hTQS0yeGdtLXdjNGctNWp2Z84ABfhT",
+    "GhsaId": "GHSA-2xgm-wc4g-5jvg",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-2xgm-wc4g-5jvg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59253"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.28.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-improper-authorization-in-workflow-assignment-to-folders"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2xgm-wc4g-5jvg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2xgm-wc4g-5jvg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59253"
+      }
+    ],
+    "Description": "## Impact\nAn authenticated user with permission to create workflows in one project could bypass project/folder authorization boundaries during workflow creation. By supplying a crafted request payload, the user could associate a newly created workflow with a folder belonging to a different project they do not have access to.\n\nThe workflow itself remains in the attacker's project and is not visible to the target project's members. The target project's folder ownership is not changed, and no data from the target project is exposed. The impact is limited to a logical integrity violation of the target project's folder structure at the database level.\n\nThis issue affects instances with multi-project and folder support enabled.\n\n## Patches\nThe issue has been fixed in n8n version 2.28.0. Users should upgrade to this version or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict project membership and workflow creation permissions to fully trusted users only.\n\nThis workaround does not fully remediate the risk and should only be used as a short-term mitigation measure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:24:43Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Improper Authorization Allows Authenticated Users to Assign Workflows to Folders in Other Projects",
+    "UpdatedAt": "2026-07-22T22:24:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.28.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.28.0"
+    }
+  ]
+}

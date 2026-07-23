@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:13:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391247,
+    "Id": "GSA_kwCzR0hTQS1wZjJxLXB4aGYtaGdtd84ABfhP",
+    "GhsaId": "GHSA-pf2q-pxhf-hgmw",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-pf2q-pxhf-hgmw"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.31.5"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.32.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pf2q-pxhf-hgmw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pf2q-pxhf-hgmw"
+      }
+    ],
+    "Description": "## Impact\n\nThe component `@n8n/computer-use` file-search tool confined searches to a configured base directory. A crafted search pattern could bypass the confinement check and expand to locations outside that directory, causing the tool to return the names and contents of files anywhere the daemon's OS user could read. Any deployment where an actor could influence the tool's search input was affected; the result was disclosure of arbitrary local files outside the intended sandbox.\n\n## Patches\n\nThe issue has been fixed in n8n versions 2.31.5 and 2.32.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Disable or remove AI agent workflows that use the `computer-use` package until the instance is patched.\n- Ensure the n8n process runs under a dedicated low-privilege user account to limit the files accessible outside the sandbox.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:13:36Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Path-Confinement Bypass in computer-use search_files Allows Reading Files Outside the Base Directory",
+    "UpdatedAt": "2026-07-22T22:13:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.5"
+      },
+      "VulnerableVersionRange": "\u003c 2.31.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.32.0, \u003c 2.32.1"
+    }
+  ]
+}

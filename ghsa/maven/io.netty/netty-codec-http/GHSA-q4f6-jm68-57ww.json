@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T21:49:14Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http"
+  },
+  "Advisory": {
+    "DatabaseId": 391221,
+    "Id": "GSA_kwCzR0hTQS1xNGY2LWptNjgtNTd3d84ABfg1",
+    "GhsaId": "GHSA-q4f6-jm68-57ww",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-q4f6-jm68-57ww"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.136.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.16.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q4f6-jm68-57ww"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q4f6-jm68-57ww"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59899"
+      }
+    ],
+    "Description": "### Impact\n`HttpContentEncoder` (the superclass of the production handler `HttpContentCompressor`) maintains a per-channel `ArrayDeque\u003cCharSequence\u003e` named `acceptEncodingQueue` that accumulates attacker-controlled data without any size limit. The queue is filled on the I/O thread for every inbound HTTP request and drained only when the application later writes a non-1xx response. This creates a resource exhaustion vulnerability when an attacker exploits HTTP/1.1 pipelining to flood the connection with requests faster than the application produces responses.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T21:49:13Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty: [HttpContentEncoder] Unbounded Per-Connection Queue Growth via HTTP/1.1 Pipelining Leads to Denial of Service",
+    "UpdatedAt": "2026-07-22T21:49:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.136.Final"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.136.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.16.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.15.Final"
+    }
+  ]
+}

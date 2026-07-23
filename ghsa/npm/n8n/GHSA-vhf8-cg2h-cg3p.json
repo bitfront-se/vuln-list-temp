@@ -1,0 +1,61 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:07:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391238,
+    "Id": "GSA_kwCzR0hTQS12aGY4LWNnMmgtY2czcM4ABfhG",
+    "GhsaId": "GHSA-vhf8-cg2h-cg3p",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-vhf8-cg2h-cg3p"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/f69dfc6dd2178a14ea1624d2e1d403c2e755042f"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.31.5"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.32.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vhf8-cg2h-cg3p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vhf8-cg2h-cg3p"
+      }
+    ],
+    "Description": "## Impact\n\nOn an n8n instance with SSRF protection enabled, the MCP Client node sent requests to a user-supplied endpoint without routing them through that protection and without pinning the resolved address. An authenticated user who could create or edit a workflow could therefore cause the server to connect to internal or otherwise blocked hosts and read the responses back through the workflow, exposing internal services the SSRF protection was meant to protect.\n\n## Patches\n\nThe issue has been fixed in n8n versions 2.31.5 and 2.32.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Disable the MCP Client node by adding it to the `NODES_EXCLUDE` environment variable.\n- Restrict network egress from the n8n host to block access to internal and link-local address ranges at the network level.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:07:04Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: SSRF Protection Bypass via MCP Client Node",
+    "UpdatedAt": "2026-07-22T22:07:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.5"
+      },
+      "VulnerableVersionRange": "\u003c 2.31.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.32.0, \u003c 2.32.1"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T21:23:29Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-haproxy"
+  },
+  "Advisory": {
+    "DatabaseId": 391157,
+    "Id": "GSA_kwCzR0hTQS1xNmNxLW1ocjItam1yNc4ABff1",
+    "GhsaId": "GHSA-q6cq-mhr2-jmr5",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-q6cq-mhr2-jmr5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-55851"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/bb2ff68a1fb71cb4b0eb9a9e17b66c52aff680c6"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.136.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.16.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6cq-mhr2-jmr5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6cq-mhr2-jmr5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55851"
+      }
+    ],
+    "Description": "The `HAProxyMessageDecoder` in netty's `codec-haproxy` module performs protocol version detection by reading the 13th byte of the inbound stream as a signed Java `byte` and widening it to `int` without masking. When an attacker sends a PROXY protocol v2 binary prefix (`0D 0A 0D 0A 00 0D 0A 51 55 49 54 0A`) followed by version byte `0xFF`, the sign extension produces `-1`, which collides with the decoder's \"need more data\" sentinel value. This collision traps the decoder in a version-detection loop where it perpetually requests more data without consuming any bytes, never instantiates the `HeaderExtractor` that enforces header size limits, and causes `ByteToMessageDecoder` to accumulate all subsequent inbound bytes into an unbounded `cumulation` buffer until the JVM exhausts its direct memory allocation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T21:23:25Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: [codec-haproxy] Signed-Byte Sentinel Collision in HAProxyMessageDecoder Leads to Unbounded Memory Exhaustion",
+    "UpdatedAt": "2026-07-22T21:23:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.136.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.1.0.Final, \u003c= 4.1.135.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.16.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.15.Final"
+    }
+  ]
+}

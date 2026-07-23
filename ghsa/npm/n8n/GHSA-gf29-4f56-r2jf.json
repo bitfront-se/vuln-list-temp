@@ -1,0 +1,70 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T22:06:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391237,
+    "Id": "GSA_kwCzR0hTQS1nZjI5LTRmNTYtcjJqZs4ABfhF",
+    "GhsaId": "GHSA-gf29-4f56-r2jf",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-gf29-4f56-r2jf"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/commit/f69dfc6dd2178a14ea1624d2e1d403c2e755042f"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.67"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.31.5"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.32.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gf29-4f56-r2jf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gf29-4f56-r2jf"
+      }
+    ],
+    "Description": "## Impact\n\nAuthenticated n8n users with workflow create/execute rights could use the Git node's fetch, pull, or push-tags operations to bypass the repository-path containment checks that already protected clone and push. By pointing an allowlisted remote configuration value at a local path outside the intended sandbox, an attacker could pull an arbitrary local git repository into the workspace and subsequently read its files and history. \n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.67, 2.31.5, and 2.32.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Disable the Git node by adding `n8n-nodes-base.git` to the `NODES_EXCLUDE` environment variable.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:06:45Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Git Node fetch/pull/pushTags Operations Bypass Sandbox Path Restriction",
+    "UpdatedAt": "2026-07-22T22:06:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.31.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.32.0, \u003c 2.32.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.67"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.67"
+    }
+  ]
+}

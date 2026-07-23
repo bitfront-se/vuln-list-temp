@@ -1,0 +1,80 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:56:08Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.jetty:jetty-server"
+  },
+  "Advisory": {
+    "DatabaseId": 391266,
+    "Id": "GSA_kwCzR0hTQS1mNHY1LTY1amotcGNyMs4ABfhi",
+    "GhsaId": "GHSA-f4v5-65jj-pcr2",
+    "References": [
+      {
+        "Url": "https://github.com/jetty/jetty.project/security/advisories/GHSA-f4v5-65jj-pcr2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10051"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/pull/15162"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/pull/15163"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/commit/72206b3ea623cf7ed8729b47a83ee628ff10e8eb"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/commit/dc27e8d3ab743fe27935ea2d8c41756eb6c5bae9"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/releases/tag/jetty-12.0.36"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/releases/tag/jetty-12.1.10"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/work_items/119"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f4v5-65jj-pcr2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f4v5-65jj-pcr2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-10051"
+      }
+    ],
+    "Description": "### Description\n\n\u003e FINDING — MEDIUM (HTTP/1.1 keep-alive connections with trailers)\n\u003e HttpConnection._trailers Cross-Request Leakage (Never Reset Between Requests)\n\u003e \n\u003e Location:\n\u003e   jetty-core/jetty-server/src/main/java/org/eclipse/jetty/server/internal/\n\u003e   HttpConnection.java:107, 1157-1161, 1170\n\u003e \n\u003e Detail:\n\u003e   _trailers (line 107) is a connection-scoped HttpFields.Mutable field.\n\u003e   parsedTrailer() (line 1157) populates it when request N carries HTTP trailers.\n\u003e   messageComplete() (line 1170) checks \"if (_trailers != null)\" — evaluates true\n\u003e   from request N's data — and stamps it onto request N+1.\n\u003e \n\u003e   Grep confirms: ZERO occurrences of \"_trailers = null\" in entire HttpConnection.java.\n\u003e \n\u003e   Scenario:\n\u003e     Request N:   POST /upload (trailers: X-Checksum: abc123)\n\u003e     Request N+1: GET  /data   (no trailers)\n\u003e     app: request.getTrailers() on N+1 → returns {X-Checksum: abc123} ← STALE\n\u003e \n\u003e   Application logic branching on getTrailers() != null produces incorrect behavior.\n\u003e   Not cross-connection (same keep-alive connection only).\n\u003e \n\u003e   More dangerous scenario: TOCTOU — trailer passes check, target swapped before use.\n\n### Workarounds\nDo not rely on HTTP request trailers for security-sensitive logic, or disable persistent connections by closing the connection after each HTTP/1.1 request.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:56:05Z",
+    "Severity": "MODERATE",
+    "Summary": "Eclipse Jetty: Cross-Request Leakage for trailers on HTTP/1.1 keep-alive connections",
+    "UpdatedAt": "2026-07-22T22:56:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.1.10"
+      },
+      "VulnerableVersionRange": "\u003e= 12.1.0, \u003c= 12.1.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.0.36"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c= 12.0.35"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:28:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391253,
+    "Id": "GSA_kwCzR0hTQS1mcGc2LXg2OHEtNTc5M84ABfhV",
+    "GhsaId": "GHSA-fpg6-x68q-5793",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-fpg6-x68q-5793"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65590"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.29.8"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.30.1"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-before-shell-sandbox-bypass-on-linux-windows"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fpg6-x68q-5793"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fpg6-x68q-5793"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65590"
+      }
+    ],
+    "Description": "## Impact\nThe shell tool in the `@n8n/computer-use` package applied its sandbox restrictions only on macOS. On Linux and Windows, shell commands executed by the tool ran without any filesystem or network restrictions, allowing unrestricted access to the host filesystem and network from within the computer-use agent process.\n\nThis issue only affects deployments where the `@n8n/computer-use` package is explicitly installed and running. It does not affect standard n8n installations.\n\n## Patches\nThe issue has been fixed in n8n versions 2.29.8 and 2.30.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\nThe fix adds sandbox enforcement on Linux via bubblewrap and disables the shell tool entirely when a working sandbox cannot be established. An explicit opt-out flag (`--dangerously-disable-shell-sandbox`) is available for deployments that require unsandboxed shell access and accept the associated risk.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Disable or avoid deploying the `@n8n/computer-use` package on Linux or Windows hosts until the fix is applied.\n- Restrict access to the n8n instance and the computer-use agent to fully trusted users only.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:28:24Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: computer-use Shell Sandbox Not Enforced on Linux and Windows",
+    "UpdatedAt": "2026-07-22T22:28:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.29.8"
+      },
+      "VulnerableVersionRange": "\u003c 2.29.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.30.0, \u003c 2.30.1"
+    }
+  ]
+}

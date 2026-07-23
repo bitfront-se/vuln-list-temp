@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T23:02:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 391274,
+    "Id": "GSA_kwCzR0hTQS1wOWoyLWd2OTQtMndmNM4ABfhq",
+    "GhsaId": "GHSA-p9j2-gv94-2wf4",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-p9j2-gv94-2wf4"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/35f501357e9b0fe7c950b0d6aa8fcf5343f707e9"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/d3033266c6dff23f7be71e19341fe3a8c6e2c599"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.21"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p9j2-gv94-2wf4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p9j2-gv94-2wf4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-64645"
+      }
+    ],
+    "Description": "## Impact\n\nA `rewrites()` or `redirects()` rule that builds its external destination hostname from request-controlled input can be pointed at an arbitrary hostname, regardless of the rule's hostname suffix. For a rewrite, Next.js proxies the request to that arbitrary host and serves the response from the application's origin, leading to Server-Side Request forgery. A `redirects()` rule configured this way is vulnerable to an Open Redirect.\n\nThis affects any destination that puts a dynamic segment in the hostname, whether from the path:\n\n```javascript\n// next.config.js\nmodule.exports = {\n  async rewrites() {\n    return [\n      {\n        source: '/:tenant',\n        destination: 'https://:tenant.api.example.com',\n      },\n    ]\n  },\n}\n```\n\nor from a `has` capture:\n\n```javascript\n// next.config.js\nmodule.exports = {\n  async rewrites() {\n    return [\n      {\n        source: '/',\n        has: [{ type: 'query', key: 'region', value: '(?\u003cregion\u003e.+)' }],\n        destination: 'https://:region.api.example.com',\n      },\n    ]\n  },\n}\n```\n\n## Workarounds\n\nIf you cannot upgrade immediately, do not build the hostname of an external `rewrites()` or `redirects()` destination from user-controlled input. If a dynamic subdomain is required, constrain the value to hostname-safe characters:  `value: '(?\u003cregion\u003e[a-z0-9-]+)'`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T23:02:23Z",
+    "Severity": "HIGH",
+    "Summary": "Next.js: Server-Side Request Forgery in rewrites via attacker-controlled destination hostname",
+    "UpdatedAt": "2026-07-22T23:02:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.11"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.21"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 15.5.21"
+    }
+  ]
+}

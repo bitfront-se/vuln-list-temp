@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:32:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391255,
+    "Id": "GSA_kwCzR0hTQS1ncTY2LTljdzUtajVqbc4ABfhX",
+    "GhsaId": "GHSA-gq66-9cw5-j5jm",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-gq66-9cw5-j5jm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65596"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.64"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.29.8"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.30.1"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-before-credential-exfiltration-via-graphql-node"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gq66-9cw5-j5jm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gq66-9cw5-j5jm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65596"
+      }
+    ],
+    "Description": "## Impact\nThe GraphQL node did not enforce the \"Allowed HTTP Request Domains\" restriction on HTTP-based credentials (such as Header Auth, Basic Auth, Query Auth, and OAuth), unlike the HTTP Request node. An authenticated user able to create or edit workflows could therefore point the node's endpoint at a server they control and exfiltrate restricted credentials.\n\nOnly instances where a credential has \"Allowed HTTP Request Domains\" configured and is usable by non-owner users are affected.\n\n## Patches\nThe issue has been fixed in n8n versions 1.123.64, 2.29.8, and 2.30.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict workflow creation and editing permissions to fully trusted users only.\n- Restrict credential sharing to fully trusted users only.\n- Audit credentials with domain restrictions for unexpected sharing relationships.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:32:23Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: GraphQL Node Bypasses \"Allowed HTTP Request Domains\" Restriction",
+    "UpdatedAt": "2026-07-22T22:32:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.29.8"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.29.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.30.0, \u003c 2.30.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.64"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.64"
+    }
+  ]
+}

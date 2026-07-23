@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T23:08:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 391277,
+    "Id": "GSA_kwCzR0hTQS02OGczLXY5MjctZjc0Ms4ABfht",
+    "GhsaId": "GHSA-68g3-v927-f742",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-68g3-v927-f742"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/062f66700b52a5d6bba2c0605d55577ab7ad262c"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/73b94872bc343d09494b50394d8c08eb9fc8e56a"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v15.5.21"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.2.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-68g3-v927-f742"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-68g3-v927-f742"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-64648"
+      }
+    ],
+    "Description": "## Impact\n\nA server-side `fetch` with a request body may return a cached **response** body from a different request to the same URL but different body. Confidential data in the `POST`'s **response** body would then leak to unauthorized requests. Though the request itself will not be deduped.\n\nThis only applies to `fetch` calls with a request that has a different init than the one passed to `fetch`.\nSafe: `fetch(new Request(init), init)`\nUnsafe: `fetch(new Request(init), aDifferentInit)`\n\n## Workarounds\n\nNo workaround exists besides upgrading. Applications using Pages Router are not vulnerable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T23:08:17Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js: Cache confusion of response bodies for requests with bodies",
+    "UpdatedAt": "2026-07-22T23:08:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.2.11"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.2.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.5.21"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c 15.5.21"
+    }
+  ]
+}

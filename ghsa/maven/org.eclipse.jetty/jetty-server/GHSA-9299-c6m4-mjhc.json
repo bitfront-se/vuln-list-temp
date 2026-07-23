@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-22T22:58:31Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.jetty:jetty-server"
+  },
+  "Advisory": {
+    "DatabaseId": 391269,
+    "Id": "GSA_kwCzR0hTQS05Mjk5LWM2bTQtbWpoY84ABfhl",
+    "GhsaId": "GHSA-9299-c6m4-mjhc",
+    "References": [
+      {
+        "Url": "https://github.com/jetty/jetty.project/security/advisories/GHSA-9299-c6m4-mjhc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2024-7708"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/pull/12156"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/commit/8259eabbc70ae7fc2d525f1e95b43fbdfd2ad097"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/releases/tag/jetty-10.0.23"
+      },
+      {
+        "Url": "https://github.com/jetty/jetty.project/releases/tag/jetty-11.0.23"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/work_items/29"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9299-c6m4-mjhc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9299-c6m4-mjhc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2024-7708"
+      }
+    ],
+    "Description": "### Impact\nThe original report:\n\n\u003e Server handling of 100-Continue requests can lead to memory leak that can be abused to cause a Denial of Service state.\n\nAfter investigation, turns out that every request that has a body, but reading the body may end up in reading 0 bytes, leaks a buffer.\nThis is particularly the case for 100-Continue, but any request where the network is slow can leak.\n\n### Affected Versions\n\n* Jetty 11.0.0-11.0.22 (EOL)\n* Jetty 10.0.0-10.0.22 (EOL)\n\n### Patched Versions\n\n* Jetty 11.0.23\n* Jetty 10.0.23\n\n### Patches\n\nhttps://github.com/jetty/jetty.project/pull/12156\n\n### Workarounds\n\nNo workarounds.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:58:29Z",
+    "Severity": "HIGH",
+    "Summary": "Eclipse Jetty: DoS attack triggering OutOfMemory with 100-Continue requests",
+    "UpdatedAt": "2026-07-22T22:58:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.23"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.7, \u003c 11.0.23"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.23"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.7, \u003c 10.0.23"
+    }
+  ]
+}

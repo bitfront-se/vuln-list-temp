@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T22:23:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391250,
+    "Id": "GSA_kwCzR0hTQS0yNDM0LTN4NnEtOHI5Oc4ABfhS",
+    "GhsaId": "GHSA-2434-3x6q-8r99",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-2434-3x6q-8r99"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59254"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n%402.27.4"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n%402.28.1"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/n8n-external-secrets-disclosure-via-workflow-node-expressions"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2434-3x6q-8r99"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2434-3x6q-8r99"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59254"
+      }
+    ],
+    "Description": "## Impact\nExternal secrets were incorrectly resolved in workflow node expressions, where they are not intended to be available. An authenticated user with project editor access could read the plaintext value of external secrets by referencing them in a node expression, without needing explicit secrets access permissions.\n\nThis issue only affects instances with the external secrets feature configured.\n\n## Patches\nThe issue has been fixed in n8n versions 2.27.4 and 2.28.1. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict project membership to fully trusted users only.\n- Avoid granting editor access to projects on instances where external secrets are configured.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:23:29Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: External Secrets Accessible via Workflow Expressions Outside Credentials",
+    "UpdatedAt": "2026-07-22T22:23:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.27.4"
+      },
+      "VulnerableVersionRange": "\u003c 2.27.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.28.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.28.0, \u003c 2.28.1"
+    }
+  ]
+}

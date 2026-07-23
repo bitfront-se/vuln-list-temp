@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-22T22:38:05Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 391258,
+    "Id": "GSA_kwCzR0hTQS00ZzVtLWM5cjUtNDl4Zs4ABfha",
+    "GhsaId": "GHSA-4g5m-c9r5-49xf",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-4g5m-c9r5-49xf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59819"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/pull/25592"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.83.10-stable"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4g5m-c9r5-49xf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4g5m-c9r5-49xf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59819"
+      }
+    ],
+    "Description": "### Impact\n\nLiteLLM's `/health/test_connection` endpoint resolved request-supplied environment and OIDC file references in `litellm_params`. A proxy administrator, or another privileged caller with permission to test model connections, could cause LiteLLM to read files from the local filesystem via an `oidc/file/` reference.\n\nBecause exploitation requires privileged proxy access, this is treated as a defense-in-depth issue rather than a cross-tenant privilege bypass.\n\n### Patches\n\nThe issue is fixed in `1.83.10-stable`.\n\nLiteLLM recommend upgrading to `1.83.10-stable` or later.\n\n### Workarounds\n\nRestrict `/health/test_connection` access to trusted administrators only.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T22:38:04Z",
+    "Severity": "LOW",
+    "Summary": "LiteLLM: Local file read via request-supplied OIDC file references",
+    "UpdatedAt": "2026-07-22T22:38:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.83.10"
+      },
+      "VulnerableVersionRange": "\u003c 1.83.10"
+    }
+  ]
+}

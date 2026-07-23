@@ -1,0 +1,67 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-22T23:20:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 391286,
+    "Id": "GSA_kwCzR0hTQS02NTJxLWd2cTMtNzRxds4ABfh2",
+    "GhsaId": "GHSA-652q-gvq3-74qv",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-652q-gvq3-74qv"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.67"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.31.5"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.32.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-652q-gvq3-74qv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-652q-gvq3-74qv"
+      }
+    ],
+    "Description": "## Impact\n\nThe n8n Snowflake node's Execute Query operation interpolated expression values directly into the SQL string, making queries built with untrusted data susceptible to SQL injection.\n\nExploitation requires that a workflow author has already embedded untrusted expression data directly in a raw SQL query.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.67, 2.31.5, and 2.32.1. Users should upgrade to one of these versions or later to remediate the vulnerability. The fix introduces an optional \"Query Parameters\" field that allows values to be bound via positional placeholders rather than interpolated into the query string.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict workflow creation and editing permissions to fully trusted users only.\n- Audit existing workflows that use the Snowflake `executeQuery` operation and ensure no expression resolving to externally-controlled data is embedded directly in a raw SQL query string.\n- Restrict network access to any webhook or trigger endpoints that feed data into Snowflake `executeQuery` nodes.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T23:20:24Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Snowflake Node executeQuery Operation Allows SQL Injection via Unparameterized Expression Interpolation",
+    "UpdatedAt": "2026-07-22T23:20:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-rc.0, \u003c 2.31.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.32.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.32.0, \u003c 2.32.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.67"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.67"
+    }
+  ]
+}
