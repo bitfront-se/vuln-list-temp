@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T15:44:33Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.OpenAPI.Kiota"
+  },
+  "Advisory": {
+    "DatabaseId": 391834,
+    "Id": "GSA_kwCzR0hTQS14ZzJoLTV4cjItMjlqd84ABfqa",
+    "GhsaId": "GHSA-xg2h-5xr2-29jw",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/kiota/security/advisories/GHSA-xg2h-5xr2-29jw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59861"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/pull/7746"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/commit/fee1b648bb4394ba7ba72de9c0ce4f2a0bad0cb6"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/releases/tag/v1.32.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xg2h-5xr2-29jw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xg2h-5xr2-29jw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59861"
+      }
+    ],
+    "Description": "Code Generation Literal Injection in Kiota Ruby Generator Leads to Arbitrary Code Execution\n\n# Impact\n\nThe Kiota Ruby code generator is vulnerable to a code generation literal injection attack. The generator embeds string values from OpenAPI default fields and property names directly into Ruby double-quoted string literals without properly escaping the # character. Since Ruby evaluates string interpolation expressions like #{expr}, #$var, and #@var within double-quoted strings at runtime, an attacker who controls an OpenAPI specification file can inject arbitrary Ruby code into generated model classes.\n\n# Who is impacted\n\nDevelopers using Kiota to generate Ruby API clients from external or untrusted OpenAPI specifications\nTeams with CI/CD pipelines configured to automatically regenerate client code from remote specs\nApplications that deploy generated Ruby code to production servers\n\n# Vulnerability details\n\nAffected component: CodeMethodWriter.cs\nRoot cause: The shared SanitizeForQuotedLiteral() function in Writers/StringExtensions.cs does not escape the # character\n\n# Attack vectors\n\nOpenAPI default fields in schema properties\nProperty wire-name hash keys in deserializer/serializer methods\nAny schema-derived string embedded in Ruby double-quoted literals\nSeverity: Critical when generated code reaches production; High for CI/CD environments with access to production secrets; Medium for public third-party specs; Low for developer-controlled specs.\n\n# Patches\n\nhttps://github.com/microsoft/kiota/pull/7746\n\n# Workarounds\n\nIf you cannot upgrade immediately:\n\n1. Audit and sanitize OpenAPI specifications: Review all OpenAPI specification files for any default values or property names containing the # character. Remove or replace any suspicious strings before code generation.\n1. Code review of generated files: Implement mandatory code review of all generated Ruby files before merging into any branch. Look for double-quoted strings containing #{, #$, or #@ patterns.\n1. Restrict specification sources: Only consume OpenAPI specifications from trusted internal sources. Avoid automatic code generation from external or third-party APIs until this patch is applied.\n1. Isolate generated code from production: Do not deploy generated Ruby models to production environments unless the specification source has been verified and reviewed.\n1. Manual escaping (temporary): If regeneration is not possible, manually inspect and edit generated files to escape any # characters in string literals (replace # with \\# in double-quoted strings).\n\n# Remediation\n\nUpgrade Kiota to 1.32.0 or later.\nRegenerate/refresh existing generated clients as a precaution:\n\n```shell\nkiota update\n```\n\nRefreshing generated clients ensures previously generated vulnerable code is replaced with hardened output.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T15:44:32Z",
+    "Severity": "HIGH",
+    "Summary": "Microsoft Kiota: Code Generation Literal Injection in Kiota Ruby Generator",
+    "UpdatedAt": "2026-07-24T15:44:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.32.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.32.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T15:30:48Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.OpenApi.Kiota.Builder"
+  },
+  "Advisory": {
+    "DatabaseId": 391787,
+    "Id": "GSA_kwCzR0hTQS0zaHJmLTJnYzItbXgzMs4ABfpr",
+    "GhsaId": "GHSA-3hrf-2gc2-mx32",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/kiota/security/advisories/GHSA-3hrf-2gc2-mx32"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59860"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/pull/7831"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/commit/ebb632db90aa8e3c20949337d9faa2720d64ca44"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/releases/tag/v1.32.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3hrf-2gc2-mx32"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3hrf-2gc2-mx32"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59860"
+      }
+    ],
+    "Description": "### Summary\n\nKiota versions **prior to 1.32.3** are affected by a code-generation injection vulnerability in the C# XML documentation-comment sink (the `description`, `externalDocs` label, and `externalDocs` link fields emitted as `/// …` comments).\n\nWhen text from an OpenAPI description is written into single-line XML doc comments without stripping newline and Unicode line-terminator characters, an attacker can break out of the `///` comment line and inject additional code into generated C# clients.\n\n## Impact and Preconditions\n\nThis issue is only practically exploitable when:\n\n1.  the OpenAPI description used for generation is from an **untrusted source**, or\n2.  a normally trusted OpenAPI description has been **compromised/tampered with**.\n\nThe injected code is compiled (and may execute) when the developer or CI **builds** the generated client. If you only generate from trusted, integrity-protected API descriptions, risk is significantly reduced.\n\n## Affected Versions\n\n- **Affected:** all versions **\u003c 1.32.3**\n- **Fixed: 1.32.3** and later\n\n## Illustrative Exploit Example\n\n### Example OpenAPI fragment (malicious description)\n\n```yaml\nopenapi: 3.0.1\ninfo:\n  title: Exploit Demo\n  version: 1.0.0\n  description: |-\n    Legitimate summary text\n    public static class Pwned { static Pwned() { System.Diagnostics.Process.Start(\"calc.exe\"); } }\n```\n\nThe newline inside `description` (also exploitable via `\\r`, U+0085, U+2028, U+2029) terminates the doc-comment line.\n\n### Example generated C# snippet before fix (illustrative)\n\n```csharp\n/// Legitimate summary text\npublic static class Pwned { static Pwned() { System.Diagnostics.Process.Start(\"calc.exe\"); } }\n```\n\nThe injected payload escapes the intended `///` comment context and introduces attacker-controlled statements in generated code.\n\n\u003e Note: this exploit is not limited to the `description` field, but may also impact the `externalDocs` label and link text and other doc-comment-derived locations.\n\n## Remediation\n\n1.  Upgrade Kiota to **1.32.3 or later**.\n2.  Regenerate/refresh existing generated clients as a precaution:\n\nRefreshing generated clients ensures previously generated vulnerable code is replaced with hardened output. The fix (PR microsoft/kiota#7831) strips `\\r`, `\\n`, `\\u0085`, `\\u2028`, `\\u2029` (and normalizes tabs) from description, label, and link text before emitting doc comments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T15:30:47Z",
+    "Severity": "HIGH",
+    "Summary": "Microsoft Kiota: XML Doc-Comment Newline Breakout Code Injection",
+    "UpdatedAt": "2026-07-24T15:30:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.32.3"
+      },
+      "VulnerableVersionRange": "\u003c 1.32.3"
+    }
+  ]
+}

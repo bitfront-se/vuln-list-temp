@@ -1,0 +1,58 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-24T16:24:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@prompty/core"
+  },
+  "Advisory": {
+    "DatabaseId": 391860,
+    "Id": "GSA_kwCzR0hTQS13Mjh3LWdwMzktbTRwNs4ABfq0",
+    "GhsaId": "GHSA-w28w-gp39-m4p6",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/prompty/security/advisories/GHSA-w28w-gp39-m4p6"
+      },
+      {
+        "Url": "https://github.com/microsoft/prompty/pull/404"
+      },
+      {
+        "Url": "https://github.com/microsoft/prompty/commit/047756f4c8caf91c5868eeb42520c938393277b0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w28w-gp39-m4p6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w28w-gp39-m4p6"
+      }
+    ],
+    "Description": "## Summary\nThe TypeScript Nunjucks renderer evaluated untrusted `.prompty` template bodies with unrestricted JavaScript member access. An attacker-controlled template could traverse constructor and prototype properties to execute JavaScript in the host Node.js process.\n\n## Affected packages\n- npm `@prompty/core` versions `\u003c= 0.1.4`\n- npm `@prompty/core` versions `\u003c= 2.0.0-beta.4`\n\n## Impact\nApplications that render untrusted, community-supplied, cloned, or LLM-generated `.prompty` files with the TypeScript runtime could allow attacker-controlled code execution with the privileges of the Node.js host process.\n\n## Remediation\nUpgrade to `@prompty/core` `2.0.0-beta.5` or later. The patched renderer sanitizes render inputs to own-data-only values, rejects constructor/prototype member traversal, and disallows template function calls. Ordinary interpolation, conditionals, loops, and own nested data properties remain supported.\n\n## Fix details\nThe fix is merged in PR #404 and includes regression coverage for default Nunjucks rendering, explicit renderer usage, unsafe member lookups, and attempted template function calls.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T16:23:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "Prompty: Server-Side Template Injection to Remote Code Execution in the @prompty/core Nunjucks Renderer",
+    "UpdatedAt": "2026-07-24T16:24:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.0-beta.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-alpha.1, \u003c= 2.0.0-beta.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.5"
+      },
+      "VulnerableVersionRange": "\u003c= 0.1.4"
+    }
+  ]
+}

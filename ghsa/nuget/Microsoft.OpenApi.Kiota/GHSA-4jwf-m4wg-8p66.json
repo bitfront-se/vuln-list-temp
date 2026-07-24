@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-24T15:58:32Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.OpenApi.Kiota"
+  },
+  "Advisory": {
+    "DatabaseId": 391842,
+    "Id": "GSA_kwCzR0hTQS00andmLW00d2ctOHA2Ns4ABfqi",
+    "GhsaId": "GHSA-4jwf-m4wg-8p66",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/kiota/security/advisories/GHSA-4jwf-m4wg-8p66"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59864"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/pull/7892"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/commit/9a185994a4e549b7bba3cc2beffb9736aa902e79"
+      },
+      {
+        "Url": "https://github.com/microsoft/kiota/releases/tag/v1.32.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4jwf-m4wg-8p66"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4jwf-m4wg-8p66"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59864"
+      }
+    ],
+    "Description": "### Summary\n\n`kiota plugin add` / `kiota plugin generate` (with `-t APIPlugin`) emits an attacker-controlled `static_template.file` path from the AI-plugin extensions (`x-ai-adaptive-card`, `x-ai-capabilities`) **verbatim**, with no path validation, into the generated Microsoft 365 Copilot / Teams plugin manifest (`\u003cname\u003e-apiplugin.json`). An attacker-controlled or compromised OpenAPI description can therefore embed a `../` / absolute path into the manifest's `response_semantics.static_template.file`, yielding a **path traversal (CWE-22)** / out-of-package file inclusion (CWE-829) that is resolved by the AI host when the generated plugin is deployed.\n\nConfirmed on Kiota **1.32.4** (`KIOTA_CONFIG_PREVIEW=true`, the self-contained `linux-x64` release binary).\n\n### Details\n\nBoth extension paths write the `static_template.file` reference straight into the manifest without sanitization — `PluginsGenerationService.GetResponseSemanticsFromAdaptiveCardExtension` mints `static_template = {\"file\": \u003cFile\u003e}`, and the `x-ai-capabilities` path copies the `static_template` object through:\n\n```\n# spec                                                  -\u003e generated manifest (functions[].capabilities.response_semantics)\nx-ai-adaptive-card: {title: T, data_path: $.x,\n   file: \"../../../../../../etc/passwd\"}                -\u003e static_template.file = \"../../../../../../etc/passwd\"   (CWE-22)\nx-ai-capabilities.response_semantics.static_template:\n   {file: \"../../../../../../etc/passwd\"}               -\u003e static_template.file = \"../../../../../../etc/passwd\"   (CWE-22)\n```\n\n(`x-ai-adaptive-card.file` only reaches the manifest when `title` is set, so `GetResponseSemanticsFromAdaptiveCardExtension` fires; otherwise kiota writes its own template card instead.)\n\n### Impact\n\n**This is not local code execution on the build host.** The injected path is written into the generated plugin manifest and realized **downstream**, when the plugin is packaged and sideloaded / deployed to an AI host (Microsoft 365 Copilot / Teams) that resolves `static_template.file` relative to the plugin package (out-of-package file reference via `../`). Kiota is the propagation point: it fails to reject `../` and absolute paths in this provider-supplied field before writing it into the manifest.\n\n### Patches\n\nFixed in **1.32.5** (https://github.com/microsoft/kiota/pull/7892). `static_template.file` from both `x-ai-adaptive-card` and `x-ai-capabilities` is validated as a relative path confined to the plugin output package: absolute URIs, rooted/UNC paths, Windows drive paths, and `..` traversal segments are rejected, and unsafe references are dropped with a warning. Regression tests cover `..`, absolute paths, and URI values.\n\n### Remediation\n\nUpgrade to Kiota **1.32.5** or later and regenerate affected plugins.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T15:58:31Z",
+    "Severity": "CRITICAL",
+    "Summary": "Microsoft Kiota: Path/URL injection into generated Copilot plugin manifest via x-ai-* extensions",
+    "UpdatedAt": "2026-07-24T15:58:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.32.5"
+      },
+      "VulnerableVersionRange": "\u003c 1.32.5"
+    }
+  ]
+}
