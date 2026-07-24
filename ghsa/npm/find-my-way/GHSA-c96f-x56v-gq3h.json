@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-23T19:33:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "find-my-way"
+  },
+  "Advisory": {
+    "DatabaseId": 391635,
+    "Id": "GSA_kwCzR0hTQS1jOTZmLXg1NnYtZ3EzaM4ABfnT",
+    "GhsaId": "GHSA-c96f-x56v-gq3h",
+    "References": [
+      {
+        "Url": "https://github.com/delvedor/find-my-way/security/advisories/GHSA-c96f-x56v-gq3h"
+      },
+      {
+        "Url": "https://github.com/delvedor/find-my-way/pull/434"
+      },
+      {
+        "Url": "https://github.com/delvedor/find-my-way/commit/cfe3fd6168b5ac1594c0820fb83fce251a533fc1"
+      },
+      {
+        "Url": "https://github.com/delvedor/find-my-way/releases/tag/v9.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c96f-x56v-gq3h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c96f-x56v-gq3h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47219"
+      }
+    ],
+    "Description": "### Impact\nRemotely triggerable DoS in find-my-way when it is used with Node's HTTP/2 server.\n\nThe short version is that `lookup()` passes `req.method` into `find()`, and `find()` indexes `this.trees[method]`. Since `this.trees` is a normal object, HTTP/2 method values like constructor, `toString`, or `__proto__` can resolve inherited object properties instead of returning undefined. The code then treats that value like a router node and crashes when it reaches `currentNode.prefix.length`.\n\n### Patches\n\nUpgrade to v9.7.0.\n\n### Workarounds\n\nDo not use find-my-way with HTTP/2 servers, or validate that the http method is valid beforehand.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-23T19:33:15Z",
+    "Severity": "HIGH",
+    "Summary": "find-my-way: DDoS with HTTP2",
+    "UpdatedAt": "2026-07-23T19:33:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.7.0"
+      },
+      "VulnerableVersionRange": "\u003c= 9.6.0"
+    }
+  ]
+}
