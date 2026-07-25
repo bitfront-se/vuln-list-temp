@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T22:26:49Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:blaze-http_2.12"
+  },
+  "Advisory": {
+    "DatabaseId": 392022,
+    "Id": "GSA_kwCzR0hTQS00NnE0LTQzcGgtYzZmcs4ABftW",
+    "GhsaId": "GHSA-46q4-43ph-c6fr",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/blaze/security/advisories/GHSA-46q4-43ph-c6fr"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/ef3e666c146cfc16cb6603f1fc3c464daab4a24f"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/releases/tag/v0.23.18"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/releases/tag/v1.0.0-M42"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-46q4-43ph-c6fr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-46q4-43ph-c6fr"
+      }
+    ],
+    "Description": "### Summary\n  blaze-server can merge HTTP/1.1 chunked-body trailer fields into `Request.headers`. Because trailer fields are attacker-controlled, an unauthenticated remote client can inject arbitrary header names/values (e.g. `X-Forwarded-For`, internal-auth headers) that a fronting proxy sanitized from the request-header section, bypassing header-based trust decisions in the application.\n\n  ### Impact\n  Any http4s application using `BlazeServerBuilder` over HTTP/1.1 whose routes or middleware trust proxy-set headers (e.g., `X-Forwarded-For`, `X-Real-IP`, `X-Forwarded-Host`, org-internal auth headers) is affected. Where a fronting proxy strips/normalizes those headers but forwards chunked bodies with trailers intact, an attacker can spoof client IP for allow-lists/rate-limits/audit, forge the `https` scheme, or inject internal-auth headers. A promoted `Connection: close` trailer is also honored, allowing attacker-controlled termination of pooled backend connections.\n\n  ### Workarounds\n  Deploy behind a proxy that removes trailer fields (or rejects requests that use trailers) before forwarding; until patched, avoid trust decisions based on headers that a proxy is relied upon to sanitize.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T22:26:48Z",
+    "Severity": "HIGH",
+    "Summary": "blaze: Chunked-body trailer fields promoted into Request.headers in blaze-server (front-end header-sanitization bypass)",
+    "UpdatedAt": "2026-07-24T22:26:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.18"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.17"
+    }
+  ]
+}

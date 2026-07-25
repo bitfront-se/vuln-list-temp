@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-24T21:46:08Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.opendj:opendj-dsml-servlet"
+  },
+  "Advisory": {
+    "DatabaseId": 392004,
+    "Id": "GSA_kwCzR0hTQS02OHI1LTlocGctN3F3Oc4ABftE",
+    "GhsaId": "GHSA-68r5-9hpg-7qw9",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenDJ/security/advisories/GHSA-68r5-9hpg-7qw9"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenDJ/commit/131e8576dcf3613f944c3e02527959bbf52370c3"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenDJ/releases/tag/5.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-68r5-9hpg-7qw9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-68r5-9hpg-7qw9"
+      }
+    ],
+    "Description": "The DSMLv2 SOAP gateway (opendj-dsml-servlet) in OpenIdentityPlatform OpenDJ through 5.1.1 dereferences attacker-supplied xsd:anyURI values server-side without a scheme allowlist, egress filtering, or a size cap, and is reachable without authentication by default. A remote unauthenticated attacker can submit a DSML add/modify request whose value is a URI to (1) perform server-side request forgery against internal services and the cloud metadata endpoint (SSRF), (2) read local files via file: URIs, and (3) exhaust memory through an unbounded response read (DoS). Fixed in 5.1.2: anyURI dereferencing is disabled by default; when enabled it is limited to an http/https allowlist, rejects loopback/link-local/private/reserved targets, refuses HTTP redirects, and caps the bytes read. The gateway also now requires container-managed authentication by default.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T21:46:06Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenDJ unauthenticated SSRF, local file read and unbounded-read DoS in the DSMLv2 gateway",
+    "UpdatedAt": "2026-07-24T21:46:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 5.1.1"
+    }
+  ]
+}

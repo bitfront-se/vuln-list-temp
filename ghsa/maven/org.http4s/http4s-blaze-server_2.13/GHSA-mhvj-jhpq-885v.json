@@ -1,0 +1,70 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T22:26:28Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-blaze-server_2.13"
+  },
+  "Advisory": {
+    "DatabaseId": 392021,
+    "Id": "GSA_kwCzR0hTQS1taHZqLWpocHEtODg1ds4ABftV",
+    "GhsaId": "GHSA-mhvj-jhpq-885v",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/blaze/security/advisories/GHSA-mhvj-jhpq-885v"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/3f7c022e306631b006dcb43a1d7f65c0d1966f17"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/4eec2007806aa9acfefb00ebb636ddc39a147a96"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/927b67753a78c13c4445dac9307f511f5c4878c3"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/a54bc9cd31758335c7f24e29763622fd03fcf734"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/c47d9675f87603f11b32a11d503626bdf9be5c7a"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/commit/e871ebb1d27f50c98fd56988526ce42d0fee74d6"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/releases/tag/v0.23.18"
+      },
+      {
+        "Url": "https://github.com/http4s/blaze/releases/tag/v1.0.0-M42"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mhvj-jhpq-885v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mhvj-jhpq-885v"
+      }
+    ],
+    "Description": "### Summary\n  Five independent HTTP/1.1 conformance laxities in blaze's hand-written Java parser (`http/src/main/java/org/http4s/blaze/http/parser/`) cause request-boundary disagreement with a stricter intermediary. All are reachable from a default `BlazeServerBuilder` with no non-default configuration.\n\n### Impact\nActual exploitability depends on the fronting proxy — a boundary disagreement requires a *pair* of parsers that disagree. Where the proxy forwards the malformed bytes and derives a different message boundary, the consequences are the standard set: front-end ACL/auth bypass, response-queue poisoning on pooled backend connections, and cache poisoning. Risk concentrates on lenient or legacy intermediaries.\n\n### Workarounds\n  Deploy behind an RFC-strict reverse proxy (nginx, HAProxy, Envoy, ALB) that rejects or re-serializes malformed requests at the edge; this neutralizes most of these for deployments that cannot upgrade immediately.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T22:26:27Z",
+    "Severity": "HIGH",
+    "Summary": "blaze: Multiple HTTP/1.1 request-smuggling primitives in blaze's Java wire parser",
+    "UpdatedAt": "2026-07-24T22:26:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.18"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.17"
+    }
+  ]
+}

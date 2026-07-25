@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-24T21:11:10Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-core"
+  },
+  "Advisory": {
+    "DatabaseId": 391970,
+    "Id": "GSA_kwCzR0hTQS13ZzVyLXdjM3gtMzl2Y84ABfsi",
+    "GhsaId": "GHSA-wg5r-wc3x-39vc",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-wg5r-wc3x-39vc"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/commit/edcf968cad91a78b932dba4ad559ef94cbf35f5a"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wg5r-wc3x-39vc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wg5r-wc3x-39vc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62379"
+      }
+    ],
+    "Description": "## Summary\nA pre-authentication remote code execution vulnerability affects OpenAM. The\nremote authentication endpoint (`/authservice`, PLL) accepts an XML element\nthat names an arbitrary Java class, which the server then loads and\ninstantiates without validation. On a default configuration this is reachable\n**without authentication** and allows an attacker to run code on the server.\n\n## Impact\nUnauthenticated remote code execution / full server compromise on any OpenAM\ninstance with default settings.\n\n## Affected\nAll releases up to and including 16.1.1 (the defect predates the Open Identity\nPlatform fork).\n\n## Remediation\nUpgrade to `16.1.2`.\n\n## Interim mitigation\n- Require the remote-auth security token by enabling\n  `sunRemoteAuthSecurityEnabled` (rejects unauthenticated `/authservice` calls).\n- Restrict or block external network access to `/authservice` until patched.\n\n## Credit\nVulnerability discovered by Zhixi \"Jace\" Sun of ASM/VI at TikTok.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T21:11:09Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenAM: Unauthenticated Remote Code Execution via Class.forName in AuthXMLUtils.createCustomCallback",
+    "UpdatedAt": "2026-07-24T21:11:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 16.1.1"
+    }
+  ]
+}

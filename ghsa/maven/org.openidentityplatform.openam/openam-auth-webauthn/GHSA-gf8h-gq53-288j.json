@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-24T21:08:46Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-auth-webauthn"
+  },
+  "Advisory": {
+    "DatabaseId": 391968,
+    "Id": "GSA_kwCzR0hTQS1nZjhoLWdxNTMtMjg4as4ABfsg",
+    "GhsaId": "GHSA-gf8h-gq53-288j",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-gf8h-gq53-288j"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/commit/9dd0fbe07f70f118cf45042d3a9ffb32f3c21e08"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gf8h-gq53-288j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gf8h-gq53-288j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62263"
+      }
+    ],
+    "Description": "### Summary\nThe GHSA-6c99-87fr-6q7r fix wrapped WebAuthn authenticator deserialization in an `ObjectInputFilter` meant to allow only `AuthenticatorImpl`, but it short-circuits to `ALLOWED` for any object at stream `depth \u003e 1`. Because the Java serialization filter is consulted for every class in the graph (and `depth == 1` only for the root's concrete class), the allowlist constrains only the root and leaves the entire nested graph unchecked.\n\n### Impact\nAn attacker can craft a stream rooted at `AuthenticatorImpl` with an arbitrary gadget chain nested inside. The gadget's `readObject`/`readResolve` executes during `readObject()` — before the cast and before any assertion verification — enabling remote code execution when a gadget is on the classpath. The deserialization sink is reached pre-authentication via an attacker-chosen `userHandle`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T21:08:46Z",
+    "Severity": "CRITICAL",
+    "Summary": "OpenAM: WebAuthn Java deserialization RCE via ObjectInputFilter depth\u003e1 bypass",
+    "UpdatedAt": "2026-07-24T21:08:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 16.1.1"
+    }
+  ]
+}

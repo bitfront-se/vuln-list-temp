@@ -1,0 +1,73 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T22:35:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "shescape"
+  },
+  "Advisory": {
+    "DatabaseId": 392031,
+    "Id": "GSA_kwCzR0hTQS1nbTNyLXEyd3AtaHc4N84ABftf",
+    "GhsaId": "GHSA-gm3r-q2wp-hw87",
+    "References": [
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/security/advisories/GHSA-gm3r-q2wp-hw87"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/pull/2649"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/pull/2651"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/commit/43d70b59d09bbe5c3fd02ef08b3a123e977ed9de"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/commit/b4b34c394e7f9da2775bb75381066b9a228c425f"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/blob/dea8893a5877893d8d4923dbf253080e08899e6d/docs/migration.md"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/releases/tag/v2.1.14"
+      },
+      {
+        "Url": "https://github.com/ericcornelissen/shescape/releases/tag/v3.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gm3r-q2wp-hw87"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gm3r-q2wp-hw87"
+      }
+    ],
+    "Description": "### Impact\n\nThis impacts users of Shescape that have flag protection enabled, which is on by default, regardless of the API being used.\n\nAn attacker can cause a runtime quadratic in the input size, causing denial of service for large inputs.\n\n```javascript\nimport { Shescape } from \"shescape\";\n\n// 1. Prerequisites\nconst options = {\n    //flagProtection unspecified\n    // Or\n    flagProtection: true,\n};\n\n// 2. Payload\nlet payload = \"\\u0000-\".repeat(32000);\n\n// 3. Usage\nconst shescape = new Shescape(options);\nlet callback;\n\ncallback = () =\u003e shescape.escape(payload);\n// Or\ncallback = () =\u003e shescape.escapeAll([payload]);\n// Or\ncallback = () =\u003e shescape.quote(payload);\n// Or\ncallback = () =\u003e shescape.quoteAll([payload]);\n\nconst t0 = process.hrtime.bigint();\ncallback();\nconst ms = Number(process.hrtime.bigint() - t0) / 1e6;\n\n// 4. Impact\nconsole.log(\"Duration:\", ms);\n// Outputs \"Duration:\" followed by a number close to 20000\n```\n\n### Patches\n\nThis bug has been patched in [v2.1.14] and [v3.0.1] which you can upgrade to now.\n\nIf you are already using v3 of Shescape, no further changes are required. If you are using v2 of Shescape it is recommended to upgrade as this version reaches end-of-life status on 2026-09-28, follow the [migration guide] to upgrade to v3.\n\nNo patches will be released for version of Shescape lower than v2.0.0.\n\n### Workarounds\n\nAlternatively, users of Shescape can 1) put restrictions on the length of untrusted input or 2) strip all content before the **last** `-` from untrusted inputs.\n\n### For more information\n\n- Comment on Pull Request [#2651] for v2 and [#2649] for v3\n- Comment on commit [b4b34c3] for v2 and [43d70b5] for v3\n- Open an issue at \u003chttps://github.com/ericcornelissen/shescape/issues\u003e (New issue \u003e Question)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T22:35:08Z",
+    "Severity": "HIGH",
+    "Summary": "Shescape: Quadratic-time denial of service in the flag-protection",
+    "UpdatedAt": "2026-07-24T22:35:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.14"
+      },
+      "VulnerableVersionRange": "\u003e= 2.1.11, \u003c 2.1.14"
+    }
+  ]
+}

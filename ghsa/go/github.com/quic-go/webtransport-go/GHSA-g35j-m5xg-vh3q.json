@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-24T20:49:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/quic-go/webtransport-go"
+  },
+  "Advisory": {
+    "DatabaseId": 391962,
+    "Id": "GSA_kwCzR0hTQS1nMzVqLW01eGctdmgzcc4ABfsa",
+    "GhsaId": "GHSA-g35j-m5xg-vh3q",
+    "References": [
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/security/advisories/GHSA-g35j-m5xg-vh3q"
+      },
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/pull/290"
+      },
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/commit/3aecd11736579530ff067651c30a543eb0b4b8c4"
+      },
+      {
+        "Url": "https://github.com/quic-go/webtransport-go/releases/tag/v0.11.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g35j-m5xg-vh3q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g35j-m5xg-vh3q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57497"
+      }
+    ],
+    "Description": "## Summary\n\nAn attacker can cause excessive memory allocation in webtransport-go by sending an unknown WebTransport capsule with a large payload. The implementation skips unknown capsules by reading the entire capsule body into memory, instead of draining it without retaining the data. This can lead to memory exhaustion.\n\n## Impact\n\nA misbehaving or malicious peer can cause a denial-of-service (DoS) attack against webtransport-go clients or servers by triggering excessive memory allocation, potentially leading to crashes or resource exhaustion.\n\n## Details\n\nWebTransport sessions use capsules on the HTTP/3 request stream. Unknown capsule types are ignored, but the capsule body still needs to be consumed before the next capsule can be parsed.\n\nwebtransport-go used `io.ReadAll` when skipping unknown capsules. Since the capsule reader is only limited by the capsule's declared length, a peer could send a large unknown capsule and cause the receiver to allocate memory for the full capsule body.\n\nQUIC flow control limits buffered data, but it does not bound total allocation here, since reading the stream advances the flow control window while retaining the received bytes in memory.\n\n## The Fix\n\nwebtransport-go now drains unknown capsules to `io.Discard` instead of buffering them. This consumes the capsule body so parsing can continue, without retaining the payload in memory.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T20:49:28Z",
+    "Severity": "MODERATE",
+    "Summary": "webtransport-go: Memory Exhaustion Attack due to Buffering of Unknown Capsules",
+    "UpdatedAt": "2026-07-24T20:49:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.11.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.11.0"
+    }
+  ]
+}

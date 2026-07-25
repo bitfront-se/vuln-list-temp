@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-24T21:09:37Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-oauth2"
+  },
+  "Advisory": {
+    "DatabaseId": 391969,
+    "Id": "GSA_kwCzR0hTQS12cXh2LTZ4cmgtNDljcM4ABfsh",
+    "GhsaId": "GHSA-vqxv-6xrh-49cp",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-vqxv-6xrh-49cp"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/commit/98cee2dfe701c2e16e5bcee34e6fd9d913925118"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vqxv-6xrh-49cp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vqxv-6xrh-49cp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62280"
+      }
+    ],
+    "Description": "### Description\nThe OAuth2/OIDC consent page rendered for `display=wap` authorize requests reflected several request-derived values into the HTML response without escaping. An attacker who induces a user with an active OpenAM session to follow a crafted authorize link can execute arbitrary JavaScript in the OpenAM origin.\n\nThis is the same vulnerability class as CVE-2026-44203; that fix did not cover this code path.\n\n### Impact\nArbitrary JavaScript execution in the OpenAM origin in the victim's authenticated context — enabling session/cookie theft, CSRF-token exfiltration, and actions on behalf of the victim, up to administrative takeover if the victim is an administrator. Reachable on any deployment with at least one registered OAuth2 client; no attacker-controlled client and no special configuration required.\n\n### Mitigation\n- Upgrade to 16.1.2 (or later).\n- Until then, restrict/limit access to the OAuth2 authorize endpoint and treat unsolicited `display=wap` authorize links as untrusted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T21:09:36Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenAM Reflected XSS in the OAuth2/OIDC `wap` consent page",
+    "UpdatedAt": "2026-07-24T21:09:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 16.1.1"
+    }
+  ]
+}

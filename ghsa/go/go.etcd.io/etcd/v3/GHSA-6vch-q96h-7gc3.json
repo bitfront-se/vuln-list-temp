@@ -1,0 +1,76 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T22:40:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "go.etcd.io/etcd/v3"
+  },
+  "Advisory": {
+    "DatabaseId": 392042,
+    "Id": "GSA_kwCzR0hTQS02dmNoLXE5NmgtN2djM84ABftq",
+    "GhsaId": "GHSA-6vch-q96h-7gc3",
+    "References": [
+      {
+        "Url": "https://github.com/etcd-io/etcd/security/advisories/GHSA-6vch-q96h-7gc3"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/pull/22130"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/commit/2e07efce9745004eb4773cffaada9b5cdf77cff2"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/commit/f73cba7d920019f91a1ea1f6697833e42731f057"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/releases/tag/v3.5.33"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/releases/tag/v3.6.14"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/releases/tag/v3.7.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6vch-q96h-7gc3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6vch-q96h-7gc3"
+      }
+    ],
+    "Description": "### Impact\n_What kind of vulnerability is it? Who is impacted?_\n\nA network attacker who can reach an etcd TLS listener can open many TCP connections and never send a ClientHello. Each connection spawns a goroutine in the etcd server process that blocks indefinitely inside tls.Conn.Handshake(), and each is tracked in the pending map. Unbounded goroutine and map growth exhausts memory in the etcd process, causing loss of availability for the etcd cluster (and, when etcd backs Kubernetes, the control plane).\n\n### Patches\n_Has the problem been patched? What versions should users upgrade to?_\n\nThis vulnerability is patched in the following versions:\n\n- etcd 3.7.1\n- etcd 3.6.14\n- etcd 3.5.33\n\n### Workarounds\n_Is there a way for users to fix or remediate the vulnerability without upgrading?_\n\nIf upgrading is not immediately possible, then restrict network access. Limit which hosts can reach etcd's client (gRPC) port via firewall rules or network policy, reducing who can attempt exploitation.\n\n### Reporter\n\nVMware By Broadcom",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T22:40:16Z",
+    "Severity": "HIGH",
+    "Summary": "etcd: `tlsListener.acceptLoop` spawns unbounded handshake goroutines with no deadline",
+    "UpdatedAt": "2026-07-24T22:40:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.33"
+      },
+      "VulnerableVersionRange": "\u003c 3.5.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.14"
+      },
+      "VulnerableVersionRange": "\u003e= 3.6.0, \u003c 3.6.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.7.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.7.0-alpha.0, \u003c 3.7.1"
+    }
+  ]
+}

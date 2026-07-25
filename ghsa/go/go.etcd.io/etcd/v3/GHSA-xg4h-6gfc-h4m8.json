@@ -1,0 +1,76 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-24T22:38:25Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "go.etcd.io/etcd/v3"
+  },
+  "Advisory": {
+    "DatabaseId": 392038,
+    "Id": "GSA_kwCzR0hTQS14ZzRoLTZnZmMtaDRtOM4ABftm",
+    "GhsaId": "GHSA-xg4h-6gfc-h4m8",
+    "References": [
+      {
+        "Url": "https://github.com/etcd-io/etcd/security/advisories/GHSA-xg4h-6gfc-h4m8"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/commit/6643f80602461a6095c9b294b6512fd9719bef41"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/commit/afeaa624da19085b47fb5ccc7c22a8c421bc2eae"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/commit/e863b001bbf3367003a543aa3099db9892134cd7"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/releases/tag/v3.5.33"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/releases/tag/v3.6.14"
+      },
+      {
+        "Url": "https://github.com/etcd-io/etcd/releases/tag/v3.7.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xg4h-6gfc-h4m8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xg4h-6gfc-h4m8"
+      }
+    ],
+    "Description": "### Impact\n_What kind of vulnerability is it? Who is impacted?_\n\nA user granted READ permission on a single, exact key can use the Watch gRPC API with `clientv3.WithFromKey()` (an open-ended, \"from this key to the end of the keyspace\" watch) to receive watch events for every key lexicographically greater than or equal to their permitted key — not just the one key they were granted. \n\nThis is an authorization bypass in etcd's RBAC enforcement for the Watch API; Range/Get and DeleteRange requests are not affected. It only affects clusters with authentication enabled — clusters running without auth already allow unrestricted read access.\n\n### Patches\n_Has the problem been patched? What versions should users upgrade to?_\n\nThis vulnerability is patched in the following versions:\n\n- etcd 3.7.1\n- etcd 3.6.14\n- etcd 3.5.33\n\n### Workarounds\n_Is there a way for users to fix or remediate the vulnerability without upgrading?_\n\nIf upgrading is not immediately possible, the following mitigations reduce exposure:\n\n- Audit READ grants. Any READ grant — even on one key — can be leveraged via Watch to read everything after it. Review who holds READ permissions and revoke/tighten any you wouldn't trust with full read access.\n- Restrict network access. Limit which hosts can reach etcd's client (gRPC) port via firewall rules or network policy, reducing who can attempt exploitation.\n\n### Reporter\n\n- Luis Toro ([@lobuhi](https://github.com/lobuhi) on Github)\n- Anthropic  and Adam Korczynski ([@AdamKorcz](https://github.com/AdamKorcz) on Github)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T22:38:22Z",
+    "Severity": "HIGH",
+    "Summary": "etcd: Watch API authorization bypass via open-ended range requests",
+    "UpdatedAt": "2026-07-24T22:38:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.33"
+      },
+      "VulnerableVersionRange": "\u003c 3.5.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.14"
+      },
+      "VulnerableVersionRange": "\u003e= 3.6.0, \u003c 3.6.14"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.7.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.7.0-alpha.0, \u003c 3.7.1"
+    }
+  ]
+}
