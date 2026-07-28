@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-28T14:50:25Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.cedarpolicy:cedar-java"
+  },
+  "Advisory": {
+    "DatabaseId": 395616,
+    "Id": "GSA_kwCzR0hTQS00cjlyLTQ0MjUtNzRwN84ABglg",
+    "GhsaId": "GHSA-4r9r-4425-74p7",
+    "References": [
+      {
+        "Url": "https://github.com/cedar-policy/cedar-java/security/advisories/GHSA-4r9r-4425-74p7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-55771"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4r9r-4425-74p7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4r9r-4425-74p7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55771"
+      }
+    ],
+    "Description": "### Summary\n\nCedarJava is an open source Java implementation of the Cedar policy language, used for fine-grained authorization decisions. Under certain circumstances, it could lead to incorrect equality comparisons.\n\n### Impact\n\n**`EntityIdentifier.equals()` has inverted null/self branches**\n\nThe `EntityIdentifier.equals()` method has inverted logic for null and self-reference checks, returning true for null comparisons and false for self-comparisons. This does not affect Cedar authorization decisions (computed in Rust from JSON), but could affect integrators who perform their own equality checks on entity identifiers.\n\n### Impacted versions: \n\u003c 4.9\n\n### Patches\nIt has been addressed in CedarJava version 4.9 and above. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes.\n\n### Workarounds\nAvoid relying on `EntityIdentifier.equals()` for security-sensitive comparisons until upgraded to version `4.9`.\n\n### References\nIf you have any questions or comments about this advisory, Cedar asks that you contact us directly via email to [cedar-policy-security@lists.cncf.io](mailto:cedar-policy-security@lists.cncf.io). Please do not create a public GitHub issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-28T14:50:25Z",
+    "Severity": "HIGH",
+    "Summary": "Cedar-Java has policy injection, type confusion, and incorrect equality comparison vulnerabilities",
+    "UpdatedAt": "2026-07-28T14:50:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.9.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.2, \u003c 3.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.6"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.6"
+    }
+  ]
+}

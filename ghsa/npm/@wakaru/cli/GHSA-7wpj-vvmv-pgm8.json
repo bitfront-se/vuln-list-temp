@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-28T14:44:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@wakaru/cli"
+  },
+  "Advisory": {
+    "DatabaseId": 395615,
+    "Id": "GSA_kwCzR0hTQS03d3BqLXZ2bXYtcGdtOM4ABglf",
+    "GhsaId": "GHSA-7wpj-vvmv-pgm8",
+    "References": [
+      {
+        "Url": "https://github.com/pionxzh/wakaru/security/advisories/GHSA-7wpj-vvmv-pgm8"
+      },
+      {
+        "Url": "https://github.com/pionxzh/wakaru/commit/1d30383b20a6f768786b8ada2f1b0945de13c316"
+      },
+      {
+        "Url": "https://github.com/pionxzh/wakaru/releases/tag/v1.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7wpj-vvmv-pgm8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7wpj-vvmv-pgm8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54545"
+      }
+    ],
+    "Description": "### Impact\n\n`@wakaru/cli` is vulnerable to arbitrary file write when unpacking a crafted JavaScript bundle with `--unpack`.\n\nBundle-controlled module filenames were sanitized before writing extracted modules to the output directory. A crafted filename containing overlapping path traversal characters, such as `....//`, could be transformed into `../` after sanitization. This allowed the final output path to escape the intended output directory.\n\nAn attacker who can cause a user to run `wakaru --unpack` on a malicious bundle may be able to write files outside the selected output directory. Depending on the target path and user environment, this may lead to code execution.\n\nAffected versions: `\u003e=1.0.0 \u003c1.4.0`.\n\n### Patches\n\nThe issue has been patched in `@wakaru/cli@1.4.0`.\n\nUsers should upgrade to:\n\n```sh\nnpm install @wakaru/cli@latest\n```\n\nor specifically:\n```\nnpm install @wakaru/cli@1.4.0\n```\n\n### Workarounds\n\nDo not run `wakaru --unpack` on untrusted or unknown bundles with affected versions.\n\nIf upgrading immediately is not possible, avoid using `--unpack on files that may be attacker-controlled.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-28T14:44:01Z",
+    "Severity": "HIGH",
+    "Summary": "@wakaru/cli arbitrary file write during bundle unpack",
+    "UpdatedAt": "2026-07-28T14:44:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 1.4.0"
+    }
+  ]
+}

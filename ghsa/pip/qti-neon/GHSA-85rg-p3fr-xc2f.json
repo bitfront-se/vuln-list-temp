@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-28T16:36:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "qti-neon"
+  },
+  "Advisory": {
+    "DatabaseId": 395683,
+    "Id": "GSA_kwCzR0hTQS04NXJnLXAzZnIteGMyZs4ABgmj",
+    "GhsaId": "GHSA-85rg-p3fr-xc2f",
+    "References": [
+      {
+        "Url": "https://github.com/Quiet-Terminal-Interactive/QTINeon/security/advisories/GHSA-85rg-p3fr-xc2f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-85rg-p3fr-xc2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-85rg-p3fr-xc2f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54609"
+      }
+    ],
+    "Description": "### Impact\nThe relay's reconnect handler forwards every `RECONNECT_REQUEST` to the host without deduplication or a size cap on the `pendingReconnects` map, unlike the connect flow which guards against this with `maxPendingConnections`. An unauthenticated attacker who knows a valid session ID can send `RECONNECT_REQUEST` packets from many spoofed source addresses; each packet that passes the session lookup is forwarded to the host as a new reconnect attempt. Because the per-source rate limiter assigns a fresh token bucket to each spoofed IP, it provides no protection. The host receives one forwarded packet per spoofed source per cleanup cycle, making the relay an amplification vector for denial-of-service against the host. The host's real address is never exposed to clients by design, so this is the primary viable DoS path against it. A secondary issue: once more than `maxRateLimiters` spoofed IPs are seen, `performCleanup` calls `rateLimiters.clear()`, resetting rate limit state for all sources including legitimate ones.\n\nAffected: `NeonRelay` in all three implementations (Java, Python, TypeScript).\n\n### Patches\nNot yet patched. Fix consists of three changes to handleReconnectRequest in each implementation:\n\n1. Reject the request if `pendingReconnects.size() \u003e= maxPendingConnections` (mirrors the existing connect-flow guard)\n2. Only forward to the host if the `sessionId:clientId` key is not already present in `pendingReconnects` — the map entry can still be updated with the new source address, but the host only needs to validate once per slot\n3. In `performCleanup`, evict throttled entries before falling back to `rateLimiters.clear()` to avoid resetting legitimate sources' rate limit state\n\n### Workarounds\nOperators can partially mitigate by placing the relay behind a network-level filter that drops packets with spoofed source addresses (BCP38/uRPF). This does not address the missing `pendingReconnects` size cap or the `rateLimiters.clear()` issue but eliminates the amplification path in most deployment environments.\n\n### References\n- PROTOCOL.md — reconnect flow\n- ARCHITECTURE.md — reconnect handshake detail (step 4 describes the unbounded `put`)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-28T16:36:47Z",
+    "Severity": "HIGH",
+    "Summary": "QTINeon has unauthenticated relay-to-host amplification via unbounded RECONNECT_REQUEST forwarding",
+    "UpdatedAt": "2026-07-28T16:36:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "= 1.0.0"
+    }
+  ]
+}

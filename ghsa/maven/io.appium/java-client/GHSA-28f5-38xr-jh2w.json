@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-28T14:26:53Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.appium:java-client"
+  },
+  "Advisory": {
+    "DatabaseId": 395611,
+    "Id": "GSA_kwCzR0hTQS0yOGY1LTM4eHItamgyd84ABglb",
+    "GhsaId": "GHSA-28f5-38xr-jh2w",
+    "References": [
+      {
+        "Url": "https://github.com/appium/java-client/security/advisories/GHSA-28f5-38xr-jh2w"
+      },
+      {
+        "Url": "https://github.com/appium/java-client/pull/2408"
+      },
+      {
+        "Url": "https://github.com/appium/java-client/commit/2b9cd442b9dbf56ccc6f1e83aeeb411c0ec230c9"
+      },
+      {
+        "Url": "https://github.com/appium/java-client/releases/tag/v10.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-28f5-38xr-jh2w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-28f5-38xr-jh2w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-43910"
+      }
+    ],
+    "Description": "## Summary\n\nWhen `directConnect(true)` is enabled, appium/java-client unconditionally\naccepts `directConnectHost`, `directConnectPort`, and `directConnectPath`\nfrom the server's NEW_SESSION response and silently redirects all subsequent\nsession traffic to the attacker-specified endpoint — with no allowlist,\nno host validation, and no user notification.\n\n## Affected Code\n\n- `AppiumCommandExecutor.java` (line 196–219): `setDirectConnect()` builds\n  a new URL from server-supplied fields and calls `overrideServerUrl(newUrl)`\n  without validating host/IP.\n- `DirectConnect.java`: `getUrl()` constructs `protocol://host:port/path`\n  with no allowlist.\n\n## Root Cause\n\nOnly the protocol is validated (must equal \"https\"). The destination host\nand port are never checked against any allowlist or denylist.\n\n## PoC (confirmed)\n\nA rogue server injecting `directConnectHost=127.0.0.1:4443` causes the\nclient to silently redirect all post-session commands:\n\n[bootstrap]       POST /wd/hub/session\n[bootstrap]       Injecting directConnect -\u003e https://127.0.0.1:4443/wd/hub\n[redirect-target] HIT #1: GET /wd/hub/session/poc-session-001/source\n[redirect-target] HIT #2: DELETE /wd/hub/session/poc-session-001\n\nOriginal source code unmodified — confirmed via `git diff HEAD` (empty).\n\n## Evidence Screenshots\n\n**Screenshot 1 — Rogue server capturing redirected traffic:**\n\n\u003cimg width=\"887\" height=\"146\" alt=\"1\" src=\"https://github.com/user-attachments/assets/cc28002c-ea20-4ac8-8336-cec632e3c842\" /\u003e\n\n**Screenshot 2 — Java client processing response from attacker host:**\n\n\u003cimg width=\"788\" height=\"130\" alt=\"2\" src=\"https://github.com/user-attachments/assets/222cbab0-0d53-45b2-847d-6aa4e3b79370\" /\u003e\n\n## Impact\n\n- Full interception of session traffic\n- Network pivot to internal hosts (RFC-1918, 169.254.169.254)\n- Cloud credential theft via IMDS endpoint\n- Escalates to ~8.1 High in CI/CD environments where directConnect(true)\n  is set in shared base configuration\n\n## Suggested Fix\n\nAdd allowlist validation before `overrideServerUrl()` is called, and/or\nblock RFC-1918/loopback/link-local destinations by default.\n\n[poc_appium_directconnect.zip](https://github.com/user-attachments/files/26472525/poc_appium_directconnect.zip)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-28T14:26:53Z",
+    "Severity": "HIGH",
+    "Summary": "java-client Allows Network Pivot via Unvalidated directConnect Redirect in AppiumCommandExecutor",
+    "UpdatedAt": "2026-07-28T14:26:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 8.2.1, \u003c= 10.1.0"
+    }
+  ]
+}
