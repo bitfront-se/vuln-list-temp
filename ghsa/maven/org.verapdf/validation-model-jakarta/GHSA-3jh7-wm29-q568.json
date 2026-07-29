@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-29T15:11:47Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.verapdf:validation-model-jakarta"
+  },
+  "Advisory": {
+    "DatabaseId": 395976,
+    "Id": "GSA_kwCzR0hTQS0zamg3LXdtMjktcTU2OM4ABgrI",
+    "GhsaId": "GHSA-3jh7-wm29-q568",
+    "References": [
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-validation/security/advisories/GHSA-3jh7-wm29-q568"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3jh7-wm29-q568"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3jh7-wm29-q568"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54078"
+      }
+    ],
+    "Description": "## Summary  \n  \n**Description**\nAn XML External Entity Injection (CWE-611) vulnerability in veraPDF allows a remote attacker to read arbitrary files on the server file system and perform Server-Side Request Forgery by submitting a crafted PDF containing a malicious rich-text (/RC or /RV) entry. This affects all current versions of veraPDF-validation.  \n  \n## Details  \nThe vulnerability resides in veraPDF-validation `validation-model/src/main/java/org/verapdf/gf/model/tools/DictionaryKeysHelper.java` within the `getRichTextStringOrStreamEntryStringRepresentation()` method. This helper extracts the XHTML rich-text body from a PDF dictionary string or stream and parses it with a DOM parser to return the concatenated text content.  \n  \nThe vulnerability stems from two combined issues:  \n- The DocumentBuilderFactory is instantiated with default settings , no disallow-doctype-decl, no disabling of external general/parameter entities, no FEATURE_SECURE_PROCESSING, and no secure EntityResolver. The default JAXP/Xerces parser will therefore resolve `\u003c!DOCTYPE … SYSTEM \"…\"\u003e` and `\u003c!ENTITY … SYSTEM \"…\"\u003e` declarations.  \n- After parsing, `getAllNodeText()` recursively concatenates every text node in the document and returns it as the model property value. This means the expanded contents of any external entity are reflected directly back into the validation report.  \n  \n## Impact  \n  \nThis impacts all current releases of the veraPDF validation-model module.  \n  \nSuccessful exploitation requires only that the target validate an attacker-supplied PDF. A single markup annotation with a crafted /RC string is sufficient.  \n   \n## Proposed Patch  \n  \nHarden the `DocumentBuilderFactory` in `validation-model/src/main/java/org/verapdf/gf/model/tools/DictionaryKeysHelper.java` per the OWASP XXE Prevention Cheat Sheet to disallow DOCTYPE outright.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-29T15:11:43Z",
+    "Severity": "HIGH",
+    "Summary": "veraPDF Validation XXE via Rich Text",
+    "UpdatedAt": "2026-07-29T15:11:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.31.71"
+      },
+      "VulnerableVersionRange": "\u003e= 1.31.1, \u003c= 1.31.70"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.30.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.25.73, \u003c= 1.30.1"
+    }
+  ]
+}

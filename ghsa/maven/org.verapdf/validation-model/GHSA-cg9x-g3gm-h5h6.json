@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-29T15:14:32Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.verapdf:validation-model"
+  },
+  "Advisory": {
+    "DatabaseId": 395977,
+    "Id": "GSA_kwCzR0hTQS1jZzl4LWczZ20taDVoNs4ABgrJ",
+    "GhsaId": "GHSA-cg9x-g3gm-h5h6",
+    "References": [
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-validation/security/advisories/GHSA-cg9x-g3gm-h5h6"
+      },
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-validation/pull/730"
+      },
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-validation/commit/94caa46c1a594512247fbd46c808edae39469542"
+      },
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-validation/commit/cacd9436d0de40b0e58cc7d2dbb06451619e61ec"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cg9x-g3gm-h5h6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cg9x-g3gm-h5h6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54082"
+      }
+    ],
+    "Description": "### Summary\n\nveraPDF-validation has an XML External Entity (XXE) vulnerability in two PDF parsing paths (validate and `GFPDAcroForm.getdynamicRender()`). A malicious/crafted PDF supplied to a veraPDF consumer can lead to the expansion of external entities while parsing rich-text annotation/form-field values or XFA configurations, allowing local file disclosure and potentially outbound network requests depending on the runtime (host) environment.\n\n### Details\n\nConsumers that utilise either the `PDFAValidator.validate(...)` or `GFPDAcroForm(acroForm).getdynamicRender()` APIs to process untrusted PDFs are vulnerable to XXE exploits. \n\nBoth vulnerable paths share the same root cause: the underlying source binds a default `DocumentBuilderFactory` and immediately calls `newDocumentBuilder()` which does not disable parsing of DTDs, external entities, XInclude, or external resource access directives in XML schemas.\n\nThis is an XXE vulnerability affecting applications that use veraPDF's affected APIs to parse or validate untrusted PDFs.\n\nAn attacker could craft a PDF that includes crafted XML external entities that when processed by vulnerable consumers could lead to local file disclosure and server-side outbound requests to attacker-controlled endpoints, depending on JVM XML parser behavior and network controls on the host.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-29T15:14:32Z",
+    "Severity": "MODERATE",
+    "Summary": "veraPDF-validatio: Use of Default `DocumentBuilderFactory` leads to XXE When Processing Untrusted PDFs",
+    "UpdatedAt": "2026-07-29T15:14:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.31.71"
+      },
+      "VulnerableVersionRange": "\u003e= 1.31.1, \u003c= 1.31.70"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.30.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.17.35, \u003c= 1.30.1"
+    }
+  ]
+}

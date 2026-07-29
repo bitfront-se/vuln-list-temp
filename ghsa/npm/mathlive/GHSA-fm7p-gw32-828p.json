@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-29T17:21:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mathlive"
+  },
+  "Advisory": {
+    "DatabaseId": 396049,
+    "Id": "GSA_kwCzR0hTQS1mbTdwLWd3MzItODI4cM4ABgsR",
+    "GhsaId": "GHSA-fm7p-gw32-828p",
+    "References": [
+      {
+        "Url": "https://github.com/arnog/mathlive/security/advisories/GHSA-fm7p-gw32-828p"
+      },
+      {
+        "Url": "https://github.com/arnog/mathlive/issues/3028"
+      },
+      {
+        "Url": "https://github.com/arnog/mathlive/commit/5fe1c46153883f9ec0249a5c8c34e64aaae9cfb8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fm7p-gw32-828p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fm7p-gw32-828p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54705"
+      }
+    ],
+    "Description": "### Summary\n\nDespite the 0.104.0 patch escaping attribute-bearing constructs (`\\htmlData`, `\\href`), text-content reflection was missed. The `\\text{}`, `\\mbox{}` commands accept arbitrary characters in their body and emit them raw and unescaped into both the HTML markup and the MathML output, leading to XSS.\n\n### Details\n\n`Box.toMarkup` at `src/core/box.ts:356` concatenates `this.value` into the rendered span without HTML-escaping. In text mode any literal character (`\u003c`, `\u003e`, `\u0026`, `\"`) is wrapped into a `TextAtom` whose `value` is the raw codepoint and lands in the markup unchanged. The MathML serializer at `src/formats/atom-to-math-ml.ts` is independently broken: `xmlEscape` deliberately omits the `\u0026` rule, and `scanText`, `case 'text'`, and the `mode === 'text'` early return all emit `atom.value` raw.\n\nBoth outputs flow into `innerHTML` sinks via the public API. `\u003cmath-span\u003e` / `\u003cmath-div\u003e` (`src/public/math-static-elements.ts:331,407`) bypass `MathfieldElement.createHTML` entirely. The editor and SSR paths route through `createHTML`, but its default value is the identity function (`src/public/mathfield-element.ts:789`).\n\n### PoC\n\n1. Go to https://mathlive.io/mathfield/demo/\n2. open DevTools console and paste:\n\n```js\nconst s = document.createElement('math-span');\ns.style.display = 'block';\ns.textContent = '\\\\text{\u003cimg src=x onerror=alert(1)\u003e}';\ndocument.body.appendChild(s);\ns.scrollIntoView();\n```\n\nEquivalent payloads: `\\mbox{\u003cimg src=x onerror=alert(1)\u003e}`\n\nor\n\n```js\nimport { convertLatexToMarkup } from 'mathlive';\ndocument.body.innerHTML = convertLatexToMarkup('\\\\text{\u003cimg src=x onerror=alert(1)\u003e}');\n```\n\n### Impact\n\nMathLive users who render untrusted mathematical expressions can encounter malicious input that runs arbitrary JavaScript.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-29T17:21:26Z",
+    "Severity": "MODERATE",
+    "Summary": "mathlive's Lack of Escaping of HTML allows for XSS",
+    "UpdatedAt": "2026-07-29T17:21:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.110.0"
+      },
+      "VulnerableVersionRange": "\u003c= 0.109.2"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-29T15:17:33Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.verapdf:parser"
+  },
+  "Advisory": {
+    "DatabaseId": 395978,
+    "Id": "GSA_kwCzR0hTQS1qcm1jLXFnNnAtOTRmcM4ABgrK",
+    "GhsaId": "GHSA-jrmc-qg6p-94fp",
+    "References": [
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-parser/security/advisories/GHSA-jrmc-qg6p-94fp"
+      },
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-parser/pull/703"
+      },
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-parser/commit/73d6ec002b98ce1f3f68640442f8e5d5613c80ce"
+      },
+      {
+        "Url": "https://github.com/veraPDF/veraPDF-parser/commit/cb3538607a549d63504299be1088c85ae48605f4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jrmc-qg6p-94fp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jrmc-qg6p-94fp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54080"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\n\nA PostScript-interpreter-driven Denial of Service (CWE-1325) vulnerability in veraPDF allows a remote attacker to exhaust validator memory or CPU by submitting a PDF whose Type 0 font `/Encoding` (or any `/ToUnicode`) is a CMap stream containing attacker-supplied PostScript. veraPDF reuses its CMap parser as a general PostScript interpreter and exposes the unguarded `array N` allocation operator and the `for` control operator with no zero-increment guard. This affects all current versions of veraPDF-parser.\n\n## Details\n\nThe vulnerability resides in veraPDF-parser. CMap streams referenced as a Type 0 font's `/Encoding` (or any font's `/ToUnicode`) are parsed by `CMapParser` (veraPDF-parser/src/main/java/org/verapdf/pd/font/cmap/CMapParser.java), which extends `PSParser`. Tokens that are not the small CMap-specific keyword set (`begincodespacerange`, `bfchar`, `cidchar`, ...) fall through to `PSObject.execute` (veraPDF-parser/src/main/java/org/verapdf/parser/postscript/PSObject.java), which dispatches generic PostScript operators implemented in `PSOperator` (veraPDF-parser/src/main/java/org/verapdf/parser/postscript/PSOperator.java).\n\nTwo operators in that interpreter take their bound from the PDF and apply no validation:\n1. `array` at PSOperator.java:536-547 pops the top number from the operand stack and immediately calls `COSArray.construct(arraySize)`, then loops `arraySize` times appending `COSObject.getEmpty()`. `COSArray.construct(int)` calls `new ArrayList\u003c\u003e(arraySize)` (COSArray.java:102), so the underlying `Object[]` is allocated up-front. Passing `2147483647` (`Integer.MAX_VALUE`) requests a 16 GB backing array on a 64-bit JVM.\n2. `for` at PSOperator.java:571-592 reads `initial`, `increment`, and `limit` from the stack and loops `for (long i = initial; i \u003c= limit; i += increment)`. Because `increment` is unchecked, `0 0 1 { } for` produces an infinite-CPU spin (and progressively a heap exhaustion as each iteration pushes `i` onto the operand stack).\n\n`CMapFactory.getCMap` only catches `IOException` and `PostScriptException`; it does not catch `OutOfMemoryError` or wall-clock budget, so the failure propagates out of font model construction and aborts the validation worker.\n\nA single payload byte sequence, the unframed PostScript `2147483647 array`, is sufficient. No `begincmap`/`endcmap` framing is required because the operator runs before the parser ever reaches the CMap structure.\n\n## Impact\n\nThis impacts all current releases of the veraPDF-parser. Successful exploitation requires only that the target validate an attacker-supplied PDF; a single Type 0 font with a malicious `/Encoding` (or any `/ToUnicode`) stream is sufficient.\n\n## Proposed Patch\n\nCap `array` allocation and forbid zero increments in `for`.\n\nAs a defensive measure, also wrap `CMapFactory.getCMap` to enforce a wall-clock and operand-stack-size budget on CMap parsing, and audit the remaining unbounded operators (`copy`, `roll`, `dict`) for similar primitives.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-29T15:17:32Z",
+    "Severity": "MODERATE",
+    "Summary": "veraPDF Parser DoS via PostScript CMap Streams",
+    "UpdatedAt": "2026-07-29T15:17:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.31.23"
+      },
+      "VulnerableVersionRange": "\u003e= 1.31.1, \u003c= 1.31.22"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.30.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.30.1"
+    }
+  ]
+}

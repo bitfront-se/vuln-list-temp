@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-29T17:16:33Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.opentelemetry.javaagent:opentelemetry-javaagent"
+  },
+  "Advisory": {
+    "DatabaseId": 396047,
+    "Id": "GSA_kwCzR0hTQS1mcTNmLW01cW0tOTlmNc4ABgsP",
+    "GhsaId": "GHSA-fq3f-m5qm-99f5",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/security/advisories/GHSA-fq3f-m5qm-99f5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-54712"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/17870"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/commit/6ef18806d5daa4913619e4cb33d2d7ed6a853c22"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/tag/v2.27.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fq3f-m5qm-99f5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fq3f-m5qm-99f5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54712"
+      }
+    ],
+    "Description": "The RMI context propagation payload reader limits the number of context entries but does not limit the aggregate size of the strings read from the stream.\n\nAn attacker who can reach an RMI endpoint on an instrumented JVM can send an oversized context propagation payload. This can cause excessive memory allocation while the JVM reads the payload, potentially leading to denial of service.\n\nThe issue affects only deployments where RMI instrumentation is enabled and an RMI endpoint is network-reachable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-29T17:16:32Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenTelemetry Javaagent RMI context propagation allows resource exhaustion",
+    "UpdatedAt": "2026-07-29T17:16:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.27.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.27.0"
+    }
+  ]
+}

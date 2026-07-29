@@ -1,0 +1,107 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-29T15:40:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.quarkus:quarkus-vertx-http"
+  },
+  "Advisory": {
+    "DatabaseId": 396016,
+    "Id": "GSA_kwCzR0hTQS1xY3hwLWdtN20tNGo1ds4ABgrw",
+    "GhsaId": "GHSA-qcxp-gm7m-4j5v",
+    "References": [
+      {
+        "Url": "https://github.com/quarkusio/quarkus/security/advisories/GHSA-qcxp-gm7m-4j5v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50559"
+      },
+      {
+        "Url": "https://github.com/quarkusio/quarkus/commit/919b80017d85564143a845b38e9cca54aff5b3cc"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26017"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26018"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26194"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26586"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34608"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:36820"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-50559"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2486959"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-50559.json"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qcxp-gm7m-4j5v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qcxp-gm7m-4j5v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50559"
+      }
+    ],
+    "Description": "Quarkus HTTP path-based authorization policies can be bypassed using encoded semicolons (%3B) to smuggle matrix\n  parameters past the security layer, and using encoded slashes (%2F) or backslashes (%5C) to access protected static\n  resources. This is a distinct issue from CVE-2026-39852, which addressed only literal semicolon stripping.\n\n  ### Technical Details\n\n  The security layer (AbstractPathMatchingHttpSecurityPolicy) normalizes request paths using Vert.x's normalizedPath(),\n  which only decodes unreserved RFC 3986 characters (letters, digits, -, ., _, ~). It then strips matrix parameters by\n  looking for literal ; characters. This creates two mismatches:\n\n  1. Encoded semicolons (`%3B`): Since `%3B` is not decoded by normalizedPath(), the matrix parameter stripping in\n  pathWithoutMatrixParams() never sees it. The encoded semicolon and everything after it become part of the path\n  segment, causing policy matching to fail. This affects all path-policy-protected endpoints.\n  2. Static resource path mismatch: Static resource handlers (StaticHandlerImpl, FileSystemStaticHandler) perform full\n  percent-decoding via URIDecoder.decodeURIComponent() and backslash-to-slash conversion before filesystem resolution.\n  Reserved characters like `%2F` (slash) and `%5C` (backslash) that survive the security layer's partial decoding are fully\n  decoded before file serving.\n\n  REST endpoints using Quarkus REST (RESTEasy Reactive) are not affected by the `%2F/%5C` vectors because the routing layer also uses `normalizedPath()` — both security and routing agree on the path, so no mismatch exists.\n\n###  Attack Vectors\n\n  Encoded semicolon (matrix parameter smuggling), affects all path-policy-protected endpoints:\n  \n  - `/api/admin%3Bbypass=true/data`: security sees this as a single segment `admin%3Bbypass=true`, which does not match the\n   `/api/admin/* policy`. The request passes through unauthenticated.\n  - `/api/secret%3b/data`: same mechanism with lowercase hex digit.\n\n  Encoded slash/backslash on static resources, affects static files behind path policies:\n  - `/static-secret%2Fhtml`, security does not match /static-secret.html policy; static handler decodes `%2F` to `/` and may\n  resolve the file.\n  - `/static-secret%5Chtml `. static handler decodes `%5C` to `\\`, then converts to `/`.\n\n  Double encoding, affects static resources:\n  - `/secret%252Fconfidential.html`, first decode by normalizedPath() turns `%25` into `%`, producing `%2F`. Static handler's\n  second decode turns `%2F` into `/`.\n\n  The following vectors were investigated and confirmed not exploitable:\n\n  - Unreserved character encoding (`/api/adm%69n/data`): `normalizedPath()` decodes these. Both security and routing see\n  `/api/admin/data`. \n  - Null byte injection (`/api/admin%00/data`): `%00` is not decoded by `normalizedPath()`. \n  - Encoded dot segments (`/api/%2e%2e/secret/data`): Period is unreserved, so `%2e` is decoded to `.` by `normalizedPath()`,\n  then `removeDots()` normalizes `..` segments. \n  - REST endpoint bypass via `%2F/%5C`: Routing uses the same `normalizedPath()` as security. The encoded slash/backslash\n  doesn't match any route. \n\n###   Root Cause\n\n  `pathWithoutMatrixParams()` operates on the partially-decoded output of `normalizedPath()`, where reserved characters\n  remain encoded. It searches for literal ; but never sees `%3B.` The fix (`normalizePath()`) performs full percent-decoding\n   in a loop before stripping matrix parameters, removing null bytes, normalizing backslashes, and resolving dot\n  segments, aligning the security layer's view of the path with what downstream handlers resolve.\n\n###  Impact\n\n  - Unauthenticated access to endpoints protected by `quarkus.http.auth.permission` path-based policies via `%3B` smuggling\n  - Static resource exposure by bypassing path policies on protected files via `%2F/%5C`\n  - Applications using annotation-based security (`@RolesAllowed`, `@Authenticated`) on JAX-RS resources without path-based\n  policies are not affected by the `%2F/%5C` vectors, but may still be affected by `%3B` if path policies coexist\n\n###  Proof of Concept\n\n```\n  # Encoded semicolon bypass — works on any path-policy-protected endpoint\n  # Security sees \"/api/admin%3Bbypass=true/data\", doesn't match /api/admin/* policy\n  curl -v http://target/api/admin%3Bbypass=true/data\n\n  # Encoded semicolon on authenticated endpoint\n  curl -v http://target/api/secret%3b/data\n\n  # Static resource bypass via encoded slash (if static file behind path policy)\n  curl -v http://target/static-secret%2Fhtml\n\n  # Static resource bypass via encoded backslash\n  curl -v http://target/static-secret%5Chtml\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-29T15:40:05Z",
+    "Severity": "HIGH",
+    "Summary": "Quarkus: Authentication/Authorization Bypass via Advanced Path Normalization Vulnerabilities",
+    "UpdatedAt": "2026-07-29T15:40:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.37.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.37.0.CR1, \u003c 3.37.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.36.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.34.0.CR1, \u003c 3.36.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.33.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.28.0.CR1, \u003c 3.33.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.27.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.21.0.CR1, \u003c 3.27.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.20.6.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.20.6.2"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-29T15:51:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "decompress"
+  },
+  "Advisory": {
+    "DatabaseId": 361200,
+    "Id": "GSA_kwCzR0hTQS1oMzlqLXI1cXEtcjltbc4ABYLw",
+    "GhsaId": "GHSA-h39j-r5qq-r9mm",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10732"
+      },
+      {
+        "Url": "https://github.com/kevva/decompress/pull/112"
+      },
+      {
+        "Url": "https://gist.github.com/Alemmi/409c3cc148c39522c6d6a8538b0e1f9e"
+      },
+      {
+        "Url": "https://security.snyk.io/vuln/SNYK-JS-DECOMPRESS-16415209"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-10732"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2485376"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-10732.json"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h39j-r5qq-r9mm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h39j-r5qq-r9mm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-10732"
+      }
+    ],
+    "Description": "All versions of the package decompress are vulnerable to Arbitrary File Write via Archive Extraction (Zip Slip) when extracting a ZIP archive containing two entries with the same path - the first being a symlink to an arbitrary target and the second being a regular file - the file content is written through the symlink to the target location outside the output directory. This is due to the microtask processing order that checks readlink for the second file before resolving symlink for the first file. An attacker can write arbitrary files on the host filesystem potentially leading to remote code execution by providing a specially crafted ZIP archive.\n\n**Note:**\n\nThis bypasses all existing path traversal protections including preventWritingThroughSymlink, added as a part of the fix for [CVE-2020-12265](https://security.snyk.io/vuln/SNYK-JS-DECOMPRESS-557358).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-05T09:33:46Z",
+    "Severity": "MODERATE",
+    "Summary": "decompress: Arbitrary File Write via Archive Extraction (Zip Slip)",
+    "UpdatedAt": "2026-07-29T15:51:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.1"
+    }
+  ]
+}
