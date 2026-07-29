@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-28T22:20:54Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/bablilayoub/openhole"
+  },
+  "Advisory": {
+    "DatabaseId": 395847,
+    "Id": "GSA_kwCzR0hTQS1maDJmLXhmeGMtcTljY84ABgpH",
+    "GhsaId": "GHSA-fh2f-xfxc-q9cc",
+    "References": [
+      {
+        "Url": "https://github.com/bablilayoub/openhole/security/advisories/GHSA-fh2f-xfxc-q9cc"
+      },
+      {
+        "Url": "https://github.com/bablilayoub/openhole/commit/a28c27adde2a7ed0c347b730c8707208c0f78ed3"
+      },
+      {
+        "Url": "https://github.com/bablilayoub/openhole/releases/tag/v0.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fh2f-xfxc-q9cc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fh2f-xfxc-q9cc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54650"
+      }
+    ],
+    "Description": "## Summary\n\nopenhole-server forwarded the URL-decoded request path (`r.URL.Path`) to tunnel clients instead of the original request-target. Percent-encoded dot-segments (`%2e`) and separators (`%2f`) were decoded to `../` and `/` before reaching the local service.\n\nGo's ServeMux rejects literal `../` paths, but percent-encoded traversal sequences bypassed this and were delivered to backends as working path traversal.\n\n## Impact\n\nAn unauthenticated remote attacker could read files outside the published web root on tunneled local services that resolve paths without canonicalization.\n\nExample:\n- `/%2e%2e/secret.txt` → file outside web root\n- `/%2e%2e/%2e%2e/etc/passwd` → sensitive files\n\nEncoded slashes (`/a%2fb`) could also bypass path-based access controls.\n\n## Fix\n\nv0.1.2 forwards `r.URL.EscapedPath()` on the server and preserves the request-target on the CLI client.\n\nUsers should upgrade both openhole-server and the openhole CLI to v0.1.2 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-28T22:20:51Z",
+    "Severity": "HIGH",
+    "Summary": "openhole-server vulnerable to path traversal via URL-decoded request path",
+    "UpdatedAt": "2026-07-28T22:20:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.2"
+      },
+      "VulnerableVersionRange": "\u003c= 0.1.1"
+    }
+  ]
+}

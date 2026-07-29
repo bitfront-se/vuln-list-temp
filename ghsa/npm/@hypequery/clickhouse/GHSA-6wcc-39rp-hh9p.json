@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-28T22:19:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@hypequery/clickhouse"
+  },
+  "Advisory": {
+    "DatabaseId": 395846,
+    "Id": "GSA_kwCzR0hTQS02d2NjLTM5cnAtaGg5cM4ABgpG",
+    "GhsaId": "GHSA-6wcc-39rp-hh9p",
+    "References": [
+      {
+        "Url": "https://github.com/hypequery/hypequery/security/advisories/GHSA-6wcc-39rp-hh9p"
+      },
+      {
+        "Url": "https://github.com/hypequery/hypequery/commit/4dfa9d77d70a08b970e722268b75ca7d13db0bdf"
+      },
+      {
+        "Url": "https://github.com/hypequery/hypequery/blob/main/packages/clickhouse/CHANGELOG.md#202"
+      },
+      {
+        "Url": "https://github.com/hypequery/hypequery/releases/tag/@hypequery/clickhouse@2.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6wcc-39rp-hh9p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6wcc-39rp-hh9p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54658"
+      }
+    ],
+    "Description": "### Impact\n A SQL injection vulnerability exists in the `escapeValue()` function used for parameter substitution. Attackers who can control parameter values can inject arbitrary SQL by using a trailing backslash to escape the closing quote.\n\nWho is impacted: All users of @hypequery/clickhouse versions prior to 2.0.2 who pass user-controlled input as query parameters.\n\n### Patches\nThe vulnerability has been patched in version 2.0.2. The fix properly escapes backslashes before escaping single quotes\n\n### Workarounds\nNo workaround exists other than upgrading. Manual input validation/sanitization is not recommended as a mitigation - the library must handle escaping correctly.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-28T22:19:23Z",
+    "Severity": "CRITICAL",
+    "Summary": "@hypequery/clickhouse has SQL Injection in parameter escaping that allows arbitrary SQL execution",
+    "UpdatedAt": "2026-07-28T22:19:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.2"
+    }
+  ]
+}
