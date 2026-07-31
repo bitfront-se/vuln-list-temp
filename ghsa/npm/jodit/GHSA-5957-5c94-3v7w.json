@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-31T19:10:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jodit"
+  },
+  "Advisory": {
+    "DatabaseId": 397235,
+    "Id": "GSA_kwCzR0hTQS01OTU3LTVjOTQtM3Y3d84ABg-z",
+    "GhsaId": "GHSA-5957-5c94-3v7w",
+    "References": [
+      {
+        "Url": "https://github.com/xdan/jodit/security/advisories/GHSA-5957-5c94-3v7w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-54756"
+      },
+      {
+        "Url": "https://github.com/xdan/jodit/commit/d298397bc993793b17145806c15f7dae53f90104"
+      },
+      {
+        "Url": "https://github.com/xdan/jodit/releases/tag/4.12.18"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5957-5c94-3v7w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5957-5c94-3v7w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54756"
+      }
+    ],
+    "Description": "### Summary\n`Jodit.configure(options)` — and the internal `ConfigMerge` / `ConfigProto` helpers — merged user-supplied options into the editor configuration without filtering prototype-mutating keys. A payload nested under an existing plain-object option such as `controls` could reach and mutate `Object.prototype` (prototype pollution).\n\n### Affected\n- Package: `jodit` (npm)\n- Versions: `\u003c 4.12.18`\n- Public API: `Jodit.configure(options)`\n\n### Proof of Concept\n```js\nimport { Jodit } from 'jodit';\ndelete Object.prototype.polluted;\nJodit.configure(JSON.parse('{\"controls\":{\"__proto__\":{\"polluted\":\"yes\"}}}'));\nconsole.log(({}).polluted); // \"yes\" (before the fix)\ndelete Object.prototype.polluted;\n```\n\n### Impact\nApplications that pass user-controlled or partially user-controlled configuration into `Jodit.configure()` could be vulnerable to prototype pollution: unexpected property injection, logic bypass, denial of service, or secondary security issues.\n\n### Patch\nFixed in 4.12.18 by rejecting `__proto__`, `constructor`, and `prototype` at every merge level in `ConfigMerge` and `ConfigProto`.\n\n### Credit\nResponsibly reported by Junming Wu.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-31T19:10:16Z",
+    "Severity": "MODERATE",
+    "Summary": "Jodit has prototype pollution via Jodit.configure() / ConfigMerge",
+    "UpdatedAt": "2026-07-31T19:10:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.18"
+      },
+      "VulnerableVersionRange": "\u003c 4.12.18"
+    }
+  ]
+}

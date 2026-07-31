@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-31T17:03:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hashi-vault-js"
+  },
+  "Advisory": {
+    "DatabaseId": 397198,
+    "Id": "GSA_kwCzR0hTQS1nOTU2LTJmNzQtcm12N84ABg-O",
+    "GhsaId": "GHSA-g956-2f74-rmv7",
+    "References": [
+      {
+        "Url": "https://github.com/kyndryl-open-source/hashi-vault-js/security/advisories/GHSA-g956-2f74-rmv7"
+      },
+      {
+        "Url": "https://github.com/kyndryl-open-source/hashi-vault-js/pull/66"
+      },
+      {
+        "Url": "https://github.com/kyndryl-open-source/hashi-vault-js/commit/ea2f76052d366a08f35f62ef4c12b6a334c91ec2"
+      },
+      {
+        "Url": "https://github.com/kyndryl-open-source/hashi-vault-js/releases/tag/v0.5.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g956-2f74-rmv7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g956-2f74-rmv7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55100"
+      }
+    ],
+    "Description": "## Summary\n\nThe `hashi-vault-js` library is vulnerable to path traversal and query string injection due to the lack of proper encoding of identifiers in path segments and query strings. This allows attackers to manipulate the request URL and potentially access unintended downstream endpoints or inject malicious parameters if untrusted input is passed to the library.\n\n## Details\n\nThere are zero calls to `encodeURIComponent` anywhere in `Vault.js`. Every identifier (e.g., name, username, group, role, version) provided to the library is concatenated straight into the HTTP URL without URI encoding.\n\nTwo vectors can be dynamically confirmed:\n\n1. **Path Traversal:** Passing `../../sys/seal` as a secret name causes the HTTP client to normalize the path and send the request to `/v1/sys/seal` instead of the intended Key-Value path.\n2. **Query Injection:** Passing `1\u0026list=true` as a version value injects an extra query parameter into the request payload.\n\n## Impact\n\nIn applications where Vault identifiers originate from untrusted user input, this allows an unauthenticated attacker to redirect requests to unintended Vault endpoints (including administrative paths under `sys/`) or otherwise alter the executed query, executing operations within the permissions of the Vault token used by the application.\n\n## Patches\n\nThis vulnerability has been addressed by wrapping path segments with `encodeURIComponent()` and safely formatting query strings instead of manual string concatenation. Users should upgrade to a version that includes this fix.\n\n## Workarounds\n\nIf you cannot immediately update the library, you can mitigate this issue by rigidly validating and sanitizing all user-supplied input before passing it into `hashi-vault-js` methods. Alternatively, manually encode inputs using `encodeURIComponent()` before supply them to the library's functions.\n\n## Acknowledgements\n\nhashi-vault-js would like to thank Sebastián Alba Vives for reporting this vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-31T17:03:27Z",
+    "Severity": "HIGH",
+    "Summary": "hashi-vault-js has a path traversal and query parameter injection",
+    "UpdatedAt": "2026-07-31T17:03:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.5.2"
+      },
+      "VulnerableVersionRange": "\u003c= 0.5.1"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-07-31T19:15:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jodit"
+  },
+  "Advisory": {
+    "DatabaseId": 397237,
+    "Id": "GSA_kwCzR0hTQS00NXFnLTI1MnYtM2Y3cM4ABg-1",
+    "GhsaId": "GHSA-45qg-252v-3f7p",
+    "References": [
+      {
+        "Url": "https://github.com/xdan/jodit/security/advisories/GHSA-45qg-252v-3f7p"
+      },
+      {
+        "Url": "https://github.com/xdan/jodit/commit/49a31f451f6b686f5610022a1d4406ee85138dc5"
+      },
+      {
+        "Url": "https://github.com/xdan/jodit/releases/tag/4.13.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-45qg-252v-3f7p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-45qg-252v-3f7p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65841"
+      }
+    ],
+    "Description": "A `\u003cscript\u003e` element placed directly inside an `\u003csvg\u003e` (or MathML) container was not removed by Jodit's clean-html sanitizer.\n\nThe deny/allow tag filter compared `node.nodeName` against an upper-cased tag hash, but foreign (SVG/MathML) elements preserve their original-case node names — an SVG script reports `\"script\"`, not `\"SCRIPT\"` — so the default `denyTags` list (which includes `script`) did not match it. The script therefore survived in the editor value and serialized output, where it could execute when the content was loaded back into a page or editor.\n\n### Proof of concept\n\n```html\n\u003csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"400\" viewBox=\"0 0 124 124\"\u003e\n  \u003crect width=\"124\" height=\"124\" rx=\"24\" fill=\"#000000\"\u003e\u003c/rect\u003e\n  \u003cscript type=\"text/javascript\"\u003ealert(document.domain);\u003c/script\u003e\n\u003c/svg\u003e\n```\n\nLoad the payload into the editor (e.g. via source mode) and the `\u003cscript\u003e` is preserved in `editor.value` and executes.\n\n### Impact\n\nStored / DOM cross-site scripting. An application that persists editor output and later renders or re-opens it in Jodit can have attacker-supplied script run in a victim's (e.g. an administrator's) authenticated browser context.\n\n### Patch\n\nFixed in **4.13.6**: the deny/allow lookup now normalises the tag name to upper case before matching, so a foreign namespace can no longer bypass the filter, while `allowTags` is still honoured.\n\n### Workaround\n\nUpgrade to 4.13.6 or later. Server-side sanitization of stored HTML mitigates in the interim.\n\n### Credit\n\nReported by Roman Kis (@CrownKingClown).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-31T19:15:57Z",
+    "Severity": "MODERATE",
+    "Summary": "Jodit has cross-site scripting (XSS) via \u003cscript\u003e nested in SVG that bypasses clean-html sanitization",
+    "UpdatedAt": "2026-07-31T19:15:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.13.6"
+      },
+      "VulnerableVersionRange": "\u003c 4.13.6"
+    }
+  ]
+}
