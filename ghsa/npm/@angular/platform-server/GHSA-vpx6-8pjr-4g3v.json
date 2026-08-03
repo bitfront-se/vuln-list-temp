@@ -1,0 +1,86 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-03T16:14:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/platform-server"
+  },
+  "Advisory": {
+    "DatabaseId": 397725,
+    "Id": "GSA_kwCzR0hTQS12cHg2LThwanItNGczds4ABhGd",
+    "GhsaId": "GHSA-vpx6-8pjr-4g3v",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-vpx6-8pjr-4g3v"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/69675"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/69714"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/69929"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/69930"
+      },
+      {
+        "Url": "https://github.com/angular/domino/pull/32"
+      },
+      {
+        "Url": "https://github.com/angular/domino/commit/f88e5aa49cf2804d7c2df22ef1640eb4ec43dd56"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vpx6-8pjr-4g3v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vpx6-8pjr-4g3v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69149"
+      }
+    ],
+    "Description": "A Cross-Site Scripting (XSS) vulnerability exists in `@angular/platform-server`'s DOM emulation dependency (`domino`) when serializing the content of fallback raw-content elements (`\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`, and `\u003cnoscript\u003e`).\n\nWhen rendering dynamic text content inside fallback raw-content elements via template bindings, the template engine expects the browser to render the content safely. Under Server-Side Rendering (SSR), `domino` is configured with scripting enabled, meaning these elements are treated as raw-text elements.\n\nHowever, `domino`'s serializer previously did not escape text nodes within fallback raw-content elements (`\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`, `\u003cnoscript\u003e`) during DOM serialization. As a result, any occurrence of closing tags in the bound dynamic text was not escaped.\n\nThe unescaped closing tag could be serialized directly into the output HTML. When parsed by a browser or re-parsed during SSR post-processing without preserving raw-content parser state, an injected closing tag closes the element early, allowing an injected script block to execute in the user's browser context, causing same-origin Cross-Site Scripting (XSS).\n\n### Impact\n\nThis vulnerability allows an attacker to perform same-origin Cross-Site Scripting (XSS) attacks against any user visiting an SSR-rendered page that binds user-controlled data inside fallback raw-content elements (`\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`, `\u003cnoscript\u003e`). This can lead to session hijacking, credentials theft, unauthorized actions on behalf of users, and defacement.\n\n### Patched Versions\n\n- 22.0.7\n- 21.2.19\n- 20.3.27\n\n### Workarounds\nIf you cannot immediately update your dependencies, you can mitigate this issue using any of the following approaches:\n- **Disable critical CSS inlining**: Critical CSS inlining in Angular SSR post-processes the rendered HTML using `domino`. Disabling this step prevents `domino` from re-parsing and re-serializing the HTML during server-side rendering.\n  - In `angular.json`, set `inlineCritical` to `false` under style optimization options:\n    ```json\n    {\n      \"projects\": {\n        \"my-app\": {\n          \"architect\": {\n            \"build\": {\n              \"builder\": \"@angular/build:application\",\n              \"options\": {\n                \"optimization\": {\n                  \"styles\": {\n                    \"inlineCritical\": false\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n    ```\n  - When rendering programmatically with `CommonEngine`, set `inlineCriticalCss: false` in your render options.\n- **Avoid binding user-controlled values** inside fallback raw-content elements (`\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`, `\u003cnoscript\u003e`).\n- **Sanitize user input** placed inside these elements to explicitly strip or escape closing tags before passing it to the template.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-03T16:14:43Z",
+    "Severity": "HIGH",
+    "Summary": "Angular SSR: Missing Fallback Raw-Content Serialization Escaping leads to Cross-Site Scripting (XSS)",
+    "UpdatedAt": "2026-08-03T16:14:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.27"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0-next.0, \u003c 20.3.27"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.19"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0-next.0, \u003c 21.2.19"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0-next.0, \u003c 22.0.7"
+    }
+  ]
+}
