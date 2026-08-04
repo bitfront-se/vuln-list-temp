@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-03T20:40:56Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 397773,
+    "Id": "GSA_kwCzR0hTQS1tcTQ0LTdwNzctcTVoN84ABhHN",
+    "GhsaId": "GHSA-mq44-7p77-q5h7",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-mq44-7p77-q5h7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59881"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/12978"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/47fb6ae354d4fa22048f4dbe7dbf82b625f0a2f6"
+      },
+      {
+        "Url": "http://github.com/aio-libs/aiohttp/releases/tag/v3.14.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mq44-7p77-q5h7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mq44-7p77-q5h7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59881"
+      }
+    ],
+    "Description": "### Summary\n\nThe client accepts and decompresses frames with the RSV1 bit set even when the `permessage-deflate` extension was not negotiated.\n\n### Impact\n\nA client may unexpectedly decompress WebSocket frames when explicitly opted out. This could lead to additional CPU/memory consumption, but is unlikely to be a significant issue unless a zip bomb vulnerability or similar is also present.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/47fb6ae354d4fa22048f4dbe7dbf82b625f0a2f6",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-03T20:40:55Z",
+    "Severity": "MODERATE",
+    "Summary": "AIOHTTP: WebSocket client accepts compressed frames without negotiated permessage-deflate",
+    "UpdatedAt": "2026-08-03T20:40:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.1"
+    }
+  ]
+}

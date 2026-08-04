@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-07-02T20:13:56Z",
+  "UpdatedAt": "2026-08-03T20:49:57Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "jsonata"
@@ -29,6 +29,12 @@
         "Url": "https://github.com/jsonata-js/jsonata/releases/tag/v2.2.0"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-52746"
+      },
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/releases/tag/v1.8.9"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-86vw-mfpg-wwv9"
       }
     ],
@@ -42,12 +48,12 @@
         "Value": "CVE-2026-52746"
       }
     ],
-    "Description": "### Impact\nIn JSONata `\u003cv2.2.0`, it is possible to craft non-matching inputs to the [$toMillis](https://docs.jsonata.org/date-time-functions#tomillis) function that cause superlinear backtracking in the ISO-8601 validation regex. This may lead to denial of service in applications that evaluate user-provided JSONata expressions.\n\n### Patches\nThis issue has been addressed in JSONata version \u003e= 2.2.0 via fixes that include https://github.com/jsonata-js/jsonata/pull/782 and https://github.com/jsonata-js/jsonata/pull/793. Applications that evaluate user-provided expressions should update ASAP to prevent exploitation.\n\n### References\nhttps://github.com/jsonata-js/jsonata/releases/tag/v2.2.0\n\n### Credit\nThank you to Doruk Tan Öztürk for disclosing this issue.",
+    "Description": "### Impact\nBefore JSONata `2.2.0` and `1.8.9`, it is possible to craft non-matching inputs to the [$toMillis](https://docs.jsonata.org/date-time-functions#tomillis) function that cause superlinear backtracking in the ISO-8601 validation regex. This may lead to denial of service in applications that evaluate user-provided JSONata expressions.\n\n### Patches\nThis issue has been addressed in JSONata version 2.2.0 or later, and 1.8.9 or later on v1, via fixes that include https://github.com/jsonata-js/jsonata/pull/782 and https://github.com/jsonata-js/jsonata/pull/793. Applications that evaluate user-provided expressions should update ASAP to prevent exploitation.\n\n### References\nhttps://github.com/jsonata-js/jsonata/releases/tag/v2.2.0\nhttps://github.com/jsonata-js/jsonata/releases/tag/v1.8.9\n\n### Credit\nThank you to Doruk Tan Öztürk for disclosing this issue.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-07-02T20:13:55Z",
     "Severity": "HIGH",
     "Summary": "jsonata: Malicious inputs to \"$toMillis\" function can cause resource exhaustion",
-    "UpdatedAt": "2026-07-02T20:13:56Z",
+    "UpdatedAt": "2026-08-03T20:49:58Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,
@@ -57,9 +63,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "1.8.9"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.9"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "2.2.0"
       },
-      "VulnerableVersionRange": "\u003c 2.2.0"
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.2.0"
     }
   ]
 }
