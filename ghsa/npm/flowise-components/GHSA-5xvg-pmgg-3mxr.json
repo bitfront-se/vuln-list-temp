@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-04T19:29:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise-components"
+  },
+  "Advisory": {
+    "DatabaseId": 398503,
+    "Id": "GSA_kwCzR0hTQS01eHZnLXBtZ2ctM214cs4ABhSn",
+    "GhsaId": "GHSA-5xvg-pmgg-3mxr",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-5xvg-pmgg-3mxr"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/pull/6499"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/commit/f4e2794f6a576b94578f2fdafbf49c2fb304626c"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise@3.1.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5xvg-pmgg-3mxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5xvg-pmgg-3mxr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70477"
+      }
+    ],
+    "Description": "-- ABSTRACT -------------------------------------\n\nTrend Micro's Zero Day Initiative has identified a vulnerability affecting the following products:\nFlowise - Flowise\n\n-- VULNERABILITY DETAILS ------------------------\n* Version tested: 3.1.1\n* Installer file: https://github.com/FlowiseAI/Flowise (npm install flowise@3.1.1)\n* Platform tested: Ubuntu 25.10\n\n---\n\nA prompt injection sent to a chatflow using a CSV Agent node can cause the LLM to respond with a malicious Python script that bypasses the blocklist validator and executes in an unsandboxed pyodide environment. An attacker can leverage this to execute arbitrary code in the context of the user running the server.\n\n```\nThis vulnerability allows remote attackers to execute arbitrary code on affected installations of Flowise. Authentication is not required to exploit this vulnerability.\n\nThe specific flaw exists within the run method of the CSV_Agents class. The issue results from insufficient input sanitization when using untrusted data to construct an LLM prompt. An attacker can leverage this vulnerability to execute code in the context of the service account.\n```\n\n### Analysis\n\nWhen a user makes a query against a chatflow using the CSV Agent node, the `run` method of the `CSV_Agents` class is called. This method reads the CSV file, loads a pyodide environment, and uses pandas to extract column names and data types into a dictionary. It then constructs a system prompt using that dictionary and the user's input, and sends this prompt to a configured LLM. The LLM response is stored in a variable named `pythonCode`. The method then attempts to validate this value using `validatePythonCodeForDataFrame` from `packages/components/src/pythonCodeValidator.ts` before evaluating it in pyodide.\n\nThe validator relies on a static regex blocklist. It can be bypassed using obfuscation techniques including string concatenation to reconstruct forbidden identifiers, `chr()` encoding, aliasing of dangerous builtins, `__getattribute__` with concatenated attribute names, frame object inspection, MRO traversal, `df.query()` expression evaluation, and decorator syntax to invoke `exec` indirectly. Furthermore, pyodide is not sandboxed from the host operating system, so any Python code that passes the validator is executed with full access to OS interfaces.\n\nFrom `packages/components/nodes/agents/CSVAgent/CSVAgent.ts`:\n```ts\nlet pythonCode = ''\nif (dataframeColDict) {\n    const chain = new LLMChain({\n        llm: model,\n        prompt: PromptTemplate.fromTemplate(systemPrompt),\n        verbose: process.env.DEBUG === 'true' ? true : false\n    })\n    const inputs = {\n        dict: dataframeColDict,\n        question: input // user-controlled input substituted into prompt\n    }\n    const res = await chain.call(inputs, [loggerHandler, ...callbacks])\n    pythonCode = res?.text // LLM response assigned to pythonCode\n    pythonCode = pythonCode.replace(/^```[a-z]+\\n|\\n```$/gm, '')\n}\n\nlet finalResult = ''\nif (pythonCode) {\n    const validation = validatePythonCodeForDataFrame(pythonCode) // blocklist validation applied\n    if (!validation.valid) {\n        throw new Error(\n            `Generated code was rejected for security reasons (${\n                validation.reason ?? 'unsafe construct'\n            }). Please rephrase your question to use only pandas DataFrame operations.`\n        )\n    }\n    try {\n        const code = `import pandas as pd\\nimport numpy as np\\n${pythonCode}`\n        finalResult = await pyodide.runPythonAsync(code) // executed in unsandboxed pyodide\n    } catch (error) {\n        throw new Error(`Sorry, I'm unable to find answer for question: \"${input}\" using following code: \"${pythonCode}\"`)\n    }\n}\n```\n\nAn unauthenticated attacker with the ability to send prompts to a chatflow using the CSV Agent node may use prompt injection to cause the LLM to respond with a malicious Python script. An authenticated attacker may instead configure a chatflow that points to an attacker-controlled server, which responds to LLM requests with an attacker-controlled Python payload, bypassing the LLM entirely.\n\nEight bypass variants were demonstrated against the validator:\n\n| Variant | Technique | Bypasses |\n|---------|-----------|----------|\n| 0 | `@exec` decorator with string-concatenated `__import__` | `/\\bexec\\s*\\(/`, `/\\b__import__\\s*\\(/` |\n| 1 | `eval` aliased to a variable, payload chr()-encoded | `/\\beval\\s*\\(/`, `/\\bimport\\b/` |\n| 2 | `df.query()` with chr()-encoded `@__builtins__.__import__` | `/\\b__builtins__\\b/`, `/\\b__import__\\s*\\(/` |\n| 3 | MRO traversal + `__getattribute__` + `__subclasses__` -\u003e `BuiltinImporter.load_module` | `/\\b__class__\\b/`, `/\\b__subclasses__\\s*\\(/`, `/\\b__mro__\\b/` |\n| 4 | Generator frame inspection via `gi_frame.f_globals['__loader__']` | `/\\b__loader__\\b/`, `/\\b__globals__\\b/` |\n| 5 | Exception traceback frame walk to `f_builtins['__import__']` | `/\\b__globals__\\b/`, `/\\b__import__\\s*\\(/` |\n| 6 | `__build_class__.__self__.__getattribute__('__import__')` | `/\\b__import__\\s*\\(/` |\n| 7 | `vars` aliased to a variable, `__builtins__` accessed via dict key | `/\\bvars\\s*\\(/`, `/\\b__builtins__\\b/`, `/\\b__import__\\s*\\(/` |\n\n### Repro\n\nThe proof of concept (`poc.py`) has three modes of operation:\n\n**mode = \"server\"**: Starts a malicious server that responds to \"/api/chat\" requests with a JSON object containing an LLM response with the selected attack payload.\n\n**mode = \"chatflow\"**: Authenticates to the Flowise server, creates a chatflow with a CSV Agent node configured to use a ChatOllama model pointed at the malicious server, and triggers a prediction to execute the payload.\n\n**mode = \"prompt_injection\"**: Sends a prompt injection payload directly to an existing chatflow's prediction endpoint. Due to the nature of LLM responses, it may take multiple attempts or require a different injection technique depending on the model used.\n\n```\npython3 poc.py --mode [server OR chatflow OR prompt_injection] [--user \u003cUSER\u003e --passwd \u003cPASSWORD\u003e --host \u003cHOST\u003e --r_host \u003cR_HOST\u003e --r_port \u003cR_PORT\u003e --l_port \u003cL_PORT\u003e --port \u003cPORT\u003e --cmd \u003cCMD\u003e --attack \u003cATTACK\u003e --chatflow_id \u003cCHAT_ID\u003e]\n```\n\n\n-- CREDIT ---------------------------------------\nThis vulnerability was discovered by:\nDre Cura (@dre_cura) of TrendAI Research",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T19:29:26Z",
+    "Severity": "CRITICAL",
+    "Summary": "Flowise: CSV Agent Prompt Injection Remote Code Execution Vulnerability",
+    "UpdatedAt": "2026-08-04T19:29:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.2"
+    }
+  ]
+}

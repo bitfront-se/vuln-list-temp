@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-04T19:18:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 398500,
+    "Id": "GSA_kwCzR0hTQS1mbTJmLTQzMzktNHAyZs4ABhSk",
+    "GhsaId": "GHSA-fm2f-4339-4p2f",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-fm2f-4339-4p2f"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/pull/6409"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/commit/96a9b23b5a103b362a0ee1368d04636755be1bed"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise@3.1.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fm2f-4339-4p2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fm2f-4339-4p2f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70475"
+      }
+    ],
+    "Description": "# Flowise Security Audit Report\n**Date**: 2026-03-17\n**Researcher**: Dimpal Jadhav (jadhavdimpy@gmail.com)\n**GitHub**: https://github.com/Dimpyj1604\n**Target**: FlowiseAI/Flowise (latest main branch)\n**Version**: flowise-components@3.1.0\n\n### FINDING 1: Missing Authorization on Execution Update Endpoint\n**Severity**: HIGH (CVSS ~7.5)\n**Type**: CWE-862 (Missing Authorization)\n**File**: `packages/server/src/routes/executions/index.ts:11`\n\n**Description**: The `PUT /api/v1/executions/:id` endpoint lacks the `checkAnyPermission()` middleware that protects all other execution endpoints (GET, DELETE). Any authenticated user — regardless of their assigned permissions — can modify any execution record.\n\n**Evidence**:\n```typescript\n// Line 7 - GET has permission check\nrouter.get('/', checkAnyPermission('executions:view'), executionController.getAllExecutions)\n\n// Line 11 - PUT has NO permission check\nrouter.put(['/', '/:id'], executionController.updateExecution)  // \u003c-- MISSING checkAnyPermission\n\n// Line 14 - DELETE has permission checkadvisory_1_execution_auth_bypass\nrouter.delete('/:id', checkAnyPermission('executions:delete'), executionController.deleteExecutions)\n```\n\n**Impact**: Privilege escalation. A low-privileged user with any valid API key can modify execution state, data, and metadata of any execution in their workspace. Could be used to manipulate workflow execution results or inject data.\n\n**Reproduction**:\n```bash\ncurl -X PUT https://TARGET/api/v1/executions/EXECUTION_ID \\\n  -H \"Authorization: Bearer LOW_PRIV_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"state\": \"FINISHED\", \"data\": \"MANIPULATED\"}'\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T19:18:47Z",
+    "Severity": "HIGH",
+    "Summary": "Flowise: Missing Authorization on Execution Update Endpoint",
+    "UpdatedAt": "2026-08-04T19:18:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.2"
+    }
+  ]
+}

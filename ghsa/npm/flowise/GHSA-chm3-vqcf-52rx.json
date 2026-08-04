@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-04T17:51:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 398436,
+    "Id": "GSA_kwCzR0hTQS1jaG0zLXZxY2YtNTJyeM4ABhRk",
+    "GhsaId": "GHSA-chm3-vqcf-52rx",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-chm3-vqcf-52rx"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/pull/6170"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/commit/d81483b70c997ddf981acc9c49fbd9a02fa345cd"
+      },
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/releases/tag/flowise@3.1.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-chm3-vqcf-52rx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-chm3-vqcf-52rx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70472"
+      }
+    ],
+    "Description": "# Summary \n\nThese endpoints accept a client-controlled `credential` parameter. The server loads credentials by `id` and uses them directly, without checking whether that credential belongs to the caller’s workspace. If an attacker knows another workspace’s `credentialId`, they can use that workspace’s OpenAI key.\n\n# Details\n\nRoute permissions (`assistants:*`) only check feature access. They do not check credential ownership. The controller passes `req.query.credential` straight to the service. The service does `findOneBy({ id: credentialId })`, decrypts the credential, and calls OpenAI APIs. There is no `workspaceId` check in this flow, so this is an IDOR.\n\n# Impact \n\n\n- Cross-workspace unauthorized use of stored OpenAI keys.\n- Unauthorized read/modify/delete of victim vector stores and files.\n- Direct billing impact on victim OpenAI account.\n- Multi-tenant boundary violation with practical exploitability.\n\n# Reproduction steps  \n\n1. Set up two workspaces: A (attacker) and B (victim), each with an OpenAI credential.  \n2. Log in as a user in workspace A (with assistants-related permissions).  \n3. Call `/api/v1/openai-assistants-vector-store` and set `credential` to B’s credential ID.  \n4. Example: `GET /api/v1/openai-assistants-vector-store?credential=\u003cB_credentialId\u003e`.  \n5. If responses/actions are executed using B’s credential context, the issue is confirmed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T17:51:48Z",
+    "Severity": "HIGH",
+    "Summary": "Flowise: Cross-workspace credential IDOR in openai-assistants-vector-store",
+    "UpdatedAt": "2026-08-04T17:51:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.2"
+    }
+  ]
+}
