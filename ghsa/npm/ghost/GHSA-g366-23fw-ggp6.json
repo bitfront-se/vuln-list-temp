@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-04T21:25:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ghost"
+  },
+  "Advisory": {
+    "DatabaseId": 398534,
+    "Id": "GSA_kwCzR0hTQS1nMzY2LTIzZnctZ2dwNs4ABhTG",
+    "GhsaId": "GHSA-g366-23fw-ggp6",
+    "References": [
+      {
+        "Url": "https://github.com/TryGhost/Ghost/security/advisories/GHSA-g366-23fw-ggp6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53946"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/pull/26753"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/commit/ba692df7f27162d0440d57487f16c530416a8eb2"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/releases/tag/v6.21.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g366-23fw-ggp6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g366-23fw-ggp6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53946"
+      }
+    ],
+    "Description": "### Impact\n\nWhen re-rendering posts, Ghost would refetch missing image dimensions by issuing an outbound HTTP request to the URL stored on an image card — without restricting that URL to trusted image hosts. An authenticated staff user able to create or edit posts could therefore point an image card at an attacker-chosen host and cause the Ghost server to request it on their behalf, including hosts on internal networks or cloud instance metadata endpoints that would not normally be reachable from the public internet.\n\n### Vulnerable versions\n\nThis vulnerability is present in Ghost from v6.19.3 up to v6.21.0.\n\n### Patches\n\nv6.21.1 contains a fix for this issue.\n\n### How to update\n\nFor self-hosters using Docker, find [Docker's official Ghost image here](https://hub.docker.com/_/ghost). Updating a Docker-based Ghost instance [is documented here](https://docs.ghost.org/install/docker#updating-ghost). \n\nIf your Ghost is a Ghost-CLI install see our documentation on [updating it to the latest version here](https://docs.ghost.org/update). \n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@ghost.org](mailto:security@ghost.org).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T21:25:21Z",
+    "Severity": "MODERATE",
+    "Summary": "Ghost: Mobiledoc image-size fetch SSRF",
+    "UpdatedAt": "2026-08-04T21:25:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.21.2"
+      },
+      "VulnerableVersionRange": "\u003e= 6.19.4, \u003c 6.21.1"
+    }
+  ]
+}

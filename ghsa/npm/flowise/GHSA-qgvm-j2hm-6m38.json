@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-04T19:37:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 398504,
+    "Id": "GSA_kwCzR0hTQS1xZ3ZtLWoyaG0tNm0zOM4ABhSo",
+    "GhsaId": "GHSA-qgvm-j2hm-6m38",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-qgvm-j2hm-6m38"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qgvm-j2hm-6m38"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qgvm-j2hm-6m38"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70478"
+      }
+    ],
+    "Description": "### Summary\n\nThe OAuth2 token refresh endpoint (`POST /api/v1/oauth2-credential/refresh/:credentialId`) is in `WHITELIST_URLS`, meaning it requires **no authentication**. It decrypts the stored credential (containing `clientId`, `clientSecret`, `refresh_token`), sends a refresh request to the configured OAuth provider, and returns the new `access_token` directly in the response body.\n\n### Root Cause\n\n```typescript\n// packages/server/src/routes/oauth2/index.ts:393-402\nres.json({\n    success: true,\n    message: 'OAuth2 token refreshed successfully',\n    credentialId: credential.id,\n    tokenInfo: {\n        ...tokenData,  // ← includes access_token!\n        has_new_refresh_token: !!tokenData.refresh_token,\n        expires_at: updatedCredentialData.expires_at\n    }\n})\n```\n\nWhitelist entry at `packages/server/src/utils/constants.ts:40`.\n\n### Attack Chain\n\n1. Attacker obtains a credential ID (via Finding 2 / public chatflow leak, or enumeration)\n2. Attacker calls `POST /api/v1/oauth2-credential/refresh/:credentialId` (no auth required)\n3. Server decrypts credential, sends refresh request to OAuth provider with user's `client_secret`\n4. Server returns the new `access_token` in the response to the attacker\n5. Attacker uses the token to access the victim's connected service (Google, Microsoft, etc.)\n\n### Docker Validation\n\n`POST /api/v1/oauth2-credential/refresh/fake-uuid` returns `{\"message\":\"Credential not found\"}` (not 401 Unauthorized), proving the endpoint processes the request without authentication.\n\n### Impact\n\n- OAuth2 access token theft for any connected service\n- Full access to the victim's third-party accounts (Google, Microsoft, GitHub, etc.)\n- Client secret transmitted to OAuth provider during refresh\n- Can also be used for DoS by exhausting refresh token quota\n\n### Suggested Fix\n\nRemove the refresh endpoint from `WHITELIST_URLS` and require authentication:\n\n```typescript\n// Remove from WHITELIST_URLS in constants.ts\n// Add authentication check in the route handler\n```\n\n---\n\n## Credits\n\n- Shinobi Security - https://github.com/shinobisecurity",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T19:37:36Z",
+    "Severity": "CRITICAL",
+    "Summary": "Flowise: Unauthenticated OAuth2 token refresh endpoint returns access tokens — enables token theft for any connected service",
+    "UpdatedAt": "2026-08-04T19:37:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.2"
+    }
+  ]
+}

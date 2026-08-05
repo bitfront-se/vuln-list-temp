@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-04T21:05:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ghost"
+  },
+  "Advisory": {
+    "DatabaseId": 398523,
+    "Id": "GSA_kwCzR0hTQS05NDR4LXBtOTUtM2pwcs4ABhS7",
+    "GhsaId": "GHSA-944x-pm95-3jpr",
+    "References": [
+      {
+        "Url": "https://github.com/TryGhost/Ghost/security/advisories/GHSA-944x-pm95-3jpr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53948"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/pull/26751"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/commit/d659e752d6636144d75b9aa94062cdbc88a16b21"
+      },
+      {
+        "Url": "https://github.com/TryGhost/Ghost/releases/tag/v6.21.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-944x-pm95-3jpr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-944x-pm95-3jpr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53948"
+      }
+    ],
+    "Description": "### Impact\n\nInsufficient validation of the client-supplied `Content-Type` on Ghost's Admin API file upload endpoint allowed uploaded files to be served from the site with an attacker-chosen content type on S3/GCS storage backends. On installations that serve uploaded files from the same origin as the site, this could have been used to facilitate stored cross-site scripting against site visitors or staff.\n\n### Vulnerable versions\n\nThis vulnerability is present in Ghost from v6.19.4 up to v6.21.0.\n\n### Patches\n\nv6.21.1 contains a fix for this issue.\n\n### How to update\n\nFor self-hosters using Docker, find [Docker's official Ghost image here](https://hub.docker.com/_/ghost). Updating a Docker-based Ghost instance [is documented here](https://docs.ghost.org/install/docker#updating-ghost). \n\nIf your Ghost is a Ghost-CLI install see our documentation on [updating it to the latest version here](https://docs.ghost.org/update). \n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@ghost.org](mailto:security@ghost.org).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T21:05:39Z",
+    "Severity": "MODERATE",
+    "Summary": "Ghost: File Upload Content-Type Spoofing",
+    "UpdatedAt": "2026-08-04T21:05:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.21.1"
+      },
+      "VulnerableVersionRange": "\u003e= 6.19.4, \u003c 6.21.1"
+    }
+  ]
+}
