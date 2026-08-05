@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-05T15:46:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 398962,
+    "Id": "GSA_kwCzR0hTQS1oN3JwLWNmOGgtajk4eM4ABhZy",
+    "GhsaId": "GHSA-h7rp-cf8h-j98x",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-h7rp-cf8h-j98x"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h7rp-cf8h-j98x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h7rp-cf8h-j98x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70601"
+      }
+    ],
+    "Description": "### Impact\nApps that expose Promise-returning functions to web content via `contextBridge` may be vulnerable to a context isolation bypass. Untrusted web content could obtain access to the isolated preload world and, through it, every capability the preload script has. In renderers without a sandbox, or with `nodeIntegration` enabled, this may escalate to Node.js access.\n\nApps are affected if they expose Promise-returning functions via `contextBridge` — the standard pattern for wrapping `ipcRenderer.invoke` — in windows that load untrusted content. Apps that never load untrusted content in those windows are not affected.\n\n### Workarounds\nThere are no app side workarounds, you must update to a patched version of Electron.\n\n### Fixed Versions\n* `42.0.0-beta.5`\n* `41.2.2`\n* `40.9.2`\n* `39.8.9`\n\n### For more information\nIf you have any questions or comments about this advisory, email Electron at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T15:46:08Z",
+    "Severity": "HIGH",
+    "Summary": "Electron: Context isolation bypass via Function.prototype.bind hijack",
+    "UpdatedAt": "2026-08-05T15:46:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-beta.5"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-beta.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.2.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.9"
+      },
+      "VulnerableVersionRange": "\u003c 39.8.9"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-05T17:41:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 398999,
+    "Id": "GSA_kwCzR0hTQS1mZjJwLWhtcXItaHhtNM4ABhaX",
+    "GhsaId": "GHSA-ff2p-hmqr-hxm4",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-ff2p-hmqr-hxm4"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/51083"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/51084"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/51085"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/51086"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/17d5d26499cd279fab48f5f26527f8edc02a7713"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/23a6efb714dec80e2cf45d3054d18d701162e4dd"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/4ac50292d552fb510eb778392620c85308770a55"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/5b699544cbbed51bedb7c60d75c8c42be5825737"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v39.8.9"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v40.9.2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.2.2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.0.0-beta.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ff2p-hmqr-hxm4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ff2p-hmqr-hxm4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70610"
+      }
+    ],
+    "Description": "### Impact\nObjects copied across the `contextBridge` boundary from untrusted content could carry an attacker-influenced prototype, enabling prototype-pollution-style attacks against preload code despite context isolation being enabled.\n\nApps are only affected if their preload code accepts object arguments from untrusted content and reads properties from them without own-property checks. Apps that only accept primitive arguments, or that validate object arguments, are not affected.\n\n### Workarounds\nValidate objects received from untrusted content with own-property checks (`Object.hasOwn`), or copy them onto a null-prototype object before use.\n\n### Fixed Versions\n* `42.0.0-beta.4`\n* `41.2.2`\n* `40.9.2`\n* `39.8.9`\n\n### For more information\nIf you have any questions or comments about this advisory, email Electron at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T17:41:20Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: contextBridge object copy honors prototype setters",
+    "UpdatedAt": "2026-08-05T17:41:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-beta.4"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-beta.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.2.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.9"
+      },
+      "VulnerableVersionRange": "\u003c 39.8.9"
+    }
+  ]
+}

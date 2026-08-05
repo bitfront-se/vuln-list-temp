@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-05T15:21:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 398904,
+    "Id": "GSA_kwCzR0hTQS1qbTdwLWNjNWctcXd4eM4ABhY4",
+    "GhsaId": "GHSA-jm7p-cc5g-qwxx",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-jm7p-cc5g-qwxx"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/0a6291a97d210db3733689e70a51f5711e38ed35"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jm7p-cc5g-qwxx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jm7p-cc5g-qwxx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70597"
+      }
+    ],
+    "Description": "### Impact\nOn macOS, the check Electron uses to confirm it was launched by a same-signed parent process could be bypassed by a local process. Apps that enable the fuse-based hardening restricting `ELECTRON_RUN_AS_NODE` and `NODE_OPTIONS` to same-signed parents rely on this check; a local attacker could bypass it and run their own code inside the signed app, inheriting its TCC permissions and keychain access.\n\nApps are only affected if they enable those macOS fuse-based restrictions. Apps that do not enable them are not affected.\n\n### Workarounds\nThere are no app side workarounds, you must update to a patched version of Electron.\n\n### Fixed Versions\n* `42.0.0-beta.3`\n* `41.2.1`\n* `40.9.0`\n* `39.8.8`\n\n### For more information\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T15:21:22Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Parent process code-sign check is spoofable",
+    "UpdatedAt": "2026-08-05T15:21:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-beta.3"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-beta.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.9.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.8"
+      },
+      "VulnerableVersionRange": "\u003c 39.8.8"
+    }
+  ]
+}

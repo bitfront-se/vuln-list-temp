@@ -1,0 +1,104 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-05T17:56:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 399010,
+    "Id": "GSA_kwCzR0hTQS1wMnJyLXJ2bW0tYzVmcM4ABhai",
+    "GhsaId": "GHSA-p2rr-rvmm-c5fp",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-p2rr-rvmm-c5fp"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/50961"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/50962"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/50963"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/50964"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/08b9d0a220e267d1a2402a44bdd01a2e9aa320b5"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/2764e4c35168855f614876051823db4f58a3714a"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/477dcf7afc6550715f9ec5e6f39ee38e5dd7bf39"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/c39e3d5687d57434c8d5fe814c5152efd2f631c3"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v39.8.8"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v40.9.0"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.2.1"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.0.0-beta.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p2rr-rvmm-c5fp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p2rr-rvmm-c5fp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-70612"
+      }
+    ],
+    "Description": "### Impact\nRequests to open external protocol URLs from web content did not take iframe sandbox restrictions into account, so a sandboxed iframe could cause an OS-registered external application to be launched. The frame's sandbox state was also not made available to the app's permission handlers.\n\nApps are only affected if they render untrusted content in sandboxed iframes and grant the `openExternal` permission (granted by default when no `setPermissionRequestHandler` is installed). Apps whose permission handler denies `openExternal` for untrusted content are not affected.\n\n### Workarounds\nInstall a `setPermissionRequestHandler` that denies the `openExternal` permission for untrusted content.\n\n### Fixed Versions\n* `42.0.0-beta.3`\n* `41.2.1`\n* `40.9.0`\n* `39.8.8`\n\n### For more information\nIf you have any questions or comments about this advisory, email Electron at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T17:56:50Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Sandboxed iframes can launch external protocol handlers",
+    "UpdatedAt": "2026-08-05T17:56:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-beta.3"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-beta.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0-alpha.1, \u003c 41.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 40.9.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.8"
+      },
+      "VulnerableVersionRange": "\u003c 39.8.8"
+    }
+  ]
+}
