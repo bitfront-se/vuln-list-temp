@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-05T21:27:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nuxt/devtools"
+  },
+  "Advisory": {
+    "DatabaseId": 399431,
+    "Id": "GSA_kwCzR0hTQS0yNzl4LW13ZnYtdmNxds4ABhhH",
+    "GhsaId": "GHSA-279x-mwfv-vcqv",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-279x-mwfv-vcqv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-279x-mwfv-vcqv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-279x-mwfv-vcqv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71319"
+      }
+    ],
+    "Description": "### Impact\n\nNuxt DevTools (development mode only) exposes a bidirectional RPC channel over the Vite HMR WebSocket via the `nuxt:devtools:rpc` plugin. On affected versions the channel has no authentication: any client that can reach the Vite HMR endpoint (`ws://\u003chost\u003e:\u003cport\u003e/`, subprotocol `vite-hmr`) can call RPC methods, with no token, handshake, or origin check before the channel is established. The `updateOptions()`, `clearOptions()`, and `openInEditor()` methods do not enforce the `ensureDevAuthToken` check that the other mutating methods use.\n\n`openInEditor()` reads the persisted `behavior.openInEditor` value and passes it to the `launch-editor` package, which spawns it as a child process. That value is settable through the equally unauthenticated `updateOptions()`. An attacker who can reach the HMR port can therefore chain `updateOptions('behavior', { openInEditor: '\u003ccommand\u003e' })` then `openInEditor('\u003cany-existing-file\u003e')` to execute an arbitrary program on the developer's machine.\n\nThe HMR port is reachable by a process on the same host, by any peer on the LAN when the dev server is bound with `nuxi dev --host`, or by a malicious website the developer visits while the dev server is running (a browser can open the HMR WebSocket cross-origin). Impact is limited to development environments; production builds do not run DevTools.\n\n### Patches\n\nFixed in `@nuxt/devtools@3.3.1`. Because `nuxt` depends on `@nuxt/devtools` through a `^3.x` range, updating is a lockfile refresh / reinstall; no `nuxt` release is required.\n\n### Workarounds\n\n- Update `@nuxt/devtools` to a patched version.\n- Do not run the dev server bound to a non-loopback interface (`nuxi dev --host`) on an untrusted network.\n- Disable DevTools entirely with `devtools: { enabled: false }` in `nuxt.config`.\n\n### References\n\n- GHSA-279x-mwfv-vcqv\n- `launch-editor`: https://www.npmjs.com/package/launch-editor",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T21:27:39Z",
+    "Severity": "CRITICAL",
+    "Summary": "Unauthenticated Nuxt DevTools RPC allows arbitrary command execution on the developer's host",
+    "UpdatedAt": "2026-08-05T21:27:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.1"
+    }
+  ]
+}

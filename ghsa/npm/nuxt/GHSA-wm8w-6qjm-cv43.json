@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-05T21:14:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 399429,
+    "Id": "GSA_kwCzR0hTQS13bTh3LTZxam0tY3Y0M84ABhhF",
+    "GhsaId": "GHSA-wm8w-6qjm-cv43",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-wm8w-6qjm-cv43"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/ac9b41a36b62296a117862254ee7d2b21a2a5203"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v4.5.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wm8w-6qjm-cv43"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wm8w-6qjm-cv43"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71316"
+      }
+    ],
+    "Description": "### Impact\n\nWhen a page is covered by `routeRules` `cache` / `swr` / `isr`, Nuxt enables runtime payload extraction and serves `/\u003cpage\u003e/_payload.json`. On affected versions the renderer stored the SSR payload in the shared `cache:nuxt:payload` storage under a path-only key (no cookie, `authorization`, or `cache.varies` dimension) and, on a later payload request, returned the cached entry before route middleware / page guards ran again.\n\nAs a result, once any authenticated user warms a protected, cached page, a subsequent `GET /\u003cpage\u003e/_payload.json` from an unauthenticated client or a different authenticated user receives the first user's payload: the full SSR data for that route, including anything loaded via `useFetch` / `useAsyncData` (for example `/api/me`: profile, tenant, billing, token-like values). The HTML response stays correctly varied and protected; only the extracted payload leaks. Both cross-user (A warms, B receives A) and unauthenticated disclosure are exploitable. `cache.varies` does not mitigate it, because the payload cache ignores `varies`.\n\nIntroduced when runtime payload extraction landed for cached routes (#34410); the regression is specific to the 4.x line, where the runtime `cache:nuxt:payload` storage was added and the `import.meta.prerender` gate on the payload-cache read/writes was dropped. The 3.x line shipped the same feature with the gate intact and is not affected.\n\n### Patches\n\nFixed in `nuxt@4.5.1`. Runtime payload-cache reads and writes are again confined to prerendering (`import.meta.prerender`); at runtime, `/\u003cpage\u003e/_payload.json` follows the normal render path so route middleware, `routeRules.appMiddleware`, and page guards run for the current request. `main` / v5 and the `3.x` line already had this property, so 3.x is not affected.\n\n### Workarounds\n\n- Set `experimental.payloadExtraction: false` (reporter-validated): the standalone `/_payload.json` endpoint returns 404 and the page still serves a 200 with an inline payload.\n- Do not apply `cache` / `swr` / `isr` to authenticated pages that render user-specific SSR data.\n- As defense-in-depth, require authentication for `/**/_payload.json` at a proxy / CDN.\n- After upgrading, purge any CDN / platform cache that may already hold protected payloads.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T21:14:33Z",
+    "Severity": "HIGH",
+    "Summary": "Nuxt runtime payload cache discloses another user's SSR data across users and to unauthenticated clients",
+    "UpdatedAt": "2026-08-05T21:14:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.4.0, \u003c= 4.5.0"
+    }
+  ]
+}

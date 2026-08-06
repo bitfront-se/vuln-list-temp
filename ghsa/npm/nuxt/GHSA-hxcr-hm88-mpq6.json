@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-05T20:59:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 399427,
+    "Id": "GSA_kwCzR0hTQS1oeGNyLWhtODgtbXBxNs4ABhhD",
+    "GhsaId": "GHSA-hxcr-hm88-mpq6",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-hxcr-hm88-mpq6"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/4e35ae9babd94be53246e31200232d48438bb34e"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/668cdfdfda41849ed11c1ee5e2067a11fc103b22"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v3.21.10"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v4.5.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hxcr-hm88-mpq6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hxcr-hm88-mpq6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71314"
+      }
+    ],
+    "Description": "### Impact\n\nAn unauthenticated attacker can crash a Nuxt server that renders any island / server component containing a `v-for` over a prop (for example `v-for=\"n in count\"` or a `\u003cslot v-for\u003e`). Because the island URL hash is a non-secret digest of the request, the attacker can compute a valid hash for arbitrary props and send the iterated prop as a large integer. The server then expands the `v-for` to that many nodes during SSR, allocating memory proportional to the attacker's number. Reporter figures: `count=8000000` produced a 142.9 MB response; `count=40000000` (and `items=4000000` on a slot list) produced an out-of-memory crash of the worker from a single ~130-byte request. Both the plain `v-for` path (Vue's `ssrRenderList`) and the slot path (`vforToArray`) are affected.\n\n### Patches\n\nFixed in `nuxt@4.5.1` and `nuxt@3.21.10`. Island/server-component `v-for` sources are now clamped to a maximum iteration count (`MAX_VFOR_LENGTH = 100000`) at the render boundary, covering the plain path, the `\u003cslot v-for\u003e` element, and the `vforToArray` slot-props helper. Combined with the body-size cap (GHSA-9pgf-384g-p7mv), a single island render can no longer allocate without bound regardless of which `v-for` path is used or whether the prop arrives as an integer or an array.\n\n### Workarounds\n\nAvoid `v-for` directly over an unclamped prop in server components, or clamp the count in the component (`v-for=\"n in Math.min(count, 1000)\"`). A body-size limit in front of `/__nuxt_island/` only mitigates array-shaped inputs, not the integer-amplification case.\n\n### References\n\n- Bound helper: `packages/nuxt/src/app/components/vfor.ts`\n- Transform: `packages/nuxt/src/components/plugins/islands-transform.ts`\n- Slot helper: `packages/nuxt/src/app/components/utils.ts` (`vforToArray`)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T20:59:04Z",
+    "Severity": "HIGH",
+    "Summary": "Nuxt: Unauthenticated out-of-memory crash via unbounded v-for expansion in island rendering",
+    "UpdatedAt": "2026-08-05T20:59:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.21.10"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.0, \u003c 3.21.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.5.1"
+    }
+  ]
+}

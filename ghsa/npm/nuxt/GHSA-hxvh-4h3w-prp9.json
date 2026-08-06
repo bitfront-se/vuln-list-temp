@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-05T21:05:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 399428,
+    "Id": "GSA_kwCzR0hTQS1oeHZoLTRoM3ctcHJwOc4ABhhE",
+    "GhsaId": "GHSA-hxvh-4h3w-prp9",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-hxvh-4h3w-prp9"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/619963309e082190bac4a26b05f2dd155b039b81"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/ad624a75ad2d215f43633f6b40be346a7194d34d"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v3.21.10"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v4.5.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hxvh-4h3w-prp9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hxvh-4h3w-prp9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71315"
+      }
+    ],
+    "Description": "### Impact\n\nNuxt matches route rules case-insensitively by default (mirroring vue-router's default `sensitive: false` routing). The fix for GHSA-mm7m-92g8-7m47 / CVE-2026-53721 lowercased the *lookup* path before matching route rules, but the route-rule *keys* compiled into the matcher were left verbatim. As a result, any route rule whose key contains an uppercase character (for example `/Admin`, `/Dashboard/**`, or the rules Nuxt derives from PascalCase/camelCase page files such as `pages/Admin.vue`) never matches, because every lookup is folded to lowercase while the key stays mixed-case.\n\nvue-router still serves the page case-insensitively, so the page renders with none of its Nuxt route-rule protections applied. The most serious consequence is an authorization bypass: an `appMiddleware` rule used as an auth gate (`routeRules: { '/Admin/dashboard': { appMiddleware: 'auth' } }`) is dropped, and `/Admin/dashboard`, `/admin/dashboard`, and `/ADMIN/dashboard` all render the protected page (and its SSR-fetched data) to an unauthenticated visitor instead of redirecting to login. The same gap drops Nuxt's other app-side route-rule behaviours for mixed-case keys, including the client redirect middleware, the app-side `ssr: false` decision, `prerender`, and payload handling.\n\n### Patches\n\nFixed in `nuxt@4.5.1` (4.x) and `nuxt@3.21.10` (3.x). The route-rule matcher now case-folds the compiled keys the same way it folds the lookup path, so key and lookup normalisation are symmetric. Both sides are gated on `router.options.sensitive`: with `sensitive: true` (case-sensitive routing) configured casing is preserved on both sides.\n\nScope note: server-emitted per-route `headers`, server `redirect`, and `proxy` are matched by Nitro's own case-sensitive route-rule matcher, not by Nuxt's app-level matcher. They are unchanged by this advisory. The fix covers the app-level protections Nuxt owns (`appMiddleware`, `appLayout`, the client redirect middleware, the app `ssr` decision, `prerender`, and payload).\n\n### Workarounds\n\nIf you cannot upgrade immediately, any one of:\n\n- Key all `routeRules` (and name your page files) in lowercase, so the keys already match the folded lookup path.\n- Set `router: { options: { sensitive: true } }` so routing and route-rule matching are both case-sensitive and exact (requests must then use the exact casing).\n- Enforce the sensitive protections server-side independently of route rules (for example a server middleware that checks auth), which does not rely on case-insensitive route-rule matching.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-05T21:05:18Z",
+    "Severity": "HIGH",
+    "Summary": "Nuxt route rules silently dropped for mixed-case paths, bypassing appMiddleware auth gates (incomplete fix for CVE-2026-53721)",
+    "UpdatedAt": "2026-08-05T21:05:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.21.10"
+      },
+      "VulnerableVersionRange": "\u003e= 3.21.7, \u003c 3.21.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.4.7, \u003c 4.5.1"
+    }
+  ]
+}
