@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-07T18:15:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jsii-diff"
+  },
+  "Advisory": {
+    "DatabaseId": 401435,
+    "Id": "GSA_kwCzR0hTQS13Y3g0LXdwZnYtbWM1Y84ABiAb",
+    "GhsaId": "GHSA-wcx4-wpfv-mc5c",
+    "References": [
+      {
+        "Url": "https://github.com/aws/jsii/security/advisories/GHSA-wcx4-wpfv-mc5c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-15895"
+      },
+      {
+        "Url": "https://aws.amazon.com/security/security-bulletins/2026-057-aws"
+      },
+      {
+        "Url": "https://github.com/aws/jsii/releases/tag/v1.131.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wcx4-wpfv-mc5c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wcx4-wpfv-mc5c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-15895"
+      }
+    ],
+    "Description": "## Summary\n\njsii-diff is a command line tool to compare the API differences between two jsii assemblies, and report errors if there are backwards-incompatible changes to the API. An issue exists where specially formatted command line arguments can be used to execute shell commands via this tool.\n\n## Impact\njsii-diff supports downloading packages to compare directly from NPM, so that you can compare a proposed candidate version of your jsii package with an already-published version, by passing an argument that looks like `npm:\u003cpackage-specifier\u003e`. For example:\n\n```\njsii-diff npm:my-package@latest .\n```\n\nBy injecting a `;` into the `package-specifier` part of that command, jsii-diff can be tricked into running shell commands. For example:\n\n```\njsii-diff \"npm:lodash; touch /tmp/123\" .\n```\n\nThis allows anyone that can control the command-line arguments to jsii-diff to run arbitrary commands with the same permissions as the jsii-diff command itself.\n\n## Patches\nThis issue has been addressed in jsii-diff version 1.131.0. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes.\n\n## Workarounds\nIf you are unable to update, make sure only trusted actors can control the arguments passed to jsii-diff.\n\n## References\nIf you have any questions or comments about this advisory, AWS asks that you contact AWS Security via the [vulnerability reporting page](https://aws.amazon.com/security/vulnerability-reporting) or directly via email to [aws-security@amazon.com](mailto:aws-security@amazon.com). Please do not create a public GitHub issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-07T18:15:47Z",
+    "Severity": "HIGH",
+    "Summary": "jsii-diff: Command Injection via npm: package argument",
+    "UpdatedAt": "2026-08-07T18:15:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.131.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.131.0"
+    }
+  ]
+}

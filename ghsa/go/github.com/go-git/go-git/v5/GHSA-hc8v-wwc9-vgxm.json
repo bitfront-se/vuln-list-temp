@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-07T16:38:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/go-git/go-git/v5"
+  },
+  "Advisory": {
+    "DatabaseId": 400352,
+    "Id": "GSA_kwCzR0hTQS1oYzh2LXd3Yzktdmd4bc4ABhvg",
+    "GhsaId": "GHSA-hc8v-wwc9-vgxm",
+    "References": [
+      {
+        "Url": "https://github.com/go-git/go-git/security/advisories/GHSA-hc8v-wwc9-vgxm"
+      },
+      {
+        "Url": "https://github.com/go-git/go-git/commit/008a78f2dd86f52544ddff8b8e8ddeecdf3f7aab"
+      },
+      {
+        "Url": "https://github.com/go-git/go-git/commit/661d1c7f101d34e002a3cfcf8dbea5b7421d07ac"
+      },
+      {
+        "Url": "https://github.com/go-git/go-git/releases/tag/v5.19.2"
+      },
+      {
+        "Url": "https://github.com/go-git/go-git/releases/tag/v6.0.0-alpha.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hc8v-wwc9-vgxm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hc8v-wwc9-vgxm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71556"
+      }
+    ],
+    "Description": "## Impact\n\nA symlink traversal issue in `go-git` could allow worktree operations to modify files outside the intended worktree path.\n\nThe `worktreeFilesystem` wrapper rejected dangerous path strings, including paths containing `.git`, parent-directory components, or control characters. However, it did not prevent filesystem operations from following symbolic links that were already present in the worktree.\n\nAs a result, a path that is safe when evaluated as a string could still resolve into the repository's Git metadata directory. For example, if `s` is a symbolic link to `.git`, writing to `s/config` would modify `.git/config`.\n\nA symbolic link at the final path component could also be followed. For example, if `s` points directly to `.git/config`, opening `s` for writing with truncation could overwrite the repository configuration.\n\nExploitation requires an attacker to be able to introduce or control a symbolic link in the worktree and cause the application to perform a write through that path.\n\nApplications using `storage/memory` for their Storer, or `go-billy/memfs` for their `Worktree`, are not affected by this vulnerability.\n\n## Patches\n\nThe issue has been addressed by making the worktree filesystem wrapper a symlink-safe boundary.\n\nWorktree operations now reject paths where an existing symbolic link in any path component could cause the operation to escape the intended worktree location, including symbolic links at the final component.\n\nUsers of filesystem-backed worktrees should upgrade to a patched version.\n\n### Credits\n\nThanks to @kodareef5 for reporting this issue and working with the go-git security team toward its resolution. :1st_place_medal: \nWe would also like to thank @HughLewis20, who independently reported the same issue while a fix was already in progress.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-07T16:38:15Z",
+    "Severity": "HIGH",
+    "Summary": "go-git: Worktree operations may follow symlinks",
+    "UpdatedAt": "2026-08-07T16:38:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.19.2"
+      },
+      "VulnerableVersionRange": "\u003c= 5.19.1"
+    }
+  ]
+}

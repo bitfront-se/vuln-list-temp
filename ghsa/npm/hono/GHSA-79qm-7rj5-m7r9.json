@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-08-07T18:38:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 401493,
+    "Id": "GSA_kwCzR0hTQS03OXFtLTdyajUtbTdyOc4ABiBV",
+    "GhsaId": "GHSA-79qm-7rj5-m7r9",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-79qm-7rj5-m7r9"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/720b566290793d4358bf39843adcb7cf4da4548f"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.34"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-79qm-7rj5-m7r9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-79qm-7rj5-m7r9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71849"
+      }
+    ],
+    "Description": "### Summary\n\nThe Proxy Helper (`hono/proxy`) does not remove response headers named by the origin's `Connection` header. Headers that the origin marked as connection-scoped are therefore forwarded to clients.\n\n### Details\n\nPer RFC 9110 Section 7.6.1, an intermediary must remove the header fields listed in a message's `Connection` header field before forwarding the message, in addition to the well-known hop-by-hop headers. The `proxy()` function removed the well-known hop-by-hop headers (including `Connection` itself) from origin responses, but did not remove the headers that the response's `Connection` header field designated as connection-scoped.\n\nThis issue arises when an application proxies responses from an origin that declares additional, non-standard headers as hop-by-hop via the `Connection` response header.\n\n### Impact\n\nA client may receive response headers that the origin intended only for its immediate peer. This may lead to:\n\n- Disclosure of connection-scoped or internal metadata contained in such headers\n\nThis issue affects applications that use the Proxy Helper (`hono/proxy`) to forward responses from origins that list custom header names in their `Connection` response header. Applications whose origins only use the standard hop-by-hop headers are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-07T18:38:48Z",
+    "Severity": "LOW",
+    "Summary": "Hono: Proxy Helper does not remove response headers listed in the `Connection` header",
+    "UpdatedAt": "2026-08-07T18:38:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.34"
+      },
+      "VulnerableVersionRange": "\u003e= 4.7.0, \u003c 4.12.34"
+    }
+  ]
+}

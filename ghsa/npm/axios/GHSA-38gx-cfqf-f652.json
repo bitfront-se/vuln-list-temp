@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-07T17:51:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "axios"
+  },
+  "Advisory": {
+    "DatabaseId": 397464,
+    "Id": "GSA_kwCzR0hTQS0zOGd4LWNmcWYtZjY1Ms4ABhCY",
+    "GhsaId": "GHSA-38gx-cfqf-f652",
+    "References": [
+      {
+        "Url": "https://github.com/axios/axios/security/advisories/GHSA-xj6q-8x83-jv6g"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-67314"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/axios-before-prototype-pollution-via-auth-subfields"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-38gx-cfqf-f652"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-38gx-cfqf-f652"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-xj6q-8x83-jv6g. This link is maintained to preserve external references.\n\n## Original Description\naxios versions \u003e=1.15.2 and \u003c1.18.0 contain prototype-pollution read-side gadgets in Basic auth subfield handling (lib/adapters/http.js and lib/helpers/resolveConfig.js). When an application is already affected by a separate prototype-pollution primitive and makes an axios request with an own auth object that omits the username and/or password properties, axios reads the inherited Object.prototype.username and Object.prototype.password values and uses them to construct an outbound 'Authorization: Basic ...' header. axios itself does not pollute prototypes. The practical impact is outbound request tampering: an attacker who controls the polluted prototype values can inject attacker-chosen Basic auth credentials or replace an existing Authorization header. Credential disclosure is only possible under additional application-specific conditions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-01T15:30:27Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: Axios: Prototype pollution auth subfields can inject Basic auth",
+    "UpdatedAt": "2026-08-07T17:51:36Z",
+    "WithdrawnAt": "2026-08-07T17:51:06Z",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 1.15.2, \u003c 1.18.0"
+    }
+  ]
+}

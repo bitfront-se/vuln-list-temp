@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-07T17:16:17Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-redis"
+  },
+  "Advisory": {
+    "DatabaseId": 400360,
+    "Id": "GSA_kwCzR0hTQS1wOWptLXE4NXAtN21jcM4ABhvo",
+    "GhsaId": "GHSA-p9jm-q85p-7mcp",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-p9jm-q85p-7mcp"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17065"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/bb2ff68a1fb71cb4b0eb9a9e17b66c52aff680c6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p9jm-q85p-7mcp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p9jm-q85p-7mcp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-56818"
+      }
+    ],
+    "Description": "## Summary\n\n`RedisArrayAggregator` clears retained partial aggregate state when the `maxNestedArrayDepth` limit is exceeded, but it does not clear the same state when the sibling `maxElements` limit is exceeded. A peer can start a valid RESP array, send a bulk-string child, then send a nested array header longer than the configured `maxElements`. Netty throws a decoder exception, but the existing partial aggregate remains retained in the handler.\n\nIf the application leaves the channel alive after the exception, later messages are still consumed into the pre-error aggregate. The supplied PoV proves both the retained `ByteBuf` reference and the stale parser state continuation.\n\n## Technical Details\n\n`RedisArrayAggregator.decode(...)` retains non-array messages before adding them to `depths.peek().children`. In `decodeRedisArrayHeader(...)`, the `header.length() \u003e maxElements` branch throws immediately:\n\n```java\nif (header.length() \u003e maxElements) {\n    throw new CodecException(\"this codec doesn't support longer length than \" + maxElements);\n}\n```\n\nThe immediately following nested-depth branch clears retained aggregate state before throwing:\n\n```java\nif (depths.size() \u003e= maxNestedArrayDepth) {\n    releaseAndClearDepths();\n    throw new CodecException(\"max nested array depth exceeded: \" + maxNestedArrayDepth);\n}\n```\n\nThe missing cleanup in the first branch leaves retained children and aggregate state reachable after the exception.\n\n## PoC\n\nPlace the supplied `RedisArrayAggregatorIncompleteCleanupPovTest.java` under:\n\n`codec-redis/src/test/java/io/netty/handler/codec/redis/`\n\nRun:\n\n```fish\n./mvnw -pl codec-redis -am -Dtest=RedisArrayAggregatorIncompleteCleanupPovTest -Dsurefire.failIfNoSpecifiedTests=false -DskipNativeTests -DskipAutobahnTests test\n```\n\nThe test suite includes:\n\n- serialized RESP trigger through `RedisDecoder`, `RedisBulkStringAggregator`, and `RedisArrayAggregator`;\n- direct refcount proof that max-elements overflow does not release the retained child immediately;\n- post-exception continuation proof that the stale aggregate consumes a later message;\n- nested-depth controls that clear the same partial aggregate state.\n\nAll five tests pass on current `4.2`, `4.2.15.Final`, and `4.1.135.Final`.\n\n## Impact\n\nFor Redis codec pipelines that continue after codec exceptions, an unauthenticated peer can keep attacker-controlled aggregate state alive across a security-limit exception. This can pin retained pooled buffers until channel close/removal or until a later message completes the stale aggregate.\n\n`RedisBulkStringAggregator` permits bulk strings up to `RedisConstants.REDIS_MESSAGE_MAX_LENGTH` (`512MB`), so the retained child can be large in deployments that aggregate untrusted Redis streams.\n\nApplications that always close the channel or remove the handler on decoder exceptions will trigger existing cleanup; the issue is the missing immediate cleanup on the max-elements failure path while the handler remains installed.\n\n## Suggested Fix\n\nCall `releaseAndClearDepths()` before throwing from the max-elements branch. Consider applying the same cleanup to all unrecoverable `decodeRedisArrayHeader(...)` error exits that can occur while `depths` is non-empty.\n\n## Affected Package/Versions\n\n`io.netty:netty-codec-redis`\n\nConfirmed on:\n\n- current `4.2` branch head `7bae566a93e69409697fe57fa807910ba5c9720e`\n- `4.2.15.Final` at `a41f7b289ce1`\n- `4.1.135.Final` at `f05f765d8146`\n\n## Advisory History\n\nThis differs from the public Redis codec advisories because it reproduces on their patched tags:\n\n- `GHSA-5w86-c3rq-vjj7`\n- `GHSA-3244-j874-rhc2` / `CVE-2026-44250`\n- `GHSA-6jv9-x5w9-2ccm` / `CVE-2026-48006`\n- `GHSA-6ghj-frrj-jjj3` / `CVE-2026-44890`\n\n## Why This Is Not Intended Behavior\n\nThe public API docs document `RedisArrayAggregator` as aggregating `RedisMessage` parts into `ArrayRedisMessage` and document a `CodecException` when an array header exceeds `maxElements`. They do not document preserving pre-exception partial aggregate state after that limit fires.\n\nThe adjacent nested-depth branch already calls `releaseAndClearDepths()` before throwing. The max-elements branch is the sibling aggregation-limit branch but throws without cleanup. Netty's later Redis lifecycle cleanup patch explicitly added release behavior for nested-array failure and handler removal, leaving the max-elements failure branch as a missed cleanup path.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-07T17:16:13Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty: RedisArrayAggregator max-elements failure leaves retained partial aggregate state",
+    "UpdatedAt": "2026-08-07T17:16:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.16.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0-Final, \u003c 4.2.16.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.136.Final"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.136.Final"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-07T18:36:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 401492,
+    "Id": "GSA_kwCzR0hTQS01NGZ4LTQyZ2MtN3Z3NM4ABiBU",
+    "GhsaId": "GHSA-54fx-42gc-7vw4",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-54fx-42gc-7vw4"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/f70e2c31684387b3231cc38512a31df6ca76a1c7"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.12.34"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-54fx-42gc-7vw4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-54fx-42gc-7vw4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71848"
+      }
+    ],
+    "Description": "### Summary\n\nThe `languageDetector` middleware is vulnerable to algorithmic complexity denial of service when processing a crafted language tag containing a large number of hyphen-separated subtags.\n\n### Details\n\nTo implement progressive language-tag truncation, `normalizeLanguage()` repeatedly calls `parts.slice(0, i).join('-')` for every possible prefix. The total amount of string processing grows quadratically with the number of subtags.\n\nLanguage values may come from a query parameter, cookie, `Accept-Language` header, or URL path, depending on the detector configuration. The default detector order enables query-string, cookie, and header detection, so applications using `languageDetector()` may expose this processing to unauthenticated requests.\n\nRequest-size limits reduce the maximum cost of a single request but do not eliminate the issue. Inputs accepted by common JavaScript runtimes can still cause noticeable synchronous event-loop blocking.\n\n### Impact\n\nAn attacker may repeatedly send requests containing long, hyphen-separated language tags, causing excessive CPU consumption and preventing unrelated requests from being processed.\n\nThe practical impact depends on the runtime's request-size limits, reverse-proxy configuration, and the detectors enabled by the application.\n\n### Resolution\n\nThe progressive lookup should avoid reconstructing every shorter prefix. The implementation can instead inspect the configured supported languages and select the longest value that matches the input at a hyphen boundary.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-07T18:36:31Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: Algorithmic Complexity DoS in Language Middleware",
+    "UpdatedAt": "2026-08-07T18:36:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.12.34"
+      },
+      "VulnerableVersionRange": "\u003e= 4.12.0, \u003c 4.12.34"
+    }
+  ]
+}
