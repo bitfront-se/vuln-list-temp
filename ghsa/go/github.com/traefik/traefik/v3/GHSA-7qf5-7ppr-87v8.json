@@ -1,0 +1,58 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-06T16:45:13Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/traefik/traefik/v3"
+  },
+  "Advisory": {
+    "DatabaseId": 397461,
+    "Id": "GSA_kwCzR0hTQS03cWY1LTdwcHItODd2OM4ABhCV",
+    "GhsaId": "GHSA-7qf5-7ppr-87v8",
+    "References": [
+      {
+        "Url": "https://github.com/traefik/traefik/security/advisories/GHSA-8rxv-jg7p-wvg3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-67309"
+      },
+      {
+        "Url": "https://github.com/traefik/traefik/commit/69259c3acc9d4bdc065cb2e3b83336f7de3e7038"
+      },
+      {
+        "Url": "https://github.com/traefik/traefik/commit/b93f02cd07b79490fb8c8f02e301a7a1ec553195"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/traefik-path-traversal-via-rewritetarget-authentication-bypass"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7qf5-7ppr-87v8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7qf5-7ppr-87v8"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-8rxv-jg7p-wvg3. This link is maintained to preserve external references.\n\n## Original Description\n\nTraefik versions \u003e= v3.7.0 and \u003c= v3.7.7 contain a path traversal vulnerability in the Kubernetes Ingress NGINX provider's RewriteTarget middleware (generated from the nginx.ingress.kubernetes.io/rewrite-target annotation). When an Ingress path uses a regex that captures attacker-controlled text without requiring a path separator (e.g., path /api(.*) with rewrite target /$1), a crafted request such as /api../admin matches the public router, is rewritten to a dot-segment traversal path (/../admin), and is forwarded without post-replacement normalization validation. A backend that normalizes dot segments resolves the path to a protected endpoint (e.g., /admin) reachable only through a separate router secured with BasicAuth, DigestAuth, or ForwardAuth, resulting in route-level authentication bypass. The issue is fixed in v3.7.8.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-01T15:30:27Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: Kubernetes Ingress NGINX RewriteTarget Path Traversal Allows Route-Level Authentication Bypass",
+    "UpdatedAt": "2026-08-06T16:45:13Z",
+    "WithdrawnAt": "2026-08-06T16:45:13Z",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.7.0, \u003c= 3.7.7"
+    }
+  ]
+}

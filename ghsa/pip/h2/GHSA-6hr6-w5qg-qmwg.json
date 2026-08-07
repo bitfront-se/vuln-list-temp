@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-06T21:53:43Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "h2"
+  },
+  "Advisory": {
+    "DatabaseId": 399911,
+    "Id": "GSA_kwCzR0hTQS02aHI2LXc1cWctcW13Z84ABhon",
+    "GhsaId": "GHSA-6hr6-w5qg-qmwg",
+    "References": [
+      {
+        "Url": "https://github.com/python-hyper/h2/security/advisories/GHSA-6hr6-w5qg-qmwg"
+      },
+      {
+        "Url": "https://github.com/python-hyper/h2/commit/292a40829feefda98c8509dcdbbb4a57af9bd6a6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6hr6-w5qg-qmwg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6hr6-w5qg-qmwg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71554"
+      }
+    ],
+    "Description": "### Impact\nh2 \u003c=4.4.0 accepts request header blocks containing more than one Host header, and forwards every Host header to the consuming application. Where the consumer downgrades HTTP/2 to HTTP/1.1, the resulting request carries two Host header lines, which is a request smuggling primitive (CWE-444).\n\n### Patches\nPatched and fixed in v4.4.1\n\n### Workarounds\nUsers of the h2 library are advised to check and follow HTTP semantics best practices in their application code. h2 provides best effort sanity checks, but ultimately the calling code is responsible to ensure proper and safe usage of HTTP/2 as provided by h2, hyperframe, and hpack.\n\n### References\nSimilar to the previously disclosed and fixed duplicate content-length issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-06T21:53:41Z",
+    "Severity": "MODERATE",
+    "Summary": "h2: Duplicate Host header could facilitate request smuggling",
+    "UpdatedAt": "2026-08-06T21:53:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 4.4.0"
+    }
+  ]
+}

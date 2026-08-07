@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-06T19:55:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mermaid"
+  },
+  "Advisory": {
+    "DatabaseId": 399884,
+    "Id": "GSA_kwCzR0hTQS02eDY0LTl4NjItZjJneM4ABhoM",
+    "GhsaId": "GHSA-6x64-9x62-f2gx",
+    "References": [
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/security/advisories/GHSA-6x64-9x62-f2gx"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/pull/8022"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/12d472c9ed43f94814b110da8d7a9ae6dd5266ed"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/7e83f1533318b307764d961906a73377266f4c5e"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/mermaid@11.16.1"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/v10.9.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6x64-9x62-f2gx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6x64-9x62-f2gx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50159"
+      }
+    ],
+    "Description": "### Summary\n\nMermaid does not fully restrict CSS to the rendered SVG subtree. Although selectors are prefixed with `#mermaid-X`, sibling (`~` and `+`) combinators can still escape the Mermaid container and inject styles to DOM elements adjacent to the diagram `\u003csvg\u003e`.\n\n**Most users of mermaid would not be affected by this**, as mermaid adds its `\u003csvg\u003e` as an only child of it's parent element. However, you may be affected if you manually insert the `\u003csvg\u003e` (or other elements) into the DOM yourself.\n\n### Details\n\nMermaid namespaces CSS through with a middleware intended to scope all rules to the diagram's SVG element. CSS nesting expands `\u0026 ~ * { ... }` to `#svgId ~ *`, which selects all sibling elements following the SVG in the DOM, outside the diagram boundary.\n\n### Impact\n\nAn attacker able to supply diagram source to a page (e.g., user-generated content rendered by Mermaid) could inject CSS rules affecting sibling elements to the diagram `\u003csvg\u003e` on the host page. This can be used for UI redressing, hiding content, conditional CSS-based probing, or phishing-style visual manipulation.\n\nJavaScript execution is not possible via this vector.\n\n### Patches\n\nThis has been patched in https://github.com/mermaid-js/mermaid/commit/12d472c9ed43f94814b110da8d7a9ae6dd5266ed and released in [Mermaid v11.16.1](https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.16.1).\n\nA backport has been made for the v10 branch in 7e83f1533318b307764d961906a73377266f4c5e and was released in [Mermaid v10.9.8](https://github.com/mermaid-js/mermaid/releases/tag/v10.9.8)\n\n### Workarounds\n\nIf you are inserting the `\u003csvg\u003e` into the DOM yourself, you can wrap it in an element with no other children, e.g. `\u003cdiv\u003e\u003csvg\u003e...\u003c/svg\u003e\u003c/div\u003e` or `element.innerHTML = svg`. Alternatively, you can use `mermaid.run()` or `mermaid.initialize()`  which will do this for you. \n\nSetting [\"securityLevel\": \"sandbox\"](https://mermaid.js.org/config/schema-docs/config.html#securitylevel) will also prevent this, or setting the [`secure`](https://mermaid.js.org/config/schema-docs/config.html#secure) config value in the mermaid config to avoid allowing diagrams to modify `fontFamily`, `themeCSS`, `altFontFamily`, and `themeVariables`.\n\nTo test, you can try using a `themeCSS` with `\u0026 + * { /* my CSS here */}` and see if it's applied outside of your mermaid `\u003csvg\u003e`.\n\n```mermaid-example\n---\nconfig:\n  themeCSS: |-\n    \u0026 + * { background:red !important; width:100vw !important; height:100vh !important; position:fixed !important; inset:0 !important; }\n---\ninfo\n```\n\n### References\n\n- GHSA-87f9-hvmw-gh4p/CVE-2026-41159 (related vulnerability)\n- https://github.com/mermaid-js/mermaid/commit/12d472c9ed43f94814b110da8d7a9ae6dd5266ed\n- https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.16.1\n- https://github.com/mermaid-js/mermaid/commit/7e83f1533318b307764d961906a73377266f4c5e\n- https://github.com/mermaid-js/mermaid/releases/tag/v10.9.8",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-06T19:55:31Z",
+    "Severity": "MODERATE",
+    "Summary": "Mermaid allows CSS injection applying to sibling elements of the diagram",
+    "UpdatedAt": "2026-08-06T19:55:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.9.8"
+      },
+      "VulnerableVersionRange": "\u003c 10.9.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0-alpha.1, \u003c 11.16.1"
+    }
+  ]
+}

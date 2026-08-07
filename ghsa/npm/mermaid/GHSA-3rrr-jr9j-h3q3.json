@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-06T19:52:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mermaid"
+  },
+  "Advisory": {
+    "DatabaseId": 399883,
+    "Id": "GSA_kwCzR0hTQS0zcnJyLWpyOWotaDNxM84ABhoL",
+    "GhsaId": "GHSA-3rrr-jr9j-h3q3",
+    "References": [
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/security/advisories/GHSA-3rrr-jr9j-h3q3"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/pull/8022"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/commit/99af3fc35ef0a9a9c8c6314521344d67523ddccf"
+      },
+      {
+        "Url": "https://github.com/mermaid-js/mermaid/releases/tag/mermaid@11.16.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3rrr-jr9j-h3q3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3rrr-jr9j-h3q3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71437"
+      }
+    ],
+    "Description": "Rendering an untrusted `architecture-beta` diagram lets the diagram author write an arbitrary property with the value `horizontal` or `vertical` onto `Object.prototype`. A group id of `__proto__` is accepted as a valid parent.\n\n### Impact\n\nAny code in the same realm that reads a property of that name from an arbitrary object, or enumerates an object with bare `for...in`, observes the injected value (which can only be the string `horizontal` or `vertical`.\n\nThis may mean corrupted option/config defaults, bypassed truthiness checks, causing denial of service or logic corruption in the embedding application.\n\nBecause the injected value cannot be an object or function, this is not directly exploitable for remote code execution.\n\n### PoC\n\n```\narchitecture-beta\n      group mermaidPrototypePollutionMarker(cloud)[Marker]\n      service a(server)[A] in __proto__\n      service b(server)[B] in mermaidPrototypePollutionMarker\n      a:R -- L:b\n```\n\nThe vulnerable write was introduced in commit [cb0a4703bdf01d47508bde1c08aa9a980d70bc20](https://github.com/mermaid-js/mermaid/commit/cb0a4703bdf01d47508bde1c08aa9a980d70bc20) and first shipped in `mermaid@11.5.0`. The lines are unchanged in every release since.\n\n### Patches\n\nThis has been patched by https://github.com/mermaid-js/mermaid/commit/99af3fc35ef0a9a9c8c6314521344d67523ddccf, released in [Mermaid v11.16.1](https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.16.1)\n\n### Workarounds\n\nThere are no known workarounds. Please update to a patched version.\n\n### References\n\n_Are there any links users can visit to find out more?_\n\n- https://github.com/mermaid-js/mermaid/commit/99af3fc35ef0a9a9c8c6314521344d67523ddccf\n- https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.16.1",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-06T19:51:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Mermaid Architecture diagrams are vulnerable to prototype pollution",
+    "UpdatedAt": "2026-08-06T19:52:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 11.5.0, \u003c 11.16.1"
+    }
+  ]
+}
