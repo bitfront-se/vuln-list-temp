@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-07T20:55:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "image-size"
+  },
+  "Advisory": {
+    "DatabaseId": 362560,
+    "Id": "GSA_kwCzR0hTQS13M3J4LXI2cjYtcGdwcs4ABYhA",
+    "GhsaId": "GHSA-w3rx-r6r6-pgpr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-71330"
+      },
+      {
+        "Url": "https://joshua.hu/image-size-infinite-loop-dos-vulnerabilities"
+      },
+      {
+        "Url": "https://web.archive.org/web/20260224152152/https://github.com/image-size/image-size/pull/439"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/image-size-denial-of-service-via-malformed-icns-image-parsing"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w3rx-r6r6-pgpr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w3rx-r6r6-pgpr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-71330"
+      }
+    ],
+    "Description": "image-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted ICNS image buffer. Attackers can craft an ICNS buffer containing valid magic bytes and a zero-valued entry length field to trigger an infinite loop in the ICNS parser, as the offset is never incremented when the entry length field is 0, causing the while loop condition to remain true indefinitely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-10T15:31:30Z",
+    "Severity": "HIGH",
+    "Summary": "image-size: ICNS parser allows denial of service through an infinite loop",
+    "UpdatedAt": "2026-08-07T20:55:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.0.2"
+    }
+  ]
+}

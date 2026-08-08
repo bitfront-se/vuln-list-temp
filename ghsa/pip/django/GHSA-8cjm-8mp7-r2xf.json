@@ -1,0 +1,77 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-08-07T20:04:00Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "django"
+  },
+  "Advisory": {
+    "DatabaseId": 360416,
+    "Id": "GSA_kwCzR0hTQS04Y2ptLThtcDctcjJ4Zs4ABX_g",
+    "GhsaId": "GHSA-8cjm-8mp7-r2xf",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-8404"
+      },
+      {
+        "Url": "https://docs.djangoproject.com/en/dev/releases/security"
+      },
+      {
+        "Url": "https://groups.google.com/g/django-announce"
+      },
+      {
+        "Url": "https://www.djangoproject.com/weblog/2026/jun/03/security-releases"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/366d9ae6e8d1469c04e9ebdc1bcd098fc14a3b1e"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/b4330259ffbe1a031ed14daab1f35697460f10f2"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/d618d7ae4fec727d5b582bd24f803c28d17bf7cd"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/django/PYSEC-2026-201.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8cjm-8mp7-r2xf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8cjm-8mp7-r2xf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-8404"
+      }
+    ],
+    "Description": "An issue was discovered in Django 5.2 before 5.2.15 and 6.0 before 6.0.6.\n`django.middleware.cache.UpdateCacheMiddleware` in Django does not match `Cache-Control` response directives case-insensitively, which allows remote attackers to read responses that were incorrectly cached because their `Cache-Control` directives used uppercase or mixed-case values.\nEarlier, unsupported Django series (such as 5.0.x, 4.1.x, and 3.2.x) were not evaluated and may also be affected.\nDjango would like to thank Ahmed Badawe for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-03T15:30:43Z",
+    "Severity": "LOW",
+    "Summary": "Django: UpdateCacheMiddleware may disclose cached responses due to case-sensitive Cache-Control handling",
+    "UpdatedAt": "2026-08-07T20:04:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c 6.0.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.15"
+      },
+      "VulnerableVersionRange": "\u003c 5.2.15"
+    }
+  ]
+}

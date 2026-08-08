@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-07T20:35:49Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "keras"
+  },
+  "Advisory": {
+    "DatabaseId": 397483,
+    "Id": "GSA_kwCzR0hTQS1tOHdoLTI5d20tNTJtds4ABhCr",
+    "GhsaId": "GHSA-m8wh-29wm-52mv",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-9335"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/commit/23370f16b0ab9a200f7550a34e54a3ceab74ba0e"
+      },
+      {
+        "Url": "https://huntr.com/bounties/876a7226-5428-4a66-9d05-232461120db5"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/pull/22899"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/pull/23165"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/commit/d338a45204bdc787c8b3c4a9b82c1911cd52dedf"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/releases/tag/v3.12.3"
+      },
+      {
+        "Url": "https://github.com/keras-team/keras/releases/tag/v3.15.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m8wh-29wm-52mv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m8wh-29wm-52mv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-9335"
+      }
+    ],
+    "Description": "A vulnerability in keras-team/keras versions \u003c= 3.14.0 allows arbitrary local HDF5 file content disclosure due to improper handling of HDF5 ExternalLinks. The `KerasFileEditor` and `keras.saving.load_weights` functions bypass the `safe_get_h5_group` and `safe_get_h5_dataset` helpers, which are designed to reject ExternalLinks and SoftLinks. This results in automatic dereferencing of links to external HDF5 files, enabling attackers to disclose sensitive data from the victim's local filesystem. Specifically, `KerasFileEditor` extracts attributes and datasets from linked files into its internal structures, while `keras.saving.load_weights` loads weights from linked files into the user's model. This issue can be exploited by providing a malicious `.h5`, `.weights.h5`, or `.keras` file containing ExternalLinks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-02T06:30:20Z",
+    "Severity": "MODERATE",
+    "Summary": "Keras: HDF5 links can disclose local file contents",
+    "UpdatedAt": "2026-08-07T20:35:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.15.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.13.0, \u003c 3.15.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.12.3"
+      },
+      "VulnerableVersionRange": "\u003c 3.12.3"
+    }
+  ]
+}
