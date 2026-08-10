@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-05-08T17:15:11Z",
+  "UpdatedAt": "2026-08-10T14:46:28Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "fast-uri"
@@ -20,6 +20,72 @@
         "Url": "https://cna.openjsf.org/security-advisories.html"
       },
       {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-6321.json"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v3.1.1"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v2.4.1"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2466582"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-6321"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:42079"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:42078"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37385"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34342"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26420"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26416"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26234"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26214"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:25123"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:25089"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:24977"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:24866"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:24766"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:24473"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:21338"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:20338"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:19238"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-q3j6-qgpj-74h6"
       }
     ],
@@ -33,12 +99,12 @@
         "Value": "CVE-2026-6321"
       }
     ],
-    "Description": "### Impact\n\n`fast-uri` v3.1.0 and earlier decodes percent-encoded path separators (`%2F`) and dot segments (`%2E`) before applying dot-segment removal in `normalize()` and `equal()`. This makes encoded path data behave like real `/` and `..`, so distinct URIs collapse onto the same normalized path.\n\nFor example, `http://example.com/public/%2e%2e/admin` normalizes to `http://example.com/admin`, and `equal()` considers them the same URI.\n\nApplications that normalize or compare attacker-controlled URLs to enforce path-based policy can be bypassed. A path that looks confined under an allowed prefix can normalize to a different location.\n\n### Patches\n\nUpgrade to `fast-uri` \u003e= 3.1.1.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+    "Description": "### Impact\n\n`fast-uri` v3.1.0 and earlier decodes percent-encoded path separators (`%2F`) and dot segments (`%2E`) before applying dot-segment removal in `normalize()` and `equal()`. This makes encoded path data behave like real `/` and `..`, so distinct URIs collapse onto the same normalized path.\n\nFor example, `http://example.com/public/%2e%2e/admin` normalizes to `http://example.com/admin`, and `equal()` considers them the same URI.\n\nApplications that normalize or compare attacker-controlled URLs to enforce path-based policy can be bypassed. A path that looks confined under an allowed prefix can normalize to a different location.\n\n### Patches\n\nUpgrade to `fast-uri` \u003e= 3.1.1, or if you are in the v2.x release line, v2.4.1\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-08T17:15:09Z",
     "Severity": "HIGH",
     "Summary": "fast-uri vulnerable to path traversal via percent-encoded dot segments",
-    "UpdatedAt": "2026-05-08T17:15:11Z",
+    "UpdatedAt": "2026-08-10T14:46:29Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,
@@ -48,9 +114,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "2.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2.4.0"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "3.1.1"
       },
-      "VulnerableVersionRange": "\u003c= 3.1.0"
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.1.0"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-05-08T19:13:02Z",
+  "UpdatedAt": "2026-08-10T14:43:43Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "fast-uri"
@@ -20,6 +20,111 @@
         "Url": "https://cna.openjsf.org/security-advisories.html"
       },
       {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37186"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37385"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:37628"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:40118"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:40945"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:41066"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:41928"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:41951"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:42078"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:42142"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:43038"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-6322"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2466684"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v2.4.1"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v3.1.2"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-6322.json"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:25271"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:25273"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26225"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:26234"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:28571"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:29197"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:29795"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:29796"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:29800"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:29834"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:30076"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:33683"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34160"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34342"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34374"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34766"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:34770"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:36651"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:36754"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-v39h-62p7-jpjc"
       }
     ],
@@ -33,12 +138,12 @@
         "Value": "CVE-2026-6322"
       }
     ],
-    "Description": "### Impact\n\n`fast-uri` v3.1.1 and earlier decodes percent-encoded authority delimiters (`%40` as `@`, `%3A` as `:`) inside the host component and serializes them back as raw characters. This changes the URI structure, turning a hostname into userinfo plus a different host.\n\nFor example, `http://trusted.com%40evil.com/` normalizes to `http://trusted.com@evil.com/`, which reparses as host `evil.com` with userinfo `trusted.com`.\n\nApplications that normalize untrusted URLs before host allowlist checks, redirect validation, or outbound request routing can be steered to a different authority than the original URL appeared to contain.\n\n### Patches\n\nUpgrade to `fast-uri` \u003e= 3.1.2.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+    "Description": "### Impact\n\n`fast-uri` v3.1.1 and earlier decodes percent-encoded authority delimiters (`%40` as `@`, `%3A` as `:`) inside the host component and serializes them back as raw characters. This changes the URI structure, turning a hostname into userinfo plus a different host.\n\nFor example, `http://trusted.com%40evil.com/` normalizes to `http://trusted.com@evil.com/`, which reparses as host `evil.com` with userinfo `trusted.com`.\n\nApplications that normalize untrusted URLs before host allowlist checks, redirect validation, or outbound request routing can be steered to a different authority than the original URL appeared to contain.\n\n### Patches\n\nUpgrade to `fast-uri` \u003e= 3.1.2, or if you are in the v2.x release line, v2.4.1\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-08T19:13:01Z",
     "Severity": "HIGH",
     "Summary": "fast-uri vulnerable to host confusion via percent-encoded authority delimiters",
-    "UpdatedAt": "2026-05-08T19:13:02Z",
+    "UpdatedAt": "2026-08-10T14:43:43Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,
@@ -48,9 +153,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "2.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2.4.0"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "3.1.2"
       },
-      "VulnerableVersionRange": "\u003c= 3.1.1"
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.1.1"
     }
   ]
 }
