@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-12T15:19:10Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "SSH.NET"
+  },
+  "Advisory": {
+    "DatabaseId": 403531,
+    "Id": "GSA_kwCzR0hTQS1xOTM5LXJwcjMtMzI4NM4ABihL",
+    "GhsaId": "GHSA-q939-rpr3-3284",
+    "References": [
+      {
+        "Url": "https://github.com/sshnet/SSH.NET/security/advisories/GHSA-q939-rpr3-3284"
+      },
+      {
+        "Url": "https://github.com/sshnet/SSH.NET/commit/600be0de543765995a189b5d7cd4efac5007f3ce"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q939-rpr3-3284"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q939-rpr3-3284"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48798"
+      }
+    ],
+    "Description": "## Summary\n\n`ScpClient.Download(string directoryName, DirectoryInfo directoryInfo)` writes files and directories using names returned by the remote SCP server during recursive downloads, with no validation that the resulting path stays inside the requested local directory. A malicious, compromised, or man-in-the-middle SCP server can return names containing `../` sequences (or absolute paths), causing the client to create directories and write/overwrite files anywhere the client process has access. This is similar to OpenSSH [CVE-2019-6111](https://github.com/advisories/GHSA-jr78-hfw4-xp7g), but with directory traversal capability.\n\n## Impact\n\nA malicious/compromised/MITM SCP server can create or write files outside the intended download directory, anywhere the client process can write. Overwriting files such as ~/.ssh/authorized_keys, shell rc files, cron entries, or application binaries/config can lead to persistence, privilege escalation, or remote code execution on the client host. Requires the victim to perform a directory download from the attacker-controlled server.\n\n## Remediation\n\nThe fixed release ensures that remotely-supplied file and directory names are valid local names such that the constructed local path is contained within the given local directory, and throws `ScpException` when an invalid name is detected.\n\n[600be0de543765995a189b5d7cd4efac5007f3ce](https://github.com/sshnet/SSH.NET/commit/600be0de543765995a189b5d7cd4efac5007f3ce)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-12T15:19:10Z",
+    "Severity": "HIGH",
+    "Summary": "SSH.NET: ScpClient Recursive Download Allows Arbitrary File Write via Server-Controlled SCP Filenames",
+    "UpdatedAt": "2026-08-12T15:19:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.0.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2025.1.0"
+    }
+  ]
+}
