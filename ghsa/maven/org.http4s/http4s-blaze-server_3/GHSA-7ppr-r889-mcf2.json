@@ -36,6 +36,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-7ppr-r889-mcf2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73493"
       }
     ],
     "Description": "## Summary\n\n`http4s-blaze-server` aggregates the fragments of an incoming WebSocket\nmessage with no limit on total size or fragment count. A client that\ncompletes a WebSocket handshake can send an unterminated fragmented\nmessage and drive unbounded heap growth in the server JVM, resulting in\ndenial of service via `OutOfMemoryError`.\n\n## Impact\n\nAny http4s application serving WebSocket routes over\n`BlazeServerBuilder` is affected; no non-default configuration is required,\nand `maxWebSocketBufferSize` does not bound the aggregate (it bounds only\nindividual frames). A single connection sending continuation frames that\nnever set FIN forces the server to buffer every fragment until the heap is\nexhausted, terminating the JVM with `OutOfMemoryError` on the blaze\nselector thread. Small fragments amplify the cost through per-frame object\noverhead, so a modest volume of wire bytes is sufficient. Where the\nWebSocket endpoint is reachable without authentication the attacker is\nunauthenticated and remote; where the handshake requires a principal, any\nauthenticated client can still trigger it.\n\n## Workarounds\n\n- No blaze-server configuration bounds the aggregate; `maxWebSocketBufferSize`\n  is not a mitigation.\n- Terminate/limit WebSocket traffic at a fronting layer that enforces\n  message-size and fragment limits, or disable WebSocket routes.\n- Longer term: blaze is EOL upstream; plan migration to a maintained\n  backend (e.g. ember).",
@@ -43,7 +47,7 @@
     "PublishedAt": "2026-07-24T22:28:05Z",
     "Severity": "HIGH",
     "Summary": "blaze: Unbounded WebSocket message aggregation in http4s-blaze-server",
-    "UpdatedAt": "2026-07-24T22:28:07Z",
+    "UpdatedAt": "2026-08-12T21:08:45Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,

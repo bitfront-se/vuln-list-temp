@@ -45,6 +45,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mhvj-jhpq-885v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73494"
       }
     ],
     "Description": "### Summary\n  Five independent HTTP/1.1 conformance laxities in blaze's hand-written Java parser (`http/src/main/java/org/http4s/blaze/http/parser/`) cause request-boundary disagreement with a stricter intermediary. All are reachable from a default `BlazeServerBuilder` with no non-default configuration.\n\n### Impact\nActual exploitability depends on the fronting proxy — a boundary disagreement requires a *pair* of parsers that disagree. Where the proxy forwards the malformed bytes and derives a different message boundary, the consequences are the standard set: front-end ACL/auth bypass, response-queue poisoning on pooled backend connections, and cache poisoning. Risk concentrates on lenient or legacy intermediaries.\n\n### Workarounds\n  Deploy behind an RFC-strict reverse proxy (nginx, HAProxy, Envoy, ALB) that rejects or re-serializes malformed requests at the edge; this neutralizes most of these for deployments that cannot upgrade immediately.",
@@ -52,7 +56,7 @@
     "PublishedAt": "2026-07-24T22:26:27Z",
     "Severity": "HIGH",
     "Summary": "blaze: Multiple HTTP/1.1 request-smuggling primitives in blaze's Java wire parser",
-    "UpdatedAt": "2026-07-24T22:26:28Z",
+    "UpdatedAt": "2026-08-12T21:12:11Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.4,
