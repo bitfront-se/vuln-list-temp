@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-pm4m-ph32-ghv5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73643"
       }
     ],
     "Description": "### Summary\nParsing a small YAML document can take exponential time. An application that calls `load()` or `loadAll()` on untrusted input can be hung by a payload under 200 bytes.\n\n### Details\nWhen an entry in a flow sequence turns out to be a `key: value` pair, the parser rewinds and parses that entry a second time as the key.\nIf the key is itself a nested flow sequence of the same shape, every level is parsed twice, so the total work is O(2^n) in the nesting depth. The default `maxDepth` of 100 does not help, because the time is already unmanageable at about 30 to 40 levels.\n\nRoot cause, potentially the: `readFlowCollection` in [parser.ts](https://github.com/nodeca/js-yaml/blob/master/src/parser/parser.ts), the `restoreState` followed by a second `parseNode` further down.\n\n\n### PoC\n\n```javascript\nconst yaml = require('js-yaml')\nconst n = 30\nyaml.load('[ '.repeat(n) + '1' + ' ]: 0'.repeat(n))\n```\n\nWith default options: 22 levels takes about 1 second, 26 levels about 17 seconds, 30 levels over 2 minutes. The input stays under 200 bytes and grows linearly with `n`.\n\n### Impact\nDenial of service. A single small request can keep one CPU busy for minutes or longer and blocks the Node event loop, so one request can stall the whole process. No anchors, aliases, merges, tags, or non default options are required, and it reproduces on the default schema.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-07-24T16:47:36Z",
     "Severity": "HIGH",
     "Summary": "js-yaml: Exponential parsing time in flow collections leads to denial of service",
-    "UpdatedAt": "2026-07-24T16:47:37Z",
+    "UpdatedAt": "2026-08-13T17:47:37Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,

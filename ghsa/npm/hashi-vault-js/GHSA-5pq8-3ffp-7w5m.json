@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-13T14:14:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hashi-vault-js"
+  },
+  "Advisory": {
+    "DatabaseId": 403954,
+    "Id": "GSA_kwCzR0hTQS01cHE4LTNmZnAtN3c1bc4ABiny",
+    "GhsaId": "GHSA-5pq8-3ffp-7w5m",
+    "References": [
+      {
+        "Url": "https://github.com/kyndryl-open-source/hashi-vault-js/security/advisories/GHSA-5pq8-3ffp-7w5m"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5pq8-3ffp-7w5m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5pq8-3ffp-7w5m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55102"
+      }
+    ],
+    "Description": "## Summary\n\nVault token and secret values are exposed in thrown errors when using `hashi-vault-js`.\n\n## Details\n\nEvery API method in `Vault.js` executes `throw parseAxiosError(err)`, which returns the raw `AxiosError` untouched. That error carries the full Axios configuration, including the `X-Vault-Token` header and the request body. Consuming applications that log caught errors (e.g., using `console.error`, `pino`, `winston`, Sentry, or APMs) inadvertently log the live Vault token in plaintext. Furthermore, write-path methods expose submitted passwords and secret values via `err.config.data`.\n\n## Impact\n\nWhen consuming applications log intercepted exceptions, sensitive credentials such as tokens, passwords, and secrets are unknowingly exposed to application logs, monitoring services, and APM systems via the raw `AxiosError`. This may lead to authorization bypass or unauthorized access to the underlying Vault instance.\n\n## Patches\n\nThis vulnerability should be addressed by redacting `err.config.headers['X-Vault-Token']` and `err.config.data` before re-throwing, or by throwing a purpose-built error containing only safe properties like status and message. Users should upgrade to a version that includes this fix.\n\n## Workarounds\n\nIf users cannot immediately update the library, they can mitigate this issue by capturing all exceptions thrown by `hashi-vault-js` and sanitizing or omitting the `err.config` object before passing the errors to logging utilities or crash reporters.\n\n## Acknowledgements\nhashi-vault-js would like to thank Sebastián Alba Vives for reporting this vulnerability.\n\n## Resources\n\n- [CWE-532: Insertion of Sensitive Information into Log File](https://cwe.mitre.org/data/definitions/532.html)\n- [CWE-209: Generation of Error Message Containing Sensitive Information](https://cwe.mitre.org/data/definitions/209.html)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-13T14:14:32Z",
+    "Severity": "MODERATE",
+    "Summary": "hashi-vault-js: Vault token and secret values exposed in thrown errors",
+    "UpdatedAt": "2026-08-13T14:14:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.5.2"
+      },
+      "VulnerableVersionRange": "\u003c= 0.5.1"
+    }
+  ]
+}

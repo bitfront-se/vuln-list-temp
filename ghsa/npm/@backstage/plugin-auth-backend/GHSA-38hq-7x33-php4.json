@@ -36,6 +36,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-38hq-7x33-php4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73563"
       }
     ],
     "Description": "### Impact\nThe allowlist matching used by the experimental dynamic client registration and client ID metadata document (CIMD) features in `@backstage/plugin-auth-backend` matched glob patterns against the full URL string. A * wildcard could therefore match across URL component boundaries: a pattern such as `https://*.example.com/callback`, intended to allow subdomains of a trusted host, would also match an attacker-controlled URL such as `https://attacker.example/x.example.com/callback`. This applies to `auth.experimentalDynamicClientRegistration.allowedRedirectUriPatterns` as well as the `allowedClientIdPatterns` and `allowedRedirectUriPatterns` options of `auth.experimentalClientIdMetadataDocuments`.\n\nAn attacker could use this to register an OAuth client whose redirect URI points to a host they control while still passing the allowlist, causing authorization codes to be delivered to the attacker when a victim completes an authorization flow. In addition, allowlist patterns without an explicit protocol could match URLs with any protocol, and redirect URIs containing embedded credentials (user:pass@host) were accepted after the credentials were stripped for matching.\n\nThe practical impact is limited. Both features are experimental and disabled by default, and the default allowlist patterns only reference fixed or loopback hosts and are not affected. Deployments are only impacted if they enable one of these features and configure custom allowlist patterns that contain a wildcard in the hostname, or patterns without an explicit protocol.\n\n### Patches\nPatched in `@backstage/plugin-auth-backend` version `0.29.2`. Patterns are now matched against each URL component separately so that wildcards no longer match across the host and path boundary, patterns without an explicit protocol are rejected as invalid configuration, and redirect URIs with embedded credentials are always rejected.\n\nNote that as part of this fix, a wildcard port no longer implicitly matches every path: a pattern such as `http://localhost:*` now only matches the root path. Use `http://localhost:*/*` to allow any port and any path.\n\n### Workarounds\nDisable the experimental features by removing `auth.experimentalDynamicClientRegistration` and `auth.experimentalClientIdMetadataDocuments` from your `app-config`, which is the default configuration. Alternatively, restrict the configured allowlist patterns to fully specified URLs with an explicit protocol and no wildcard in the hostname, which are not affected by this vulnerability.",
@@ -43,7 +47,7 @@
     "PublishedAt": "2026-07-24T16:20:59Z",
     "Severity": "MODERATE",
     "Summary": "@backstage/plugin-auth-backend: Unauthenticated OAuth account takeover via `redirect_uri` allowlist bypass",
-    "UpdatedAt": "2026-07-24T16:21:00Z",
+    "UpdatedAt": "2026-08-13T17:32:47Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 4.7,

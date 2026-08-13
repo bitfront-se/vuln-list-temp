@@ -48,6 +48,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-p63j-vcc4-9vmv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73653"
       }
     ],
     "Description": "## Summary\n\nBrowser Mode exposes a set of built-in \"commands\" that run on the Node.js side of the test runner and can touch the local filesystem (taking screenshots, managing Playwright traces, uploading files for `\u003cinput type=\"file\"\u003e`, comparing screenshots).\n\nSeveral of these commands accept a file path from the browser and act on it without checking the `allowWrite` permission gate and without confining the path to the project directory. A client that can reach the Browser Mode API can therefore read, create, overwrite, or delete files anywhere the Vitest process can access, even when `allowWrite` is `false`.\n\nThis matters most when the Browser Mode API is exposed to the network (for example `test.api.host` is set, or the dev server is reachable from another machine or origin). In that configuration `allowWrite` defaults to `false` precisely to block file access, and these commands bypass that protection. On a default localhost-only setup with trusted test code, there is no untrusted party in a position to exploit it. The gap still matters wherever you rely on `allowWrite: false` to contain untrusted test code, because these commands ignore that flag.\n\n## Affected commands and impact\n\n| Command | Operation | Impact |\n|---|---|---|\n| `upload` (Playwright + WebdriverIO) | Read | Arbitrary local file read; contents are loaded into the page and readable by test code. Highest-impact case. |\n| `takeScreenshot` (Playwright + WebdriverIO) | Write | Writes a PNG to an arbitrary path (absolute path used verbatim), creating parent directories. |\n| `screenshotMatcher` | Write | Writes reference/diff PNGs; directory derived from client path allows partial traversal. |\n| `stopChunkTrace` | Write | Writes a Playwright trace `.zip` to a path escapable via `../` in the trace name. |\n| `deleteTracing` | Delete | Deletes arbitrary files by path. |\n| `annotateTraces` | Read (disclosure) | Records a client-controlled attachment path that the reporter copies into the attachments directory, disclosing file contents. |\n\nThe writes do not let an attacker choose the file contents (they produce PNG images or trace archives), so the integrity impact is creating, overwriting, or deleting a file at an arbitrary path rather than writing a chosen payload. The reads (`upload`, `annotateTraces`) are more serious because they expose the full contents of an arbitrary file.\n\nThe fix adds, to every file-touching provider command, an `allowWrite` check for write/delete operations and path confinement to the project root (matching the existing `fs` command pattern), so client-supplied absolute paths and `../` traversal are rejected.",
@@ -55,7 +59,7 @@
     "PublishedAt": "2026-07-21T19:36:12Z",
     "Severity": "CRITICAL",
     "Summary": "@vitest/browser: Browser Mode provider commands bypass the file-access permission gate",
-    "UpdatedAt": "2026-07-21T19:36:13Z",
+    "UpdatedAt": "2026-08-13T18:19:12Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 9.4,

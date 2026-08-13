@@ -39,6 +39,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-v74w-7mr3-4qg3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73507"
       }
     ],
     "Description": "### Summary\nAn attacker can cause Denial of Service by sending a specially crafted malicious XML payload (e.g., repeated `\u003c/` characters) to a Netty server utilizing XmlFrameDecoder, causing the server's EventLoop thread to exhaust CPU resources and become unresponsive.\n\n### Details\n`io.netty.handler.codec.xml.XmlFrameDecoder` suffers from a vulnerability resulting in CPU exhaustion. When `\u003c` followed by `/` is encountered, the decoder scans the remaining buffer for a closing `\u003e`.\nBecause the parser state is not saved between `decode()` invocations, an attacker can trickle-feed a payload of `\u003c/` characters. This forces the decoder to repeatedly rescan the entire accumulated buffer. A 1MB `maxFrameLength` is enough to completely hang a server's thread while it loops endlessly.\n\n### Impact\nDenial of Service via CPU Exhaustion. Any application utilizing Netty's XmlFrameDecoder is impacted. An unauthenticated remote attacker can exploit this flaw by sending a modest amount of malformed XML data to an exposed port.",
@@ -46,7 +50,7 @@
     "PublishedAt": "2026-07-24T16:53:04Z",
     "Severity": "HIGH",
     "Summary": "Netty: Denial of Service in XmlFrameDecoder via CPU Exhaustion",
-    "UpdatedAt": "2026-07-24T16:53:07Z",
+    "UpdatedAt": "2026-08-13T14:25:44Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.5,

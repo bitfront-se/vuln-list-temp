@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-9mqv-5hh9-4cgg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73565"
       }
     ],
     "Description": "## Summary\n\nA WebSocket upgrade request to an `upgradeWebSocket` route with a missing or malformed `Sec-WebSocket-Key` header leaks memory permanently. The request's `IncomingMessage` is retained in an internal map and a pending promise is never settled, even though no connection is established. Since the route is reachable pre-handshake without authentication, an unauthenticated attacker can flood it to gradually exhaust memory.\n\n## Details\n\nThe built-in WebSocket helper cleans up its internal map only on a successful handshake or when the route guard rejects the request. When `ws` aborts the handshake because `Sec-WebSocket-Key` is missing or malformed, no `connection` event is emitted, so neither cleanup path runs and the entry is retained forever. A present-but-malformed key leaks identically, so a proxy that only checks for the header's presence does not mitigate it.\n\n## Impact\n\nAn unauthenticated attacker can flood any public `upgradeWebSocket` route with malformed-key upgrade requests, causing unbounded memory growth and eventual loss of availability. No confidentiality or integrity impact.\n\nReported by @TarPeg007.",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-07-21T22:04:27Z",
     "Severity": "MODERATE",
     "Summary": "Node.js Adapter for Hono: Unauthenticated memory-leak DoS via aborted WebSocket handshake",
-    "UpdatedAt": "2026-07-21T22:04:28Z",
+    "UpdatedAt": "2026-08-13T17:37:35Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,

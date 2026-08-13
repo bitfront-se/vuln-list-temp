@@ -27,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-8r6m-32jq-jx6q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73569"
       }
     ],
     "Description": "### Impact\n`fast-xml-parser` processes multiple \"DOCTYPE\" declarations within a single XML document. Each declaration passes its entities to `@nodable/entities` through `addInputEntities()`.\n\n`addInputEntities()` resets the entity expansion counters every time it is called. An attacker can therefore insert additional DOCTYPE declarations to repeatedly reset maxTotalExpansions and maxExpandedLength during one parse operation.\n\nThis allows a crafted XML document to exceed the configured entity-expansion limits and can cause excessive CPU use, event-loop blocking, memory exhaustion, and process termination.\n\n### Workarounds\n- Manually check if multiple DOCTYPEs are not present in input contents\n- Update to v5.10.1\n- Keep `processEntity` flag off",
@@ -34,7 +38,7 @@
     "PublishedAt": "2026-07-21T22:06:36Z",
     "Severity": "HIGH",
     "Summary": "fast-xml-parser: Repeated DOCTYPE declarations reset entity expansion limits",
-    "UpdatedAt": "2026-07-21T22:06:38Z",
+    "UpdatedAt": "2026-08-13T17:45:29Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
