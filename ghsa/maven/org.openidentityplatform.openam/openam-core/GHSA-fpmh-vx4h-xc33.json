@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-14T19:25:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.openidentityplatform.openam:openam-core"
+  },
+  "Advisory": {
+    "DatabaseId": 409666,
+    "Id": "GSA_kwCzR0hTQS1mcG1oLXZ4NGgteGMzM84ABkBC",
+    "GhsaId": "GHSA-fpmh-vx4h-xc33",
+    "References": [
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-fpmh-vx4h-xc33"
+      },
+      {
+        "Url": "https://github.com/OpenIdentityPlatform/OpenAM/releases/tag/16.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fpmh-vx4h-xc33"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fpmh-vx4h-xc33"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53660"
+      }
+    ],
+    "Description": "## Summary\n\n**Description**\nAn Insecure Default Initialization of Resource (CWE-1188) issue in the OpenAM default configuration ships the `iPlanetDirectoryPro` SSO cookie with `HttpOnly=false`. Also, the `iPlanetDirectoryPro` SSO cookie is used as a CSRF token in OAuth/OIDC flows. This affects OpenAM Community Edition through version 16.0.6 and was patched in version 16.1.1.\n\n## Impact\nA single click on an attacker link may yield full SSO session theft of any authenticated console user when chained with any other same-origin XSS in the OpenAM origin. The missing `SameSite` default also widens the CSRF surface. Also, because the consent flow reuses the SSO cookie as its CSRF token, any XSS in the OpenAM origin both steals the session and completes attacker-driven OAuth consent grants in one step.\n\n## Patch\nThis has been patched in OpenAM Community Edition version 16.1.1. Users are encouraged to update to the latest release.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-14T19:25:57Z",
+    "Severity": "HIGH",
+    "Summary": "OpenAM Insecure SSO Cookie Initialization",
+    "UpdatedAt": "2026-08-14T19:25:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 16.1.1"
+    }
+  ]
+}

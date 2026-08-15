@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-14T19:24:57Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/hyperledger/fabric-ca"
+  },
+  "Advisory": {
+    "DatabaseId": 409665,
+    "Id": "GSA_kwCzR0hTQS14Z2h3LXA3N3AtM3I3eM4ABkBB",
+    "GhsaId": "GHSA-xghw-p77p-3r7x",
+    "References": [
+      {
+        "Url": "https://github.com/hyperledger/fabric-ca/security/advisories/GHSA-xghw-p77p-3r7x"
+      },
+      {
+        "Url": "https://github.com/hyperledger/fabric-ca/commit/d379df823534d56dec0166a6da8f0415e3beee24"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xghw-p77p-3r7x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xghw-p77p-3r7x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53658"
+      }
+    ],
+    "Description": "When fabric-ca is configured with an LDAP backend, the username from HTTP Basic authentication is included in an LDAP uid search filter without proper escaping. An unauthenticated attacker with network access to the CA enrollment endpoint could exploit this to perform LDAP injection before password validation, and potentially steer authentication attempts toward a victim account.\n\n### Recommendation\n\n- All users of fabric-ca with an LDAP backend should update to a fixed version.\n- For users not using an LDAP backend, no action is required.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-14T19:24:57Z",
+    "Severity": "MODERATE",
+    "Summary": "Fabric CA Developer's Guide: LDAP Injection via Unescaped Username in GetUser Filter",
+    "UpdatedAt": "2026-08-14T19:24:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.21"
+      },
+      "VulnerableVersionRange": "\u003c= 1.5.20"
+    }
+  ]
+}
