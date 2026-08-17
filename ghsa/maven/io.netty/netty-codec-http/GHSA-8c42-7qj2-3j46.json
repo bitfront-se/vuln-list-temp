@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-17T18:24:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-codec-http"
+  },
+  "Advisory": {
+    "DatabaseId": 410983,
+    "Id": "GSA_kwCzR0hTQS04YzQyLTdxajItM2o0Ns4ABkVn",
+    "GhsaId": "GHSA-8c42-7qj2-3j46",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-8c42-7qj2-3j46"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17213"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17217"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.137.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.17.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8c42-7qj2-3j46"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8c42-7qj2-3j46"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59903"
+      }
+    ],
+    "Description": "### Summary\nNetty's `CorsHandler` silently overwrites existing `Vary` headers, enabling cache poisoning and sensitive information disclosure.\n\n### Details\n`io.netty.handler.codec.http.cors.CorsHandler#setVaryHeader` overwrites any existing Vary headers set by backend applications. \n\n```java\n    private static void setVaryHeader(final HttpResponse response) {\n        response.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);\n    }\n```\n\nBecause `set()` replaces all existing values for the header, if a backend application sets a `Vary` header (such as `Vary: Authorization` or `Vary: Cookie`) to ensure that intermediate caches (like CDNs) cache responses separately per user, the `CorsHandler` will overwrite it with `Vary: origin`. This causes the caching proxy to ignore the authorization context and cache the response based solely on the URL and Origin, allowing an attacker to retrieve another user's cached sensitive data.\n\n### Impact\nThis is a Cache Poisoning vulnerability that leads to Information Disclosure. It impacts any Netty-based web application that uses the CorsHandler, sets its own Vary headers to manage caching of authenticated or user-specific responses (e.g., Vary: Authorization), and is deployed behind a caching proxy or CDN. The end-users of these applications are impacted, as their sensitive data may be leaked to unauthorized actors.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T18:24:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty Vulnerable to Cache Poisoning and Information Disclosure via CORS Vary Header Overwrite",
+    "UpdatedAt": "2026-08-17T18:24:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.137.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.136.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.17.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.16.Final"
+    }
+  ]
+}

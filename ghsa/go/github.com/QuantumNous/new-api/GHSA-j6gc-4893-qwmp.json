@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-17T16:36:20Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/QuantumNous/new-api"
+  },
+  "Advisory": {
+    "DatabaseId": 410961,
+    "Id": "GSA_kwCzR0hTQS1qNmdjLTQ4OTMtcXdtcM4ABkVR",
+    "GhsaId": "GHSA-j6gc-4893-qwmp",
+    "References": [
+      {
+        "Url": "https://github.com/QuantumNous/new-api/security/advisories/GHSA-j6gc-4893-qwmp"
+      },
+      {
+        "Url": "https://github.com/QuantumNous/new-api/commit/dfc0d6324b40c1d6c2972e524409f933541bfb0f"
+      },
+      {
+        "Url": "https://github.com/QuantumNous/new-api/releases/tag/v1.0.0-rc.16"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j6gc-4893-qwmp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j6gc-4893-qwmp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-64865"
+      }
+    ],
+    "Description": "### Summary\nAuthenticated users can repeatedly call PUT /api/user/self with language or sidebar_modules while relay requests are consuming quota. The settings path reads a full User snapshot and writes it back through User.Update(), which refreshes Redis with RedisHSetObj and overwrites the Quota field. This can erase concurrent HINCRBY quota deductions and keep cached balance artificially high, allowing calls far beyond the paid quota.\n\n### Impact\nA low-privileged authenticated user may bypass quota enforcement and cause financial loss to operators. Authentication and pre-consumption use cached quota, while DB/log usage can continue increasing.\n\n### Affected Components\n- controller/user.go: UpdateSelf language/sidebar_modules branches\n- model/user.go: User.Update / UpdateWithTx full snapshot update\n- model/user_cache.go: updateUserCache RedisHSetObj full hash write\n- model/user.go: GetUserQuota reads Redis cache first\n\n### Root Cause\nNormal billing uses Redis HINCRBY on user:\u003cid\u003e.Quota, while settings updates use a stale full user snapshot to HSET the entire cache hash, including Quota. These two writers race on the same Redis field.\n\n### Patches\nThis issue is fixed in v1.0.0-rc.16. The fix makes user setting updates field-scoped, prevents stale user snapshots from overwriting accounting fields, and keeps generic user cache refreshes from modifying Quota. Quota cache updates are reserved for atomic quota delta paths or explicit quota synchronization paths.\n\n### Workarounds\nIf upgrading immediately is not possible, operators should temporarily restrict or rate-limit PUT /api/user/self and avoid allowing frequent user setting updates while Redis-backed quota cache is enabled. This is only a mitigation; upgrading is recommended.\n\n### Remediation\nUpgrade to v1.0.0-rc.16 or later. Deployments with Redis enabled should restart application instances after upgrading so stale in-process code paths are removed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T16:36:19Z",
+    "Severity": "MODERATE",
+    "Summary": "New API: Redis user quota cache overwrite via PUT /api/user/self allows quota bypass",
+    "UpdatedAt": "2026-08-17T16:36:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-rc.16"
+      },
+      "VulnerableVersionRange": "\u003c= 1.0.0-rc.15"
+    }
+  ]
+}

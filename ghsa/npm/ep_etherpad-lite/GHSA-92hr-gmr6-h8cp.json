@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-17T17:49:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ep_etherpad-lite"
+  },
+  "Advisory": {
+    "DatabaseId": 410977,
+    "Id": "GSA_kwCzR0hTQS05MmhyLWdtcjYtaDhjcM4ABkVh",
+    "GhsaId": "GHSA-92hr-gmr6-h8cp",
+    "References": [
+      {
+        "Url": "https://github.com/ether/etherpad/security/advisories/GHSA-92hr-gmr6-h8cp"
+      },
+      {
+        "Url": "https://github.com/ether/etherpad/pull/7906"
+      },
+      {
+        "Url": "https://github.com/ether/etherpad/commit/7ea99706483443239bbbc0f2df9aff8ab5de4805"
+      },
+      {
+        "Url": "https://github.com/ether/etherpad/releases/tag/3.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92hr-gmr6-h8cp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92hr-gmr6-h8cp"
+      }
+    ],
+    "Description": "Fix: PR #7906 (ether/etherpad). A set of medium/low hardening fixes:\n\n- **Weak RNG for tokens (CWE-330):** author/session/readonly IDs were generated with `Math.random()` (client and server). Now use `crypto.getRandomValues`.\n- **Login timing / no failure delay (CWE-208/CWE-307):** the OIDC interaction login used a non-constant-time password compare with no failure delay. Now uses `crypto.timingSafeEqual` plus a uniform failure delay; user lookup is own-property only.\n- **Plugin dependency path handling (CWE-22):** plugin dependency names from package.json were used to build filesystem paths without validation (admin-gated install). Now validated against the npm name grammar.\n- **API parameter pollution (CWE-235):** `/api/2` merged all request headers into the API field set. Now forwards only `authorization`, matching the openapi.ts handler.\n- **Pad-creation side effect:** `API.appendChatMessage` could create arbitrary pads (missing `getPadSafe`). Now requires the pad to exist.\n- **Error info disclosure (CWE-209):** the admin file server echoed filesystem error detail; now returns a generic message.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T17:49:21Z",
+    "Severity": "MODERATE",
+    "Summary": "Etherpad addressed weak token RNG, login timing, plugin path handling, API request handling",
+    "UpdatedAt": "2026-08-17T17:49:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.14"
+    }
+  ]
+}

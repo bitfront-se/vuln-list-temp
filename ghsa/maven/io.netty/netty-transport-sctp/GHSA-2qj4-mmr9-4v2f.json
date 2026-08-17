@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-17T17:50:49Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-transport-sctp"
+  },
+  "Advisory": {
+    "DatabaseId": 410982,
+    "Id": "GSA_kwCzR0hTQS0ycWo0LW1tcjktNHYyZs4ABkVm",
+    "GhsaId": "GHSA-2qj4-mmr9-4v2f",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-2qj4-mmr9-4v2f"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17213"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17217"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/1b5abc6443b63726c72cdd285af2feb7ddbb8ff7"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.137.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.17.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2qj4-mmr9-4v2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2qj4-mmr9-4v2f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59902"
+      }
+    ],
+    "Description": "### Summary\nSctpMessageCompletionHandler does not limit the total size of buffered fragments, allowing an unauthenticated attacker to cause an OutOfMemoryError by sending large SCTP fragments.\n\n### Details\n`io.netty.handler.codec.sctp.SctpMessageCompletionHandler` buffers fragments for incomplete SCTP messages. The fix for CVE-2026-46340 fixed unbounded memory growth by introducing limits on the number of concurrent incomplete messages (maxIncompleteSctpMessages) and the number of fragments per message (maxFragments).\n\nWhile the count of fragments is now bounded, the handler still does not enforce a maximum size in bytes.\n\nWith the default limits of 128 messages and 128 fragments, and a typical max SCTP chunk size of 64KB, an attacker can consume up to ~1GB per connection. By opening a small number of concurrent connections, an attacker can easily exhaust the server's memory, causing an OutOfMemoryError.\n\n### Impact\nMemory Exhaustion. Any application using Netty's SCTP transport with SctpMessageCompletionHandler is impacted.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T17:50:49Z",
+    "Severity": "HIGH",
+    "Summary": "Netty: Memory Exhaustion in SctpMessageCompletionHandler",
+    "UpdatedAt": "2026-08-17T17:50:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.137.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.136.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.17.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.16.Final"
+    }
+  ]
+}

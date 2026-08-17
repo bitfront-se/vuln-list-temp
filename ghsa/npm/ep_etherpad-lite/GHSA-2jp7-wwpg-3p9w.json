@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-17T17:49:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "ep_etherpad-lite"
+  },
+  "Advisory": {
+    "DatabaseId": 410978,
+    "Id": "GSA_kwCzR0hTQS0yanA3LXd3cGctM3A5d84ABkVi",
+    "GhsaId": "GHSA-2jp7-wwpg-3p9w",
+    "References": [
+      {
+        "Url": "https://github.com/ether/etherpad/security/advisories/GHSA-2jp7-wwpg-3p9w"
+      },
+      {
+        "Url": "https://github.com/ether/etherpad/pull/7905"
+      },
+      {
+        "Url": "https://github.com/ether/etherpad/commit/86c56cf827dd6e5ff1b6cd3760f87adc47f58bb1"
+      },
+      {
+        "Url": "https://github.com/ether/etherpad/releases/tag/3.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2jp7-wwpg-3p9w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2jp7-wwpg-3p9w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55090"
+      }
+    ],
+    "Description": "Fix: PR #7905 (ether/etherpad).\n\n`getHTMLFromAtext` in `src/node/utils/ExportHtml.ts` interpolates values from the `exportHtmlAdditionalTagsWithData` plugin hook into `span data-\u003ck\u003e=\"\u003cv\u003e\"` without HTML-attribute escaping. The value comes verbatim from the pad attribute pool, which a pad editor controls via a crafted changeset (only `author` attributes are validated; `moveOpsToNewPool` -\u003e `AttributePool.putAttrib` stores any value). With a bundled plugin that registers the hook (ep_font_color / ep_font_size), an attribute value such as `\" onload=\"alert(1)` is exported as `\u003cspan data-color=\"\" onload=\"alert(1)\"\u003e` and served as text/html, yielding stored XSS for any collaborator who opens the export.\n\nFix: escape the name and value via `Security.escapeHTMLAttribute`. PR #7905 also adds a startup warning when default/placeholder account or SSO credentials are configured (defense-in-depth, non-breaking).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T17:49:38Z",
+    "Severity": "HIGH",
+    "Summary": "Etherpad has stored XSS in HTML export via unescaped attribute-pool values",
+    "UpdatedAt": "2026-08-17T17:49:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.14"
+    }
+  ]
+}
