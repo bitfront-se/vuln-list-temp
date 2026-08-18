@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-17T21:58:24Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-core"
+  },
+  "Advisory": {
+    "DatabaseId": 411067,
+    "Id": "GSA_kwCzR0hTQS1nNHcyLTZoMnItM20zd84ABkW7",
+    "GhsaId": "GHSA-g4w2-6h2r-3m3w",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-g4w2-6h2r-3m3w"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.49.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g4w2-6h2r-3m3w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g4w2-6h2r-3m3w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53659"
+      }
+    ],
+    "Description": "### Impact\n\n`ServerFilters.GZip` and `RequestFilters.GunZip` (and the underlying `Gzip` functions used to decompress request bodies) did not impose any cap on the decompressed size. A small malicious gzip-encoded request body (on the order of kilobytes) could decompress to gigabytes, exhausting the JVM heap and denying service to other clients.\n\n**Who is affected:** any http4k server that accepts gzip-encoded requests via `ServerFilters.GZip` or `RequestFilters.GunZip`. Exploitable by any unauthenticated client. The vulnerability was introduced on 2017-08-01 (commit `2618fe08f9`) and was present for ~9 years.\n\n### Patches\n\n| Line | Fixed in | Edition |\n|------|----------|---------|\n| v6.x (Community) | **6.49.0.0** | Community |\n| v5.x (LTS) | **5.42.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) |\n| v4.x (LTS) | **4.51.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) |\n\nThe fix caps decompression at 10MB by default; oversized requests through `ServerFilters.GZip` / `RequestFilters.GunZip` now return `413 Request Entity Too Large`, and decompressing elsewhere throws `SizeLimitExceededException`. The keyed `hmacSHA256` helper and other safe paths are unaffected.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately:\n- Replace the `GZip` / `GunZip` filters with custom versions that wrap the decompressed `InputStream` in a size-limited reader, or\n- Strip gzip-encoded request support at the edge (CDN, reverse proxy, or load balancer).\n\n### References\n\n- Vulnerability introduced: [`2618fe08f9`](https://github.com/http4k/http4k/commit/2618fe08f9)\n- Fix release: [v6.49.0.0](https://github.com/http4k/http4k/releases/tag/6.49.0.0)\n- Background: [CWE-409 — Improper Handling of Highly Compressed Data](https://cwe.mitre.org/data/definitions/409.html)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T21:52:27Z",
+    "Severity": "HIGH",
+    "Summary": "http4k: Unbounded gzip decompression in `ServerFilters.GZip` / `RequestFilters.GunZip` allowed memory-exhaustion DoS",
+    "UpdatedAt": "2026-08-17T21:58:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.49.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0.0, \u003c 6.49.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.48.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.42.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0.0, \u003c 5.42.0.0"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-17T21:57:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-security-digest"
+  },
+  "Advisory": {
+    "DatabaseId": 411071,
+    "Id": "GSA_kwCzR0hTQS12eHhtLXd3cWgtbWg0N84ABkW_",
+    "GhsaId": "GHSA-vxxm-wwqh-mh47",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-vxxm-wwqh-mh47"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/65d23d99fc"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.50.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vxxm-wwqh-mh47"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vxxm-wwqh-mh47"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54147"
+      }
+    ],
+    "Description": "### Impact\n\nAn issue in `DigestAuthProvider.verify`:\n\n **Algorithm silently forced to MD5.** The configured `algorithm` parameter was ignored — every verification used MD5 regardless of configuration. Deployments believing they were running SHA-256 Digest auth were silently inheriting MD5's collision weaknesses, including documented attack paths against Digest schemes that rely on the hash being collision-resistant.\n\n**Who is affected:** any application using `http4k-security-digest` for HTTP Digest authentication. The bug has been present since `DigestAuthProvider` was introduced (commit `8a52b615b1`, 2021).\n\n### Patches\n\n| Line | Fixed in | Edition |\n|------|----------|---------|\n| v6.x (Community) | **6.50.0.0** | Community |\n| v5.x (LTS) | **5.42.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if Digest auth is present in your v5.x line) |\n| v4.x (LTS) | **4.51.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if Digest auth is present in your v4.x line) |\n\nThe fix:\n- Hashes with the configured `algorithm` instead of hardcoded MD5.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately:\n- **Algorithm gap:** do not rely on `algorithm` configuration; assume MD5 is in use and treat the Digest credentials as low-trust.\n\n### References\n\n- Vulnerability first present: [`8a52b615b1`](https://github.com/http4k/http4k/commit/8a52b615b1)\n- Algorithm fix: [`65d23d99fc`](https://github.com/http4k/http4k/commit/65d23d99fc)\n- Fix release: [v6.50.0.0](https://github.com/http4k/http4k/releases/tag/6.50.0.0)\n- Background: [RFC 7616 — HTTP Digest Access Authentication](https://datatracker.ietf.org/doc/html/rfc7616)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T21:56:58Z",
+    "Severity": "MODERATE",
+    "Summary": "http4k: `DigestAuthProvider.verify` ignored configured algorithm and did not bind to request URI",
+    "UpdatedAt": "2026-08-17T21:57:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.50.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0.0, \u003c 6.50.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.48.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.42.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0.0, \u003c 5.42.0.0"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-17T21:56:03Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "software.sslmate.com/src/go-pkcs12"
+  },
+  "Advisory": {
+    "DatabaseId": 411069,
+    "Id": "GSA_kwCzR0hTQS1tcHdyLTh2bTctaDczZs4ABkW9",
+    "GhsaId": "GHSA-mpwr-8vm7-h73f",
+    "References": [
+      {
+        "Url": "https://github.com/SSLMate/go-pkcs12/security/advisories/GHSA-mpwr-8vm7-h73f"
+      },
+      {
+        "Url": "https://openssl-library.org/news/vulnerabilities/#CVE-2026-34181"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mpwr-8vm7-h73f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mpwr-8vm7-h73f"
+      }
+    ],
+    "Description": "`Decode`, `DecodeChain`, `DecodeTrustStore`, and `ToPEM` can incorrectly accept PKCS#12 files which were encoded with the wrong password, due to a failure to reject excessively-short PBMAC1 keys. Users who decode PKCS#12 files from untrusted sources and rely on the password for authentication can be tricked into accepting malicious PKCS#12 files. Users who only decode PKCS#12 files from trusted sources are not affected.\n\nThanks to Pavol Žáčik (Red Hat) and Alex Gaynor (Anthropic) for finding and reporting the same issue in OpenSSL ([CVE-2026-34181](https://openssl-library.org/news/vulnerabilities/#CVE-2026-34181)).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T21:56:01Z",
+    "Severity": "MODERATE",
+    "Summary": "package pkcs12: Authentication bypass in Decode functions",
+    "UpdatedAt": "2026-08-17T21:56:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.6.0, \u003c 0.7.2"
+    }
+  ]
+}

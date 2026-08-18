@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-17T21:57:43Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4k:http4k-security-digest"
+  },
+  "Advisory": {
+    "DatabaseId": 411072,
+    "Id": "GSA_kwCzR0hTQS1wMjhwLWo5NHEtcGczMs4ABkXA",
+    "GhsaId": "GHSA-p28p-j94q-pg32",
+    "References": [
+      {
+        "Url": "https://github.com/http4k/http4k/security/advisories/GHSA-p28p-j94q-pg32"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/commit/725f1b9697"
+      },
+      {
+        "Url": "https://github.com/http4k/http4k/releases/tag/6.50.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p28p-j94q-pg32"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p28p-j94q-pg32"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54148"
+      }
+    ],
+    "Description": "### Impact\n\nAn issue in `DigestAuthProvider.verify`:\n\nThe `uri` parameter in the client's `Authorization: Digest …` response was not checked against the actual request URL. A captured Digest authentication response could be replayed against any other URL served by the same realm, breaking the per-request-URL binding the Digest scheme assumes.\n\n**Who is affected:** any application using `http4k-security-digest` for HTTP Digest authentication. The bug has been present since `DigestAuthProvider` was introduced (commit `8a52b615b1`, 2021).\n\n### Patches\n\n| Line | Fixed in | Edition |\n|------|----------|---------|\n| v6.x (Community) | **6.50.0.0** | Community |\n| v5.x (LTS) | **5.42.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if Digest auth is present in your v5.x line) |\n| v4.x (LTS) | **4.51.0.0** | Enterprise — contact [enterprise@http4k.org](mailto:enterprise@http4k.org) (if Digest auth is present in your v4.x line) |\n\nThe fix:\n- Rejects credentials whose `uri` parameter does not match the request URL.\n\n### Workarounds\n\nFor deployments that cannot upgrade immediately:\n- **URI binding gap:** place Digest auth behind a reverse proxy that pins requests to a single URL.\n\n### References\n\n- Vulnerability first present: [`8a52b615b1`](https://github.com/http4k/http4k/commit/8a52b615b1)\n- URI binding fix: [`725f1b9697`](https://github.com/http4k/http4k/commit/725f1b9697)\n- Fix release: [v6.50.0.0](https://github.com/http4k/http4k/releases/tag/6.50.0.0)\n- Background: [RFC 7616 — HTTP Digest Access Authentication](https://datatracker.ietf.org/doc/html/rfc7616)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-17T21:57:41Z",
+    "Severity": "HIGH",
+    "Summary": "http4k: `DigestAuthProvider.verify` did not bind to request URI",
+    "UpdatedAt": "2026-08-17T21:57:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.48.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.42.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0.0, \u003c 5.42.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.50.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0.0, \u003c 6.50.0.0"
+    }
+  ]
+}
