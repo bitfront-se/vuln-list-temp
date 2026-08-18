@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-18T16:31:39Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.kestra:kestra"
+  },
+  "Advisory": {
+    "DatabaseId": 411431,
+    "Id": "GSA_kwCzR0hTQS0zNHBtLTkyM2otN3dmOM4ABkcn",
+    "GhsaId": "GHSA-34pm-923j-7wf8",
+    "References": [
+      {
+        "Url": "https://github.com/kestra-io/kestra/security/advisories/GHSA-34pm-923j-7wf8"
+      },
+      {
+        "Url": "https://github.com/kestra-io/kestra/commit/6c8e6d099ed172cbb6b003b7fb30b7bb1f8f710e"
+      },
+      {
+        "Url": "https://github.com/kestra-io/kestra/releases/tag/v1.3.24"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-34pm-923j-7wf8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-34pm-923j-7wf8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55839"
+      }
+    ],
+    "Description": "## Summary\n\nKestra’s Markdown renderer supports a custom `[[link ...]]` syntax that is converted into a custom HTML element. The custom Markdown parser allows attacker-controlled attributes to be rendered into the generated element without proper allowlisting or sanitization.\n\nAs a result, a user who can create or edit Markdown-rendered content, such as a Flow description, can inject JavaScript event-handler attributes. When another user views or interacts with the affected Markdown-rendered UI element, the JavaScript executes in that user’s browser.\n\nThis is not a normal raw-HTML Markdown payload such as `\u003cimg onerror=...\u003e`. The payload uses Kestra’s custom `[[link]]` Markdown syntax, and the dangerous HTML attributes are introduced by Kestra’s own Markdown plugin.\n\n## Affected version\n\nTested on Kestra `1.3.22`.\n\n## Affected components\n\nSource review identified the issue in the custom Markdown link renderer:\n\n* `ui/src/utils/markdown_plugins/link.ts`\n* `ui/src/utils/markdown.ts`\n* `ui/src/components/layout/Markdown.vue`\n\nThe vulnerable code path renders parsed attributes directly into an HTML string:\n\n```ts\nconst attrs = token.attrs\n  ? token.attrs.map(([name, value]) =\u003e `${name}=\"${value}\"`).join(\"\")\n  : \"\";\n\nreturn `\u003crouter-md ${attrs}\u003e`;\n```\n\nThe implementation does not safely restrict attribute names or values before inserting the generated HTML into the DOM.\n\n## Proof of concept\n\nCreate or edit a Flow with the following YAML:\n\n```yaml\nid: markdown_xss_flow_desc\nnamespace: company.team\ndescription: |\n  [[link x=\"y\" style=\"position:fixed;inset:0;z-index:9999;background:rgba(255,0,0,0.05)\" onmouseover=\"alert(document.domain)\"]]\n\ntasks:\n  - id: hello\n    type: io.kestra.plugin.core.log.Log\n    message: hello\n```\n\nSave the Flow.\n\nThen navigate to the Flow list:\n\n```text\nhttp://localhost:8080/ui/main/flows\n```\n\nClick the description/info icon next to the malicious Flow.\n\n## Actual result\n\nThe browser executes JavaScript from the Flow description. In the PoC, an alert is triggered showing the current domain.\n\n## Expected result\n\nMarkdown-rendered Flow descriptions should not be able to inject arbitrary JavaScript event handlers or attacker-controlled HTML attributes into the page.\n\nThe custom `[[link]]` syntax should only generate safe attributes required for the intended router-link behavior.\n\n## Security impact\n\nAn attacker with permission to create or update a Flow in a namespace can store a malicious Markdown payload in the Flow description. When another Kestra user views the Flow list and opens the Flow description/info panel, attacker-controlled JavaScript executes in the victim’s browser.\n\nDepending on the victim’s privileges, this may allow the attacker to perform actions as the victim within the Kestra UI, access data visible to the victim, or pivot into more privileged namespace or administrative functionality.\n\nThis crosses a security boundary in multi-user Kestra deployments where Flow authors are less privileged than administrators or other operators who review workflows.\n\n## Suggested remediation\n\nThe custom Markdown link plugin should not render arbitrary attributes into raw HTML.\n\nRecommended fixes:\n\n1. Allowlist only the exact attributes required by the custom router link component.\n2. Reject all attributes beginning with `on`, such as `onclick`, `onmouseover`, and `onfocus`.\n3. Reject or sanitize dangerous attributes such as `style`.\n4. HTML-escape all attribute values before rendering.\n5. Ensure attributes are joined safely with spaces.\n6. Sanitize the final rendered Markdown output before passing it to `v-html`.\n7. Add regression tests for custom `[[link]]` payloads containing event-handler attributes.\n\n## Minimal payload\n\n```md\n[[link x=\"y\" style=\"position:fixed;inset:0;z-index:9999;background:rgba(255,0,0,0.05)\" onmouseover=\"alert(document.domain)\"]]\n```\n\n## Evidence collected\n\n* The payload was stored in a Flow description.\n* The Flow list displayed the malicious Flow.\n* Opening the Flow description/info panel triggered JavaScript execution in the browser.\n* The payload did not require execution of the Flow.\n* The payload used Kestra’s custom `[[link]]` syntax rather than raw HTML.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-18T16:31:38Z",
+    "Severity": "HIGH",
+    "Summary": "Kestra vulnerable to stored XSS via custom Markdown [[link]] attribute injection",
+    "UpdatedAt": "2026-08-18T16:31:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.24"
+      },
+      "VulnerableVersionRange": "\u003c 1.3.24"
+    }
+  ]
+}

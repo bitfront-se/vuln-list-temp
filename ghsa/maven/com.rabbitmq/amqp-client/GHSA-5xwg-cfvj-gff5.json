@@ -1,0 +1,65 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-08-18T16:36:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 411438,
+    "Id": "GSA_kwCzR0hTQS01eHdnLWNmdmotZ2ZmNc4ABkcu",
+    "GhsaId": "GHSA-5xwg-cfvj-gff5",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-5xwg-cfvj-gff5"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/1994"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/1995"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/08790f09686173eb17b48d08a25edcb32e71a591"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/b491075f42e89967610c40beded68d3680cfd472"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.33.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5xwg-cfvj-gff5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5xwg-cfvj-gff5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61634"
+      }
+    ],
+    "Description": "## Summary\nThe max body size was enforced to patch CVE-2023-46120, but even though that limit still works, the frame size itself still exceeds the given max size. \n\n## Root cause\nThe Java client records the AMQP 0-9-1 `frame_max` negotiated during connection tuning, but the socket inbound frame reader continues to validate broker-controlled payload lengths against the much larger `maxInboundMessageBodySize` limit. A broker peer can therefore send a method frame whose payload is larger than the negotiated `frame_max`, have it allocated and decoded, and complete the connection handshake instead of being rejected as a protocol violation.\n\n*Reported by Team Atlanta.*",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-18T16:36:29Z",
+    "Severity": "LOW",
+    "Summary": "RabbitMQ Java client accepts broker frames larger than the negotiated AMQP frame_max",
+    "UpdatedAt": "2026-08-18T16:36:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.33.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.33.0"
+    }
+  ]
+}

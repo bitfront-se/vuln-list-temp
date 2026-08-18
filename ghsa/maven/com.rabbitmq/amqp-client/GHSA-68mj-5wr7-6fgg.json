@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-18T16:32:22Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 411434,
+    "Id": "GSA_kwCzR0hTQS02OG1qLTV3cjctNmZnZ84ABkcq",
+    "GhsaId": "GHSA-68mj-5wr7-6fgg",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-68mj-5wr7-6fgg"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2007"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2008"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/388209356c6478088efce4d8a07b68e73837a7a0"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/6a87a8dcdc8b4cc4b961a7cdd388276446e5dfb2"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.33.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-68mj-5wr7-6fgg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-68mj-5wr7-6fgg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69219"
+      }
+    ],
+    "Description": "## Summary\n\n`ValueReader.readBytes()` allocates a byte array sized by a wire-declared content length without validating it against actual frame data. A malicious AMQP peer triggers OOM by declaring a ~2GB string/bytes field.\n\n## Vulnerable Code\n\n`src/main/java/com/rabbitmq/client/impl/ValueReader.java` lines 83-95:\n\n```java\nprivate static byte[] readBytes(final DataInputStream in) throws IOException {\n    final long contentLength = unsignedExtend(in.readInt());\n    if(contentLength \u003c Integer.MAX_VALUE) {\n        final byte[] buffer = new byte[(int)contentLength];  // allocates before reading\n        in.readFully(buffer);\n        return buffer;\n    }\n}\n```\n\n## Attack Scenario\n\nA malicious AMQP server sends a LongString field (type tag 'S') with declared length `0x7FFFFFFE` (2,147,483,646). The check `contentLength \u003c Integer.MAX_VALUE` passes. `new byte[2147483646]` attempts ~2GB allocation, causing `OutOfMemoryError` before `readFully()` attempts to read data.\n\nThe allocation size is attacker-controlled and is NOT validated against the frame size or `TruncatedInputStream` bounds. Exploitable pre-authentication via `connection.start` server-properties table.\n\n## Impact\n\nDenial of service via JVM `OutOfMemoryError`. Crashes the entire JVM.\n\n## CWE\n\nCWE-789: Memory Allocation with Excessive Size Value\n\n## Remediation\n\nValidate `contentLength` against the frame's remaining bytes or the negotiated max frame size (default 131,072) before allocating.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-18T16:32:20Z",
+    "Severity": "HIGH",
+    "Summary": "RabbitMQ Java client ValueReader: Oversized LongString/bytes length triggers OOM via unchecked allocation",
+    "UpdatedAt": "2026-08-18T16:32:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.33.1"
+      },
+      "VulnerableVersionRange": "\u003c= 5.33.0"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-18T16:32:29Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 411435,
+    "Id": "GSA_kwCzR0hTQS02ZzMyLXB4djQtMndmas4ABkcr",
+    "GhsaId": "GHSA-6g32-pxv4-2wfj",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-6g32-pxv4-2wfj"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2000"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2002"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/0032f75f9dc3df847f94b2b85a16119250bf63cb"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/9f8e7efd0c648f235dc0e96232ae7efa75ea4fa8"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.33.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6g32-pxv4-2wfj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6g32-pxv4-2wfj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63337"
+      }
+    ],
+    "Description": "The JSON-RPC tools in `com.rabbitmq.tools.jsonrpc` perform `Class.forName(javaReturnType)` with `initialize=true` on class names received from untrusted AMQP messages, without any validation or allowlist.\n\n**Vulnerable code** (`ProcedureDescription.java:101-127`):\nWhen a `JsonRpcClient` connects, it calls `system.describe` and receives a service description from the AMQP queue. The response JSON includes `javaReturnType` fields that are reflectively set via `JSONUtil.tryFill()`, triggering `setJavaReturnType()` → `computeReturnTypeAsJavaClass()` → `Class.forName(javaReturnType)`.\n\n**Attack scenario:**\n1. Victim uses `JsonRpcClient` to connect to a JSON-RPC service via RabbitMQ\n2. Attacker (co-tenant on shared broker, or MITM) intercepts the `system.describe` request\n3. Attacker responds with crafted `javaReturnType` values\n4. Victim's client calls `Class.forName(attackerInput)` with default `initialize=true`\n5. Static initializers of attacker-specified classes execute in victim's JVM\n\nAdditionally, the loaded class from `getReturnType()` is passed to `mapper.parse(replyStr, expectedType)` at `JsonRpcClient.java:168`, potentially enabling type-confusion.\n\n**Recommended fix:** Use `Class.forName(javaReturnType, false, classLoader)` to prevent static initializer execution, or add an allowlist of permitted return types.\n\n**CWE:** CWE-470\n\n---\n\n**Reply from reporter (2026-06-29):** Thanks for the quick turnaround. Fix looks good. Looking forward to the CVE assignment.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-18T16:32:29Z",
+    "Severity": "HIGH",
+    "Summary": "RabbitMQ Java client: Unvalidated Class.forName in JSON-RPC ProcedureDescription enables arbitrary class loading",
+    "UpdatedAt": "2026-08-18T16:32:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.33.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.33.0"
+    }
+  ]
+}

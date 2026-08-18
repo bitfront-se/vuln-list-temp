@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-18T16:32:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 411437,
+    "Id": "GSA_kwCzR0hTQS01bTlmLXJwaGotYzQzNc4ABkct",
+    "GhsaId": "GHSA-5m9f-rphj-c435",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-5m9f-rphj-c435"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/1999"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2001"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/1e7deb2e6020c9793a81385a53ea378ec63b9339"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/a4bf571dd368765baaa9cecfae68ce09f1bdcc01"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.33.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5m9f-rphj-c435"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5m9f-rphj-c435"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63336"
+      }
+    ],
+    "Description": "## Vulnerability Summary\n\n`com.rabbitmq.client.TrustEverythingTrustManager` accepts ANY TLS certificate (including null chains) and is used as the default trust manager when calling `ConnectionFactory.useSslProtocol()` without arguments. Combined with hostname verification being disabled by default, this enables trivial man-in-the-middle attacks.\n\n## Affected Components\n\n- `com.rabbitmq.client.TrustEverythingTrustManager` — accepts any certificate\n- `com.rabbitmq.client.ConnectionFactory.useSslProtocol()` — uses TrustEverythingTrustManager\n- Hostname verification disabled by default (`enableHostnameVerification()` must be called explicitly)\n- `com.rabbitmq.client.ConnectionFactory.getPassword()` — returns plaintext with no redaction\n- Default port 5672 (plaintext) with PLAIN SASL — credentials sent unencrypted\n\n## POC (Verified on Java 21, amqp-client 5.25.0)\n\n```java\n// TrustEverythingTrustManager accepts ANY certificate including null\nTrustEverythingTrustManager tm = new TrustEverythingTrustManager();\ntm.checkServerTrusted(null, \"RSA\");  // No exception — accepts null cert chain\ntm.getAcceptedIssuers();  // Returns empty array — trusts all CAs\n\n// ConnectionFactory defaults\nConnectionFactory factory = new ConnectionFactory();\nfactory.useSslProtocol();  // Uses TrustEverythingTrustManager internally\n// enableHostnameVerification() NOT called by default\n\n// Credential exposure\nfactory.setPassword(\"secret_password_123\");\nfactory.getPassword();  // Returns \"secret_password_123\" — no redaction\n\n// Default plaintext port\nfactory.getPort();  // 5672 (plaintext, not 5671/TLS)\n\n// PLAIN SASL sends cleartext credentials\nPlainMechanism pm = new PlainMechanism();\n// handleChallenge() sends username+password in cleartext\n```\n\n## Attack Scenarios\n\n1. **MITM**: Attacker presents self-signed cert → `TrustEverythingTrustManager` accepts it → all RabbitMQ traffic intercepted\n2. **Credential theft**: Default plaintext port (5672) + PLAIN SASL = credentials readable on network\n3. **DNS rebinding**: No hostname verification → attacker DNS record → MITM without cert\n4. **Logging exposure**: `getPassword()` returns plaintext → credentials in logs/stack traces\n\n## Suggested Fix\n1. Deprecate `TrustEverythingTrustManager` — it should never be used in production\n2. `useSslProtocol()` should use the JVM default trust store, not TrustEverything\n3. Enable hostname verification by default\n4. Redact password in `getPassword()` or remove the public getter\n5. Warn when using PLAIN SASL without TLS",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-18T16:32:59Z",
+    "Severity": "MODERATE",
+    "Summary": "RabbitMQ Java client: TrustEverythingTrustManager used by default in useSslProtocol() enables MITM",
+    "UpdatedAt": "2026-08-18T16:32:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.33.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.33.0"
+    }
+  ]
+}
