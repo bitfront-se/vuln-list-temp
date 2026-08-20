@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-19T19:31:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.geoserver.web:gs-web-app"
+  },
+  "Advisory": {
+    "DatabaseId": 412964,
+    "Id": "GSA_kwCzR0hTQS13ZjZqLWdyMjctZzdjaM4ABk0k",
+    "GhsaId": "GHSA-wf6j-gr27-g7ch",
+    "References": [
+      {
+        "Url": "https://github.com/geoserver/geoserver/security/advisories/GHSA-wf6j-gr27-g7ch"
+      },
+      {
+        "Url": "https://github.com/geoserver/geoserver/pull/8164"
+      },
+      {
+        "Url": "https://docs.geoserver.org/latest/en/user/tutorials/GetFeatureInfo/html/#accessing-instance-methods"
+      },
+      {
+        "Url": "https://osgeo-org.atlassian.net/browse/GEOS-11645"
+      },
+      {
+        "Url": "https://osgeo-org.atlassian.net/browse/GEOS-11777"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wf6j-gr27-g7ch"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wf6j-gr27-g7ch"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2024-45747"
+      }
+    ],
+    "Description": "### Summary\nA server-side template injection (SSTI) vulnerability exist that allows an authenticated administrator to upload FreeMarker templates containing malicious content that can execute OS commands and read from or write to arbitrary files on the server. These FreeMarker templates are used in a plain GeoServer instance (no extension or community modules) for WMS GetFeatureInfo HTML and JSON and WMS GetMap KML and GeoRSS output formats.\n\n### Details\nThe org.geoserver.template.TemplateUtils.getSafeConfiguration() method attempts to block access to the class freemarker.template.utility.Execute but it is still possible to gain access to it and other sensitive functionality by chaining a specific sequence of method calls.\n\n### Impact\nThis vulnerability can lead to executing arbitrary code and reading and writing arbitrary files.\n\n### Resolution\nGeoServer 2.27.0 addresses this vulnerability with several new application properties:\n\n* ``GEOSERVER_FREEMARKER_BLOCK_LIST``\n* ``GEOSERVER_FREEMARKER_ALLOW_LIST``\n* ``GEOSERVER_FREEMARKER_API_EXPOSED``\n\nThese application properties default to restricting the objects template authors can access, and limit access to \"getter\" methods used to access object properties.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-19T19:31:54Z",
+    "Severity": "HIGH",
+    "Summary": "GeoServer has a Server-Side Template Injection (SSTI) vulnerability in processing FreeMarker templates",
+    "UpdatedAt": "2026-08-19T19:31:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.27.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.27.0"
+    }
+  ]
+}
