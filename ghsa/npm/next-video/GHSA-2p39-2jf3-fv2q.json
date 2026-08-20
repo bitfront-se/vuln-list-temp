@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-20T18:36:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next-video"
+  },
+  "Advisory": {
+    "DatabaseId": 413573,
+    "Id": "GSA_kwCzR0hTQS0ycDM5LTJqZjMtZnYycc4ABk-F",
+    "GhsaId": "GHSA-2p39-2jf3-fv2q",
+    "References": [
+      {
+        "Url": "https://github.com/muxinc/next-video/security/advisories/GHSA-2p39-2jf3-fv2q"
+      },
+      {
+        "Url": "https://github.com/muxinc/next-video/commit/73abf1d534c2ac48db546ecfed0e89cbaf124f6f"
+      },
+      {
+        "Url": "https://github.com/muxinc/next-video/releases/tag/v2.8.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2p39-2jf3-fv2q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2p39-2jf3-fv2q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54150"
+      }
+    ],
+    "Description": "### Impact\n\nThe HTTP route handler exported by `next-video/request-handler` — which the README instructs consumers to mount at `/api/video` — allows an unauthenticated remote attacker to read arbitrary `.json` files from the production filesystem of any application following the documented setup.\n\nThe handler's `GET` endpoint accepts a `url` query parameter and uses it to locate and serve a JSON asset descriptor from disk. The only guard between \"remote URL\" and \"local file path\" is a regex check for `^https?://`. Any value that does not match that prefix is treated as a local path, `.json` is appended, and the file is read with `fs.readFile` and returned in the HTTP response — with no authentication, no path canonicalization, and no traversal guard.\n\nOn a typical Next.js deployment this exposes, at minimum:\n- The **Next.js Server Actions AES encryption key** (`.next/server/server-reference-manifest.json`)\n- The **Next.js Preview/Draft Mode keys** (`previewModeId`, `previewModeSigningKey`, `previewModeEncryptionKey`)\n- Internal build manifests, route registries, and absolute runtime paths\n- Application-specific asset metadata (e.g. Mux `uploadId`, `assetId`, `playbackId` values stored in `videos/*.json`)\n\nAny application that mounted `/api/video` following the documented one-liner is affected.\n\n### Patches\n\n2.8.1\n\n### Workarounds\n\nUntil a patched version is available, wrap the exported handler in your own route file and validate the `url` parameter before passing it through:\n\n- Reject any `url` value that does not begin with `https://`, or that does not match a known allowlist of trusted remote hosts.\n- Alternatively, remove the `/api/video` route entirely if your application only uses build-time `import` of local video files and does not use `\u003cVideo src=\"https://...\"\u003e` with string URLs at runtime.\n\n### References\n\n- `src/request-handler.ts` — the vulnerable GET handler\n- `src/assets.ts` — `getAssetPath()`, where the local-vs-remote branching occurs\n- `src/utils/utils.ts` — `isRemote()`, the sole guard between the two branches\n- `src/config.ts` — `loadAsset()`, which performs the unconstrained `fs.readFile`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:35:11Z",
+    "Severity": "MODERATE",
+    "Summary": "next-video: Unauthenticated arbitrary file read via /api/video request handler",
+    "UpdatedAt": "2026-08-20T18:36:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.8.1"
+      },
+      "VulnerableVersionRange": "\u003c= 2.8.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-20T18:32:22Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.cxf:cxf-rt-rs-security-oauth2"
+  },
+  "Advisory": {
+    "DatabaseId": 362880,
+    "Id": "GSA_kwCzR0hTQS14ZjYyLXdyNXAtNXA5Nc4ABYmA",
+    "GhsaId": "GHSA-xf62-wr5p-5p95",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-50630"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/bt7vnjzzkpd6vdhkxv103poor1jy5trm"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/06/11/7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xf62-wr5p-5p95"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xf62-wr5p-5p95"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-50630"
+      }
+    ],
+    "Description": "A CRLF injection vulnerability exists in the OAuth2 AuthorizationUtils class. When constructing the WWW-Authenticate response header, the 'realm' parameter is concatenated without sanitizing Carriage Return (CR) and Line Feed (LF) characters. If an attacker can control the realm value, they can inject arbitrary HTTP headers or split the HTTP response entirely. Users are recommended to upgrade to versions 4.2.2 or 4.1.7, which fixes this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-12T12:31:33Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache CXF OAuth2 HTTP Response Splitting via WWW-Authenticate Realm Injection",
+    "UpdatedAt": "2026-08-20T18:32:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.7"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0, \u003c 4.2.2"
+    }
+  ]
+}

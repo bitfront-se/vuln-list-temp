@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-20T18:40:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "wagtail"
+  },
+  "Advisory": {
+    "DatabaseId": 413593,
+    "Id": "GSA_kwCzR0hTQS1yNnA0LWdycTcteG00bc4ABk-Z",
+    "GhsaId": "GHSA-r6p4-grq7-xm4m",
+    "References": [
+      {
+        "Url": "https://github.com/wagtail/wagtail/security/advisories/GHSA-r6p4-grq7-xm4m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-54261"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/wagtail/PYSEC-2026-614.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r6p4-grq7-xm4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r6p4-grq7-xm4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54261"
+      }
+    ],
+    "Description": "### Impact\nDue to a missing permission check on the image preview endpoint, a user with access to the Wagtail admin can preview any image. The existing data of the image object itself is not exposed. The vulnerability is not exploitable by an ordinary site visitor without access to the Wagtail admin.\n\n### Patches\nPatched versions have been released as Wagtail 7.0.8, 7.3.3, 7.4.2.\n\n### Workarounds\nFor sites that cannot easily upgrade to a current supported version, the vulnerability can be patched by adding the following code to `urls.py` URL pattern declarations to override the vulnerable view.\n\n```python\nfrom django.core.exceptions import PermissionDenied\nfrom django.shortcuts import get_object_or_404\nfrom django.urls import path\nfrom wagtail.admin import urls as wagtailadmin_urls\nfrom wagtail.images.permissions import permission_policy\nfrom wagtail.images.views import preview\n\n\ndef patched_preview(request, image_id, filter_spec):\n    image = get_object_or_404(get_image_model(), id=image_id)\n\n    if not permission_policy.user_has_permission_for_instance(request.user, \"change\", image):\n        raise PermissionDenied\n\n    return preview(request, image_id, filter_spec)\n\n\nurlpatterns = [\n    # Example where the CMS admin is at /admin/.\n    # Add this before the Wagtail admin URLs registration, with the same sub-path.\n    path(\"admin/images/\u003cint:image_id\u003e/preview/\u003cstr:filter_spec\u003e/\", patched_preview)\n    path(\"admin/\", include(wagtailadmin_urls)),\n]\n```\n\n### Acknowledgements\nMany thanks to @0x1saac and @harshakshit for reporting this issue.\n\n\n### For more information\nIf you have any questions or comments about this advisory:\n\n* Visit Wagtail's [support channels](https://docs.wagtail.org/en/stable/support.html)\n* Email us at [security@wagtail.org](mailto:security@wagtail.org) (view our [security policy](https://github.com/wagtail/wagtail/security/policy) for more information).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:40:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Wagtail: Improper permission handling in image preview",
+    "UpdatedAt": "2026-08-20T18:40:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.4.2"
+      },
+      "VulnerableVersionRange": "\u003e= 7.4, \u003c 7.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.3.3"
+      },
+      "VulnerableVersionRange": "\u003e= 7.1, \u003c 7.3.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.8"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.8"
+    }
+  ]
+}

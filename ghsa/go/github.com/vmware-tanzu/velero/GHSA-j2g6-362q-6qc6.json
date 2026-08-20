@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-20T17:26:48Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/vmware-tanzu/velero"
+  },
+  "Advisory": {
+    "DatabaseId": 413481,
+    "Id": "GSA_kwCzR0hTQS1qMmc2LTM2MnEtNnFjNs4ABk8p",
+    "GhsaId": "GHSA-j2g6-362q-6qc6",
+    "References": [
+      {
+        "Url": "https://github.com/velero-io/velero/security/advisories/GHSA-j2g6-362q-6qc6"
+      },
+      {
+        "Url": "https://github.com/securego/gosec/issues/324"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j2g6-362q-6qc6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j2g6-362q-6qc6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-32637"
+      }
+    ],
+    "Description": "### Impact\n_What kind of vulnerability is it? Who is impacted?_\nIf the attacker compromises the backup's object storage backend and uploads a malicious backup tarball including file names like the following:\n* ../../../tmp/escape_1              -\u003e file created at /tmp/escape_1\n* ../../../../../../../../tmp/escape_2 -\u003e file created at /tmp/escape_2\n* ../../../tmp/cron_poc              -\u003e would be /etc/cron.d/backdoor in real attack\n* ../../../tmp/ssh_poc               -\u003e would be ~/.ssh/authorized_keys\n* ../../../tmp/kubeconfig_poc        -\u003e would be ~/.kube/config\n\nIt's possible that extracting files from the tarball during restore can overwrite sensitive files in the Velero pod filesystem. \n\n### Patches\n_Has the problem been patched? What versions should users upgrade to?_\n\nBy far, there is no patch yet.\nWe are working on the main branch, then cherry-pick to the release-1.18 for v1.18.1 patch.\n\n### Workarounds\n_Is there a way for users to fix or remediate the vulnerability without upgrading?_\n\nThere is no workaround, but the good news is that keeping your OSS safe will prevent the vulnerability.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T17:26:07Z",
+    "Severity": "MODERATE",
+    "Summary": "Velero vulnerable to file path traversal when extracting from backup's tarball",
+    "UpdatedAt": "2026-08-20T17:26:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.18.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.18.1"
+    }
+  ]
+}
