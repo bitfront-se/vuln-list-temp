@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-20T18:43:19Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty.incubator:netty-incubator-codec-ohttp-hpke-classes-boringssl"
+  },
+  "Advisory": {
+    "DatabaseId": 413604,
+    "Id": "GSA_kwCzR0hTQS0ybWM0LWo4NjUtOXE0cs4ABk-k",
+    "GhsaId": "GHSA-2mc4-j865-9q4r",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/security/advisories/GHSA-2mc4-j865-9q4r"
+      },
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/releases/tag/netty-incubator-codec-parent-ohttp-0.0.23.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2mc4-j865-9q4r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2mc4-j865-9q4r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61798"
+      }
+    ],
+    "Description": "## Summary\n\n`io.netty.incubator:netty-incubator-codec-ohttp-hpke-classes-boringssl` exposes raw HPKE private key bytes in string representations and error messages. `BoringSSLAsymmetricCipherKeyPair.toString()` includes the private-key parameter object, and `BoringSSLAsymmetricKeyParameter.toString()` renders the full byte array with `Arrays.toString(bytes)`. Separately, failed native key initialization includes `Arrays.toString(privateKeyBytes)` in the thrown `IllegalArgumentException` message. Applications that log key-pair objects or exceptions can persist private key material in logs.\n\n## Details\n\n`codec-ohttp-hpke-classes-boringssl/src/main/java/io/netty/incubator/codec/hpke/boringssl/BoringSSLAsymmetricCipherKeyPair.java` renders private key material through `toString()`:\n\n- `BoringSSLAsymmetricCipherKeyPair.toString()` at lines 72-78 concatenates `\"privateKey=\" + privateKey`.\n- `privateKey` is a `BoringSSLAsymmetricKeyParameter` created with `isPrivate=true` at lines 26-36.\n\n`codec-ohttp-hpke-classes-boringssl/src/main/java/io/netty/incubator/codec/hpke/boringssl/BoringSSLAsymmetricKeyParameter.java` then renders all bytes:\n\n- `BoringSSLAsymmetricKeyParameter.toString()` at lines 70-76 returns `\"bytes=\" + Arrays.toString(bytes)` regardless of whether `isPrivate` is true.\n\nA separate error path in `codec-ohttp-hpke-classes-boringssl/src/main/java/io/netty/incubator/codec/hpke/boringssl/BoringSSL.java` also exposes caller-provided private key bytes:\n\n- `EVP_HPKE_KEY_init_or_throw(...)` at lines 228-232 throws `IllegalArgumentException(\"privateKeyBytes does not contain a valid private key: \" + Arrays.toString(privateKeyBytes))` when BoringSSL rejects the key.\n\nBecause Java logging frameworks commonly call `toString()` for structured objects and commonly persist exception messages, these paths can place complete HPKE private key material in logs or telemetry.\n\n## Proof of concept\n\nSafe local verification was performed without native BoringSSL by compiling the relevant Java classes and a no-op native stub for the unused finalizer reference. The observed output includes the full private key byte array:\n\n```text\nBoringSSLAsymmetricCipherKeyPair{privateKey=BoringSSLAsymmetricKeyParameter{bytes=[1, 2, 3, 4], isPrivate=true}, publicKey=BoringSSLAsymmetricKeyParameter{bytes=[5, 6, 7, 8], isPrivate=false}}\n```\n\nMinimal reproducer concept in the same package:\n\n```java\npackage io.netty.incubator.codec.hpke.boringssl;\n\npublic final class VerifyPrivateKeyToString {\n  public static void main(String[] args) {\n    byte[] privateKey = new byte[] {1, 2, 3, 4};\n    byte[] publicKey = new byte[] {5, 6, 7, 8};\n    BoringSSLAsymmetricCipherKeyPair pair = new BoringSSLAsymmetricCipherKeyPair(privateKey, publicKey);\n    System.out.println(pair.toString());\n  }\n}\n```\n\nThe code path is deterministic: the production `toString()` methods concatenate the raw private-key byte array.\n\n## Impact\n\nIf an affected key pair or initialization exception is logged, application logs contain complete HPKE private key material. Anyone with access to those logs can recover the key. Depending on key reuse and log retention, this can compromise:\n\n- confidentiality of OHTTP messages encrypted to the exposed key;\n- integrity/authenticity expectations for future messages if the key remains active;\n- incident response and key rotation assumptions, because logs may retain key material long after the in-memory key is rotated.\n\n## Suggested remediation\n\n- Redact private key material in `BoringSSLAsymmetricKeyParameter.toString()` when `isPrivate` is true, for example `bytes=\u003credacted\u003e` or only key type/length.\n- Redact `privateKey` in `BoringSSLAsymmetricCipherKeyPair.toString()`.\n- Remove `Arrays.toString(privateKeyBytes)` from `BoringSSL.EVP_HPKE_KEY_init_or_throw(...)`; report only length and KEM metadata.\n- Add regression tests asserting that `toString()` and exception messages do not contain private key byte values.\n- Consider making key pair classes avoid implementing detailed `toString()` for sensitive material entirely.\n\n## References\n\n- `codec-ohttp-hpke-classes-boringssl/src/main/java/io/netty/incubator/codec/hpke/boringssl/BoringSSLAsymmetricCipherKeyPair.java:72-78`\n- `codec-ohttp-hpke-classes-boringssl/src/main/java/io/netty/incubator/codec/hpke/boringssl/BoringSSLAsymmetricKeyParameter.java:70-76`\n- `codec-ohttp-hpke-classes-boringssl/src/main/java/io/netty/incubator/codec/hpke/boringssl/BoringSSL.java:228-232`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:43:17Z",
+    "Severity": "HIGH",
+    "Summary": "netty-incubator-codec-ohttp: BoringSSL HPKE private key bytes exposed through toString() and exception messages",
+    "UpdatedAt": "2026-08-20T18:43:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.23.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 0.0.22.Final"
+    }
+  ]
+}

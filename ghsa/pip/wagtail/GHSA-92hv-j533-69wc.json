@@ -1,0 +1,64 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-08-20T18:45:09Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "wagtail"
+  },
+  "Advisory": {
+    "DatabaseId": 413620,
+    "Id": "GSA_kwCzR0hTQS05Mmh2LWo1MzMtNjl3Y84ABk-0",
+    "GhsaId": "GHSA-92hv-j533-69wc",
+    "References": [
+      {
+        "Url": "https://github.com/wagtail/wagtail/security/advisories/GHSA-92hv-j533-69wc"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92hv-j533-69wc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92hv-j533-69wc"
+      }
+    ],
+    "Description": "### Impact\nBy passing specific HTTP headers to the document serve URL endpoint, an attacker was able to determine whether a document with a given ID matched a specified SHA1 hash, regardless of any permission restrictions on the document or knowing its filename. This could allow an attacker to determine whether a document with a specific known hash is present in the Wagtail document library.\n\nThis vulnerability does not expose the document's contents or any metadata beyond the already known SHA1 hash, and does not expose information about any documents for which the attacker does not know the SHA1 hash.\n\n### Patches\nPatched versions have been released as Wagtail 7.0.9, 7.3.4, 7.4.3 and 8.0rc2.\n\n### Workarounds\nSite owners who are unable to upgrade can strip `If-Match` and `If-None-Match` from anonymous requests to `/documents/` at the reverse proxy, or use a custom document model without a `file_hash` attribute.\n\n### Acknowledgements\nMany thanks to Anand Himanshu for reporting this issue.\n\n### For more information\nIf you have any questions or comments about this advisory:\n\n* Visit Wagtail's [support channels](https://docs.wagtail.org/en/stable/support.html)\n* Email us at [security@wagtail.org](mailto:security@wagtail.org) (view our [security policy](https://github.com/wagtail/wagtail/security/policy) for more information).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:45:09Z",
+    "Severity": "LOW",
+    "Summary": "Wagtail: Identification of documents by SHA1 hash",
+    "UpdatedAt": "2026-08-20T19:50:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0rc2"
+      },
+      "VulnerableVersionRange": "= 8.0rc1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.4.3"
+      },
+      "VulnerableVersionRange": "\u003e= 7.4, \u003c 7.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.3.4"
+      },
+      "VulnerableVersionRange": "\u003e= 7.1, \u003c 7.3.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.9"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.9"
+    }
+  ]
+}

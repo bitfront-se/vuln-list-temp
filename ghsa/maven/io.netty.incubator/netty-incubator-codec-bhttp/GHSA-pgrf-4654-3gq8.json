@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-20T18:43:24Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty.incubator:netty-incubator-codec-bhttp"
+  },
+  "Advisory": {
+    "DatabaseId": 413605,
+    "Id": "GSA_kwCzR0hTQS1wZ3JmLTQ2NTQtM2dxOM4ABk-l",
+    "GhsaId": "GHSA-pgrf-4654-3gq8",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/security/advisories/GHSA-pgrf-4654-3gq8"
+      },
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/releases/tag/netty-incubator-codec-parent-ohttp-0.0.23.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pgrf-4654-3gq8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pgrf-4654-3gq8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61799"
+      }
+    ],
+    "Description": "## Summary\n\n`io.netty.incubator:netty-incubator-codec-bhttp` uses attacker-controlled Binary HTTP variable-length integers as `long` values but accumulates them into `int` offsets. Large valid varint lengths wrap the internal offset negative, leading to unchecked `ArrayIndexOutOfBoundsException` / `IndexOutOfBoundsException` from a tiny malformed BHTTP payload. A remote peer can trigger connection-level denial of service in applications that expose `BinaryHttpParser` / `BinaryHttpDecoder` to untrusted input.\n\n## Details\n\nIn `codec-bhttp/src/main/java/io/netty/incubator/codec/bhttp/BinaryHttpParser.java`, several parser paths store cumulative byte offsets in `int sumBytes` and then add attacker-controlled `long` lengths using compound assignment. In Java, `int += long` narrows the result back to `int`, so a length such as `2^31` wraps `sumBytes` negative.\n\nPrimary request-control-data path:\n\n- `readRequestHead(...)` declares `int sumBytes = 0` at `BinaryHttpParser.java:386`.\n- It reads `methodLength` as a `long` at `BinaryHttpParser.java:394`.\n- It performs `sumBytes += methodLength` at `BinaryHttpParser.java:395`, narrowing the result to `int`.\n- If `methodLength` is `2^31`, `sumBytes` wraps negative and bypasses `if (sumBytes \u003e= in.readableBytes()) return null` at `BinaryHttpParser.java:396-398`.\n- The parser then computes `schemeLengthIdx = in.readerIndex() + sumBytes` and calls `in.getByte(schemeLengthIdx)` at `BinaryHttpParser.java:401-402`, producing a negative index exception.\n\nThe same pattern is present in header parsing:\n\n- `readFieldLine(...)` uses `int sumBytes` and adds `long nameLength` / `long valueLength` at `BinaryHttpParser.java:659-680`.\n- `valueLengthIdx = nameIdx + (int) nameLength` at `BinaryHttpParser.java:674` can also overflow.\n\n`getIndeterminateLength(...)` similarly uses `int sumBytes` and `long possibleTerminator` at `BinaryHttpParser.java:544-553`.\n\n## Proof of concept\n\nSafe local verification performed in this repository. After compiling `codec-bhttp`, the following minimal verifier uses a 15-byte payload:\n\n```java\nimport io.netty.buffer.ByteBuf;\nimport io.netty.buffer.Unpooled;\nimport io.netty.incubator.codec.bhttp.BinaryHttpParser;\n\npublic final class VerifyBhttpOverflow {\n  public static void main(String[] args) {\n    byte[] payload = new byte[] {\n      0x00, (byte)0xc0, 0x00, 0x00, 0x00, (byte)0x80, 0x00, 0x00, 0x00,\n      0x47, 0x45, 0x54, 0x58, 0x58, 0x58\n    };\n    ByteBuf input = Unpooled.wrappedBuffer(payload);\n    try {\n      new BinaryHttpParser(8192).parse(input, false);\n      System.out.println(\"returned\");\n    } catch (Throwable t) {\n      System.out.println(t.getClass().getName());\n      System.out.println(t.getMessage());\n    }\n  }\n}\n```\n\nPayload interpretation:\n\n- `00`: known-length request frame indicator.\n- `c000000080000000`: valid 8-byte varint encoding of `0x80000000` (`2^31`) as the method length.\n- `474554585858`: a few dummy bytes so the parser proceeds far enough to compute the next index.\n\nObserved result:\n\n```text\njava.lang.ArrayIndexOutOfBoundsException\nIndex -2147483639 out of bounds for length 15\n```\n\nThe parser should reject the malformed/incomplete message with a controlled decoder exception or return `null` awaiting more bytes; it should not allow integer wraparound to reach unchecked buffer indexing.\n\n## Impact\n\nA remote peer can trigger an unchecked exception in the Binary HTTP decoder using a tiny payload. In typical Netty pipelines this closes or fails the affected channel. Depending on application-level exception handling, repeated payloads can cause sustained denial of service for exposed BHTTP endpoints. No memory corruption or information disclosure was observed because the failure occurs in Java/Netty bounds checks.\n\n## Suggested remediation\n\n- Use `long` for all cumulative byte counts derived from protocol lengths.\n- Before converting any protocol length to `int`, verify it is non-negative, no larger than `Integer.MAX_VALUE`, and no larger than available readable bytes and configured limits.\n- Replace `sumBytes \u003e= in.readableBytes()` checks with precise checked arithmetic that permits exact-boundary complete fields but rejects impossible lengths.\n- Throw a controlled `CorruptedFrameException` / `TooLongFrameException` for invalid or unsupported lengths.\n- Add regression tests for 8-byte varint lengths at and above `Integer.MAX_VALUE` in request control data, response control data, known and indeterminate field sections, and field lines.\n\n## References\n\n- `codec-bhttp/src/main/java/io/netty/incubator/codec/bhttp/BinaryHttpParser.java:386-402`\n- `codec-bhttp/src/main/java/io/netty/incubator/codec/bhttp/BinaryHttpParser.java:659-680`\n- `codec-bhttp/src/main/java/io/netty/incubator/codec/bhttp/BinaryHttpParser.java:544-553`\n- RFC 9292: Binary Representation of HTTP Messages\n- RFC 9000 variable-length integer encoding",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:43:21Z",
+    "Severity": "MODERATE",
+    "Summary": "netty-incubator-codec-ohttp: Binary HTTP parser unchecked varint length overflow causes decoder crash",
+    "UpdatedAt": "2026-08-20T18:43:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.23.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 0.0.22.Final"
+    }
+  ]
+}

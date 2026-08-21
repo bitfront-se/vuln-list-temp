@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-20T18:42:29Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "wagtail"
+  },
+  "Advisory": {
+    "DatabaseId": 413599,
+    "Id": "GSA_kwCzR0hTQS0zdnJoLW05dzctdjk0Zs4ABk-f",
+    "GhsaId": "GHSA-3vrh-m9w7-v94f",
+    "References": [
+      {
+        "Url": "https://github.com/wagtail/wagtail/security/advisories/GHSA-3vrh-m9w7-v94f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3vrh-m9w7-v94f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3vrh-m9w7-v94f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55468"
+      }
+    ],
+    "Description": "### Impact\n\nThe internal Pages admin [API](https://docs.wagtail.org/en/stable/advanced_topics/api/index.html) incorrectly returns page fields  without access control when they are declared in `api_fields`. A user with access to the Wagtail admin can use this API to fetch draft and live page fields’ contents that are part of `api_fields` on the base page model (title, slug, seo_title, search_description), as well as all custom fields declared in `api_fields`.\n\nThe vulnerability is not exploitable by an ordinary site visitor without access to the Wagtail admin.\n\n### Patches\n\nPatched versions have been released as Wagtail 7.0.9, 7.3.4, 7.4.3 and 8.0rc2.\n\n### Workarounds\n\nSite owners unable to upgrade can apply the fix by overriding the relevant method on `PagesAdminAPIViewSet` to patch all vulnerable admin API endpoints:\n\n```python\n# wagtail_hooks.py or AppConfig.ready()\n\nfrom wagtail.admin.api.views import PagesAdminAPIViewSet\nfrom wagtail.permissions import page_permission_policy\n\n\ndef _restricted_get_base_queryset(self):\n    return page_permission_policy.explorable_instances(self.request.user)\n\nPagesAdminAPIViewSet.get_base_queryset = _restricted_get_base_queryset\n```\n\n### Acknowledgements\n\nMany thanks to xuliang@QAX for reporting this issue.\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n\n-   Visit Wagtail's [support channels](https://docs.wagtail.org/en/stable/support.html)\n-   Email us at [security@wagtail.org](mailto:security@wagtail.org) (view our [security policy](https://github.com/wagtail/wagtail/security/policy) for more information).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:42:25Z",
+    "Severity": "MODERATE",
+    "Summary": "Wagtail: Improper restriction handling on Pages admin API",
+    "UpdatedAt": "2026-08-20T18:42:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0rc2"
+      },
+      "VulnerableVersionRange": "= 8.0rc1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.4.3"
+      },
+      "VulnerableVersionRange": "\u003e= 7.4, \u003c 7.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.3.4"
+      },
+      "VulnerableVersionRange": "\u003e= 7.1, \u003c 7.3.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.9"
+      },
+      "VulnerableVersionRange": "\u003c 7.0.9"
+    }
+  ]
+}

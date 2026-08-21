@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-20T18:39:51Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty.incubator:netty-incubator-codec-ohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 413589,
+    "Id": "GSA_kwCzR0hTQS12bXI5LWo2d2YtcG1oMs4ABk-V",
+    "GhsaId": "GHSA-vmr9-j6wf-pmh2",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/security/advisories/GHSA-vmr9-j6wf-pmh2"
+      },
+      {
+        "Url": "https://github.com/netty/netty-incubator-codec-ohttp/releases/tag/netty-incubator-codec-parent-ohttp-0.0.23.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vmr9-j6wf-pmh2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vmr9-j6wf-pmh2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54251"
+      }
+    ],
+    "Description": "The **netty-incubator-codec-ohttp** library implements Oblivious HTTP (OHTTP) gateway and client functionality using Netty's `ByteBuf` memory management. When an OHTTP gateway processes encrypted client requests, it allocates a pooled direct (native off-heap) `ByteBuf` to hold the decrypted plaintext before the AEAD tag is verified. If the AEAD tag check fails — meaning the ciphertext is invalid — the decryption method throws a `CryptoException`, but the allocated buffer is never released because no `try/finally` block guards the allocation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-20T18:39:50Z",
+    "Severity": "HIGH",
+    "Summary": "netty-incubator-codec-ohttp: [OHttpServerCodec] Native Direct-Memory Leak on AEAD Decryption Failure Leads to Gateway Denial of Service",
+    "UpdatedAt": "2026-08-20T18:39:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.23.Final"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.23.Final"
+    }
+  ]
+}
