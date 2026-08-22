@@ -1,0 +1,86 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-21T20:26:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.geotools.jdbc:gt-jdbc-postgis"
+  },
+  "Advisory": {
+    "DatabaseId": 413977,
+    "Id": "GSA_kwCzR0hTQS1tcWpmLTVmNDktMmZqaM4ABlEZ",
+    "GhsaId": "GHSA-mqjf-5f49-2fjh",
+    "References": [
+      {
+        "Url": "https://github.com/geotools/geotools/security/advisories/GHSA-mqjf-5f49-2fjh"
+      },
+      {
+        "Url": "https://github.com/geotools/geotools/pull/5829"
+      },
+      {
+        "Url": "https://github.com/geotools/geotools/commit/d821c4d321dd91c22e31fcd5b1ce676645da5176"
+      },
+      {
+        "Url": "https://github.com/geotools/geotools/releases/tag/33.6"
+      },
+      {
+        "Url": "https://github.com/geotools/geotools/releases/tag/34.5"
+      },
+      {
+        "Url": "https://github.com/geotools/geotools/releases/tag/35.1"
+      },
+      {
+        "Url": "https://osgeo-org.atlassian.net/browse/GEOT-7589"
+      },
+      {
+        "Url": "https://osgeo-org.atlassian.net/browse/GEOT-7958"
+      },
+      {
+        "Url": "https://osgeo-org.atlassian.net/browse/GEOT-7959"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mqjf-5f49-2fjh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mqjf-5f49-2fjh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-76904"
+      }
+    ],
+    "Description": "### Summary\n\nAn SQL Injection Vulnerability has been found when executing OGC Filters with PostGIS DataStore implementation:\n\n* `jsonArrayContains` function  \n    Requires PostGIS 12 or greater with a String or JSON field\n\nFor PostGIS 12 and greater `jsonArrayContains(\u003ccolumn\u003e, \u003cpointer\u003e, \u003cvalue\u003e)` function writes `\u003cvalue\u003e` into generated SQL without escaping.\n\n### Patches\n\n* GeoTools 35.1\n* GeoTools 33.5\n* GeoTools 34.4\n\n### Mitigation\n\nNo mitigation is available:\n\n* To limit scope of SQL Injection the PostGIS connection pool should be configured with limited rights.\n\n### Impact\n\nThis vulnerability can lead to execution of arbitrary SQL expressions in the database.\n\n### References\n\n* https://osgeo-org.atlassian.net/browse/GEOT-7958\n* https://osgeo-org.atlassian.net/browse/GEOT-7959\n* https://github.com/geotools/geotools/pull/5829\n* https://osgeo-org.atlassian.net/browse/GEOT-7589",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-21T20:25:41Z",
+    "Severity": "CRITICAL",
+    "Summary": "GeoTools has unauthenticated SQL injection in the jsonArrayContains filter function against PostGIS layers",
+    "UpdatedAt": "2026-08-21T20:26:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "33.6"
+      },
+      "VulnerableVersionRange": "\u003e= 30.5, \u003c 33.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "34.5"
+      },
+      "VulnerableVersionRange": "\u003e= 34.0, \u003c 34.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "35.1"
+      },
+      "VulnerableVersionRange": "= 35.0"
+    }
+  ]
+}
