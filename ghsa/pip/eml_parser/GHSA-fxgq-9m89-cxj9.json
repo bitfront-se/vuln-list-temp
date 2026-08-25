@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-25T18:23:17Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "eml_parser"
+  },
+  "Advisory": {
+    "DatabaseId": 415132,
+    "Id": "GSA_kwCzR0hTQS1meGdxLTltODktY3hqOc4ABlWc",
+    "GhsaId": "GHSA-fxgq-9m89-cxj9",
+    "References": [
+      {
+        "Url": "https://github.com/GOVCERT-LU/eml_parser/security/advisories/GHSA-fxgq-9m89-cxj9"
+      },
+      {
+        "Url": "https://github.com/GOVCERT-LU/eml_parser/pull/90"
+      },
+      {
+        "Url": "https://github.com/GOVCERT-LU/eml_parser/commit/746a69f86443eb0b6a47f77db3cfe727c21f92b3"
+      },
+      {
+        "Url": "https://github.com/GOVCERT-LU/eml_parser/releases/tag/v3.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fxgq-9m89-cxj9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fxgq-9m89-cxj9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55618"
+      }
+    ],
+    "Description": "## Summary\n\n`eml_parser` performs certain validations on potential URL strings to discard bogus values. In versions prior to `3.0.2`, this validation was performed before unescaping any HTML entities that might occur in the string. This caused the library to wrongfully reject valid URLs that use HTML entities for the `:`, `/`, or `.` characters. These URLs would then not be included in the list of extracted URLs. Similarly, the host parts of such URLs would not be extracted.\n\nFor example, neither the URL `https\u0026#58;\u0026#47;\u0026#47;phishing\u0026#46;example\u0026#46;com` nor its host (`phishing.example.com`) would appear in the parsing result.\n\n## Impact\n\n`eml_parser` is used in email security gateways and SOC pipelines to extract URLs as IOCs. Those URLs are then checked against threat-intel feeds, URL reputation services, and sandboxes. A URL that is not extracted is never checked.\n\n## Patches\n\nSince version 3.0.2 the library unescapes all HTML entities in every URL before deciding to accept or reject it. A test was added to prevent regressions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-25T18:23:16Z",
+    "Severity": "MODERATE",
+    "Summary": "eml_parser has a URL extraction bypass via HTML entities in URLs",
+    "UpdatedAt": "2026-08-25T18:23:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.0.2"
+    }
+  ]
+}

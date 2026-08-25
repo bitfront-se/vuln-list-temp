@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-25T16:40:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "justhtml"
+  },
+  "Advisory": {
+    "DatabaseId": 414323,
+    "Id": "GSA_kwCzR0hTQS04OTJtLWdjcTgtMjQ2OM4ABlJz",
+    "GhsaId": "GHSA-892m-gcq8-2468",
+    "References": [
+      {
+        "Url": "https://github.com/EmilStenstrom/justhtml/security/advisories/GHSA-v7cf-c9rm-wm3j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-9769"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/justhtml-before-denial-of-service-via-deeply-nested-html"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-892m-gcq8-2468"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-892m-gcq8-2468"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-v7cf-c9rm-wm3j. This link is maintained to preserve external references.\n\n### Original Description\njusthtml through 1.9.1 (fixed in 1.10.0) is vulnerable to uncontrolled recursion leading to denial of service. During JustHTML() construction, TreeBuilder.finish() unconditionally calls _populate_selectedcontent(), which recursively traverses the DOM tree via _find_elements()/_find_element() without a depth bound. An attacker who can supply HTML for parsing can provide deeply nested elements (e.g., ~1000 nested \u003cdiv\u003e tags, roughly 11 KB) to exceed CPython's default recursion limit and trigger an unhandled RecursionError, which may abort parsing, fail requests, or terminate a worker/process depending on the host application's exception handling.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-23T15:33:06Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: Uncontrolled recursion DoS in JustHTML() via deeply nested HTML",
+    "UpdatedAt": "2026-08-25T16:40:28Z",
+    "WithdrawnAt": "2026-08-25T16:40:27Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.9.1"
+    }
+  ]
+}

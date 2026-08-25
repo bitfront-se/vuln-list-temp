@@ -14,6 +14,12 @@
         "Url": "https://github.com/openclaw/openclaw/security/advisories/GHSA-mhq8-78pj-5j79"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53831"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openclaw-arbitrary-file-read-via-shell-expansion-in-system-run-safe-bin-allowlist"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-mhq8-78pj-5j79"
       }
     ],
@@ -21,6 +27,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-mhq8-78pj-5j79"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53831"
       }
     ],
     "Description": "### Summary\n\nOn POSIX nodes, OpenClaw's `system.run` safe-bin checks could approve a command before shell expansion changed how the command was interpreted. A value that appeared to be a safe-bin argument could expand into additional shell words and become a file operand.\n\nThis issue is limited to paired POSIX node execution through `system.run` with safe-bin or allowlist-style auto-approval. It is not an unauthenticated node takeover.\n\n### Affected configurations\n\nThis affects deployments where:\n\n- a POSIX node is paired to the gateway\n- `system.run` is reachable by an authenticated operator or agent flow\n- exec policy uses safe-bin or allowlist-based auto-approval\n- the approved command contains shell-expanded values that can change argv shape\n\n### Impact\n\nA lower-privilege operator flow could cause an approved safe-bin command to read a node-local file that was not intended by the policy. Depending on the local files available to the node process, this could expose OpenClaw configuration data or other node-local information.\n\nThe issue is a policy-enforcement gap in argv validation, not a general statement that every safe-bin command is unsafe.\n\n### Patched Versions\n\nThe first stable patched version is `2026.5.18`.\n\n### Mitigations\n\nUpgrade to `openclaw@2026.5.18` or later. Before upgrading, avoid broad safe-bin auto-approval for commands that can read arbitrary paths, and prefer explicit approval for node commands that touch local files.",
@@ -28,7 +38,7 @@
     "PublishedAt": "2026-07-02T16:05:38Z",
     "Severity": "HIGH",
     "Summary": "OpenClaw's POSIX node system.run safe-bin allowlist could be widened by shell expansion",
-    "UpdatedAt": "2026-07-02T16:05:39Z",
+    "UpdatedAt": "2026-08-25T16:38:52Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 7.1,
