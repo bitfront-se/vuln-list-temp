@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-27T17:06:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n-nodes-sqlite3"
+  },
+  "Advisory": {
+    "DatabaseId": 416162,
+    "Id": "GSA_kwCzR0hTQS1xN20zLXJoeGctN3Z4cs4ABlmi",
+    "GhsaId": "GHSA-q7m3-rhxg-7vxr",
+    "References": [
+      {
+        "Url": "https://github.com/DangerBlack/n8n-node-sqlite3/security/advisories/GHSA-q7m3-rhxg-7vxr"
+      },
+      {
+        "Url": "https://github.com/DangerBlack/n8n-node-sqlite3/pull/25"
+      },
+      {
+        "Url": "https://github.com/DangerBlack/n8n-node-sqlite3/commit/145a8876ff12375813bdcd4ae4fe78f460c53a98"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q7m3-rhxg-7vxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q7m3-rhxg-7vxr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54687"
+      }
+    ],
+    "Description": "## Affected versions\n\u003c 1.0.0\n\n## Patched version\n1.0.0\n\n## Description\nIn versions prior to 1.0.0, the SQLite node accepted the database file\npath as a direct node parameter visible and editable in the workflow.\nA workflow author who mapped untrusted user input to the db_path field\ncould allow an attacker to control which file was opened by SQLite,\npotentially enabling path traversal to read or overwrite arbitrary\nfiles accessible to the n8n process.\n\nThe vulnerability requires the workflow author to explicitly wire\nuntrusted input to the db_path parameter, so it does not affect\nstandalone deployments where only trusted users author workflows.\nHowever, in multi-tenant or user-facing n8n deployments the risk\nis elevated.\n\nFixed in v1.0.0 by moving the database path into a credential\n(v2 node architecture), which is stored server-side and not\ncontrollable by workflow input data.\n\n## References\n- Fix commit: 145a887\n- Introduced credential-based path: v2 node\n\n## Credits\ndyingman1 (role: Reporter)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-27T17:06:55Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n-nodes-sqlite3 vulnerable to path traversal via user-controlled database file path (db_path parameter)",
+    "UpdatedAt": "2026-08-27T17:06:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.0"
+    }
+  ]
+}

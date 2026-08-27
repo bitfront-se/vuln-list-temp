@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-27T17:23:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "libreoffice-convert"
+  },
+  "Advisory": {
+    "DatabaseId": 416165,
+    "Id": "GSA_kwCzR0hTQS1nbXhjLXI4MnEtMzQ3cs4ABlml",
+    "GhsaId": "GHSA-gmxc-r82q-347r",
+    "References": [
+      {
+        "Url": "https://github.com/elwerene/libreoffice-convert/security/advisories/GHSA-gmxc-r82q-347r"
+      },
+      {
+        "Url": "https://github.com/elwerene/libreoffice-convert/commit/b78f17df9b9183bd503fc4635fc8b3df6705047b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gmxc-r82q-347r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gmxc-r82q-347r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54732"
+      }
+    ],
+    "Description": "### Impact\noptions.fileName is used to build a filesystem path\n(path.join(tempDir.name, fileName)) and the caller-supplied document buffer is\nwritten there, but fileName is never reduced to a base name. A fileName containing\n\"../\" escapes the temporary directory, so a caller can write arbitrary content to an\narbitrary path the process can write to (e.g. ~/.ssh/authorized_keys, an /etc/cron.d\nentry, or a web root).\n\n### Patches\nVersion 1.8.2 uses `path.basename` on `filename` to make sure the temp directory can not be escaped.\n\n### Workarounds\nMake sure you supply the filename yourself and don't have it user supplied or use `path.basename` on `filename` before using it in `libreoffice-convert`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-27T17:23:16Z",
+    "Severity": "MODERATE",
+    "Summary": "libreoffice-convert vulnerable to path traversal / arbitrary file write",
+    "UpdatedAt": "2026-08-27T17:23:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.2"
+    }
+  ]
+}
