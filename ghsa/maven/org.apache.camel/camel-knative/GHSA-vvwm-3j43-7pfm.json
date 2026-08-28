@@ -1,0 +1,98 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T20:30:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-knative"
+  },
+  "Advisory": {
+    "DatabaseId": 414599,
+    "Id": "GSA_kwCzR0hTQS12dndtLTNqNDMtN3Bmbc4ABlOH",
+    "GhsaId": "GHSA-vvwm-3j43-7pfm",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63621"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-63621.html"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24724"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24751"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24753"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24768"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/4eb26807d40420abf45253286ce3d07c2fba448c"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/5c7a8dbf1f1ed92bb4f289a50cc1765095054112"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/bbf680af8af4a39f808727758e72d469c2eec539"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.14.9"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.18.4"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.22.0"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/CAMEL-24084"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vvwm-3j43-7pfm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vvwm-3j43-7pfm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63621"
+      }
+    ],
+    "Description": "Improper Input Validation, Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection') vulnerability in Apache Camel Knative component\n\nThe Knative consumer in camel-knative maps inbound CloudEvent attributes onto Camel message headers. In binary content mode the HTTP-header path filters Camel-internal headers through KnativeHttpHeaderFilterStrategy, but in structured content mode (Content-Type application/cloudevents+json) the CloudEvent extension fields are read directly from the JSON body and every extension key is copied into the Exchange headers without applying any HeaderFilterStrategy (CloudEventProcessors, spec versions 1.0, 1.0.1 and 1.0.2). As a result, an unauthenticated attacker can inject Camel-internal headers (e.g. CamelHttpUri, CamelHttpPath, CamelFileName) via a structured-mode CloudEvent request, matched case-insensitively against Camel's header map. When a route forwards messages from a Knative consumer to a header-driven component such as camel-http or camel-file, the injected headers override configured values, enabling server-side request forgery (SSRF), path traversal or message-dispatch redirection depending on the route. This is an incomplete fix of the inbound header filtering previously added for the binary content-mode path, and is the same pattern addressed in camel-cxf/camel-knative (CVE-2026-47323), camel-undertow (CVE-2025-30177), the broader incoming-header filter (CVE-2025-27636 and CVE-2025-29891), and the non-HTTP strategies (CVE-2026-40453).\n\n\nThis issue affects Apache Camel: from 3.15.0 before 4.14.9, from 4.15.0 before 4.18.4, from 4.19.0 before 4.22.0.\n\nUsers are recommended to upgrade to version 4.22.0, which fixes the issue. If users are on the 4.18.x LTS releases stream, then they are suggested to upgrade to 4.18.4. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.9. The non-LTS releases 4.15.0 through 4.17.0 and 4.19.0 through 4.21.0 are affected but do not receive a maintenance fix; users on those versions should upgrade to 4.18.4 or 4.22.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-24T18:31:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Camel-Knative: CloudEvent extension fields received in structured content mode were mapped onto message headers without applying any header filter strategy",
+    "UpdatedAt": "2026-08-28T20:30:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.22.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.19.0, \u003c 4.22.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.4"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.9"
+      },
+      "VulnerableVersionRange": "\u003e= 3.15.0, \u003c 4.14.9"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T17:32:17Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.yamcs:yamcs-core"
+  },
+  "Advisory": {
+    "DatabaseId": 417787,
+    "Id": "GSA_kwCzR0hTQS05MjcyLXdnMnItN3hteM4ABl_7",
+    "GhsaId": "GHSA-9272-wg2r-7xmx",
+    "References": [
+      {
+        "Url": "https://github.com/yamcs/yamcs/security/advisories/GHSA-9272-wg2r-7xmx"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/8e18e279d8ce761c21f4f67bbd06a1bff804d297"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/ecf34a4e2ccbe085e6ceff0253595b24d5ecb4aa"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.12.8"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.13.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9272-wg2r-7xmx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9272-wg2r-7xmx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55566"
+      }
+    ],
+    "Description": "**Attack type**: Unauthenticated remote \n**Impact**: Execution of arbitrary JavaScript in a user’s browser.\n**Affected components**: extension.matcher.ts:12, extension.component.ts:40, app.component.ts:134.\n\nYamcs is vulnerable to cross-site scripting in the /ext URL endpoint. By inputting specially crafted code into the URL, an attacker can execute arbitrary JavaScript code in a user’s browser. This URL may be sent to a user via a phishing email.\n \n\u003cimg width=\"940\" height=\"294\" alt=\"image\" src=\"https://github.com/user-attachments/assets/d886d65c-9bb5-4599-ac11-55db83aafc0e\" /\u003e\n\nSteps to Reproduce:\n1.\tStart a Yamcs instance.\n2.\tInsert the following URL into the browser and press enter (change ‘myproject’ to the name of your instance):\n```\nhttp://localhost:8090/ext/img%20src%3Dx%20onerror%3Dalert%281%29?c=myproject\n```\n3.\tYou will receive an alert with the number ‘1’ in it.\n\nRecommendations:\n1.\tUse document.createElement instead of innerHTML in extension.component.ts.\n2.\tValidate the extension against registered plugin IDs.\n3.\tEnforce a strict custom-element-name regex before mounting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T17:32:16Z",
+    "Severity": "MODERATE",
+    "Summary": "Yamcs has DOM XSS in Extension Routing",
+    "UpdatedAt": "2026-08-28T17:32:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.8"
+      },
+      "VulnerableVersionRange": "\u003c= 5.12.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.13.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.13.0, \u003c= 5.13.1"
+    }
+  ]
+}

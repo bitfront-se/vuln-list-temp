@@ -1,0 +1,101 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T20:29:24Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-azure-storage-datalake"
+  },
+  "Advisory": {
+    "DatabaseId": 414591,
+    "Id": "GSA_kwCzR0hTQS03andjLXEzZmotYzlwcc4ABlN_",
+    "GhsaId": "GHSA-7jwc-q3fj-c9pq",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-60093"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-60093.html"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/08/24/8"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24542"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24581"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24582"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24585"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/007929bb732a8c5e3e49d4d3c6c8adc2aab13340"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/55fcbaf8bc1936cae90abdea5adecbc43e57340e"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/857d0cd3024b706ce80f3d2a4aa111e5e94a3e59"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.14.9"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.18.4"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.22.0"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/CAMEL-23942"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7jwc-q3fj-c9pq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7jwc-q3fj-c9pq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-60093"
+      }
+    ],
+    "Description": "Relative path traversal vulnerability in Apache Camel Azure-Storage Datalake component\n\nThis issue affects Apache Camel: from 4.0.0 before 4.14.9, from 4.15.0 before 4.18.4, from 4.19.0 before 4.22.0.\n\nThe camel-azure-storage-datalake component can download an Azure Data Lake Storage Gen2 file to the local filesystem through its downloadToFile operation, writing into the directory named by the fileDir endpoint option. DataLakeFileOperations.downloadToFile built the local target by joining fileDir with the remote path name exactly as the Azure SDK reported it (new File(fileDir, fileClientWrapper.getFileName())) and passed the result straight to the SDK download call, with no lexical normalization and no check that the resolved location stayed inside fileDir. The remote name is not route-controlled data: the consumer enumerates the filesystem in DataLakeConsumer.createBatchExchangesFromPath, which lists paths and creates one exchange per entry from PathItem.getName() verbatim, applying no name filtering by default. A path name containing parent-directory segments therefore resolved to a location outside the configured fileDir, letting anyone able to influence the names present in the consumed Data Lake filesystem cause Camel to create or overwrite a file at a location of their choosing, with the privileges of the Camel process. Depending on what the process can write to, overwriting a file outside the download directory can escalate beyond the loss of integrity of that file. The fileDir option is an ordinary common-group configuration parameter and carries no security marker, so nothing signalled to users that its value was not being enforced as a containment boundary. Camel's other file-download consumers - camel-file, camel-ftp, camel-smb, camel-mina-sftp and camel-azure-files - already constrained their local downloads to the configured directory using a path-segment boundary check; the camel-azure-storage-datalake download path was not covered by that work.\n\nUsers are recommended to upgrade to version 4.22.0, which fixes the issue. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.9. If users are on the 4.18.x releases stream, then they are suggested to upgrade to 4.18.4. For deployments that cannot upgrade immediately, constrain the names the consumer will act on using the regex endpoint option, which is applied to each listed path name as a full-string match, so that only simple single-segment names are accepted and any name carrying a path separator or a parent-directory segment is filtered out before an exchange is created. Alternatively, avoid the downloadToFile operation on untrusted filesystems and write the payload from the route under a file name the route itself controls, rather than one taken from the remote listing. As defence in depth, treat the object names in any externally writable Data Lake filesystem as untrusted input and do not derive local filesystem paths from them.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-24T18:31:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Camel-Azure-Storage-DataLake: the downloadToFile operation built the local download target from the remote path name without constraining it to the configured fileDir",
+    "UpdatedAt": "2026-08-28T20:29:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.22.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.19.0, \u003c 4.22.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.4"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.9"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.14.9"
+    }
+  ]
+}

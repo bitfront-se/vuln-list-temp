@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T17:10:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.yamcs:yamcs-core"
+  },
+  "Advisory": {
+    "DatabaseId": 417780,
+    "Id": "GSA_kwCzR0hTQS1md3d3LWNwMjMtN2Y1Z84ABl_0",
+    "GhsaId": "GHSA-fwww-cp23-7f5g",
+    "References": [
+      {
+        "Url": "https://github.com/yamcs/yamcs/security/advisories/GHSA-fwww-cp23-7f5g"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/0691731846c5a0aca81b88fabbd2cd51d56fe076"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/commit/12864af555e6ca4941b01c1f1217859cc0492ce0"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.12.8"
+      },
+      {
+        "Url": "https://github.com/yamcs/yamcs/releases/tag/yamcs-5.13.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fwww-cp23-7f5g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fwww-cp23-7f5g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55545"
+      }
+    ],
+    "Description": "**Asset / scope:** Yamcs 5.12.7 WebSocket topics (`packets`, `algorithm-status`, `mdb-changes`)\n\n## Summary\n\nSeveral WebSocket subscription handlers do not perform the privilege check that their REST counterparts\nenforce, so a principal subscribing over WebSocket receives data the REST API would have scoped or denied.\n\n## Root cause\n\n- `packets` (`PacketsApi.subscribePackets`) performs no `ReadPacket` check, while the REST siblings do\n  (`listPackets:128`, `streamPackets:256`, `subscribeContainers:538`). A principal with a narrow\n  `ReadPacket` scope receives the raw binary of all TM packets on the processor.\n- `algorithm-status` (`ProcessingApi.subscribeAlgorithmStatus`) performs no check, while REST\n  `getAlgorithmStatus` enforces `checkObjectPrivileges(ReadAlgorithm, ...)` (`:467`).\n- `mdb-changes` (`MdbOverrideApi.subscribeMdbChanges`) performs no check, while base MDB reads require\n  `GetMissionDatabase`.\n\n## Remediation\n\nBring each WebSocket subscription handler to parity with its REST sibling's privilege check\n(`ReadPacket`, `ReadAlgorithm`, `GetMissionDatabase`). This is the same declarative fail-closed fix as\nReport 1.\n\n## Supporting material\n\nSubsystem source audit of the WS-vs-REST authorization parity. Available on request.\n\n--\n\n## Disclosure and credit\n\nThis was found by Cipher / Causal Security - https://causalsecurity.com/. We are coordinating disclosure\nvia this report and request CVEs where you agree they qualify. We propose the 90-day window stated in your\nsecurity policy. We might publish a write-up after a fix and the agreed window.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T17:10:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Yamcs's WebSocket subscription handlers omit the privilege checks their REST siblings enforce",
+    "UpdatedAt": "2026-08-28T17:10:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.13.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.13.0, \u003c= 5.13.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.8"
+      },
+      "VulnerableVersionRange": "\u003c= 5.12.7"
+    }
+  ]
+}

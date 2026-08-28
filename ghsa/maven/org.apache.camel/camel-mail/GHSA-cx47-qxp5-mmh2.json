@@ -1,0 +1,104 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T20:19:13Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.camel:camel-mail"
+  },
+  "Advisory": {
+    "DatabaseId": 414602,
+    "Id": "GSA_kwCzR0hTQS1jeDQ3LXF4cDUtbW1oMs4ABlOK",
+    "GhsaId": "GHSA-cx47-qxp5-mmh2",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59230"
+      },
+      {
+        "Url": "https://camel.apache.org/security/CVE-2026-59230.html"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/08/24/7"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24406"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24409"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24445"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24454"
+      },
+      {
+        "Url": "https://github.com/apache/camel/pull/24456"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/4d03138dc27c04afdaae6cd40f026c23ed8d7973"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/ca74898bdef4f2917755ed8911eedfc7f09bd589"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/ccdeebc2ae378ba75e5563ddab508fc887527f0c"
+      },
+      {
+        "Url": "https://github.com/apache/camel/commit/cd1333ca1c1d491b4d121878dc025b130554d367"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.14.9"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.18.4"
+      },
+      {
+        "Url": "https://github.com/apache/camel/releases/tag/camel-4.22.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cx47-qxp5-mmh2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cx47-qxp5-mmh2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59230"
+      }
+    ],
+    "Description": "Improper input validation vulnerability in Apache Camel.\n\nThis issue affects Apache Camel: from 2.17.0 before 4.14.9, from 4.15.0 before 4.18.4, from 4.19.0 before 4.22.0.\n\nThe camel-mail component ships a MimeMultipart data format that can unmarshal a MIME multipart message. When it is configured with headersInline set to true, the unmarshal path copies the MIME headers of the incoming message onto the Camel message: it enumerates every header that is not one of the three standard ones it generates itself - Message-ID, MIME-Version and Content-Type - and calls setHeader for each, applying no HeaderFilterStrategy. The names of those MIME headers come from the message being unmarshalled, so a sender able to influence the message could place a header whose name falls in the Camel-internal namespace and have it set on the Exchange. Camel components read control headers from that namespace to override their configured behaviour - the camel-sql producer, for instance, takes the statement to execute from a Camel header when one is present - so an injected header could redirect what a downstream step in the route does with data the route author never intended it to take from the message. Which sinks are reachable, and what the consequences are, depends entirely on what the route does after the unmarshal step. The camel-mail consumer already applied a header filter strategy on its own inbound path, so this was the parallel inbound path into the same component that the earlier hardening did not cover. The affected copy is reached only when headersInline is enabled, which is not the default: with the default setting the MIME headers are surfaced as attachments rather than as message headers, and are not affected. The behaviour dates back to the introduction of the data format in 2.17.0 and was present on every release line until this fix.\n\nUsers are recommended to upgrade to version 4.22.0, which fixes the issue. If users are on the 4.14.x LTS releases stream, then they are suggested to upgrade to 4.14.9. If users are on the 4.18.x releases stream, then they are suggested to upgrade to 4.18.4. For deployments that cannot upgrade immediately, leave headersInline at its default of false where the inline headers are not needed, since the copy is only reached when it is enabled. Where it must stay enabled, strip Camel-internal headers immediately after the unmarshal step, for example with removeHeaders(“Camel*”) placed before any processor or producer that reads control headers, and do not unmarshal MIME content from an untrusted sender into a route that dispatches on header values. As defence in depth, treat the header names of any MIME message arriving from outside the trust boundary as untrusted input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-24T18:31:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Camel-Mail: the MimeMultipart data format copied MIME headers onto the Camel message without a header filter strategy when unmarshalling with headersInline enabled",
+    "UpdatedAt": "2026-08-28T20:19:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.22.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.19.0, \u003c 4.22.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.4"
+      },
+      "VulnerableVersionRange": "\u003e= 4.15.0, \u003c 4.18.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.9"
+      },
+      "VulnerableVersionRange": "\u003e= 2.17.0, \u003c 4.14.9"
+    }
+  ]
+}

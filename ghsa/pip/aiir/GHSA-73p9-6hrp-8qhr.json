@@ -1,0 +1,46 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T19:20:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiir"
+  },
+  "Advisory": {
+    "DatabaseId": 417882,
+    "Id": "GSA_kwCzR0hTQS03M3A5LTZocnAtOHFocs4ABmBa",
+    "GhsaId": "GHSA-73p9-6hrp-8qhr",
+    "References": [
+      {
+        "Url": "https://github.com/invariant-systems-ai/aiir/security/advisories/GHSA-73p9-6hrp-8qhr"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-73p9-6hrp-8qhr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-73p9-6hrp-8qhr"
+      }
+    ],
+    "Description": "### Summary\nSeveral of AIIR's verification and policy paths could return a success/\"verified\" result without actually enforcing the control they represent — they could **fail open** rather than fail closed. For a tool whose purpose is trustworthy verification, a consumer relying on these gates may have treated unverified or non-conforming input as verified.\n\nFound during an internal adversarial hardening review of AIIR (not a third-party audit). All paths are fixed in **1.7.0**.\n\n### Affected paths\n- A `require_signing` policy gate could be satisfied by a forgeable/empty field, so an unsigned or forged-bundle receipt could pass a \"signing required\" check without a valid signature.\n- A CI verification path could report `success` regardless of the underlying verification result.\n- A release-verification gate could advertise policy limits it did not actually enforce.\n- A signature-verification path could be silently skipped for certain input categories, exiting success without verifying.\n\n### Impact\nA consumer relying on these gates (e.g. `require_signing`, release/policy verification, or the CI check) to block unsigned, forged, or non-conforming receipts could have received a false \"verified\"/\"pass\". Exploitation requires reliance on the affected gate; it does not forge valid signatures, nor does it compromise content-addressing or correctly-signed receipts.\n\n### Patches\nFixed in **1.7.0**. Every affected path now fails closed, each with a regression test. Upgrade to `aiir \u003e= 1.7.0`.\n\n### Workarounds\nNone for earlier versions other than upgrading. Full cryptographic Sigstore verification (`pip install aiir[sign]`, `--verify-signature` with `--signer-identity`/`--signer-issuer`) provides defense in depth.\n\n### Scope note\nThis advisory covers code present in released versions (`\u003c 1.7.0`). Separately, an unreleased agent-receipt feature had pre-release forgery findings fixed before it shipped — those were never in a released version and are out of scope.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T19:20:32Z",
+    "Severity": "MODERATE",
+    "Summary": "AIIR verification and policy gates could report success without enforcing the control (fail-open)",
+    "UpdatedAt": "2026-08-28T19:20:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.0"
+    }
+  ]
+}
