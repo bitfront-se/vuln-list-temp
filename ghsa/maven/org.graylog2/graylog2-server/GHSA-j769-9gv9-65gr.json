@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T22:15:42Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.graylog2:graylog2-server"
+  },
+  "Advisory": {
+    "DatabaseId": 418022,
+    "Id": "GSA_kwCzR0hTQS1qNzY5LTlndjktNjVncs4ABmDm",
+    "GhsaId": "GHSA-j769-9gv9-65gr",
+    "References": [
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/security/advisories/GHSA-j769-9gv9-65gr"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/pull/26049"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/pull/26051"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/pull/26053"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/pull/26055"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/commit/41d3745d0e52736d06c07d279ca0d72c1616df4c"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/commit/4f280138b53dc3bbb5749213e8cb1c8e372f23a2"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/commit/84b0ffa0bdf918f6edd2bb23a47254088634b1fc"
+      },
+      {
+        "Url": "https://github.com/Graylog2/graylog2-server/commit/e5accc5f4ce48bd61b84bb8e5a13d21f8eac3da5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j769-9gv9-65gr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j769-9gv9-65gr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55867"
+      }
+    ],
+    "Description": "### Impact\n\nGraylog contains an insecure direct object reference (IDOR) vulnerability in the token revocation endpoint. An authenticated user can delete access tokens belonging to other users, including service account tokens and administrator tokens, if they know or can guess a valid token identifier.\n\nThe issue does not expose token contents, but it allows unauthorized token deletion, leading to integrity impact and potential availability impact for access token based integrations.\n\n### Patches\n\nThe issue has been fixed in the following Graylog versions: `6.3.12`, `7.0.7`, `7.1.2`. Users should upgrade to one of these versions or above to remediate the vulnerability.\n\nGraylog Cloud has already been patched.\n\n### Workarounds\n\nThere are no feasible workarounds for this issue. Upgrading to a patched version is recommended.\n\nCustomers using Graylog Enterprise or Security can review the audit log[^1] for suspicious activity. Audit log lines for successful token deletions begin with `access token deleted from user`. \n\n### Credits\n\nThanks to [michaelddickenson](https://github.com/michaelddickenson) and [sreelim](https://github.com/sreelim) for reporting.\n\n\n[^1]: https://go2docs.graylog.org/current/interacting_with_your_log_data/audit_log.html",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T22:15:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Graylog token revocation endpoint allows authenticated users to delete other users’ access tokens",
+    "UpdatedAt": "2026-08-28T22:15:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 7.1.0, \u003c 7.1.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.7"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.0.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.3.12"
+      },
+      "VulnerableVersionRange": "\u003e= 6.2.0, \u003c 6.3.12"
+    }
+  ]
+}

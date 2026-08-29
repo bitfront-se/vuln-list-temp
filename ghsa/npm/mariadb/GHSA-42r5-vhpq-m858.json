@@ -1,0 +1,95 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T22:04:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mariadb"
+  },
+  "Advisory": {
+    "DatabaseId": 418019,
+    "Id": "GSA_kwCzR0hTQS00MnI1LXZocHEtbTg1OM4ABmDj",
+    "GhsaId": "GHSA-42r5-vhpq-m858",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-42r5-vhpq-m858"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/29733403cfe6519cdfe9c36c93765a468fbe285d"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/53b304264df84496d331dba2765c3634602f342e"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/9781de636841d34afdd08d81dd07d43edb82f85c"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/fbc159c2c8bd18c2db2d2e6587ab3020bbda64b6"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.2.4"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.3.3"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.4.6"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.5.3"
+      },
+      {
+        "Url": "https://jira.mariadb.org/browse/CONJS-353"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-42r5-vhpq-m858"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-42r5-vhpq-m858"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55854"
+      }
+    ],
+    "Description": "### Summary\n\nWhen PAM (dialog) authentication is used, the connector can be coerced into sending the account password in cleartext over an insecure connection. A hostile or man-in-the-middle server can trigger this with the default configuration, disclosing the user's password.\n\n### Details\n\nThe mysql_clear_password plugin is gated behind a secure connection: the driver refuses to transmit the password in cleartext over plain TCP. The sibling PAM plugin handler (SendPamAuthPacketFactory, server-side plugin name dialog) did not override that gate and inherited the default value false, so it was not subject to the same secure-transport requirement.\n\nAs a result, a hostile or man-in-the-middle server can issue an Authentication Switch Request for the dialog plugin over plain TCP, and the driver responds with the user's password in cleartext. With the default configuration (sslMode=DISABLE, restrictedAuth=null) this is reachable with no non-default options.\n\n### Am I affected?\n\nYou are affected if all of the following hold:\n\nYou use mariadb Connector/Node.js at a version below the patched release(s).\nConnections can occur over an insecure transport: plain TCP (sslMode=DISABLE), or a TLS mode that establishes server identity only via self-signed-certificate fingerprint validation.\nAn attacker can occupy an on-path (MITM) position, or otherwise cause the client to connect to a server they control, and present an Authentication Switch Request for the dialog plugin.\n\nConnections over properly verified TLS or a local Unix socket are not exposed to this vector.\n\n### Impact\n\nDisclosure of the authenticating account's password in cleartext to an on-path or hostile server. The captured credentials can then be reused to authenticate to the database (and, if reused elsewhere, beyond it).\n\n### Patches\n\nFixed in 3.2.4, 3.3.3, 3.4.6, and 3.5.3. Upgrade to the patched release on your branch (3.5.x → 3.5.3, 3.4.x → 3.4.6, 3.3.x → 3.3.3, 3.2.x and earlier → 3.2.4). PAM (dialog) is now treated exactly like mysql_clear_password: it may only run over a secure transport. SendPamAuthPacketFactory overrides the secure-required flag to true, and the authentication dispatcher permits a secure-required plugin only when the connection is TLS or a local Unix socket. The pre-existing check that blocks non-MITM-proof plugins when server identity relies solely on self-signed-certificate fingerprint validation continues to apply. Net effect: PAM is allowed over TLS or a Unix socket, and rejected over plain TCP or fingerprint-only connections.\n\n### Workarounds\n\nIf you cannot upgrade immediately:\n\n* Restrict the permitted authentication plugins via restrictedAuth so dialog cannot be negotiated over an insecure transport.\nAvoid PAM (dialog) authentication over plain TCP.\n\n###Credit\n\nReported by Yalguun Tumenkhuu ([@fg0x0](https://github.com/fg0x0/)).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T22:04:53Z",
+    "Severity": "MODERATE",
+    "Summary": "MariaDB has Cleartext Transmission of Sensitive Information and Insufficiently Protected Credentials",
+    "UpdatedAt": "2026-08-28T22:04:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0, \u003c 3.5.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.6"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.0, \u003c 3.4.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.3.0, \u003c 3.3.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.4"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.4"
+    }
+  ]
+}

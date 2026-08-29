@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-28T22:50:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mariadb:r2dbc-mariadb"
+  },
+  "Advisory": {
+    "DatabaseId": 418034,
+    "Id": "GSA_kwCzR0hTQS1jODU3LTl4Mm0tY3ZoMs4ABmDy",
+    "GhsaId": "GHSA-c857-9x2m-cvh2",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/security/advisories/GHSA-c857-9x2m-cvh2"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/commit/be786603ec5530414996d2396157013e095b320a"
+      },
+      {
+        "Url": "https://hackerone.com/reports/3784556"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/releases/tag/1.4.1"
+      },
+      {
+        "Url": "https://jira.mariadb.org/browse/R2DBC-115"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c857-9x2m-cvh2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c857-9x2m-cvh2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55860"
+      }
+    ],
+    "Description": "### Summary\n\nThe connector does not gate clear-text password authentication plugins on transport encryption. A hostile or man-in-the-middle MariaDB server can request a clear-text plugin over an unencrypted (plain-TCP) connection, and the driver responds with the user's password in cleartext on the wire.\n\n### Details\n\nThe driver does not require a secure transport before using clear-text-password authentication plugins. A hostile or man-in-the-middle server can issue an AuthSwitchRequest naming mysql_clear_password or dialog (PAM) over a plain-TCP, unencrypted connection, and the driver replies with the user's password as cleartext bytes on the wire.\n\nThe root cause is that the AuthenticationPlugin interface declares no capability for a plugin to require a secure connection. Because no such gate exists, clear-text plugins run regardless of whether the connection is encrypted.\n\n### Impact\n\nThe account password is transmitted in cleartext to the peer. An on-path attacker (MITM) who presents themselves as the server can capture the password during the authentication handshake. The disclosed credentials can subsequently be used to authenticate directly against the database server.\n\n### Patches\n\nFixed in 1.4.1. Clear-text authentication plugins (mysql_clear_password, dialog/PAM) now require a secure connection: the AuthenticationPlugin contract can declare that a plugin requires a secure transport, and such plugins are permitted only over an encrypted connection. Upgrade to 1.4.1 or later.\n\n### Workarounds\n\nUntil you can upgrade, configure certificate verification explicitly: provide the server/CA certificate and use a verifying SSL mode (e.g. VERIFY_CA / VERIFY_FULL) so the connection is encrypted and the server's identity is established before credentials are sent.\n\n### Credit\n\nReported by Yalguun Tumenkhuu ([@fg0x0](https://github.com/fg0x0/)).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-28T22:50:56Z",
+    "Severity": "MODERATE",
+    "Summary": "org.mariadb:r2dbc-mariadb vulnerable to cleartext password disclosure to a man-in-the-middle server (clear-text auth plugins not gated on a secure transport)",
+    "UpdatedAt": "2026-08-28T22:50:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.4.1"
+    }
+  ]
+}
