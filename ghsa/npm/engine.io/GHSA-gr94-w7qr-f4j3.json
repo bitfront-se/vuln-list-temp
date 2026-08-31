@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-08-31T21:28:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "engine.io"
+  },
+  "Advisory": {
+    "DatabaseId": 418646,
+    "Id": "GSA_kwCzR0hTQS1ncjk0LXc3cXItZjRqM84ABmNW",
+    "GhsaId": "GHSA-gr94-w7qr-f4j3",
+    "References": [
+      {
+        "Url": "https://github.com/socketio/socket.io/security/advisories/GHSA-gr94-w7qr-f4j3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59724"
+      },
+      {
+        "Url": "https://github.com/socketio/socket.io/commit/1fa1f46cd420ac5b57bb4c04c959b58f3c79158c"
+      },
+      {
+        "Url": "https://github.com/socketio/socket.io/releases/tag/engine.io@6.6.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gr94-w7qr-f4j3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gr94-w7qr-f4j3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59724"
+      }
+    ],
+    "Description": "### Impact\n\nEngine.IO servers with **WebTransport enabled** are vulnerable to a remotely triggerable denial of service.\n\nA malicious unauthenticated client can send a crafted WebTransport upgrade request containing a specially chosen session ID, such as `__proto__`. Because the session ID lookup did not properly verify that the key was an own property of the clients object, the lookup could resolve to an inherited prototype property instead of a valid Engine.IO client.\n\nThis can cause a `TypeError` during WebTransport upgrade handling. Since the failure occurs in an asynchronous context, it may result in an unhandled Promise rejection and terminate the Node.js process on affected Node.js versions/configurations.\n\nSuccessful exploitation can allow an unauthenticated remote attacker to crash the server process and cause denial of service. Under a process supervisor, repeated exploitation may cause crash loops.\n\nAffected configurations are limited to deployments where WebTransport support is enabled. WebTransport is not enabled by default.\n\nAffected versions:\n\n- `engine.io \u003e= 6.5.0 \u003c 6.6.7`\n\n## Patches\n\nThe issue was fixed in:\n\n- **engine.io 6.6.7**\n\nUsers should upgrade to `engine.io@6.6.7` or later.\n\nIf using Socket.IO packages that depend on Engine.IO, users should update to a Socket.IO release that includes the patched Engine.IO version.\n\n### Workarounds\n\nIf upgrading immediately is not possible, affected users can mitigate the issue by disabling WebTransport support.\n\nWebTransport is opt-in, so servers should ensure that `webtransport` is not included in the enabled transports list.\n\nFor example, use only the default HTTP long-polling and WebSocket transports:\n\n```js\nconst engine = new Server({\n  transports: [\"polling\", \"websocket\"],\n});\n```\n\nAdditional operational mitigations may include:\n\n- Restricting access to WebTransport endpoints at the reverse proxy or HTTP/3 layer.\n- Disabling HTTP/3/WebTransport support until the patched version can be deployed.\n- Running the service under a supervisor as a partial availability mitigation, though this does not prevent repeated crash attempts.\n\n### References\n\n- Fix commit: https://github.com/socketio/socket.io/commit/1fa1f46cd420ac5b57bb4c04c959b58f3c79158c\n- Engine.IO changelog entry for `6.6.7`: https://github.com/socketio/socket.io/blob/main/packages/engine.io/CHANGELOG.md#667-2026-04-27\n- Engine.IO package: https://www.npmjs.com/package/engine.io\n- Socket.IO repository: https://github.com/socketio/socket.io",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-31T21:28:12Z",
+    "Severity": "HIGH",
+    "Summary": "Socket.IO: Engine.IO WebTransport SID DoS",
+    "UpdatedAt": "2026-08-31T21:28:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.6.7"
+      },
+      "VulnerableVersionRange": "\u003e= 6.5.0, \u003c 6.6.7"
+    }
+  ]
+}

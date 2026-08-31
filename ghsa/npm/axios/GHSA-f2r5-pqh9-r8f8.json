@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-08-31T19:51:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "axios"
+  },
+  "Advisory": {
+    "DatabaseId": 397453,
+    "Id": "GSA_kwCzR0hTQS1mMnI1LXBxaDktcjhmOM4ABhCN",
+    "GhsaId": "GHSA-f2r5-pqh9-r8f8",
+    "References": [
+      {
+        "Url": "https://github.com/axios/axios/security/advisories/GHSA-mmx7-hfxf-jppx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-67316"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/axios-before-prototype-pollution-via-bodyless-methods"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f2r5-pqh9-r8f8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f2r5-pqh9-r8f8"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-mmx7-hfxf-jppx. This link is maintained to preserve external references.\n\n## Original Description\naxios is vulnerable to read-side prototype-pollution gadgets that can alter request construction when Object.prototype has already been polluted by a separate vulnerability or dependency. In the bodyless method aliases (axios.get(), axios.delete(), axios.head(), axios.options()), inherited data is read via (config || {}).data before config normalization, causing an attacker-controlled body to be sent on requests that did not set one. Additional low-level paths, only reachable when calling exported adapters/helpers (e.g. lib/adapters/http.js, unsafe/helpers/resolveConfig.js) directly with plain configs and no own proxy or paramsSerializer, can inherit polluted proxy values (routing requests through an attacker-controlled proxy) or paramsSerializer values (attacker-controlled URL serialization). These low-level gadgets do not reproduce through normal high-level axios calls on 1.15.2+. The issue is fixed in axios 1.18.0 and 0.33.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-01T15:30:27Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: Axios: Prototype pollution gadgets can alter axios request construction",
+    "UpdatedAt": "2026-08-31T19:51:22Z",
+    "WithdrawnAt": "2026-08-31T19:51:19Z",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c 0.33.0"
+    }
+  ]
+}
