@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-01T17:15:38Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "kafka-python"
+  },
+  "Advisory": {
+    "DatabaseId": 362625,
+    "Id": "GSA_kwCzR0hTQS1tM3B4LXE1Z2otajl4N84ABYiB",
+    "GhsaId": "GHSA-m3px-q5gj-j9x7",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-10142"
+      },
+      {
+        "Url": "https://github.com/dpkp/kafka-python/pull/3019"
+      },
+      {
+        "Url": "https://github.com/dpkp/kafka-python/pull/3026"
+      },
+      {
+        "Url": "https://github.com/dpkp/kafka-python/commit/6e4831444f972d169cdd11f5c8d50333cea3f19b"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/kafka-python-prior-to-denial-of-service-via-protocol-parser-frame-length"
+      },
+      {
+        "Url": "https://github.com/dpkp/kafka-python/commit/9f92d0f53ecfee738c54638867c3d67f83017bca"
+      },
+      {
+        "Url": "https://github.com/dpkp/kafka-python/releases/tag/2.3.2"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/kafka-python/PYSEC-2026-2190.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m3px-q5gj-j9x7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m3px-q5gj-j9x7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-10142"
+      }
+    ],
+    "Description": "kafka-python prior to 2.3.2 contains a denial-of-service vulnerability in the protocol parser that allows a malicious broker or machine-in-the-middle attacker to exhaust memory or hang connections by sending a crafted 4-byte frame length value without bounds validation. Attackers can send a specially crafted frame length through the receive_bytes() function to trigger either a multi-gigabyte memory allocation or an uncaught ValueError that leaves the connection in a broken state, causing requests to hang and consumers to stop heartbeating until restart.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-11T00:32:04Z",
+    "Severity": "HIGH",
+    "Summary": "kafka-python vulnerable to denial of service through an unvalidated protocol frame length",
+    "UpdatedAt": "2026-09-01T17:15:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.2"
+    }
+  ]
+}

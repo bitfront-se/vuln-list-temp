@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-01T18:42:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "axios"
+  },
+  "Advisory": {
+    "DatabaseId": 397444,
+    "Id": "GSA_kwCzR0hTQS02OGpwLTQ0dmMtMng1aM4ABhCE",
+    "GhsaId": "GHSA-68jp-44vc-2x5h",
+    "References": [
+      {
+        "Url": "https://github.com/axios/axios/security/advisories/GHSA-gcfj-64vw-6mp9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-67320"
+      },
+      {
+        "Url": "https://github.com/axios/axios/commit/df53d7dd99b202fb194217abd127ae6a630e70dc"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/axios-before-prototype-pollution-via-node-http-adapter"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-68jp-44vc-2x5h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-68jp-44vc-2x5h"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-gcfj-64vw-6mp9. This link is maintained to preserve external references.\n\n## Original Description\naxios in a Node.js deployment using the HTTP adapter can route requests through an attacker-controlled proxy. axios hardens merged request configuration by creating a null-prototype object, but request interceptors run after the merge; a common immutable interceptor pattern such as {...config} or Object.assign({}, config) converts the hardened config back into a regular object. axios then dispatches that object without re-hardening it, and the Node HTTP adapter reads config.proxy through the prototype chain. If an attacker can pollute Object.prototype.proxy, affected requests can be routed through an attacker-controlled proxy. For plaintext HTTP requests, the proxy can observe Authorization headers, Basic auth from config.auth, method, absolute URL, Host, and request body, and can return its own response. This does not establish browser impact or HTTPS header/body disclosure under normal TLS validation. Affected versions are \u003e=0.31.1 (fixed in 0.33.0) and \u003e=1.15.2 (fixed in 1.18.0).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-01T15:30:28Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: Axios Node HTTP adapter can use an inherited proxy after interceptor config cloning",
+    "UpdatedAt": "2026-09-01T18:42:05Z",
+    "WithdrawnAt": "2026-09-01T18:42:04Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 1.15.2, \u003c 1.18.0"
+    }
+  ]
+}
