@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-02T15:39:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 427947,
+    "Id": "GSA_kwCzR0hTQS0zZ3FtLWZjdzUtdzgzOc4ABoer",
+    "GhsaId": "GHSA-3gqm-fcw5-w839",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-3gqm-fcw5-w839"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63311"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3582"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/4a820afa58810cd05049b6c6eae306694d6cfe65"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.0"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3723.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-before-ssrf-via-dns-resolution-failure"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3gqm-fcw5-w839"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3gqm-fcw5-w839"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63311"
+      }
+    ],
+    "Description": "There is an SSRF vulnerability in NLTK 3.9.4's network URL validation. The validate_network_url() function in nltk/pathsec.py fails open when DNS resolution returns an error.\n\nThe _resolve_hostname() helper at lines 193-234 catches OSError and ValueError during socket.getaddrinfo() and returns an empty list []. When this happens, the validation loop in validate_network_url() iterates over nothing (for addr in resolved: ... never executes), with no else/fallback check. The function returns normally, and urlopen() proceeds to make the request without any IP validation.\n\nThis means:\n1. If DNS is temporarily unavailable, ALL SSRF protections are disabled\n2. DNS rebinding attacks bypass the check after the LRU cache entry expires\n3. In environments with unreliable resolvers, the protection is permanently bypassed\n\nPoC:\n```python\nimport nltk.pathsec\nimport unittest.mock\n\n# Simulate DNS failure\nwith unittest.mock.patch('socket.getaddrinfo', side_effect=OSError('DNS unavailable')):\n    # This SHOULD raise but doesn't -- fails open\n    nltk.pathsec.validate_network_url('http://169.254.169.254/latest/meta-data/')\n    # Returns normally, allowing SSRF to cloud metadata\n```\n\nThe correct behavior is fail-closed: if DNS resolution fails, the URL should be REJECTED (not allowed). The function should raise an exception or return a failure status when _resolve_hostname() returns an empty list.\n\nThis is distinct from CVE-2024-39705 (which addressed pickle deserialization) and CVE-2026-33236 (which addressed XML path traversal). This finding targets the newly-added pathsec.py security layer introduced to fix those earlier issues.\n\nSuggested fix: Add an explicit check after _resolve_hostname() returns: if the result is empty, raise a SecurityError. Never allow a URL request to proceed when IP validation was impossible.\n\nCVSS Note: The CVSS use SC:H (High subsequent confidentiality) because the advisory explicitly identifies cloud metadata endpoints (169.254.169.254) as an attack target. Access to AWS IMDS or GCP metadata exposes credentials or service account tokens, which constitutes High-impact disclosure on downstream systems. This justifies SC:H over NVD's SC:L.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T15:39:39Z",
+    "Severity": "MODERATE",
+    "Summary": "NLTK: SSRF Fail-Open in validate_network_url() via DNS Resolution Failure",
+    "UpdatedAt": "2026-09-02T15:39:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.4"
+    }
+  ]
+}

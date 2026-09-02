@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T14:40:02Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 414770,
+    "Id": "GSA_kwCzR0hTQS1jcnA5LXI3cnEtYzhjZ84ABlQy",
+    "GhsaId": "GHSA-crp9-r7rq-c8cg",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-6ww7-3frv-cqxh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-78682"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-before-ssrf-protection-bypass-via-proxy"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-crp9-r7rq-c8cg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-crp9-r7rq-c8cg"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-6ww7-3frv-cqxh. This link is maintained to preserve external references.\n\n## Original Description\nNLTK before 3.10.3 contains a server-side request forgery vulnerability in nltk.pathsec.urlopen (and callers nltk.data.load, nltk.downloader.Downloader.index/download) when an HTTP proxy is configured. pathsec.urlopen validates the requested hostname locally, but proxy-handler inheritance disables the safe HTTP/HTTPS handlers so the actual fetch is performed by the proxy against a destination that is never re-validated. An attacker can supply a validated public URL that the proxy forwards to an internal loopback-only service, allowing disclosure of internal HTTP resources, loading of forged downloader indexes, and installation of attacker-chosen package content.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-25T03:32:11Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: pathsec SSRF protection can be bypassed when a proxy is configured",
+    "UpdatedAt": "2026-09-02T14:40:02Z",
+    "WithdrawnAt": "2026-09-02T14:40:01Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.2"
+    }
+  ]
+}

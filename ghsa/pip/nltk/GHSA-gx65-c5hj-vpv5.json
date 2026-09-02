@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-02T14:40:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 414731,
+    "Id": "GSA_kwCzR0hTQS1neDY1LWM1aGotdnB2Nc4ABlQL",
+    "GhsaId": "GHSA-gx65-c5hj-vpv5",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-rhp5-r9x4-f5g2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-78683"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-before-remote-code-execution-via-unsafe-pickle-deserialization"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gx65-c5hj-vpv5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gx65-c5hj-vpv5"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-rhp5-r9x4-f5g2. This link is maintained to preserve external references.\n\n## Original Description\nNLTK before 3.10.0 (affected versions \u003c=3.9.4) contains an unsafe pickle deserialization vulnerability in the TransitionParser.parse() method (nltk/parse/transitionparser.py). The method calls pickle_load() with the default restricted=False, routing deserialization through WarningUnpickler, which does not override find_class() and therefore permits arbitrary class resolution. When an application loads an attacker-crafted model file, embedded pickle gadget chains execute arbitrary Python code with the privileges of the user running the application. NLTK provides a RestrictedUnpickler for safe deserialization, but it is not used by production code paths. Fixed in 3.10.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-25T03:32:11Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: [CWE-502] Unsafe Pickle Deserialization in TransitionParser Allows Remote Code Execution",
+    "UpdatedAt": "2026-09-02T14:40:51Z",
+    "WithdrawnAt": "2026-09-02T14:40:50Z",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.4"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-02T15:38:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 414100,
+    "Id": "GSA_kwCzR0hTQS1xZzlwLXhyaGotNDM1bc4ABlGU",
+    "GhsaId": "GHSA-qg9p-xrhj-435m",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-3gqm-fcw5-w839"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63311"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-before-ssrf-via-dns-resolution-failure"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qg9p-xrhj-435m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qg9p-xrhj-435m"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-3gqm-fcw5-w839. This link is maintained to preserve external references.\n\n## Original Description\nNLTK before 3.10.0 (affected versions \u003c= 3.9.4) contains a server-side request forgery (SSRF) vulnerability in the validate_network_url() function in nltk/pathsec.py. The _resolve_hostname() helper catches OSError and ValueError during socket.getaddrinfo() and returns an empty list; when DNS resolution fails, the validation loop executes no IP checks and the function fails open, allowing urlopen() to proceed without validation. An attacker who can trigger DNS resolution failures or use DNS rebinding can bypass SSRF protections and reach restricted network resources, including cloud metadata endpoints (e.g., 169.254.169.254).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-22T15:31:03Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: nltk: SSRF Fail-Open in validate_network_url() via DNS Resolution Failure",
+    "UpdatedAt": "2026-09-02T15:38:16Z",
+    "WithdrawnAt": "2026-09-02T15:38:15Z",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.4"
+    }
+  ]
+}

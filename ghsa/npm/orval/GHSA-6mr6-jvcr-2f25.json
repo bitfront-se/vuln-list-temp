@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-02T14:52:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orval"
+  },
+  "Advisory": {
+    "DatabaseId": 427857,
+    "Id": "GSA_kwCzR0hTQS02bXI2LWp2Y3ItMmYyNc4ABodR",
+    "GhsaId": "GHSA-6mr6-jvcr-2f25",
+    "References": [
+      {
+        "Url": "https://github.com/orval-labs/orval/security/advisories/GHSA-6mr6-jvcr-2f25"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-71866"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/pull/3692"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/commit/8ef1bfdf3f9bcaf9dabfbe2e42887f1c0e159ab6"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/releases/tag/v8.21.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6mr6-jvcr-2f25"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6mr6-jvcr-2f25"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71866"
+      }
+    ],
+    "Description": "### Summary\n\norval's zod client emits each schema property name as a double-quoted key in the generated zod.object({...})\nWITHOUT escaping the double quote. A \" in a property name closes the key and lands in object-literal\ncontext, where an injected computed property key [expr] is evaluated when zod.object({...}) runs -- which\nis at MODULE IMPORT (the `export const X = zod.object({...})` executes on load) -\u003e import-time RCE. The\nproperty name is a pure data field. Verified on orval 8.19.0 / Node. CWE-94 / CWE-95 / CWE-116.\n\n### Details\n\n```ts\nexport const OpBody = zod.object({ \"a\":zod.string(),[require(\"fs\").writeFileSync(\"PWNED\",\"\")]:zod.string(),\"b\": zod.string().optional() })\n```\n\nSibling: the MSW mock uses a single-quoted key (' breakout, call-time) -- separate report. The TS interface\nkey is a type (DoS only). Distinct from orval's $ref / route-path / server-url / zod-default findings.\n\n### PoC\n\nreproduce.sh (+ make_spec.py) attached: a property name a\":zod.string(),[require(\"fs\").writeFileSync(\"\u003cmarker\u003e\",\"\")]:zod.string(),\"b\n-\u003e zod.object; evaluating it (= importing the module) writes the marker. Verified on 8.19.0.\n\n### Impact\n\nJavaScript / OS command execution (via child_process) at import time for anyone who generates an orval zod\nclient from an attacker-controlled spec and imports it. Estimated Critical, e.g.\n`CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N`.\n\n### Suggested fix\n\nEscape the property name for the JS string key (JSON.stringify) in the zod.object key generation; never\ninterpolate a raw property name adjacent to [ ] in object-literal position.\n[maintainer-report.txt](https://github.com/user-attachments/files/29426038/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29426039/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29426040/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T14:52:56Z",
+    "Severity": "CRITICAL",
+    "Summary": "Orval: Import-time RCE via schema property name -\u003e computed-property-key injection in the zod client",
+    "UpdatedAt": "2026-09-02T14:52:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.21.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.21.0"
+    }
+  ]
+}

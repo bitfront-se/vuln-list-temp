@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T14:20:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@faker-js/faker"
+  },
+  "Advisory": {
+    "DatabaseId": 427833,
+    "Id": "GSA_kwCzR0hTQS1xeGMyLWo4MnctcjUzN84ABoc5",
+    "GhsaId": "GHSA-qxc2-j82w-r537",
+    "References": [
+      {
+        "Url": "https://github.com/faker-js/faker/security/advisories/GHSA-qxc2-j82w-r537"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-73231"
+      },
+      {
+        "Url": "https://github.com/faker-js/faker/pull/3852"
+      },
+      {
+        "Url": "https://github.com/faker-js/faker/commit/54586208f904012f57c50b46cc1ad32bcbe4bfb7"
+      },
+      {
+        "Url": "https://github.com/faker-js/faker/releases/tag/v10.5.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qxc2-j82w-r537"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qxc2-j82w-r537"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73231"
+      }
+    ],
+    "Description": "### Summary\n\n`faker.helpers.fake` can be tricked into arbritary code execution.\n\n### Details\n\nfakeEval.resolveProperty resolves properties on functions itself instead of resolving the nested function first.\nThis can be addressed by recursively calling resolveProperty instead of accessing the property after one iteration.\n\n### PoC\n\nGo to https://fakerjs.dev/\nOpen Browser console and run\n\n````ts\nawait enableFaker(); // or import faker\nfaker.rawDefinitions.test = (() =\u003e () =\u003e {}); // Any function that returns a function\nfaker.helpers.fake(`{{test.constructor(alert('PowerLevel: Eval'))}}`);\n````\n\n### Impact\n\nThe Fake method claims:\n\n\u003e It is also NOT possible to use any non-faker methods or plain javascript in such patterns.\n\nWhich is objectively false, since any global gets fully accessible in the fake string.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T14:20:14Z",
+    "Severity": "HIGH",
+    "Summary": "Faker: helpers.fake exploitable into arbritary code execution",
+    "UpdatedAt": "2026-09-02T14:20:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.5.0"
+      },
+      "VulnerableVersionRange": "\u003c= 10.4.0"
+    }
+  ]
+}

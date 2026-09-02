@@ -1,0 +1,65 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-09-02T15:32:29Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 414084,
+    "Id": "GSA_kwCzR0hTQS1jdjIyLWc3bXctOHY3M84ABlGE",
+    "GhsaId": "GHSA-cv22-g7mw-8v73",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-71514"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/10d34b3f4fe3fec74b76527a409eb0acbac2e8ab"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/blob/v3.10.2/nltk/corpus/reader/crubadan.py#L90-L98"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-through-path-traversal-via-crubadancorpusreader-pathsec-bypass"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cv22-g7mw-8v73"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cv22-g7mw-8v73"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71514"
+      }
+    ],
+    "Description": "NLTK 3.9.4 through 3.10.2 contains a path traversal vulnerability in CrubadanCorpusReader. _load_lang_ngrams joins the corpus root with crubadan_code, the column-0 value read from the corpus table.txt mapping file, and opens the result with the builtin open() rather than the pathsec-validated opener, so os.path.join discards the root when that value is absolute and the read escapes the corpus directory without the containment check nltk.pathsec applies when ENFORCE is set. An attacker who controls a corpus package can disclose file contents outside the corpus root through lang_freq, limited to paths ending in -3grams.txt whose contents parse as token count lines.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-22T15:31:03Z",
+    "Severity": "LOW",
+    "Summary": "NLTK CrubadanCorpusReader path traversal allows arbitrary file disclosure",
+    "UpdatedAt": "2026-09-02T15:32:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 2.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.9.4, \u003c 3.10.3"
+    }
+  ]
+}

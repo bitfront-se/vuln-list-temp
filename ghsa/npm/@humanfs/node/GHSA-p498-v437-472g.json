@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-02T14:27:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@humanfs/node"
+  },
+  "Advisory": {
+    "DatabaseId": 427834,
+    "Id": "GSA_kwCzR0hTQS1wNDk4LXY0MzctNDcyZ84ABoc6",
+    "GhsaId": "GHSA-p498-v437-472g",
+    "References": [
+      {
+        "Url": "https://github.com/humanwhocodes/humanfs/security/advisories/GHSA-p498-v437-472g"
+      },
+      {
+        "Url": "https://github.com/humanwhocodes/humanfs/commit/22bbaa4487a3e6c1197ca619840de4615d0c3404"
+      },
+      {
+        "Url": "https://github.com/humanwhocodes/humanfs/releases/tag/node-v0.16.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p498-v437-472g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p498-v437-472g"
+      }
+    ],
+    "Description": "### Summary\n\n`@humanfs/node` does not treat symlinks as a separate case during copy operations. A symlink placed inside an attacker-controlled source tree can make `copyAll()` read and copy the contents of any file readable by the process, even when that file is outside the directory being copied.\n\n### Details\n\nThe Node implementation exposes symlink state through `list()`, but `copyAll()` ignores it. During recursive copies, every non-directory entry is passed to `copy()`, which delegates to `fs.promises.copyFile()`.\n\nOn Node, `copyFile()` dereferences symlinks. As a result, a symlink inside the copied tree is handled as if it were an ordinary file, and the destination receives the contents of the symlink target rather than a copy of the link itself.\n\nThat breaks the expected boundary of a directory copy. A caller can point `copyAll()` at a seemingly self-contained directory and still end up copying data from elsewhere on the host filesystem if the source tree contains attacker-supplied symlinks.\n\nThe same dereference behavior also affects `copy()` when the source path itself is a symlink.\n\n### PoC\n\n```js\nimport { NodeHfs } from \"@humanfs/node\";\nimport fs from \"node:fs/promises\";\nimport path from \"node:path\";\nimport os from \"node:os\";\n\nconst root = await fs.mkdtemp(path.join(os.tmpdir(), \"humanfs-\"));\nconst src = path.join(root, \"src\");\nconst dst = path.join(root, \"dst\");\nconst secret = path.join(root, \"secret.txt\");\n\nawait fs.mkdir(src);\nawait fs.writeFile(secret, \"TOPSECRET\");\nawait fs.symlink(secret, path.join(src, \"link.txt\"));\n\nconst hfs = new NodeHfs();\nawait hfs.copyAll(src, dst);\n\nconsole.log(await fs.readFile(path.join(dst, \"link.txt\"), \"utf8\"));\n// TOPSECRET\n```\n\n### Impact\n\nIf an application uses `copyAll()` or `copy()` on attacker-controlled paths, a symlink can be used to pull arbitrary readable host files into the copied output. In practice, that can turn a normal workspace copy, export, or packaging step into a file disclosure primitive.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T14:27:16Z",
+    "Severity": "MODERATE",
+    "Summary": "humanfs: Recursive copy follows symlinked files and copies data from outside the source tree",
+    "UpdatedAt": "2026-09-02T14:27:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.16.8"
+      },
+      "VulnerableVersionRange": "\u003c 0.16.8"
+    }
+  ]
+}

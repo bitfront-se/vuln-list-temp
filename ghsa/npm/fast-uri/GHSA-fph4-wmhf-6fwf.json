@@ -1,0 +1,86 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T15:42:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-uri"
+  },
+  "Advisory": {
+    "DatabaseId": 427950,
+    "Id": "GSA_kwCzR0hTQS1mcGg0LXdtaGYtNmZ3Zs4ABoeu",
+    "GhsaId": "GHSA-fph4-wmhf-6fwf",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fast-uri/security/advisories/GHSA-fph4-wmhf-6fwf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-75899"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/2642290672e7211c990aaed3749c2ce667d0af4f"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/8c15dbe94ec50bb8e595791ebb42c35cef0fd304"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/ae92a4c5d8c4b6c9e447f048d5fcbde7eebd5514"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v2.4.5"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v3.1.6"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v4.1.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fph4-wmhf-6fwf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fph4-wmhf-6fwf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-75899"
+      }
+    ],
+    "Description": "### Impact\n\n`fast-uri` decodes a hostname's percent escapes twice in a single `normalize()` or `resolve()` call: once during parsing and again during authority recomposition. A nested percent-encoded host therefore survives the first decode and is turned into a live destination by the second, so `normalize('http://%256c%256f%2563%2561%256c%2568%256f%2573%2574/')` returns `http://localhost/`. Applications that normalize or resolve an untrusted URI before an SSRF check, redirect validation, or host allowlist can be steered to a different destination, including internal addresses such as loopback or a cloud metadata endpoint, than the encoded input appeared to contain. This is an incomplete-fix variant of CVE-2026-6322, whose encoded-authority-delimiter fix introduced the second decode.\n\n### Patches\n\nFixed in `fast-uri` 2.4.5, 3.1.6, and 4.1.3.\n\n### Workarounds\n\nReject untrusted URIs whose host component contains an encoded percent sign (`%25`) before passing them to `normalize()` or `resolve()`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T15:42:39Z",
+    "Severity": "HIGH",
+    "Summary": "fast-uri vulnerable to server-side request forgery via repeated hostname percent-decoding",
+    "UpdatedAt": "2026-09-02T15:42:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.3"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.1.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.2, \u003c 3.1.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.4.1, \u003c 2.4.5"
+    }
+  ]
+}

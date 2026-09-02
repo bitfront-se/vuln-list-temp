@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T14:35:05Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 427839,
+    "Id": "GSA_kwCzR0hTQS04bWdwLTc0NmMtajV4cM4ABoc_",
+    "GhsaId": "GHSA-8mgp-746c-j5xp",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-8mgp-746c-j5xp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-81726"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3757"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3759"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3813"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/2a92b71827d754ae8920261e7ed0c4bb283ab2d7"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/a44a7af69bca87e92d9c4a701fcbbe4512e8d450"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/cbc98458b43de5f792f0382583c16df39e5c5117"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3740.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-through-3.10.3-path-traversal-via-model-artifact-apis"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8mgp-746c-j5xp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8mgp-746c-j5xp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-81726"
+      }
+    ],
+    "Description": "### Summary\n\nSeveral model-artifact APIs still treat caller-controlled model paths as ordinary filenames even when NLTK path security is enforced. The same outside-root paths are rejected by guarded helpers, but these public read and write flows still use raw file APIs.\n\n### Details\n\n- **Vulnerability type:** File sandbox bypass\n- **Affected component:** `TransitionParser.train`, `TransitionParser.parse`, `AveragedPerceptron.save`, `AveragedPerceptron.load`, `PerceptronTagger.save_to_json`, `save_maxent_params`\n- **Affected versions:** Published `3.9.4` and current source `v3.10.0-rc2` both reproduced.\n- **Patched versions:** Not yet patched\n- **Root cause:** Model import and export helpers use built-in `open()` on caller-controlled paths instead of pathsec-aware helpers.\n\n`TransitionParser.train()` writes outside allowed roots, `TransitionParser.parse()` reads outside allowed roots, `AveragedPerceptron` bypasses the sandbox in both directions, and adjacent read-side helpers in the same family already show the intended guarded behavior. I confirmed outside-root reads and writes while `pathsec.open()` or the guarded sibling helpers rejected the same paths.\n\n### PoC\n\n**Preconditions**\n- The application enables `pathsec` enforcement and lets untrusted workflows choose model import or export paths.\n\n**Steps**\n1. Enable `pathsec.ENFORCE=True` and restrict allowed roots to a dedicated sandbox directory.\n2. Use public model import or export APIs with paths that point outside that root.\n3. Observe the same paths are rejected by negative-control guarded helpers such as `pathsec.open()`, `PerceptronTagger.load_from_json()`, or `load_maxent_params()`.\n4. Observe the vulnerable APIs still read or write outside-root files successfully.\n\n**Minimal reproducible excerpt**\n\n```text\ntransition_train_exists True\ntransition_parse_loader_read_bytes 13\naveraged_load_keys ['bias']\nmaxent_save wrote ['alwayson.tab', 'labels.txt']\n```\n\n### Impact\n\nConsumers that rely on `pathsec` for local containment can be tricked into reading or overwriting files outside approved roots through normal model persistence and loading APIs.\n\n### Remediation\n\nRoute all model-path file access through `nltk.pathsec.open()` or existing pathsec-aware helpers, and add regression tests that pair each vulnerable API with a negative control on the same path.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T14:35:04Z",
+    "Severity": "HIGH",
+    "Summary": "NLTK: Model-artifact APIs bypass pathsec and touch files outside allowed roots",
+    "UpdatedAt": "2026-09-02T14:35:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.3"
+    }
+  ]
+}

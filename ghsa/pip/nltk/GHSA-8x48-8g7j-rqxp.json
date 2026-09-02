@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T14:36:04Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 416407,
+    "Id": "GSA_kwCzR0hTQS04eDQ4LThnN2otcnF4cM4ABlqX",
+    "GhsaId": "GHSA-8x48-8g7j-rqxp",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-ww6m-cw3f-q94g"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-81722"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-porterstemmer-before-3.10.3-quadratic-time-dos"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8x48-8g7j-rqxp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8x48-8g7j-rqxp"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-ww6m-cw3f-q94g. This link is maintained to preserve external references.\n\n## Original Description\nnltk PorterStemmer in versions \u003c= 3.10.2 (fixed in 3.10.3) contains an inefficient-algorithmic-complexity denial of service in PorterStemmer.stem(). The _is_consonant() helper walks backward over the entire run of trailing 'y' characters on every call, and _measure() invokes it for each stem position, causing O(n^2) behavior. A single ~20-50 KB untrusted token consisting of a long run of the letter 'y' followed by a matching suffix (e.g., 'ness') can pin a CPU core for seconds to minutes, causing availability impact.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-27T18:32:29Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: Quadratic-time DoS in PorterStemmer via long runs of 'y'",
+    "UpdatedAt": "2026-09-02T14:36:04Z",
+    "WithdrawnAt": "2026-09-02T14:36:04Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.2"
+    }
+  ]
+}

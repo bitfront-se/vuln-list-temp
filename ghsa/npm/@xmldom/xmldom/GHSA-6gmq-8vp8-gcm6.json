@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-02T15:18:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@xmldom/xmldom"
+  },
+  "Advisory": {
+    "DatabaseId": 427869,
+    "Id": "GSA_kwCzR0hTQS02Z21xLTh2cDgtZ2NtNs4ABodd",
+    "GhsaId": "GHSA-6gmq-8vp8-gcm6",
+    "References": [
+      {
+        "Url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-6gmq-8vp8-gcm6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-83610"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/pull/1071"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/pull/1072"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/4664386e4f4d99d17b416a151dbe8323e245284b"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/6c3fb5ffeafe7901ec928ce9010988dd716c94a0"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.8.15"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.9.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6gmq-8vp8-gcm6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6gmq-8vp8-gcm6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-83610"
+      }
+    ],
+    "Description": "## Summary\n\nAn `EntityReference` node can be created with an invalid, attacker-controlled name through `Document.createEntityReference(name)`. When this node is serialized directly with:\n\n```js\nserializer.serializeToString(ref, { requireWellFormed: true })\n```\n\nthe invalid `nodeName` is emitted into the serialized XML fragment without validation or escaping.\n\nThis can produce real XML markup in the serialized output. In the proof of concept below, the serialized fragment contains `\u003cinjected/\u003e`, and reparsing the fragment creates a real `injected` element.\n\n---\n\n## Details\n\nThe issue appears to be in the serialization path for `ENTITY_REFERENCE_NODE`.\n\nFor several other node types, `requireWellFormed: true` performs specific validation checks before serialization. For example, comments, processing instructions, document types, and some character data cases are checked before being emitted.\n\nHowever, for `ENTITY_REFERENCE_NODE`, the serializer appears to emit the node name directly in entity reference form:\n\n```js\ncase ENTITY_REFERENCE_NODE:\n  buf.push('\u0026', n.nodeName, ';');\n  return null;\n```\n\nAs a result, if `nodeName` contains characters that break out of the intended `\u0026name;` structure, the serializer can emit additional XML markup.\n\nFor example, an entity reference created with the name:\n\n```text\nsafe; \u003cinjected/\u003e \u0026x\n```\n\nis serialized as:\n\n```xml\n\u0026safe; \u003cinjected/\u003e \u0026x;\n```\n\nWhen this fragment is later parsed in an XML context, `\u003cinjected/\u003e` becomes a real element.\n\nThis is especially surprising when `{ requireWellFormed: true }` is used, because applications may reasonably treat this mode as the stricter or safer XML serialization mode.\n\n---\n\n## Proof of Concept\n\nTested with:\n\n```text\n@xmldom/xmldom@0.9.10\nNode.js v24.18.0\nWindows 10 / PowerShell\n```\n\n```js\n'use strict';\n\nconst { DOMImplementation, XMLSerializer, DOMParser } = require('@xmldom/xmldom');\n\nconst impl = new DOMImplementation();\nconst doc = impl.createDocument(null, 'root', null);\nconst serializer = new XMLSerializer();\n\nfunction countInjected(fragment) {\n  try {\n    const parsed = new DOMParser().parseFromString(`\u003croot\u003e${fragment}\u003c/root\u003e`, 'application/xml');\n    return parsed.getElementsByTagName('injected').length;\n  } catch (e) {\n    return `PARSE_THROW ${e.name}: ${e.message}`;\n  }\n}\n\nfor (const name of [\n  'safe',\n  'safe; \u003cinjected/\u003e \u0026x',\n  'x\u003cinjected',\n  'x y'\n]) {\n  try {\n    const ref = doc.createEntityReference(name);\n    const xml = serializer.serializeToString(ref, { requireWellFormed: true });\n\n    console.log(`[SERIALIZED] ${JSON.stringify(name)}: ${xml}`);\n    console.log(`[INJECTED_COUNT] ${JSON.stringify(name)}: ${countInjected(xml)}`);\n  } catch (e) {\n    console.log(`[THROW] ${JSON.stringify(name)}: ${e.name}: ${e.message}`);\n  }\n}\n```\n\nObserved output:\n\n```text\n[SERIALIZED] \"safe\": \u0026safe;\n[INJECTED_COUNT] \"safe\": 0\n\n[SERIALIZED] \"safe; \u003cinjected/\u003e \u0026x\": \u0026safe; \u003cinjected/\u003e \u0026x;\n[INJECTED_COUNT] \"safe; \u003cinjected/\u003e \u0026x\": 1\n\n[SERIALIZED] \"x\u003cinjected\": \u0026x\u003cinjected;\n[INJECTED_COUNT] \"x\u003cinjected\": 0\n\n[SERIALIZED] \"x y\": \u0026x y;\n[INJECTED_COUNT] \"x y\": 0\n```\n\n---\n\n## Impact\n\nAn application that creates an `EntityReference` from attacker-controlled input and then serializes that node or XML fragment with `requireWellFormed: true` may produce XML containing attacker-controlled markup.\n\nThe impact is limited by two observations:\n\n1. The parser does not create `EntityReference` nodes from ordinary XML entity references.\n2. Appending an `EntityReference` node as an element child is rejected with a `HierarchyRequestError`.\n\nThe main affected scenario is applications that directly use `createEntityReference(name)` and then serialize the resulting node or fragment.\n\n## Fix Applied\n\nTwo complementary, non-breaking fixes.\n(1) `document.createEntityReference(name)` rejects an invalid `Name` at creation, closing the reachable creation vector by default — the opt-in serializer check alone cannot, since a later `nodeName` mutation would bypass a creation-only guard.\n(2) Under `requireWellFormed`, the serializer validates the `EntityReference` `nodeName` as a well-formed XML `Name` and throws `InvalidStateError` when it is not; a valid reference still serializes as `\u0026name;`. Both ship on both maintained versions. The `EntityReference` / `createEntityReference` docs note that under `requireWellFormed` the `nodeName` is validated as an XML `Name`, and that xmldom does not expand entities. See the [XML `Name` production](https://www.w3.org/TR/xml/#NT-Name).\n\u003e **⚠ Opt-in required.** Protection is not automatic. Existing serialization calls remain\n\u003e vulnerable unless `{ requireWellFormed: true }` is explicitly passed. Applications that\n\u003e serialize untrusted DOM content should audit all `serializeToString()` call sites and add it.\n\n### Proof of Concept - fixed path\n\n```js\n'use strict';\n\nconst { DOMImplementation, XMLSerializer } = require('@xmldom/xmldom');\n\nconst impl = new DOMImplementation();\nconst doc = impl.createDocument(null, 'root', null);\nconst serializer = new XMLSerializer();\n\n// Creation-time anchor (applied by default): an invalid XML Name is rejected at creation.\ntry {\n  doc.createEntityReference('safe; \u003cinjected/\u003e \u0026x');\n} catch (e) {\n  console.log(`${e.name}`); // rejected at creation\n}\n\n// Default path (requireWellFormed omitted): because creation now rejects an ill-formed name,\n// an ill-formed nodeName is only reachable via a post-creation mutation — and is emitted verbatim.\nconst ref = doc.createEntityReference('safe');\nref.nodeName = 'safe; \u003cinjected/\u003e \u0026x';\nconsole.log(serializer.serializeToString(ref));\n// -\u003e \u0026safe; \u003cinjected/\u003e \u0026x;   (injection present on the default path)\n\n// Opt-in path: throws on the invalid nodeName.\ntry {\n  serializer.serializeToString(ref, { requireWellFormed: true });\n} catch (e) {\n  console.log(`${e.name}`); // InvalidStateError\n}\n\n// A valid name still serializes as \u0026name; under requireWellFormed.\nconst ok = doc.createEntityReference('valid');\nconsole.log(serializer.serializeToString(ok, { requireWellFormed: true }));\n// -\u003e \u0026valid;\n```\n\n### Why the default stays verbatim\n\nThe creation-time anchor is applied by default, because it is classified non-breaking. The serializer check, by contrast, stays gated behind `{ requireWellFormed: true }`: W3C DOM Parsing's require-well-formed flag defaults to `false`, and the browser `XMLSerializer` emits the `nodeName` verbatim in that default mode, so unconditionally throwing for an ill-formed `EntityReference.nodeName` would be an unjustified breaking change — which is why the default serialization path stays verbatim.\n\n### Residual limitation\n\nThe creation vector is closed by default — the non-breaking creation-time anchor — with no further deferred work. The residual is at serialization: the default path still emits an ill-formed `nodeName` verbatim, because the serializer check is opt-in via `{ requireWellFormed: true }`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T15:18:20Z",
+    "Severity": "MODERATE",
+    "Summary": "xmldom: XML fragment injection via invalid EntityReference.nodeName during requireWellFormed serialization",
+    "UpdatedAt": "2026-09-02T15:18:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.9.12"
+      },
+      "VulnerableVersionRange": "\u003e= 0.9.0, \u003c= 0.9.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.15"
+      },
+      "VulnerableVersionRange": "\u003e= 0.7.0, \u003c= 0.8.14"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T15:18:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 414083,
+    "Id": "GSA_kwCzR0hTQS01Z2gyLTk0cWctcXBwcc4ABlGD",
+    "GhsaId": "GHSA-5gh2-94qg-qppq",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-71513"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/c3e37113742a1ebeeb4f2ca58941f320f98805ea"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/blob/v3.10.2/nltk/picklesec.py#L119-L124"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-through-remote-code-execution-via-allowlistunpickler-dotted-name-bypass"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5gh2-94qg-qppq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5gh2-94qg-qppq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71513"
+      }
+    ],
+    "Description": "NLTK before 3.10.3 contains a remote code execution vulnerability in AllowlistUnpickler that validates only the pickle module string and not the global name, allowing attackers to resolve dotted names by attribute traversal to callables outside the allowlisted namespace. Attackers can craft untrusted transition-parser models that execute arbitrary commands when TransitionParser.parse loads the model through allowlisted_pickle_load.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-22T15:31:03Z",
+    "Severity": "HIGH",
+    "Summary": "NLTK AllowlistUnpickler dotted-name validation bypass allows remote code execution",
+    "UpdatedAt": "2026-09-02T15:18:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.10.0, \u003c 3.10.3"
+    }
+  ]
+}

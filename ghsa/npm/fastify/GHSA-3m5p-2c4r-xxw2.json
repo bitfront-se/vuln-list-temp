@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-02T15:14:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fastify"
+  },
+  "Advisory": {
+    "DatabaseId": 427867,
+    "Id": "GSA_kwCzR0hTQS0zbTVwLTJjNHIteHh3Ms4ABodb",
+    "GhsaId": "GHSA-3m5p-2c4r-xxw2",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fastify/security/advisories/GHSA-3m5p-2c4r-xxw2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-16732"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/commit/8acfea7eada05383a7357e3eb21c2628416df280"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/releases/tag/v5.12.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3m5p-2c4r-xxw2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3m5p-2c4r-xxw2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-16732"
+      }
+    ],
+    "Description": "## Impact\n\nThe fix for [CVE-2026-3635](https://www.cve.org/CVERecord?id=CVE-2026-3635) ([GHSA-444r-cwp2-x5xf](https://github.com/fastify/fastify/security/advisories/GHSA-444r-cwp2-x5xf)) added a `proxyFn(socket.remoteAddress, 0)` guard on the `X-Forwarded-*` reads in `request.host`, `request.protocol`, `request.hostname`, `request.ip`, and `request.ips`. That guard closes the IP, CIDR, and custom-function forms of `trustProxy` correctly because those forms compile to predicates that inspect the connecting address. The hop-count form (`trustProxy: \u003cnumber\u003e`) compiles to a predicate that structurally ignores the address argument, so the guard reduces to `0 \u003c tp`, always true for any `tp \u003e= 1`.\n\nApplications configured with `trustProxy: \u003cnumber\u003e` (documented as \"behind N reverse proxies\", `trustProxy: 1` being the canonical single-proxy setting) remain vulnerable. An attacker who can reach the Fastify origin directly, bypassing the front-facing proxy, can spoof the request fields exactly as in the unpatched version. Impact class matches the parent CVE-2026-3635: host injection in generated URLs, HTTPS-enforcement bypass, secure-cookie / CSRF-origin bypass, host-based routing and cache poisoning.\n\n## Patches\n\nPatched in fastify 5.12.1. The numeric form of `trustProxy` is now disabled at runtime and removed from the TypeScript type union.\n\n## Workarounds\n\n- Migrate to an IP / CIDR / custom-function `trustProxy` value that validates the connecting address. Custom functions must inspect the `address` argument, not only the hop index.\n- Ensure the Fastify origin is only reachable through the trusted proxy chain (no direct network path).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T15:14:06Z",
+    "Severity": "MODERATE",
+    "Summary": "fastify vulnerable to X-Forwarded-* spoofing under trustProxy hop-count",
+    "UpdatedAt": "2026-09-02T15:14:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.8.3, \u003c 5.12.1"
+    }
+  ]
+}
