@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T23:42:07Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/seaweedfs/seaweedfs"
+  },
+  "Advisory": {
+    "DatabaseId": 433518,
+    "Id": "GSA_kwCzR0hTQS1ndjV3LWhmeDgtOGN3cc4ABp1u",
+    "GhsaId": "GHSA-gv5w-hfx8-8cwq",
+    "References": [
+      {
+        "Url": "https://github.com/seaweedfs/seaweedfs/security/advisories/GHSA-gv5w-hfx8-8cwq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72921"
+      },
+      {
+        "Url": "https://github.com/seaweedfs/seaweedfs/pull/9439"
+      },
+      {
+        "Url": "https://github.com/seaweedfs/seaweedfs/commit/05ed5c9ae8a2a45101b52b61d02f170d20d587ff"
+      },
+      {
+        "Url": "https://github.com/seaweedfs/seaweedfs/releases/tag/4.24"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gv5w-hfx8-8cwq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gv5w-hfx8-8cwq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-72921"
+      }
+    ],
+    "Description": "### Impact\nWhen a filer JWT restricts a token to a set of path prefixes via `allowed_prefixes`, the authorization check used a literal byte-prefix match (`strings.HasPrefix`). A token scoped to `/tenant1` therefore also authorized requests to sibling paths such as `/tenant1234`, `/tenant1-old`, and `/tenant1backup`.\n\nIn a multi-tenant deployment this lets the holder of one tenant's token access another tenant's data. Because `allowed_prefixes` gates both read and write tokens, the impact covers cross-tenant reads and writes. A valid scoped token is required, so this is an authorization bypass rather than a fully unauthenticated flaw.\n\n### Affected component\n- `weed/server/filer_server_handlers.go` (JWT `allowed_prefixes` authorization check)\n\n### Patches\nFixed in **4.24**. The check now matches on `/`-separated path components after `path.Clean` normalisation, so `/tenant1` authorizes only `/tenant1` and its descendants — not `/tenant1234` or other sibling paths.\n\n### Workarounds\nWhere feasible, choose prefix names that are not string-prefixes of one another (e.g. keep a trailing separator convention). Upgrade to 4.24.\n\n### References\n- Reported by Kadir Arslan (https://github.com/KadirArslan)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T23:42:05Z",
+    "Severity": "HIGH",
+    "Summary": "SeaweedFS: Filer JWT allowed_prefixes literal prefix match allows cross-tenant access to sibling paths",
+    "UpdatedAt": "2026-09-02T23:42:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260512171048-05ed5c9ae8a2"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260512171048-05ed5c9ae8a2"
+    }
+  ]
+}

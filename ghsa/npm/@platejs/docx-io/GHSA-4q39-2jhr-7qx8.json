@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T22:14:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@platejs/docx-io"
+  },
+  "Advisory": {
+    "DatabaseId": 433513,
+    "Id": "GSA_kwCzR0hTQS00cTM5LTJqaHItN3F4OM4ABp1p",
+    "GhsaId": "GHSA-4q39-2jhr-7qx8",
+    "References": [
+      {
+        "Url": "https://github.com/udecode/plate/security/advisories/GHSA-4q39-2jhr-7qx8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65842"
+      },
+      {
+        "Url": "https://github.com/udecode/plate/pull/5053"
+      },
+      {
+        "Url": "https://github.com/udecode/plate/commit/21aa59926f4bbd421027354823cca09c6700ed73"
+      },
+      {
+        "Url": "https://github.com/udecode/plate/releases/tag/v53.3.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4q39-2jhr-7qx8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4q39-2jhr-7qx8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-65842"
+      }
+    ],
+    "Description": "## Summary\n\n`@platejs/docx-io` can fetch remote image URLs while converting HTML to DOCX. When an application converts attacker-controlled HTML in a server-side or privileged environment, this can cause the application environment to make unintended outbound requests and include fetched image data in the generated DOCX.\n\n## Impact\n\nApplications are affected when they use `@platejs/docx-io` to convert untrusted HTML that may contain remote image references, especially in server-side conversion workflows or environments with access to internal network resources.\n\nAffected package:\n\n- `@platejs/docx-io` versions `\u003c 53.3.2`\n\n## Patched versions\n\nUpgrade to `@platejs/docx-io` version `53.3.2` or later.\n\n## Workarounds\n\nIf you cannot upgrade immediately, do not pass untrusted HTML with remote image URLs to DOCX export. Sanitize untrusted HTML to remove remote image references, convert trusted images to data URIs before conversion, or run conversion in an environment with restricted outbound network access.\n\n## Credits\n\nThanks to EQSTLab for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T22:14:54Z",
+    "Severity": "HIGH",
+    "Summary": "Plate: SSRF with response disclosure in DOCX image embedding",
+    "UpdatedAt": "2026-09-02T22:14:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "53.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 53.3.2"
+    }
+  ]
+}

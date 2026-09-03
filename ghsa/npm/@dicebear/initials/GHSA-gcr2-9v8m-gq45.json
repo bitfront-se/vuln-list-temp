@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-02T22:44:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@dicebear/initials"
+  },
+  "Advisory": {
+    "DatabaseId": 433515,
+    "Id": "GSA_kwCzR0hTQS1nY3IyLTl2OG0tZ3E0Nc4ABp1r",
+    "GhsaId": "GHSA-gcr2-9v8m-gq45",
+    "References": [
+      {
+        "Url": "https://github.com/dicebear/dicebear/security/advisories/GHSA-gcr2-9v8m-gq45"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-68921"
+      },
+      {
+        "Url": "https://github.com/dicebear/dicebear/commit/922946d738c4e77ab6c412e27ede75941fec4b59"
+      },
+      {
+        "Url": "https://github.com/dicebear/dicebear/releases/tag/v9.4.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gcr2-9v8m-gq45"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gcr2-9v8m-gq45"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-68921"
+      }
+    ],
+    "Description": "## Summary\n\n`@dicebear/core` builds avatar SVGs from caller-supplied options. The numeric `rotate` option is interpolated into an SVG `transform` attribute without XML-escaping. It is typed as a number, but nothing checks the type at runtime, so a string value passes straight through and can break out of the attribute to inject arbitrary SVG markup.\n\nThis is the same root cause as CVE-2026-33311 (GHSA-mr9r-mww3-v6gv), which escaped the string options `backgroundColor`, `fontFamily`, and `textColor` but did not cover `rotate`. `@dicebear/initials` has the same gap in its numeric `fontSize` and `fontWeight` options.\n\n## Impact\n\nCross-site scripting (CWE-79). When the generated avatar is rendered inline (for example via `innerHTML`) or served as `image/svg+xml` and opened directly, injected markup such as an `\u003cimage onerror\u003e` handler runs script in the page's origin.\n\nExploitation requires the application to pass untrusted input into one of these options:\n\n- `rotate` (`@dicebear/core`)\n- `fontSize`, `fontWeight` (`@dicebear/initials`)\n\nIn most integrations these options are set by the developer and only `seed` is user-controlled, so the vulnerable configuration is uncommon. Applications that use trusted, hardcoded values for these options are not at risk.\n\n## Patches\n\nFixed in `@dicebear/core` 9.4.3 and `@dicebear/initials` 9.4.3: the values are now XML-escaped before being written into the SVG, matching the CVE-2026-33311 fix. Upgrade to 9.4.3 or later.\n\nThe 5.x through 8.x lines share the same flaw but are end-of-life and will not receive a backport; upgrade to 9.4.3. The 10.x line is not affected.\n\n## Workarounds\n\nIf you cannot upgrade, coerce the affected options to a number before passing them to `createAvatar`:\n\n```js\nrotate: Number(userInput) || 0,\n```\n\n## Credits\n\nReported by @rz1027.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T22:44:25Z",
+    "Severity": "MODERATE",
+    "Summary": "DiceBear: SVG injection via the unescaped rotate option in @dicebear/core (and fontSize/fontWeight in @dicebear/initials)",
+    "UpdatedAt": "2026-09-02T22:44:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.4.3"
+      },
+      "VulnerableVersionRange": "\u003c= 9.4.2"
+    }
+  ]
+}

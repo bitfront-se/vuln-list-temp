@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-02T22:50:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "scrapy"
+  },
+  "Advisory": {
+    "DatabaseId": 433516,
+    "Id": "GSA_kwCzR0hTQS03NmczLWMzeDQtY3J2eM4ABp1s",
+    "GhsaId": "GHSA-76g3-c3x4-crvx",
+    "References": [
+      {
+        "Url": "https://github.com/scrapy/scrapy/security/advisories/GHSA-76g3-c3x4-crvx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-84366"
+      },
+      {
+        "Url": "https://github.com/scrapy/scrapy/commit/9523e1ec8c41fde265a26d14563d178b6f1ad04b"
+      },
+      {
+        "Url": "https://github.com/scrapy/scrapy/releases/tag/2.17.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-76g3-c3x4-crvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-76g3-c3x4-crvx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84366"
+      }
+    ],
+    "Description": "### Problem\n\nScrapy’s `S3DownloadHandler` sends signed S3 requests over plaintext HTTP by default.\n\nA normal request like `s3://bucket/key` is converted into `http://bucket.s3.amazonaws.com/key` unless `request.meta[\"is_secure\"]` is explicitly set. The generated request is then signed with configured AWS credentials, so AWS authorization material can be sent without TLS.\n\nVulnerable code in `scrapy/core/downloader/handlers/s3.py`:\n\n```python\nscheme = \"https\" if request.meta.get(\"is_secure\") else \"http\"\nurl = f\"{scheme}://{bucket}.s3.amazonaws.com{path}\"\n```\n\nThe request is then signed and dispatched:\n\n```python\nself._signer.add_auth(awsrequest)\nrequest = request.replace(url=url, headers=awsrequest.headers.items())\n```\n\n### Impact\n\nUsers making Scrapy `s3://` requests with AWS credentials are impacted.\n\nA network attacker able to observe traffic between Scrapy and S3, such as a public Wi-Fi attacker, compromised router, ISP/corporate network observer, or local network attacker using ARP spoofing, can read:\n\n```text\nbucket/key path\nAWS Authorization header\nX-Amz-Security-Token, if temporary credentials are used\nS3 object contents\nS3 response headers\n```\n\nAn active MITM attacker can also modify the plaintext S3 response body, status code, and headers before Scrapy processes it. This can cause scraped data poisoning, poisoned exports, HTTP cache poisoning when cache is enabled, and influence over later crawl targets through forged redirects or attacker-controlled links.\n\n\nSuggested classification: **CWE-319: Cleartext Transmission of Sensitive Information**.\n\n\n### PoC\n\nA minimal PoC creates an `s3://` request, enables fake AWS settings, captures the request produced by `S3DownloadHandler`, and prints the rewritten URL and auth headers.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-02T22:50:44Z",
+    "Severity": "HIGH",
+    "Summary": "Scrapy: S3DownloadHandler sends signed S3 requests over plaintext HTTP by default",
+    "UpdatedAt": "2026-09-02T22:50:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17"
+      },
+      "VulnerableVersionRange": "\u003c 2.17.0"
+    }
+  ]
+}
