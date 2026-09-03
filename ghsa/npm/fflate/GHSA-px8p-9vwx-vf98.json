@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-03T14:58:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fflate"
+  },
+  "Advisory": {
+    "DatabaseId": 391015,
+    "Id": "GSA_kwCzR0hTQS1weDhwLTl2d3gtdmY5OM4ABfdn",
+    "GhsaId": "GHSA-px8p-9vwx-vf98",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-45820"
+      },
+      {
+        "Url": "https://github.com/101arrowz/fflate/blob/f7873560ad229c22c4b23b06c6a3806ffde77569/src/index.ts#L2714"
+      },
+      {
+        "Url": "https://github.com/101arrowz/fflate/commit/e6d5e6e1076892f72770ac732d83c81da9f3316e"
+      },
+      {
+        "Url": "https://github.com/101arrowz/fflate/releases/tag/v0.8.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-px8p-9vwx-vf98"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-px8p-9vwx-vf98"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-45820"
+      }
+    ],
+    "Description": "fflate through 0.8.2 is vulnerable to denial of service via an infinite loop in unzipSync(). A crafted ZIP archive with a central directory entry declaring compressed_size=0xFFFFFFFF (ZIP64 sentinel) but missing the required ZIP64 extra field tag 0x0001 causes z64e() to loop indefinitely due to out-of-bounds reads returning undefined, which coerces to 0, keeping the loop condition permanently true.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-22T09:32:13Z",
+    "Severity": "MODERATE",
+    "Summary": "fflate unzipSync can enter an infinite loop when parsing malformed ZIP64 archives",
+    "UpdatedAt": "2026-09-03T14:58:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.3"
+      },
+      "VulnerableVersionRange": "\u003e= 0.8.0, \u003c 0.8.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.7.5"
+      },
+      "VulnerableVersionRange": "\u003e= 0.7.0, \u003c 0.7.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.11"
+      },
+      "VulnerableVersionRange": "\u003e= 0.6.0, \u003c 0.6.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.5.4"
+      },
+      "VulnerableVersionRange": "\u003e= 0.5.0, \u003c 0.5.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.9"
+      },
+      "VulnerableVersionRange": "\u003e= 0.4.5, \u003c 0.4.9"
+    }
+  ]
+}
