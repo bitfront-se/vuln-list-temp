@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-03T18:08:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orval"
+  },
+  "Advisory": {
+    "DatabaseId": 433731,
+    "Id": "GSA_kwCzR0hTQS02NDM3LWd4aHEtcHF2OM4ABp5D",
+    "GhsaId": "GHSA-6437-gxhq-pqv8",
+    "References": [
+      {
+        "Url": "https://github.com/orval-labs/orval/security/advisories/GHSA-6437-gxhq-pqv8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-71864"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/pull/3692"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/commit/8ef1bfdf3f9bcaf9dabfbe2e42887f1c0e159ab6"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/releases/tag/v8.21.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6437-gxhq-pqv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6437-gxhq-pqv8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71864"
+      }
+    ],
+    "Description": "### Summary\n\norval's zod client emits each header parameter name as a double-quoted key in the generated zod.object({...}) request-validation schema WITHOUT escaping the double quote. A \" in the header parameter name closes the key and lands in object-literal context, where an injected computed property key [expr] is evaluated when zod.object({...}) runs -- at MODULE IMPORT (export const OpHeader = zod.object({...}) executes on load) -\u003e import-time RCE. The header parameter name is a pure data field. Verified on orval 8.19.0 / Node.\n\n### Details\n\nexport const OpHeader = zod.object({ \"a\":zod.string(),[require(\"fs\").writeFileSync(\"PWNED\",\"\")]:zod.string(),\"b\": ... })\n\nAlso affects the hono client (reuses zod generation). orval escapes values in zod arrays but not keys in zod.object. Sibling fields: schema property name, query parameter name (CVE-96) (separate reports). Distinct from orval's $ref / route-path / server-url / zod-default findings.\n\n### PoC\n\nreproduce.sh (+ make_spec.py) attached: a header parameter name that breaks the zod.object key and injects a computed key; evaluating it (= importing the module) writes the marker. Verified on 8.19.0.\n\n### Impact\n\nJavaScript / OS command execution at import time for anyone who generates an orval zod client from an attacker-controlled spec and imports it. \n\n### Suggested fix\n\nEscape the header parameter name for the JS string key (JSON.stringify) in the zod.object key generation; never interpolate a raw name adjacent to [ ] in object-literal position.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T18:08:31Z",
+    "Severity": "CRITICAL",
+    "Summary": "Orval: Import-time RCE via header parameter name -\u003e computed-property-key injection in the zod client",
+    "UpdatedAt": "2026-09-03T18:08:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.21.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.21.0"
+    }
+  ]
+}

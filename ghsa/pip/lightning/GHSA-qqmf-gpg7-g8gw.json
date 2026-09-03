@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-03T19:51:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "lightning"
+  },
+  "Advisory": {
+    "DatabaseId": 372780,
+    "Id": "GSA_kwCzR0hTQS1xcW1mLWdwZzctZzhnd84ABbAs",
+    "GhsaId": "GHSA-qqmf-gpg7-g8gw",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58659"
+      },
+      {
+        "Url": "https://github.com/Lightning-AI/pytorch-lightning/issues/21822"
+      },
+      {
+        "Url": "https://github.com/Lightning-AI/pytorch-lightning/pull/21832"
+      },
+      {
+        "Url": "https://github.com/Lightning-AI/pytorch-lightning/commit/d710d689510d50e800f53b3cd773cbca20b1f86f"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/pytorch-lightning-arbitrary-code-execution-via-instantiator-hyperparameter"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/lightning/PYSEC-2026-3624.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qqmf-gpg7-g8gw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qqmf-gpg7-g8gw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58659"
+      }
+    ],
+    "Description": "PyTorch Lightning through 2.6.5, fixed in commit d710d68, contains a remote code execution vulnerability in the _load_state function that imports and executes attacker-controlled module names from checkpoint _instantiator hyperparameters. Attackers can craft malicious checkpoint files that bypass weights_only=True protections to execute arbitrary code when LightningModule.load_from_checkpoint is called.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-15T18:31:58Z",
+    "Severity": "HIGH",
+    "Summary": " PyTorch Lightning allows arbitrary code execution through checkpoint _instantiator hyperparameters",
+    "UpdatedAt": "2026-09-03T19:51:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2022.6.15"
+      },
+      "VulnerableVersionRange": "\u003c 2022.6.15"
+    }
+  ]
+}

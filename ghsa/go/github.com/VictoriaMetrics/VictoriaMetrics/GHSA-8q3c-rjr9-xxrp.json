@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-03T17:49:29Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/VictoriaMetrics/VictoriaMetrics"
+  },
+  "Advisory": {
+    "DatabaseId": 433729,
+    "Id": "GSA_kwCzR0hTQS04cTNjLXJqcjkteHhycM4ABp5B",
+    "GhsaId": "GHSA-8q3c-rjr9-xxrp",
+    "References": [
+      {
+        "Url": "https://github.com/VictoriaMetrics/VictoriaMetrics/security/advisories/GHSA-8q3c-rjr9-xxrp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61625"
+      },
+      {
+        "Url": "https://github.com/VictoriaMetrics/VictoriaMetrics/commit/710c920d6083327042a309e449fae4383617d817"
+      },
+      {
+        "Url": "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.122.25"
+      },
+      {
+        "Url": "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.136.12"
+      },
+      {
+        "Url": "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.146.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8q3c-rjr9-xxrp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8q3c-rjr9-xxrp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61625"
+      }
+    ],
+    "Description": "### Summary\nThe VictoriaMetrics `vmrestore` utility does not validate backup part path components before writing restored files to the local filesystem. An attacker who can provide or modify a backup source can craft object names containing `..` path components that cause vmrestore to write files outside the intended `-storageDataPath` restore root, subject to the permissions of the `vmrestore` process.\n\n### Impact\nAn attacker who can supply or modify the backup source -- for example by writing malicious object names to a compromised or misconfigured storage bucket -- can cause arbitrary files to be created or overwritten on the host running `vmrestore`, within the limits of the process's filesystem permissions.\n\n### Patches\nVersions 1.146.0, 1.136.12, 1.122.25\n\n### Resources\n  - https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.146.0\n  - https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.136.12\n  - https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.122.25\n\n### Note\nVictoriaMetrics' security model assumes backup sources are trusted and access-controlled. This vulnerability requires an attacker to have write access to the backup storage (e.g. S3, GCS, or Azure Blob Storage bucket) used as the `-src` for `vmrestore`. Under a correctly secured deployment where backup storage access is properly restricted, unauthorized exploitation of this issue should not be possible. Users are advised to follow the principle of least privilege when granting access to backup storage buckets.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T17:49:29Z",
+    "Severity": "MODERATE",
+    "Summary": "VictoriaMetrics vmrestore: Path traversal via crafted backup part names escapes restore root",
+    "UpdatedAt": "2026-09-03T17:49:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.122.25"
+      },
+      "VulnerableVersionRange": "\u003c 1.122.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.136.12"
+      },
+      "VulnerableVersionRange": "\u003e= 1.123.0, \u003c 1.136.12"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.146.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.137.0, \u003c 1.146.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-03T19:52:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@toon-format/toon"
+  },
+  "Advisory": {
+    "DatabaseId": 433825,
+    "Id": "GSA_kwCzR0hTQS1wOTV2LTk5MnctaDZjM84ABp6h",
+    "GhsaId": "GHSA-p95v-992w-h6c3",
+    "References": [
+      {
+        "Url": "https://github.com/toon-format/toon/security/advisories/GHSA-p95v-992w-h6c3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-82404"
+      },
+      {
+        "Url": "https://github.com/toon-format/toon/pull/316"
+      },
+      {
+        "Url": "https://github.com/toon-format/toon/commit/94a2b7560b2b5ed903a4d466a3bce8b13daa2660"
+      },
+      {
+        "Url": "https://github.com/toon-format/toon/releases/tag/v2.3.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p95v-992w-h6c3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p95v-992w-h6c3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-82404"
+      }
+    ],
+    "Description": "### Summary\n\nDecoding attacker-controlled TOON containing a `__proto__`, `constructor`, or `prototype` key wrote through the object's prototype chain instead of creating an own property, polluting `Object.prototype` for the whole runtime. The `expandPaths: 'safe'` path (dotted keys such as `a.__proto__.x`) was the strongest vector; plain nested objects, tabular rows, and quoted keys were all affected. The encoder had a matching defect: it silently dropped own `__proto__` properties and could fire an inherited setter while normalizing.\n\n### Impact\n\nAny service that decodes untrusted TOON is affected. Prototype pollution can escalate to denial of service or, with a suitable downstream gadget, remote code execution.\n\n### Patches\n\nUpgrade to `@toon-format/toon@2.3.1`. Decoders now materialize `__proto__`/`constructor`/`prototype` as ordinary own data properties, matching `JSON.parse` semantics; the encoder preserves the same keys without invoking inherited accessors.\n\n### Workarounds\n\nNone. Upgrade is the only fix. Callers who cannot upgrade should reject input whose keys include `__proto__`, `constructor`, or `prototype` before decoding.\n\n### Port maintainers\n\nThe same bug shape can exist in any implementation that assigns decoded keys with `obj[key] = value`. Rust, Swift, Java, Python, and C# ports should audit their object-construction and path-expansion paths for the three prototype keys.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T19:52:08Z",
+    "Severity": "HIGH",
+    "Summary": "TOON: Prototype pollution when decoding untrusted TOON input",
+    "UpdatedAt": "2026-09-03T19:52:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.1"
+    }
+  ]
+}

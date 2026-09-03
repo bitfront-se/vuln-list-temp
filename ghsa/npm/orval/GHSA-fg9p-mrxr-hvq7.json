@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-03T19:17:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orval"
+  },
+  "Advisory": {
+    "DatabaseId": 433821,
+    "Id": "GSA_kwCzR0hTQS1mZzlwLW1yeHItaHZxN84ABp6d",
+    "GhsaId": "GHSA-fg9p-mrxr-hvq7",
+    "References": [
+      {
+        "Url": "https://github.com/orval-labs/orval/security/advisories/GHSA-fg9p-mrxr-hvq7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62681"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/pull/3692"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/commit/8ef1bfdf3f9bcaf9dabfbe2e42887f1c0e159ab6"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/releases/tag/v8.21.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fg9p-mrxr-hvq7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fg9p-mrxr-hvq7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62681"
+      }
+    ],
+    "Description": "### Summary\n\nOrval emits the OpenAPI path into the generated request URL as a TEMPLATE LITERAL (`` `/users/...` ``) without escaping the backtick character. A path containing a backtick closes the template literal and injects a concatenation expression that is evaluated when the generated URL/request/key function is called, executing attacker-controlled code. Affects the axios, fetch, react-query, and swr clients. Verified on Orval 8.19.0; survives Orval's default OpenAPI validation.\n\n### Details\n\n```ts\n// generated URL builder (fetch client)\nreturn `/users/` + (globalThis.X = require(\"fs\").writeFileSync(\"/marker\",\"pwned\")) + `/list`;\n```\n\nThe backtick in the path terminates the `` `...` `` literal; `+ (\u003ccode\u003e) +` runs as a live expression; a trailing backtick reopens a template literal so the file stays valid. The code runs whenever the generated request function, URL builder, or query-key function is called.\n\nThis is distinct from Orval's four published CVEs: CVE-2026-22785 (`summary` -\u003e MCP server), CVE-2026-23947 / CVE-2026-25141 (`x-enumDescriptions`), and CVE-2026-24132 (`const` -\u003e mock files). This is a different field (the route path) and a different sink (the request-URL template literal), which those advisories and their fixes do not cover.\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates a fetch client with default validation, bundles it, calls the generated functions, and shows a marker file written. Verified on 8.19.0.\n\n### Impact\n\nCode execution in any environment that calls a client generated from an attacker-controlled or attacker-influenced OpenAPI description (developer, CI, or the running application). \n\n### Suggested fix\n\nEscape the path before emitting it into the URL template literal (escape backtick and `${`, or build the URL with an encoder that treats the path as data), and validate path characters.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T19:17:32Z",
+    "Severity": "CRITICAL",
+    "Summary": "Orval: RCE via OpenAPI path -\u003e unescaped request-URL template literal (backtick breakout)",
+    "UpdatedAt": "2026-09-03T19:17:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.21.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.21.0"
+    }
+  ]
+}

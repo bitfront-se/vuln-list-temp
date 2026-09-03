@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-03T20:07:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sanitize-html"
+  },
+  "Advisory": {
+    "DatabaseId": 433828,
+    "Id": "GSA_kwCzR0hTQS1qeHdqLWo3d3ItZ2Zyd84ABp6k",
+    "GhsaId": "GHSA-jxwj-j7wr-gfrw",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-jxwj-j7wr-gfrw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63670"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/pull/5501"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/eae1fb2b72ec5d1c27d0977509c6482a0408f725"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jxwj-j7wr-gfrw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jxwj-j7wr-gfrw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63670"
+      }
+    ],
+    "Description": "### Summary\nA mutation-XSS / allowedTags bypass: when `textarea` (or `xmp`) is included in `allowedTags`, an input containing a literal `\u003c/textarea/\u003e` (a solidus right after the RCDATA end-tag name) lets non-allowed markup such as `\u003cimg src=x onerror=…\u003e` pass through `sanitizeHtml()` **live and unescaped**, even though `img`/`onerror` are not in the allowlist. A spec-compliant browser executes the surviving handler — XSS. This is a literal-solidus variant that bypasses the two most recent fixes in this code area (CVE-2026-40186, CVE-2026-44990), both already applied in 2.17.5. The default configuration is not affected.\n\n### Details\n`sanitize-html` emits the text content of HTML raw-text elements (`textarea`, `xmp`) without escaping. Two things combine:\n- **Parser differential:** on input, htmlparser2 does NOT recognize `\u003c/textarea/\u003e` (solidus after the RCDATA\n  end-tag name) as a close tag; it emits `\u003c/textarea/\u003e\u003cimg …\u003e` as a single raw-text node.\n- **Unescaped passthrough:** the `ontext` handler (`index.js` ~575-583) appends `textarea`/`xmp` content with\n`result += text` (no `escapeHtml`), assuming it is \"already properly encoded\" — true for entity-decoded\n  content (what CVE-2026-40186 fixed) but false for this mis-tokenized literal close tag.\nA spec browser treats `\u003c/textarea/\u003e` as a valid `textarea` close, so the following `\u003cimg onerror\u003e` is parsed as a live element. The recent fixes addressed entity-encoding (CVE-2026-40186) and the `xmp` default (CVE-2026-44990); neither covers the literal-solidus mis-tokenization, so the raw passthrough still leaks.\n\n### PoC\n```js\n// npm i sanitize-html@2.17.5 parse5 \u0026\u0026 node poc.js\nconst sanitizeHtml = require('sanitize-html');\nconst input = '\u003ctextarea\u003e\u003c/textarea/\u003e\u003cimg src=x onerror=\"alert(document.domain)\"\u003e';\nconst opts  = { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['textarea']) };  // img NOT allowed\nconsole.log(sanitizeHtml(input, opts));\n// =\u003e \u003ctextarea\u003e\u003c/textarea/\u003e\u003cimg src=x onerror=\"alert(document.domain)\"\u003e\u003c/textarea\u003e\n//    the \u003cimg onerror\u003e survives live and unescaped\n\nconsole.log(sanitizeHtml(input));   // default config (no textarea allowed) =\u003e \"\"  (safe)\n```\nRe-parsing the sanitized OUTPUT with **parse5** (the WHATWG HTML parser browsers/jsdom use) yields a **live\n`\u003cimg src=x onerror=alert(document.domain)\u003e`** at `body` level (it escaped the textarea RCDATA, not inert text) → the `onerror` fires in a browser. Confirmed on 2.17.5 (Node v24). A canonical `poc.js` is attached.\n\u003cimg width=\"650\" height=\"118\" alt=\"image\" src=\"https://github.com/user-attachments/assets/d63bb5b7-ba3e-4b0e-a821-86a453ea0352\" /\u003e\n\n### Impact\nCross-site scripting (CWE-79). Requires `textarea` (or `xmp`) in `allowedTags` — a benign-looking, common addition in form builders, CMS, and rich-text editors. Adding a harmless tag that then enables XSS via *non-allowed* `img`/`onerror` breaks the sanitizer's core contract; the maintainers have fixed this class before (e.g. GHSA-9mrh). An attacker who can submit content rendered through such a configuration achieves stored/reflected XSS (cookie theft, session hijack). Severity Medium (default config is safe; user interaction to view the page). **Suggested fix:** route `textarea`/`xmp` content through `escapeHtml` instead of the raw passthrough, and/or fix the htmlparser2 `\u003c/tag/\u003e` RCDATA end-tag tokenization to match the WHATWG spec.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T20:07:16Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS: Mutation-XSS / allowedTags bypass via literal `\u003c/textarea/\u003e` solidus close",
+    "UpdatedAt": "2026-09-03T20:07:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.17.6"
+      },
+      "VulnerableVersionRange": "\u003c= 2.17.5"
+    }
+  ]
+}

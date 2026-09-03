@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-03T19:03:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orval"
+  },
+  "Advisory": {
+    "DatabaseId": 433819,
+    "Id": "GSA_kwCzR0hTQS13NzI3LThqNmMtMnJqNM4ABp6b",
+    "GhsaId": "GHSA-w727-8j6c-2rj4",
+    "References": [
+      {
+        "Url": "https://github.com/orval-labs/orval/security/advisories/GHSA-w727-8j6c-2rj4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72717"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/pull/3692"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/commit/8ef1bfdf3f9bcaf9dabfbe2e42887f1c0e159ab6"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/releases/tag/v8.21.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w727-8j6c-2rj4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w727-8j6c-2rj4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-72717"
+      }
+    ],
+    "Description": "### Summary\n\nOrval's zod schema generation emits a schema's `default` value as a module-level template literal (`export const …Default = `\u003cdefault\u003e`;`) without escaping `${` or the backtick. A default of the form `v${\u003ccode\u003e}w` injects a live JavaScript expression that is evaluated when the generated zod schema module is imported, executing attacker-controlled code at import — no request or function call needed. Verified on Orval 8.19.0; survives default OpenAPI validation.\n\n### Details\n\n```ts\nexport const getIResponseDsDefault = `v${globalThis.ORVPWN()}w`;\n```\n\n`${...}` permits an arbitrary JS expression. Orval escapes its other value sinks (enum, mock, regex, object-default values) with `\\'` inside single-quoted strings; the string `default` is the one value emitted as a backtick template literal, so `${...}`/backtick are interpreted, not escaped. Distinct from the URL-template-literal cases (different field and sink) and from the published Orval CVEs (summary/MCP, x-enumDescriptions, const/mock).\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates the zod schema with default validation, bundles it, imports it, and shows a marker written at import. Verified on 8.19.0.\n\n### Impact\n\nCode execution at import in any application that imports a zod schema module generated from an attacker-controlled or attacker-influenced OpenAPI description.\n\n### Suggested fix\n\nEmit `default` values via a proper string-literal encoder (JSON.stringify, or escape backtick and ${ if a template literal must be used); never interpolate a spec value into a template literal. \n\n[maintainer-report.txt](https://github.com/user-attachments/files/29399048/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29399049/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29399050/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T19:03:03Z",
+    "Severity": "CRITICAL",
+    "Summary": "Orval: Import-time RCE via schema default -\u003e zod module-level template literal",
+    "UpdatedAt": "2026-09-03T19:03:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.21.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.21.0"
+    }
+  ]
+}

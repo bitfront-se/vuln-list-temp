@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-03T18:26:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orval"
+  },
+  "Advisory": {
+    "DatabaseId": 433734,
+    "Id": "GSA_kwCzR0hTQS0ydzg2LXhmcmMtZzg1cs4ABp5G",
+    "GhsaId": "GHSA-2w86-xfrc-g85r",
+    "References": [
+      {
+        "Url": "https://github.com/orval-labs/orval/security/advisories/GHSA-2w86-xfrc-g85r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-71867"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/pull/3692"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/commit/8ef1bfdf3f9bcaf9dabfbe2e42887f1c0e159ab6"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/releases/tag/v8.21.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2w86-xfrc-g85r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2w86-xfrc-g85r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71867"
+      }
+    ],
+    "Description": "### Summary\n\norval, when generating MSW mocks (output.mock: true), emits each schema property name as a single-quoted object key in the mock factory WITHOUT escaping the single quote. A ' in a property name closes the key and lands in object-literal context, where an injected computed property key [expr] is evaluated when the mock factory is called (e.g. in tests / MSW handlers) -\u003e RCE. The property name is a pure data field. Verified on orval 8.19.0 / Node. \n\n### Details\n\n```ts\nexport const getOpResponseMock = (...): Thing =\u003e ({'x': 0, [require(\"fs\").writeFileSync(\"PWNED\",\"\")]: 0, 'y': faker...., ...overrideResponse});\n```\n\nSafe elsewhere: the zod schema double-quotes the property name; the TS interface key is a type (DoS only). Distinct from orval's $ref / route-path / server-url / zod-default findings.\n\n### PoC\n\nreproduce.sh (+ make_spec.py) attached: a property name `x': 0, [require(\"fs\").writeFileSync(\"\u003cmarker\u003e\",\"\")]: 0, 'y` -\u003e mock object literal; calling the mock factory writes the marker. Verified on 8.19.0.\n\n### Impact\n\nJavaScript / OS command execution (via child_process) on the machine of anyone who generates orval mocks from an attacker controlled spec and runs them (tests / MSW).\n\n### Suggested fix\n\nEscape the property name for the JS string key (JSON.stringify), and never interpolate a raw property name adjacent to [ ] in object-literal position.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T18:26:12Z",
+    "Severity": "CRITICAL",
+    "Summary": "Orval: RCE via schema property name -\u003e computed-property-key injection in the MSW mock generator",
+    "UpdatedAt": "2026-09-03T18:26:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.21.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.21.0"
+    }
+  ]
+}

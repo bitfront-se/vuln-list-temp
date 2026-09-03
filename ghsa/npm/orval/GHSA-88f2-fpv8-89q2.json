@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-03T19:06:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "orval"
+  },
+  "Advisory": {
+    "DatabaseId": 433820,
+    "Id": "GSA_kwCzR0hTQS04OGYyLWZwdjgtODlxMs4ABp6c",
+    "GhsaId": "GHSA-88f2-fpv8-89q2",
+    "References": [
+      {
+        "Url": "https://github.com/orval-labs/orval/security/advisories/GHSA-88f2-fpv8-89q2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62682"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/pull/3692"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/commit/8ef1bfdf3f9bcaf9dabfbe2e42887f1c0e159ab6"
+      },
+      {
+        "Url": "https://github.com/orval-labs/orval/releases/tag/v8.21.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-88f2-fpv8-89q2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-88f2-fpv8-89q2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62682"
+      }
+    ],
+    "Description": "### Summary\n\nWhen Orval is configured with `output.baseUrl.getBaseUrlFromSpecification: true`, it bakes the spec's `servers[0].url` into the generated request URL as a template literal without escaping the backtick. A server URL containing a backtick closes the template literal and injects a concatenation expression evaluated when the generated URL/request function is called, executing attacker-controlled code. Verified on Orval 8.19.0 (fetch client); survives default OpenAPI validation.\n\n### Details\n\n```ts\nreturn `http://api.x/` + (globalThis.X = require(\"fs\").writeFileSync(\"/marker\",\"pwned\")) + `/v1/u`;\n```\n\nPrerequisite: the documented `getBaseUrlFromSpecification: true` option (takes the base URL from the OpenAPI servers block). This is the same output sink as the route-path case (request-URL template literal) reached via the server `url` field. Distinct from Orval's published CVEs (CVE-2026-22785 summary/MCP, CVE-2026-23947 / CVE-2026-25141 x-enumDescriptions, CVE-2026-24132 const/mock).\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates a fetch client with `getBaseUrlFromSpecification: true`, bundles it, calls the functions, and shows a marker written. Verified on 8.19.0.\n\n### Impact\n\nWith that option enabled, code execution in any environment that calls a client generated from an attacker-controlled or attacker-influenced OpenAPI description.\n\n### Suggested fix\n\nEscape the server URL before emitting it into the URL template literal (escape backtick and `${`), or build the base URL with an encoder that treats it as data; validate the URL.\n[maintainer-report.txt](https://github.com/user-attachments/files/29396562/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29396563/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29396564/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-03T19:06:52Z",
+    "Severity": "CRITICAL",
+    "Summary": "Orval: RCE via servers[].url -\u003e unescaped request-URL template literal (with getBaseUrlFromSpecification)",
+    "UpdatedAt": "2026-09-03T19:06:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.21.0"
+      },
+      "VulnerableVersionRange": "\u003c 8.21.0"
+    }
+  ]
+}
