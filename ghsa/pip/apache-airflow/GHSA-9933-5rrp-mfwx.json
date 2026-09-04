@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-04T19:24:55Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 369800,
+    "Id": "GSA_kwCzR0hTQS05OTMzLTVycnAtbWZ3eM4ABaSI",
+    "GhsaId": "GHSA-9933-5rrp-mfwx",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48892"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/67622"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/pq5yy40079h6tzh3fxvw28dd8dbk72hk"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/07/07/4"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/f0f978d2736891a2f9e9d2954e87fc358e1ef4e3"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-2087.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9933-5rrp-mfwx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9933-5rrp-mfwx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48892"
+      }
+    ],
+    "Description": "The Config API in Apache Airflow surfaced per-key secrets-backend overrides (environment variables like `AIRFLOW__SECRETS__BACKEND_KWARG__SECRET_ID` and `AIRFLOW__WORKERS__SECRETS_BACKEND_KWARG__SECRET_ID`) as synthetic config options whose option names were not in `sensitive_config_values`, so the masker did not redact them. An authenticated UI/API user with Config read permission could retrieve plaintext secrets-backend credentials (Vault `role_id` / `secret_id`, etc.) from the Config API output. Affects deployments that configure secrets backends via per-key environment overrides. Users are advised to upgrade to `apache-airflow` 3.3.0 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-07T12:31:35Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow exposes secrets backend credentials through the Config API",
+    "UpdatedAt": "2026-09-04T19:24:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.0"
+    }
+  ]
+}

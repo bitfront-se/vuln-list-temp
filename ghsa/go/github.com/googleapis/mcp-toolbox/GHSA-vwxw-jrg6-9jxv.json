@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-04T19:21:11Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/googleapis/mcp-toolbox"
+  },
+  "Advisory": {
+    "DatabaseId": 367541,
+    "Id": "GSA_kwCzR0hTQS12d3h3LWpyZzYtOWp4ds4ABZu1",
+    "GhsaId": "GHSA-vwxw-jrg6-9jxv",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-11720"
+      },
+      {
+        "Url": "https://github.com/googleapis/mcp-toolbox/pull/3218"
+      },
+      {
+        "Url": "https://github.com/googleapis/mcp-toolbox/commit/80a66021205e032a424fff87b3dc6d92da58aa77"
+      },
+      {
+        "Url": "https://github.com/googleapis/mcp-toolbox/releases/tag/v1.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vwxw-jrg6-9jxv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vwxw-jrg6-9jxv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-11720"
+      }
+    ],
+    "Description": "A path traversal vulnerability exists in the HTTP tool URL builder of googleapis/mcp-toolbox.\n\nWhen constructing downstream API requests, the URL builder substitutes user-controlled pathParams into the configured tool path and parses the resulting string as a relative URL. While it checks that the input does not alter the scheme, host, or user info, it relies on ResolveReference for the final URL resolution. Because dot segments (../) are normalized during this resolution step, an attacker can supply path parameters containing directory traversal sequences to escape the operator-configured path scope. This allows the client to coerce the toolbox into making requests to unintended endpoints on the same target host while forwarding the toolbox's configured credentials (e.g., bypassing a restricted path like /api/v1/users/{{.id}} to reach /admin/secrets).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-29T18:31:55Z",
+    "Severity": "CRITICAL",
+    "Summary": "MCP Toolbox HTTP tool path parameters allow traversal to unintended endpoints",
+    "UpdatedAt": "2026-09-04T19:21:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.3.0"
+    }
+  ]
+}

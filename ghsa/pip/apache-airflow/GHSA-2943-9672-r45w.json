@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-04T19:23:04Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 369806,
+    "Id": "GSA_kwCzR0hTQS0yOTQzLTk2NzItcjQ1d84ABaSO",
+    "GhsaId": "GHSA-2943-9672-r45w",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33264"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/66002"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/68528"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/otvdw8qt2y7xy2n5nq9xby9ky4rf5ltj"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/07/07/1"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/69b6c54ef17b048ebb0e9a656d0d9e1c99480d6b"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/7e9bdb245e09373d91fcb7bda575ad4be63aa28d"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-2082.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2943-9672-r45w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2943-9672-r45w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-33264"
+      }
+    ],
+    "Description": "A bug in `BaseSerialization.deserialize()` allowed unrestricted `import_string()` of attacker-controlled class paths when the Scheduler / API Server loaded a serialized DAG: a DAG author could embed a malicious trigger into a DAG to gain remote code execution on the API Server / Scheduler process, crossing the Airflow security boundary that DAG-author code must never execute in those processes. Users are advised to upgrade to `apache-airflow` 3.3.0 or later. As a defense-in-depth mitigation, deployments where DAG-author trust is limited can restrict the `[core] allowed_deserialization_classes` config to a narrow allowlist.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-07T12:31:35Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache Airflow allows code execution through unsafe serialized DAG deserialization",
+    "UpdatedAt": "2026-09-04T19:23:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.0"
+    }
+  ]
+}

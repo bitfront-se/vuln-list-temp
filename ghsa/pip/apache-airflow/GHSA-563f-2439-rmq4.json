@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-04T19:25:32Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 369798,
+    "Id": "GSA_kwCzR0hTQS01NjNmLTI0Mzktcm1xNM4ABaSG",
+    "GhsaId": "GHSA-563f-2439-rmq4",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48828"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/67495"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/y9kf314t6dhnv994hr11wj3tbow847yc"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/07/07/2"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/b12f5ad66f51b91fd0a6268f94938be830133115"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-563f-2439-rmq4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-563f-2439-rmq4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-48828"
+      }
+    ],
+    "Description": "The Bulk Variables API in Apache Airflow called the redactor without passing the variable's key, so the key-based `should_hide_value_for_key` check (which triggers on secret-suffixed key names like `*_password` / `*_token` / `*_secret`) could not fire for JSON-decodable variable values. An authenticated UI/API user with bulk Variable read permission could retrieve plaintext values from JSON variables whose key would otherwise trigger redaction. Affects deployments that store sensitive values in JSON-typed Airflow Variables under secret-suffixed key names. Users are advised to upgrade to `apache-airflow` 3.3.0 or later (the fix landed on `main` after 3.2.2; no 3.2.x backport).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-07T12:31:35Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow exposes sensitive JSON Variable values through the Bulk Variables API",
+    "UpdatedAt": "2026-09-04T19:25:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.0"
+    }
+  ]
+}

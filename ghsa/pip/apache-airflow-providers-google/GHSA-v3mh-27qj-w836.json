@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-04T19:22:14Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow-providers-google"
+  },
+  "Advisory": {
+    "DatabaseId": 369485,
+    "Id": "GSA_kwCzR0hTQS12M21oLTI3cWotdzgzNs4ABaNN",
+    "GhsaId": "GHSA-v3mh-27qj-w836",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49297"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/67667"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/cb5nvoxsj1q7rv878cyqgtg150w0zglq?users@airflow.apache.org"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/07/04/8"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/0385bae70553223677753047b3e779d8b86b15c4"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow-providers-google/PYSEC-2026-2084.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v3mh-27qj-w836"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v3mh-27qj-w836"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-49297"
+      }
+    ],
+    "Description": "Apache Airflow's Google provider operators `GCSToSFTPOperator` and `GCSTimeSpanFileTransformOperator` joined GCS object names returned by the bucket listing API directly to a destination filesystem path without normalisation or containment check. A user with write access to the source GCS bucket (typically a different trust principal than the DAG author — partner uploads, ingest-only service accounts, public-data buckets) could create an object whose name contains `..` segments and cause the DAG run to write the downloaded blob outside the configured destination (the SFTP `destination_path` for `GCSToSFTPOperator`; the worker-local temp directory for `GCSTimeSpanFileTransformOperator`), enabling overwrite of arbitrary files on the SFTP server or the worker host. Affects deployments that ingest from buckets writable by less-trusted principals. Users are advised to upgrade to `apache-airflow-providers-google` 22.2.1 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-06T12:31:30Z",
+    "Severity": "HIGH",
+    "Summary": "Apache Airflow Google provider allows path traversal through GCS object names",
+    "UpdatedAt": "2026-09-04T19:22:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 22.2.1"
+    }
+  ]
+}
