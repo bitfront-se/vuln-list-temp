@@ -1,11 +1,12 @@
 {
-  "id": "PYSEC-2026-2084",
+  "id": "GHSA-v3mh-27qj-w836",
   "modified": "2026-09-04T19:40:33.043155846Z",
-  "published": "2026-07-06T11:16:30.207Z",
+  "published": "2026-07-06T12:31:30Z",
   "aliases": [
     "CVE-2026-49297",
-    "GHSA-v3mh-27qj-w836"
+    "PYSEC-2026-2084"
   ],
+  "summary": "Apache Airflow Google provider allows path traversal through GCS object names",
   "details": "Apache Airflow's Google provider operators `GCSToSFTPOperator` and `GCSTimeSpanFileTransformOperator` joined GCS object names returned by the bucket listing API directly to a destination filesystem path without normalisation or containment check. A user with write access to the source GCS bucket (typically a different trust principal than the DAG author — partner uploads, ingest-only service accounts, public-data buckets) could create an object whose name contains `..` segments and cause the DAG run to write the downloaded blob outside the configured destination (the SFTP `destination_path` for `GCSToSFTPOperator`; the worker-local temp directory for `GCSTimeSpanFileTransformOperator`), enabling overwrite of arbitrary files on the SFTP server or the worker host. Affects deployments that ingest from buckets writable by less-trusted principals. Users are advised to upgrade to `apache-airflow-providers-google` 22.2.1 or later.",
   "affected": [
     {
@@ -242,24 +243,39 @@
         "9.0.0rc1",
         "9.0.0rc2"
       ],
-      "ecosystem_specific": {},
       "database_specific": {
-        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/apache-airflow-providers-google/PYSEC-2026-2084.yaml"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/07/GHSA-v3mh-27qj-w836/GHSA-v3mh-27qj-w836.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "http://www.openwall.com/lists/oss-security/2026/07/04/8"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49297"
     },
     {
-      "type": "ADVISORY",
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/pull/67667"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/commit/0385bae70553223677753047b3e779d8b86b15c4"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/apache/airflow"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow-providers-google/PYSEC-2026-2084.yaml"
+    },
+    {
+      "type": "WEB",
       "url": "https://lists.apache.org/thread/cb5nvoxsj1q7rv878cyqgtg150w0zglq?users@airflow.apache.org"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/67667"
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2026/07/04/8"
     }
   ]
 }

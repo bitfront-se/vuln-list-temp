@@ -1,13 +1,14 @@
 {
-  "id": "PYSEC-2026-2082",
-  "modified": "2026-09-04T19:40:19.933602916Z",
-  "published": "2026-07-07T10:16:40.443Z",
+  "id": "GHSA-22hf-vx2v-gjff",
+  "modified": "2026-09-04T19:55:20.913501619Z",
+  "published": "2026-07-07T12:31:36Z",
   "aliases": [
-    "BIT-airflow-2026-33264",
-    "CVE-2026-33264",
-    "GHSA-2943-9672-r45w"
+    "BIT-airflow-2026-49487",
+    "CVE-2026-49487",
+    "PYSEC-2026-2088"
   ],
-  "details": "A bug in `BaseSerialization.deserialize()` allowed unrestricted `import_string()` of attacker-controlled class paths when the Scheduler / API Server loaded a serialized DAG: a DAG author could embed a malicious trigger into a DAG to gain remote code execution on the API Server / Scheduler process, crossing the Airflow security boundary that DAG-author code must never execute in those processes. Users are advised to upgrade to `apache-airflow` 3.3.0 or later. As a defense-in-depth mitigation, deployments where DAG-author trust is limited can restrict the `[core] allowed_deserialization_classes` config to a narrow allowlist.",
+  "summary": "Apache Airflow exposes deferred trigger kwargs in task-instance API responses",
+  "details": "In Apache Airflow before 3.3.0, the REST API task-instance detail and list endpoints returned a deferred task's trigger kwargs without masking. When a deferred operator passed a secret (for example a provider API key) into its trigger, any authenticated user with DAG-scoped task-instance read access for that DAG could read that secret in clear text while the task was deferred.\nUsers should upgrade to apache-airflow 3.3.0 or later, which masks sensitive values in trigger kwargs returned by the API.",
   "affected": [
     {
       "package": {
@@ -324,28 +325,39 @@
         "3.3.0rc1",
         "3.3.0rc2"
       ],
-      "ecosystem_specific": {},
       "database_specific": {
-        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/apache-airflow/PYSEC-2026-2082.yaml"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/07/GHSA-22hf-vx2v-gjff/GHSA-22hf-vx2v-gjff.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "http://www.openwall.com/lists/oss-security/2026/07/07/1"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-49487"
     },
     {
-      "type": "ADVISORY",
-      "url": "https://lists.apache.org/thread/otvdw8qt2y7xy2n5nq9xby9ky4rf5ltj"
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/pull/67868"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/66002"
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/commit/9101aa66754af052ba5010a5fce9f8fa4140e6c7"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/68528"
+      "type": "PACKAGE",
+      "url": "https://github.com/apache/airflow"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-2088.yaml"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread/qlw6pozlzlfhkvmbgqsbjlq6vj4v0pc4"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2026/07/07/6"
     }
   ]
 }

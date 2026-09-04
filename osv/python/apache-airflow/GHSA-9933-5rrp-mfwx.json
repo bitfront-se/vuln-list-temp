@@ -1,13 +1,14 @@
 {
-  "id": "PYSEC-2026-2082",
-  "modified": "2026-09-04T19:40:19.933602916Z",
-  "published": "2026-07-07T10:16:40.443Z",
+  "id": "GHSA-9933-5rrp-mfwx",
+  "modified": "2026-09-04T19:40:26.527966097Z",
+  "published": "2026-07-07T12:31:35Z",
   "aliases": [
-    "BIT-airflow-2026-33264",
-    "CVE-2026-33264",
-    "GHSA-2943-9672-r45w"
+    "BIT-airflow-2026-48892",
+    "CVE-2026-48892",
+    "PYSEC-2026-2087"
   ],
-  "details": "A bug in `BaseSerialization.deserialize()` allowed unrestricted `import_string()` of attacker-controlled class paths when the Scheduler / API Server loaded a serialized DAG: a DAG author could embed a malicious trigger into a DAG to gain remote code execution on the API Server / Scheduler process, crossing the Airflow security boundary that DAG-author code must never execute in those processes. Users are advised to upgrade to `apache-airflow` 3.3.0 or later. As a defense-in-depth mitigation, deployments where DAG-author trust is limited can restrict the `[core] allowed_deserialization_classes` config to a narrow allowlist.",
+  "summary": "Apache Airflow exposes secrets backend credentials through the Config API",
+  "details": "The Config API in Apache Airflow surfaced per-key secrets-backend overrides (environment variables like `AIRFLOW__SECRETS__BACKEND_KWARG__SECRET_ID` and `AIRFLOW__WORKERS__SECRETS_BACKEND_KWARG__SECRET_ID`) as synthetic config options whose option names were not in `sensitive_config_values`, so the masker did not redact them. An authenticated UI/API user with Config read permission could retrieve plaintext secrets-backend credentials (Vault `role_id` / `secret_id`, etc.) from the Config API output. Affects deployments that configure secrets backends via per-key environment overrides. Users are advised to upgrade to `apache-airflow` 3.3.0 or later.",
   "affected": [
     {
       "package": {
@@ -324,28 +325,39 @@
         "3.3.0rc1",
         "3.3.0rc2"
       ],
-      "ecosystem_specific": {},
       "database_specific": {
-        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/apache-airflow/PYSEC-2026-2082.yaml"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/07/GHSA-9933-5rrp-mfwx/GHSA-9933-5rrp-mfwx.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "http://www.openwall.com/lists/oss-security/2026/07/07/1"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48892"
     },
     {
-      "type": "ADVISORY",
-      "url": "https://lists.apache.org/thread/otvdw8qt2y7xy2n5nq9xby9ky4rf5ltj"
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/pull/67622"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/66002"
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/commit/f0f978d2736891a2f9e9d2954e87fc358e1ef4e3"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/68528"
+      "type": "PACKAGE",
+      "url": "https://github.com/apache/airflow"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-2087.yaml"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread/pq5yy40079h6tzh3fxvw28dd8dbk72hk"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2026/07/07/4"
     }
   ]
 }

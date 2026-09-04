@@ -1,13 +1,14 @@
 {
-  "id": "PYSEC-2026-2082",
-  "modified": "2026-09-04T19:40:19.933602916Z",
-  "published": "2026-07-07T10:16:40.443Z",
+  "id": "GHSA-3322-mjxh-9mp5",
+  "modified": "2026-09-04T19:40:28.229022872Z",
+  "published": "2026-07-07T12:31:35Z",
   "aliases": [
-    "BIT-airflow-2026-33264",
-    "CVE-2026-33264",
-    "GHSA-2943-9672-r45w"
+    "BIT-airflow-2026-48891",
+    "CVE-2026-48891",
+    "PYSEC-2026-2086"
   ],
-  "details": "A bug in `BaseSerialization.deserialize()` allowed unrestricted `import_string()` of attacker-controlled class paths when the Scheduler / API Server loaded a serialized DAG: a DAG author could embed a malicious trigger into a DAG to gain remote code execution on the API Server / Scheduler process, crossing the Airflow security boundary that DAG-author code must never execute in those processes. Users are advised to upgrade to `apache-airflow` 3.3.0 or later. As a defense-in-depth mitigation, deployments where DAG-author trust is limited can restrict the `[core] allowed_deserialization_classes` config to a narrow allowlist.",
+  "summary": "Apache Airflow exposes unreadable DAG identifiers in the scheduling dependencies graph",
+  "details": "A bug in Apache Airflow's `/ui/dependencies` scheduling graph endpoint applied the caller's readable-Dag filter to the top-level serialized Dag key but still emitted referenced Dag IDs through the `dep.source` and `dep.target` fields of trigger / sensor dependency entries. An authenticated UI user with read permission on some Dags could enumerate the identifiers of other Dags they were not authorized to read by inspecting the dependency graph for trigger / sensor references. Affects deployments that rely on per-Dag read scoping to keep Dag identifiers private across teams. This is a residual gap in the fix for CVE-2026-28563, which filtered the top-level Dag key but did not propagate the filter into the trigger / sensor dep-source / dep-target fields. Users who already upgraded for CVE-2026-28563 should additionally upgrade to `apache-airflow` 3.3.0 or later to cover the residual trigger / sensor dependency leak.",
   "affected": [
     {
       "package": {
@@ -324,28 +325,39 @@
         "3.3.0rc1",
         "3.3.0rc2"
       ],
-      "ecosystem_specific": {},
       "database_specific": {
-        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/apache-airflow/PYSEC-2026-2082.yaml"
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/07/GHSA-3322-mjxh-9mp5/GHSA-3322-mjxh-9mp5.json"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "http://www.openwall.com/lists/oss-security/2026/07/07/1"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48891"
     },
     {
-      "type": "ADVISORY",
-      "url": "https://lists.apache.org/thread/otvdw8qt2y7xy2n5nq9xby9ky4rf5ltj"
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/pull/67627"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/66002"
+      "type": "WEB",
+      "url": "https://github.com/apache/airflow/commit/e61c9bac30a7b1a7f68589629f10c4cb247c683e"
     },
     {
-      "type": "FIX",
-      "url": "https://github.com/apache/airflow/pull/68528"
+      "type": "PACKAGE",
+      "url": "https://github.com/apache/airflow"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-2086.yaml"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread/wzc8nflg94rq6w8f5tvtlo0o3g4wjrfl"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.cve.org/CVERecord?id=CVE-2026-28563"
     }
   ]
 }
