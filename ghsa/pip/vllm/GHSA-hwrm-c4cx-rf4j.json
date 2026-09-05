@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-04T21:36:35Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 444270,
+    "Id": "GSA_kwCzR0hTQS1od3JtLWM0Y3gtcmY0as4ABsdu",
+    "GhsaId": "GHSA-hwrm-c4cx-rf4j",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-hwrm-c4cx-rf4j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-73555"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/46415"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/e87521626febe2763f997691d1599de4175f4324"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/releases/tag/v0.26.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hwrm-c4cx-rf4j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hwrm-c4cx-rf4j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73555"
+      }
+    ],
+    "Description": "## Summary\n\nWhen the vLLM API receives a malformed request (e.g., invalid JSON or missing required fields), FastAPI raises a Pydantic `RequestValidationError`. The `validation_exception_handler` in `vllm/entrypoints/openai/server_utils.py` converts this exception to a string via `str(exc)`, which includes the internal file path and line number of the handler function. The existing `sanitize_message()` function in `vllm/entrypoints/utils.py` strips memory addresses (e.g., `0x7f...`) but does not strip `File \"...\", line X` patterns. The result is a user-facing HTTP response that leaks internal system information.\n\n## Impact\n\nAn unauthenticated attacker can extract the following with a single malformed request:\n\n- **OS username** running the vLLM process (e.g., `ubuntu`)\n- **Home directory path** (e.g., `/home/ubuntu/`)\n- **Virtual environment path** (e.g., `vllm-env/`)\n- **Python version** (e.g., `3.12`)\n- **Internal package structure and line numbers** (e.g., `vllm/entrypoints/openai/chat_completion/api_router.py`)\n- **Handler function names per endpoint**, enabling precise version fingerprinting\n\nThis information aids attackers in constructing targeted exploits: environment paths narrow the attack surface, and handler function names + line numbers enable exact version identification even when the `/version` endpoint is disabled.\n\nAll POST endpoints that accept JSON bodies are affected, including `/v1/chat/completions`, `/v1/completions`, `/tokenize`, and `/detokenize`.\n\n## Workarounds\n\nDeploying vLLM behind a reverse proxy that rewrites error response bodies to strip file paths would mitigate this, though it is fragile.\n\n## Remediation Recommendation\n\nTwo possible fixes (either suffices):\n\n**Option A — Fix `validation_exception_handler`:** Construct the error message from `exc.errors()` (the structured Pydantic error list) rather than `str(exc)`. This avoids the traceback-style string entirely.\n\n**Option B — Fix `sanitize_message`:** Add a regex to strip `File \"...\", line \\d+` patterns, similar to how memory addresses are already stripped:\n\n```python\nimport re\nmsg = re.sub(r'File \".*?\", line \\d+, in \\w+', '[internal]', msg)\n```\n\nOption A is preferred as it addresses the root cause rather than filtering symptoms.\n\n## Environment Tested\n\n- vLLM 0.20.1 (pip install, latest stable as of May 2026)\n- Python 3.12\n- Ubuntu 22.04\n- Model: Qwen/Qwen2-0.5B (text-only; bug is model-independent)\n\nThis was fixed here: https://github.com/vllm-project/vllm/commit/e87521626f",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-04T21:36:33Z",
+    "Severity": "MODERATE",
+    "Summary": "vLLM: Unauthenticated Internal Path and Username Disclosure via Validation Error Messages",
+    "UpdatedAt": "2026-09-04T21:36:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.26.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.26.0"
+    }
+  ]
+}

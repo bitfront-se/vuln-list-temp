@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-04T21:37:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 444271,
+    "Id": "GSA_kwCzR0hTQS00OGpoLTNnajctZmc4ds4ABsdv",
+    "GhsaId": "GHSA-48jh-3gj7-fg8v",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-48jh-3gj7-fg8v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-73556"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/47595"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/c9a788eedc412acceaa5112e0d44624b49841577"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/releases/tag/v0.26.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-48jh-3gj7-fg8v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-48jh-3gj7-fg8v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73556"
+      }
+    ],
+    "Description": "### Summary\n\nThe fix for `GHSA-rwxx-mrjm-wc2m` (\"ReDoS via `structured_outputs.regex` compiled without timeout\") wrapped the regex compile in the **xgrammar** and **outlines** backends with `compile_regex_with_timeout` (and, for outlines, `validate_regex_is_buildable`). The **lm-format-enforcer** backend was left unguarded: it compiles the attacker-supplied regex with no timeout and no buildability check. A single request with a catastrophic regex hangs the structured-output compile step and stalls the engine worker (denial of service).\n\n### Affected code (HEAD d6d39c1)\n\n`vllm/v1/structured_output/backend_lm_format_enforcer.py`:\n- line 110: `character_level_parser = lmformatenforcer.RegexParser(grammar_spec)` — builds an `interegular` FSM from the attacker regex synchronously, **no timeout**.\n- line 155: `validate_structured_output_request_lm_format_enforcer` returns immediately on `if so_params.regex:` — **no validation**.\n\nSibling backends that WERE patched by GHSA-rwxx:\n- `backend_xgrammar.py:92` → `compile_regex_with_timeout(...)`.\n- `backend_outlines.py:65` → `compile_regex_with_timeout(...)` (plus `validate_regex_is_buildable`).\n\nlm-format-enforcer uses the same `interegular` DFA-construction primitive the advisory cites for the outlines backend.\n\n### Reproduction (runtime-verified against the sink)\n\nThe sink `lmformatenforcer.RegexParser(\u003cregex\u003e)` was exercised directly (this is exactly what the backend calls):\n\n```\nbaseline  '[0-9]{3}'          -\u003e 0.0002 s\nattacker  '(a{1,300}){300}'   -\u003e DID NOT COMPLETE in 20 s (one core pegged at 100% in interegular FSM construction)\n```\n\nEnd-to-end: start `vllm serve \u003cmodel\u003e --structured-outputs-config '{\"backend\":\"lm-format-enforcer\"}'`, then `POST /v1/completions` with `{\"structured_outputs\":{\"regex\":\"(a{1,300}){300}\"}, ...}`. The request never returns; because grammar compile runs in the engine's structured-output path, concurrent requests stall = worker-level DoS. The identical request against the outlines backend is bounded by `compile_regex_with_timeout` and returns a clean error.\n\n### Impact\n\nUnauthenticated denial of service (vLLM ships with no authentication by default). One request pegs a CPU core and blocks the structured-output engine path.\n\n**Reachability precondition:** the operator must have selected `backend=lm-format-enforcer` via `--structured-outputs-config` (the default is `auto` → xgrammar). This is the same opt-in tier as the outlines backend that GHSA-rwxx already covered.\n\n### Suggested remediation\n\nRoute the lm-format-enforcer regex compile (`backend_lm_format_enforcer.py:110`) through the same `compile_regex_with_timeout` guard already applied to the xgrammar and outlines backends, and reject un-buildable / oversized patterns in `validate_structured_output_request_lm_format_enforcer`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-04T21:37:00Z",
+    "Severity": "MODERATE",
+    "Summary": "vLLM: ReDoS via structured_outputs.regex in the lm-format-enforcer backend (no compile timeout) — missed sibling of GHSA-rwxx-mrjm-wc2m",
+    "UpdatedAt": "2026-09-04T21:37:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.26.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.26.0"
+    }
+  ]
+}
