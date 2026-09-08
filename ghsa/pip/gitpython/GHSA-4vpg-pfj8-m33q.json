@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T15:08:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "gitpython"
+  },
+  "Advisory": {
+    "DatabaseId": 397456,
+    "Id": "GSA_kwCzR0hTQS00dnBnLXBmajgtbTMzcc4ABhCQ",
+    "GhsaId": "GHSA-4vpg-pfj8-m33q",
+    "References": [
+      {
+        "Url": "https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-956x-8gvw-wg5v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-67323"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/gitpython-before-command-injection-via-unguarded-git-options"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4vpg-pfj8-m33q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4vpg-pfj8-m33q"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-956x-8gvw-wg5v. This link is maintained to preserve external references.\n\n## Original Description\nGitPython before 3.1.51 fails to guard against dangerous Git options passed as keyword arguments in Repo.archive() and git.ls_remote(), allowing command injection via options such as --exec/--upload-pack (leading to arbitrary command execution). Additionally, Repo.iter_commits() and Repo.blame() do not check for leading-dash revision arguments, so a revision like --output=\u003cpath\u003e can cause Git to open and truncate an arbitrary file. Exploitation requires an application that passes attacker-controlled arguments to these methods.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-01T15:30:28Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: GitPython: command injection via unguarded Git options in `Repo.archive()`, `git.ls_remote()`, and arbitrary file overwrite via `Repo.iter_commits()` / `Repo.blame()`",
+    "UpdatedAt": "2026-09-08T15:08:45Z",
+    "WithdrawnAt": "2026-09-08T15:08:44Z",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.50"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T15:34:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "gitpython"
+  },
+  "Advisory": {
+    "DatabaseId": 397460,
+    "Id": "GSA_kwCzR0hTQS1tNGYzLWc0Y3EtaHFyeM4ABhCU",
+    "GhsaId": "GHSA-m4f3-g4cq-hqrx",
+    "References": [
+      {
+        "Url": "https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-rwj8-pgh3-r573"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-67322"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/gitpython-before-environment-variable-exfiltration-via-clone-from"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m4f3-g4cq-hqrx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m4f3-g4cq-hqrx"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-rwj8-pgh3-r573. This link is maintained to preserve external references.\n\n## Original Description\n\nGitPython before 3.1.52 is vulnerable to environment-variable exfiltration in Repo.clone_from(). The caller-supplied remote URL is passed through Git.polish_url(), which on non-Cygwin platforms calls os.path.expandvars() on the URL before invoking git clone. An attacker who controls the clone URL can embed $NAME or ${NAME} tokens that are expanded to the values of the hosting process's environment variables (e.g., AWS_SECRET_ACCESS_KEY or GITHUB_TOKEN). The resulting URL, now containing the secret, is transmitted over the network to an attacker-controlled host during the clone attempt, disclosing the secret.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-01T15:30:28Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: GitPython: Environment-variable exfiltration via os.path.expandvars() on Repo.clone_from() URL",
+    "UpdatedAt": "2026-09-08T15:34:15Z",
+    "WithdrawnAt": "2026-09-08T15:34:11Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.51"
+    }
+  ]
+}

