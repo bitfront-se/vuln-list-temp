@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T16:55:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 453356,
+    "Id": "GSA_kwCzR0hTQS1wNHJ3LXJ2djItN3h3cs4ABurs",
+    "GhsaId": "GHSA-p4rw-rvv2-7xwr",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-p4rw-rvv2-7xwr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-79676"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/10d34b3f4fe3fec74b76527a409eb0acbac2e8ab"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.3"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3737.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-before-path-traversal-via-symlink-bypass"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p4rw-rvv2-7xwr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p4rw-rvv2-7xwr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-79676"
+      }
+    ],
+    "Description": "### Summary\n\nSeveral corpus readers still step outside NLTK's symlink-aware trusted-root model. They derive in-root paths from trusted corpus state, convert those paths back into plain strings, and reopen them with built-in `open()` rather than `nltk.pathsec.open()`.\n\n### Details\n\n- **Vulnerability type:** Path traversal and symlink boundary bypass\n- **Affected component:** `nltk.corpus.reader.ipipan`, `nltk.corpus.reader.crubadan`, `nltk.corpus.reader.lin`\n- **Affected versions:** Published `3.9.4` and current source `v3.10.0-rc2` both reproduced.\n- **Patched versions:** Not yet patched\n- **Root cause:** Root-derived paths are reopened with raw `open()` without preserving the trusted-root boundary.\n\n`IPIPANCorpusReader` opens `header.xml` derived from `morph.xml`, `CrubadanCorpusReader` opens `table.txt` directly, and `LinThesaurusCorpusReader` opens `simN.lsp` paths returned from its own root helpers. Under `pathsec.ENFORCE=True`, a symlink placed inside the trusted corpus root can point outside the root and still be parsed successfully. It was confirmed parsed outside-root content is returned through public methods such as `channels()`, `domains()`, `categories()`, `langs()`, `crubadan_to_iso()`, `synonyms()`, and `scored_synonyms()`.\n\n### PoC\n\n**Preconditions**\n- The application processes attacker-influenced corpora inside a trusted NLTK data root or trusted corpus directory.\n\n**Steps**\n1. Create a trusted corpus root and keep `pathsec.ENFORCE=True` with that root allowlisted.\n2. Place symlinked reader inputs such as `header.xml`, `table.txt`, or `simN.lsp` inside the root and point them to external files.\n3. Instantiate the corresponding corpus reader and call its normal public methods.\n4. Observe that parsed outside-root values are returned even though `pathsec.open()` blocks the same symlink targets.\n\n**Minimal reproducible excerpt**\n\n```text\n{'ipipan': ['LEAK', 'TOPSECRET', 'CLASSIFIED'], 'crubadan': ['LEAK'], 'lin': [('LEAK', 9.5)]}\n```\n\n### Impact\n\nAn attacker who can stage corpus files or symlinks under a trusted data root can disclose outside-root content through normal corpus-reader results, defeating the boundary NLTK documents for shared and untrusted-input environments.\n\n### Remediation\n\nPreserve `PathPointer` and `required_root` semantics end to end. Replace direct `open()` calls with `nltk.pathsec.open()` or a reader helper that keeps the trusted-root boundary intact.\n\n### References\n\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/ipipan.py#L162-L192\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/crubadan.py#L74-L98\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/lin.py#L40-L43\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/pathsec.py#L521-L545\n\n---\n\n## Fix + full-codebase audit (verified)\n\n\nI swept every raw file open in the corpus readers, not just the three the umbrella named:\n\n| Reader | Site | Advisory | Root scoping |\n|---|---|---|---|\n| crubadan | table.txt + `\u003ccode\u003e-3grams.txt` | p4rw / j5pw | `required_root=self.root` |\n| lin | simN.lsp | p4rw | `required_root=self.root` |\n| xmldocs | XMLCorpusView bare-string fileid | 934p (base reader) | global fallback (view has no root) |\n| pl196x | textids index | **found by audit** | `required_root=self._root` |\n| mte | MTEFileReader | mvf5 | `required_root` threaded through 8 call sites |\n| toolbox | StandardFormat.open codecs.open | cr8c | global sandbox (low-level parser) |\n| named_entity | load_ace_file ann/text | 7qj2 | global sandbox |\n| nkjp | XML_Tool source file | p4rw class | `required_root=self._root` |\n\n`ipipan` already validates via the earlier #3727 fix — unchanged.\n\n## Fix\nEach site now calls `nltk.pathsec.validate_path(path, required_root=…)` before opening. Where the reader has a concrete corpus root, the check is **scoped** with `required_root` (rejects any escape outside that root). `XMLCorpusView` carries no root, so it falls back to the global data-root sandbox via `getattr(self, \"_root\", None)` — which also avoids an AttributeError on the bare-string path.\n\n## Reproduced (captured)\n```\nraw open(symlink) reads: 'TOPSECRET_OUTSIDE_ROOT'          \u003c- the bypass\nvalidate_path(symlink, required_root): ValueError -\u003e BLOCKS the escape\nvalidate_path(legit in-root): PASSED                       \u003c- loads normally\n```\n\n## Honest residual\nThe global-sandbox fallback (toolbox, named_entity, xmldocs-view) is only as tight as the allowed-roots list, which currently includes the **system temp dir**. Scoping every reader with `required_root` and removing the temp dir from the allowed roots would harden it further (separate advisory / task).\n\n## Tests\n`test_corpus_reader_pathsec.py` — symlink escape rejected, in-root file allowed, XMLCorpusView string-fileid no AttributeError, MTEFileReader out-of-root rejected. 46 existing corpus/toolbox tests pass; all edited modules import (no circular import). pre-commit (black/isort/ruff) clean.\n\n---\n\n## Scope caveat\n`validate_path` blocks every symlink escape variant (verified) and equals `pathsec.open()`'s guarantee, but does NOT block **hardlinks** (no symlink to resolve; tracked separately as GHSA-f794-5jv7-7672) or the validate-then-open TOCTOU race (shared by `pathsec.open`; needs O_NOFOLLOW/openat).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T16:55:38Z",
+    "Severity": "HIGH",
+    "Summary": "NLTK: Corpus readers follow symlinks outside trusted roots despite pathsec enforcement",
+    "UpdatedAt": "2026-09-08T16:55:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.2"
+    }
+  ]
+}

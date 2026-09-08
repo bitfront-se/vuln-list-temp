@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-08T17:58:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@swc/html"
+  },
+  "Advisory": {
+    "DatabaseId": 453363,
+    "Id": "GSA_kwCzR0hTQS01cXIyLXYzOTItbTlnOM4ABurz",
+    "GhsaId": "GHSA-5qr2-v392-m9g8",
+    "References": [
+      {
+        "Url": "https://github.com/swc-project/swc/security/advisories/GHSA-5qr2-v392-m9g8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72925"
+      },
+      {
+        "Url": "https://github.com/swc-project/swc/pull/12080"
+      },
+      {
+        "Url": "https://github.com/swc-project/swc/commit/e1877b44bdac8abc9fd51e984d584f40f6999832"
+      },
+      {
+        "Url": "https://github.com/swc-project/swc/releases/tag/v1.15.47"
+      },
+      {
+        "Url": "https://github.com/swc-project/swc/releases/tag/v1.15.47-nightly-20260729.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5qr2-v392-m9g8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5qr2-v392-m9g8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-72925"
+      }
+    ],
+    "Description": "## Impact\n\n`@swc/html` minifies JSON contained in `script` elements such as\n`application/json` and `application/ld+json` by parsing and serializing the\nJSON value.\n\nBefore the patched versions, JSON serialization could convert escaped\nless-than signs such as `\\u003C` into literal `\u003c` characters. If the JSON\ncontained an escaped `\u003c/script\u003e` sequence, the generated HTML could terminate\nthe containing script element early because HTML tokenization occurs before\nthe JSON is consumed.\n\nApplications that minify HTML containing attacker-controlled JSON data could\ntherefore transform inert data into active markup. A crafted payload could\nexecute script in the origin of the generated page.\n\n## Patches\n\nThe issue is fixed in:\n\n- `@swc/html` 1.15.47\n- `swc_html_minifier` 59.0.0\n\nThe minifier now re-escapes less-than signs after JSON serialization, preserving\nthe script element boundary.\n\n## Workarounds\n\nUsers who cannot upgrade can disable JSON minification with:\n\n```js\nawait minify(html, {\n  minifyJson: false,\n});",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T17:58:00Z",
+    "Severity": "MODERATE",
+    "Summary": "SWC HTML minifier may allow script element breakout when minifying embedded JSON",
+    "UpdatedAt": "2026-09-08T17:58:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.47-nightly-20260729.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.15.47-nightly-20260729.1"
+    }
+  ]
+}

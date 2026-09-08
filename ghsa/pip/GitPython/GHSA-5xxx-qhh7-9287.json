@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-08T18:41:32Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "GitPython"
+  },
+  "Advisory": {
+    "DatabaseId": 454418,
+    "Id": "GSA_kwCzR0hTQS01eHh4LXFoaDctOTI4N84ABu8S",
+    "GhsaId": "GHSA-5xxx-qhh7-9287",
+    "References": [
+      {
+        "Url": "https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-5xxx-qhh7-9287"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-78678"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/gitpython/PYSEC-2026-3788.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/gitpython-before-arbitrary-file-read-via-repo-blame"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5xxx-qhh7-9287"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5xxx-qhh7-9287"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-78678"
+      }
+    ],
+    "Description": "## Summary\n`Repo.blame()` / `Repo.blame_incremental()` guard forwarded revision options against `unsafe_git_revision_options`, but that denylist only contains the file-WRITE options `--output`/`-o`. `git blame` also honors `--contents \u003cfile\u003e` and `-S \u003cfile\u003e`, which cause the file's lines to be echoed into the blame result — an arbitrary file READ. Neither option is in the denylist, so a caller-influenced revision value of `--contents=\u003cpath\u003e` passes the guard and leaks file contents. This is a distinct sink-option and impact class (READ) from GHSA-956x-8gvw-wg5v (which addressed the blame `--output` WRITE), directly analogous to GHSA-539m-9xh6-q6rr (archive READ gap accepted separately from the archive write/exec advisory).\n\n## Root Cause\n`unsafe_git_revision_options = [\"--output\",\"-o\"]` (`git/repo/base.py:188`). The `rev` string is passed to `_option_candidates([rev], kwargs)` and placed BEFORE the `--` separator (base.py:841). The canonical name of `--contents=...` is `contents`, which is not on the denylist, so no `UnsafeOptionError` is raised. The trailing `--` protects only the pathspec, not the option before the revision.\n\n## Impact\nArbitrary local file read at the privileges of the host process; the file's line contents appear in the blame result returned to the caller. Pure VALUE control (the caller forwards a user-influenced revision string). Default `allow_unsafe_options=False`.\n\n## Proof of Concept\n```python\nresult = repo.blame(\"--contents=/etc/passwd\", \"a.txt\")\n# result rows carry the victim file's line text\n```\n\n## Attack Chain\n1. Entry: app calls `repo.blame(rev, file)` with attacker `rev=\"--contents=/etc/passwd\"` (or kwarg `contents=\"/etc/passwd\"`, or `-S`).\n2. Check: `Git.check_unsafe_options(_option_candidates([rev,...], kwargs), unsafe_git_revision_options)` @ base.py:841. Guard: denylist = `[\"--output\",\"-o\"]` only. Bypass proof: canonical name `contents` ∉ denylist → no error.\n3. Sink: `self.git.blame(rev, \"--\", file, p=True, ...)`. argv (observed): `['git','blame','-p','--contents=\u003csecret\u003e','HEAD','--','a.txt']`.\n4. Impact: blame result rows carry the victim file's line text.\n\n## Bypass Evidence\nIndependently reproduced (independent test harness, default `allow_unsafe_options=False`): `blame('--contents=\u003csecret\u003e','a.txt')` → guard PASSED; result rows = `['GATE_SECRET_LINE_A','GATE_SECRET_LINE_B']`. Control: `blame('--output=…')` still BLOCKED (guard active on this path). `-S` kwarg argv also reaches git unguarded.\n\n## Affected Versions\n`GitPython \u003c= 3.1.58` (denylist present verbatim on the latest release tag).\n\n## Suggested Fix\nPrefer an allowlist of blame options; at minimum add `--contents`/`-S` (and any other path-taking blame options) to `unsafe_git_revision_options`, and make the membership rule \"the option takes a filesystem path\" rather than \"the option writes output\".\n\n---\nReported by **zx (Jace)** — GitHub: @manus-use",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T18:41:31Z",
+    "Severity": "MODERATE",
+    "Summary": "GitPython: Incomplete unsafe_git_revision_options denylist omits --contents/-S, enabling arbitrary file read via Repo.blame()",
+    "UpdatedAt": "2026-09-08T18:41:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.59"
+      },
+      "VulnerableVersionRange": "\u003c= 3.1.58"
+    }
+  ]
+}

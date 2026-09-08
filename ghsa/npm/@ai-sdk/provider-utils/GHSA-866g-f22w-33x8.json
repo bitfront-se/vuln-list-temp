@@ -1,6 +1,6 @@
 {
   "Severity": "LOW",
-  "UpdatedAt": "2026-05-29T16:18:59Z",
+  "UpdatedAt": "2026-09-08T16:16:51Z",
   "Package": {
     "Ecosystem": "NPM",
     "Name": "@ai-sdk/provider-utils"
@@ -26,6 +26,30 @@
         "Url": "https://vuldb.com/vuln/364394/cti"
       },
       {
+        "Url": "https://github.com/vercel/ai/pull/16374"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/commit/6a436e31d247d678ddaedfc6f61e73ac0595e4b4"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/commit/b30e43ac3fae2432a40b4f4f27f844f3d78b119e"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/commit/b85c4fbc603b8173cf50a9790823397aada908a9"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/blob/main/packages/provider-utils/CHANGELOG.md#501"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/releases/tag/@ai-sdk/provider-utils@3.0.28"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/releases/tag/@ai-sdk/provider-utils@4.0.33"
+      },
+      {
+        "Url": "https://github.com/vercel/ai/releases/tag/@ai-sdk/provider-utils@5.0.1"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-866g-f22w-33x8"
       }
     ],
@@ -39,12 +63,12 @@
         "Value": "CVE-2026-8769"
       }
     ],
-    "Description": "A vulnerability was determined in Vercel AI up to 3.0.97. The impacted element is the function `createJsonResponseHandler/createJsonErrorResponseHandler` of the file `packages/provider-utils/src/response-handler.ts` of the component `provider-utils`. This manipulation causes resource consumption. The attack may be initiated remotely. The exploit has been publicly disclosed and may be utilized. The vendor was contacted early about this disclosure but did not respond in any way.",
+    "Description": "Versions of `@ai-sdk/provider-utils` before 3.0.28, from 4.0.0 before 4.0.33, and from 5.0.0 before 5.0.1 are vulnerable to uncontrolled resource consumption. The `createJsonResponseHandler`, `createJsonErrorResponseHandler`, and `createStatusCodeErrorResponseHandler` functions in `packages/provider-utils/src/response-handler.ts` read response bodies without a shared size limit, allowing a remote attacker with low privileges to cause excessive memory consumption. The exploit has been publicly disclosed and may be utilized.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2026-05-18T00:31:37Z",
     "Severity": "LOW",
     "Summary": "@ai-sdk/provider-utils has an Uncontrolled Resource Consumption issue",
-    "UpdatedAt": "2026-05-29T16:18:59Z",
+    "UpdatedAt": "2026-09-08T16:16:51Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 4.3,
@@ -54,9 +78,21 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": ""
+        "Identifier": "5.0.1"
       },
-      "VulnerableVersionRange": "\u003c= 3.0.97"
+      "VulnerableVersionRange": "\u003e= 5.0.0-beta.0, \u003c 5.0.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.33"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-beta.10, \u003c 4.0.33"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.28"
+      },
+      "VulnerableVersionRange": "\u003c 3.0.28"
     }
   ]
 }

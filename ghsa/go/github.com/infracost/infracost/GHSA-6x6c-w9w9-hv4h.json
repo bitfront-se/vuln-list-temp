@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-08T18:14:12Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/infracost/infracost"
+  },
+  "Advisory": {
+    "DatabaseId": 453369,
+    "Id": "GSA_kwCzR0hTQS02eDZjLXc5dzktaHY0aM4ABur5",
+    "GhsaId": "GHSA-6x6c-w9w9-hv4h",
+    "References": [
+      {
+        "Url": "https://github.com/infracost/infracost/security/advisories/GHSA-6x6c-w9w9-hv4h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-71494"
+      },
+      {
+        "Url": "https://github.com/infracost/infracost/pull/3590"
+      },
+      {
+        "Url": "https://github.com/infracost/infracost/commit/3d24c757f5e4e60c7259f1b89ad7ceaabcfca86f"
+      },
+      {
+        "Url": "https://github.com/infracost/infracost/releases/tag/v0.10.45"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6x6c-w9w9-hv4h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6x6c-w9w9-hv4h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-71494"
+      }
+    ],
+    "Description": "### Impact\n\nSensitive information exposure in the Infracost Terraform Cloud/Enterprise integration. Several code paths attached a configured secret token to a request whose host was taken straight from the scanned Terraform, with no check that the host was the trusted endpoint. \n\nThe condition that matters is whether a Terraform Cloud/Enterprise (or registry) token is present in the run: if one is, the injected hostname can disclose it. Impact therefore depends on the trigger. Under `on: pull_request` (the only configuration in Infracost's documentation) fork pull requests run without secrets, so no token is present. It only reaches token disclosure under `pull_request_target`, a same-repository pull request, or another CI setup that provides the token alongside untrusted Terraform, and exploiting an untrusted fork pull request also typically needs a maintainer to approve the workflow run. The patch scopes the token to the trusted host regardless of trigger.\n\n### Patches\n\nFixed in `v0.10.45` ([#3590](https://github.com/infracost/infracost/pull/3590)) by attaching a token only when the destination host matches the configured trusted host; otherwise Infracost refuses to send it and skips remote variable loading\n  - Installed via the official script, a package manager, or the `latest` Docker tag: upgrade to `v0.10.45` (or later) to receive the fix.\n  - Pinned to a specific version or image digest: bump to `v0.10.45`.\n\n### Workarounds\n\nNo full fix without upgrading. To limit exposure: use `on: pull_request` rather than `pull_request_target`, pin `organization`, `workspace`, and `host` in Infracost config so the `.tf` hostname is ignored, and keep Terraform Cloud and registry tokens out of runs that process untrusted pull request content.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T18:14:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Infracost: Terraform Cloud and registry token disclosure via unvalidated hostname",
+    "UpdatedAt": "2026-09-08T18:14:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.10.45"
+      },
+      "VulnerableVersionRange": "\u003c 0.10.45"
+    }
+  ]
+}

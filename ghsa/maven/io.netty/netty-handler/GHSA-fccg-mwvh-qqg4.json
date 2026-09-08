@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-08T18:14:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-handler"
+  },
+  "Advisory": {
+    "DatabaseId": 453370,
+    "Id": "GSA_kwCzR0hTQS1mY2NnLW13dmgtcXFnNM4ABur6",
+    "GhsaId": "GHSA-fccg-mwvh-qqg4",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-fccg-mwvh-qqg4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-75596"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17213"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17217"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/1b5abc6443b63726c72cdd285af2feb7ddbb8ff7"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/9e0519239108a69b7e9bbc5e9182ee139a0d7961"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.137.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.17.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fccg-mwvh-qqg4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fccg-mwvh-qqg4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-75596"
+      }
+    ],
+    "Description": "### Summary\n\nNetty's default SNI entrypoint reparses and recopies previously received ClientHello fragments on every additional TLS handshake record. A remote peer can send a small first record that advertises a large ClientHello length and then drip the body in many tiny records, causing **superlinear (quadratic) CPU work** before the handshake completes. With 4095 one-byte fragments, the handler recopies **8,386,560 bytes** from only **24,579 bytes** on the wire — a **341× amplification** ratio.\n\n### Affected Entrypoints\n\n- `io.netty.handler.ssl.SniHandler` — default constructors\n- `io.netty.handler.ssl.SslClientHelloHandler` — pre-handshake ClientHello aggregation path\n\n### Vulnerable Code Locations\n\n- `handler/src/main/java/io/netty/handler/ssl/SniHandler.java:85`\n- `handler/src/main/java/io/netty/handler/ssl/SslClientHelloHandler.java:75` (decode entry)\n- `handler/src/main/java/io/netty/handler/ssl/SslClientHelloHandler.java:165` (handshakeBuffer.clear)\n- `handler/src/main/java/io/netty/handler/ssl/SslClientHelloHandler.java:174` (writeBytes re-copy)\n- `codec-base/src/main/java/io/netty/handler/codec/ByteToMessageDecoder.java:294` (cumulation retention)\n\n### Exploit Path\n\n```\n1. TCP connection → SniHandler → SslClientHelloHandler.decode\n2. First record: TLS handshake header declaring large ClientHello length (e.g., 4096 bytes)\n3. Attacker sends thousands of tiny follow-on handshake records (1 byte each)\n4. On each fragment: handshakeBuffer.clear() + writeBytes() re-copies ALL accumulated body bytes\n5. Total bytes copied = n*(n+1)/2 where n = number of body bytes → quadratic\n6. Event-loop CPU exhausted before SslHandler takes over\n```\n\n### Impact\n\n- **Vulnerability Type:** Inefficient Algorithmic Complexity\n- An unauthenticated network attacker can drive disproportionate CPU consumption on the Netty event loop\n- Affects **all** Netty deployments using `SniHandler` for TLS termination (the default SNI path)\n- No privileges, user interaction, or special configuration required\n- Can degrade or stall TLS connection handling for all clients on the affected event loop\n- The attack requires only modest bandwidth (~25 KB) to trigger significant CPU work\n\n---\n### Credits\n\nFound by a security research team from the University of Sydney, focusing on detecting open source software vulnerabilities.\nLiyi Zhou: https://lzhou1110.github.io/\nZiyue Wang: https://zyy0530.github.io/\nStrick: https://str1ckl4nd.github.io/\nMaurice: https://maurice.busystar.org/\nChenchen Yu: https://7thparkk.github.io/",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T18:14:56Z",
+    "Severity": "MODERATE",
+    "Summary": "Netty: Fragmented ClientHello records trigger quadratic pre-handshake reassembly in default SNI parsing",
+    "UpdatedAt": "2026-09-08T18:14:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.137.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.136.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.17.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.16.Final"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-08T16:42:58Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 453355,
+    "Id": "GSA_kwCzR0hTQS14OTl3LTZmZ2MtcG1md84ABurr",
+    "GhsaId": "GHSA-x99w-6fgc-pmfw",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-x99w-6fgc-pmfw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-79657"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/c3e37113742a1ebeeb4f2ca58941f320f98805ea"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.3"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3735.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-before-3.10.3-remote-code-execution-via-unsafe-pickle-deserialization"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x99w-6fgc-pmfw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x99w-6fgc-pmfw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-79657"
+      }
+    ],
+    "Description": "### Summary\n\nThe current source tree still allows arbitrary code execution during supposedly safer allowlisted pickle loading. The allowlist trusts whole module namespaces instead of exact safe globals, so crafted pickles can invoke dangerous in-namespace callables through pickle REDUCE.\n\n### Details\n\n- **Vulnerability type:** Remote code execution via unsafe deserialization\n- **Affected component:** `nltk.picklesec.allowlisted_pickle_load`, `nltk.tokenize.punkt.punkt_pickle_load`, `nltk.parse.transitionparser.TransitionParser.parse`\n- **Affected versions:** Current source `v3.10.0-rc2`; published `3.9.4` was not the claim target for this bypass.\n- **Patched versions:** Not yet patched\n- **Root cause:** Module-prefix allowlists include dangerous callables such as `nltk.tokenize.repp.ReppTokenizer._execute` and `numpy.f2py.crackfortran.myeval`.\n\n`punkt_pickle_load()` allowlists both `nltk.tokenize.punkt` and the whole `nltk.tokenize` namespace, which exposes `ReppTokenizer._execute()` and its `subprocess.Popen(...)` sink during unpickling. `TransitionParser.parse()` uses `allowlisted_pickle_load(..., allowed_modules=(\"numpy\", \"scipy\", \"sklearn\"))`, which permits `numpy.f2py.crackfortran.myeval()` and its attacker-controlled `eval(...)` path. I confirmed both gadgets create marker files before the caller returns or later aborts on type misuse.\n\n### PoC\n\n**Preconditions**\n- The application loads an attacker-controlled tokenizer or model artifact through these public loaders.\n\n**Steps**\n1. Create a pickle whose REDUCE callable is `ReppTokenizer._execute` and point its command to a harmless marker-file write.\n2. Pass that payload to `punkt_pickle_load(BytesIO(payload))` and observe the marker file is created during unpickling.\n3. Create a second pickle whose REDUCE callable is `numpy.f2py.crackfortran.myeval` and load it through `TransitionParser.parse()`.\n4. Observe the second marker file is created before `TransitionParser.parse()` later fails on the returned object type.\n\n**Minimal reproducible excerpt**\n\n```text\n{'punkt_marker': 'PUNKT_RCE', 'transitionparser_marker': 'TP_RCE'}\n```\n\n### Impact\n\nAny caller that trusts these current allowlisted loaders can still execute attacker-controlled commands while loading model or tokenizer artifacts. This defeats the protection mechanism that replaced unrestricted pickle loading and creates a dangerous false sense of safety.\n\n### Remediation\n\nReplace broad module-prefix allowlists with exact `(module, qualname)` pairs for the few safe classes or functions genuinely required. Do not allow entire namespaces such as `nltk.tokenize` or `numpy`, and keep post-load type validation only as a secondary defense.\n\n### Resources\n\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/tokenize/punkt.py#L120-L134\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/tokenize/repp.py#L111-L115\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/parse/transitionparser.py#L26-L30\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/parse/transitionparser.py#L565-L571\n\n---\n\n## Fix + attack demonstration (verified)\n\n + tightened callers\n`find_class` now, before the allowlists:\n1. **Rejects any dotted `name`** → closes 4489 with zero legit impact.\n2. **Denies dangerous modules** (`os`, `subprocess`, `sys`, `builtins`, `numpy.f2py`, `nltk.tokenize.repp`, …) even under a broad `allowed_modules` — a defense-in-depth **backstop** so a future too-broad allowlist can't silently reopen RCE.\n3. **`builtins` denied wholesale**; safe primitives (`int`, `str`, …) must be named exactly via `allowed_globals`.\n\nCallers tightened: punkt drops the broad `nltk.tokenize` (keeps `nltk.tokenize.punkt` + exact `collections.defaultdict`/`builtins.int`); transitionparser keeps numpy/scipy/sklearn (array unpickling needs their submodules) with the new guards blocking the gadgets.\n\n## Full pickle-sink audit\nEvery deserialization sink in the tree was reviewed: **no raw `pickle.load`** anywhere, and **no** joblib/numpy/torch/dill/yaml/marshal loaders. `data.load` + `wordnet_app` use `RestrictedUnpickler` (blocks all globals — safe); the remaining `pickle_load` sites (`chartparser_app`, `tbl/demo`) load user-selected or self-written files and keep their warning.\n\n## Attack demonstration (captured; fork clone)\n```\n=== EXPLOITS blocked ===\n  4489 sklearn.os.system (dotted)      -\u003e BLOCKED\n  x99w numpy.f2py.crackfortran.myeval  -\u003e BLOCKED\n  x99w nltk.tokenize.repp._execute     -\u003e BLOCKED\n  backstop os.system (os allowlisted)  -\u003e BLOCKED\n  backstop builtins.eval (exact global)-\u003e BLOCKED\n=== LEGIT loads still work ===\n  punkt round-trip via punkt_pickle_load -\u003e OK\n  builtins.int (safe primitive)          -\u003e OK\n```\n\n## Tests\n`test_pickle_allowlist_security.py` — added 5 regressions (dotted traversal, both namespace gadgets, denied-module backstop, legit round-trip). Suite: 122 passed / 9 skipped (sklearn-dependent) across pickle/punkt/transition/tokenize. pre-commit (black/isort/ruff) clean.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T16:42:57Z",
+    "Severity": "CRITICAL",
+    "Summary": "NLTK: Allowlisted pickle loaders still permit code execution in current source",
+    "UpdatedAt": "2026-09-08T16:42:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.3"
+      },
+      "VulnerableVersionRange": "\u003c= 3.10.2"
+    }
+  ]
+}

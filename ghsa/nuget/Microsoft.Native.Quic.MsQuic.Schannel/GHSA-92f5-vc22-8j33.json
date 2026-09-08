@@ -1,0 +1,86 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-08T20:27:05Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.Native.Quic.MsQuic.Schannel"
+  },
+  "Advisory": {
+    "DatabaseId": 454423,
+    "Id": "GSA_kwCzR0hTQS05MmY1LXZjMjItOGozM84ABu8X",
+    "GhsaId": "GHSA-92f5-vc22-8j33",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/msquic/security/advisories/GHSA-92f5-vc22-8j33"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62815"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/pull/6217"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/pull/6219"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/pull/6220"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/commit/583e7d5b509bb0bfa3518482d98879b6eda41ad0"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/commit/9ff06b71fd4b4d5258361598ada5b24cbc1beb20"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/commit/e0f55b5fdc9fff0b4465976d066ebd22fb7e2b3b"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/releases/tag/v2.4.19"
+      },
+      {
+        "Url": "https://github.com/microsoft/msquic/releases/tag/v2.5.10"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-62815"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92f5-vc22-8j33"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92f5-vc22-8j33"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62815"
+      }
+    ],
+    "Description": "# Summary\nUse after free in Microsoft QUIC allows an unauthorized attacker to execute code over a network.\n\n# Details\n\nNew network path creations and removals triggered by incoming packets can lead to a pointer invalidation.\n\n## Patches\n\n- Guard path promotion [e0f55b5](https://github.com/microsoft/msquic/commit/e0f55b5fdc9fff0b4465976d066ebd22fb7e2b3b)\n\n# Impact\n\nAn unauthenticated attacker could exploit this vulnerability by sending a specially crafted packet to an affected service over the network. Successful exploitation could allow the attacker to execute code on the target system. No authentication or user interaction is required.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T20:27:02Z",
+    "Severity": "CRITICAL",
+    "Summary": "Microsoft QUIC: Remote Code Execution Vulnerability",
+    "UpdatedAt": "2026-09-08T20:27:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.19"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.19"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.10"
+      },
+      "VulnerableVersionRange": "\u003e= 2.5.3, \u003c 2.5.10"
+    }
+  ]
+}

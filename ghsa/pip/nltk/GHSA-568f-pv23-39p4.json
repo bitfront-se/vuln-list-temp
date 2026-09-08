@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T16:37:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 453348,
+    "Id": "GSA_kwCzR0hTQS01NjhmLXB2MjMtMzlwNM4ABurk",
+    "GhsaId": "GHSA-568f-pv23-39p4",
+    "References": [
+      {
+        "Url": "https://github.com/nltk/nltk/security/advisories/GHSA-568f-pv23-39p4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62385"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3579"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3581"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/7d1389d0789c1eca56bd0ed444089e0a3972e3ed"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/bf3bf32786791394a1008258b4917a7f2d4dbcda"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.0"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3728.yaml"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/nltk-path-traversal-via-framenet-and-nkjp-readers"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-568f-pv23-39p4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-568f-pv23-39p4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62385"
+      }
+    ],
+    "Description": "### Summary\n\nPublished `nltk==3.9.4` still contains several XML-reader entrypoints that build parser paths from caller-controlled selectors or trusted-looking index state without preserving the corpus-root boundary.\n\n### Details\n\n- **Vulnerability type:** Path traversal and trusted-root bypass\n- **Affected component:** `FramenetCorpusReader.frame_by_name`, `FramenetCorpusReader.doc`, `FramenetCorpusReader.lu`, `NKJPCorpusReader.header`\n- **Affected versions:** Published `3.9.4` reproduced. Current source `v3.10.0-rc2` acted as a negative control and blocked the same payloads.\n- **Patched versions:** Patched in version 3.10.0, which includes the path-safety rejections seen in the release candidate.\n- **Root cause:** Stable reader paths still construct raw XML filenames from unsafe selectors, poisoned index state, or unsafe file identifiers.\n\nI confirmed four public stable entrypoints return parsed outside-root content: a parent-segment traversal frame name, a poisoned fulltext index filename, a poisoned LU id, and an unsafe NKJP header file identifier. Current source rejects the same payloads with explicit path-safety errors, which shows the bug is real but version-scoped to the published stable package.\n\n### PoC\n\n**Preconditions**\n- The application exposes FrameNet or NKJP reader APIs while trusting NLTK to keep XML parsing inside a corpus root.\n\n**Steps**\n1. Create a minimal FrameNet or NKJP corpus root and place attacker-chosen XML files outside that root.\n2. Feed unsafe selectors or poisoned index state into the relevant public stable `3.9.4` APIs.\n3. Observe `frame_by_name`, `doc`, `lu(...).exemplars`, or `header` return parsed outside-root values.\n4. Run the same payloads against current source and observe explicit path-safety rejections.\n\n**Minimal reproducible excerpt**\n\n```text\nframenet_frame_definition FRAME_LEAK\nframenet_doc_text DOC_LEAK\nframenet_lu_text LU_LEAK\nnkjp_header_title HEADER_LEAK\n```\n\n### Impact\n\nApplications that process attacker-influenced FrameNet or NKJP corpus selectors or state can be made to parse XML outside the trusted corpus root through normal public reader responses.\n\n### Remediation\n\nKeep these reader paths on the same root-confinement model as `CorpusReader.open()` and `nltk.pathsec`. Reject unsafe path components before constructing filenames from frame names, document filenames, LU ids, or NKJP file identifiers.\n\n### Resources\n\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/framenet.py#L1366-L1369\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/framenet.py#L1456-L1460\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/framenet.py#L1803-L1810\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/nkjp.py#L96-L103\n- https://github.com/nltk/nltk/blob/3.9.4/nltk/corpus/reader/nkjp.py#L251-L256\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/corpus/reader/framenet.py#L1388-L1399\n- https://github.com/nltk/nltk/blob/v3.10.0-rc2/nltk/corpus/reader/nkjp.py#L96-L128",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T16:37:18Z",
+    "Severity": "HIGH",
+    "Summary": "NLTK: Stable FrameNet and NKJP readers parse outside-root XML",
+    "UpdatedAt": "2026-09-08T16:37:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.9.4"
+    }
+  ]
+}

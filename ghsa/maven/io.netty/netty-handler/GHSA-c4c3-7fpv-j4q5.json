@@ -1,0 +1,77 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-08T18:16:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.netty:netty-handler"
+  },
+  "Advisory": {
+    "DatabaseId": 453371,
+    "Id": "GSA_kwCzR0hTQS1jNGMzLTdmcHYtajRxNc4ABur7",
+    "GhsaId": "GHSA-c4c3-7fpv-j4q5",
+    "References": [
+      {
+        "Url": "https://github.com/netty/netty/security/advisories/GHSA-c4c3-7fpv-j4q5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-75595"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17213"
+      },
+      {
+        "Url": "https://github.com/netty/netty/pull/17217"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/1b5abc6443b63726c72cdd285af2feb7ddbb8ff7"
+      },
+      {
+        "Url": "https://github.com/netty/netty/commit/9e0519239108a69b7e9bbc5e9182ee139a0d7961"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.1.137.Final"
+      },
+      {
+        "Url": "https://github.com/netty/netty/releases/tag/netty-4.2.17.Final"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c4c3-7fpv-j4q5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c4c3-7fpv-j4q5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-75595"
+      }
+    ],
+    "Description": "### Summary\nA fragmented TLS ClientHello whose handshake header spans multiple records makes Netty silently fall back to the default SslContext; where per-SNI selection is the sole mTLS gate, an unauthenticated attacker can bypass the route's mTLS requirement.\n\n### Details\nIn `io.netty.handler.ssl.SslClientHelloHandler#decode` the guard that should wait for the 4-byte handshake header checks the wrong offset - it ignores the 5-byte record header that precedes it - and therefore never fires:\n\n```java\nif (handshakeLength == -1) {\n    if (readerIndex + 4 \u003e endOffset) {\n        // Need more data to read HandshakeType and handshakeLength (4 bytes)\n        return;\n    }\n```\n\nWhen the first record's payload is \u003c 4 bytes, `handshakeLength = in.getUnsignedMedium(readerIndex + SslUtils.SSL_RECORD_HEADER_LENGTH + 1);` leads to `IndexOutOfBoundsException `. That is caught by the generic `catch (Exception)` block, which calls `select(ctx, null)` - this is the default `SslContext`. Fallback to default on parse failure is a problem when per-SNI selection is the sole mTLS gate.\n\n### Impact\nSNI routing bypass. Escalates to an unauthenticated mTLS bypass only when:\n- mTLS is enforced solely via per-SNI SslContext (clientAuth=REQUIRE)\n- the default/fallback SslContext is permissive (clientAuth=NONE/OPTIONAL)\n- no secondary peer-certificate verification exists at the application layer.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T18:16:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "Netty: SNI Routing Bypass via Fragmented TLS ClientHello Causing Fallback to Default SslContext",
+    "UpdatedAt": "2026-09-08T18:16:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.137.Final"
+      },
+      "VulnerableVersionRange": "\u003c= 4.1.136.Final"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.17.Final"
+      },
+      "VulnerableVersionRange": "\u003e= 4.2.0.Final, \u003c= 4.2.16.Final"
+    }
+  ]
+}
