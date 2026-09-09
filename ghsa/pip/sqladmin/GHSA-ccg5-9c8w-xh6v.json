@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-09T18:02:00Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "sqladmin"
+  },
+  "Advisory": {
+    "DatabaseId": 455401,
+    "Id": "GSA_kwCzR0hTQS1jY2c1LTljOHcteGg2ds4ABvLp",
+    "GhsaId": "GHSA-ccg5-9c8w-xh6v",
+    "References": [
+      {
+        "Url": "https://github.com/smithyhq/sqladmin/security/advisories/GHSA-ccg5-9c8w-xh6v"
+      },
+      {
+        "Url": "https://github.com/smithyhq/sqladmin/releases/tag/0.27.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ccg5-9c8w-xh6v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ccg5-9c8w-xh6v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54529"
+      }
+    ],
+    "Description": "## Summary\n\n`ModelView.sort_query()` uses the attacker-controlled `sortBy` list-view query parameter without checking it against the configured `column_sortable_list` allow-list. The value is resolved with `getattr(model, ...)` and fed into relationship joins and `order_by()`, so a request can sort by **any** column of the model — including ones hidden from `column_list` — and, via a dotted path, by columns of related models. Because row order then reflects the value of an unexposed column, this is an information-exposure **ordering oracle**.\n\n## Root cause\n\n`column_sortable_list` is consulted only in the list template to decide which header links to render; the server never enforces it, so removing a column from the UI does not prevent sorting by it.\n\n## Exploitation\n\nA single request leaks the relative ordering of an unexposed column; the `asc`↔`desc` reversal confirms rows are ordered by the secret's actual value. Pairing `sortBy` with searchable/filterable columns and pagination can narrow the oracle toward specific values, though value recovery is conditional on having a filterable target column.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-09T18:01:56Z",
+    "Severity": "MODERATE",
+    "Summary": "SQLAdmin: Unvalidated sortBy parameter in `ModelView` bypasses `column_sortable_list`",
+    "UpdatedAt": "2026-09-09T18:02:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.27.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.27.1"
+    }
+  ]
+}

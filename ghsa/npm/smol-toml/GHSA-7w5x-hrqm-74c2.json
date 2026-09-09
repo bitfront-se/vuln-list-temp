@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-09T18:07:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "smol-toml"
+  },
+  "Advisory": {
+    "DatabaseId": 455403,
+    "Id": "GSA_kwCzR0hTQS03dzV4LWhycW0tNzRjMs4ABvLr",
+    "GhsaId": "GHSA-7w5x-hrqm-74c2",
+    "References": [
+      {
+        "Url": "https://github.com/squirrelchat/smol-toml/security/advisories/GHSA-7w5x-hrqm-74c2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85730"
+      },
+      {
+        "Url": "https://github.com/squirrelchat/smol-toml/commit/30f5c367d946b695f379b5d4f0946b2f0a0a8c2f"
+      },
+      {
+        "Url": "https://github.com/squirrelchat/smol-toml/releases/tag/v1.7.1"
+      },
+      {
+        "Url": "https://medium.com/@ravindu.lakmina1/seven-bytes-that-freeze-a-node-js-server-forever-the-story-of-cve-2026-85730-3213328b38f0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7w5x-hrqm-74c2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7w5x-hrqm-74c2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85730"
+      }
+    ],
+    "Description": "### Summary\n`parse()` can be forced into an infinite loop when a value inside an array or inline table is followed by a comment that has no trailing newline (i.e. the comment \"ends\" the document).\n\nThe library fails to exit an internal loop when attempting to find the end of the structure, resetting its cursor to the beginning of the string instead. This causes the parser to indefinitely hang, compromising the availability of the service.\n\n### Proof of concept\n\n```js\nimport { parse } from 'smol-toml'\nparse('a=[1 #')   // never returns; CPU pinned at 100%\n```\n\n### Impact\n\nApplications which parse arbitrary TOML documents can suffer major availability issues if they receive malicious input. This issue is particularly severe for these use-cases, and it is **strongly advised** to upgrade to an up-to-date version of the library as soon as possible.\n\nIf your use-case does not involve parsing arbitrary TOML documents from untrusted sources, the impact is much lower in practice, although it's still advisable to update to version 1.7.1.\n\n### Patches\n\nVersion 1.7.1 properly breaks out of the loop in these situations and throws the expected `TomlError`.\n\n### Workarounds\n\nNone that don't involve refactors. Update the library **as soon as possible** if your use-case involves parsing arbitrary TOML documents from untrusted sources.\n\n\nReported By : [Ravindu Lakmina Munaweera](https://www.linkedin.com/in/ravindulakmina/)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-09T18:07:11Z",
+    "Severity": "HIGH",
+    "Summary": "smol-toml: Denial of Service via malformed TOML documents",
+    "UpdatedAt": "2026-09-09T18:07:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.7.0"
+    }
+  ]
+}

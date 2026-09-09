@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-09T17:56:33Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/lf-edge/ekuiper/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 455396,
+    "Id": "GSA_kwCzR0hTQS1wcXFjLTh2NzMtOWdnMs4ABvLk",
+    "GhsaId": "GHSA-pqqc-8v73-9gg2",
+    "References": [
+      {
+        "Url": "https://github.com/lf-edge/ekuiper/security/advisories/GHSA-pqqc-8v73-9gg2"
+      },
+      {
+        "Url": "https://github.com/lf-edge/ekuiper/releases/tag/v2.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pqqc-8v73-9gg2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pqqc-8v73-9gg2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-24979"
+      }
+    ],
+    "Description": "### Summary\nServer-side request forgery (SSRF) vulnerability in eKuiper allows an attacker with permissions to register external services or create rules to induce the eKuiper server to make requests to unintended network locations, such as internal services, loopback interfaces (localhost), or cloud metadata endpoints.\n\n### Details\nPrior to v2.4.0, eKuiper external service registrations and HTTP invocations did not validate destination IP addresses. An attacker with access to the eKuiper management API could register an external service pointing to an internal address (such as `http://127.0.0.1:9081` or other internal network services) and trigger queries using service functions (e.g. `SELECT tsschemaless(...) FROM demo`). This allows probing internal networks, leaking sensitive information (such as internal endpoints/credentials), or interacting with internal APIs accessible to the eKuiper host.\n\n### PoC\n1. Create an external service with an address pointing to an internal network / localhost:\n\n```json\n{\n  \"interfaces\": {\n    \"tsschemaless\": {\n      \"address\": \"http://127.0.0.1:9081\",\n      \"protocol\": \"rest\",\n      \"options\": {\n        \"insecureSkipVerify\": true,\n        \"headers\": {\n          \"Accept-Charset\": \"utf-8\"\n        }\n      },\n      \"schemaless\": true\n    }\n  }\n}\n```\n2. Load it to eKuiper and create a rule invoking it, e.g.: `SELECT tsschemaless(\"get\", \"/metadata/sources/yaml/mqtt\", *) FROM demo`.\n3. Run the rule. When data flows through the stream, the response from the internal service is retrieved and can be routed to an external sink or inspected.\n\n### Impact\nServer-Side Request Forgery (SSRF) allowing unauthorized access / probing of internal network services.\n\n### Remediation \u0026 Patches\n- **Upgrade to eKuiper \u003e= 2.4.0**: Starting with v2.4.0, SSRF protection (`httpx.GetSSRFDialContext`) is enabled by default across HTTP clients, blocking requests to private, loopback, link-local, multicast, and unspecified IP addresses.\n\n### Workarounds (for versions \u003c 2.4.0)\nIf unable to upgrade immediately:\n1. **Restrict Management API Access**: Restrict access to the eKuiper REST API (port 9081) and CLI using network firewalls, reverse proxies, and authentication so only trusted administrators can create or update services and rules.\n2. **Egress Network Filtering**: Use firewall / iptables rules or container network isolation to block outbound requests from eKuiper to private subnets, loopback addresses, and cloud metadata endpoints (`169.254.169.254`).\n3. **Audit Service Definitions**: Regularly review registered external services (`GET /services` or `bin/kuiper show services`) to verify target hosts.\n\n### Notes for Users Upgrading to \u003e= 2.4.0\n- In v2.4.0 and later, `basic.enablePrivateNet` in `kuiper.yaml` defaults to `false` (blocking private network access).\n- If a developer's deployment legitimately requires eKuiper to communicate with internal REST services or private networks, they can explicitly opt in by setting `basic.enablePrivateNet: true` (or via environment variable `KUIPER__BASIC__ENABLEPRIVATENET=true`). Ensure eKuiper's API is protected before enabling this setting.\n\nReported by Alexey Kosmachev, Bi.Zone",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-09T17:56:32Z",
+    "Severity": "MODERATE",
+    "Summary": "LF Edge eKuiper: SSRF in External Service",
+    "UpdatedAt": "2026-09-09T17:56:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.0"
+    }
+  ]
+}

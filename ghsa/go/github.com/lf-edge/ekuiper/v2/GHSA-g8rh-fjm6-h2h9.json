@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-09-09T17:56:23Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/lf-edge/ekuiper/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 455395,
+    "Id": "GSA_kwCzR0hTQS1nOHJoLWZqbTYtaDJoOc4ABvLj",
+    "GhsaId": "GHSA-g8rh-fjm6-h2h9",
+    "References": [
+      {
+        "Url": "https://github.com/lf-edge/ekuiper/security/advisories/GHSA-g8rh-fjm6-h2h9"
+      },
+      {
+        "Url": "https://github.com/lf-edge/ekuiper/releases/tag/v2.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g8rh-fjm6-h2h9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g8rh-fjm6-h2h9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2025-24978"
+      }
+    ],
+    "Description": "### Summary\nA Cross-Site Scripting (XSS) vulnerability in external service creation allows an authenticated attacker to inject HTML/script payloads into external service names, which may execute in a user's browser when rendered by administrative web interfaces.\n\n### Details\nPrior to v2.4.0, external service registration endpoints did not strictly enforce alphanumeric character restrictions on service names. An operator or attacker with API access could register a service using a crafted name containing HTML elements (such as `\u003ciframe src=\"...\"\u003e`). If an administrative web UI rendered the unescaped service name, arbitrary script execution could occur in the context of the user's browser session.\n\n### PoC\n1. Create an external service JSON definition with a filename containing an XSS payload, e.g. `\u003ciframe src=\"javascript:alert`1337`\"\u003e.json` inside a ZIP archive.\n2. In external service creation, upload the ZIP and provide the matching service name: `\u003ciframe src=\"javascript:alert`1337`\"\u003e`.\n3. Upon service registration, the unescaped name executes when rendered in the UI context.\n\n### Impact\nSelf-XSS / Stored XSS leading to potential session token leakage or unauthorized actions in the context of the affected user's browser session.\n\n### Remediation \u0026 Patches\n- **Upgrade to eKuiper \u003e= 2.4.0**: Strict alphanumeric identifier validation (`validate.ValidateID`) is now enforced on all external service creation and update endpoints, rejecting invalid characters.\n\n### Workarounds\n- Protect eKuiper management endpoints (`POST /services`) with authentication and network-level firewalls.\n\n### Credits\n- Reported by Alexey Kosmachev, Bi.Zone (@TheMostKnown)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-09T17:56:22Z",
+    "Severity": "LOW",
+    "Summary": "LF Edge eKuiper: Self-XSS in External Service Creation",
+    "UpdatedAt": "2026-09-09T17:56:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.0"
+    }
+  ]
+}
