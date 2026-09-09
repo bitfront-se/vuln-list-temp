@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T21:30:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multer"
+  },
+  "Advisory": {
+    "DatabaseId": 454480,
+    "Id": "GSA_kwCzR0hTQS13YzlnLW1xZnctanJ3bc4ABu9Q",
+    "GhsaId": "GHSA-wc9g-mqfw-jrwm",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/multer/security/advisories/GHSA-wc9g-mqfw-jrwm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77078"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/commit/87a584e8c8d4da873292635fa1d8c4d78d985b76"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/releases/tag/v2.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wc9g-mqfw-jrwm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wc9g-mqfw-jrwm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77078"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in multer allows a remote, unauthenticated attacker to crash the Node.js process with a single `multipart/form-data` request. Two specially crafted text field names cause an uncaught `RangeError: Invalid array length` inside multer's field parsing, which is not routed to the application error handler and terminates the process. All applications using multer to parse multipart requests are affected.\n\n### Patches\n\nUsers should upgrade to `2.3.0`.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:30:20Z",
+    "Severity": "HIGH",
+    "Summary": "multer vulnerable to Denial of Service via crafted multipart field names",
+    "UpdatedAt": "2026-09-08T21:30:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.0"
+    }
+  ]
+}

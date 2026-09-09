@@ -1,0 +1,92 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T21:20:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "svgo"
+  },
+  "Advisory": {
+    "DatabaseId": 454461,
+    "Id": "GSA_kwCzR0hTQS13Mjd2LTdxM3AtdzM4cs4ABu89",
+    "GhsaId": "GHSA-w27v-7q3p-w38r",
+    "References": [
+      {
+        "Url": "https://github.com/svg/svgo/security/advisories/GHSA-w27v-7q3p-w38r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-84370"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/pull/2268"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/pull/2269"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/pull/2272"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/commit/0557385564a5c6c11d76cd934a6cff94451e532c"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/commit/3db3ef33e409a0bc0fdaf255e46c908b00e93bc2"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/commit/994a9f00d79ddec68ce19a1ce9eb8ca08d747e4f"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/releases/tag/v2.8.4"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/releases/tag/v3.3.5"
+      },
+      {
+        "Url": "https://github.com/svg/svgo/releases/tag/v4.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w27v-7q3p-w38r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w27v-7q3p-w38r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84370"
+      }
+    ],
+    "Description": "## Summary\n\nSVGO's opt-in `removeScripts` plugin failed to remove some executable links. Namespace-prefixed SVG anchors and URL schemes containing ASCII tabs or newlines could bypass its checks. Applications that used this plugin as their only protection for untrusted SVG input could expose users to cross-site scripting (XSS).\n\nSVGO is an optimizer rather than a comprehensive sanitization library, but `removeScripts` is maintained for consumers that already rely on it to remove common script execution paths.\n\n## Details\n\nTwo related bypasses were present:\n\n1. The plugin inspected unprefixed SVG `\u003ca\u003e` elements but did not recognize namespace-prefixed SVG anchors such as `\u003csvg:a\u003e` when the prefix was bound to the SVG namespace. Their executable `href` or namespaced `*:href` values remained intact.\n2. The URL check did not account for ASCII tab, line-feed, or carriage-return characters embedded in a scheme. Browsers remove these characters before parsing the scheme, so values such as `java\u0026#9;script:` could remain executable after bypassing the plugin's `javascript:` check.\n\nAnchors in unrelated custom namespaces are not executable SVG anchors and remain untouched.\n\n## Impact\n\nIf an application optimized attacker-controlled SVGs with `removeScripts` and then served the result in an active browser context, a victim could follow a link that executes script in the SVG's origin. Depending on the embedding and origin configuration, this could expose cookies or local storage, modify content, or perform actions as the victim.\n\nThe plugin is opt-in, so consumers that do not enable it are not relying on the affected behavior. Typical local optimization of trusted SVG files is not affected.\n\n## Patches\n\nUpgrade to one of the following releases for the maintained release line in use:\n\n| Release line | Patched version | Plugin |\n| --- | --- | --- |\n| v2 | 2.8.4 | `removeScriptElement` |\n| v3 | 3.3.5 | `removeScriptElement` |\n| v4 | 4.1.0 | `removeScripts` |\n\nThe fix makes SVG anchor handling namespace-aware and strips ASCII tabs, line feeds, and carriage returns before checking executable URL schemes.\n\nSVGO v1 is no longer maintained. Users of v1 should upgrade to a supported release line.\n\n## Workarounds\n\nFor hostile input, use a dedicated SVG sanitization tool before passing the SVG to SVGO. Applications can also reject links from untrusted SVG input and avoid serving user-controlled SVGs in an active same-origin context.\n\n## References\n\n- v4 fix: https://github.com/svg/svgo/pull/2268\n- related executable URL hardening: https://github.com/svg/svgo/pull/2263\n- v3 backport: https://github.com/svg/svgo/pull/2269\n- v2 backport: https://github.com/svg/svgo/pull/2272\n- v4.1.0 release: https://github.com/svg/svgo/releases/tag/v4.1.0\n- v3.3.5 release: https://github.com/svg/svgo/releases/tag/v3.3.5\n- v2.8.4 release: https://github.com/svg/svgo/releases/tag/v2.8.4",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:20:28Z",
+    "Severity": "HIGH",
+    "Summary": "SVGO: removeScripts allows executable links through namespace and control-character bypasses",
+    "UpdatedAt": "2026-09-08T21:20:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.3.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.8.4"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 2.8.4"
+    }
+  ]
+}

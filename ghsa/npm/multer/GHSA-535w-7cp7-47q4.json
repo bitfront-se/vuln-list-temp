@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T21:28:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multer"
+  },
+  "Advisory": {
+    "DatabaseId": 454477,
+    "Id": "GSA_kwCzR0hTQS01MzV3LTdjcDctNDdxNM4ABu9N",
+    "GhsaId": "GHSA-535w-7cp7-47q4",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/multer/security/advisories/GHSA-535w-7cp7-47q4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-82333"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/pull/1438"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/commit/73c1759fa93b87366bc6dbd7abe1b80ddff7d27c"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/releases/tag/v2.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-535w-7cp7-47q4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-535w-7cp7-47q4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-82333"
+      }
+    ],
+    "Description": "### Impact\n\nmulter is vulnerable to a Denial of Service (DoS) via a crafted array index in multipart field names. The `append-field` dependency parses bracket notation in field names, and a large numeric index such as `items[4294967294]` forces allocation of a maximum-length sparse array. A following field with a non-numeric key on the same base then converts that array to an object by iterating its full length, which consumes CPU synchronously and leaves the process unable to handle other requests. A single HTTP request with a crafted multipart body is sufficient to exploit this, and it affects multer 1.x and 2.x.\n\n### Patches\n\nUsers should upgrade to `2.3.0` and configure `limits.fieldArrayIndexLimit` to the minimum array index their application requires.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:28:43Z",
+    "Severity": "HIGH",
+    "Summary": "multer vulnerable to Denial of Service via oversized array index in field names",
+    "UpdatedAt": "2026-09-08T21:28:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.0"
+    }
+  ]
+}

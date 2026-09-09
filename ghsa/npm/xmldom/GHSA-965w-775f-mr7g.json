@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T21:00:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "xmldom"
+  },
+  "Advisory": {
+    "DatabaseId": 454450,
+    "Id": "GSA_kwCzR0hTQS05NjV3LTc3NWYtbXI3Z84ABu8y",
+    "GhsaId": "GHSA-965w-775f-mr7g",
+    "References": [
+      {
+        "Url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-965w-775f-mr7g"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-83615"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/pull/1071"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/pull/1072"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/954370f58c046223faf95ba77efcbc8ce014409d"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/commit/dabffe884e864eeecb1f515c716f875e1bc47ec1"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.8.15"
+      },
+      {
+        "Url": "https://github.com/xmldom/xmldom/releases/tag/0.9.12"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-965w-775f-mr7g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-965w-775f-mr7g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-83615"
+      }
+    ],
+    "Description": "## Summary\n\nWhen an element declares a namespace prefix, xmldom copies the entire in-scope namespace map\ninto a fresh object and keeps that copy on the element while it is open on the parse stack. A\ncrafted document that nests N elements, each declaring one unique prefix, therefore drives the\nparser to hold on the order of N(N+1)/2 = **O(N²) namespace-map entries at its peak**, so a small,\nhighly compressible input exhausts the heap. Parsing runs under default options on untrusted,\nnetwork-delivered XML, so a sub-megabyte payload can OOM-crash the process before any\napplication-level validation runs — an unauthenticated denial of service.\n\n## Details\n\n`appendElement` performs the copy: `_copy` clones the current namespace map into a fresh object for\neach prefix-declaring element, and the copy is retained on that element's parse-stack entry:\n\n```js\nif (localNSMap == null) {\n    localNSMap = Object.create(null);\n    _copy(currentNSMap, (currentNSMap = Object.create(null)));   // full copy of all ancestor prefixes\n}\ncurrentNSMap[nsPrefix] = localNSMap[nsPrefix] = value;\n...\nel.currentNSMap = currentNSMap;   // retained while the element is open on the parse stack\n```\n\nhttps://github.com/xmldom/xmldom/blob/08a22d78e4bc50f12ce9f5090b8d96ee6031ac7b/lib/sax.js#L467-L540\n\nThe copies stack: the element at depth `i` copies a map of size ~`i`, and every ancestor stays live\non the parse stack until it closes, so at the deepest point Σ`i` namespace entries are held at once.\nThat peak is transient — the completed DOM retains only O(N), one small namespace map per node — but\nit is reached during parsing, which is what OOM-crashes the process.\n\n## Proof of Concept\n\nA minimal document — N nested elements, each declaring one unique namespace prefix (no SAML wrapper\nneeded):\n\n```js\nconst { DOMParser } = require('@xmldom/xmldom');\n\nfunction build(n) {\n  let open = '', close = '';\n  for (let i = 0; i \u003c n; i++) { open += `\u003ca xmlns:p${i}=\"urn:${i}\"\u003e`; close = '\u003c/a\u003e' + close; }\n  return `\u003cr\u003e${open}${close}\u003c/r\u003e`;   // \u003cr\u003e\u003ca xmlns:p0=\"urn:0\"\u003e...\u003ca xmlns:p{n-1}=\"urn:{n-1}\"\u003e...\u003c/a\u003e...\u003c/r\u003e\n}\n\nfor (const n of [2000, 4000, 8000, 16000]) {\n  const src = build(n);\n  new DOMParser().parseFromString(src, 'text/xml');   // peak memory ~ O(n^2)\n  console.log(n, (src.length / 1024).toFixed(0) + ' KB in', (process.resourceUsage().maxRSS / 1024).toFixed(0) + ' MB peak RSS');\n}\n```\n\nMeasured on Node.js v24 (peak RSS ~quadruples per doubling of depth; absolute numbers vary by host):\n\n| depth  | input   | peak RSS                        |\n| -----: | ------: | ------------------------------- |\n|  2,000 |  56 KB  | 266 MB                          |\n|  4,000 | 115 KB  | 622 MB                          |\n|  8,000 | 232 KB  | 1.9 GB                          |\n| 16,000 | ~470 KB | OOM crash (default ~4 GB heap)  |\n\nAbout 470 KB of trivially-generated, highly-compressible input crashes a default Node.js process;\nlarger depths scale as O(N²) into the tens of GB, crashing larger hosts (as first measured by the\nreporter with a SAML-shaped payload).\n\n## Impact\n\nUnauthenticated denial of service against any service that parses attacker-influenced XML with\nxmldom under default options. A single sub-megabyte request drives multi-gigabyte peak memory and\ncan OOM-crash the process before any application-level validation (e.g. schema checks or a SAML\nsignature verification) runs. The payload is a plain namespace-nesting document and highly\ncompressible, so it is effective over compressed transports (e.g. an HTTP-Redirect / DEFLATE\nbinding, not only POST bindings).\n\n## Severity note\n\nThe CVSS 4.0 vector scores availability only (`VC:N/VI:N/VA:H`): the flaw neither discloses nor\nalters data, it exhausts the heap. `VA:H` is justified because a single unauthenticated,\nnetwork-delivered request (`AV:N/PR:N/UI:N`) of trivial complexity (`AC:L/AT:N`) drives the parser\nto multi-gigabyte peak memory and OOM-crashes the process before any application-level logic runs —\na full loss of availability for the affected service.\n\n## Fix Applied\n\nInherit each element's in-scope namespace map through the prototype chain instead of copying it for every prefix-declaring element, so a deeply namespaced document holds O(N) namespace entries instead of O(N²) at peak. Behavior-preserving: serialized output is byte-identical, only the memory cost drops. Non-breaking and independent of `requireWellFormed`; ships on both maintained versions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:00:52Z",
+    "Severity": "HIGH",
+    "Summary": "xmldom: Quadratic-memory consumption",
+    "UpdatedAt": "2026-09-08T21:00:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.1.5, \u003c= 0.6.0"
+    }
+  ]
+}

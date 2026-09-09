@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-08T20:50:48Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "maplibre-gl"
+  },
+  "Advisory": {
+    "DatabaseId": 454440,
+    "Id": "GSA_kwCzR0hTQS1qcmM3LTk2YzUtcTU3Oc4ABu8o",
+    "GhsaId": "GHSA-jrc7-96c5-q579",
+    "References": [
+      {
+        "Url": "https://github.com/maplibre/maplibre-gl-js/security/advisories/GHSA-jrc7-96c5-q579"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85061"
+      },
+      {
+        "Url": "https://github.com/maplibre/maplibre-gl-js/pull/8189"
+      },
+      {
+        "Url": "https://github.com/maplibre/maplibre-gl-js/commit/1da69f3cd913a39fa948708e01478663bf48bc27"
+      },
+      {
+        "Url": "https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jrc7-96c5-q579"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jrc7-96c5-q579"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85061"
+      }
+    ],
+    "Description": "### Impact\n`DOM.sanitize()` in `src/util/dom.ts` iterated `elem.attributes` (a live `NamedNodeMap`) while calling `elem.removeAttribute()` in the same loop. Removing an attribute shifts subsequent attributes down by one index, causing the iterator to skip the adjacent attribute.\n\nAn attacker can provide an HTML payload with consecutive dangerous attributes (such as `\u003cdetails open onload=\"1\" ontoggle=\"...\"\u003e`). The first attribute is stripped while the second survives and executes upon insertion into `innerHTML` via the attribution control without requiring user interaction (zero-click XSS).\n\nApplications rendering untrusted/third-party style attribution strings or user-supplied custom attributions are impacted.\n\n### Patches\nThe issue has been resolved by creating a static snapshot of attributes using `Array.from(elem.attributes)` before iteration. Please upgrade to `maplibre-gl` version **6.4.1** (or latest).\n\n### Workarounds\nSanitizing the attribute field of a source before passing it down to maplibre",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T20:50:47Z",
+    "Severity": "CRITICAL",
+    "Summary": "MapLibre GL JS: XSS Sanitizer Bypass in DOM.sanitize() via Live NamedNodeMap Removal Skip",
+    "UpdatedAt": "2026-09-08T20:50:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 6.4.0"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T21:25:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sharp"
+  },
+  "Advisory": {
+    "DatabaseId": 454470,
+    "Id": "GSA_kwCzR0hTQS1yZ2o3LWczbTQtNWc4Y84ABu9G",
+    "GhsaId": "GHSA-rgj7-g3m4-5g8c",
+    "References": [
+      {
+        "Url": "https://github.com/lovell/sharp/security/advisories/GHSA-rgj7-g3m4-5g8c"
+      },
+      {
+        "Url": "https://github.com/strukturag/libheif/security/advisories/GHSA-2jg2-4ch7-h545"
+      },
+      {
+        "Url": "https://github.com/strukturag/libheif/security/advisories/GHSA-g89c-p67h-r497"
+      },
+      {
+        "Url": "https://github.com/lovell/sharp/releases/tag/v0.35.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rgj7-g3m4-5g8c"
+      }
+    ],
+    "Description": "### Impact\nA number of vulnerabilities, two rated as \"Critical\" severity using CVSSv3, have been discovered and fixed in the upstream libheif dependency. These can lead to possible remote code execution (RCE) on glibc-based Linux when run under certain conditions.\n\nThe attack vector for these claims to be \"network\" however sharp does not provide any networking features so this vulnerability is down-rated to a \"High\" severity using CVSSv4 but please note its Subsequent System Impact.\n\nThose processing untrusted input with versions of sharp prior to 0.35.4 are affected.\n\n### Patches\n\n#### Using prebuilt binaries provided by sharp?\n\nMost people rely on the prebuilt binaries provided by sharp.\n\nPlease upgrade sharp to the latest version, currently 0.35.4, which provides libheif 1.23.2.\n\n#### Using a globally-installed libheif?\n\nPlease ensure you are using the latest libheif 1.23.2.\n\n### Workarounds\nAdd the following to your code to prevent sharp from decoding AVIF images.\n```js\nsharp.block({ operation: [\"VipsForeignLoadHeif\"] });\n```\n\nEnsure you are using a `node` executable binary compiled as a Position Independent Executable (PIE). Most Linux package managers already do this for protection against RCE however be warned that the \"official\" Node.js binaries do not.\n\n### References\n- [CVE-2026-84383](https://github.com/strukturag/libheif/security/advisories/GHSA-g89c-p67h-r497)\n- https://github.com/strukturag/libheif/security/advisories/GHSA-2jg2-4ch7-h545",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:25:11Z",
+    "Severity": "HIGH",
+    "Summary": "sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545",
+    "UpdatedAt": "2026-09-08T21:25:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.35.4"
+      },
+      "VulnerableVersionRange": "\u003c 0.35.4"
+    }
+  ]
+}

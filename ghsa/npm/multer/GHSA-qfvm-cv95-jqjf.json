@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-08T21:29:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multer"
+  },
+  "Advisory": {
+    "DatabaseId": 454479,
+    "Id": "GSA_kwCzR0hTQS1xZnZtLWN2OTUtanFqZs4ABu9P",
+    "GhsaId": "GHSA-qfvm-cv95-jqjf",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/multer/security/advisories/GHSA-qfvm-cv95-jqjf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77037"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/commit/eef74440b491ef0f976f3d25895e8089ae495df0"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/releases/tag/v2.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qfvm-cv95-jqjf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qfvm-cv95-jqjf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77037"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in multer `2.2.0` allows an attacker to trigger a Denial of Service (DoS) by aborting or truncating multipart uploads. When using `diskStorage`, the destination write stream is not closed if the upload is aborted before it finishes, so each failed request leaks an open file descriptor and retains its disk blocks until the process exits. Repeated failed uploads can exhaust the available file descriptors. All applications using multer's disk storage are affected.\n\n### Patches\n\nUsers should upgrade to `2.3.0`.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:29:51Z",
+    "Severity": "HIGH",
+    "Summary": "multer vulnerable to Denial of Service via file descriptor leak on aborted uploads",
+    "UpdatedAt": "2026-09-08T21:29:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.0"
+      },
+      "VulnerableVersionRange": "= 2.2.0"
+    }
+  ]
+}

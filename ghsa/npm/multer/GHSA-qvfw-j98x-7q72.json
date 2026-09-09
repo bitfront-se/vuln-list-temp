@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-09-08T21:29:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multer"
+  },
+  "Advisory": {
+    "DatabaseId": 454478,
+    "Id": "GSA_kwCzR0hTQS1xdmZ3LWo5OHgtN3E3Ms4ABu9O",
+    "GhsaId": "GHSA-qvfw-j98x-7q72",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/multer/security/advisories/GHSA-qvfw-j98x-7q72"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77063"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/commit/ab6aeae650328cf31799dcfa4c3e116ba8faaacc"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/releases/tag/v2.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qvfw-j98x-7q72"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qvfw-j98x-7q72"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77063"
+      }
+    ],
+    "Description": "### Impact\n\nWhen `multer` is configured with an asynchronous `fileFilter`, the `limits.fileSize` limit can be bypassed. The `'limit'` event is registered inside the async `fileFilter` callback, so if a file exceeds `limits.fileSize` before that callback runs, the event is missed and the oversized upload is accepted instead of being rejected with a `LIMIT_FILE_SIZE` error. Applications that rely on `limits.fileSize` to reject oversized uploads are affected on all upload methods (`.single()`, `.array()`, `.fields()`, `.any()`). Uploads using a synchronous `fileFilter` are not affected.\n\n### Patches\n\nUsers should upgrade to `2.3.0`.\n\n### Workarounds\n\nUse a synchronous `fileFilter`, or validate the uploaded file size after the upload completes.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-08T21:29:42Z",
+    "Severity": "LOW",
+    "Summary": "multer vulnerable to file size limit bypass via async fileFilter race condition",
+    "UpdatedAt": "2026-09-08T21:29:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.3.0"
+    }
+  ]
+}
