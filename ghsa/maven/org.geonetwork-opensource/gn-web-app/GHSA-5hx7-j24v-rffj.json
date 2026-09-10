@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-09T23:43:53Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.geonetwork-opensource:gn-web-app"
+  },
+  "Advisory": {
+    "DatabaseId": 455506,
+    "Id": "GSA_kwCzR0hTQS01aHg3LWoyNHYtcmZmas4ABvNS",
+    "GhsaId": "GHSA-5hx7-j24v-rffj",
+    "References": [
+      {
+        "Url": "https://github.com/geonetwork/core-geonetwork/security/advisories/GHSA-5hx7-j24v-rffj"
+      },
+      {
+        "Url": "https://github.com/geonetwork/core-geonetwork/pull/9343"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5hx7-j24v-rffj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5hx7-j24v-rffj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-55864"
+      }
+    ],
+    "Description": "### Summary\nAn unauthenticated server-side request forgery vulnerability lets any anonymous user make the GeoNetwork server issue arbitrary outbound HTTP requests. This gives an external attacker a position inside the server's network, making it possible to make internal requests no matter if the response is XML-type or not.\n\nThe SLD tooling endpoint `POST /api/tools/ogc/sld` takes a caller-supplied **WMS server URL** and performs a **server-side HTTP GET** to it, with no validation. The fetched body can also be stored and downloaded if the output of the outbound request is in XML format, making the SSRF non-blind.\n\n### Impact\nAny unauthenticated user can make the server send arbitrary HTTP requests to internal hosts it would never expose publicly, and read the responses back if the request responses are XML. This enables internal data disclosure, for example, configuration files that return as XML, authorization bypass, and reconnaissance of the internal network all from an anonymous position.\n\n### Resolution \n\nPatched releases:\n\n* 4.4.12\n* 4.2.17\n\n### Resources\n\n* https://github.com/geonetwork/core-geonetwork/pull/9343",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-09T23:43:51Z",
+    "Severity": "HIGH",
+    "Summary": "GeoNetwork Web Module: Unauthenticaded Server-Side Request Forgery  in SLD Tool",
+    "UpdatedAt": "2026-09-09T23:43:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.17"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c= 4.2.16"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.4.12"
+      },
+      "VulnerableVersionRange": "\u003e= 4.4.0, \u003c= 4.4.11"
+    }
+  ]
+}
