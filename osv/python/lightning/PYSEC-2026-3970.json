@@ -1,20 +1,20 @@
 {
-  "id": "GHSA-98fp-7v67-4v3q",
-  "modified": "2026-09-10T17:25:34.335699774Z",
-  "published": "2025-03-20T12:32:47Z",
+  "id": "PYSEC-2026-3970",
+  "modified": "2026-09-10T17:25:45.422789003Z",
+  "published": "2026-09-10T16:42:38.395281Z",
   "aliases": [
-    "CVE-2024-8020",
-    "PYSEC-2026-1857",
-    "PYSEC-2026-3971"
+    "CVE-2024-8019",
+    "GHSA-4cv3-v7pv-rfhf",
+    "PYSEC-2026-507"
   ],
-  "summary": "PyTorch Lightning denial of service vulnerability",
-  "details": "A vulnerability in lightning-ai/pytorch-lightning version 2.3.2 allows an attacker to cause a denial of service by sending an unexpected POST request to the `/api/v1/state` endpoint of `LightningApp`. This issue occurs due to improper handling of unexpected state values, which results in the server shutting down.",
+  "summary": "PyTorch Lightning path traversal vulnerability",
+  "details": "In lightning-ai/pytorch-lightning version 2.3.2, a vulnerability exists in the `LightningApp` when running on a Windows host. The vulnerability occurs at the `/api/v1/upload_file/` endpoint, allowing an attacker to write or overwrite arbitrary files by providing a crafted filename. This can lead to potential remote code execution (RCE) by overwriting critical files or placing malicious files in sensitive locations.",
   "affected": [
     {
       "package": {
         "ecosystem": "PyPI",
-        "name": "pytorch-lightning",
-        "purl": "pkg:pypi/pytorch-lightning"
+        "name": "lightning",
+        "purl": "pkg:pypi/lightning"
       },
       "ranges": [
         {
@@ -23,7 +23,9 @@
             {
               "introduced": "0"
             },
-            {}
+            {
+              "fixed": "2.4.0"
+            }
           ]
         }
       ],
@@ -228,26 +230,71 @@
         "2.2.4",
         "2.2.5",
         "2.3.0",
+        "2.3.0.dev20240318",
+        "2.3.0.dev20240324",
+        "2.3.0.dev20240328",
+        "2.3.0.dev20240331",
+        "2.3.0.dev20240407",
+        "2.3.0.dev20240414",
+        "2.3.0.dev20240421",
+        "2.3.0.dev20240428",
+        "2.3.0.dev20240505",
+        "2.3.0.dev20240519",
+        "2.3.0.dev20240526",
+        "2.3.0.dev20240602",
+        "2.3.0.dev20240609",
+        "2.3.0.dev20240616",
+        "2.3.0.dev20240623",
         "2.3.1",
-        "2.3.2"
+        "2.3.2",
+        "2.3.3",
+        "2.4.0.dev20240630",
+        "2.4.0.dev20240707",
+        "2.4.0.dev20240714",
+        "2.4.0.dev20240721",
+        "2.4.0.dev20240728",
+        "2.4.0.dev20240804",
+        "2.4.0.dev20240811",
+        "2.4.0.dev20240818",
+        "2.4.0.dev20240825",
+        "2.4.0.dev20240901",
+        "2.4.0.dev20240908",
+        "2.4.0.dev20240915",
+        "2.4.0.dev20240922",
+        "2.4.0.dev20240929",
+        "2.4.0.dev20241006",
+        "2.4.0.dev20241013",
+        "2.4.0.dev20241020"
       ],
       "database_specific": {
-        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-98fp-7v67-4v3q/GHSA-98fp-7v67-4v3q.json"
+        "source": "https://github.com/pypa/advisory-database/blob/main/vulns/lightning/PYSEC-2026-3970.yaml"
       }
     }
   ],
   "references": [
     {
       "type": "ADVISORY",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-8020"
-    },
-    {
-      "type": "PACKAGE",
-      "url": "https://github.com/Lightning-AI/pytorch-lightning"
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-8019"
     },
     {
       "type": "WEB",
-      "url": "https://huntr.com/bounties/8b642a78-2b80-4fb0-9b2f-8ba0ff37db6a"
+      "url": "https://github.com/lightning-ai/pytorch-lightning/commit/330af381de88cff17515418a341cbc1f9f127f9a"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/pytorch/pytorch"
+    },
+    {
+      "type": "WEB",
+      "url": "https://huntr.com/bounties/2754298b-5af5-48ef-8b38-999093ddf2bd"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://pypi.org/project/pytorch-lightning"
+    },
+    {
+      "type": "ADVISORY",
+      "url": "https://github.com/advisories/GHSA-4cv3-v7pv-rfhf"
     }
   ]
 }
