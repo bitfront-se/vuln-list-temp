@@ -1,0 +1,89 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-10T20:25:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/platform-server"
+  },
+  "Advisory": {
+    "DatabaseId": 464184,
+    "Id": "GSA_kwCzR0hTQS12M3A4LXdocTYtcjVqZ84ABxU4",
+    "GhsaId": "GHSA-v3p8-whq6-r5jg",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-v3p8-whq6-r5jg"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/73d8bbd27cb46495426d4132975a1355b47ad915"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/89b20568dfaee1ec8e0b3bcf1872acdddd2f4fef"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/ba3bc47b20b3d12f5eb141ec9c651373ae4d15e8"
+      },
+      {
+        "Url": "https://github.com/angular/domino/commit/04f987dc08ff3736b427f50941adf1722458528f"
+      },
+      {
+        "Url": "https://github.com/angular/angular/releases/tag/v20.3.30"
+      },
+      {
+        "Url": "https://github.com/angular/angular/releases/tag/v21.2.22"
+      },
+      {
+        "Url": "https://github.com/angular/angular/releases/tag/v22.1.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v3p8-whq6-r5jg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v3p8-whq6-r5jg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-88060"
+      }
+    ],
+    "Description": "### Summary\nAn XSS vulnerability exists in `@angular/platform-server` during server-side rendering (SSR) HTML serialization when traversing ancestor tags across `\u003ctemplate\u003e` element boundaries. When an application renders untrusted user input within raw-text tags (`\u003cxmp\u003e`, `\u003cstyle\u003e`, `\u003cscript\u003e`), comments, or text nodes inside a `\u003ctemplate\u003e` that is nested within a fallback raw-content element (`\u003cnoscript\u003e`, `\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`), matching closing tags (e.g., `\u003c/noscript\u003e`) are not escaped during HTML serialization. When rendered in a browser, this unescaped closing tag prematurely terminates the fallback container and executes trailing markup as active DOM elements.\n\n### Technical Description\nIn HTML5 parsing, fallback raw-content elements (`\u003cnoscript\u003e`, `\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`) place the browser's tokenizer into `RAWTEXT` mode. In this mode, inner content is parsed as literal text until an end tag matching the container tag name (e.g., `\u003c/noscript\u003e`) is encountered.\n\nTo prevent XSS breakout vectors during SSR serialization, the DOM serializer inspects a node's ancestors to escape any matching fallback closing tags (`\u003c/tag` -\u003e `\u0026lt;/tag`). However:\n1. Per DOM specifications, the children of a `\u003ctemplate\u003e` element reside in a separate `DocumentFragment` (`template.content`), whose own `parentNode` is `null`.\n2. The serializer's ancestor traversal previously only inspected element nodes. When traversing upward from a node inside `template.content`, traversal terminated immediately at the `DocumentFragment` boundary.\n3. Because traversal stopped before reaching the outer document tree, enclosing fallback raw-content ancestors (such as `\u003cnoscript\u003e` or `\u003ciframe\u003e`) were not discovered. As a result, closing sequences like `\u003c/noscript\u003e` within `\u003ctemplate\u003e` content were emitted unescaped.\n\n### Impact \u0026 Reachability\n* **Framework Guarantee Bypass**: Angular guarantees that standard text interpolation (`{{ userInput }}` bound as element text content) is safe by default without manual sanitization. This vulnerability bypasses that guarantee during SSR HTML serialization when untrusted input is interpolated inside template content within fallback containers.\n* **Template Authoring**: Writing literal `\u003cxmp\u003e` or `\u003cstyle\u003e` directly inside a component's `\u003ctemplate\u003e` markup requires relaxed template schema checks (`CUSTOM_ELEMENTS_SCHEMA` or `NO_ERRORS_SCHEMA`). However, standard HTML comments and text nodes inside `\u003ctemplate\u003e` within `\u003cnoscript\u003e` are reachable without relaxed schemas.\n* **Imperative DOM Construction**: Components or directives that construct DOM structures imperatively via `Renderer2` bypass template compiler schema checks entirely and are unconditionally affected.\n\n### Proof of Concept (Minimal Reproduction)\n```ts\nimport { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-root',\n  standalone: true,\n  template: `\n    \u003cnoscript\u003e\n      \u003ctemplate\u003e\n        \u003cxmp\u003e{{ payload }}\u003c/xmp\u003e\n      \u003c/template\u003e\n    \u003c/noscript\u003e\n  `\n})\nexport class AppComponent {\n  // Attacker-controlled input bound via standard text interpolation\n  payload = '\u003c/noscript\u003e\u003cimg src=x onerror=alert(\"SSR_TEMPLATE_XSS\")\u003e';\n}\n```\n**Vulnerable SSR Output**:\n```html\n\u003cnoscript\u003e\u003ctemplate\u003e\u003cxmp\u003e\u003c/noscript\u003e\u003cimg src=x onerror=alert(\"SSR_TEMPLATE_XSS\")\u003e\u003c/xmp\u003e\u003c/template\u003e\u003c/noscript\u003e\n```\n\n### Workarounds\n* Avoid rendering untrusted user input inside `\u003ctemplate\u003e` elements nested within `\u003cnoscript\u003e`, `\u003ciframe\u003e`, `\u003cnoembed\u003e`, or `\u003cnoframes\u003e` in server-rendered templates.\n* Avoid programmatic DOM assembly of `\u003ctemplate\u003e` elements inside fallback containers when handling untrusted data.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T20:25:25Z",
+    "Severity": "HIGH",
+    "Summary": "Angular: SSR XSS via Unescaped \u003ctemplate\u003e Content Across DocumentFragment Boundaries in Fallback Raw-Content Elements",
+    "UpdatedAt": "2026-09-10T20:25:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.30"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0, \u003c 20.3.30"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.22"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0, \u003c 21.2.22"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0, \u003c 22.1.4"
+    }
+  ]
+}
