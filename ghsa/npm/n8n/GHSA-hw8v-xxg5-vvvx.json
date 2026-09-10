@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-10T15:11:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 464042,
+    "Id": "GSA_kwCzR0hTQS1odzh2LXh4ZzUtdnZ2eM4ABxSq",
+    "GhsaId": "GHSA-hw8v-xxg5-vvvx",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-hw8v-xxg5-vvvx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-86076"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.76"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.37.7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hw8v-xxg5-vvvx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hw8v-xxg5-vvvx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-86076"
+      }
+    ],
+    "Description": "## Impact\n\nThe expression compiler's sanitizer resolved through a dynamically-scoped `this`, so a class field named `__sanitize` rebound it and reached the `Function` constructor. On the backend, any expression author could run code in the n8n process; in the editor preview, a member's expression could run as JavaScript in the session of whoever opened the workflow. The patch rejects reserved class-member names.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.76, 2.37.7, and 2.38.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Avoid granting workflow-create or workflow-edit permissions to untrusted users.\n- Audit existing workflows for unexpected or unfamiliar expressions in node parameters.\n- Set `N8N_EXPRESSION_ENGINE=vm`.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T15:11:07Z",
+    "Severity": "HIGH",
+    "Summary": "n8n: Expression Sandbox Escape via Class-Field Sanitizer Rebinding Can Lead to Code Execution",
+    "UpdatedAt": "2026-09-10T15:11:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.37.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.37.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.38.0, \u003c 2.38.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.76"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.76"
+    }
+  ]
+}
