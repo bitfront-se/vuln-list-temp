@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-10T21:05:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 464190,
+    "Id": "GSA_kwCzR0hTQS02NzlmLTU4cHEtNHYyY84ABxU-",
+    "GhsaId": "GHSA-679f-58pq-4v2c",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-679f-58pq-4v2c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-86078"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.37.7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-679f-58pq-4v2c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-679f-58pq-4v2c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-86078"
+      }
+    ],
+    "Description": "## Impact\n\nThe Instance AI workflow summary built its result with get-or-create-then-nested-write idioms keyed by node names and connection keys taken from the stored workflow. Those are arbitrary strings: the restricted-name guard n8n shows in the editor is client-side and is bypassed by posting the workflow to the REST API directly. So a reserved key such as `__proto__` resolved up the prototype chain instead of creating an own key, and the write landed on `Object.prototype` in the main n8n process, affecting every later request. The patch builds the summary with null-prototype accumulators and validates the keys it accepts, so reserved names cannot reach the prototype chain.\n\n## Patches\n\nThe issue has been fixed in n8n versions 2.37.7 and 2.38.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Remove or leave unconfigured the `N8N_INSTANCE_AI_MODEL*` environment variables to prevent the Instance AI module from reaching the vulnerable code path.\n- Restart the n8n process to clear any in-memory prototype pollution if an attack is suspected.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T21:05:24Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Prototype Pollution via Workflow Structure Summary Can Lead to Denial of Service",
+    "UpdatedAt": "2026-09-10T21:05:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.37.7"
+      },
+      "VulnerableVersionRange": "\u003c 2.37.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.38.0, \u003c 2.38.2"
+    }
+  ]
+}

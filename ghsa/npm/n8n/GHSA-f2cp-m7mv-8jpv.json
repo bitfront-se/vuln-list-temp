@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-10T21:05:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 464191,
+    "Id": "GSA_kwCzR0hTQS1mMmNwLW03bXYtOGpwds4ABxU_",
+    "GhsaId": "GHSA-f2cp-m7mv-8jpv",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-f2cp-m7mv-8jpv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-86079"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.76"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.37.7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f2cp-m7mv-8jpv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f2cp-m7mv-8jpv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-86079"
+      }
+    ],
+    "Description": "## Impact\n\nThe Elasticsearch and ElasticSecurity nodes built REST endpoints by interpolating user-provided identifiers straight into the request path. A value containing path separators or dot segments changed which endpoint the request actually reached, so an operation intended for one document could hit another index or a cluster administration endpoint instead, under the stored Elasticsearch credential. The patch encodes each identifier as a single URL path segment and rejects values that normalise away.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.76, 2.37.7, and 2.38.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Disable the affected nodes by adding `n8n-nodes-base.elasticsearch` and `n8n-nodes-base.elasticSecurity` to the `NODES_EXCLUDE` environment variable if they are not required.\n- Audit existing workflows that use these nodes and ensure that index and document identifier fields do not accept externally-controlled input.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T21:05:43Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Path Injection in Elasticsearch and ElasticSecurity Nodes via Unencoded Identifiers",
+    "UpdatedAt": "2026-09-10T21:05:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.37.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.37.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.38.0, \u003c 2.38.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.76"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.76"
+    }
+  ]
+}

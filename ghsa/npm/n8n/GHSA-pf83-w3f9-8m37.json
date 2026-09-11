@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-10T21:07:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 464193,
+    "Id": "GSA_kwCzR0hTQS1wZjgzLXczZjktOG0zN84ABxVB",
+    "GhsaId": "GHSA-pf83-w3f9-8m37",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-pf83-w3f9-8m37"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-86084"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.76"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.37.7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pf83-w3f9-8m37"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pf83-w3f9-8m37"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-86084"
+      }
+    ],
+    "Description": "## Impact\n\nThe public OIDC login and callback endpoints ran the full flow whether or not OIDC was the instance's active, enabled authentication method, so turning OIDC off in Settings did not stop it issuing sessions. An administrator who disabled the provider still had a working login route. The patch requires OIDC to be the enabled, active authentication method before either endpoint starts the flow or issues a session.\n\nThe issue affects n8n Enterprise instances where OIDC was configured at least once and subsequently disabled.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.76, 2.37.7, and 2.38.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Disable or revoke the corresponding application or client at the IdP level to prevent the OIDC flow from completing.\n- Restrict network-level access to the n8n instance to trusted users only.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T21:07:24Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Disabled OIDC SSO Endpoints Remain Active and Issue Valid Sessions",
+    "UpdatedAt": "2026-09-10T21:07:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.37.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.37.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.38.0, \u003c 2.38.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.76"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.76"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-10T21:01:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 464189,
+    "Id": "GSA_kwCzR0hTQS02NXh3LTJ2NTItamh4Y84ABxU9",
+    "GhsaId": "GHSA-65xw-2v52-jhxc",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-65xw-2v52-jhxc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-86994"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.76"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.37.7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-65xw-2v52-jhxc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-65xw-2v52-jhxc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-86994"
+      }
+    ],
+    "Description": "## Impact\n\nThe endpoint `/rest/active-workflows` returned every active workflow ID on the instance to any member, regardless of sharing, and workflow activation, deactivation and publication push events were broadcast to every connected client, carrying workflow IDs, version IDs and activation-error detail across users. The patch scopes both the listing and the push events through the sharing service, so a user only sees workflows they can access.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.76, 2.37.7, and 2.38.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Avoid provisioning `global:member` accounts for untrusted users until the instance is patched.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T21:01:27Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Cross-User Active Workflow ID and Lifecycle Event Disclosure via Missing userId Filter",
+    "UpdatedAt": "2026-09-10T21:01:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.37.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.37.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.38.0, \u003c 2.38.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.76"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.76"
+    }
+  ]
+}

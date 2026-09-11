@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-10T21:16:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "n8n"
+  },
+  "Advisory": {
+    "DatabaseId": 464196,
+    "Id": "GSA_kwCzR0hTQS1xZ3B3LThnNDYtdzk1ds4ABxVE",
+    "GhsaId": "GHSA-qgpw-8g46-w95v",
+    "References": [
+      {
+        "Url": "https://github.com/n8n-io/n8n/security/advisories/GHSA-qgpw-8g46-w95v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-86995"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@1.123.76"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.37.7"
+      },
+      {
+        "Url": "https://github.com/n8n-io/n8n/releases/tag/n8n@2.38.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qgpw-8g46-w95v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qgpw-8g46-w95v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-86995"
+      }
+    ],
+    "Description": "## Impact\n\nThe Git node validated the repository that a fetch or pull targeted, but `setUpstream` wrote a `branch.\u003cname\u003e.remote` value into the repository's own configuration without validating it. A subsequent fetch or pull resolved the remote from that configuration rather than from the checked parameter, so an authenticated user with workflow-edit permission could point it at any local repository the n8n process could read and receive its contents. The patch validates the branch remote configuration on the same terms as the repository parameter.\n\n## Patches\n\nThe issue has been fixed in n8n versions 1.123.76, 2.37.7, and 2.38.2. Users should upgrade to one of these versions or later to remediate the vulnerability.\n\n## Workarounds\n\nIf upgrading is not immediately possible, administrators should consider the following temporary mitigations:\n- Restrict n8n instance access to fully trusted users only.\n- Disable the Git node by adding `n8n-nodes-base.git` to the `NODES_EXCLUDE` environment variable.\n- Ensure the n8n process runs under a dedicated low-privilege OS user account to limit the scope of any filesystem access.\n\nThese workarounds do not fully remediate the risk and should only be used as short-term mitigation measures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T21:16:36Z",
+    "Severity": "MODERATE",
+    "Summary": "n8n: Git Node branch.\u003cname\u003e.remote Config Key Bypasses Sandbox Path Restriction, Enabling Local Git Repository Read",
+    "UpdatedAt": "2026-09-10T21:16:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.37.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.37.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.38.2"
+      },
+      "VulnerableVersionRange": "\u003e= 2.38.0, \u003c 2.38.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.123.76"
+      },
+      "VulnerableVersionRange": "\u003c 1.123.76"
+    }
+  ]
+}
