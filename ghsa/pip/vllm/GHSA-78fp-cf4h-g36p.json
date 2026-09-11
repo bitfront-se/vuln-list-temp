@@ -1,0 +1,61 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-11T19:18:43Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 365445,
+    "Id": "GSA_kwCzR0hTQS03OGZwLWNmNGgtZzM2cM4ABZOF",
+    "GhsaId": "GHSA-78fp-cf4h-g36p",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-mcmc-2m55-j8jj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56340"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vllm-denial-of-service-via-unvalidated-multimodal-embeddings"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-56340"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2491060"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-56340.json"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-78fp-cf4h-g36p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-78fp-cf4h-g36p"
+      }
+    ],
+    "Description": "### Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-mcmc-2m55-j8jj. This link is maintained to preserve external references.\n\n### Original Description\n\nvLLM versions \u003e= 0.10.2 and \u003c 0.13.0 are missing sparse tensor validation in multimodal embeddings processing. Because PyTorch disables sparse tensor invariant checks by default, an attacker can submit crafted embedding requests with malformed (negative or out-of-bounds) tensor indices, when the prompt-embeds feature is enabled, to trigger crashes or resource exhaustion (denial of service), with potential for out-of-bounds/write-what-where memory corruption. This continues CVE-2025-62164, whose prior fix only disabled the feature by default rather than addressing the root cause.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-20T21:31:21Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: vLLM introduced enhanced protection for CVE-2025-62164",
+    "UpdatedAt": "2026-09-11T19:18:43Z",
+    "WithdrawnAt": "2026-09-11T19:18:42Z",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.13.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.10.2, \u003c 0.13.0"
+    }
+  ]
+}
