@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-11T22:11:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "yayson"
+  },
+  "Advisory": {
+    "DatabaseId": 465003,
+    "Id": "GSA_kwCzR0hTQS0zMjVqLW1nMjUtOHE1OM4ABxhr",
+    "GhsaId": "GHSA-325j-mg25-8q58",
+    "References": [
+      {
+        "Url": "https://github.com/confetti/yayson/security/advisories/GHSA-325j-mg25-8q58"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-325j-mg25-8q58"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-325j-mg25-8q58"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61534"
+      }
+    ],
+    "Description": "# Summary\n`Store`/`LegacyStore` key internal lookup tables by the `type`, `id`, and relationship names from a JSON:API document. Because these were plain objects, a document with `type: \"__proto__\"` writes onto `Object.prototype`, polluting every object in the process.\n\n# Severity\nSuggested CVSS v3.1 `AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H` (8.1). The guaranteed impact is process-wide DoS / logic corruption; escalation to authorization bypass or RCE is dependent on gadgets in the consuming application.\n\n# Affected / Patched\n- Affected: `\u003c= 4.2.0` (verified in `3.0.0` and `4.2.0`; all 3.x and 4.x).\n- Patched: `4.3.0`.\n\n# Details\n`type` is a string *value*, untouched by `JSON.parse`, and is used directly as an object key:\n```js\nif (!models[type]) models[type] = {}          // models[\"__proto__\"] is Object.prototype → skipped\nif (!models[type][id]) models[type][id] = model // → Object.prototype[id] = model\n```\nThe attacker controls the polluted key (`id`) and value (the model, populated from `attributes`). Pollution persists for the process lifetime. The malicious type can also arrive via an `included` resource referenced by a relationship, bypassing any `data.type` allow-list. `LegacyStore` is additionally reachable when a configured `types` mapping resolves to `\"__proto__\"`.\n\n# Proof of concept\n```js\nconst { Store } = require('yayson')()\nnew Store().sync({ data: { type: '__proto__', id: 'polluted', attributes: { x: 1 } } })\nconsole.log(({}).polluted) // { x: 1, id: 'polluted' }  ← Object.prototype polluted\n```\n\n# Workarounds\nReject documents whose `type` or relationship names are `__proto__`, `constructor`, or `prototype`, or run Node with `--disable-proto=throw`.\n\n# Fix\nNull-prototype lookup tables, rejection of `__proto__`/`constructor`/`prototype` as document-derived member names, `Object.keys()` iteration, and null-prototype normalization of caller-supplied caches.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-11T22:11:38Z",
+    "Severity": "CRITICAL",
+    "Summary": "yayson: Prototype pollution in Store/LegacyStore deserialization",
+    "UpdatedAt": "2026-09-11T22:11:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.0"
+    }
+  ]
+}

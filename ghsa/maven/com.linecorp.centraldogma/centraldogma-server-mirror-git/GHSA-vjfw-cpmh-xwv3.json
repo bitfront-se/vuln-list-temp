@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-11T20:45:50Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.linecorp.centraldogma:centraldogma-server-mirror-git"
+  },
+  "Advisory": {
+    "DatabaseId": 464507,
+    "Id": "GSA_kwCzR0hTQS12amZ3LWNwbWgteHd2M84ABxZ7",
+    "GhsaId": "GHSA-vjfw-cpmh-xwv3",
+    "References": [
+      {
+        "Url": "https://github.com/line/centraldogma/security/advisories/GHSA-vjfw-cpmh-xwv3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-11745"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vjfw-cpmh-xwv3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vjfw-cpmh-xwv3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-11745"
+      }
+    ],
+    "Description": "# Vulnerability\n\nCentral Dogma's Git mirror SSH client installs an Apache MINA SSHD `ServerKeyVerifier` lambda that returns `true` unconditionally for every outbound SSH connection used by `git+ssh://` mirrors. The accompanying lines disable the `known_hosts` and `~/.ssh/config` fallbacks, and a repo-wide search confirms that no host-key pinning mechanism (no `acceptedHostKeys`, `knownHosts`, `KnownHostsServerKeyVerifier`, `StaticServerKeyVerifier`, or `RequiredServerKeyVerifier`) exists anywhere in `server-mirror-git/`. Operators have no opt-in way to enable verification. Every outbound mirror connection blindly trusts whatever host key the remote presents.\n\n## Evidence\n\nFile: `server-mirror-git/src/main/java/com/linecorp/centraldogma/server/internal/mirror/SshGitMirror.java`\nLines 143-160 (especially 149) on branch `main` @ commit `d64a5151`:\n\n```java\nprivate SshClient createSshClient() {\n    final ClientBuilder builder = ClientBuilder.builder();\n    // Do not use local file system.\n    builder.hostConfigEntryResolver(HostConfigEntryResolver.EMPTY);   // line 146\n    builder.fileSystemFactory(NoneFileSystemFactory.INSTANCE);        // line 147\n    // Do not verify the server key.\n    builder.serverKeyVerifier((clientSession, remoteAddress, serverKey) -\u003e true);  // line 149\n    ...\n}\n```\n\nVerification:\n\n- Read confirmed on 2026-05-21 against `main` @ `d64a5151`.\n- A multi-agent code audit verified that no operator-facing pinning field exists on `SshKeyCredential`, `PasswordCredential`, or `MirrorContext`.\n- Exploit PoC reproduced locally with a `paramiko`-based fake SSH server bound to 127.0.0.1. The fake server presents an ephemeral RSA host key never seen before; the Central Dogma mirror client accepts the connection and proceeds to authentication, logging the offered username and public-key fingerprint. A correctly hardened SSH client would refuse the connection before reaching the authentication phase.\n- Full PoC artifacts (read-only, loopback-only) at `~/centraldogma-poc/C1_ssh_hostkey_bypass/` on the reporter's workstation.\n\n## Impact\n\nThreat model: An on-path attacker on the corporate network — ARP spoofing on the LAN, internal DNS poisoning, malicious internal DNS overriding `github.com` or the configured internal git hostname, BGP hijack, sidecar/CNI compromise in Kubernetes, or any process able to answer TCP on the resolved IP. No Central Dogma account required; only network position.\n\n1. **Direction `LOCAL_TO_REMOTE`**: the attacker impersonating the remote git server receives the entire mirrored repository contents over the SSH session. Central Dogma is a configuration store, so this typically exfiltrates DB credentials, third-party API keys, certificates, feature flags, and any other secret configuration committed to mirrored repositories.\n2. **Direction `REMOTE_TO_LOCAL`**: the attacker can serve arbitrary commits which Central Dogma materializes into the local repo and then broadcasts to every subscribing microservice via the watch API. This is a supply-chain root-of-trust compromise across all downstream services consuming Central Dogma configuration.\n3. **Credential theft chain with finding H2** (mirror credentials are not bound to a hostname): an SSH key or access token configured for `github.com` can be captured by the attacker's fake server and replayed against the real upstream, extending impact beyond Central Dogma itself.\n\nScope is `Changed` (CVSS) because exploitation alters trust assumptions of every downstream client of Central Dogma, not just Central Dogma itself.\n\n## How to fix\n\n1. Add an `acceptedHostKeys: List\u003cString\u003e` field to `SshKeyCredential` and `PasswordCredential` (or to `MirrorContext`). Values are SHA-256 fingerprints of trusted remote SSH server host keys, e.g. `SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8`.\n2. Replace the accept-all lambda at `SshGitMirror.java:149` with a verifier that computes the SHA-256 fingerprint of the presented host key and compares it against the credential's allowlist using a constant-time comparison.\n3. Refuse to connect when `acceptedHostKeys` is empty — fail-closed. Do not implement implicit TOFU.\n4. Optionally provide an admin-only `dogma mirror probe-host-key \u003cremote\u003e` tool that performs a single audited connection, prints the server's fingerprint, and prompts the operator to add it to the credential. This makes TOFU an explicit, audited operation.\n5. Update `SshGitMirrorTest.java` and `it/mirror/*` tests to pin a test fingerprint or use the explicit trust-once tool, so the regression cannot silently return.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-11T20:45:50Z",
+    "Severity": "HIGH",
+    "Summary": "Central Dogma: SSH host-key verification permanently disabled in Git mirror (SshGitMirror)",
+    "UpdatedAt": "2026-09-11T20:45:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.84.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.84.0"
+    }
+  ]
+}

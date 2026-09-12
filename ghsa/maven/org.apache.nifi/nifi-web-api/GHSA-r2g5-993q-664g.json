@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-11T22:09:40Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.nifi:nifi-web-api"
+  },
+  "Advisory": {
+    "DatabaseId": 365539,
+    "Id": "GSA_kwCzR0hTQS1yMmc1LTk5M3EtNjY0Z84ABZPj",
+    "GhsaId": "GHSA-r2g5-993q-664g",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-44914"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/ydr34t03xd1n0t9oogpzogjrd5y93838"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/06/20/6"
+      },
+      {
+        "Url": "https://github.com/apache/nifi/commit/8fb3240441282825b6ef131b856c67b2476aeb28"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r2g5-993q-664g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r2g5-993q-664g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-44914"
+      }
+    ],
+    "Description": "Apache NiFi 1.12.0 through 2.9.0 are missing authorization when replacing Process Groups that include extension components with specific Required Permissions based on the Restricted annotation. The Restricted annotation indicates additional privileges required, but framework authorization did not check restricted status when handling requests to replace Process Groups. The missing authorization permits a user with general write access to add components with Restricted status. Apache NiFi installations that do not implement specific authorization for Restricted components are not subject to this vulnerability because the framework enforces write permissions as the security boundary. Upgrading to Apache NiFi 2.9.0 is the recommended mitigation, which removes the implementation of Restricted status authorization from the framework.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T09:30:45Z",
+    "Severity": "HIGH",
+    "Summary": "Apache NiFi: Missing authorization when replacing Process Groups with restricted components",
+    "UpdatedAt": "2026-09-11T22:09:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.12.0, \u003c 2.9.0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-11T22:10:45Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.apache.nifi:nifi-jetty"
+  },
+  "Advisory": {
+    "DatabaseId": 365536,
+    "Id": "GSA_kwCzR0hTQS04dm0yLWMzMmotbXZmcs4ABZPg",
+    "GhsaId": "GHSA-8vm2-c32j-mvfr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-54665"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/y0yoblon8f6dp00qz5r90cxq5n6g4j6k"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/06/20/7"
+      },
+      {
+        "Url": "https://github.com/apache/nifi/commit/41625c4433898922b0a3e7635f597cb4ef197c28"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8vm2-c32j-mvfr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8vm2-c32j-mvfr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-54665"
+      }
+    ],
+    "Description": "Apache NiFi 0.0.1 through 2.9.0 support building qualified URLs from one of several HTTP request headers that provide an alternative to the standard Host header without validating the values provided. Apache NiFi 1.6.0 introduced a configurable application property to restrict values provided in the HTTP Host header, but did not apply the validation to alternative Proxy and Forwarded headers. The absence of proxy host header validation allowed a client to instruct Apache NiFi web services to construct invalid qualified URLs for redirection or data references. Upgrading to Apache NiFi 2.10.0 is the recommended mitigation, which implements validation for the X-ProxyHost and X-Forwarded-Host HTTP request headers based on the nifi.web.proxy.host property. Enabling header validation requires configuring the application with HTTPS. Reverse proxy servers in front of Apache NiFi are responsible for filtering input request headers and providing allowed values to the application.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T09:30:45Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache NiFi fails to validate proxy host headers when constructing qualified URLs",
+    "UpdatedAt": "2026-09-11T22:10:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.10.0"
+    }
+  ]
+}
