@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-15T20:00:46Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-client_2.12"
+  },
+  "Advisory": {
+    "DatabaseId": 485329,
+    "Id": "GSA_kwCzR0hTQS13djY0LWo0ZnEtNWY5eM4AB2fR",
+    "GhsaId": "GHSA-wv64-j4fq-5f9x",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-wv64-j4fq-5f9x"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/87535f7288f3baaf6736e2735087e473762b5b2f"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wv64-j4fq-5f9x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wv64-j4fq-5f9x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69214"
+      }
+    ],
+    "Description": "When processing a `Set-Cookie` from a response, the `CookieJar` client middleware trusts the server-supplied `Domain` attribute verbatim, with no check that it domain-matches the host that sent the cookie (RFC6265 §5.3 step 6) and no public suffix check.  A malicious or compromised server can therefore plant a cookie for any domain in the cookie jar, which is subsequently set on the client's next request to that victim domain, enabling session fixation or overwriting security-relevant cookies.\n\n## Impact\n\nSession fixation and overwrite of security-relevant cookies for arbitrary domains contacted by the same wrapped client.\n\n## Preconditions\n\n- Application uses the `CookieJar` client middleware.\n- Application contacts an attacker-controlled (or compromised) server using the same jar it uses for trusted hosts.\n\n## Workarounds\n\n- Do not share a `CookieJar` across trusted and untrusted targets.\n\n## Note\n\nThis middleware still does not implement public suffix rejection.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T20:00:43Z",
+    "Severity": "MODERATE",
+    "Summary": "Http4s: CookieJar middleware accepts arbitrary Set-Cookie domain",
+    "UpdatedAt": "2026-09-15T20:00:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

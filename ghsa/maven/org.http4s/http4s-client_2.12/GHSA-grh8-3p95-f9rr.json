@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-15T20:00:55Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-client_2.12"
+  },
+  "Advisory": {
+    "DatabaseId": 485330,
+    "Id": "GSA_kwCzR0hTQS1ncmg4LTNwOTUtZjlycs4AB2fS",
+    "GhsaId": "GHSA-grh8-3p95-f9rr",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-grh8-3p95-f9rr"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/c0a37f38d5ee2a568ba57bd9da62f8d79b8b1fcc"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-grh8-3p95-f9rr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-grh8-3p95-f9rr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69215"
+      }
+    ],
+    "Description": "The `CookieJar` client middleware decides whether to attach a cookie to an outgoing request using an unanchored substring test on the host and path, instead of the domain match specified by RFC6265 5.1.3.  A cookie stored for `example.com` is therefore sent to any host whose name merely contains `example.com` (e.g. `evilexample.com`), leaking potentially sensitive cookies to an attacker-chosen host.\n\n## Impact\n\nDisclosure of session and authentication cookies to an attacker-controlled host, enabling session hijack of the application's outbound calls.\n\n## Preconditions\n\n- Application uses the `CookieJar` client middleware.\n- Application can be induced to make an outbound request to a host controlled by the attacker, where the hostname contains the targeted domain as a substring.\n\n## Workarounds\n\n- Do not use the `CookieJar` with clients that fetch attacker-influenced URLs\n- Apply a separate `CookieJar` per trusted origin.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T20:00:54Z",
+    "Severity": "MODERATE",
+    "Summary": "Http4s: CookieJar middleware matches by substring, leaking cookies cross-origin",
+    "UpdatedAt": "2026-09-15T20:00:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

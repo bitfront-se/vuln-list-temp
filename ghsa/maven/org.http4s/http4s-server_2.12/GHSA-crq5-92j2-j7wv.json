@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-15T20:01:14Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-server_2.12"
+  },
+  "Advisory": {
+    "DatabaseId": 485333,
+    "Id": "GSA_kwCzR0hTQS1jcnE1LTkyajItajd3ds4AB2fV",
+    "GhsaId": "GHSA-crq5-92j2-j7wv",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-crq5-92j2-j7wv"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/bcd99cdc1342ef58a0f132acb814af06a668a8d3"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-crq5-92j2-j7wv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-crq5-92j2-j7wv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69201"
+      }
+    ],
+    "Description": "The static content handlers `ResourceService` and `WebjarService` URL decode each path segment and then reject only segments that are exactly `\"\"`, `\".\"`, or `\"..\"`.  A percent-encoded separator (`%2F`) lets an attacker smuggle a `../` segment past that filter and escape the configured base, reading resources that should not be public.\n\nOn Windows, a similar attack exists with (`%5C`).\n\n## Impact\n\nDisclosure of classpath or webjar resources outside the configured base.\n\n## Preconditions\n\n- Application uses `ResourceService` (with a non-root base path) or `WebjarService`\n- At least one classpath entry is served from a directory (e.g. `sbt run`, exploded .war)\n- Backend forwards `%2F`/`%5C` without normalizing (e.g., Ember, Blaze)\n\n## Fixes\n\nThe patch rejects any decoded path segment containing `/` (`%2F`) or `\\` (`%5C`) with a `400 Bad Request` in `ResourceService` and `WebjarService`.\n\n`FileService` was not exploitable, but the same guards are applied for consistency and to remove its reliance on path normalization.\n\n## Workarounds\n\n- Deploy as a fat jar, with no filesystem directories on the classpath.\n- Front the service with a proxy that rejects/normalizes `%2F` and `%5C` in the request path.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T20:01:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Http4s: ResourceService and Webjar Service path escape via percent-encoded separators",
+    "UpdatedAt": "2026-09-15T20:01:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

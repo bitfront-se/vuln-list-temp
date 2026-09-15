@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-15T20:01:09Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-ember-core_3"
+  },
+  "Advisory": {
+    "DatabaseId": 485332,
+    "Id": "GSA_kwCzR0hTQS1jcDRxLWZxdzktNGhmNs4AB2fU",
+    "GhsaId": "GHSA-cp4q-fqw9-4hf6",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-cp4q-fqw9-4hf6"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/6e8eccd64a6a74ab4811897881e95e0e1b3a818e"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cp4q-fqw9-4hf6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cp4q-fqw9-4hf6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69218"
+      }
+    ],
+    "Description": "When Ember receives an HTTP/2 `HEADERS` or `PUSH_PROMISE` frame without the `END_HEADERS` flag, it buffers the header block fragment and waits for subsequent `CONTINUATION` frames.  These accumulate unbounded until the connection closes. \n\n### Impact\n\nA remote, unauthenticated peer can exhaust the heap on any Ember endpoint that has HTTP/2 enabled:\n\n- **ember-server with `.withHttp2`**: any HTTP/2 client can trigger this against any reachable path (including paths that return 404).  No authentication is required because the attack completes before the request is decoded.\n- **ember-client with `.withHttp2`**:  a malicious or compromised origin server can trigger this via the response header block.  A single in-flight request is sufficient.\n\nMemory consumption is bounded only by the attacker's upload bandwidth and the connection lifetime.\n\n### Prerequisites\n\n- `EmberServerBuilder` configured with `.withHttp2`.\n    - For the server: the attacker can establish an HTTP/2 connection\n    - For the client: the application makes a request to an attacker-controlled origin.\nHTTP/2 incoming headers exceeding the configured size limit are buffer in order to generate an informative HTTP 413 response. If a client does not stop sending headers, this leads to memory exhaustion.\n\n### Patches\n\nThe fix bounds the accumulated header-block size at `SETTINGS_MAX_HEADER_LIST_SIZE` (derived from `EmberServerBuilder.maxHeaderSize` / `EmberClientBuilder.maxResponseHeaderSize`).  When a `CONTINUATION` frame would push the accumulated block over that limit, the connection is terminated with `GOAWAY`.  The `receiveHeadersTimeout` additionally bounds how long an incomplete header block may remain open.\n\n### Workarounds\n\n- Disable HTTP/2 (`.withHttp2`) until upgraded (default).  It is off by default.\n- If HTTP/2 must remain enabled, place ember behind a reverse proxy that terminates HTTP/2 and speaks HTTP/1.1 to ember.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T20:01:08Z",
+    "Severity": "HIGH",
+    "Summary": "Http4s Ember HTTP/2: unbounded continuation frame accumulation",
+    "UpdatedAt": "2026-09-15T20:01:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-M47"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-M1, \u003c= 1.0.0-M46"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

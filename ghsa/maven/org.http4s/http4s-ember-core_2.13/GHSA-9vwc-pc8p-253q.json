@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-15T19:53:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-ember-core_2.13"
+  },
+  "Advisory": {
+    "DatabaseId": 485323,
+    "Id": "GSA_kwCzR0hTQS05dndjLXBjOHAtMjUzcc4AB2fL",
+    "GhsaId": "GHSA-9vwc-pc8p-253q",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-9vwc-pc8p-253q"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/4983de1f93f2caaa3b9de310cf6a9db32c50d66e"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9vwc-pc8p-253q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9vwc-pc8p-253q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69203"
+      }
+    ],
+    "Description": "An ember server with HTTP/2 enabled (`.withHttp2`) does not enforce `SETTINGS_MAX_CONCURRENT_STREAMS` on streams opened by the peer.  A single unauthenticated connection can open an unbounded number of concurrent streams, each of which allocates per-stream server state that is never released, exhausting the heap.\n\n## Impact\n\nUnauthenticated remote denial of service (memory exhaustion) against any Ember server built `.withHttp2`.  This is the resource-exhaustion class of the HTTP/2 \"Rapid Reset\" family (CVE-2023-44487).\n\nThe same unchecked allocation path is reachable on the client via server-initiated `PUSH_PROMISE` frames, so a malicious or compromised server can exhaust an ember-client's heap the same way.\n\n## Preconditions\n\n- Server: with `.withHttp2` enabled.\n- Client: makes HTTP/2 requests to malicious or compromised sites.  `enablePush` is not enforced.\n\n## Workarounds\n\n- Disable HTTP/2 on `EmberServerBuilder` or `EmberClientBuilder` (default)\n- Client only: avoid HTTP/2 to untrusted servers until patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T19:53:14Z",
+    "Severity": "HIGH",
+    "Summary": "Http4s Ember HTTP/2 does not enforce SETTINGS_MAX_CONCURRENT_STREAMS",
+    "UpdatedAt": "2026-09-15T19:53:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-M47"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-M1, \u003c= 1.0.0-M46"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

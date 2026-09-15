@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-15T20:00:36Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-ember-core_2.13"
+  },
+  "Advisory": {
+    "DatabaseId": 485328,
+    "Id": "GSA_kwCzR0hTQS04ZjNxLTNqbXYtN3Byd84AB2fQ",
+    "GhsaId": "GHSA-8f3q-3jmv-7prw",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-8f3q-3jmv-7prw"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/13fe24d6440bde2f1eb70121486cf59c278e6bae"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8f3q-3jmv-7prw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8f3q-3jmv-7prw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69213"
+      }
+    ],
+    "Description": "Ember's HTTP/2 connection serializes all outgoing frames through a single unbounded queue drained by one writer fiber (`writeLoop`).  When the write side stalls, any frames the connection keeps producing accumulate in that queue without limit.  The peer can drive this cheaply because the connection emits a control frame in response to inbound frames it does not flow-control: one `PING` ACK per `PING`, one `SETTINGS` ACK per `SETTINGS`, and a `WINDOW_UPDATE` per inbound DATA.  A single unauthenticated connection can therefore exhaust heap and OOM the process.\n\nThis affects an ember server (malicious client) and an ember client (malicious/compromised server that floods the client and stops reading its ACKs).\n\n## Impact\n\nUnauthenticated remote denial of service (OOM) against any ember server built `.withHttp2`, from a single connection, at negligible attacker cost (tiny control frames).  Also affects an ember client talking to a hostile HTTP/2 server.\n\n## Preconditions\n\n- Ember server or client built `.withHttp2`, speaking to a hostile or compromised peer.\n\n## Workarounds\n\n- Disable HTTP/2 (do not call `.withHttp2`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T20:00:36Z",
+    "Severity": "HIGH",
+    "Summary": "Http4s Ember HTTP/2 has an unbounded outbound frame queue",
+    "UpdatedAt": "2026-09-15T20:00:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-M47"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-M1, \u003c= 1.0.0-M46"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

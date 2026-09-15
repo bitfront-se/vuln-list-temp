@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-15T19:54:38Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-ember-server_3"
+  },
+  "Advisory": {
+    "DatabaseId": 485327,
+    "Id": "GSA_kwCzR0hTQS1mbTRnLTc2YzktN3c2Oc4AB2fP",
+    "GhsaId": "GHSA-fm4g-76c9-7w69",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-fm4g-76c9-7w69"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/8cfeda8472954d631dfbe5dc026463a27653e482"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fm4g-76c9-7w69"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fm4g-76c9-7w69"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69208"
+      }
+    ],
+    "Description": "The `DigestAuth` server middleware's stale-nonce cleanup uses an inverted comparison: it removes *fresh* nonces and stops at the first *stale* one.  Because a new nonce is created for every unauthenticated challenge, an attacker can drive the nonce map to grow without bound until the JVM runs out of heap.\n\n## Impact\n\nUnauthenticated remote denial of service (gradual heap exhaustion / OOM) against\nany service using DigestAuth.  The leak is persistent.\n\n## Preconditions\n\n- Application uses `DigestAuth` on at least one route.\n\n## Workarounds\n\n- Front the DigestAuth protected routes with a rate limiter to slow the leak.\n- Restart periodically.\n\n## Fixes\n\n- The eviction logic is corrected.\n- A max cache size of 1000000 is imposed to protected against a burst between evictions.  This limit is not yet configurable.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T19:54:37Z",
+    "Severity": "HIGH",
+    "Summary": "Http4s: DigestAuth nonce map grows unbounded",
+    "UpdatedAt": "2026-09-15T19:54:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-M47"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-M1, \u003c= 1.0.0-M46"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}

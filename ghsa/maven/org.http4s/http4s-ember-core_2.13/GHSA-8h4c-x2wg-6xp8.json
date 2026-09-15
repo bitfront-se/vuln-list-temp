@@ -1,0 +1,65 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-15T19:53:44Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-ember-core_2.13"
+  },
+  "Advisory": {
+    "DatabaseId": 485324,
+    "Id": "GSA_kwCzR0hTQS04aDRjLXgyd2ctNnhwOM4AB2fM",
+    "GhsaId": "GHSA-8h4c-x2wg-6xp8",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s/security/advisories/GHSA-8h4c-x2wg-6xp8"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/commit/9feaf8677951a52af906ae9664ff6f0543d9d810"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v0.23.35"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s/releases/tag/v1.0.0-M47"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8h4c-x2wg-6xp8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8h4c-x2wg-6xp8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69204"
+      }
+    ],
+    "Description": "## Summary\n\nEmber's HTTP/1.1 request parser does not reject a message that carries both a\n`Transfer-Encoding` and a `Content-Length` header. RFC 9112 §6.1 requires a\nserver to treat such a message as a framing error and close the connection.\nAn intermediary that follows the RFC's CL-strip-and-forward path (or that\nprioritises `Content-Length`) will frame the body differently from Ember,\nenabling HTTP request smuggling (CL.TE).\n\n## Impact\n\n### Server\n\nRequest smuggling when ember-server is an origin behind an intermediary that\nforwards both headers over a keep-alive backend connection and frames by\n`Content-Length` while Ember frames by chunked:\n\n- Front-end security bypass: the smuggled request reaches paths the\n  intermediary's ACL/auth layer would have blocked, with attacker-chosen\n  method and headers.\n- Cross-user request hijack: a dangling smuggled prefix concatenates with the\n  next victim's request on the shared backend socket, capturing its headers.\n- Cache poisoning: the smuggled response is associated with the next request\n  key in a caching proxy.\n\n### Client\n\nember-client shares the same parser on the response path. An upstream that\nsends both headers can desync a pooled client connection. This requires a\nmalicious or compromised upstream.\n\n## Preconditions\n\n- Unauthenticated remote attacker (server)\n- ember-server as origin behind a keep-alive intermediary\n- Intermediary forwards a request carrying both `Transfer-Encoding` and\n  `Content-Length` (RFC says it MAY reject; many forward) and frames by\n  `Content-Length`\n- Malicious or compromised upstream (client)\n\n## Workarounds\n\n- Intermediary strictly rejects requests carrying both `Transfer-Encoding`\n  and `Content-Length`\n- Intermediary buffers and re-encodes request bodies\n- Disable backend keep-alive between the intermediary and Ember",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-15T19:53:44Z",
+    "Severity": "CRITICAL",
+    "Summary": "Http4s Ember accepts Transfer-Encoding combined with Content-Length (CL.TE request smuggling)",
+    "UpdatedAt": "2026-09-15T19:53:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-M47"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-M1, \u003c= 1.0.0-M46"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.35"
+      },
+      "VulnerableVersionRange": "\u003c= 0.23.34"
+    }
+  ]
+}
