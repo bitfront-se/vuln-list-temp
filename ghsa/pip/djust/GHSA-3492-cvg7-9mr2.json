@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-16T15:32:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "djust"
+  },
+  "Advisory": {
+    "DatabaseId": 486864,
+    "Id": "GSA_kwCzR0hTQS0zNDkyLWN2ZzctOW1yMs4AB23Q",
+    "GhsaId": "GHSA-3492-cvg7-9mr2",
+    "References": [
+      {
+        "Url": "https://github.com/djust-org/djust/security/advisories/GHSA-3492-cvg7-9mr2"
+      },
+      {
+        "Url": "https://github.com/djust-org/djust/releases/tag/v1.0.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3492-cvg7-9mr2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61595"
+      }
+    ],
+    "Description": "### Impact\n`djust.tenants` isolation was enforced only on the HTTP path. The current tenant was stored in `threading.local()` and set exclusively by the HTTP-only `TenantMiddleware`, so on the live (WebSocket/SSE) path `get_current_tenant()` was always `None` during mount and every event handler — and the tenant-aware `QuerySet` manager failed **OPEN** (returned the unfiltered queryset, ignoring `STRICT_MODE`), disclosing **every** tenant's rows to whoever held the socket. `threading.local` was additionally shared across connections on the `sync_to_async` executor thread.\n\n### Patches\nFixed in **djust 1.0.7**. Tenant storage moved to a `contextvars.ContextVar` (per async task); the resolved tenant is bound around WS/SSE mount and every dispatch; both managers scope the base queryset once and fail **CLOSED** (`.none()` under the default `STRICT_MODE`); and system check **S006** warns when `STRICT_MODE=False`.\n\n### Workarounds\nNo workaround on the live path short of upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-16T15:32:10Z",
+    "Severity": "HIGH",
+    "Summary": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
+    "UpdatedAt": "2026-09-16T15:32:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.7"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.7"
+    }
+  ]
+}

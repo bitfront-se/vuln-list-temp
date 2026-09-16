@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-16T13:49:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "djust"
+  },
+  "Advisory": {
+    "DatabaseId": 486754,
+    "Id": "GSA_kwCzR0hTQS04ZzJmLWczZ3EtNXJqds4AB21i",
+    "GhsaId": "GHSA-8g2f-g3gq-5rjv",
+    "References": [
+      {
+        "Url": "https://github.com/djust-org/djust/security/advisories/GHSA-8g2f-g3gq-5rjv"
+      },
+      {
+        "Url": "https://github.com/djust-org/djust/releases/tag/v1.0.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8g2f-g3gq-5rjv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61590"
+      }
+    ],
+    "Description": "### Impact\ndjust's observability endpoints expose live view/session state and a remote method-invocation surface (`eval_handler`). The localhost restriction was an **opt-in middleware that the documented setup omits**; the views themselves enforced only `DEBUG`. In the misconfigured-but-documented scenario (DEBUG on, middleware not installed) a non-localhost client could read live application state and invoke handlers remotely.\n\n### Patches\nFixed in **djust 1.0.7**. The localhost restriction is enforced **in-view** on every observability endpoint (no longer dependent on a separately-installed middleware), and `eval_handler` is restricted; gated requests receive a non-disclosing response.\n\n### Workarounds\nEnsure `DEBUG=False` in production, and do not expose the observability endpoints to untrusted networks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-16T13:49:19Z",
+    "Severity": "HIGH",
+    "Summary": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the views enforce only DEBUG",
+    "UpdatedAt": "2026-09-16T13:49:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.7"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.7"
+    }
+  ]
+}
