@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-17T14:50:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@vendure/core"
+  },
+  "Advisory": {
+    "DatabaseId": 496389,
+    "Id": "GSA_kwCzR0hTQS14ZjY1LXIzNXgtd21tds4AB5MF",
+    "GhsaId": "GHSA-xf65-r35x-wmmv",
+    "References": [
+      {
+        "Url": "https://github.com/vendurehq/vendure/security/advisories/GHSA-xf65-r35x-wmmv"
+      },
+      {
+        "Url": "https://github.com/vendurehq/vendure/commit/6daf5cb8571321eb6c6afa1d8e95a390c060be02"
+      },
+      {
+        "Url": "https://github.com/vendurehq/vendure/releases/tag/v3.6.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xf65-r35x-wmmv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xf65-r35x-wmmv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63461"
+      }
+    ],
+    "Description": "The Shop API `products`, `collections` and `facets` queries inject a mandatory filter to restrict results to publicly-visible entities (`Product.enabled = true`, `Collection.isPrivate = false`, `Facet.isPrivate = false`). This injected guard was combined with the caller-supplied filter using the caller-controlled `filterOperator`. When a caller sets `filterOperator: OR`, the guard is OR-combined instead of AND-combined, so a caller can retrieve disabled products and private collections/facets by supplying a predicate that matches them.\n\n### Impact\nExposure of catalog entities intended to be hidden from the Shop API. The Shop API is publicly accessible, so no authentication is required.\n\n### Patches\nThe injected guard is now always AND-combined with the caller-supplied filter, regardless of `filterOperator`.\n\n### Workarounds\nNone other than upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T14:50:02Z",
+    "Severity": "MODERATE",
+    "Summary": "Vendure: Shop API list queries can return non-public entities when filterOperator is OR",
+    "UpdatedAt": "2026-09-17T14:50:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.5"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 3.6.5"
+    }
+  ]
+}

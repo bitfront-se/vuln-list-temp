@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-17T14:52:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 496394,
+    "Id": "GSA_kwCzR0hTQS1qaDR2LWdmcWotN3JoeM4AB5MK",
+    "GhsaId": "GHSA-jh4v-gfqj-7rhx",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-jh4v-gfqj-7rhx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-75516"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2015"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2016"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/6d7c2bfe89796ca34d3531098fb59dd657fea39e"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/e7f10bf99aee103dd9f64b3e52a725fc9f9d3763"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.34.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jh4v-gfqj-7rhx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jh4v-gfqj-7rhx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-75516"
+      }
+    ],
+    "Description": "## Vulnerability\n\nIn `AMQConnection.java` (line 435-436), after `Connection.Tune` negotiation, the frame-max limit is set via:\n\n```java\n_frameHandler.setFrameMax(\n    Math.min(this.maxInboundMessageBodySize, frameMax));\n```\n\nWhen `frameMax = 0` (meaning \"unlimited\" per AMQP spec), `Math.min(67108864, 0) = 0`. This value is then passed to `Utils.framePayloadLimit(0)` which returns `Integer.MAX_VALUE` (line 77-79 of Utils.java):\n\n```java\nstatic int framePayloadLimit(int frameMax) {\n    if (frameMax \u003c= 0) {\n      return Integer.MAX_VALUE;\n    }\n    // ...\n}\n```\n\nThis completely defeats the `maxInboundMessageBodySize` protection (default 64MB) at the frame level.\n\n## Attack Scenario\n\nA malicious AMQP server (or MITM) sends `Connection.Tune` with `frameMax=0`:\n\n1. Client defaults: `requestedFrameMax = 0` (`ConnectionFactory.DEFAULT_FRAME_MAX`, line 82)\n2. `negotiatedMaxValue(0, 0)` = `Math.max(0, 0)` = 0 (line 673-676)\n3. `Math.min(maxInboundMessageBodySize, 0)` = 0 — **64MB cap defeated**\n4. `framePayloadLimit(0)` = `Integer.MAX_VALUE` — no frame size enforcement\n5. Attacker sends a single frame with `frameSize = 0x1FFFFFFF` (~500MB)\n6. `Frame.readFrom()` (line 135) executes `new byte[frameSize]` — **OOM crash**\n\nThe frame does not need to be a body frame — method frames, header frames, or heartbeat frames with a crafted size field all trigger the allocation before any content-level check fires.\n\n## Root Cause\n\nThe AMQP spec uses `frameMax=0` to mean \"unlimited\", but `Math.min` treats it as the integer value zero. The intent of line 435-436 was to take the smaller of the two limits, but when one limit uses 0-means-unlimited semantics, `Math.min` always selects the zero, disabling the other limit.\n\n## Impact\n\n- **Default configuration is vulnerable**: Both `requestedFrameMax` (client) and legitimate servers' `frameMax` in Tune may be 0\n- **Single-frame OOM**: One malicious frame triggers up to ~2GB allocation (`Integer.MAX_VALUE` bytes)\n- **Bypasses existing protection**: `maxInboundMessageBodySize` (introduced to cap allocations at 64MB) is entirely defeated at the frame level\n- **Different from ValueReader OOM**: This is a frame-layer allocation in `Frame.readFrom()`, not a value-layer allocation in `ValueReader.readBytes()`\n\n## Affected Code\n\n- `AMQConnection.java:435-436` — `Math.min` with 0-means-unlimited\n- `Utils.java:77-79` — `framePayloadLimit(0)` returns `Integer.MAX_VALUE`\n- `Frame.java:135` — `new byte[frameSize]` allocation site\n- `ConnectionFactory.java:82` — `DEFAULT_FRAME_MAX = 0`\n\n## Suggested Fix\n\n```java\nint effectiveFrameMax = (frameMax == 0)\n    ? this.maxInboundMessageBodySize\n    : Math.min(this.maxInboundMessageBodySize, frameMax);\n_frameHandler.setFrameMax(effectiveFrameMax);\n```\n\nThis treats `frameMax=0` as \"use maxInboundMessageBodySize as the cap\" instead of \"zero\".",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T14:52:21Z",
+    "Severity": "HIGH",
+    "Summary": "RabbitMQ Java client has frame-level OOM: Math.min(maxInboundMessageBodySize, 0) defeats frame size enforcement",
+    "UpdatedAt": "2026-09-17T14:52:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.34.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.34.0"
+    }
+  ]
+}
