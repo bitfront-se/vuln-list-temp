@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-17T17:19:13Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 496539,
+    "Id": "GSA_kwCzR0hTQS14cjU3LWdjeDgtNTJoZs4AB5Ob",
+    "GhsaId": "GHSA-xr57-gcx8-52hf",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-xr57-gcx8-52hf"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/pull/2234"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/9dba5ac988b7e750551f59b2eab550b60ac8a0d6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xr57-gcx8-52hf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xr57-gcx8-52hf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85720"
+      }
+    ],
+    "Description": "### Impact\nWhen a request uses an HTTP proxy to reach an HTTPS origin, the client opens the tunnel with a plaintext CONNECT sent to the proxy before any TLS exists. On affected versions the origin's preemptive credentials were added to that CONNECT. A Basic realm sent `Authorization: Basic base64(user:pass)` to the proxy in the clear, and NTLM, SPNEGO or Kerberos realms sent their token. The proxy, and anyone who can read the client to proxy hop, saw credentials that were meant only for the origin.\n\n### Affected versions\n* 3.x: up to and including 3.0.11\n* 2.x: up to and including 2.16.0\n\n### Patches\nFixed in 3.0.12 on the 3.x line and in 2.16.1 on the 2.x line. The origin Basic or Digest Authorization is no longer put on the CONNECT; it is added to the tunnelled request once the tunnel is up. The per-connection NTLM, Kerberos and SPNEGO token is likewise no longer attached on the tunnel path; it never reached the origin there in any case, and the challenge flow still negotiates it inside the tunnel.\n\n### Workarounds\nDo not use preemptive origin authentication together with an HTTP proxy, or reach the origin without a CONNECT proxy.\n\n### Details\nNettyRequestFactory added the origin Authorization to every request it built, including the CONNECT, and NettyRequestSender did the same for the per-connection NTLM or SPNEGO token in sendRequestWithNewChannel. Both now skip the CONNECT.\n\nNote that 3.0.12 is itself affected by a separate issue, GHSA-rqf5-2wxv-rjf4, where a Digest challenge the client cannot read downgrades to Basic and sends the password in cleartext. Upgrade to 3.0.13 to pick up both fixes.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T17:19:12Z",
+    "Severity": "MODERATE",
+    "Summary": "AsyncHttpClient sends origin credentials to the proxy on the plaintext CONNECT request",
+    "UpdatedAt": "2026-09-17T17:19:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.16.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.12"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.0.11"
+    }
+  ]
+}

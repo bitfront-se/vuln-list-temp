@@ -1,0 +1,80 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-17T16:29:48Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Umbraco.Cms"
+  },
+  "Advisory": {
+    "DatabaseId": 496509,
+    "Id": "GSA_kwCzR0hTQS13cjU3LWhxbXAtZmd2aM4AB5N9",
+    "GhsaId": "GHSA-wr57-hqmp-fgvh",
+    "References": [
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/security/advisories/GHSA-wr57-hqmp-fgvh"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/commit/26312a3f717a0f33bb3d7d28b14bef3592bdb0fe"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/commit/5360e2a9681ce2d0024be374e80339260bcc2511"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/commit/a9649da4e5a0786db7688bd6b5036a21df26b015"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/releases/tag/release-13.15.1"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/releases/tag/release-17.5.3"
+      },
+      {
+        "Url": "https://github.com/umbraco/Umbraco-CMS/releases/tag/release-18.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wr57-hqmp-fgvh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wr57-hqmp-fgvh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69197"
+      }
+    ],
+    "Description": "The Content Delivery API enforces member / Public Access protection only at the controller layer, against the node that is directly requested. When a public (unprotected) node references a protected node through a Content Picker or Multi-Node Tree Picker (including those nested inside Block List, Block Grid, or Rich Text Editor blocks), the Delivery API expands and serializes the protected node with no access check applied.\n\nSimilarly, configuration based restrictions based on aliases of allowed or disallowed content types are by-passed for referenced content items that are retrieved via property expansion.\n\nAs a result, an anonymous / unauthorized caller can retrieve a protected node's:\n- Name, route, and id — always, even without expansion, and\n- Full property values — when the request uses ?expand on the picker property.\nA direct request for the same protected node correctly returns 401 Unauthorized, which makes the leak easy to miss: the protection appears to work, but is bypassed via reference expansion.\n\n### Impact\nConfidential, member-gated content (e.g. pricing, internal documents, gated articles) referenced by any publicly readable node is disclosed to unauthenticated clients. No write/integrity or availability impact.\n\nHighest impact when the Delivery API is publicly readable (DeliveryApi:PublicAccess: true).\nStill exploitable, at reduced severity, when the Delivery API is gated by the org-wide API key (the key holder still bypasses per-node Public Access).\n\n### Patches\n13.15.1, 17.5.3, 18.0.2\n\n### References\nhttps://docs.umbraco.com/umbraco-cms/develop-with-umbraco/headless-and-apis/content-delivery-api",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T16:29:46Z",
+    "Severity": "HIGH",
+    "Summary": "Umbraco: Delivery API leaks protected (Public Access) content through Content Picker / Multi-Node Tree Picker expansion",
+    "UpdatedAt": "2026-09-17T16:29:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "18.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 18.0.0, \u003c 18.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.5.3"
+      },
+      "VulnerableVersionRange": "\u003e= 14.0.0-rc1, \u003c 17.5.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.15.1"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 13.15.1"
+    }
+  ]
+}

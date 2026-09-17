@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-17T18:01:32Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Steeltoe.Management.Endpoint"
+  },
+  "Advisory": {
+    "DatabaseId": 496544,
+    "Id": "GSA_kwCzR0hTQS04cGh3LXhyajktY3BxcM4AB5Og",
+    "GhsaId": "GHSA-8phw-xrj9-cpqp",
+    "References": [
+      {
+        "Url": "https://github.com/SteeltoeOSS/security-advisories/security/advisories/GHSA-8phw-xrj9-cpqp"
+      },
+      {
+        "Url": "https://github.com/SteeltoeOSS/Steeltoe/commit/9bf0ecb9f2d4a34b65f61d41c5625d49071ae9fa"
+      },
+      {
+        "Url": "https://github.com/SteeltoeOSS/Steeltoe/releases/tag/4.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8phw-xrj9-cpqp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8phw-xrj9-cpqp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-75523"
+      }
+    ],
+    "Description": "## Summary\n\nSteeltoe's `/actuator/httpexchanges` endpoint records and displays request URIs after passing them through `MaskedUri`. The masking only covers the `UserInfo` portion of the URI (inline `user:password@host` credentials) and does not inspect the query string. With `IncludeQueryString` enabled by default, any secrets carried in query strings (for example: OAuth tokens, password-reset tokens, signed-URL signatures, API keys) are returned verbatim in the `uri` field of the response and written to logs at DEBUG level.\n\n## Impact\n\nAny caller who can reach `/actuator/httpexchanges` can receive full request URIs from prior traffic, including any secrets those URIs contained in their query strings. Applications with DEBUG-level logging enabled for the `Steeltoe.Management.Endpoint.Actuators.HttpExchanges` namespace also write these URIs to their application logs.\n\n## Affected configuration\n\n- `httpexchanges` is explicitly added to the actuator exposure list (`Management:Endpoints:Web:Exposure:Include`). It is not included by default.\n- The application handles requests that carry secrets in query strings, such as OAuth callbacks, signed URLs, or password-reset links.\n- DEBUG logging is enabled for `Steeltoe.Management.Endpoint.Actuators.HttpExchanges` (log exposure only).\n\n## Mitigations\n\nIf an immediate upgrade is not possible:\n\n- Remove `httpexchanges` from the actuator exposure list, or restrict it behind authentication.\n- Set `Management:Endpoints:HttpExchanges:IncludeQueryString` to `false` to strip query strings from recorded exchanges entirely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T18:01:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Steeltoe.Management.Endpoint: HttpExchanges URI masking leaks query-string secrets",
+    "UpdatedAt": "2026-09-17T18:01:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 4.2.0"
+    }
+  ]
+}

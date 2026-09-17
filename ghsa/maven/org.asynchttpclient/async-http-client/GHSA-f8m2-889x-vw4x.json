@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-17T17:19:33Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 496540,
+    "Id": "GSA_kwCzR0hTQS1mOG0yLTg4OXgtdnc0eM4AB5Oc",
+    "GhsaId": "GHSA-f8m2-889x-vw4x",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-f8m2-889x-vw4x"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/pull/2224"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/43db7bba81430cbd61ec2dc2c7be464e0ff6a0ff"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/b66757bec34def2e9867bb2b77bd848b1112abb4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f8m2-889x-vw4x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f8m2-889x-vw4x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85717"
+      }
+    ],
+    "Description": "### Impact\nA client configured with a client-wide realm (a Realm set on the config builder rather than on an individual request) and following redirects could re-send those credentials to a redirect target on a different origin. The redirect code strips the per-exchange realm, but when the target answered 401 the credentials were re-derived from the client config, handing Basic or Digest credentials, or a Negotiate or NTLM token, to an attacker controlled origin. This is a residual of the earlier cross-origin credential leak advisories, whose strip this bypassed.\n\n### Affected versions\n* 3.x: 3.0.9 through 3.0.11\n* 2.x: 2.14.5 through 2.16.0\n\nReleases below those floors are covered by the earlier advisories GHSA-cmxv-58fp-fm3g and GHSA-fmxf-pm6p-7xgm: the cross-origin strip that this issue bypasses did not exist yet, so the leak there is the original one rather than this residual.\n\n### Patches\nFixed in 3.0.12 on the 3.x line and in 2.16.1 on the 2.x line. The realm is taken from the per-exchange state that the redirect already cleared, rather than being re-derived from the client configuration.\n\n### Workarounds\nSet the Realm on the individual request instead of on the client configuration. A per-request realm is stripped correctly on a cross-origin redirect while still authenticating same-origin, so this is a complete workaround with no loss of function. Turning off follow-redirects also avoids it. Note that setStripAuthorizationOnRedirect(true) is not a workaround: it forces the strip, but the configuration fallback re-derived the realm regardless.\n\n### Details\nThe interceptor read the realm as the request's realm or, failing that, the client configuration's realm, which re-attached the config realm after the redirect strip had cleared it. It now reads the realm held on the response future. See also GHSA-cmxv-58fp-fm3g and GHSA-fmxf-pm6p-7xgm.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T17:19:31Z",
+    "Severity": "MODERATE",
+    "Summary": "AsyncHttpClient re-sends client-wide realm credentials to a cross-origin redirect target",
+    "UpdatedAt": "2026-09-17T17:19:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.14.5, \u003c= 2.16.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.12"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.9, \u003c= 3.0.11"
+    }
+  ]
+}

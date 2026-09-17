@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-17T16:30:38Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "AccessControl"
+  },
+  "Advisory": {
+    "DatabaseId": 496513,
+    "Id": "GSA_kwCzR0hTQS1wcTU5LTlmcTctbTg4Ns4AB5OB",
+    "GhsaId": "GHSA-pq59-9fq7-m886",
+    "References": [
+      {
+        "Url": "https://github.com/zopefoundation/AccessControl/security/advisories/GHSA-pq59-9fq7-m886"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77401"
+      },
+      {
+        "Url": "https://github.com/zopefoundation/AccessControl/commit/f980450eea416718be62847f34dfd51822938e43"
+      },
+      {
+        "Url": "https://github.com/zopefoundation/AccessControl/releases/tag/7.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pq59-9fq7-m886"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pq59-9fq7-m886"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77401"
+      }
+    ],
+    "Description": "### Impact\nPython's string `format` functionality allows someone controlling the format string to \"read\" objects accessible (recursively) via attribute access and subscription from accessible objects. Those attribute accesses and subscriptions use Python's full blown `getattr` and `getitem`, not the policy restricted `AccessControl` variants `_getattr_` and `_getitem_`. This can lead to critical information disclosure.\n\nThe `AccessControl` package already guards against direct access to the formatting functions on string instances, but these mitigations did not cover subclasses of `str`.\n\nAffected are all users who allow untrusted users to create AccessControl controlled Python code and execute it.\n\n### Patches\nA fix was published with version 7.4.\n\n### Workarounds\nThere is no workaround.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T16:30:37Z",
+    "Severity": "MODERATE",
+    "Summary": "Zope AccessControl vulnerable to information disclosure through Python string `format` and `format_map` functions",
+    "UpdatedAt": "2026-09-17T16:30:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.4"
+      },
+      "VulnerableVersionRange": "\u003c 7.4"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-17T20:32:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@platejs/core"
+  },
+  "Advisory": {
+    "DatabaseId": 497197,
+    "Id": "GSA_kwCzR0hTQS1xcmZqLW1ndzgtajljNs4AB5Yt",
+    "GhsaId": "GHSA-qrfj-mgw8-j9c6",
+    "References": [
+      {
+        "Url": "https://github.com/udecode/plate/security/advisories/GHSA-qrfj-mgw8-j9c6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-88976"
+      },
+      {
+        "Url": "https://github.com/udecode/plate/pull/5117"
+      },
+      {
+        "Url": "https://github.com/udecode/plate/commit/d02afe45d5ec3a9fb95e0745bc5820ff18a3c12b"
+      },
+      {
+        "Url": "https://github.com/udecode/plate/releases/tag/v53.3.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qrfj-mgw8-j9c6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qrfj-mgw8-j9c6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-88976"
+      }
+    ],
+    "Description": "### Summary\n\nHTML strings passed to Plate's core deserialization APIs were parsed in the active document. Certain HTML attributes could therefore trigger browser behavior during parsing, before the content was converted into editor nodes.\n\nApplications that deserialize HTML from untrusted or cross-user sources may be affected.\n\n### Impact\n\nAn attacker who can control HTML later deserialized in another user's browser may be able to execute script in that application's origin.\n\n### Remediation\n\nUpgrade to `@platejs/core` 53.3.11 or later. Users of the discontinued 54.0.0 beta builds should install the fixed stable line. Applications should also sanitize untrusted HTML before rendering it; inert parsing is not a substitute for sanitization.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T20:32:47Z",
+    "Severity": "MODERATE",
+    "Summary": "@platejs/core HTML deserialization can trigger browser behavior during parsing",
+    "UpdatedAt": "2026-09-17T20:32:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 54.0.0-beta.0, \u003c= 54.0.0-beta.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "53.3.11"
+      },
+      "VulnerableVersionRange": "\u003c 53.3.11"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "Severity": "MODERATE",
-  "UpdatedAt": "2024-11-19T17:22:24Z",
+  "UpdatedAt": "2026-09-17T19:24:16Z",
   "Package": {
     "Ecosystem": "PIP",
     "Name": "vyper"
@@ -23,6 +23,9 @@
         "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/vyper/PYSEC-2023-168.yaml"
       },
       {
+        "Url": "https://github.com/vyperlang/vyper/commit/78fa8dd8f91ba0cb26277eeffb585c68c83e7daa"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-4hg4-9mf5-wxxq"
       }
     ],
@@ -36,12 +39,12 @@
         "Value": "CVE-2023-41052"
       }
     ],
-    "Description": "### Impact\nThe order of evaluation of the arguments of the builtin functions `uint256_addmod`, `uint256_mulmod`, `ecadd` and `ecmul` does not follow source order.\n• For `uint256_addmod(a,b,c)` and `uint256_mulmod(a,b,c)`, the order is `c,a,b`.\n• For `ecadd(a,b)` and `ecmul(a,b)`, the order is `b,a`.\n\nNote that this behaviour is problematic when the evaluation of one of the arguments produces side effects that other arguments depend on. \n\n### Patches\nhttps://github.com/vyperlang/vyper/pull/3583\n\n### Workarounds\nWhen using builtins from the list above, make sure that the arguments of the expression do not produce side effects or, if one does, that no other argument is dependent on those side effects.\n\n### References\n_Are there any links users can visit to find out more?_\n",
+    "Description": "### Impact\nThe order of evaluation of the arguments of the builtin functions `uint256_addmod`, `uint256_mulmod`, `ecadd` and `ecmul` does not follow source order.\n• For `uint256_addmod(a,b,c)` and `uint256_mulmod(a,b,c)`, the order is `c,a,b`.\n• For `ecadd(a,b)` and `ecmul(a,b)`, the order is `b,a`.\n\nNote that this behaviour is problematic when the evaluation of one of the arguments produces side effects that other arguments depend on. \n\n### Patches\nhttps://github.com/vyperlang/vyper/pull/3583\n\n### Workarounds\nWhen using builtins from the list above, make sure that the arguments of the expression do not produce side effects or, if one does, that no other argument is dependent on those side effects.",
     "Origin": "UNSPECIFIED",
     "PublishedAt": "2023-09-04T16:39:49Z",
     "Severity": "MODERATE",
     "Summary": "incorrect order of evaluation of side effects for some builtins",
-    "UpdatedAt": "2024-11-19T17:22:24Z",
+    "UpdatedAt": "2026-09-17T19:24:17Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 5.3,
@@ -51,9 +54,9 @@
   "Versions": [
     {
       "FirstPatchedVersion": {
-        "Identifier": "0.3.10rc1"
+        "Identifier": "0.3.10"
       },
-      "VulnerableVersionRange": "\u003c= 0.3.9"
+      "VulnerableVersionRange": "\u003c 0.3.10"
     }
   ]
 }

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-17T20:32:25Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ca.uhn.hapi.fhir:org.hl7.fhir.validation.cli"
+  },
+  "Advisory": {
+    "DatabaseId": 497194,
+    "Id": "GSA_kwCzR0hTQS1ncTljLXdtcm0tNWh2cs4AB5Yq",
+    "GhsaId": "GHSA-gq9c-wmrm-5hvr",
+    "References": [
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/security/advisories/GHSA-gq9c-wmrm-5hvr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-81876"
+      },
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/pull/2493"
+      },
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/commit/d804558bd77372b1629e55a5b901cad3f5134cdc"
+      },
+      {
+        "Url": "https://github.com/hapifhir/org.hl7.fhir.core/commit/edd5d8c139e669e39270785f08be7b63aefef24c"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gq9c-wmrm-5hvr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gq9c-wmrm-5hvr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-81876"
+      }
+    ],
+    "Description": "### Summary\nA malformed Smart Health Card (SHC) JWT with `zip: \"DEF\"` and an empty or truncated DEFLATE payload causes `SHCParser.inflate()` to loop forever. This allows an attacker who can submit SHC content for validation to pin a JVM worker thread indefinitely, causing denial of service.\n\n### Details\nThe vulnerable code is in `org.hl7.fhir.r5/src/main/java/org/hl7/fhir/r5/elementmodel/SHCParser.java`.\n\n`decodeJWT()` inflates the JWT payload when the header contains `\"zip\":\"DEF\"`:\n\n```java\n// SHCParser.java:300-302\nif (\"DEF\".equals(res.header.asString(\"zip\"))) {\n  payloadJson = inflate(payloadJson);\n}\n```\n\n`inflate()` loops only on `!inflater.finished()` and does not check `inflater.needsInput()`, `inflater.needsDictionary()`, or zero-progress output:\n\n```java\n// SHCParser.java:455-468\nwhile (!inflater.finished()) {\n  final int count = inflater.inflate(buffer);\n  outputStream.write(buffer, 0, count);\n}\n```\n\nFor empty or truncated raw DEFLATE input, `Inflater.inflate()` returns `0`, `finished()` remains `false`, and `needsInput()` becomes `true`, producing an infinite tight loop. The same unsafe loop pattern also exists in `decompress()` at `SHCParser.java:410-423`.\n\nThe validator reaches this path during SHC validation and during file-format detection for SHC-looking input (`ResourceChecker.java:115-118`).\n\n### PoC\nCompile the project, then run a minimal local harness that calls:\n\n```java\nSHCParser.inflate(new byte[0]);\n```\n\nThis never returns. Local verification:\n\n```bash\ntimeout 3s java -cp ... VerifyDoSFindings shcHang\necho $?\n# 124 = timeout killed the hung process\n```\n\nA JWT PoC uses:\n\n- header: Base64URL(`{\"zip\":\"DEF\"}`)\n- payload: empty or truncated raw DEFLATE bytes\n- signature: arbitrary\n\nSubmit the resulting token as SHC content, for example via a `.shc` file or content beginning with `shc:/` that reaches the validator's SHC detection path.\n\n### Impact\nThis is a denial-of-service vulnerability. A single malformed SHC validation request can consume a worker thread indefinitely. In services that validate uploaded SHC content, a small number of concurrent malformed requests can exhaust all validation workers.\n\n### Credits\n- Thai Son Dinh from VinSOC Labs (R\u0026D)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T20:32:21Z",
+    "Severity": "HIGH",
+    "Summary": "HAPI FHIR: SHCParser DEFLATE infinite loop causes denial of service",
+    "UpdatedAt": "2026-09-17T20:32:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.9.12"
+      },
+      "VulnerableVersionRange": "\u003c= 6.9.11"
+    }
+  ]
+}

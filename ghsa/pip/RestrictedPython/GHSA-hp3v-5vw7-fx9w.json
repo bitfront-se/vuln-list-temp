@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-17T16:30:23Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "RestrictedPython"
+  },
+  "Advisory": {
+    "DatabaseId": 496512,
+    "Id": "GSA_kwCzR0hTQS1ocDN2LTV2dzctZng5d84AB5OA",
+    "GhsaId": "GHSA-hp3v-5vw7-fx9w",
+    "References": [
+      {
+        "Url": "https://github.com/zopefoundation/RestrictedPython/security/advisories/GHSA-hp3v-5vw7-fx9w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-76825"
+      },
+      {
+        "Url": "https://github.com/zopefoundation/RestrictedPython/commit/3b47440070b91f8807c2b2998aca99e94783639a"
+      },
+      {
+        "Url": "https://github.com/zopefoundation/RestrictedPython/releases/tag/8.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hp3v-5vw7-fx9w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hp3v-5vw7-fx9w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-76825"
+      }
+    ],
+    "Description": "### Impact\nRestrictedPython could allow a sandbox escape when a policy exposes the standard library `string` module, or otherwise exposes `string.Formatter`, to restricted code.\n\n`string.Formatter` field resolution methods such as `get_field` can perform attribute and item traversal internally and return live object references. This can bypass RestrictedPython's normal attribute guards and may allow access to sensitive objects such as function globals, builtins, file access, or code execution primitives.\n\nUsers are impacted if they run untrusted code with RestrictedPython and expose `string.Formatter`, directly or indirectly, for example through a custom import policy or globals.\n\n### Patches\nThe problem has been patched by blocking access to `string.Formatter` and unsafe `string.Formatter` traversal methods in `safer_getattr`.\n\nUsers should upgrade to the patched release once available. Affected and patched version numbers should be filled in when the release is published.\n\n### Workarounds\nDo not expose the standard library `string` module or `string.Formatter` to restricted code.\n\nIf a custom import hook is used, deny imports of `string` or provide only a restricted wrapper that does not expose `Formatter`. If custom globals are supplied, ensure neither `string.Formatter` nor `Formatter` instances are available to restricted code.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T16:30:22Z",
+    "Severity": "HIGH",
+    "Summary": "RestrictedPython vulnerable to sandbox escape via string.Formatter field resolution",
+    "UpdatedAt": "2026-09-17T16:30:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.4"
+      },
+      "VulnerableVersionRange": "\u003c 8.4"
+    }
+  ]
+}

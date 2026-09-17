@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-17T17:18:58Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 496538,
+    "Id": "GSA_kwCzR0hTQS03Z3JnLWpjZjctcnBteM4AB5Oa",
+    "GhsaId": "GHSA-7grg-jcf7-rpmx",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-7grg-jcf7-rpmx"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/5ee2841cbf268bba4a200578be3938ccfc6cc6d6"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/663a1a91757904b22cfe37e2e6049f1f8ea6ae59"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/e1871a19972fb496be1b8ac6be11d79e22ff2162"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/e9f2f7423e0f6503f529656f2955a1317e56ba14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7grg-jcf7-rpmx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7grg-jcf7-rpmx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85721"
+      }
+    ],
+    "Description": "### Impact\nWith automatic response decompression enabled (the default), the HTTP/1.1 path decompresses response bodies with no limit on the total output size. A hostile or compromised server, or an attacker who can change a response in transit, can send a small compressed body that inflates without bound in memory, exhausting the client's heap and causing an OutOfMemoryError. gzip, deflate and snappy are always available as vectors; brotli and zstd apply only when those optional codecs are on the classpath.\n\n### Affected versions\n* 3.x: up to and including 3.0.11\n* 2.x: up to and including 2.16.0\n\nThe HTTP/2 path carries its own limit from 3.0.11 onward. On 3.0.8, 3.0.9 and 3.0.10 the HTTP/2 decompressor is also unbounded, so on those versions switching to HTTP/2 is not a mitigation.\n\n### Patches\nFixed in 3.0.12 on the 3.x line and in 2.16.1 on the 2.x line. The fix counts the decompressed bytes produced for each response and fails the response once the configured maximum is exceeded, so the limit applies to the whole body rather than to any single chunk.\n\n### Workarounds\nOn 3.x, disable automatic decompression (setEnableAutomaticDecompression(false)) and decompress manually with your own size limit. The 2.x line has no such setting; the decompressor is installed unconditionally, so the only option there is to remove the inflater handler through httpAdditionalChannelInitializer. On either line, running the client behind a proxy that caps response sizes also works.\n\n### Details\nChannelManager.newHttpContentDecompressor() created Netty's HttpContentDecompressor without any bound, and Netty's own maxAllocation parameter limits a single decode step rather than the accumulated size of a response, so it cannot bound a decompression bomb delivered as many small chunks. The fix tracks the accumulated decompressed size per response instead.\n\nNote that 3.0.12 is itself affected by a separate issue, GHSA-rqf5-2wxv-rjf4, where a Digest challenge the client cannot read downgrades to Basic and sends the password in cleartext. Upgrade to 3.0.13 to pick up both fixes.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T17:18:56Z",
+    "Severity": "HIGH",
+    "Summary": "AsyncHttpClient's unbounded HTTP/1.1 response decompression enables a decompression-bomb denial of service",
+    "UpdatedAt": "2026-09-17T17:18:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.16.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.12"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.0.11"
+    }
+  ]
+}
