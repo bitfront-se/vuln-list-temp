@@ -1,0 +1,53 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-16T21:53:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "djust"
+  },
+  "Advisory": {
+    "DatabaseId": 487104,
+    "Id": "GSA_kwCzR0hTQS1mNzk1LXA1anctajZnMs4AB27A",
+    "GhsaId": "GHSA-f795-p5jw-j6g2",
+    "References": [
+      {
+        "Url": "https://github.com/djust-org/djust/security/advisories/GHSA-f795-p5jw-j6g2"
+      },
+      {
+        "Url": "https://github.com/djust-org/djust/releases/tag/v1.0.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f795-p5jw-j6g2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f795-p5jw-j6g2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61592"
+      }
+    ],
+    "Description": "### Impact\nSSE sessions were keyed solely by a **client-chosen** `session_id` with no binding to the authenticated user — a control the WebSocket transport has but that was dropped on SSE. An attacker who learns (or a victim who leaks) a `session_id` could connect to the message endpoint and dispatch event handlers that execute with the **victim's identity and state**.\n\n### Patches\nFixed in **djust 1.0.7**. Each SSE session is bound to its owning principal at creation and cross-principal access is rejected; SSE session creation is additionally capped per principal.\n\n### Workarounds\nDisable the SSE transport short of upgrading.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-16T21:53:43Z",
+    "Severity": "HIGH",
+    "Summary": "djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capability (session hijack)",
+    "UpdatedAt": "2026-09-16T21:53:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.7"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.7"
+    }
+  ]
+}

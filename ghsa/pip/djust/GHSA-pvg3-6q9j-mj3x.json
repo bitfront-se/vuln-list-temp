@@ -1,0 +1,53 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-16T22:02:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "djust"
+  },
+  "Advisory": {
+    "DatabaseId": 487107,
+    "Id": "GSA_kwCzR0hTQS1wdmczLTZxOWotbWozeM4AB27D",
+    "GhsaId": "GHSA-pvg3-6q9j-mj3x",
+    "References": [
+      {
+        "Url": "https://github.com/djust-org/djust/security/advisories/GHSA-pvg3-6q9j-mj3x"
+      },
+      {
+        "Url": "https://github.com/djust-org/djust/releases/tag/v1.0.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pvg3-6q9j-mj3x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pvg3-6q9j-mj3x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61588"
+      }
+    ],
+    "Description": "### Impact\nWhen a Django `Model` instance is assigned to a **public** view attribute, djust serialized it to the client with **no sensitive-field denylist** — sending fields such as `password` (the hash), privilege flags (e.g. `is_staff` / `is_superuser`), tokens, and other PII to the browser. Because exposing model objects to templates is a normal djust pattern, this could leak credentials/PII without the developer realizing the full object crossed the wire.\n\n### Patches\nFixed in **djust 1.0.7**. Model serialization applies a secure-by-default sensitive-field denylist (password/hash/token/secret-style fields and known privilege flags are withheld) with an identity-subset fallback.\n\n### Workarounds\nKeep `Model` instances on `_private` attributes and expose only the specific fields needed, until patched.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-16T22:02:49Z",
+    "Severity": "MODERATE",
+    "Summary": "djust's Django model serialization has no sensitive-field denylist: password hashes, privilege flags, and PII on a public view attribute are sent to the client",
+    "UpdatedAt": "2026-09-16T22:02:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.7"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.7"
+    }
+  ]
+}
