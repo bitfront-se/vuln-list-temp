@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-18T17:39:52Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/perses/perses"
+  },
+  "Advisory": {
+    "DatabaseId": 499958,
+    "Id": "GSA_kwCzR0hTQS00MjI3LTk5ODktanJoeM4AB6D2",
+    "GhsaId": "GHSA-4227-9989-jrhx",
+    "References": [
+      {
+        "Url": "https://github.com/perses/perses/security/advisories/GHSA-4227-9989-jrhx"
+      },
+      {
+        "Url": "https://github.com/perses/perses/commit/2368c9ef4eb0a70fbca5df69aa20e595821ab625"
+      },
+      {
+        "Url": "https://github.com/perses/perses/releases/tag/v0.54.0-rc.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4227-9989-jrhx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4227-9989-jrhx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63199"
+      }
+    ],
+    "Description": "### Impact\n\nThe datasource proxy authorizes the caller on the Datasource scope, then resolves and decrypts any Secret named in the request body with no Secret-scope check.\n\nDatasource and Secret are distinct, independently grantable role scopes, so an operator can grant datasource access without secret access. The proxy and the service to create a datasource does not verify that the operator has the correct right.\n\nA user holding only `GlobalDatasource:create` can create a `GlobalDatasource` and attached to it a `GlobalSecret` without having the right to get access to. The user can also do the same by using the `unSaved datasource` feature proposed by the proxy used to verify the connectivity to the datasource before creating the resource.\n\nAs soon as you can attach a secret that you don't have right to see, you can then create a Datasource that you control and then read anything send by Perses. Which include the secret in plain text. You can then have access to the secret without being granted to.\n\nThe project-scoped variant does the same within a project.\n\n### Patches\nThe proxy and the service to create the datasource is verifying if you have the right to read a secret if a secret is attached to the datasource.\nThis is patch in v0.54.0-rc.0\n\n### Workarounds\nThis issue can be avoided by using the provisioning to create the datasource and by removing the right to create datasource.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-18T17:39:48Z",
+    "Severity": "HIGH",
+    "Summary": "Perses's missing authorization in datasource proxy allows cross-scope secret disclosure",
+    "UpdatedAt": "2026-09-18T17:39:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.54.0-rc.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.43.0, \u003c 0.54.0-rc.0"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-18T17:17:30Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/anycable/anycable"
+  },
+  "Advisory": {
+    "DatabaseId": 499951,
+    "Id": "GSA_kwCzR0hTQS13NzJ3LTlxbWotYzlxbc4AB6Dv",
+    "GhsaId": "GHSA-w72w-9qmj-c9qm",
+    "References": [
+      {
+        "Url": "https://github.com/anycable/anycable/security/advisories/GHSA-w72w-9qmj-c9qm"
+      },
+      {
+        "Url": "https://github.com/anycable/anycable/commit/201c67e99e463ed63bd6b345562f4c458385fcee"
+      },
+      {
+        "Url": "https://github.com/anycable/anycable/releases/tag/v1.6.15"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w72w-9qmj-c9qm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w72w-9qmj-c9qm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63406"
+      }
+    ],
+    "Description": "### Summary\nThe telemetry subsystem embeds a hardcoded auth token (`\"secret\"`) in the public source and transmits raw CLI arguments—including `--secret`, `--jwt_secret`, and `--http_rpc_secret` values—to a third-party telemetry endpoint.\n\n### Details\nIn `telemetry/config.go` line 12, `var authToken = \"secret\"` is committed in the public repository and used to authenticate to `https://telemetry.anycable.io`. In `telemetry/telemetry.go`, `clusterFingerprint()` (line 320) calls both `anycableFileConfig(c.ConfigFilePath)` (line 333), which reads the full TOML config file contents, and `anycableCLIArgs()` (line 402), which reads `os.Args[1:]` verbatim—including any `--secret=...`, `--jwt_secret=...`, `--http_rpc_secret=...` arguments. Both raw values are passed to `generateDigest()` (line 373), meaning the actual secret strings flow through the code path and are included in telemetry data sent to the third-party server. Since the hardcoded `authToken = \"secret\"` is public, any attacker who can perform DNS hijacking or is positioned on the network path can intercept and read the telemetry payload containing operator credentials.\n\n### PoC\n1. Read `telemetry/config.go` in the public repo to find `authToken = \"secret\"`.\n2. Set up a DNS spoof for `telemetry.anycable.io` pointing to an attacker-controlled server.\n3. Start anycable-go with `--secret=my-production-secret`.\n4. The server sends a POST to the attacker's endpoint with the telemetry JSON payload. The `clusterFingerprint` field contains data derived from raw `os.Args` including `--secret=my-production-secret`.\n\n### Impact\nIn MITM/DNS-hijack scenarios, production secrets (JWT secrets, broadcast keys, RPC auth) are exposed to third parties. The hardcoded `authToken = \"secret\"` provides no protection since it is known to anyone reading the open-source code.\n\n### Fix\n1. Remove the hardcoded `authToken` from source; generate or require operator configuration at build time or deployment time. 2. Remove `anycableCLIArgs()` from the fingerprint computation, or sanitize it to exclude values of secret-bearing flags before hashing. 3. Add a documented opt-out mechanism for telemetry.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-18T17:17:29Z",
+    "Severity": "MODERATE",
+    "Summary": "AnyCable: Telemetry Subsystem Contains Hardcoded Authentication Token and Transmits CLI Arguments Including Secrets",
+    "UpdatedAt": "2026-09-18T17:17:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6.15"
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.14"
+    }
+  ]
+}

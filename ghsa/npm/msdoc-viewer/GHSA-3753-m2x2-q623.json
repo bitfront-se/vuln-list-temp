@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-18T17:19:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "msdoc-viewer"
+  },
+  "Advisory": {
+    "DatabaseId": 499956,
+    "Id": "GSA_kwCzR0hTQS0zNzUzLW0yeDItcTYyM84AB6D0",
+    "GhsaId": "GHSA-3753-m2x2-q623",
+    "References": [
+      {
+        "Url": "https://github.com/flyfish-dev/file-viewer/security/advisories/GHSA-3753-m2x2-q623"
+      },
+      {
+        "Url": "https://github.com/flyfish-dev/file-viewer/commit/ef045680f8d9830a3eee9612f7df46a734361b07"
+      },
+      {
+        "Url": "https://github.com/flyfish-dev/file-viewer/releases/tag/v2.3.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3753-m2x2-q623"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3753-m2x2-q623"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-91127"
+      }
+    ],
+    "Description": "### Summary\n\nBefore 2.3.1, the legacy `.doc` renderer emitted document hyperlink targets after HTML escaping but without a URL-scheme allowlist. A crafted `.doc` could therefore render a live `javascript:`, `vbscript:`, `data:`, or similarly unsafe link. Script could execute in the embedding origin if a viewer clicked it.\n\n### Impact\n\nApplications rendering untrusted legacy `.doc` files with `@file-viewer/doc` or the `msdoc-viewer` compatibility package could expose their origin to attacker-controlled script after link interaction.\n\n### Fix\n\nVersion 2.3.1 centralizes link handling, removes control-character and scheme confusion, blocks external document links by default, and in explicit allow mode accepts only HTTP(S), mail, telephone, safe relative URLs, and internal bookmarks. The renderer output is safe before mounting, with mount-boundary sanitization as defense in depth. The `msdoc-viewer` compatibility release containing the fix is 0.2.2.\n\nThanks to @shashank420 for responsibly reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-18T17:19:42Z",
+    "Severity": "HIGH",
+    "Summary": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
+    "UpdatedAt": "2026-09-18T17:19:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.2"
+      },
+      "VulnerableVersionRange": "\u003c= 0.2.1"
+    }
+  ]
+}

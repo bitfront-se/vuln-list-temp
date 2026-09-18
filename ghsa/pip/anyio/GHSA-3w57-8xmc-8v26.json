@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-18T17:17:24Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "anyio"
+  },
+  "Advisory": {
+    "DatabaseId": 499950,
+    "Id": "GSA_kwCzR0hTQS0zdzU3LTh4bWMtOHYyNs4AB6Du",
+    "GhsaId": "GHSA-3w57-8xmc-8v26",
+    "References": [
+      {
+        "Url": "https://github.com/agronholm/anyio/security/advisories/GHSA-3w57-8xmc-8v26"
+      },
+      {
+        "Url": "https://github.com/agronholm/anyio/pull/1209"
+      },
+      {
+        "Url": "https://github.com/agronholm/anyio/commit/eb562e6462ee46b1904e50b02ce00a858cdeb200"
+      },
+      {
+        "Url": "https://github.com/agronholm/anyio/releases/tag/4.14.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3w57-8xmc-8v26"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3w57-8xmc-8v26"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63349"
+      }
+    ],
+    "Description": "AnyIO 4.14.0 accepts the POSIX extra_groups argument on anyio.run_process() and anyio.open_process(), but open_process() forwards the wrong variable to the backend: when extra_groups is not None, it assigns kwargs[\"extra_groups\"] = group instead of extra_groups. As a result, callers cannot reliably clear or set supplementary groups for child processes. In a disposable Linux container, Python's subprocess.run(..., extra_groups=[]) clears a synthetic parent supplementary group list, while anyio.run_process(..., extra_groups=[]) preserves the parent groups. If group is also supplied, AnyIO passes an integer as extra_groups and the call fails with TypeError. This is a POSIX privilege-dropping correctness issue for applications that rely on AnyIO subprocess helpers to launch less-privileged child processes.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-18T17:17:23Z",
+    "Severity": "HIGH",
+    "Summary": "AnyIO run_process/open_process ignores extra_groups and can retain parent supplementary groups",
+    "UpdatedAt": "2026-09-18T17:17:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.14.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.14.0, \u003c 4.14.2"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-18T17:40:07Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/perses/perses"
+  },
+  "Advisory": {
+    "DatabaseId": 499959,
+    "Id": "GSA_kwCzR0hTQS12cjVmLXczNXEtOThqcM4AB6D3",
+    "GhsaId": "GHSA-vr5f-w35q-98jp",
+    "References": [
+      {
+        "Url": "https://github.com/perses/perses/security/advisories/GHSA-vr5f-w35q-98jp"
+      },
+      {
+        "Url": "https://github.com/perses/perses/commit/75e5471040ccb5674ea8d25c2aa16c80ccb70b2a"
+      },
+      {
+        "Url": "https://github.com/perses/perses/releases/tag/v0.54.0-rc.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vr5f-w35q-98jp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vr5f-w35q-98jp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63445"
+      }
+    ],
+    "Description": "### Impact\nWhen Perses is using the file system database, on  the list endpoints, the project value is bound from the request into the resource `Query` struct and is never validated against directory-traversal characters (validation/Flatten only runs for Create/Update bodies, not list queries). \n\nThe path is then used to retrieve files in the database directly.\n\nAttacker can read arbitrary YAML/JSON files from the server host and can bypass the security constraints to get access to other resources contained in the file database.\n\nFor example `https://localhost:8080/api/v1/dashboards?project=../projects` returns the list of the project while it must not return anything.\n\n### Patches\n_Has the problem been patched? What versions should users upgrade to?_\n\n### Workarounds\nAvoid using the file system database in production. Use SQL database instead.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-18T17:40:03Z",
+    "Severity": "HIGH",
+    "Summary": "Perses's unvalidated project parameter enables filesystem path traversal",
+    "UpdatedAt": "2026-09-18T17:40:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.54.0-rc.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.54.0-rc.0"
+    }
+  ]
+}
