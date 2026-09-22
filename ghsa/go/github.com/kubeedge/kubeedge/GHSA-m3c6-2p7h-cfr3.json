@@ -1,0 +1,101 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-22T20:36:49Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/kubeedge/kubeedge"
+  },
+  "Advisory": {
+    "DatabaseId": 500910,
+    "Id": "GSA_kwCzR0hTQS1tM2M2LTJwN2gtY2ZyM84AB6Su",
+    "GhsaId": "GHSA-m3c6-2p7h-cfr3",
+    "References": [
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/security/advisories/GHSA-m3c6-2p7h-cfr3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62182"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/pull/7028"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/pull/7029"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/pull/7030"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/commit/14f65fc6207787f266cbcb0dceac7f09a81bab2b"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/commit/6309a335c8e5e3c154b6bb0a09292f5c7dc598dc"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/commit/ee78415a36911c1a93e59a921c23b8e4ecd83e90"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/blob/master/CHANGELOG/CHANGELOG-1.21.md"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/blob/master/CHANGELOG/CHANGELOG-1.22.md"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/blob/master/CHANGELOG/CHANGELOG-1.23.md"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/releases/tag/v1.21.2"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/releases/tag/v1.22.2"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/releases/tag/v1.23.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m3c6-2p7h-cfr3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m3c6-2p7h-cfr3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62182"
+      }
+    ],
+    "Description": "## Description\n\nKubeEdge ConfigUpdateJob processing was vulnerable to command injection on edge nodes.\n\nThe `updateFields` values from a ConfigUpdateJob were concatenated into a command string and executed through a system shell. An authenticated user with sufficient permissions to create or update ConfigUpdateJob resources could include shell metacharacters in the supplied configuration fields and cause unintended commands to be executed on targeted edge nodes.\n\n## Impact\n\nSuccessful exploitation could allow an authenticated attacker to execute arbitrary commands on affected edge nodes with the privileges of the KubeEdge process handling the ConfigUpdateJob.\n\nThe attacker must already have permission to create or modify ConfigUpdateJob resources and target an enrolled edge node.\n\n## Patches\n\nThe fix removes shell-based command construction and invokes `keadm config-update` using structured command arguments.\n\nThe complete `--set` value is passed as a single literal argument, preventing shell metacharacters from being interpreted as commands.\n\nFixes are planned for the following maintained releases:\n\n* v1.23.1\n* v1.22.2\n* v1.21.2\n\n## Workarounds\n\nUntil a patched release is available:\n\n* restrict RBAC permissions for creating or modifying ConfigUpdateJob resources;\n* allow only trusted administrators to submit configuration update jobs;\n* avoid using ConfigUpdateJob in environments where its input cannot be fully trusted;\n* monitor ConfigUpdateJob resources and edge-node process activity for unexpected commands or changes.\n\n## Credits\n\nKubeEdge thanks Sang-Hoon Choi ([KoreaSecurity](https://github.com/KoreaSecurity), Sejong University)\nfor responsibly reporting this issue and for coordinating with the KubeEdge\nmaintainers through the security disclosure process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:36:44Z",
+    "Severity": "HIGH",
+    "Summary": "KubeEdge: ConfigUpdateJob updateFields enables remote shell injection and code execution on edge nodes",
+    "UpdatedAt": "2026-09-22T20:36:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.23.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.23.0, \u003c 1.23.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.22.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.22.0, \u003c 1.22.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.21.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.21.0, \u003c 1.21.2"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-22T20:34:26Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "net.sf.mpxj-for-csharp"
+  },
+  "Advisory": {
+    "DatabaseId": 500875,
+    "Id": "GSA_kwCzR0hTQS01dnZ4LTNoMzQtZjNnas4AB6SL",
+    "GhsaId": "GHSA-5vvx-3h34-f3gj",
+    "References": [
+      {
+        "Url": "https://github.com/joniles/mpxj/security/advisories/GHSA-5vvx-3h34-f3gj"
+      },
+      {
+        "Url": "https://github.com/joniles/mpxj/commit/6e8288bc4d1cd62842af298004dc74fe66fb0805"
+      },
+      {
+        "Url": "https://github.com/joniles/mpxj/releases/tag/v16.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5vvx-3h34-f3gj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5vvx-3h34-f3gj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61570"
+      }
+    ],
+    "Description": "### Impact\nMPXJ used the default configuration when creating a DocumentBuilder instance, which leaves doctype declarations enabled, when parsing the XML content of the ZTIMEINTERVALS column from a Merlin project SQLite file. This would allow a carefully crafted XML payload to read an arbitrary file. However, although an arbitrary file can be read, the way the resulting parsed XML is processed by MPXJ means that the data it contains is unlikely to be available for exfiltration.\n\n### Patches\nThe patch is included in MPXJ 16.4.1\n\n### Workarounds\nPotential workarounds include:\n* Avoid reading Merlin project files with MPXJ\n* Only accept Merlin project files from trusted sources\n* Preprocess Merlin SQLite databases to strip doctype declarations from the ZTIMEINTERVALS column",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:34:25Z",
+    "Severity": "HIGH",
+    "Summary": "MPXJ: XXE Vulnerability in MerlinReader",
+    "UpdatedAt": "2026-09-22T20:34:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.5.5, \u003c 16.4.1"
+    }
+  ]
+}

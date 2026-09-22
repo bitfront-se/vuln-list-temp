@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-22T19:57:52Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/emiago/sipgo"
+  },
+  "Advisory": {
+    "DatabaseId": 500868,
+    "Id": "GSA_kwCzR0hTQS1wZzU5LTV2d2ctNGp4cc4AB6SE",
+    "GhsaId": "GHSA-pg59-5vwg-4jxq",
+    "References": [
+      {
+        "Url": "https://github.com/emiago/sipgo/security/advisories/GHSA-pg59-5vwg-4jxq"
+      },
+      {
+        "Url": "https://github.com/emiago/sipgo/commit/a7be60a07f48c06b3cdd5a7d35eb820b3df5736c"
+      },
+      {
+        "Url": "https://github.com/emiago/sipgo/releases/tag/v1.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pg59-5vwg-4jxq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pg59-5vwg-4jxq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58268"
+      }
+    ],
+    "Description": "### Summary\n\nThe stream parser allocates the SIP body buffer from the `Content-Length` header before validating its size, which can lead to an unauthenticated DoS.\n\n### Details\n\n`ParserStream.parseSingle` allocates the body buffer from the declared `Content-Length` with no size check (https://github.com/emiago/sipgo/blob/v1.4.0/sip/parser_stream.go#L195):\n\n```go\nbody := make([]byte, contentLength)   // contentLength is client-controlled, up to 2^32-1 (uint32)\n```\n\nThe `ParseMaxMessageLength` (65535) check is in the caller `ParseNext` (https://github.com/emiago/sipgo/blob/v1.4.0/sip/parser_stream.go#L132), and only runs after `parseSingle` has already allocated the buffer.\n\n### PoC\n\nTested on emiago/sipgo v1.4.0 (latest).\n\nSend a single message with a large `Content-Length` and no body to a SIP server:\n\n```\nINVITE sip:victim@example.com SIP/2.0\nVia: SIP/2.0/TCP attacker.example;branch=z9hG4bK1\nFrom: \u003csip:attacker@attacker.example\u003e;tag=1\nTo: \u003csip:victim@example.com\u003e\nCall-ID: 1@attacker.example\nCSeq: 1 INVITE\nContent-Length: 4000000000                     // \u003c- a large Content-Length\n\n```\n\n### Suggested Fix\n\nValidate `contentLength` against `ParseMaxMessageLength` before the allocation.\n\n### Impact\n\nUnauthenticated DoS. Any service using `sipgo` with a stream transport (TCP/TLS/WS/WSS) can be forced to run out of memory.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T19:57:51Z",
+    "Severity": "HIGH",
+    "Summary": "SIPGO: DoS via unvalidated Content-Length in the stream parser",
+    "UpdatedAt": "2026-09-22T19:57:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-22T20:34:14Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "hatchet-dev/hatchet"
+  },
+  "Advisory": {
+    "DatabaseId": 500870,
+    "Id": "GSA_kwCzR0hTQS1mand2LWpmMnYtajQ5Oc4AB6SG",
+    "GhsaId": "GHSA-fjwv-jf2v-j499",
+    "References": [
+      {
+        "Url": "https://github.com/hatchet-dev/hatchet/security/advisories/GHSA-fjwv-jf2v-j499"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61681"
+      },
+      {
+        "Url": "https://github.com/hatchet-dev/hatchet/commit/2d211bce16e5022afaf95780de82dc30e0bcba98"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fjwv-jf2v-j499"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fjwv-jf2v-j499"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61681"
+      }
+    ],
+    "Description": "### Summary\n  The SNS `UnsubscribeConfirmation` handler in `internal/integrations/ingestors/sns/sns.go` makes an unvalidated\n  `http.Get()` call to `payload.UnsubscribeURL` without any URL restriction. Because `UnsubscribeURL` is intentionally\n  excluded from the `BuildSignature()` signed field list, an attacker can replace this field in a legitimately\n  AWS-signed message with an arbitrary internal URL, bypassing the `VerifyPayload()` signature check entirely and\n  triggering a Server-Side Request Forgery (SSRF) against internal infrastructure — including the EC2 Instance Metadata\n  Service (IMDS) at `169.254.169.254`.\n\n ### Impact\n\n  This is a Server-Side Request Forgery (SSRF) vulnerability. An attacker with a Hatchet account and an AWS Free Tier\n  account can:\n\n  - Reach the EC2 IMDS endpoint and retrieve IAM temporary credentials if Hatchet is deployed on AWS\n  - Port-scan and probe internal services not exposed to the internet\n  - Access internal HTTP APIs (e.g., Kubernetes API server, internal dashboards) from the Hatchet server's network\n  context",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:34:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Hatchet: SSRF via Unsigned UnsubscribeURL in SNS UnsubscribeConfirmation Handler",
+    "UpdatedAt": "2026-09-22T20:34:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.91.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.91.1"
+    }
+  ]
+}

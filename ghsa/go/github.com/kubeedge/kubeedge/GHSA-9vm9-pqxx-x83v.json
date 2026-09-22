@@ -1,0 +1,101 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-22T20:37:02Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/kubeedge/kubeedge"
+  },
+  "Advisory": {
+    "DatabaseId": 500914,
+    "Id": "GSA_kwCzR0hTQS05dm05LXBxeHgteDgzds4AB6Sy",
+    "GhsaId": "GHSA-9vm9-pqxx-x83v",
+    "References": [
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/security/advisories/GHSA-9vm9-pqxx-x83v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62369"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/pull/7028"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/pull/7029"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/pull/7030"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/commit/47767b7f2649afcfa3a856e87d556f7777e0428d"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/commit/a524a66a1ae1691eb8ff16b6ff9a93fb370d4047"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/commit/ee02dea9d08114afc4a8f401b1c2f30e84e1de40"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/blob/master/CHANGELOG/CHANGELOG-1.21.md"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/blob/master/CHANGELOG/CHANGELOG-1.22.md"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/blob/master/CHANGELOG/CHANGELOG-1.23.md"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/releases/tag/v1.21.2"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/releases/tag/v1.22.2"
+      },
+      {
+        "Url": "https://github.com/kubeedge/kubeedge/releases/tag/v1.23.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9vm9-pqxx-x83v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9vm9-pqxx-x83v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62369"
+      }
+    ],
+    "Description": "## Description\n\nKubeEdge `keadm` contains a path traversal vulnerability in the `DecompressTarGz` archive extraction function.\n\nArchive entry names were joined directly with the extraction destination without sufficient validation. A crafted tar.gz archive containing parent-directory components, Windows-style backslashes, absolute paths, or drive-prefixed paths could cause files to be written outside the intended extraction directory.\n\nThe issue is particularly relevant to Windows edge nodes during the `keadm join` or installation process when `keadm` extracts downloaded component archives.\n\n## Impact\n\nAn attacker who can cause an affected `keadm` process to extract a malicious archive may write or overwrite files outside the intended destination directory with the privileges of the user running `keadm`.\n\nOn Windows edge nodes, this may allow modification of configuration files, executable files, service-related files, or other writable system locations. Depending on the overwritten file and the privileges of the `keadm` process, successful exploitation could lead to persistent system modification or code execution.\n\nExploitation requires the attacker to influence the contents of an archive processed by `keadm`, such as through a compromised, replaced, or otherwise untrusted download source.\n\n## Patches\n\nThe extraction logic now:\n\n* resolves the destination directory to an absolute path;\n* rejects empty archive entry names;\n* normalizes Windows-style path separators before validation;\n* rejects parent-directory traversal paths;\n* rejects absolute and Windows drive-prefixed paths;\n* uses `filepath-securejoin` to ensure extracted files remain within the destination directory.\n\nFixes are planned for the following maintained releases:\n\n* v1.23.1\n* v1.22.2\n* v1.21.2\n\n## Workarounds\n\nUntil a patched release is available:\n\n* only install or join edge nodes using trusted KubeEdge package sources;\n* verify the integrity and origin of downloaded archives before extraction;\n* do not use custom or untrusted component archives with `keadm`;\n* restrict write permissions and administrative privileges for the account running `keadm`;\n* avoid performing Windows edge-node installation or join operations when the package source cannot be trusted.\n\n## Credits\n\nKubeEdge thanks Sang-Hoon Choi ([KoreaSecurity](https://github.com/KoreaSecurity), Sejong University)\nfor responsibly reporting this issue and for coordinating with the KubeEdge\nmaintainers through the security disclosure process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:36:59Z",
+    "Severity": "HIGH",
+    "Summary": "KubeEdge: keadm DecompressTarGz path traversal enables arbitrary file write on Windows during edge node join",
+    "UpdatedAt": "2026-09-22T20:37:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.23.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.23.0, \u003c 1.23.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.22.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.22.0, \u003c 1.22.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.21.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.16.0, \u003c 1.21.2"
+    }
+  ]
+}

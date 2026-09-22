@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-22T20:34:16Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/hatchet-dev/hatchet"
+  },
+  "Advisory": {
+    "DatabaseId": 500871,
+    "Id": "GSA_kwCzR0hTQS1nMjZ4LW00MjctZjQ4Zs4AB6SH",
+    "GhsaId": "GHSA-g26x-m427-f48f",
+    "References": [
+      {
+        "Url": "https://github.com/hatchet-dev/hatchet/security/advisories/GHSA-g26x-m427-f48f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63342"
+      },
+      {
+        "Url": "https://github.com/hatchet-dev/hatchet/commit/06c1fe43543e853ea98ecc2e6a575e2b8310bbeb"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g26x-m427-f48f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g26x-m427-f48f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63342"
+      }
+    ],
+    "Description": "### Summary\n\nThe `GET /api/v1/stable/durable-tasks/{durable-task}` endpoint (`listDurableEventLog`) is missing tenant authorization validation, allowing any authenticated user to read durable task event logs from any tenant.\n\n\n### Impact\nThis CVE requires the attacker to successfully guess the target UUID.\nAny authenticated Hatchet user can read durable task event logs from any other tenant, exposing:\n- Task display names and workflow identifiers\n- User messages (may contain sensitive business data)\n- Wait conditions and branching logic\n- Timing information",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:34:14Z",
+    "Severity": "MODERATE",
+    "Summary": "Hatchet: Cross-Tenant Durable Task Event Log Disclosure via Missing Authorization Check",
+    "UpdatedAt": "2026-09-22T20:34:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.91.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.91.1"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-22T20:34:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mppx"
+  },
+  "Advisory": {
+    "DatabaseId": 500872,
+    "Id": "GSA_kwCzR0hTQS03MjdoLTN2bTUtcXdxNs4AB6SI",
+    "GhsaId": "GHSA-727h-3vm5-qwq6",
+    "References": [
+      {
+        "Url": "https://github.com/wevm/mppx/security/advisories/GHSA-727h-3vm5-qwq6"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/pull/602"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/commit/24ddcca719ae282977d8747309ed1275ea282b25"
+      },
+      {
+        "Url": "https://github.com/wevm/mppx/releases/tag/mppx@0.8.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-727h-3vm5-qwq6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-727h-3vm5-qwq6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63627"
+      }
+    ],
+    "Description": "### Details\nWhen the server acts as the fee_payer, `mppx` 0.6.27 validates calldata using viem's `decodeFunctionData`, which is lenient about trailing bytes. The `FeePayerPolicy` caps `gas_limit` (≤ 2 M) and `max_fee_per_gas` (≤ 100 Gwei) but does **not** check calldata length.\n\nTempo uses legacy calldata gas pricing: **16 gas per non-zero byte**. Appending `N` bytes of `0x01` padding inflates actual gas used by `N × 16` while keeping `gas_limit` and `max_fee_per_gas` within policy caps. The server cosigns and broadcasts the padded transaction, draining its fee-payer wallet.\n\n**Vulnerable code path:** `FeePayerPolicy` in `fee-payer.ts` (mppx 0.6.27) enforces `maxGas = 2_000_000` and `maxFeePerGas = 100 Gwei` but has no `calldata.length` bound. The policy check passes because the inflated gas comes from intrinsic calldata cost, not the declared `gas_limit`.\n\n**Note:** In the experiment, a 16 KB `max_header_length` is enforced, which caps the maximum effective padding at roughly 5,500 bytes. The default padding in this PoC (5,500 bytes) is within that limit.\n\n### PoC\nThe PoC is provided below. It is configured to reproduce the attack on Tempo Moderate testnet within a Docker environment. Download the PoC and run:\n```bash\nunzip mppx_typescript_PoC.zip\ncd mppx_typescript\ndocker build -t mppx-padding .\ndocker run --rm mppx-padding\n``` \nThere are more details in `mppx_typescript/README.md`\n\n### Impact\nA malicious client can force the server to pay ~**5x** the normal transaction fee. This dramatically increases operational costs and completely destroys the profit margin on low-cost items.\n\nPlease provide a way to share the PoC in .zip format to you. Thank you!",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T20:34:17Z",
+    "Severity": "MODERATE",
+    "Summary": "mppx: Gas Draining with padding",
+    "UpdatedAt": "2026-09-22T20:34:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.1"
+    }
+  ]
+}
