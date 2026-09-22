@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-22T14:43:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@roomi-fields/notebooklm-mcp"
+  },
+  "Advisory": {
+    "DatabaseId": 500691,
+    "Id": "GSA_kwCzR0hTQS1qamhwLThjcmotbXBwcc4AB6PT",
+    "GhsaId": "GHSA-jjhp-8crj-mppq",
+    "References": [
+      {
+        "Url": "https://github.com/roomi-fields/notebooklm-mcp/security/advisories/GHSA-jjhp-8crj-mppq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61647"
+      },
+      {
+        "Url": "https://github.com/roomi-fields/notebooklm-mcp/issues/15"
+      },
+      {
+        "Url": "https://github.com/roomi-fields/notebooklm-mcp/commit/13828d9ff3933839ce14c1797d3b20a6bb7694a6"
+      },
+      {
+        "Url": "https://github.com/roomi-fields/notebooklm-mcp/releases/tag/v2.0.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jjhp-8crj-mppq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jjhp-8crj-mppq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61647"
+      }
+    ],
+    "Description": "## Summary\n\nThe `vault_batch` MCP tool (and the equivalent `POST /batch-to-vault` HTTP endpoint) accepted a caller-supplied `vault_dir` path that was passed directly to `path.resolve()` + `fs.mkdir()` with no containment check. A caller — or a prompt-injected LLM driving the MCP — could therefore create directories and write `.md` / `.json` answer files anywhere the server process can write.\n\nThe `slug_prefix` parameter had a parallel, smaller traversal vector: it was concatenated into the filename without sanitization, so a prefix containing `/` or `..` could escape the resolved vault directory through the filename component.\n\n## Impact\n\nFile write (markdown + JSON sidecars) to any location writable by the server process. The written files are inert content (no code execution by themselves), but in a multi-user context — or when the MCP server is driven by an LLM that has read untrusted content (prompt injection) — this allows an attacker to plant files in sensitive locations (autostart folders, shell startup files, etc.) for downstream exploitation.\n\nThe vulnerability exists from **v1.6.0** (when the HTTP `/batch-to-vault` endpoint was introduced) and v1.7.0 (when the same logic was exposed as the `batch_to_vault` MCP tool) through **v2.0.2**.\n\n## Patch\n\nFixed in **v2.0.3**:\n\n- **Opt-in containment via `NOTEBOOKLM_VAULT_ROOT` env var.** When set, `vault_dir` is resolved relative to that root and `realpath`-based containment is enforced. Absolute paths or `..` segments outside the root are rejected with a clear error.\n- **`slug_prefix` is always sanitized.** Path separators (`/`, `\\`), `..` sequences and NUL bytes are stripped, length capped at 64 characters. This applies regardless of whether `NOTEBOOKLM_VAULT_ROOT` is set.\n- 15 unit tests in `src/__tests__/vault-writer.test.ts` cover the escape vectors (absolute paths, sibling-prefix attacks, `..` traversal, NUL/separator stripping).\n\n## Workarounds for users who cannot upgrade\n\n- Run the MCP server under a dedicated unprivileged user with write access only to the intended vault directory.\n- Do not expose the HTTP `/batch-to-vault` endpoint beyond localhost.\n- If using an LLM that ingests untrusted content, validate any `vault_dir` arguments before forwarding them to the MCP.\n\n## Configuration requirement after upgrade (important)\n\nv2.0.3 preserves the legacy unrestricted behaviour when `NOTEBOOKLM_VAULT_ROOT` is **unset**, to keep existing single-user local setups working. **To enable containment, set `NOTEBOOKLM_VAULT_ROOT` in the server environment** to a directory that should bound all vault writes.\n\n## Credit\n\nReported by @mcfly-zzh — thanks for the careful diagnosis and follow-up verification.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T14:43:26Z",
+    "Severity": "HIGH",
+    "Summary": "@roomi-fields/notebooklm-mcp has a path traversal in vault.batch tool that allows arbitrary file write outside intended vault directory",
+    "UpdatedAt": "2026-09-22T14:43:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.6.0, \u003c 2.0.3"
+    }
+  ]
+}
