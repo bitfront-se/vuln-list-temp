@@ -1,0 +1,83 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-21T22:56:36Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/grafana/grafana"
+  },
+  "Advisory": {
+    "DatabaseId": 365575,
+    "Id": "GSA_kwCzR0hTQS05Zzg0LTM5bW0tcTRwM84ABZQH",
+    "GhsaId": "GHSA-9g84-39mm-q4p3",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-9029"
+      },
+      {
+        "Url": "https://grafana.com/security/security-advisories/cve-2026-9029"
+      },
+      {
+        "Url": "https://github.com/grafana/grafana/commit/3fcdbc5a6e5c955bd42bd3715dd03cbad2b078c1"
+      },
+      {
+        "Url": "https://github.com/grafana/grafana/commit/42cdc39124912a8506a0c613c319c345aa950b29"
+      },
+      {
+        "Url": "https://github.com/grafana/grafana/commit/82ef13993059351bf21de35b8488bbd9b42df4f4"
+      },
+      {
+        "Url": "https://github.com/grafana/grafana/commit/dc695b9649530064e19c7c120bd6ebe104908e58"
+      },
+      {
+        "Url": "https://github.com/grafana/grafana/releases/tag/v12.4.4"
+      },
+      {
+        "Url": "https://github.com/grafana/grafana/releases/tag/v13.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9g84-39mm-q4p3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9g84-39mm-q4p3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-9029"
+      }
+    ],
+    "Description": "The geomap panel's XYZ tile layer has a sanitize-then-interpolate ordering bug. sanitizeTextPanelContent() runs on the raw template string before getTemplateSrv().replace() substitutes the variable value, which uses the glob format with no HTML escaping. The result is passed to OpenLayers via element.innerHTML. An Editor can set a textbox variable's default value to an XSS payload that executes for every user who opens the dashboard. This is a bypass of the CVE-2023-0507 fix",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-22T15:30:46Z",
+    "Severity": "HIGH",
+    "Summary": "Grafana geomap panel's XYZ tile layer has a sanitize-then-interpolate ordering bug",
+    "UpdatedAt": "2026-09-21T22:56:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.2-0.20260616075434-82ef13993059"
+      },
+      "VulnerableVersionRange": "\u003c 1.9.2-0.20260616075434-82ef13993059"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c 13.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-beta1, \u003c 12.4.4"
+    }
+  ]
+}
