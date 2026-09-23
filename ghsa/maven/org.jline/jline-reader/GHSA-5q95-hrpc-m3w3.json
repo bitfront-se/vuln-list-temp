@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-23T18:12:06Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.jline:jline-reader"
+  },
+  "Advisory": {
+    "DatabaseId": 501398,
+    "Id": "GSA_kwCzR0hTQS01cTk1LWhycGMtbTN3M84AB6aW",
+    "GhsaId": "GHSA-5q95-hrpc-m3w3",
+    "References": [
+      {
+        "Url": "https://github.com/jline/jline3/security/advisories/GHSA-5q95-hrpc-m3w3"
+      },
+      {
+        "Url": "https://github.com/jline/jline3/pull/2012"
+      },
+      {
+        "Url": "https://github.com/jline/jline3/pull/2018"
+      },
+      {
+        "Url": "https://github.com/jline/jline3/commit/1d5fc3099e77938b971e197211cad2d4fbb17541"
+      },
+      {
+        "Url": "https://github.com/jline/jline3/commit/341ee69ccc57b7733c1b40d6993219b64b3206ae"
+      },
+      {
+        "Url": "https://github.com/jline/jline3/releases/tag/4.3.1"
+      },
+      {
+        "Url": "https://github.com/jline/jline3/releases/tag/jline-3.30.15"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5q95-hrpc-m3w3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5q95-hrpc-m3w3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77420"
+      }
+    ],
+    "Description": "### Summary\n\nThe JLine3 `HISTORY_IGNORE` variable is converted into a Java regular expression with\nonly partial escaping. As a result, regex metacharacters other than `*` and `:` are\npassed through to the regex engine. A crafted value such as `(a+)+b` can cause\ncatastrophic backtracking each time a command line is added to history, hanging the\nreader thread at high CPU.\n\n### Details\n\nIn `reader/src/main/java/org/jline/reader/impl/history/DefaultHistory.java`,\n`matchPatterns()` converts `HISTORY_IGNORE` into a regex:\n\n```java\nfor (int i = 0; i \u003c patterns.length(); i++) {\n    char ch = patterns.charAt(i);\n    if (ch == '\\\\') {\n        ch = patterns.charAt(++i);\n        sb.append(ch);\n    } else if (ch == ':') {\n        sb.append('|');\n    } else if (ch == '*') {\n        sb.append('.').append('*');\n    } else {\n        sb.append(ch);\n    }\n}\nreturn line.matches(sb.toString());\n```\n\nThis logic translates wildcard syntax but does not escape regex metacharacters such as\n`(`, `)`, `+`, `?`, `{`, `}`, `[`, and `]`. Those characters therefore reach the Java\nregex engine unchanged.\n\nAffected source location:\n- `reader/src/main/java/org/jline/reader/impl/history/DefaultHistory.java`\n- `matchPatterns(String patterns, String line)`\n\n### PoC\n\n1. Configure `HISTORY_IGNORE` to a malicious pattern, for example:\n\n```sh\nset history-ignore \"(a+)+b\"\n```\n\n2. At the JLine prompt, enter a long non-matching line:\n\n```text\naaaaaaaaaaaaaaaaaaaaaaaaaaax\n```\n\n3. Press Enter.\n\nExpected result:\n- The prompt does not return.\n- The reader thread consumes high CPU.\n\nReproduction environment:\n- JLine3 on x86_64 Linux\n- OpenJDK 25.0.2\n\n### Impact\n\nThis is a denial-of-service vulnerability caused by catastrophic regex backtracking.\nApplications embedding `org.jline:jline-reader` are impacted if they allow\n`HISTORY_IGNORE` to be configured through user configuration or application settings.\nThe issue is lower severity than the interactive editor findings because the attacker\nmust control configuration, but it can still reliably hang a reader session.\n\n### Suggested Fix\n\nThe safest fix for the current git head is to stop treating arbitrary `HISTORY_IGNORE`\ncontent as a regex. Instead, escape all characters by default and translate only the\nintended JLine wildcard syntax (`*`) and separator syntax (`:`).\n\nSuggested patch:\n\n```diff\ndiff --git a/reader/src/main/java/org/jline/reader/impl/history/DefaultHistory.java b/reader/src/main/java/org/jline/reader/impl/history/DefaultHistory.java\n--- a/reader/src/main/java/org/jline/reader/impl/history/DefaultHistory.java\n+++ b/reader/src/main/java/org/jline/reader/impl/history/DefaultHistory.java\n@@\n         StringBuilder sb = new StringBuilder();\n         for (int i = 0; i \u003c patterns.length(); i++) {\n             char ch = patterns.charAt(i);\n             if (ch == '\\\\') {\n                 ch = patterns.charAt(++i);\n-                sb.append(ch);\n+                sb.append(Pattern.quote(Character.toString(ch)));\n             } else if (ch == ':') {\n                 sb.append('|');\n             } else if (ch == '*') {\n                 sb.append('.').append('*');\n             } else {\n-                sb.append(ch);\n+                sb.append(Pattern.quote(Character.toString(ch)));\n             }\n         }\n         return line.matches(sb.toString());\n```\n\n### Credits\n\nThis issue was identified by Michał Majchrowicz and Marcin Wyczechowski, members of the AFINE Team.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-23T18:12:05Z",
+    "Severity": "MODERATE",
+    "Summary": "JLine: ReDoS via `HISTORY_IGNORE` Configuration Variable",
+    "UpdatedAt": "2026-09-23T18:12:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.30.15"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.30.15"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.3.1"
+    }
+  ]
+}
