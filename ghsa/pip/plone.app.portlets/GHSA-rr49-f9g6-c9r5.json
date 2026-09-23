@@ -1,0 +1,83 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-23T13:55:49Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "plone.app.portlets"
+  },
+  "Advisory": {
+    "DatabaseId": 501349,
+    "Id": "GSA_kwCzR0hTQS1ycjQ5LWY5ZzYtYzlyNc4AB6Zl",
+    "GhsaId": "GHSA-rr49-f9g6-c9r5",
+    "References": [
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/security/advisories/GHSA-rr49-f9g6-c9r5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57149"
+      },
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/commit/1d9cacacfad9ed08b890dadc6e75741e295dc151"
+      },
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/commit/8a0641dc4054a2b13834bba00c67cd9a2fd189e1"
+      },
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/commit/fb979f01b57dd2fc06c90ee6577eb5eb285da8f1"
+      },
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/releases/tag/5.0.8"
+      },
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/releases/tag/6.0.4"
+      },
+      {
+        "Url": "https://github.com/plone/plone.app.portlets/releases/tag/7.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rr49-f9g6-c9r5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rr49-f9g6-c9r5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57149"
+      }
+    ],
+    "Description": "### Impact\nThe Classic portlet (plone.app.portlets.portlets.classic) used its user-supplied template/macro fields to build a TALES path expression that was then evaluated by the TAL path() helper. Because the value was interpreted as a full TALES expression, a user able to add or edit a Classic portlet could supply a crafted value that escapes simple path traversal and is evaluated as arbitrary code.\n\nThis is exploitable by any authenticated user who can configure a Classic portlet - which, with the default role map, includes regular users on their personal dashboard. The result is code execution in the context of the Plone process, i.e. a privilege escalation across the trust boundary between an authenticated web user and the server-side process.\n\n### Patches\nThe problem has been patched in `plone.app.portlets`\n\n* For Plone 6.2, upgrade to `plone.app.portlets` 7.0.2.\n* For Plone 6.1, upgrade to `plone.app.portlets` 6.0.4.\n* For Plone 6.0, upgrade to `plone.app.portlets` 5.0.8.\n\n### Workarounds\nIf upgrading is not immediately possible:\n\n- Restrict who can manage portlets: remove the `plone.app.portlets.ManageOwnPortlets` permission from untrusted roles, and limit Manage portlets to trusted administrators (usually this is already restricted to the Manager and Site Administrator roles).\n- Where the Classic portlet is not needed, unregister it so it cannot be added. This would need to be done by editing a `portlets.xml` in your own code, so it is not a quick fix.\n- You could also effectively disable showing the classic portlet by customising its template. In the Zope Management Interface go to the `portal_view_customizations` tool, locate the `classic.pt` template and click it. Click the Customize button.  Remove all text and replace it with `\u003cdiv\u003eThe classic portlet was disabled.\u003c/div\u003e`. (This is not a recommended way of customising a template, but in this case it is quite effective.)\n\n### Credits\n\nDiscovered by Giuseppe Caruso, and reported to the [Plone/Zope Security Team](mailto:security@plone.org). Thanks!",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-23T13:55:47Z",
+    "Severity": "CRITICAL",
+    "Summary": "plone.app.portlets Vulnerable to Remote Code Execution via TALES Injection",
+    "UpdatedAt": "2026-09-23T13:55:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.8"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.0.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.4"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c= 6.0.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c= 7.0.1"
+    }
+  ]
+}
