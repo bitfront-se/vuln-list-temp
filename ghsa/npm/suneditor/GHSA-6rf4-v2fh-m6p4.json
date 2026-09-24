@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-24T14:57:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "suneditor"
+  },
+  "Advisory": {
+    "DatabaseId": 501723,
+    "Id": "GSA_kwCzR0hTQS02cmY0LXYyZmgtbTZwNM4AB6fb",
+    "GhsaId": "GHSA-6rf4-v2fh-m6p4",
+    "References": [
+      {
+        "Url": "https://github.com/JiHong88/suneditor/security/advisories/GHSA-6rf4-v2fh-m6p4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59167"
+      },
+      {
+        "Url": "https://github.com/JiHong88/suneditor/issues/1646"
+      },
+      {
+        "Url": "https://github.com/JiHong88/suneditor/commit/a94ace269c7102bfb6de58a27a6547bc4eb09045"
+      },
+      {
+        "Url": "https://github.com/JiHong88/suneditor/releases/tag/2.47.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6rf4-v2fh-m6p4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6rf4-v2fh-m6p4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59167"
+      }
+    ],
+    "Description": "## Summary\n\nSUNEDITOR `v2.47.10` appears to allow JavaScript execution through crafted namespaced HTML elements.\n\nThe sanitization logic does not fully remove executable event-handler attributes from certain custom/namespaced tags. As a result, an attacker may be able to inject HTML content that executes JavaScript when the rendered element is interacted with.\n\nThis behavior was observed after the changes introduced in this commit:\n\nhttps://github.com/JiHong88/suneditor/commit/9ed405fb0de676e56cd0e6a13c19c103ad5948d3\n\n---\n\n## Affected Version\n\nConfirmed vulnerable:\n\n* SUNEDITOR =\u003c `2.47.10`\n\nPotentially affected:\n\n* Previous versions, if the same sanitization logic is still present\n\n---\n\n## Proof of Concept\n\nThe following payload preserves an executable event handler:\n\n```html\n\u003ca:b src=\"/x\"\u003e\u003ciframe src=javascript:alert(1)\u003e\u003c/iframe\u003e\u003c/a:b\u003e\n\n\u003cp\u003e\u003ca:b src=\"/x\" onclick=\"document.body.style.background='red'\"\u003eclick\u003c/a:b\u003e\u003c/p\u003e\n```\n\nSimplified PoC:\n\n```html\n\u003ca:b src=\"/x\" onclick=\"console.log('XSS:',document.domain,document.cookie)\"\u003eclick\u003c/a:b\u003e\n```\n\n```html\n\u003cp\u003e\u003ca:b src=\"/x\" onmouseover=\"alert('XSS — '+document.domain)\"\u003e📎 Click here for solutions\u003c/a:b\u003e\u003c/p\u003e\n```\n---\n\n## Steps to Reproduce\n\n1. Open SUNEDITOR using version `2.47.10`.\n2. Insert the payload above into the editor.\n3. Save or render the generated content.\n4. Click the generated element.\n5. Observe that JavaScript is executed.\n\n---\n\n## Impact\n\nThis may allow an attacker to inject arbitrary JavaScript into rendered editor content.\n\nDepending on how SUNEDITOR is integrated into an application, this could lead to:\n\n* Stored XSS\n* DOM manipulation\n* Session theft\n* Credential theft\n* Account takeover actions performed in the victim’s browser context\n\n---\n\n## Technical Details\n\nThe issue appears to be related to incomplete handling of namespaced/custom HTML elements such as:\n\n```html\n\u003ca:b\u003e\n```\n\nEvent-handler attributes such as `onclick` can remain attached to these crafted elements and execute when interacted with.\n\nThis suggests that the sanitization process may not consistently normalize and validate custom or namespaced elements before applying attribute filtering.\n\n---\n\n## Suggested Remediation\n\nPossible mitigations include:\n\n* Normalize DOM elements before sanitization.\n* Explicitly reject or unwrap unknown/custom/namespaced tags.\n* Strip all event-handler attributes from all elements, including unknown/custom elements.\n* Re-validate sanitized output after browser DOM parsing.\n* Add regression tests for namespaced/custom tag payloads.\n\n---",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T14:57:55Z",
+    "Severity": "CRITICAL",
+    "Summary": "SunEditor: Critical XSS vulnerability - sanitizer bypass",
+    "UpdatedAt": "2026-09-24T14:57:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.47.11"
+      },
+      "VulnerableVersionRange": "\u003c= 2.47.10"
+    }
+  ]
+}
