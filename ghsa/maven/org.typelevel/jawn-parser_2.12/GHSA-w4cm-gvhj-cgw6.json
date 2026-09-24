@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-23T21:23:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.typelevel:jawn-parser_2.12"
+  },
+  "Advisory": {
+    "DatabaseId": 501473,
+    "Id": "GSA_kwCzR0hTQS13NGNtLWd2aGotY2d3Ns4AB6bh",
+    "GhsaId": "GHSA-w4cm-gvhj-cgw6",
+    "References": [
+      {
+        "Url": "https://github.com/typelevel/jawn/security/advisories/GHSA-w4cm-gvhj-cgw6"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/commit/cddcd5e3387c356b05953f7b2af103d309687e4b"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/releases/tag/v1.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w4cm-gvhj-cgw6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w4cm-gvhj-cgw6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61814"
+      }
+    ],
+    "Description": "`AsyncParser` can be forced to perform O(n^2) work on the length of the input.  When a single JSON token arrives across many small chunks, each `absorb` call rescans the incomplete token from the start.\n\n### Impact\n\nDenial of service via CPU exhaustion when parsing untrusted JSON.\n\nPreconditions:\n- Application uses `AsyncParser`\n- Attacker can send large tokens with control over chunk sizes.\n\n### Patches\n\nFixed in jawn-parser-1.7.0.\n\n### Workarounds\n\nIf you can't upgrade immediately:\n- Use the synchronous `Parser`.\n- Buffer incoming bytes into larger chunks before calling `absorb`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-23T21:23:58Z",
+    "Severity": "HIGH",
+    "Summary": "Jawn: Quadratic parsing effort in AsyncParser",
+    "UpdatedAt": "2026-09-23T21:23:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.0"
+    }
+  ]
+}

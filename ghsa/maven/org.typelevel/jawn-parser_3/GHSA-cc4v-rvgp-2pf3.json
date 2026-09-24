@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-23T21:23:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.typelevel:jawn-parser_3"
+  },
+  "Advisory": {
+    "DatabaseId": 501472,
+    "Id": "GSA_kwCzR0hTQS1jYzR2LXJ2Z3AtMnBmM84AB6bg",
+    "GhsaId": "GHSA-cc4v-rvgp-2pf3",
+    "References": [
+      {
+        "Url": "https://github.com/typelevel/jawn/security/advisories/GHSA-cc4v-rvgp-2pf3"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/commit/191cb3a44e77f1afab439ee636bf66bdf3c54a04"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/commit/6219666641f9408498f85868f835e17bd8a72fed"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/commit/93ac93e9c992c11b4c03d5455d8551f9fb24da1b"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/commit/f6ace7e0db715de1a8c4618bed9378333a5c2214"
+      },
+      {
+        "Url": "https://github.com/typelevel/jawn/releases/tag/v1.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cc4v-rvgp-2pf3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cc4v-rvgp-2pf3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59990"
+      }
+    ],
+    "Description": "The Jawn parser before 1.6.1 is vulnerable to a denial of service attack via untrusted input.\n\n### Impact\n\nA remote attacker who can submit JSON to any jawn-backed parse method can exhaust JVM heap and trigger `java.lang.OutOfMemoryError`.  This is treated by Scala as a fatal error and not typically handled by `scala.util.Try` or `cats.effect.IO`.\n\n### Patches\n\nVersion `1.6.1` introduces a configurable nesting-depth limit (`Parser#maxDepth`, default `4096`).  Inputs deeper than the limit fail with a recoverable `ParseException` instead of exhausting heap.\n\nUsers who require deeper nesting may override `maxDepth` on a `Parser` subclass.\n\n### Workarounds\n\n- Enforce an input size limit small enough that the resulting context stack cannot exhaust heap, (e.g. http4s `EntityLimiter`).\n- Pre-scan untrusted input and reject documents whose maximum delimiter nesting exceeds a threshold before handing them to jawn.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-23T21:23:54Z",
+    "Severity": "HIGH",
+    "Summary": "Jawn: Uncontrolled nesting depth in JSON parser",
+    "UpdatedAt": "2026-09-23T21:23:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.0"
+    }
+  ]
+}

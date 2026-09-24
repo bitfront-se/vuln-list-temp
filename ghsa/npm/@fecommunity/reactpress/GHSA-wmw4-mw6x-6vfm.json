@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-23T21:52:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@fecommunity/reactpress"
+  },
+  "Advisory": {
+    "DatabaseId": 501607,
+    "Id": "GSA_kwCzR0hTQS13bXc0LW13NngtNnZmbc4AB6dn",
+    "GhsaId": "GHSA-wmw4-mw6x-6vfm",
+    "References": [
+      {
+        "Url": "https://github.com/fecommunity/reactpress/security/advisories/GHSA-wmw4-mw6x-6vfm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61685"
+      },
+      {
+        "Url": "https://github.com/fecommunity/reactpress/commit/78ecb70af1c021455c05fdcbe137212c70e310d6"
+      },
+      {
+        "Url": "https://github.com/fecommunity/reactpress/releases/tag/v3.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wmw4-mw6x-6vfm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wmw4-mw6x-6vfm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61685"
+      }
+    ],
+    "Description": "## Summary\n\nReactPress API list endpoints build TypeORM `QueryBuilder` conditions using\nunsanitized HTTP query parameter *names* as SQL column identifiers\n(e.g. `` `article.${key}` ``). TypeORM parameterizes values but not column\nnames, allowing unauthenticated attackers to inject SQL through crafted\nquery string keys.\n\n## Impact\n\nAn unauthenticated remote attacker can perform blind SQL injection against\nthe application database, potentially exfiltrating sensitive data (users,\nsettings, API keys, article content, etc.).\n\n## Affected endpoints (unauthenticated GET)\n\n- `GET /api/article`\n- `GET /api/comment`\n- `GET /api/file`\n- `GET /api/page`\n- `GET /api/Knowledge`\n\n## Affected code\n\nVulnerable pattern in `findAll()` methods, including but not limited to:\n\n- `server/src/modules/article/article.service.ts`\n- `server/src/modules/comment/comment.service.ts`\n- `server/src/modules/file/file.service.ts`\n- `server/src/modules/page/page.service.ts`\n- `server/src/modules/knowledge/knowledge.service.ts`\n\n## Remediation\n\n- Whitelist allowed filter column names before interpolating into SQL.\n- Upgrade to `@fecommunity/reactpress` \u003e= 3.7.0.\n\n## Credit\n\nReported by lsr365400.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-23T21:51:59Z",
+    "Severity": "HIGH",
+    "Summary": "ReactPress has SQL injection via dynamic column names in TypeORM query builders",
+    "UpdatedAt": "2026-09-23T21:52:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.7.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.6.0"
+    }
+  ]
+}
