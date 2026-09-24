@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-24T18:23:50Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.openremote:openremote-manager"
+  },
+  "Advisory": {
+    "DatabaseId": 365863,
+    "Id": "GSA_kwCzR0hTQS12anI5LWY5M2otbWpyN84ABZUn",
+    "GhsaId": "GHSA-vjr9-f93j-mjr7",
+    "References": [
+      {
+        "Url": "https://github.com/openremote/openremote/security/advisories/GHSA-h3m5-97jq-qjrf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56120"
+      },
+      {
+        "Url": "https://github.com/openremote/openremote/releases/tag/1.25.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/openremote-idor-via-bulk-alarm-deletion-endpoint"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vjr9-f93j-mjr7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vjr9-f93j-mjr7"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-h3m5-97jq-qjrf. This link is maintained to preserve external references.\n\n### Original Description\nOpenRemote before 1.25.0 contains an insecure direct object reference (IDOR) vulnerability in the bulk alarm deletion endpoint that allows authenticated users to permanently delete alarms belonging to other tenants by supplying arbitrary alarm IDs. The removeAlarms() method in AlarmResourceImpl.java omits realm-scoping validation in its JPA query, enabling any user with alarm-write permissions to enumerate sequential auto-increment alarm IDs and delete cross-tenant alarm records without authorization.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-23T21:30:33Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: OpenRemote Manager: removeAlarms cross-realm IDOR (bulk delete)",
+    "UpdatedAt": "2026-09-24T18:23:50Z",
+    "WithdrawnAt": "2026-09-24T18:23:48Z",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c 1.25.0"
+    }
+  ]
+}

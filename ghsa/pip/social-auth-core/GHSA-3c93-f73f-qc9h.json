@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-24T19:57:25Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "social-auth-core"
+  },
+  "Advisory": {
+    "DatabaseId": 502112,
+    "Id": "GSA_kwCzR0hTQS0zYzkzLWY3M2YtcWM5aM4AB6lg",
+    "GhsaId": "GHSA-3c93-f73f-qc9h",
+    "References": [
+      {
+        "Url": "https://github.com/python-social-auth/social-core/security/advisories/GHSA-3c93-f73f-qc9h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57178"
+      },
+      {
+        "Url": "https://github.com/python-social-auth/social-core/pull/1811"
+      },
+      {
+        "Url": "https://github.com/python-social-auth/social-core/commit/1bfacdd0379e5eb46e169a99ab648b835e9bb6a2"
+      },
+      {
+        "Url": "https://github.com/python-social-auth/social-core/releases/tag/5.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3c93-f73f-qc9h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3c93-f73f-qc9h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57178"
+      }
+    ],
+    "Description": "### Impact\n\nThe `vk-app` backend accepted VK application callback data without verifying the callback signature when the `auth_key` parameter was omitted.\n\nApplications using this backend could treat unsigned attacker-controlled data as a verified VK identity. An attacker could choose callback fields such as `viewer_id`, `access_token`, `api_id`, and `api_result`, potentially allowing authentication as an arbitrary VK user ID.\n\nThe issue affects only applications using the `vk-app` backend.\n\n### Patches\n\nThe issue has been fixed by requiring `auth_key` to be present and valid before callback data is trusted.\n\nUsers should upgrade to a patched version.\n\nFix:\n\n* https://github.com/python-social-auth/social-core/pull/1811\n\n### Workarounds\n\nApplications that cannot upgrade immediately should disable the `vk-app` backend by removing `social_core.backends.vk.VKAppOAuth2` from `SOCIAL_AUTH_AUTHENTICATION_BACKENDS`.\n\nThere is no complete workaround while continuing to use the vulnerable backend.\n\n### Credits\n\nReported by @lalalala5678 through GitHub private vulnerability reporting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T19:57:22Z",
+    "Severity": "HIGH",
+    "Summary": "social-auth-core: VK App backend accepts unsigned callback data when auth_key is missing",
+    "UpdatedAt": "2026-09-24T19:57:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.0.0"
+    }
+  ]
+}

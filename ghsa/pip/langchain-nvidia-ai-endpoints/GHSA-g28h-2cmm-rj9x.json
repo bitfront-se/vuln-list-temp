@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-24T19:25:37Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "langchain-nvidia-ai-endpoints"
+  },
+  "Advisory": {
+    "DatabaseId": 502090,
+    "Id": "GSA_kwCzR0hTQS1nMjhoLTJjbW0tcmo5eM4AB6lK",
+    "GhsaId": "GHSA-g28h-2cmm-rj9x",
+    "References": [
+      {
+        "Url": "https://github.com/langchain-ai/langchain-nvidia/security/advisories/GHSA-g28h-2cmm-rj9x"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langchain-nvidia/commit/b483c7cad07dd9d5fd0fee2668238c4a08825d86"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langchain-nvidia/releases/tag/libs%2Fai-endpoints%2Fv1.4.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g28h-2cmm-rj9x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g28h-2cmm-rj9x"
+      }
+    ],
+    "Description": "## Summary\n\n`langchain-nvidia-ai-endpoints` versions before 1.4.2 accepted local filesystem paths as image inputs for Vision Language Model (VLM) requests. If an application passed attacker-controlled image input to `ChatNVIDIA` or VLM reranking APIs, an attacker could cause files readable by the application process to be read and included in the outbound request to the configured NVIDIA/NIM model endpoint.\n\n## Impact\n\nApplications are affected if they use VLM image inputs with `ChatNVIDIA` or `NVIDIARerank` and allow untrusted users to control image URLs or document image metadata.\n\nAn attacker who can control those inputs may be able to read local files accessible to the application process. Applications that do not use VLM image inputs, or that only pass trusted image references, are not affected.\n\n## Patched Version\n\nUpgrade to `langchain-nvidia-ai-endpoints \u003e= 1.4.2`.\n\nThe patched version rejects raw local filesystem paths for VLM image inputs. Supported inputs are remote URLs, `data:image/...;base64,...` URIs, and supported asset/file IDs.\n\n## Workarounds\n\nIf upgrading is not immediately possible, applications should reject local filesystem paths in user-controlled VLM image inputs and only allow trusted remote URLs, data URIs, or known safe asset/file IDs.\n\nApplications should also run with least-privilege filesystem access so that the application process cannot read files it does not need.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T19:25:36Z",
+    "Severity": "HIGH",
+    "Summary": "langchain-nvidia-ai-endpoints has local file disclosure through VLM image inputs",
+    "UpdatedAt": "2026-09-24T19:25:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.1"
+    }
+  ]
+}

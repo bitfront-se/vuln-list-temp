@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-24T19:24:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "cyberchef"
+  },
+  "Advisory": {
+    "DatabaseId": 502089,
+    "Id": "GSA_kwCzR0hTQS1meDZmLTM4MnItajcyY84AB6lJ",
+    "GhsaId": "GHSA-fx6f-382r-j72c",
+    "References": [
+      {
+        "Url": "https://github.com/gchq/CyberChef/security/advisories/GHSA-fx6f-382r-j72c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57439"
+      },
+      {
+        "Url": "https://github.com/gchq/CyberChef/issues/2568"
+      },
+      {
+        "Url": "https://github.com/gchq/CyberChef/pull/2569"
+      },
+      {
+        "Url": "https://github.com/gchq/CyberChef/commit/85db3be5d0096859b810f0e8d3e151d5dc9b948f"
+      },
+      {
+        "Url": "https://github.com/gchq/CyberChef/releases/tag/v11.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fx6f-382r-j72c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fx6f-382r-j72c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57439"
+      }
+    ],
+    "Description": "On 5 June 2026 CyberChef received a security vulnerability report from @hyuunnn detailing a vulnerability in the Series Chart operation, where malicious input could result in prototype pollution of the data structures outputted from the operation.\nOther operations following Series Chart could have their behaviour manipulated by the attacker-controlled prototype, for example, injecting malicious content into their HTML output.\n\nIn this case, a demonstration was provided that chained the Series Chart operation with the Parse UDP operation to cause attacker controlled JavaScript to be executed.\n\n## Details\nWhen the Series Chart operation parses user-supplied CSV, it accepts `__proto__` as a key and uses it to pollute the object.\nThe objToTbale function in src/core/lib/Protocol.mjs, used in a number of IP parsing operations, renders data items within `\u003ctd\u003e` tags without escaping.\nThese bugs can be chained to produce an XSS vulnerability.\n\n**Proof of Concept**\n[https://gchq.github.io/CyberChef/#recipe=Series_chart('CRLF','Comma','',1,'')Parse_UDP('Raw')\u0026input=X19wcm90b19fLDxpbWcgc3JjPXggb25lcnJvcj1hbGVydChkb2N1bWVudC5kb21haW4pPiwx](https://gchq.github.io/CyberChef/#recipe=Series_chart('CRLF','Comma','',1,'')Parse_UDP('Raw')\u0026input=X19wcm90b19fLDxpbWcgc3JjPXggb25lcnJvcj1hbGVydChkb2N1bWVudC5kb21haW4pPiwx)\n\nEncoded input data is:\n```\n__proto__,\u003cimg src=x onerror=alert(document.domain)\u003e,1\n```\n\n### Impact\nObjects with attacker controlled prototypes could be processed by CyberChef operations. This enabled control of the output of some operations, and in particular, the ability to insert malicious JavaScript into the output of the Parse UDP operation.\n\n### Patches\nThis has been patched in release v11.2.0.\n\n### Workarounds\nNo workarounds are available. Users must upgrade to CyberChef v11.2.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T19:24:30Z",
+    "Severity": "MODERATE",
+    "Summary": "CyberChef: Prototype pollution in Series Chart operation",
+    "UpdatedAt": "2026-09-24T19:24:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.2.0"
+      },
+      "VulnerableVersionRange": "\u003c 11.2.0"
+    }
+  ]
+}

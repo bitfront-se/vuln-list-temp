@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-24T19:08:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.freemarker:freemarker"
+  },
+  "Advisory": {
+    "DatabaseId": 455576,
+    "Id": "GSA_kwCzR0hTQS0yN2oyLWgzbTItODIzN84ABvOY",
+    "GhsaId": "GHSA-27j2-h3m2-8237",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-84939"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/hrd7o2ylwkkswdyhyzllgqt0f80kyd5y"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/09/08/2"
+      },
+      {
+        "Url": "https://github.com/apache/freemarker/commit/83953d9a9fa5a7c1fce3e39ff57182c19a34b5eb"
+      },
+      {
+        "Url": "https://github.com/apache/freemarker/releases/tag/v2.3.35"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-27j2-h3m2-8237"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-27j2-h3m2-8237"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84939"
+      }
+    ],
+    "Description": "Path traversal vulnerability in Apache FreeMarker template loading mechanism, if the attacker can specify an arbitrary malformed locale identifier to FreeMarker, and the localized lookup configuration setting is enabled (it's by default enabled).\n\nThis issue affects Apache FreeMarker from 2.2.0 through 2.3.34.\n\nUsers are recommended to upgrade to version 2.3.35. Disabling localized lookup in previous versions also mitigates this.\n\nNote that even in versions affected by this vulnerability, the files that can be loaded remain restricted by the TemplateLoader that FreeMarker is configured to use. In particular, FileTemplateLoader prevents attempts to traverse outside the baseDir specified in its constructor. Other TemplateLoader implementations may allow access outside their designated base directory, but they are still constrained by the underlying storage mechanism—for example, a loader wrapping a Java class loader can only access resources that the class loader can load, while one wrapping a web application context can only access resources available through that context.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-10T06:31:45Z",
+    "Severity": "CRITICAL",
+    "Summary": "Apache FreeMarker template loading mechanism vulnerable to path traversal",
+    "UpdatedAt": "2026-09-24T19:08:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.35"
+      },
+      "VulnerableVersionRange": "\u003e= 2.2.0, \u003c= 2.3.34"
+    }
+  ]
+}

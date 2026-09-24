@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-24T19:13:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@aws/lsp-codewhisperer"
+  },
+  "Advisory": {
+    "DatabaseId": 502085,
+    "Id": "GSA_kwCzR0hTQS14aGNyLWo0ajktM2doN84AB6lF",
+    "GhsaId": "GHSA-xhcr-j4j9-3gh7",
+    "References": [
+      {
+        "Url": "https://github.com/aws/language-servers/security/advisories/GHSA-xhcr-j4j9-3gh7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-12957"
+      },
+      {
+        "Url": "https://github.com/Amazon-Q-Developer/language-servers/pull/2708"
+      },
+      {
+        "Url": "https://github.com/Amazon-Q-Developer/language-servers/pull/2711"
+      },
+      {
+        "Url": "https://github.com/Amazon-Q-Developer/language-servers/commit/7b8595a4e638562f79d5f71dcf22b0c700490458"
+      },
+      {
+        "Url": "https://github.com/Amazon-Q-Developer/language-servers/commit/f5aa1a3b25aa38bfe8dd0e830b5839e1cea1d410"
+      },
+      {
+        "Url": "https://aws.amazon.com/security/security-bulletins/2026-047-aws"
+      },
+      {
+        "Url": "https://github.com/Amazon-Q-Developer/language-servers/releases/tag/agentic-rc-1.65.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xhcr-j4j9-3gh7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xhcr-j4j9-3gh7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-12957"
+      }
+    ],
+    "Description": "### Summary\nLanguage Servers for AWS (the aws/language-servers project) provide the underlying language-server runtime that powers Amazon Q Developer's AI coding assistance across its IDE plugins (Visual Studio Code, JetBrains, Eclipse, and\nVisual Studio).\n\nImproper trust boundary enforcement in Language Servers for AWS may allow for arbitrary code execution. If a local user opens a maliciously crafted workspace, any commands within the project configuration files may be automatically\nexecuted.\n\n### Impact\n\nWhen a local user opens a maliciously crafted workspace and trusts it when prompted, commands defined in the workspace's project-level configuration files may be executed automatically, resulting in arbitrary code execution on the\nuser's host.\n\nThis issue is triggered when a user opens a workspace, trusts it, and the agent subsequently executes commands defined in the project-level configuration files.\n\n\nImpacted versions: Language Servers for AWS version \u003c1.65.0.\n\n### Patches\nThis issue has been addressed in Language Servers for AWS version 1.65.0. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes. \n\n### Workarounds\nNo workarounds are available.\n\n### References\nIf you have any questions or comments about this advisory, AWS Security asks that you contact them via their [vulnerability reporting page](https://aws.amazon.com/security/vulnerability-reporting) or directly via email to [aws-security@amazon.com](mailto:aws-security@amazon.com). Please do not create a public GitHub issue.\n\n### Acknowledgement \n\nAWS Security would like to thank Wiz and Maor Dokhanian for collaborating on this issue through the coordinated vulnerability disclosure process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T19:13:53Z",
+    "Severity": "HIGH",
+    "Summary": "Language Servers for AWS Vulnerable to Arbitrary Code Execution",
+    "UpdatedAt": "2026-09-24T19:13:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.113"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.113"
+    }
+  ]
+}

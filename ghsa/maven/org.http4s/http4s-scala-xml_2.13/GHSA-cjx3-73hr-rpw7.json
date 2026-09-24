@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-24T19:35:18Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.http4s:http4s-scala-xml_2.13"
+  },
+  "Advisory": {
+    "DatabaseId": 502096,
+    "Id": "GSA_kwCzR0hTQS1jangzLTczaHItcnB3N84AB6lQ",
+    "GhsaId": "GHSA-cjx3-73hr-rpw7",
+    "References": [
+      {
+        "Url": "https://github.com/http4s/http4s-scala-xml/security/advisories/GHSA-cjx3-73hr-rpw7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61741"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s-scala-xml/commit/326f965a2c45fc2ddbc22545dcf551b0f719f4c8"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s-scala-xml/releases/tag/v0.24.1"
+      },
+      {
+        "Url": "https://github.com/http4s/http4s-scala-xml/releases/tag/v1.0.0-M39"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cjx3-73hr-rpw7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cjx3-73hr-rpw7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61741"
+      }
+    ],
+    "Description": "http4s-scala-xml provides `EntityDecoder[F, scala.xml.Elem]` instances that parse XML message bodies. These decoders used a `javax.xml.parsers.SAXParserFactory` obtained from `SAXParserFactory.newInstance` without any security configuration.  With the JDK's default settings, the parser resolves DOCTYPE declarations, external general and parameter entities, and external DTDs.\n\nAn application that uses these decoders to parse untrusted XML is vulnerable to XML External Entity (XXE) attacks.  An attacker can craft a request that:\n\n- discloses local files readable by the service process,\n- performs server-side request forgery (SSRF) against internal network resources, and/or\n- causes denial of service through entity expansion.\n\n### Impact\n\nAny service that derives an XML `EntityDecoder` from this library and parses attacker-controlled input is affected.\n\n### Patches\n\nThe default SAXParserFactory is now hardened: \n- secure processing is enabled\n- `DOCTYPE` declarations are disallowed\n- external general/parameter entities and external DTD loading are disabled\n- DTD URIs are not resolved\n- XInclude is disabled.\n\nThese defaults match `scala.xml.XMLLoader`'s defaults since 2.0.0.\n\n### Workarounds\n\nBefore upgrading, override `ElemInstances#saxFactory` with a hardened factory.\n\n```scala\n  val secured = new ElemInstances {\n    override protected val saxFactory = {\n      val f = javax.xml.parsers.SAXParserFactory.newInstance\n      f.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true)\n      // etc.\n      f\n    }\n  }\n  import secured._\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T19:35:16Z",
+    "Severity": "CRITICAL",
+    "Summary": "http4s-scala-xml has an XML External Entity (XXE) processing issue",
+    "UpdatedAt": "2026-09-24T19:35:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-M39"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-M1, \u003c= 1.0.0-M38.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.24.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.24.0"
+    }
+  ]
+}

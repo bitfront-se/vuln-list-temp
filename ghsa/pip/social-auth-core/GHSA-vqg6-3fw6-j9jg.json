@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-24T19:58:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "social-auth-core"
+  },
+  "Advisory": {
+    "DatabaseId": 502113,
+    "Id": "GSA_kwCzR0hTQS12cWc2LTNmdzYtajlqZ84AB6lh",
+    "GhsaId": "GHSA-vqg6-3fw6-j9jg",
+    "References": [
+      {
+        "Url": "https://github.com/python-social-auth/social-core/security/advisories/GHSA-vqg6-3fw6-j9jg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57179"
+      },
+      {
+        "Url": "https://github.com/python-social-auth/social-core/pull/1816"
+      },
+      {
+        "Url": "https://github.com/python-social-auth/social-core/commit/0418782454ac7bbc6a9230ea21f7f5066fe89686"
+      },
+      {
+        "Url": "https://github.com/python-social-auth/social-core/releases/tag/5.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vqg6-3fw6-j9jg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vqg6-3fw6-j9jg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57179"
+      }
+    ],
+    "Description": "### Impact\n\nThe partial-pipeline resume mechanism accepted `partial_token` as a bearer credential without binding it to the browser session that created it.\n\nApplications using resumable partial pipeline steps could allow an attacker to start an authentication flow, obtain a valid partial token and verification data, and cause a victim's browser to resume that attacker-controlled flow. This could authenticate the victim's browser as the attacker's account.\n\nThe issue affects applications using partial pipeline steps such as `mail_validation` or custom steps decorated with `@partial`.\n\n### Patches\n\nThe issue has been fixed by binding partial pipeline resumes to the originating browser session.\n\nUsers should upgrade to a patched version.\n\nFix:\n\n* https://github.com/python-social-auth/social-core/pull/1816\n* https://github.com/python-social-auth/social-docs/pull/444\n* https://github.com/python-social-auth/social-app-django/pull/1009\n\n### Workarounds\n\nApplications that cannot upgrade immediately should disable resumable partial pipeline steps, including `mail_validation` and custom steps decorated with `@partial`.\n\nIf those flows are required, applications should avoid accepting partial resume links from untrusted contexts until a patched version can be deployed.\n\nThere is no complete workaround while continuing to use the vulnerable partial-pipeline resume mechanism.\n\n### Credits\n\nReported through GitHub private vulnerability reporting by Liyi Zhou, Ziyue Wang, Strick, Maurice, and Chenchen Yu from the University of Sydney security research team.\n\nReporter references:\n\n* https://lzhou1110.github.io/\n* https://zyy0530.github.io/\n* https://str1ckl4nd.github.io/\n* https://maurice.busystar.org/\n* https://7thparkk.github.io/",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-24T19:58:14Z",
+    "Severity": "MODERATE",
+    "Summary": "social-auth-core has a Session Fixation issue",
+    "UpdatedAt": "2026-09-24T19:58:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.0.0"
+    }
+  ]
+}
