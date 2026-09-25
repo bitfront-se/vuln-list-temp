@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-09-25T18:56:16Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.jenkins-ci.plugins:active-directory"
+  },
+  "Advisory": {
+    "DatabaseId": 366034,
+    "Id": "GSA_kwCzR0hTQS1neDU1LXA4ZzctcDNmaM4ABZXS",
+    "GhsaId": "GHSA-gx55-p8g7-p3fh",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57288"
+      },
+      {
+        "Url": "https://www.jenkins.io/security/advisory/2026-06-24/#SECURITY-3651"
+      },
+      {
+        "Url": "https://github.com/jenkinsci/active-directory-plugin/commit/5028dea8e0acc45ff9d6be302d4e1cbc1f9da464"
+      },
+      {
+        "Url": "https://github.com/jenkinsci/active-directory-plugin/releases/tag/active-directory-2.41.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gx55-p8g7-p3fh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gx55-p8g7-p3fh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57288"
+      }
+    ],
+    "Description": "In Jenkins Active Directory Plugin 2.41.1 and earlier, the Windows native (ADSI) authentication path does not escape the user name before building the LDAP search filter.\n\nThis allows unauthenticated attackers to inject LDAP wildcard characters into the user name, enabling them to enumerate directory user and group names, and to authenticate as a matching user when they know that user’s password but not their exact user name.\n\nActive Directory Plugin 2.41.2 escapes the user name in the Windows native (ADSI) authentication path before building the LDAP search filter.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-24T15:31:47Z",
+    "Severity": "LOW",
+    "Summary": "Jenkins Active Directory Plugin has an LDAP injection vulnerability",
+    "UpdatedAt": "2026-09-25T18:56:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.41.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.41.2"
+    }
+  ]
+}

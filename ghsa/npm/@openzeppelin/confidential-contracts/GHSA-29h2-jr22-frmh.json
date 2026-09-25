@@ -1,0 +1,85 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-25T19:31:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@openzeppelin/confidential-contracts"
+  },
+  "Advisory": {
+    "DatabaseId": 502739,
+    "Id": "GSA_kwCzR0hTQS0yOWgyLWpyMjItZnJtaM4AB6vT",
+    "GhsaId": "GHSA-29h2-jr22-frmh",
+    "References": [
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/security/advisories/GHSA-29h2-jr22-frmh"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/pull/423"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/pull/428"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/pull/431"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/commit/93e75ceed2b9648f53f9d133f431064353456805"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/commit/ee47edf189ab681cebdad18bfb53dee541987be2"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/commit/fe0863af2c9dce7614acce98720a913bf6a767a5"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/releases/tag/v0.3.2"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/releases/tag/v0.4.2"
+      },
+      {
+        "Url": "https://github.com/OpenZeppelin/openzeppelin-confidential-contracts/releases/tag/v0.5.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-29h2-jr22-frmh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-29h2-jr22-frmh"
+      }
+    ],
+    "Description": "### Impact\n\nTwo locations consume an encrypted handle returned by an untrusted external party and use it without verifying that the party is ACL-authorized on it.\n\n#### `VestingWalletConfidential`\n\nMalicious users can call `release` with a malicious token. This token could return an alternative handle on `confidentialBalanceOf`, which represents the balance of the vesting wallet on an alternative ERC-7984 token (or any other handle that the vesting wallet has access to). The vesting wallet does not check that the token has ACL access and grants access to a new handle derived from the returned handle.\n\nEffectively, this bug allows a malicious user to gain information about any private `euint64` handle that the vesting wallet has access to via a malicious ERC-7984 token. There is no loss of funds.\n\n#### ERC7984\n\nOn a transfer with callback, `ERC7984` uses the `ebool` returned by the\nrecipient's `IERC7984Receiver.onConfidentialTransferReceived` to drive the refund\nlogic, without checking that the recipient has ACL access to it. A malicious recipient\ncan return any `ebool` the token has access to and recover its plaintext from the\nrefund result, which the token grants the caller access to. The leak is limited\nto `ebool` handles (the value is only used as an `FHE.select` condition), and\nthere is no loss of funds.\n\n### Patches\n\nBoth issues were fixed in the same patch releases: v0.5.2, v0.4.2, v0.3.2\n\n- `VestingWalletConfidential`: 93e75ceed2b9648f53f9d133f431064353456805 (#423).\n- `ERC7984` transfer callback: fe0863af2c9dce7614acce98720a913bf6a767a5 (#428), with follow-up ee47edf189ab681cebdad18bfb53dee541987be2 (#431) permitting an uninitialized returned handle.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-25T19:31:08Z",
+    "Severity": "HIGH",
+    "Summary": "OpenZeppelin Confidential Contracts `VestingWalletConfidential`: a malicious ERC-7984 token is able to extract private data from the vesting wallet",
+    "UpdatedAt": "2026-09-25T19:31:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.5.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.5.0-rc.0, \u003c 0.5.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.4.0-rc.0, \u003c 0.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 0.3.2"
+    }
+  ]
+}

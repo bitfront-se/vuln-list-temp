@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-25T18:05:01Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.jenkins-ci.plugins:script-security"
+  },
+  "Advisory": {
+    "DatabaseId": 366022,
+    "Id": "GSA_kwCzR0hTQS1jM2ptLTl2ajctNXY2Ns4ABZXG",
+    "GhsaId": "GHSA-c3jm-9vj7-5v66",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57280"
+      },
+      {
+        "Url": "https://www.jenkins.io/security/advisory/2026-06-24/#SECURITY-3792"
+      },
+      {
+        "Url": "https://github.com/jenkinsci/script-security-plugin/commit/858015c25c7bc7ab59c666307093b0e16b90048c"
+      },
+      {
+        "Url": "https://github.com/jenkinsci/script-security-plugin/releases/tag/1402.1405.vc96e74964250"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c3jm-9vj7-5v66"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c3jm-9vj7-5v66"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57280"
+      }
+    ],
+    "Description": "Jenkins Script Security Plugin provides a sandbox feature that allows running user-provided scripts safely by intercepting and checking potentially unsafe operations.\n\nScript Security Plugin 1402.v94c9ce464861 and earlier does not intercept the implicit type cast applied to each element of the iterated collection in a typed for loop (e.g. for (Type t in collection)), as this cast is performed during bytecode generation rather than in the transformed script AST.\n\nThis allows attackers able to provide sandboxed scripts to invoke constructors of arbitrary types without those invocations being checked by the sandbox, bypassing the sandbox protection. This can be used to execute arbitrary code on the Jenkins controller.\n\nScript Security Plugin 1402.1405.vc96e74964250 updates the bundled groovy-sandbox library to a version that intercepts the implicit type cast applied to typed for loop elements, so those casts are checked by the sandbox.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-24T15:31:47Z",
+    "Severity": "HIGH",
+    "Summary": "Jenkins Script Security Plugin sandbox bypass vulnerability",
+    "UpdatedAt": "2026-09-25T18:05:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1402.1405.vc96e74964250"
+      },
+      "VulnerableVersionRange": "\u003c 1402.1405.vc96e74964250"
+    }
+  ]
+}

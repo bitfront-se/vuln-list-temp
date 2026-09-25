@@ -1,0 +1,101 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-25T18:06:02Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.jenkins-ci.plugins:script-security"
+  },
+  "Advisory": {
+    "DatabaseId": 366027,
+    "Id": "GSA_kwCzR0hTQS1jZmo5LTJ2Z3ItaHB4cM4ABZXL",
+    "GhsaId": "GHSA-cfj9-2vgr-hpxp",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-57281"
+      },
+      {
+        "Url": "https://www.jenkins.io/security/advisory/2026-06-24/#SECURITY-3793"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-57281"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2492200"
+      },
+      {
+        "Url": "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-57281.json"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60239"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60246"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60247"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60248"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60249"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60250"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60251"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60252"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60254"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60256"
+      },
+      {
+        "Url": "https://access.redhat.com/errata/RHSA-2026:60259"
+      },
+      {
+        "Url": "https://github.com/jenkinsci/script-security-plugin/commit/c96e7496425031182b6fc11ef1c55b9ae4fa7cc2"
+      },
+      {
+        "Url": "https://github.com/jenkinsci/script-security-plugin/releases/tag/1402.1405.vc96e74964250"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cfj9-2vgr-hpxp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cfj9-2vgr-hpxp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-57281"
+      }
+    ],
+    "Description": "Jenkins Script Security Plugin 1402.v94c9ce464861 and earlier does not reject Groovy AST transformation annotations such as @CompileStatic and @TypeChecked that carry an extensions member, which causes Groovy to load and execute a script from the classpath at compile time, before the sandbox is applied.\n\nThis may allow attackers able to define and run sandboxed scripts to execute code outside the sandbox, in the rare case that a suitable Groovy script is present on the classpath of the component that evaluates the script.\n\nThe Jenkins security team has been unable to identify any Groovy source files in Jenkins core or plugins that would allow attackers to execute dangerous code. While the severity of this issue is declared as High due to the potential impact, successful exploitation is considered very unlikely.\n\nScript Security Plugin 1402.1405.vc96e74964250 rejects any annotation carrying an extensions member during sandbox compilation, before Groovy can resolve or execute the referenced script.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-24T15:31:47Z",
+    "Severity": "HIGH",
+    "Summary": "Jenkins Script Security Plugin has a script security bypass vulnerability",
+    "UpdatedAt": "2026-09-25T18:06:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1402.1405.vc96e74964250"
+      },
+      "VulnerableVersionRange": "\u003c 1402.1405.vc96e74964250"
+    }
+  ]
+}
