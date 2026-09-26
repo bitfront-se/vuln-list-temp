@@ -1,0 +1,83 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-25T21:41:37Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "CliInvoke"
+  },
+  "Advisory": {
+    "DatabaseId": 502780,
+    "Id": "GSA_kwCzR0hTQS1qNzN3LThoZnItNGdjOc4AB6v8",
+    "GhsaId": "GHSA-j73w-8hfr-4gc9",
+    "References": [
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/security/advisories/GHSA-j73w-8hfr-4gc9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-100369"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/commit/1e98582f02eb43e345e5b97b8dd6ff9443806685"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/commit/fac321c7cc9cf4372919842701829ca2be5e7307"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/releases/tag/2.10.5"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/releases/tag/3.0.0-beta.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j73w-8hfr-4gc9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j73w-8hfr-4gc9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-100369"
+      }
+    ],
+    "Description": "### Impact\nAn argument-injection vulnerability exists in the `CliInvoke`\npackage's runner factory: `RunnerProcessFactory` on the 2.x line and\n`RunnerConfigurationFactory` on the 3.x line.\n\nThe factory joins the runner arguments, the caller's target, and the\ncaller's arguments into a single `ProcessStartInfo.Arguments` string and\nhands it to the OS. The OS command-line parser re-tokenizes the string\nbefore the runner sees it. A double quote (`\"`) in the target or in any\nargument closes the OS-level quoted region and lets the next character\nenter argv as a separate element.\n\n### Patches\nUpgrade to:\n\n- **2.8.5** (2.8.x line)\n- **2.9.4** (2.9.x line)\n- **2.10.5** (2.10.x line)\n- **3.0.0-beta.2** (3.x pre-release line)\n\n### Workarounds\nNo complete workaround is available. Until you can upgrade:\n\n- Strip `\"` from any target or argument before passing it to the\n  factory. On shell runners, also strip `;`, `|`, `\u0026`, `$`, backtick,\n  and parentheses.\n- Or bypass the factory entirely and build the `ProcessConfiguration`\n  directly. Set `ArgumentList` explicitly to the argv you want the\n  runner to receive.\n\nThese are partial mitigations. They shift the quoting problem to your\ncode.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-25T21:41:36Z",
+    "Severity": "HIGH",
+    "Summary": "CliInvoke: Argument Injection in Extensibility Runner Factory",
+    "UpdatedAt": "2026-09-25T21:41:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.0-beta.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0-alpha.1, \u003c= 3.0.0-beta.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.10.0, \u003c= 2.10.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.4"
+      },
+      "VulnerableVersionRange": "\u003e= 2.9.0, \u003c= 2.9.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.8.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.8.4"
+    }
+  ]
+}

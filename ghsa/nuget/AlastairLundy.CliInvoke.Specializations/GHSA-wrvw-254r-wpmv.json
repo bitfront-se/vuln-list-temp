@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-25T21:41:49Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "AlastairLundy.CliInvoke.Specializations"
+  },
+  "Advisory": {
+    "DatabaseId": 502781,
+    "Id": "GSA_kwCzR0hTQS13cnZ3LTI1NHItd3Btds4AB6v9",
+    "GhsaId": "GHSA-wrvw-254r-wpmv",
+    "References": [
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/security/advisories/GHSA-wrvw-254r-wpmv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-100368"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/commit/1e98582f02eb43e345e5b97b8dd6ff9443806685"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/commit/2077e5239850e83dc9cc67ae6036dcd4e68a1876"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/releases/tag/2.10.5"
+      },
+      {
+        "Url": "https://github.com/alastairlundy/CliInvoke/releases/tag/3.0.0-beta.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wrvw-254r-wpmv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wrvw-254r-wpmv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-100368"
+      }
+    ],
+    "Description": "### Impact\nAn OS command injection vulnerability exists in the PowerShell and Cmd shell wrappers provided by the `CliInvoke.Specializations` package (the `PowershellProcessInvoker`/`CmdProcessInvoker` invokers, and the `UsePowerShell`/`UseCmd` middleware in v3 pre-release versions).\n\nThe wrappers re-run a caller-supplied target and arguments inside a shell command (`pwsh -Command ...` / `cmd /c ...`). In affected versions the wrapped command was delivered to the operating system as a single `ProcessStartInfo.Arguments` string. The OS command-line parser re-tokenizes that string before the shell parses it, so a double quote (`\"`) in the target or arguments breaks OS-level quoting and lets the wrapped shell reassemble a second, unintended command. \n\nAn attacker could exploit this to execute arbitrary commands with the privileges of the host process.\n\n### Patches\nThe Specializations Packages now deliver the command via `ProcessStartInfo.ArgumentList` (natively where supported, and polyfilled in older TFMs), so that the operating system passes argv verbatim and only the shell parses the command once. \n\nUpgrade to:\n- **2.8.5** (2.8.x line)\n- **2.9.4** (2.9.x line)\n- **2.10.5** (2.10.x line)\n- **3.0.0-beta.1** (3.x pre-release line)\n\n### Workarounds\nNo complete workaround is available. Until upgraded:\n\n- Reject or strip `\"` from any target path or argument passed to the PowerShell/Cmd wrappers. On 2.2.0 – 2.9.2 and 3.0.0-alpha.1 – alpha.4, also reject shell metacharacters (`;`, `|`, `\u0026`, `$`, backtick, parentheses).\n- Alternatively, bypass the wrappers for untrusted input and invoke the target process directly so that no second shell parse of the data occurs.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-25T21:41:48Z",
+    "Severity": "HIGH",
+    "Summary": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+    "UpdatedAt": "2026-09-25T21:41:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0-rc.1, \u003c= 1.6.1.1"
+    }
+  ]
+}
