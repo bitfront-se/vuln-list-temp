@@ -1,0 +1,95 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-28T20:40:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/platform-server"
+  },
+  "Advisory": {
+    "DatabaseId": 503446,
+    "Id": "GSA_kwCzR0hTQS1qM3IzLW14cXAtcjJwNM4AB66W",
+    "GhsaId": "GHSA-j3r3-mxqp-r2p4",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-j3r3-mxqp-r2p4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-88058"
+      },
+      {
+        "Url": "https://github.com/angular/angular/issues/70146"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/73d8bbd27cb46495426d4132975a1355b47ad915"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/89b20568dfaee1ec8e0b3bcf1872acdddd2f4fef"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/ba3bc47b20b3d12f5eb141ec9c651373ae4d15e8"
+      },
+      {
+        "Url": "https://github.com/angular/domino/commit/04f987dc08ff3736b427f50941adf1722458528f"
+      },
+      {
+        "Url": "https://github.com/angular/angular/releases/tag/v20.3.30"
+      },
+      {
+        "Url": "https://github.com/angular/angular/releases/tag/v21.2.22"
+      },
+      {
+        "Url": "https://github.com/angular/angular/releases/tag/v22.1.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j3r3-mxqp-r2p4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j3r3-mxqp-r2p4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-88058"
+      }
+    ],
+    "Description": "### Summary\nAn XSS vulnerability exists in `@angular/platform-server` during server-side rendering (SSR) HTML serialization of `ProcessingInstruction` DOM nodes (`\u003c?target data?\u003e`, `nodeType === 7`) when nested inside fallback raw-content elements (`\u003cnoscript\u003e`, `\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`). While processing instruction data escaped `\u003e` to `\u0026gt;`, it did not check for or escape matching closing tags of ancestor fallback elements (e.g., `\u003c/noscript\u003e`). When rendered in a browser with scripting enabled, an unescaped closing tag sequence in a processing instruction prematurely closes the fallback raw-content tag and causes subsequent sibling elements to execute as live HTML.\n\n### Technical Description\nIn HTML5 parsing, fallback raw-content elements (`\u003cnoscript\u003e`, `\u003ciframe\u003e`, `\u003cnoembed\u003e`, `\u003cnoframes\u003e`) place the browser's HTML tokenizer into `RAWTEXT` mode. In `RAWTEXT` mode, processing instruction tokens (`\u003c?...?\u003e`) are treated as literal raw text rather than bogus comments, and the parser ignores `\u003e` or `?\u003e`. The only token sequence that terminates the container is an end tag matching the container tag name (`\u003c/noscript`, `\u003c/iframe`, etc.).\n\nDuring server-side HTML serialization, processing instruction nodes previously only replaced `\u003e` with `\u0026gt;` (preventing bogus comment breakouts in normal HTML data states) but left `\u003c` untouched. Crucially, processing instruction serialization never inspected ancestor fallback raw-content tags. As a result, if a `ProcessingInstruction` node inside `\u003cnoscript\u003e` contained `\u003c/noscript ` in its data payload, it was emitted unescaped as `\u003c?x \u003c/noscript ?\u003e`.\n\n### Impact \u0026 Reachability\n* **Reachability**: Processing instruction nodes cannot be authored directly through standard Angular template syntax (which parses `\u003c?...\u003e` into comment nodes in DOM position). Reaching this vulnerability requires application or library code calling `inject(DOCUMENT).createProcessingInstruction(target, data)` or `Renderer2` DOM insertion methods with untrusted user input passed to `data` inside a fallback raw-content container.\n* **Impact**: In applications that programmatically construct processing instruction nodes inside fallback elements during server-side rendering, an attacker controlling the processing instruction data can break out of the container and execute arbitrary JavaScript in victims' browsers.\n\n### Proof of Concept (Minimal Reproduction)\n```ts\nimport { Component, ElementRef, Renderer2, inject, DOCUMENT, AfterViewInit } from '@angular/core';\n\n@Component({\n  selector: 'app-root',\n  standalone: true,\n  template: `\u003cnoscript id=\"host\"\u003e\u003c/noscript\u003e`\n})\nexport class AppComponent implements AfterViewInit {\n  private r = inject(Renderer2);\n  private el = inject(ElementRef);\n  private doc = inject(DOCUMENT);\n\n  ngAfterViewInit() {\n    const host = this.el.nativeElement.querySelector('#host');\n    \n    // Attacker-controlled input passed as Processing Instruction data\n    const pi = this.doc.createProcessingInstruction('x', '\u003c/noscript ');\n    this.r.appendChild(host, pi);\n    \n    // Sibling markup that should remain inert inside \u003cnoscript\u003e\n    const img = this.r.createElement('img');\n    this.r.setAttribute(img, 'src', 'x');\n    this.r.setAttribute(img, 'onerror', 'alert(\"SSR_PI_XSS\")');\n    this.r.appendChild(host, img);\n  }\n}\n```\n**Vulnerable SSR Output**:\n```html\n\u003cnoscript\u003e\u003c?x \u003c/noscript ?\u003e\u003cimg src=\"x\" onerror=\"alert('SSR_PI_XSS')\"\u003e\u003c/noscript\u003e\n```\n\n### Workarounds\n* Avoid passing untrusted user input into `document.createProcessingInstruction(target, data)` when the node is inserted into `\u003cnoscript\u003e`, `\u003ciframe\u003e`, `\u003cnoembed\u003e`, or `\u003cnoframes\u003e` during server-side rendering.\n* Manually sanitize or replace `\u003c` with `\u0026lt;` in any untrusted data passed to processing instruction nodes on the server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-28T20:39:26Z",
+    "Severity": "HIGH",
+    "Summary": "Angular SSR: XSS via Unescaped Processing Instruction (\u003c?...?\u003e) Nodes in Fallback Raw-Content Elements",
+    "UpdatedAt": "2026-09-28T20:40:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.30"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0, \u003c 20.3.30"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.22"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0, \u003c 21.2.22"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0, \u003c 22.1.4"
+    }
+  ]
+}

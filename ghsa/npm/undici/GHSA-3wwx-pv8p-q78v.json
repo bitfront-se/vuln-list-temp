@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-28T21:42:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 503487,
+    "Id": "GSA_kwCzR0hTQS0zd3d4LXB2OHAtcTc4ds4AB66_",
+    "GhsaId": "GHSA-3wwx-pv8p-q78v",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-3wwx-pv8p-q78v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-85024"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/07c60d9c7099a910451244afe42861bbdbdd974c"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/4411a238a98e8791da5fff10cc9e3578a7668ed6"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/63cf698b611fecc6ee0a17b185b930051e4b982f"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v6.28.1"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v7.29.1"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v8.10.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3wwx-pv8p-q78v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3wwx-pv8p-q78v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-85024"
+      }
+    ],
+    "Description": "## Impact\n\nundici's WebSocket client (including Node.js's bundled `globalThis.WebSocket`) crashes the entire Node.js process when a remote WebSocket peer sends a permessage-deflate compressed message that crosses the decompressed-payload size limit and then contains a malformed DEFLATE block. In `lib/web/websocket/permessage-deflate.js`, the size-limit cleanup calls `removeAllListeners()` on the internal zlib `InflateRaw`, removing its `error` listener, but leaves the stream running. The inflater then emits a `Z_DATA_ERROR` with no listener attached, which Node.js treats as a fatal unhandled `error` event and terminates the process. Application `error`/`close` handlers on the public WebSocket cannot observe or prevent this, because the failing object is the internal `InflateRaw`.\n\nA malicious or compromised WebSocket server can crash a client with a single connection, unauthenticated and without any application mistake. The attack is asymmetric (about 130 KB on the wire expands past the limit) and can be repeated on reconnect (crash loop).\n\nAffected applications are those using the undici WebSocket client (`new WebSocket(...)`) or Node.js's bundled `globalThis.WebSocket` that can be induced to connect to an attacker-controlled or compromised WebSocket endpoint.\n\n## Patches\n\nUpgrade to undici v6.28.1, v7.29.1 or v8.10.2.\n\n## Workarounds\n\nNo workaround is available.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-28T21:42:37Z",
+    "Severity": "MODERATE",
+    "Summary": "undici vulnerable to Denial of Service via unhandled error in WebSocket permessage-deflate decompression",
+    "UpdatedAt": "2026-09-28T21:42:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.10.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.1.0, \u003c 8.10.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.29.1"
+      },
+      "VulnerableVersionRange": "\u003e= 7.28.0, \u003c 7.29.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.28.1"
+      },
+      "VulnerableVersionRange": "\u003e= 6.25.0, \u003c 6.28.1"
+    }
+  ]
+}

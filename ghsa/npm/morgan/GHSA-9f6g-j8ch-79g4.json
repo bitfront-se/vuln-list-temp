@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-28T21:33:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "morgan"
+  },
+  "Advisory": {
+    "DatabaseId": 503485,
+    "Id": "GSA_kwCzR0hTQS05ZjZnLWo4Y2gtNzlnNM4AB669",
+    "GhsaId": "GHSA-9f6g-j8ch-79g4",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/morgan/security/advisories/GHSA-9f6g-j8ch-79g4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-87859"
+      },
+      {
+        "Url": "https://github.com/expressjs/morgan/commit/4b695edf967ce179cdf4009fe8cddd184b7511ee"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/morgan/releases/tag/1.12.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9f6g-j8ch-79g4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9f6g-j8ch-79g4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-87859"
+      }
+    ],
+    "Description": "### Impact\n\nMorgan writes attacker-controlled request data to the access log. Its escaping (added in 1.11.0 and 1.12.0) neutralizes control characters, the Unicode line separators, and backslash, but not the double quote (`0x22`), which is the field delimiter of the Apache combined log format morgan emits. An attacker who controls a quoted field (`:user-agent`, `:referrer`, the request URL, or the Basic auth `:remote-user`) can inject a double quote to close the field early and forge additional fields in the log record. The `combined`, `common`, and `default` formats, and any custom format that quotes a token, are affected. This is an incomplete fix of CVE-2026-5078 and CVE-2026-15603.\n\n### Patches\n\nUsers should upgrade to version 1.12.1.\n\n### Workarounds\n\nUpdate to version 1.12.1.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-28T21:33:08Z",
+    "Severity": "MODERATE",
+    "Summary": "morgan vulnerable to Log Injection via unescaped double quote in quoted log fields",
+    "UpdatedAt": "2026-09-28T21:33:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.12.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.12.1"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-28T21:31:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/platform-server"
+  },
+  "Advisory": {
+    "DatabaseId": 503474,
+    "Id": "GSA_kwCzR0hTQS1mNjdqLTJqcXctanBxN84AB66y",
+    "GhsaId": "GHSA-f67j-2jqw-jpq7",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-f67j-2jqw-jpq7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f67j-2jqw-jpq7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f67j-2jqw-jpq7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-101895"
+      }
+    ],
+    "Description": "A Denial of Service (DoS) vulnerability exists in `@angular/platform-server`'s DOM emulation parser (`domino`). When processing untrusted user input containing an incomplete DOCTYPE declaration ending with whitespace before EOF (such as `\u003c!DOCTYPE html `), the HTML parser enters an infinite synchronous loop, pegging CPU utilization at 100% and completely freezing the Node.js server process.\n\n### Technical Description\nIn Angular Server-Side Rendering (SSR), `@angular/platform-server` uses `domino` to parse and sanitize HTML bound through template bindings (such as `[innerHTML]`) or manipulated via DOM APIs.\n\nIn Domino's HTML parser (`lib/HTMLParser.js`), tokenizer states that specify fixed lookahead—such as `after_doctype_name_state` (`lookahead = 6`)—rely on the state handler function to explicitly advance the character index pointer (`nextchar`). While branches for whitespace, `\u003e`, and keyword matching advance `nextchar`, the EOF branch (`case -1: // EOF`) emitted doctype and EOF tokens without advancing `nextchar` or transitioning out of the state:\n\n```javascript\ncase -1: // EOF\n  forcequirks();\n  emitDoctype();\n  emitEOF();\n  break;\n```\n\nBecause `nextchar` remained unchanged pointing to the EOF marker character (`\\uFFFF`), the scanner loop (`while (nextchar \u003c numchars)`) repeatedly re-invoked `after_doctype_name_state` with `codepoint = EOF` indefinitely. In Node.js's single-threaded runtime, this synchronous loop starves the event loop entirely.\n\n### Impact \u0026 Reachability\n* **Reachability**: The vulnerability is reachable in any Angular SSR application where untrusted user input is bound to `[innerHTML]`, interpolated into markup, or sanitized on the server.\n* **Impact**: Successful exploitation allows an unauthenticated remote attacker to cause an immediate Denial of Service (DoS) by sending a payload containing an incomplete DOCTYPE (e.g., `\u003c!DOCTYPE html `). The Node.js SSR process locks up at 100% CPU and ceases responding to all concurrent and subsequent HTTP requests.\n\n**Proof of Concept:**\n```ts\nimport { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-root',\n  standalone: true,\n  template: `\u003cdiv [innerHTML]=\"payload\"\u003e\u003c/div\u003e`,\n})\nexport class AppComponent {\n  // Attacker-controlled input containing an incomplete DOCTYPE ending with whitespace\n  payload = '\u003c!DOCTYPE html ';\n}\n```\n\n### Workarounds\n* Avoid binding untrusted user input directly to `[innerHTML]` in server-rendered templates; use standard text interpolation (`{{ userInput }}`) or `[textContent]` when raw HTML rendering is not required.\n* Validate or sanitize user input before passing it to `[innerHTML]` on the server by stripping or rejecting strings matching `/^\u003c!DOCTYPE/i`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-28T21:31:21Z",
+    "Severity": "HIGH",
+    "Summary": "Angular SSR: Denial of Service (DoS) via Infinite Loop on Malformed DOCTYPE",
+    "UpdatedAt": "2026-09-28T21:31:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 19.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "20.3.31"
+      },
+      "VulnerableVersionRange": "\u003e= 20.0.0, \u003c 20.3.31"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.23"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0, \u003c 21.2.23"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0, \u003c 22.1.6"
+    }
+  ]
+}
