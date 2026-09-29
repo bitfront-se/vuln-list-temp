@@ -1,0 +1,92 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-29T18:02:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 503788,
+    "Id": "GSA_kwCzR0hTQS05cWg0LTNqdzgtMzY2d84AB6_s",
+    "GhsaId": "GHSA-9qh4-3jw8-366w",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-9qh4-3jw8-366w"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/6462a2e1dc4e6adffd3b7d9b9be1474c45dcbbe2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/9a675aef8822bae4088567822969f900b3a37671"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/b3ae0aab5cf81c2ed03d04df1ae8e69ecfab7886"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/cd34f335c8664613db5b6e61ae51e2e1846233ae"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.10.6"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.9.2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v43.4.1"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v44.0.0-beta.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9qh4-3jw8-366w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9qh4-3jw8-366w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102676"
+      }
+    ],
+    "Description": "### Impact\n\nA `\u003cwebview\u003e` could enable Node.js integration in its Web Workers even when its embedder had Node.js integration disabled, giving guest content more privilege than the embedder allowed.\n\nApps are only affected if they enable the `\u003cwebview\u003e` tag and the embedder is unsandboxed. Apps that do not use `\u003cwebview\u003e`, or that keep the embedder sandboxed, are not affected.\n\n### Workarounds\n\nRemove `nodeIntegrationInWorker` from the guest preferences in a `will-attach-webview` handler, or do not enable the `\u003cwebview\u003e` tag when loading untrusted content.\n\n### Fixed Versions\n\n* `44.0.0-beta.5`\n* `43.4.1`\n* `42.9.2`\n* `41.10.6`\n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T18:02:18Z",
+    "Severity": "HIGH",
+    "Summary": "Electron: \u003cwebview\u003e can enable Node.js integration in Web Workers despite embedder restrictions",
+    "UpdatedAt": "2026-09-29T18:02:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "44.0.0-beta.5"
+      },
+      "VulnerableVersionRange": "\u003e= 44.0.0-alpha.1, \u003c 44.0.0-beta.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "43.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 43.0.0-alpha.1, \u003c 43.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.10.6"
+      },
+      "VulnerableVersionRange": "\u003c 41.10.6"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-29T18:05:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 503790,
+    "Id": "GSA_kwCzR0hTQS1ncjJtLXY1Z3EtdjY4Nc4AB6_u",
+    "GhsaId": "GHSA-gr2m-v5gq-v685",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-gr2m-v5gq-v685"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/29fc130569f970e91e355383821a4af0f25724a2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/3ecf3e74f4be6e2360644679b0b4698742be0e1d"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/6594d5a5b074cf501da084dc7908d3df0d68a886"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/e9c4d3cbe912e18d7c63af78e63e98ae7a48cd3a"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.10.6"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.9.2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v43.4.1"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v44.0.0-beta.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gr2m-v5gq-v685"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gr2m-v5gq-v685"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102674"
+      }
+    ],
+    "Description": "### Impact\n\nWindows opened from a sandboxed top-level document did not inherit that document's HTML `sandbox` restrictions, so content that was meant to run sandboxed could open a window with the app's full origin. GHSA-hq2x-r82h-9wj4 covers the same issue for sandboxed iframes.\n\nApps are only affected if they render untrusted content in a sandboxed top-level document that allows popups. Apps that deny popups from untrusted content with `setWindowOpenHandler` are not affected.\n\n### Workarounds\n\nReturn `{ action: 'deny' }` from `setWindowOpenHandler` for windows opened by untrusted content.\n\n### Fixed Versions\n\n* `44.0.0-beta.5`\n* `43.4.1`\n* `42.9.2`\n* `41.10.6`\n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T18:05:11Z",
+    "Severity": "HIGH",
+    "Summary": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
+    "UpdatedAt": "2026-09-29T18:05:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "44.0.0-beta.5"
+      },
+      "VulnerableVersionRange": "\u003e= 44.0.0-alpha.1, \u003c 44.0.0-beta.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "43.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 43.0.0-alpha.1, \u003c 43.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.10.6"
+      },
+      "VulnerableVersionRange": "\u003c 41.10.6"
+    }
+  ]
+}

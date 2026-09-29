@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-29T18:07:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 503792,
+    "Id": "GSA_kwCzR0hTQS12djQzLTVqZ3gtN3F2OM4AB6_w",
+    "GhsaId": "GHSA-vv43-5jgx-7qv8",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-vv43-5jgx-7qv8"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/50745"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/01faabfc250801a980fc94d64608046c67fc1cd9"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/15e2928a5c5f01759107b414010e220d90d59cef"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/a0f9ff4cc0340545008424232d49caadd9c0c767"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/b8f25c4cedb2e0f5f475912b709aba19c57c26be"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v39.8.10"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.10.5"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.0.0-beta.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vv43-5jgx-7qv8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vv43-5jgx-7qv8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102672"
+      }
+    ],
+    "Description": "### Impact\n\nOn macOS, Electron bundles the Squirrel.Mac auto-update framework, whose privileged `ShipIt` helper performs the final step of an update as root. A local attacker could cause that helper to overwrite a different application's files, as root, instead of the app that started the update. Exploitation requires local access to the machine.\n\nApps are only affected on macOS if they ship Squirrel.Mac-based auto-updates. Apps on other platforms, or that do not use Squirrel.Mac auto-updates, are not affected.\n\n### Workarounds\n\nThere are no app side workarounds, you must update to a patched version of Electron.\n\n### Fixed Versions\n\n* `42.0.0-beta.2`\n* `41.10.5`\n* `39.8.10`\n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T18:06:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: Local race condition in Squirrel.Mac update installation on macOS",
+    "UpdatedAt": "2026-09-29T18:07:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.7,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.0.0-beta.2"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.0.0-beta.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.10.5"
+      },
+      "VulnerableVersionRange": "\u003e= 40.0.0-alpha.1, \u003c 41.10.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "39.8.10"
+      },
+      "VulnerableVersionRange": "\u003c 39.8.10"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-29T18:21:41Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 503802,
+    "Id": "GSA_kwCzR0hTQS1yZmd2LXh4cXgtbWZnNc4AB6_6",
+    "GhsaId": "GHSA-rfgv-xxqx-mfg5",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-rfgv-xxqx-mfg5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-19534"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/2af0faf88b906d3127a360c3ac75164c0f95e5a5"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/6615e0175e9b635bcd2e3e87a47daa82f6f5b728"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/66e12816064cf3068f63bd134748b7fc4e779bad"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v6.28.1"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v7.29.1"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v8.10.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rfgv-xxqx-mfg5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-19534"
+      }
+    ],
+    "Description": "### Impact\n\nThe undici WebSocket client throws an uncaught `TypeError` during the opening handshake when a server's `101` response includes a `Sec-WebSocket-Protocol` header that the client never requested. The throw occurs in a `queueMicrotask` callback with no surrounding `try`/`catch`, so it propagates as an uncaught exception and terminates the Node.js process. This is a remote, unauthenticated denial of service against any application that opens a WebSocket to an attacker controlled or compromised server, or over a plaintext `ws://` connection subject to a machine-in-the-middle. It affects the default `new WebSocket(url)` usage, where no subprotocol is requested. Per RFC 6455 section 4.1, an unrequested subprotocol must fail the connection, not crash it.\n\nAll releases starting at undici 6.7.0 are affected.\n\n### Patches\n\nUpgrade to undici 6.28.1, 7.29.1, or 8.10.2.\n\n### Workarounds\n\nNo workaround is available. The fix must be applied through an upgrade.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T18:21:33Z",
+    "Severity": "HIGH",
+    "Summary": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+    "UpdatedAt": "2026-09-29T18:21:41Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.10.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.10.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.29.1"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.29.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.28.1"
+      },
+      "VulnerableVersionRange": "\u003e= 6.7.0, \u003c 6.28.1"
+    }
+  ]
+}

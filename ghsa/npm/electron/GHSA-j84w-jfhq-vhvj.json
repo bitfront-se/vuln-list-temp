@@ -1,0 +1,92 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-29T18:04:27Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 503789,
+    "Id": "GSA_kwCzR0hTQS1qODR3LWpmaHEtdmh2as4AB6_t",
+    "GhsaId": "GHSA-j84w-jfhq-vhvj",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-j84w-jfhq-vhvj"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/4d2784cc8592471ee2276235b8c2a03efddf937d"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/80178e4631cb2f6a5e42f8e793b2ae9624e78a0d"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/c595b05976e7a885465b043d17e00a92fc3c3397"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/ef75c4b98caaa3ebc615f1eba302027028ee04d2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v41.10.6"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.9.2"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v43.4.1"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v44.0.0-beta.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j84w-jfhq-vhvj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j84w-jfhq-vhvj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102675"
+      }
+    ],
+    "Description": "### Impact\n\nResponses served through `protocol.registerFileProtocol` or `protocol.registerHttpProtocol` for a custom scheme registered with `supportFetchAPI: true` but without `corsEnabled: true` could be read cross-origin by web content. This completes the fix for CVE-2026-70604.\n\nApps are only affected if they register such a scheme, serve it through one of those handlers, and load untrusted content. Apps that set `corsEnabled: true`, or that do not load untrusted content, are not affected.\n\n### Workarounds\n\nSet `corsEnabled: true` on the scheme, or do not load untrusted content in windows that can reach it.\n\n### Fixed Versions\n\n* `44.0.0-beta.5`\n* `43.4.1`\n* `42.9.2`\n* `41.10.6`\n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T18:04:24Z",
+    "Severity": "HIGH",
+    "Summary": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
+    "UpdatedAt": "2026-09-29T18:04:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "44.0.0-beta.5"
+      },
+      "VulnerableVersionRange": "\u003e= 44.0.0-alpha.1, \u003c 44.0.0-beta.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "43.4.1"
+      },
+      "VulnerableVersionRange": "\u003e= 43.0.0-alpha.1, \u003c 43.4.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 42.0.0-alpha.1, \u003c 42.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.10.6"
+      },
+      "VulnerableVersionRange": "\u003c 41.10.6"
+    }
+  ]
+}

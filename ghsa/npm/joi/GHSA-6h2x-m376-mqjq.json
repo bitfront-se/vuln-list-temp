@@ -1,0 +1,64 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-29T18:07:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "joi"
+  },
+  "Advisory": {
+    "DatabaseId": 503793,
+    "Id": "GSA_kwCzR0hTQS02aDJ4LW0zNzYtbXFqcc4AB6_x",
+    "GhsaId": "GHSA-6h2x-m376-mqjq",
+    "References": [
+      {
+        "Url": "https://github.com/hapijs/joi/security/advisories/GHSA-6h2x-m376-mqjq"
+      },
+      {
+        "Url": "https://github.com/hapijs/joi/pull/3143"
+      },
+      {
+        "Url": "https://github.com/hapijs/joi/pull/3145"
+      },
+      {
+        "Url": "https://github.com/hapijs/joi/commit/115e7b58d5eaaecc5e9b7093d41899ad6fb053ec"
+      },
+      {
+        "Url": "https://github.com/hapijs/joi/commit/e70df424c367f2976db63b089504413744a21245"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6h2x-m376-mqjq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6h2x-m376-mqjq"
+      }
+    ],
+    "Description": "### Impact\nAny application that validates a user-supplied string with `Joi.string().isoDate()` can be stalled by a single request. One of the regular expressions the rule runs over the input was unanchored, so a valid ISO date followed by a long run of fractional-second digits made the regex engine restart its search from every position in the string, costing time proportional to the square of the input length. 64 KB of digits costs about 1.4 s and 256 KB about 22 s.\n\n### Patches\nUpgrade to version 17.13.7 or 18.2.6 depending on your current major version.\n\n### Workarounds\nNone except capping the length of the string before it reaches joi.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T18:07:42Z",
+    "Severity": "HIGH",
+    "Summary": "joi: Quadratic regular-expression backtracking in `Joi.string().isoDate()`",
+    "UpdatedAt": "2026-09-29T18:07:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "18.2.6"
+      },
+      "VulnerableVersionRange": "\u003e= 18.0.0, \u003c 18.2.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.13.7"
+      },
+      "VulnerableVersionRange": "\u003e= 17.2.0, \u003c 17.13.7"
+    }
+  ]
+}
