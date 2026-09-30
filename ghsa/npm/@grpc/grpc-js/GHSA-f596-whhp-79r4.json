@@ -1,0 +1,74 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-09-30T15:35:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@grpc/grpc-js"
+  },
+  "Advisory": {
+    "DatabaseId": 504673,
+    "Id": "GSA_kwCzR0hTQS1mNTk2LXdoaHAtNzlyNM4AB7Nh",
+    "GhsaId": "GHSA-f596-whhp-79r4",
+    "References": [
+      {
+        "Url": "https://github.com/grpc/grpc-node/security/advisories/GHSA-f596-whhp-79r4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-101915"
+      },
+      {
+        "Url": "https://github.com/grpc/grpc-node/commit/350de32860428cc62473a00bee4035360690ffea"
+      },
+      {
+        "Url": "https://github.com/grpc/grpc-node/commit/7c5c5181159c6ddd292805881ef2cdec29bb475f"
+      },
+      {
+        "Url": "https://github.com/grpc/grpc-node/commit/e8329b122ca99ba10877e990c2f6edd40224fd0d"
+      },
+      {
+        "Url": "https://github.com/grpc/grpc-node/releases/tag/@grpc/grpc-js%401.13.6"
+      },
+      {
+        "Url": "https://github.com/grpc/grpc-node/releases/tag/@grpc/grpc-js%401.14.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f596-whhp-79r4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f596-whhp-79r4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-101915"
+      }
+    ],
+    "Description": "### Impact\nIf an application method handler crashes, the error message is included in the status message sent to the client. This can leak to the client any sensitive data that may be included in the error message. This impacts anyone using `@grpc/grpc-js` to run servers.\n\n### Patches\nThis vulnerability is fixed in 1.13.6 and 1.14.5.\n\n### Workarounds\nThis can be avoided by using a top-level error handler in method handlers to strip out sensitive error information.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-30T15:35:41Z",
+    "Severity": "LOW",
+    "Summary": "@grpc/grpc-js: The server transmits some error messages thrown by method handlers to the client in status messages",
+    "UpdatedAt": "2026-09-30T15:35:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.14.5"
+      },
+      "VulnerableVersionRange": "\u003e= 1.14.0, \u003c 1.14.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.13.6"
+      },
+      "VulnerableVersionRange": "\u003c 1.13.6"
+    }
+  ]
+}

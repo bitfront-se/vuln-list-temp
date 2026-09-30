@@ -1,0 +1,86 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-30T15:36:57Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.fasterxml.jackson.core:jackson-databind"
+  },
+  "Advisory": {
+    "DatabaseId": 504677,
+    "Id": "GSA_kwCzR0hTQS13djhxLXFoaGotOWg1NM4AB7Nl",
+    "GhsaId": "GHSA-wv8q-qhhj-9h54",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-wv8q-qhhj-9h54"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-91776"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/issues/6203"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/commit/2870d1d6dc1b7e1c07ee11dd5b04ab71cddbb577"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.18.11"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.21.7"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.22.3"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-3.1.7"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-3.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wv8q-qhhj-9h54"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wv8q-qhhj-9h54"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-91776"
+      }
+    ],
+    "Description": "### Summary\n\nWith `@JsonTypeInfo(use = Id.NAME, defaultImpl = ...)`, every distinct unknown\nraw type ID selects the same fallback deserializer but is retained as a\nseparate key in `TypeDeserializerBase._deserializers`. An attacker who can\nrepeatedly supply new unknown type IDs can grow this process-lifetime cache\nwithout a configured bound.\n\n### Details\n\nThe affected path is `TypeDeserializerBase._findDeserializer()`. After an\nunknown name-based type ID resolves to the configured fallback/default\nimplementation, jackson-databind caches the result under the attacker-provided\nraw `typeId`. Although all such IDs select the same fallback deserializer, each\nnew string remains a distinct cache key.\n\nThe behavior is runtime-confirmed in jackson-databind 2.22.1 and 3.2.1.\nCurrent 2.22 and 3.2 source branches retained the unbounded `_deserializers`\nmap and per-raw-ID cache write when rechecked. The earlier affected floor has\nnot been established, patched versions are: 2.18.11, 2.21.7, 2.22.3, 3.1.7 and 3.2.3.\n\nThe vulnerable application must enable name-based polymorphism with a\n`defaultImpl` or equivalent fallback, accept attacker-influenced type IDs, and\nreuse a long-lived mapper/type deserializer across requests.\n\nSuggested correction: avoid caching each unknown raw ID when every such ID\nresolves to the same fallback, use a fallback sentinel, or use an explicitly\nbounded concurrency-safe cache. A regression should contrast many distinct\nunknown IDs with repetitions of one unknown ID across requests.\n\n### PoC\n\nConfigure a polymorphic base type with\n`@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, defaultImpl = Fallback.class)` and\ndeserialize inputs containing unknown type names through the same mapper.\nInspect `TypeDeserializerBase._deserializers` after the run.\n\nOn affected 2.x and 3.x versions, 10,000 distinct unknown raw type IDs produce\n10,000 retained cache entries even though every input selects the same\nfallback deserializer. A matched control that repeats one unknown ID 10,000\ntimes produces one retained entry. This isolates attacker-controlled key\ncardinality from ordinary request count.\n\n### Impact\n\nWhere the stated polymorphic fallback configuration is exposed to\nattacker-influenced type IDs, distinct inputs cause incremental\nprocess-lifetime memory retention and eventual availability pressure or\ndenial of service. This is not claimed as a single-request allocation spike,\nand no fixed bytes-per-ID or time-to-out-of-memory value is asserted. No\nconfidentiality, integrity, or code-execution impact is claimed.\n\nRequested credit: Daniel Birtwhistle",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-30T15:36:55Z",
+    "Severity": "HIGH",
+    "Summary": "jackson-databind retains every unknown raw type ID ",
+    "UpdatedAt": "2026-09-30T15:36:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.22.0, \u003c= 2.22.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.21.7"
+      },
+      "VulnerableVersionRange": "\u003e= 2.19.0, \u003c= 2.21.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.11"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.18.10"
+    }
+  ]
+}
