@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-30T20:19:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "django"
+  },
+  "Advisory": {
+    "DatabaseId": 398449,
+    "Id": "GSA_kwCzR0hTQS1xMjM4LTVjeG0tNWM5aM4ABhRx",
+    "GhsaId": "GHSA-q238-5cxm-5c9h",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-15830"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/6af5da31775417c610dbf9c3f1b5b8333d42daf6"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/9e4a3f186b6b07b483bfd9195ea06734663fcd06"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/ba80833fa656dd09660b97c4429331067db1b080"
+      },
+      {
+        "Url": "https://github.com/django/django/commit/d2e59b77fe18de318a8272c2a7bbc798d84d1d0d"
+      },
+      {
+        "Url": "https://docs.djangoproject.com/en/dev/releases/security"
+      },
+      {
+        "Url": "https://groups.google.com/g/django-announce"
+      },
+      {
+        "Url": "https://www.djangoproject.com/weblog/2026/aug/04/security-releases"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/django/PYSEC-2026-3717.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q238-5cxm-5c9h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q238-5cxm-5c9h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-15830"
+      }
+    ],
+    "Description": "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8.\nGeoDjango's `django.contrib.gis.geos.GEOSGeometry` is subject to a potential denial-of-service when parsing deeply nested `GEOMETRYCOLLECTION` objects supplied as well-known text (WKT), well-known binary (WKB), or hex-encoded WKB, which triggers unbounded recursion and a segmentation fault in the underlying GEOS library. Spatial field lookups and the `django.contrib.gis.forms.GeometryField` form field are also affected.\nEarlier, unsupported Django series (such as 5.1.x, 5.0.x, and 4.2.x) were not evaluated and may also be affected.\nDjango would like to thank Andrew MacPherson and kimchunbok_ for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-04T18:31:27Z",
+    "Severity": "MODERATE",
+    "Summary": "Django GeoDjango vulnerable to denial of service through deeply nested geometry collections",
+    "UpdatedAt": "2026-09-30T20:19:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 6.1a1, \u003c 6.1.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.0.8"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0a1, \u003c 6.0.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.2.17"
+      },
+      "VulnerableVersionRange": "\u003c 5.2.17"
+    }
+  ]
+}

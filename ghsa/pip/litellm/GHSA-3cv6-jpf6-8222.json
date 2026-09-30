@@ -1,0 +1,119 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-30T21:11:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 504874,
+    "Id": "GSA_kwCzR0hTQS0zY3Y2LWpwZjYtODIyMs4AB7Qq",
+    "GhsaId": "GHSA-3cv6-jpf6-8222",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-3cv6-jpf6-8222"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-84377"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/pull/36011"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/pull/36314"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/pull/36494"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/473f72e63a9777d793fbbf57194d8ec4fb97bc1b"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/820f247a6abba55cd87d130bef7bba7be3b29d37"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/c898d341c02299cf2506d0d8e84cc67953043593"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3cv6-jpf6-8222"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3cv6-jpf6-8222"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84377"
+      }
+    ],
+    "Description": "### Impact\n\nAny authenticated LiteLLM proxy user could redirect an outbound provider call to a destination they control and cause the proxy to send its own configured provider credentials to that destination. The proxy's request-body validation was a denylist that did not cover every sensitive parameter and did not inspect parameters nested inside other request fields, so a caller could supply a routing or credential value that the proxy applied without clearing the operator's stored key. Any authenticated user could therefore exfiltrate the operator's upstream provider credentials and other configured secrets, and perform Server-Side Request Forgery against internal services reachable from the proxy.\n\n### Patches\n\nFixed in 1.96.2, 1.95.1, 1.94.3, 1.93.2, 1.92.2, 1.91.5, 1.90.7, 1.89.7, and 1.88.6.\n\n### Workarounds\n\nSet `general_settings.allow_client_side_credentials` to `false` so callers cannot override connection parameters, restrict proxy keys to trusted callers, and block the affected parameters (`api_base`, `base_url`, `model_list`, `fallbacks`, provider credential fields) at a reverse proxy or API gateway.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-30T21:11:25Z",
+    "Severity": "MODERATE",
+    "Summary": "LiteLLM: Authenticated SSRF and provider-credential exfiltration via unvalidated request-body routing parameters",
+    "UpdatedAt": "2026-09-30T21:11:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.96.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.96.0, \u003c 1.96.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.95.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.95.0, \u003c 1.95.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.94.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.94.0, \u003c 1.94.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.93.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.93.0, \u003c 1.93.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.92.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.92.0, \u003c 1.92.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.91.5"
+      },
+      "VulnerableVersionRange": "\u003e= 1.91.0, \u003c 1.91.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.90.7"
+      },
+      "VulnerableVersionRange": "\u003e= 1.90.0, \u003c 1.90.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.89.7"
+      },
+      "VulnerableVersionRange": "\u003e= 1.89.0, \u003c 1.89.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.88.6"
+      },
+      "VulnerableVersionRange": "\u003c 1.88.6"
+    }
+  ]
+}
