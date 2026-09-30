@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-09-29T23:49:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@xhmikosr/decompress"
+  },
+  "Advisory": {
+    "DatabaseId": 504144,
+    "Id": "GSA_kwCzR0hTQS1ocmgyLXZwM3gtNzl4Zs4AB7FQ",
+    "GhsaId": "GHSA-hrh2-vp3x-79xf",
+    "References": [
+      {
+        "Url": "https://github.com/XhmikosR/decompress/security/advisories/GHSA-hrh2-vp3x-79xf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-101894"
+      },
+      {
+        "Url": "https://github.com/XhmikosR/decompress/commit/5f4b2f64abb31bbaf1fef8975b595fd7df2558d8"
+      },
+      {
+        "Url": "https://github.com/XhmikosR/decompress/commit/f6c88c668216d6a12c6cecf4fe0b6c70bf77050a"
+      },
+      {
+        "Url": "https://github.com/XhmikosR/decompress/releases/tag/v10.2.2"
+      },
+      {
+        "Url": "https://github.com/XhmikosR/decompress/releases/tag/v11.1.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hrh2-vp3x-79xf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hrh2-vp3x-79xf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-101894"
+      }
+    ],
+    "Description": "### Impact\n\nWhen extracting an untrusted archive with the default `decompress(input, output)` API, a crafted archive containing a chain of symlink entries can make a later entry resolve **outside** the output directory. The lexical containment checks pass, but the kernel follows the planted symlinks to a path outside `output`, letting an attacker write (and read) files outside the intended extraction directory. Overwriting startup scripts or configuration can lead to remote code execution.\n\nThis is a bypass of the hardening in GHSA-mp2f-45pm-3cg9. Any application that extracts attacker-controlled archives is affected.\n\n### Patches\n\nFixed in **11.1.4** (`latest`) and backported to **10.2.2** (`release-v10` dist-tag). Upgrade to one of these.\n\nThe unmaintained upstream `decompress` package shares this flaw and will not be patched. Migrate to `@xhmikosr/decompress@11.1.4` (or `@10.2.2`).\n\n### Workarounds\n\nNone. Do not extract untrusted archives on affected versions. If you cannot upgrade, validate entries out of band and reject any whose resolved path escapes the target directory.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T23:49:42Z",
+    "Severity": "CRITICAL",
+    "Summary": "@xhmikosr/decompress: Path traversal via symlink chain",
+    "UpdatedAt": "2026-09-29T23:49:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.2.2"
+      },
+      "VulnerableVersionRange": "\u003c= 10.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.1.4"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0, \u003c= 11.1.3"
+    }
+  ]
+}

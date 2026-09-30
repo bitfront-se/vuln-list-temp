@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-29T23:10:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "adm-zip"
+  },
+  "Advisory": {
+    "DatabaseId": 504124,
+    "Id": "GSA_kwCzR0hTQS1jNmZnLTQ0NnEtY2c5NM4AB7E8",
+    "GhsaId": "GHSA-c6fg-446q-cg94",
+    "References": [
+      {
+        "Url": "https://github.com/cthackers/adm-zip/security/advisories/GHSA-c6fg-446q-cg94"
+      },
+      {
+        "Url": "https://github.com/cthackers/adm-zip/commit/491600683dacb6cb9fe0718a0eeb9cb5eb49afa6"
+      },
+      {
+        "Url": "https://github.com/cthackers/adm-zip/releases/tag/v0.6.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c6fg-446q-cg94"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c6fg-446q-cg94"
+      }
+    ],
+    "Description": "### Summary\nadm-zip enforces a `maxOutputLength` guard against decompression bombs on its synchronous `getData()` path, but the equivalent asynchronous `getDataAsync()` path does not enforce it — it accumulates and returns the entire decompressed output regardless of the entry's declared size. An application that checks an entry's declared size before deciding to process it, then reads the entry via `getDataAsync()` (a completely ordinary, often-recommended choice for I/O in Node.js), gets none of the protection it believes it has.\n\n\n### Details\n\n- `methods/inflater.js:3-10` passes `{maxOutputLength: expectedLength}` to `inflateRawSync`, which Node enforces.\n- `methods/inflater.js:12-31` passes the same option to `createInflateRaw` but never enforces it on the streaming path — it just accumulates every chunk and allocates a final Buffer of whatever size resulted.\n\n\n### PoC\n\n```js\nconst AdmZip = require('adm-zip');\nconst zip = new AdmZip();\nzip.addFile('p', Buffer.alloc(64 * 1024 * 1024, 0x41)); // 64 MiB\nconst raw = Buffer.from(zip.toBuffer());\n// patch the local + central declared uncompressed size to 1 byte\nraw.writeUInt32LE(1, localHeaderSizeOffset);\nraw.writeUInt32LE(1, centralHeaderSizeOffset);\nconst entry = new AdmZip(raw).getEntry('p');\n\nentry.getData();\n// throws: ERR_BUFFER_TOO_LARGE: Cannot create a Buffer larger than 1 bytes\n\nentry.getDataAsync((data, error) =\u003e { ... });\n// returns the full 67,108,864-byte buffer, error is undefined\n```\n\n### Impact\nAn application that validates a declared size before reading an entry, then uses the async API, gets no protection against a high-ratio DEFLATE payload. Repeated or larger requests could contribute to memory exhaustion.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T23:10:32Z",
+    "Severity": "MODERATE",
+    "Summary": "adm-zip: getDataAsync() bypasses the maxOutputLength size guard enforced by the synchronous getData() path",
+    "UpdatedAt": "2026-09-29T23:10:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.6.0"
+    }
+  ]
+}

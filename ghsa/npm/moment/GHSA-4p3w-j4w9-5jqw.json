@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-29T23:46:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "moment"
+  },
+  "Advisory": {
+    "DatabaseId": 504141,
+    "Id": "GSA_kwCzR0hTQS00cDN3LWo0dzktNWpxd84AB7FN",
+    "GhsaId": "GHSA-4p3w-j4w9-5jqw",
+    "References": [
+      {
+        "Url": "https://github.com/moment/moment/security/advisories/GHSA-4p3w-j4w9-5jqw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-17495"
+      },
+      {
+        "Url": "https://github.com/moment/moment/pull/6386"
+      },
+      {
+        "Url": "https://github.com/moment/moment/commit/5f7d983c9881e65e07574de9dda3190d99520c07"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/moment/moment/releases/tag/2.31.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4p3w-j4w9-5jqw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4p3w-j4w9-5jqw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-17495"
+      }
+    ],
+    "Description": "### Impact\n\nmoment before 2.31.0 is vulnerable to path traversal in `moment.locale()`. When an application passes a non-string, attacker-influenced value to `moment.locale()`, a specially crafted object can bypass the locale name validation and cause moment to load a file from an attacker-controlled path. This is a further bypass of the validation added in 2.29.2 for [CVE-2022-24785](https://github.com/moment/moment/security/advisories/GHSA-8hfj-j24r-96c4).\n\nThis affects server-side (npm) users only. Plain string input is not affected: the existing validation correctly rejects strings that contain path separators.\n\n### Patches\n\nThis issue is patched in moment 2.31.0.\n\n### Workarounds\n\nValidate that any user-supplied input is a string before passing it to `moment.locale()`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T23:46:02Z",
+    "Severity": "MODERATE",
+    "Summary": "moment vulnerable to Path Traversal via crafted non-string locale name",
+    "UpdatedAt": "2026-09-29T23:46:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.29.2, \u003c 2.31.0"
+    }
+  ]
+}

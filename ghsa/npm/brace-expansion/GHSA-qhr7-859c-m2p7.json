@@ -1,0 +1,80 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-09-29T23:45:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "brace-expansion"
+  },
+  "Advisory": {
+    "DatabaseId": 504139,
+    "Id": "GSA_kwCzR0hTQS1xaHI3LTg1OWMtbTJwN84AB7FL",
+    "GhsaId": "GHSA-qhr7-859c-m2p7",
+    "References": [
+      {
+        "Url": "https://github.com/juliangruber/brace-expansion/security/advisories/GHSA-qhr7-859c-m2p7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102278"
+      },
+      {
+        "Url": "https://github.com/juliangruber/brace-expansion/commit/1efee7c397c191da6287a78ec19512476a966a7b"
+      },
+      {
+        "Url": "https://github.com/juliangruber/brace-expansion/commit/935d78f32f335b2ff76578e5c5e877d31ae9888c"
+      },
+      {
+        "Url": "https://github.com/juliangruber/brace-expansion/commit/de84f144e9816f30e25fc8179e2e1249ab6df0db"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qhr7-859c-m2p7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102278"
+      }
+    ],
+    "Description": "### Summary\n\n`expand_()` recurses once per level of brace *nesting*. Deeply nested input exhausts the native stack and crashes the process.\n\nThis is distinct from CVE-2026-14257 / GHSA-mh99-v99m-4gvg, which made the *tail* iterative (recursion on `m.post`, driven by how many groups are chained). Nesting depth drives a different recursion that the tail fix never touched, so the documented constant-stack-depth guarantee only ever covered chained input, not nested input.\n\nIt is also distinct from GHSA-6j4f-fj2g-mc7p, which fixed recursion in `parseCommaParts()`. Both payloads below still crash with that fix applied.\n\n### Two recursion sites\n\n**Comma members.** Each alternative of a brace set is expanded by a recursive call, so nesting a set inside every alternative recurses once per level:\n\n```js\nexpand('{a,'.repeat(4000) + 'z' + '}'.repeat(4000))\n// RangeError: Maximum call stack size exceeded\n```\n\nCrashes at depth 3,907 - about **15.6 KB** of input.\n\n**Single set.** A brace set whose body parses to a single part is expanded by a recursive call before being re-wrapped (`x{{a,b}}y` -\u003e `x{a}y x{b}y`), which recurses once per nesting level:\n\n```js\nexpand('{'.repeat(3200) + 'a,b' + '}'.repeat(3200))\n// RangeError: Maximum call stack size exceeded\n```\n\nCrashes at depth 3,125 - about **6.25 KB** of input. This is the cheapest stack-exhaustion payload known against this package: roughly a quarter the input of GHSA-6j4f-fj2g-mc7p (29 KB), and about a tenth of minimatch's `MAX_PATTERN_LENGTH` (65,536).\n\n### Why `max` and `maxLength` do not help\n\nBoth crashes happen while recursing into sub-expansions, before the result set grows. The payloads produce almost no output - the single-set case yields 2 results - so neither bound is ever the limiter. `expand(payload, { max: 1, maxLength: 1 })` still overflows.\n\n### Impact\n\nAny application passing an untrusted string to `expand()`, directly or through `minimatch` / `glob` as a user-supplied glob pattern, can be crashed. In Node a `RangeError` the application does not catch terminates the process, so a server globbing user input is exposed to remote unauthenticated denial of service.\n\nAvailability only. No code execution, no data exposure.\n\n### Affected versions\n\nVerified affected on 1.1.18, 2.1.4, 3.0.6 and 5.0.9, at near-identical depths on every line (single set: 3,125 on all four; comma members: 3,907-4,102). Not a regression from any recent fix - the gap predates them.\n\n### Patch\n\nA `maxDepth` bound (default `EXPANSION_MAX_DEPTH`) is threaded through `expand_()`. Past the cap a group is treated as non-expanding and returned literally, which is how the parser already handles a group that cannot expand. This matches the existing `max` / `maxLength` caps, which truncate rather than throw, so `expand()` continues never to throw on any input.\n\nThe default sits far above any realistic nesting depth and well below the crash threshold.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-29T23:45:17Z",
+    "Severity": "HIGH",
+    "Summary": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+    "UpdatedAt": "2026-09-29T23:45:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.20"
+      },
+      "VulnerableVersionRange": "\u003c 1.1.20"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.1.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.8"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.0.8"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.11"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 5.0.11"
+    }
+  ]
+}
