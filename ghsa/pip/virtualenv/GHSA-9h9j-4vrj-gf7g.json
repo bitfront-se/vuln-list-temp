@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-09-30T23:53:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "virtualenv"
+  },
+  "Advisory": {
+    "DatabaseId": 504934,
+    "Id": "GSA_kwCzR0hTQS05aDlqLTR2cmotZ2Y3Z84AB7Rm",
+    "GhsaId": "GHSA-9h9j-4vrj-gf7g",
+    "References": [
+      {
+        "Url": "https://github.com/pypa/virtualenv/security/advisories/GHSA-9h9j-4vrj-gf7g"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102938"
+      },
+      {
+        "Url": "https://github.com/pypa/virtualenv/pull/3247"
+      },
+      {
+        "Url": "https://github.com/pypa/virtualenv/commit/a30f995461043acb6cacbf3a890951563ccf7140"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/virtualenv/PYSEC-2026-4012.yaml"
+      },
+      {
+        "Url": "https://github.com/pypa/virtualenv/releases/tag/21.7.11"
+      },
+      {
+        "Url": "https://pypi.org/project/virtualenv"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9h9j-4vrj-gf7g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9h9j-4vrj-gf7g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102938"
+      }
+    ],
+    "Description": "### Summary\n\n`pyvenv.cfg` is a line-based format with no escape syntax. `PyEnvCfg.write()` wrote values verbatim, while `PyEnvCfg._read_values()` parses the file with `str.splitlines()`. A value containing a line boundary therefore became additional configuration lines, and because reading is last-wins, the injected keys replaced any key written earlier in the file.\n\n### Impact\n\nThe `prompt` value is the reachable input: it is set by `--prompt`, by the `VIRTUALENV_PROMPT` environment variable, or from the config file, and `write()` emits `prompt` before `home`. A crafted prompt can therefore set `home` in the generated `pyvenv.cfg`:\n\n```console\n$ virtualenv --prompt $'x\"\\nhome = /attacker/path\\nprompt = \"z' venv\n$ grep '^home' venv/pyvenv.cfg\nhome = /attacker/path\n```\n\n`home` is what tooling reads to locate the base interpreter, so a consumer that trusts it can be pointed elsewhere. `implementation`, `version_info`, `version`, `executable`, `command` and `virtualenv` are also written before `prompt` and can be replaced the same way.\n\nThis requires the prompt to come from somewhere other than the person running the command, for example a CI job templating a branch name into it, tooling deriving an environment name from user-supplied data, or an inherited `VIRTUALENV_PROMPT`. Where the operator supplies the prompt directly they already control the command line, and the effect is corruption rather than privilege gain: the value is truncated at the boundary and read back with a dangling quote.\n\n### Details\n\nThe boundary set is the one `str.splitlines()` recognizes, which is wider than `\\n`: `\\r`, `\\v`, `\\f`, the file, group and record separators, `U+0085`, `U+2028` and `U+2029` were all written through unchanged and all split the line when read back.\n\n### Patches\n\n`PyEnvCfg.write()` now collapses those boundaries to spaces as it serializes each line, so it cannot emit a structurally invalid file regardless of what a caller places in `content`.\n\n### Workarounds\n\nDo not pass externally influenced data as the virtualenv prompt. Strip line boundaries from any value before using it as `--prompt` or `VIRTUALENV_PROMPT`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-30T23:53:58Z",
+    "Severity": "MODERATE",
+    "Summary": "virtualenv writes prompt values into pyvenv.cfg without sanitizing line boundaries, allowing configuration injection",
+    "UpdatedAt": "2026-09-30T23:53:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.7.11"
+      },
+      "VulnerableVersionRange": "\u003c= 21.7.10"
+    }
+  ]
+}
