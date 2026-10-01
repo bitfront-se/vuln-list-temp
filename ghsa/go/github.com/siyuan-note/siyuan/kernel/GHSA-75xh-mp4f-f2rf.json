@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T16:29:59Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/siyuan-note/siyuan/kernel"
+  },
+  "Advisory": {
+    "DatabaseId": 403931,
+    "Id": "GSA_kwCzR0hTQS03NXhoLW1wNGYtZjJyZs4ABinb",
+    "GhsaId": "GHSA-75xh-mp4f-f2rf",
+    "References": [
+      {
+        "Url": "https://github.com/siyuan-note/siyuan/security/advisories/GHSA-9cqf-hhrq-7v45"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-73608"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/siyuan-before-authorization-bypass-via-getattributeviewsearchtarget"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-75xh-mp4f-f2rf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-75xh-mp4f-f2rf"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-9cqf-hhrq-7v45. This link is maintained to preserve external references.\n\n## Original Description\nSiYuan's development branch (endpoint introduced by commit 9b8e8956f, not present in v3.7.3 or master, patched in v3.7.4) contains a missing-authorization vulnerability in the /api/av/getAttributeViewSearchTarget endpoint. The route is registered with CheckAuth only and performs no authorization checks (no CheckReadonly, no publish-access or encrypted-notebook gating). Given a database identifier taken from a published page and a keyword, an anonymous reader can query the endpoint to retrieve matching database row content, including rows that publish filters (FilterAttributeViewByPublishAccess) would otherwise withhold. No released stable version is affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-13T12:31:10Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: SiYuan: getAttributeViewSearchTarget returns database row content to anonymous readers with no publish-access check, reopening the class closed one day earlier at the adjacent route",
+    "UpdatedAt": "2026-10-01T16:29:59Z",
+    "WithdrawnAt": "2026-10-01T16:29:57Z",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.0.0-20260726161145-9b8e8956f997, \u003c 0.0.0-20260812083335-251596fc0de2"
+    }
+  ]
+}

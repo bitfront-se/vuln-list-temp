@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:44:02Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/siyuan-note/siyuan/kernel"
+  },
+  "Advisory": {
+    "DatabaseId": 397683,
+    "Id": "GSA_kwCzR0hTQS01dzRqLWhjaHAtcjMzMs4ABhFz",
+    "GhsaId": "GHSA-5w4j-hchp-r332",
+    "References": [
+      {
+        "Url": "https://github.com/siyuan-note/siyuan/security/advisories/GHSA-33jq-p8c2-q3q4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-69085"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/siyuan-before-sql-injection-via-searchdocs"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5w4j-hchp-r332"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5w4j-hchp-r332"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-33jq-p8c2-q3q4. This link is maintained to preserve external references.\n\n## Original Description\nSiYuan before v3.7.3 contains a SQL injection vulnerability in the /api/filetree/searchDocs endpoint, where the caller-supplied keyword parameter is concatenated directly into SQL statements with no escaping or parameter binding. The endpoint is reachable by a publish RoleReader token, or unauthenticated when publish mode is enabled with Publish.Auth.Enable set to false. Because the statement executes on a read-write SQLite handle via a driver that supports stacked (semicolon-separated) statements, an attacker can read and modify database content across all cleartext (non-encrypted) notebooks on the instance.CVE-2026-69085",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-03T15:32:48Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: Unauthenticated SQL injection in searchDocs via unescaped keyword (publish mode): cross-notebook read/write with statement stacking",
+    "UpdatedAt": "2026-10-01T15:44:02Z",
+    "WithdrawnAt": "2026-10-01T15:44:00Z",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.7.2"
+    }
+  ]
+}

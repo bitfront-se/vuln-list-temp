@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:28:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496479,
+    "Id": "GSA_kwCzR0hTQS1tN2NxLTdmMnEtZjlmaM4AB5Nf",
+    "GhsaId": "GHSA-m7cq-7f2q-f9fh",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-6w8r-xxw2-g3hx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92938"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.11.3-through-3.11.6-remote-code-execution-via-node-sqlite"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m7cq-7f2q-f9fh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m7cq-7f2q-f9fh"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-6w8r-xxw2-g3hx. This link is maintained to preserve external references.\n\n## Original Description\nvm2 versions 3.11.3 through 3.11.6 expose Node.js's host node:sqlite module to code running in NodeVM when that builtin is permitted, either explicitly or through builtin: ['*']. The module is wrapped with vm.readonly(), which prevents property assignment but leaves host-authority callables reachable; in addition, the resolver treats any request starting with 'node:' as a core-module request and the runtime strips only one 'node:' prefix, so a sandbox request for 'node:node:sqlite' resolves to the configured node:sqlite entry. Sandboxed code can therefore create an in-memory DatabaseSync with extension loading enabled and call DatabaseSync.loadExtension() on a native library bundled in the untrusted plugin package (path derived from __dirname). SQLite loads the library into the Node.js host process and invokes its native entry point, giving the sandboxed plugin arbitrary native code execution outside the sandbox with the host process's privileges. The issue is fixed in vm2 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: vm2 3.11.6 allows a sandboxed plugin to execute native code through `node:sqlite`",
+    "UpdatedAt": "2026-10-01T15:28:57Z",
+    "WithdrawnAt": "2026-10-01T15:28:54Z",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.11.3, \u003c= 3.11.6"
+    }
+  ]
+}

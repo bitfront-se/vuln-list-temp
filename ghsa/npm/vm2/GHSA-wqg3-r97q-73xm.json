@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:41:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496470,
+    "Id": "GSA_kwCzR0hTQS13cWczLXI5N3EtNzN4bc4AB5NW",
+    "GhsaId": "GHSA-wqg3-r97q-73xm",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-qhwx-74w5-xhxq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92948"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.9.6-through-3.11.5-sandbox-escape-via-node-test"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wqg3-r97q-73xm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wqg3-r97q-73xm"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-qhwx-74w5-xhxq. This link is maintained to preserve external references.\n\n## Original Description\nvm2 versions \u003e= 3.9.6 and \u003c= 3.11.6 are affected by a NodeVM builtin allowlist bypass that permits a sandbox escape on Node.js 24 and newer when the embedder explicitly allows the node:test builtin (e.g. require: { builtin: ['node:test'] }). On Node.js 24+, module.builtinModules exposes the scheme-only key node:test, which is not covered by vm2's family-based DANGEROUS_BUILTINS protection, so it is stored in the generic host-passthrough loader. Because requireImpl() in lib/setup-node-sandbox.js strips a single 'node:' prefix before the builtin lookup, sandbox code calling require('node:node:test') resolves to the stored node:test key and receives a readonly proxy to the host module. Calls to node:test.run() are forwarded to the host implementation, which spawns a separate Node process for process-isolated test execution and passes through attacker-controlled execArgv values; supplying --eval=\u003cJavaScript\u003e therefore executes arbitrary JavaScript in an unrestricted host Node process outside the NodeVM sandbox. Fixed in vm2 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:15Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: NodeVM builtin allowlist bypass via node:test.run() execArgv allows sandbox escape",
+    "UpdatedAt": "2026-10-01T15:41:06Z",
+    "WithdrawnAt": "2026-10-01T15:41:04Z",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.9.6, \u003c= 3.11.6"
+    }
+  ]
+}

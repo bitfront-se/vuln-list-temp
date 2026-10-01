@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:38:06Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496475,
+    "Id": "GSA_kwCzR0hTQS01ODQzLTltaDUtaGhnd84AB5Nb",
+    "GhsaId": "GHSA-5843-9mh5-hhgw",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-h85j-hv3c-qfgq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92940"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.11.3-through-3.11.6-https-credential-exposure-via-globalagent"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5843-9mh5-hhgw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5843-9mh5-hhgw"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-h85j-hv3c-qfgq. This link is maintained to preserve external references.\n\n## Original Description\nvm2 versions 3.11.3 through 3.11.6 expose the host process's real https.globalAgent to sandboxed code when a NodeVM is explicitly configured to allow require('https'). The builtin loader wraps host modules in a read-only proxy, but method calls such as Agent.prototype.on() are forwarded to the underlying host object, so sandbox code can register a listener for the agent's 'free' event. When an unrelated host HTTPS request releases a pooled connection, the listener receives the live host request options and the host TLSSocket, allowing sandboxed code to read the host's Authorization header and private destination host/port, attach a data listener to the released socket and read subsequent host response bodies in plaintext, and issue attacker-chosen authenticated requests using the stolen credentials. The issue is fixed in 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: vm2 exposes host HTTPS credentials and TLS traffic through globalAgent",
+    "UpdatedAt": "2026-10-01T15:38:06Z",
+    "WithdrawnAt": "2026-10-01T15:38:02Z",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.11.3, \u003c= 3.11.6"
+    }
+  ]
+}

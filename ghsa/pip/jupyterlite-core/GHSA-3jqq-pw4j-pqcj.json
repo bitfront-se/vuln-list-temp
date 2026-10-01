@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-01T15:22:18Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "jupyterlite-core"
+  },
+  "Advisory": {
+    "DatabaseId": 505182,
+    "Id": "GSA_kwCzR0hTQS0zanFxLXB3NGotcHFjas4AB7Ve",
+    "GhsaId": "GHSA-3jqq-pw4j-pqcj",
+    "References": [
+      {
+        "Url": "https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-3jqq-pw4j-pqcj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102830"
+      },
+      {
+        "Url": "https://github.com/jupyterlab/jupyterlab/commit/985a3223cd77fd4f991cd90066342a90711d70f6"
+      },
+      {
+        "Url": "https://github.com/jupyterlab/jupyterlab/commit/de324ae91346c713c4f5e5485f97b6e914e0f774"
+      },
+      {
+        "Url": "https://github.com/jupyterlab/jupyterlab/commit/f9de43dc565a1118120d466117f877a189a4ce90"
+      },
+      {
+        "Url": "https://github.com/jupyterlab/jupyterlab/releases/tag/v4.5.11"
+      },
+      {
+        "Url": "https://github.com/jupyterlab/jupyterlab/releases/tag/v4.6.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3jqq-pw4j-pqcj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3jqq-pw4j-pqcj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102830"
+      }
+    ],
+    "Description": "## Description\n\nA language pack ships a `Plural-Forms` header saying how the language counts, for example `nplurals=2; plural=(n != 1);`. JupyterLab turns that string into a function with `new Function`, so the header gets executed. The check that meant to keep it safe was a regular expression. The regex was anchored at the start but not at the end, so it accepted any string that began with a valid plural rule and ignored everything after it.\n\nA header such as the following passed the check, and the part after the plural rule ran in the JupyterLab page as soon as the first plural string was translated:\n\n```\nnplurals=2; plural=(n \u003e 1); \u003canything here ran as JavaScript\u003e\n```\n\nUsers are affected if all of the following are true:\n\n- they run JupyterLab 3.0.0 through 4.6.3, or an application that bundles it such as Notebook 7;\n- a language pack they did not write is installed in the environment; and\n- that language is selected, so its catalogue is loaded\n\nAn installation using the default English locale loads no catalogue and is not affected.\n\n\u003e CVE assignment pending, GitHub CNA is experiencing severe backlog\n\n### Impact\n\nThe code in the header ran in the JupyterLab page, in the same origin and session as the authenticated user. It could call the Jupyter Server REST API as that user: read and write any file under the server root, start a kernel and run code in it, and open a terminal where terminals are enabled. Nothing had to be clicked; translating one plural string was enough, and that happens during normal use of the interface.\n\nWhat this changes is who has to be trusted. A language pack is a Python package, and installing one is already a privileged act, so an attacker who can get any package installed has server-side code execution regardless of this issue. The header is different because it is catalogue metadata: it travels with translation content, through the [translation pipeline](https://jupyterlab.readthedocs.io/en/latest/developer/internationalization.html) that carries strings from Crowdin into the language packs, and it is reviewed as text rather than as code. Anyone able to change a catalogue, or to publish a pack under a name someone installs, got JavaScript execution in every browser that selected that language.\n\nNote: the impact is much more limited on JupyterLite which typically does not have access to most of the surfaces that this flaw exposes.\n\n### Patches\n\nJupyterLab [`v4.6.4`](https://github.com/jupyterlab/jupyterlab/releases/tag/v4.6.4) and [`v4.5.11`](https://github.com/jupyterlab/jupyterlab/releases/tag/v4.5.11) contain the patch. The check now has to match the whole header, so a plural rule followed by anything else is rejected and no function is built from it.\n\nJupyterLab 3.x reached end of life and receives no patch. Its users should move to a supported 4.x release.\n\nUsers of applications that depend on JupyterLab, such as Notebook v7+, should update `jupyterlab` package too.\n\n### Workarounds\n\nUse the English locale, which loads no catalogue:\n\n```bash\njupyter lab --LabApp.default_locale=en\n```\n\nor the following traitlet:\n\n```python\nc.LabApp.default_locale = 'en'\n```\n\nEveryone then sees the interface in English, whatever language they had selected.\n\nTo check what is installed instead of switching, report any pack whose header carries more than a plural rule:\n\n```bash\npython -c \"\nimport re\nfrom jupyterlab_server.translation_utils import get_language_packs, get_language_pack\nok = re.compile(r'\\s*nplurals\\s*=\\s*\\d+\\s*;\\s*plural\\s*=[\\s\\-?|\u0026=!\u003c\u003e+*/%:;n0-9_()]+')\npacks, _ = get_language_packs()\nfor locale in packs:\n    data, _ = get_language_pack(locale)\n    for domain, catalog in (data or {}).items():\n        header = catalog.get('', {}).get('plural_forms')\n        if header and not ok.fullmatch(header):\n            print('SUSPECT', locale, domain, repr(header))\n\"\n```\n\nThe command prints nothing when every catalogue is sound. A line of output names the pack to remove.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-01T15:22:17Z",
+    "Severity": "MODERATE",
+    "Summary": "JupyterLab: Cross-site scripting (XSS) in JupyterLab via crafted language package (jupyterlab.json)",
+    "UpdatedAt": "2026-10-01T15:22:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.4"
+      },
+      "VulnerableVersionRange": "\u003c= 0.8.3"
+    }
+  ]
+}

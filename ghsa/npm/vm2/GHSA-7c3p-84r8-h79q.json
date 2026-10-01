@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-01T15:36:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496416,
+    "Id": "GSA_kwCzR0hTQS03YzNwLTg0cjgtaDc5cc4AB5Mg",
+    "GhsaId": "GHSA-7c3p-84r8-h79q",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-6rh5-qq4q-97xh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92958"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.11.7-denylist-bypass-via-fs-promises"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7c3p-84r8-h79q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7c3p-84r8-h79q"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-6rh5-qq4q-97xh. This link is maintained to preserve external references.\n\n## Original Description\nvm2 through 3.11.6 contains a builtin-module denylist bypass in NodeVM. When the embedder uses the builtin wildcard together with negative entries (e.g. require: { builtin: ['*', '-fs', '-child_process'] }), negative entries are matched by exact module name in lib/builtin.js, so -fs removes only the builtin named fs and does not remove builtin subpaths such as fs/promises. Sandboxed code can therefore call require('fs/promises') or require('node:fs/promises') and reach the promise-based filesystem API despite fs being denied; node: prefix handling is likewise inconsistent (a -node:fs/promises entry does not block require('fs/promises')). Host file creation and writing were confirmed via fsp.writeFile(), and other fs/promises operations (cp, mkdir, rename, rm, rmdir, truncate, read operations, etc.) are also reachable. This issue is fixed in vm2 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:16Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: vm2: NodeVM builtin denylist bypass via fs/promises despite -fs, allowing host filesystem writes",
+    "UpdatedAt": "2026-10-01T15:36:34Z",
+    "WithdrawnAt": "2026-10-01T15:36:33Z",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.6"
+    }
+  ]
+}

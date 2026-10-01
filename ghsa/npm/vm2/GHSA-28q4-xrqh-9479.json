@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:35:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496468,
+    "Id": "GSA_kwCzR0hTQS0yOHE0LXhycWgtOTQ3Oc4AB5NU",
+    "GhsaId": "GHSA-28q4-xrqh-9479",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-8686-vhfx-7r3j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92957"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.11.7-authentication-bypass-via-node-prefix"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-28q4-xrqh-9479"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-28q4-xrqh-9479"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-8686-vhfx-7r3j. This link is maintained to preserve external references.\n\n## Original Description\nvm2 through 3.11.6 does not normalize `node:`-prefixed builtin specifiers when evaluating user-supplied negative (deny) entries in a NodeVM wildcard require policy. Although NodeVM strips the `node:` prefix during require() resolution, negative wildcard entries are matched by exact string comparison against the canonical builtin names, so a policy such as `new NodeVM({ require: { builtin: ['*', '-node:child_process'] } })` fails to deny the canonical `child_process` module. Sandboxed code can therefore obtain the host `child_process` builtin via `require('child_process')` or `require('node:child_process')`, gaining references to process-spawning APIs such as execSync and spawn, which is equivalent to host command-execution capability for untrusted sandbox code. Fixed in vm2 3.11.7. (Suggested title: \"vm2 before 3.11.7: NodeVM builtin deny-list bypass via node:-prefixed specifiers exposes child_process\")",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:16Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: vm2: NodeVM node:-prefixed negative builtin deny bypass exposes child_process",
+    "UpdatedAt": "2026-10-01T15:35:49Z",
+    "WithdrawnAt": "2026-10-01T15:35:49Z",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.6"
+    }
+  ]
+}

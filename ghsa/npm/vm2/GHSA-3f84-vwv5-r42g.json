@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:30:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496448,
+    "Id": "GSA_kwCzR0hTQS0zZjg0LXZ3djUtcjQyZ84AB5NA",
+    "GhsaId": "GHSA-3f84-vwv5-r42g",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-647f-g98j-qq25"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92937"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.11.6-remote-code-execution-via-promise-call-apply"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3f84-vwv5-r42g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3f84-vwv5-r42g"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-647f-g98j-qq25. This link is maintained to preserve external references.\n\n## Original Description\nvm2 3.11.6 is vulnerable to a sandbox escape leading to remote code execution in the host Node.js process. The fix for GHSA-m283-3h24-438v is incomplete: the bridge gate at lib/bridge.js:1624 identity-checks only the direct call target when deciding whether to rebuild/sanitise a rejected host Promise value. Registering the rejection handler through Function.prototype.call or .apply indirection (e.g., p.then.call(p, undefined, cb)) makes the intercepted target host Function.prototype.call, so the sanitiser never runs and the raw host error reaches sandbox code with its own properties intact. If an embedder exposes a host-realm Promise to the sandbox (an async host function bridged via the sandbox option, or a NodeVM external module's async method) and that Promise rejects with an Error carrying a non-primitive own property referencing a host object (for example err.detail = process), untrusted code in the sandbox obtains a fully functional proxy to that host object and can execute arbitrary commands with the privileges of the host process (e.g., e.detail.mainModule.require('child_process').execSync(...)). The direct p.then(undefined, cb), bind, and Reflect.apply forms are correctly sanitised. Fixed in vm2 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: vm2: GHSA-m283-3h24-438v fix bypass leads to host RCE via call/apply indirection",
+    "UpdatedAt": "2026-10-01T15:30:02Z",
+    "WithdrawnAt": "2026-10-01T15:30:00Z",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "= 3.11.6"
+    }
+  ]
+}

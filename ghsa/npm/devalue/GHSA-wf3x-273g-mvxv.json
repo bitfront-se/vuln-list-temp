@@ -1,0 +1,52 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-01T15:17:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "devalue"
+  },
+  "Advisory": {
+    "DatabaseId": 505174,
+    "Id": "GSA_kwCzR0hTQS13ZjN4LTI3M2ctbXZ4ds4AB7VW",
+    "GhsaId": "GHSA-wf3x-273g-mvxv",
+    "References": [
+      {
+        "Url": "https://github.com/sveltejs/devalue/security/advisories/GHSA-wf3x-273g-mvxv"
+      },
+      {
+        "Url": "https://github.com/sveltejs/devalue/commit/6861dbbb7e548849e48bce718e88747a298f7250"
+      },
+      {
+        "Url": "https://github.com/sveltejs/devalue/releases/tag/v5.9.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wf3x-273g-mvxv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wf3x-273g-mvxv"
+      }
+    ],
+    "Description": "Evaluating legitimate `uneval` output for a sparse array can allocate memory proportional to its declared length. A tiny serialized value can therefore cause large memory allocation in a consuming browser/runtime. This occurs during evaluation of generated code, not in default `parse` sparse-array construction.\n\nYou would only be affected by this if you were serializing very large sparse arrays and then evaluating the results. In the general use case for `uneval` of sending data to the client, the worst that could happen is the browser tab running out of memory.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-01T15:17:13Z",
+    "Severity": "LOW",
+    "Summary": "devalue: Sparse arrays emitted by uneval cause eager allocation when evaluated",
+    "UpdatedAt": "2026-10-01T15:17:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.9.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c= 5.9.2"
+    }
+  ]
+}

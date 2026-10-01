@@ -1,0 +1,55 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-01T15:32:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496467,
+    "Id": "GSA_kwCzR0hTQS05Znh4LW12NmMtajV4cM4AB5NT",
+    "GhsaId": "GHSA-9fxx-mv6c-j5xp",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-8hr7-r645-pc6w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92935"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/54b54b74a382577f0bcd0538c5bf99acdcd7f53b"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-nodevm-remote-code-execution-via-array-shaped-require"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9fxx-mv6c-j5xp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9fxx-mv6c-j5xp"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-8hr7-r645-pc6w. This link is maintained to preserve external references.\n\n## Original Description\nvm2 is a sandbox for running untrusted Node.js code. In versions \u003e= 3.11.4 and \u003c= 3.11.6, the NodeVM constructor computes `hasRealRequireConfig` with `typeof requireOpts === 'object' \u0026\u0026 requireOpts !== null`, so an array-shaped `require` value (for example `require: []`) satisfies the guard that is meant to reject nesting without an explicit require configuration. `makeResolverFromLegacyOptions()` then destructures the array into undefined option fields and returns a resolver containing only `NESTING_OVERRIDE.vm2`. As a result, an attacker who can supply JavaScript executed by a NodeVM configured with truthy `nesting` and an array-shaped `require` (e.g. `new NodeVM({nesting: true, require: []})`) can require the host `vm2` module, create an inner NodeVM with an attacker-chosen builtin allowlist (such as `child_process`), and execute arbitrary commands with the privileges of the host Node.js process, escaping the sandbox. Outer builtin restrictions do not constrain the attacker-created inner NodeVM. This issue is fixed in vm2 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:14Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: NodeVM nesting guard accepts array-shaped require and permits host RCE",
+    "UpdatedAt": "2026-10-01T15:32:42Z",
+    "WithdrawnAt": "2026-10-01T15:32:41Z",
+    "CVSS": {
+      "Score": 9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.11.4, \u003c= 3.11.6"
+    }
+  ]
+}
