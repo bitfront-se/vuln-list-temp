@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-02T19:31:17Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "trigger.dev"
+  },
+  "Advisory": {
+    "DatabaseId": 505767,
+    "Id": "GSA_kwCzR0hTQS1xeHBwLXFqZzgteDRqds4AB7en",
+    "GhsaId": "GHSA-qxpp-qjg8-x4jv",
+    "References": [
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/security/advisories/GHSA-qxpp-qjg8-x4jv"
+      },
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/pull/4199"
+      },
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/commit/34b1a181c2a1d33a53ebab88f84b05f81fea4254"
+      },
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/releases/tag/v4.5.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qxpp-qjg8-x4jv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qxpp-qjg8-x4jv"
+      }
+    ],
+    "Description": "### Summary\nThe dashboard replay action authorizes the source run (it must belong to the caller's org), but the target environment for the replayed run is taken verbatim from the request body and is never checked for org or project membership. The environment lookup used by the replay path filters by id only. As a result, an authenticated user can replay one of their own runs into another organization's or project's environment, creating a task run there that consumes the victim tenant's queue and compute and pollutes their run history.\n\n### Details\nThe replay action member-scopes the source run correctly (apps/webapp/app/routes/resources.taskruns.$runParam.replay.ts, the findFirst on taskRun filtered by `project.organization.members.some.userId`), but passes the target environment straight from the submitted form, resources.taskruns.$runParam.replay.ts:344-346:\n```js\nconst replayRunService = new ReplayTaskRunService();\nconst newRun = await replayRunService.call(taskRun, {\n  environmentId: submission.value.environment,   // attacker-controlled, unvalidated\n  payload: submission.value.payload,\n  ...\n});\n```\n`submission.value.environment` comes from ReplayRunData (apps/webapp/app/v3/replayTask.ts: `environment: z.string().optional()`), so it is fully client-controlled.\n\nReplayTaskRunService resolves it with no ownership check, apps/webapp/app/v3/services/replayTaskRun.server.ts:26-28:\n```js\nconst authenticatedEnvironment = await findEnvironmentById(\n  overrideOptions.environmentId ?? existingTaskRun.runtimeEnvironmentId\n);\n```\nfindEnvironmentById, apps/webapp/app/models/runtimeEnvironment.server.ts:197-211:\n```js\nexport async function findEnvironmentById(id) {\n  const environment = await $replica.runtimeEnvironment.findFirst({\n    where: { id },                 // no membership / org / project filter\n    include: authIncludeWithParent,\n  });\n  if (!environment || environment.project.deletedAt !== null) return null;\n  return toAuthenticated(environment);\n}\n```\nThe resolved environment is then handed to TriggerTaskService.call (apps/webapp/app/v3/services/triggerTask.server.ts), which trusts the passed authenticatedEnvironment and performs no further authorization. The replay loader does constrain the environment picker to the run's own project (replay.ts around 178-184), but the action does not re-impose that constraint, so the server-side control is missing (UI-gated only).\n\n### PoC\nAs an authenticated user who owns a run in their own org (run param runParam), and who knows a target environment id belonging to another org or project (a CUID, obtained or guessed):\n```http\nPOST /resources/taskruns/\u003cown runParam\u003e/replay\nContent-Type: application/x-www-form-urlencoded\n\nenvironment=\u003cenvironment id of the victim org/project\u003e\u0026failedRedirect=/...\n```\nThe replay resolves the victim environment with no membership check and calls TriggerTaskService against it, creating a run in the victim tenant.\n\nLive-validated: a Postgres database was seeded with two tenants (orgA with env_A, orgB with env_B_victim) and the verbatim findEnvironmentById lookup (findFirst joining the environment to its project, `WHERE id = $1`, the exact query the replay path runs) was executed with the victim env id as an orgA attacker. Captured:\n```\n[002 replay findEnvironmentById] attacker(orgA) supplied env_B_victim -\u003e {\"id\":\"env_B_victim\",\"organization_id\":\"orgB\",\"project_id\":\"proj_B\",\"deleted_at\":null}\nCROSS-TENANT: CONFIRMED (resolved another org's env with no membership check -\u003e replay would run there)\n```\nThe lookup returned another organization's environment with no membership filter. That the replay action passes the client-supplied environmentId straight into this lookup (and TriggerTaskService trusts the returned env) is verified at source.\n\n### Impact\nAn authenticated user can create task runs in another tenant's environment (including production), consuming that tenant's queue concurrency and compute and inserting entries into their run history. Practical exploitation requires knowing a target environment id (not enumerable) and, for the injected run to actually execute rather than error, a task identifier that exists in the target environment; this bounds reliability but not the unauthorized cross-tenant write itself.\n\n### Remediation\nIn the replay action (or in ReplayTaskRunService), require the resolved target environment to belong to the source run's project/organization, for example assert `environment.projectId === existingTaskRun.projectId`, or re-validate the supplied environment id against the caller's membership (findEnvironmentBySlug with the validated projectId, or a members.some.userId filter), mirroring the constraint the loader already applies to the picker.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-02T19:31:17Z",
+    "Severity": "HIGH",
+    "Summary": "Trigger.dev: Run replay injects a task run into an attacker-chosen environment (cross-tenant write)",
+    "UpdatedAt": "2026-10-02T19:31:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.5.2"
+    }
+  ]
+}
