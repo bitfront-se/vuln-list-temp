@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-02T22:43:38Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "datasets"
+  },
+  "Advisory": {
+    "DatabaseId": 391830,
+    "Id": "GSA_kwCzR0hTQS0zNzljLXF4N3YtNmg1Oc4ABfqW",
+    "GhsaId": "GHSA-379c-qx7v-6h59",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-66007"
+      },
+      {
+        "Url": "https://github.com/huggingface/datasets/issues/8324"
+      },
+      {
+        "Url": "https://github.com/huggingface/datasets/pull/8325"
+      },
+      {
+        "Url": "https://github.com/huggingface/datasets/commit/f989ef9b4cc6c0039a7a82458eebca49e2b58b4b"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/datasets-path-traversal-via-unsanitized-file-name-metadata"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/datasets/PYSEC-2026-3716.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-379c-qx7v-6h59"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-379c-qx7v-6h59"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-66007"
+      }
+    ],
+    "Description": "Datasets through 5.0.0, fixed in f989ef9, contains a path traversal vulnerability in folder-based dataset builders where the file_name metadata field is not properly validated before being joined to the dataset directory. Attackers can supply crafted file_name values with directory traversal sequences to read arbitrary local files, which are then embedded into output when save_to_disk or push_to_hub is called.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-24T15:33:03Z",
+    "Severity": "MODERATE",
+    "Summary": "Hugging Face Datasets folder-based builders allow path traversal through file_name metadata",
+    "UpdatedAt": "2026-10-02T22:43:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 5.0.1"
+    }
+  ]
+}

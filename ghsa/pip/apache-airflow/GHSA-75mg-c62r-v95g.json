@@ -1,0 +1,77 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-02T23:15:11Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 403658,
+    "Id": "GSA_kwCzR0hTQS03NW1nLWM2MnItdjk1Z84ABijK",
+    "GhsaId": "GHSA-75mg-c62r-v95g",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-68076"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/70736"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/70902"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/v4mc51dgmrc1t82mhzsngsgzo2gxsf2l"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/08/12/11"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/70886"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/e0cac1f6b2ddd473c9e6440ee0acc32b7b6581fc"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/ed87a1a024a55aaa494e6a718cb876f0cbe47b44"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/releases/tag/3.3.1"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-3709.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-75mg-c62r-v95g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-75mg-c62r-v95g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-68076"
+      }
+    ],
+    "Description": "Apache Airflow's environment-variable secrets backend resolved a team-scoped Connection or Variable from the wrong team's scope. The guard meant to prevent this only ran when no team scope was supplied, and its pattern could not match a team name containing an underscore, which team names are allowed to contain. When the guard did not apply, the lookup fell through to an unconditional global read that resolved the stored `AIRFLOW_CONN__\u003cTEAM\u003e___\u003cID\u003e` variable regardless of which team asked. In multi-team mode an authenticated user of one team could therefore have `POST /api/v2/connections/test` resolve another team's Connection and authenticate outward with that team's credentials; the endpoint uses the credentials rather than returning them. Exploitation requires `[core] multi_team` enabled, `[core] test_connection` set to `Enabled` (it ships `Disabled`), team-scoped secrets provisioned as environment variables in the API-server process, and knowledge of the encoded identifier. Redirecting the test at an attacker-controlled host is separately blocked. Users are advised to upgrade to apache-airflow 3.3.1 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-12T18:31:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow environment-variable secrets backend permits cross-team credential use",
+    "UpdatedAt": "2026-10-02T23:15:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.1"
+    }
+  ]
+}

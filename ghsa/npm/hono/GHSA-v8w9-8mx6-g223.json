@@ -17,6 +17,12 @@
         "Url": "https://github.com/honojs/hono/commit/ef902257e0beacbb83d2a9549b3b83e03514a6fe"
       },
       {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-56763"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/hono-prototype-pollution-via-proto-key-in-parsebody-with-dot-option"
+      },
+      {
         "Url": "https://github.com/advisories/GHSA-v8w9-8mx6-g223"
       }
     ],
@@ -24,6 +30,10 @@
       {
         "Type": "GHSA",
         "Value": "GHSA-v8w9-8mx6-g223"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-56763"
       }
     ],
     "Description": "## Summary\n\nWhen using `parseBody({ dot: true })` in HonoRequest, specially crafted form field names such as `__proto__.x` could create objects containing a `__proto__` property.\n\nIf the parsed result is later merged into regular JavaScript objects using unsafe merge patterns, this may lead to prototype pollution in the target object.\n\n## Details\n\nThe `parseBody({ dot: true })` feature supports dot notation to construct nested objects from form field names.\n\nIn previous versions, the `__proto__` path segment was not filtered. As a result, specially crafted keys such as `__proto__.x` could produce objects containing `__proto__` properties.\n\nWhile this behavior does not directly modify `Object.prototype` within Hono itself, it may become exploitable if the parsed result is later merged into regular JavaScript objects using unsafe merge patterns.\n\n## Impact\n\nApplications that merge parsed form data into regular objects using unsafe patterns (for example recursive deep merge utilities) may become vulnerable to prototype pollution.",
@@ -31,7 +41,7 @@
     "PublishedAt": "2026-03-11T00:31:47Z",
     "Severity": "MODERATE",
     "Summary": "Hono vulnerable to Prototype Pollution possible through __proto__ key allowed in parseBody({ dot: true })",
-    "UpdatedAt": "2026-03-11T00:31:49Z",
+    "UpdatedAt": "2026-10-02T22:36:06Z",
     "WithdrawnAt": "",
     "CVSS": {
       "Score": 4.8,

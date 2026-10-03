@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-02T22:35:26Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "trigger.dev"
+  },
+  "Advisory": {
+    "DatabaseId": 505796,
+    "Id": "GSA_kwCzR0hTQS1wcDk1LWdjODYtanE2cc4AB7fE",
+    "GhsaId": "GHSA-pp95-gc86-jq6q",
+    "References": [
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/security/advisories/GHSA-pp95-gc86-jq6q"
+      },
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/pull/4199"
+      },
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/commit/34b1a181c2a1d33a53ebab88f84b05f81fea4254"
+      },
+      {
+        "Url": "https://github.com/triggerdotdev/trigger.dev/releases/tag/v4.5.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pp95-gc86-jq6q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pp95-gc86-jq6q"
+      }
+    ],
+    "Description": "### Summary\n\nThe run replay `action` function at `apps/webapp/app/routes/resources.taskruns.$runParam.replay.ts` has no authentication or authorization check. While the `loader` (GET) in the same file properly calls `requireUser(request)` and scopes queries to the user's organizations, the `action` (POST) at line 166 does neither — allowing any authenticated user to replay task runs from any organization by knowing the run's `friendlyId`.\n\n### Details\n\n**Vulnerable file:** `apps/webapp/app/routes/resources.taskruns.$runParam.replay.ts`\n\n**The `loader` (line 28-29) — properly authenticated:**\n```typescript\nexport async function loader({ request, params }: LoaderFunctionArgs) {\n  const user = await requireUser(request);  // ✓ Auth check\n  const userId = user.id;\n  // ... queries scoped to user's orgs\n}\n```\n\n**The `action` (line 166-193) — NO authentication:**\n```typescript\nexport const action: ActionFunction = async ({ request, params }) =\u003e {\n  const { runParam } = ParamSchema.parse(params);\n  // ✗ NO requireUser() call\n  // ✗ NO requireUserId() call\n  // ✗ NO org membership check\n\n  const taskRun = await prisma.taskRun.findFirst({\n    where: {\n      friendlyId: runParam,  // Queries ANY run, no org scoping\n    },\n    include: {\n      runtimeEnvironment: { select: { slug: true } },\n      project: { include: { organization: true } },\n    },\n  });\n\n  // ... proceeds to replay the run in the victim's environment\n  const replayRunService = new ReplayTaskRunService();\n```\n\nThe Prisma query at line 177 fetches the run by `friendlyId` only — no `userId` or organization filter. The `ReplayTaskRunService` then creates a new task run in the victim's environment, executing with the victim's environment variables and secrets.\n\n**Same bug class exists in:** `apps/webapp/app/routes/resources.batches.$batchId.check-completion.ts` (line 17) — the `action` has zero authentication, allowing any user to trigger batch completion for any batch ID.\n\n### PoC\n\n**Run replay IDOR:**\n```bash\n# Any authenticated user can replay any org's task run\nPOST /resources/taskruns/run_abc123def/replay\nCookie: \u003cany-valid-session\u003e\nContent-Type: application/x-www-form-urlencoded\n\nenvironmentId=\u003cvictim-env-id\u003e\u0026failedRedirect=/\n```\n\nThe `friendlyId` values (e.g., `run_abc123def`) are short, incrementing strings that can be enumerated.\n\n**Batch completion (same bug class):**\n```bash\n# Any authenticated user can trigger batch completion for any batch\nPOST /resources/batches/\u003cbatchId\u003e/check-completion\nCookie: \u003cany-valid-session\u003e\nContent-Type: application/x-www-form-urlencoded\n\nredirectUrl=/\n```\n\n### Impact\n\n- **Cross-organization task execution:** An attacker can replay task runs belonging to other organizations, executing tasks in the victim's environment with the victim's secrets and API keys\n- **Secret exposure:** Replayed tasks run with the victim organization's environment variables, which may contain database credentials, API keys, and other secrets\n- **Resource consumption:** Attacker consumes the victim's compute quota by replaying their tasks\n- **Data integrity:** The batch completion endpoint can prematurely resume parent tasks waiting for batch results, causing data integrity issues\n- **Low attack complexity:** `friendlyId` values are short, predictable strings — enumeration is feasible",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-02T22:35:24Z",
+    "Severity": "HIGH",
+    "Summary": "Trigger.dev: Missing Authentication in Run Replay Action Allows Cross-Organization Task Execution (IDOR)",
+    "UpdatedAt": "2026-10-02T22:35:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.5.2"
+      },
+      "VulnerableVersionRange": "\u003c= 4.5.1"
+    }
+  ]
+}

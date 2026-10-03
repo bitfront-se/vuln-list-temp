@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-02T23:17:29Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@fastify/busboy"
+  },
+  "Advisory": {
+    "DatabaseId": 505821,
+    "Id": "GSA_kwCzR0hTQS14amg5LXY3eDYtMjRqd84AB7fd",
+    "GhsaId": "GHSA-xjh9-v7x6-24jw",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/busboy/security/advisories/GHSA-xjh9-v7x6-24jw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-19484"
+      },
+      {
+        "Url": "https://github.com/fastify/busboy/commit/632a237e7fb6b3b7a30e0de8fab2ee72ca5bf722"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/fastify/busboy/releases/tag/v3.2.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xjh9-v7x6-24jw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xjh9-v7x6-24jw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-19484"
+      }
+    ],
+    "Description": "### Impact\n\nVersions of `@fastify/busboy` from 3.1.0 and prior to 3.2.1 are vulnerable to a Denial of Service. The vendored streaming multipart search stores its default skip distance in a `Uint8Array(256)`. A multipart boundary of exactly 252 bytes makes the search needle 256 bytes, and the table entry wraps to zero, so a crafted request keeps the search in a CPU-bound loop and stalls the Node.js event loop. An unauthenticated client can trigger this with a single small request. Applications that use `@fastify/busboy` to parse multipart/form-data, directly or through `@fastify/multipart`, are affected.\n\n### Patches\n\nFixed in version 3.2.1.\n\n### Workarounds\n\nValidate the multipart boundary before parsing and reject any boundary longer than the RFC 2046 limit of 70 characters (for example at a reverse proxy or in an onRequest hook). Upgrading to 3.2.1 removes the issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-02T23:16:17Z",
+    "Severity": "HIGH",
+    "Summary": "@fastify/busboy vulnerable to Denial of Service via oversized multipart boundary",
+    "UpdatedAt": "2026-10-02T23:17:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.0, \u003c 3.2.1"
+    }
+  ]
+}

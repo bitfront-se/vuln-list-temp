@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-02T23:09:22Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nltk"
+  },
+  "Advisory": {
+    "DatabaseId": 400167,
+    "Id": "GSA_kwCzR0hTQS1mZmo2LTY2YzQtODZnd84ABhsn",
+    "GhsaId": "GHSA-ffj6-66c4-86gw",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-12261"
+      },
+      {
+        "Url": "https://huntr.com/bounties/8b8c381e-08a8-4e4f-bb46-a320c96a364f"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/pull/3625"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/commit/7a5740af89feeb739193db766e11e85dfe78339c"
+      },
+      {
+        "Url": "https://github.com/nltk/nltk/releases/tag/v3.10.0"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/nltk/PYSEC-2026-3954.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ffj6-66c4-86gw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ffj6-66c4-86gw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-12261"
+      }
+    ],
+    "Description": "A vulnerability in `nltk.downloader` in nltk/nltk versions \u003c= 3.9.4 allows for cross-package resource and model poisoning. The downloader extracts package archives into shared namespaces such as `corpora/` and `taggers/` instead of package-isolated roots, and validates package integrity only after the archive has been written and extracted. This design flaw enables one package to overwrite another package's trusted resources within the same namespace, making the changes immediately active through ordinary NLTK APIs. This issue persists across fresh interpreter restarts and can affect downstream workflows, including machine learning pipelines and reproducibility-sensitive environments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-07T09:31:52Z",
+    "Severity": "MODERATE",
+    "Summary": "NLTK downloader allows cross-package resource and model poisoning",
+    "UpdatedAt": "2026-10-02T23:09:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.10.0"
+    }
+  ]
+}

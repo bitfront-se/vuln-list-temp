@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-02T23:12:56Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "apache-airflow"
+  },
+  "Advisory": {
+    "DatabaseId": 403666,
+    "Id": "GSA_kwCzR0hTQS1mY21tLTQycjktbW1tbc4ABijS",
+    "GhsaId": "GHSA-fcmm-42r9-mmmm",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59242"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/pull/69378"
+      },
+      {
+        "Url": "https://lists.apache.org/thread/dm0520yhh4mn7qknyoh45r2w6c5qg2mg"
+      },
+      {
+        "Url": "http://www.openwall.com/lists/oss-security/2026/08/12/6"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/78abd3044654d44d711eb61e475029fd1b1ccc23"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/commit/d08ddc0127d5be7f9b31c1f935bc4d25a897a848"
+      },
+      {
+        "Url": "https://github.com/apache/airflow/releases/tag/3.3.1"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/apache-airflow/PYSEC-2026-3992.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fcmm-42r9-mmmm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fcmm-42r9-mmmm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-59242"
+      }
+    ],
+    "Description": "Apache Airflow's XCom `GET /api/v2/{...}/xcomEntries/{key}?deserialize=true` endpoint passed a string-literal payload through `BaseXCom.deserialize_value` without the `_check_forbidden_xcom_keys` guard, allowing an authenticated API user with XCom write-and-read access to instantiate arbitrary `airflow.*` classes on the API server (CWE-502). An authenticated user who can write an XCom value and then read it back with `deserialize=true` triggers the unsafe instantiation. Users are advised to upgrade to apache-airflow 3.3.1 or later, which rejects reserved XCom serialization keys submitted as JSON string literals.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-12T18:31:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Apache Airflow XCom API permits unsafe deserialization through JSON string literals",
+    "UpdatedAt": "2026-10-02T23:12:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.1"
+    }
+  ]
+}
