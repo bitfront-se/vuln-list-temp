@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T23:19:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 503074,
+    "Id": "GSA_kwCzR0hTQS03cnIyLThmcjMtZmpxeM4AB60i",
+    "GhsaId": "GHSA-7rr2-8fr3-fjqx",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-2v2p-6j97-cjg9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-100722"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.12.2-host-process-termination-via-construct-trap"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7rr2-8fr3-fjqx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7rr2-8fr3-fjqx"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-2v2p-6j97-cjg9. This link is maintained to preserve external references.\n\n## Original Description\nvm2 before 3.12.2 does not apply host-side Promise rejection handling in the sandbox-to-host construct trap. In BaseHandler, the apply trap calls markHostPromiseHandled() on the returned value, but the adjacent construct path returns the result of Reflect.construct without the same sanitization. If an embedder exposes a constructable host function whose constructor returns a native rejected Promise, an untrusted script executed via VM.run can invoke it with `new` and ignore the result; the rejected host Promise crosses the bridge unhandled and, under Node's strict unhandled-rejection policy, is promoted to an uncaught exception that terminates the host process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-27T03:31:03Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: vm2: Host Promise rejection from an exposed constructor can terminate the vm2 host process",
+    "UpdatedAt": "2026-10-05T23:19:30Z",
+    "WithdrawnAt": "2026-10-05T23:19:29Z",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.12.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.12.2"
+    }
+  ]
+}

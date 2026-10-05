@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T22:47:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496473,
+    "Id": "GSA_kwCzR0hTQS05NTM4LTc5ajItaDYyaM4AB5NZ",
+    "GhsaId": "GHSA-9538-79j2-h62h",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-f8gf-w286-fmq2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92959"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.11.8-allowasync-bypass-via-promise-thenable"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9538-79j2-h62h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9538-79j2-h62h"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-f8gf-w286-fmq2. This link is maintained to preserve external references.\n\n## Original Description\nvm2 before 3.11.8 does not fully enforce the allowAsync: false option in VM and NodeVM. While localPromise.prototype.then is replaced with a handler that throws 'Async not available', the sandbox's Promise static methods (Promise.resolve, Promise.all, Promise.race, Promise.any, and Promise.allSettled) still assimilate attacker-supplied thenables: native promise resolution performs PromiseResolveThenableJob and invokes the sandboxed code's then method in a microtask without passing through the patched then, so the async restriction is never applied. As a result, sandboxed script can schedule work that runs after VM.run() or NodeVM.run() has returned and outside the configured timeout, continuing to execute after the host believes execution is complete.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:16Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: `allowAsync: false` can be bypassed through Promise thenable assimilation in VM and NodeVM",
+    "UpdatedAt": "2026-10-05T22:47:22Z",
+    "WithdrawnAt": "2026-10-05T22:47:22Z",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.7"
+    }
+  ]
+}

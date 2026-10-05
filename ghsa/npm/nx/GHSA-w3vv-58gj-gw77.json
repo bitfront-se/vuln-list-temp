@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T23:28:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nx"
+  },
+  "Advisory": {
+    "DatabaseId": 506527,
+    "Id": "GSA_kwCzR0hTQS13M3Z2LTU4Z2otZ3c3N84AB7qf",
+    "GhsaId": "GHSA-w3vv-58gj-gw77",
+    "References": [
+      {
+        "Url": "https://github.com/nrwl/nx/security/advisories/GHSA-w3vv-58gj-gw77"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104854"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/pull/36370"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/commit/3298fd8b2dd066167eb3cc0410643994a59b0bba"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/commit/63e1abb287a3d69f8ba981828a1de325d0d3dc68"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/commit/71c2253b6aac23b008e192c4e2642c42a5e07545"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/releases/tag/22.7.9"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/releases/tag/23.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w3vv-58gj-gw77"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w3vv-58gj-gw77"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104854"
+      }
+    ],
+    "Description": "## Summary\n\nNx creates the Unix domain sockets for its daemon and its plugin workers in a shared temporary directory with default permissions, so any other user on the same machine can connect to them. The daemon accepts a `PROCESS_IN_BACKGROUND` request that names a module to load and invokes its default export, which turns socket access into code execution inside the daemon process. On a multi-user machine — a shared build server, a shared developer box, or a container running several accounts — one local user can execute code as another user running Nx.\n\n## Severity\n\n\nExploitable by any other unprivileged local user on a shared host while a daemon or plugin worker is running, with no user interaction. There is no known evidence of exploitation in the wild.\n\n## Affected \u0026 Patched Versions\n\n| Package | Vulnerable | Patched |\n| --- | --- | --- |\n| `nx` | `\u003e= 14.6.0, \u003c 22.7.9`; `\u003e= 23.0.0, \u003c 23.1.2` | `22.7.9`, `23.1.2` |\n\nEvery version in the ranges above is affected. The lower bound is 14.6.0, when the daemon request handler that turns socket access into code execution was added.\n\n\u003e [!IMPORTANT]\n\u003e Single-user machines are not exposed. The vulnerability requires another local account on the same host, so an ordinary laptop with one user account is unaffected — the exposure is shared CI runners, shared build and development servers, and containers or images that run more than one uid.\n\u003e\n\u003e Disabling the daemon is not sufficient on its own: the plugin worker sockets used by plugin isolation are created in the same directory with the same permissions, and those are used during normal command runs whether or not the daemon is enabled.\n\n## Remediation\n\nUpgrade to **22.7.9** (22.x line) or **23.1.2** (23.x line) or later:\n\n```\nnx migrate 23.1.2\n```\n\nOn a shared machine, run `nx reset` after upgrading so that any sockets and directories created by an older version are removed rather than reused.\n\nIf you cannot upgrade, point `NX_SOCKET_DIR` at a directory you own with mode `0700`, which is already honoured by the vulnerable versions, and disable the daemon with `NX_DAEMON=false` to reduce the reachable surface — though, per the callout above, that does not remove the plugin worker sockets.\n\n## Details\n\nThe daemon and the plugin workers communicate over Unix domain sockets placed in a subdirectory of the shared OS temporary directory. That directory is created with default permissions, which on a typical system leave it readable and traversable by every user on the machine, and nothing narrows the socket files themselves. The directory name is derived from a hash of the workspace path and the process id, so it is unique but not secret — any local user who lists the temporary directory can find it.\n\nThe connection carries no authentication: the containment is meant to be the filesystem permissions alone, and those are too broad. Any local process that can reach the socket is treated as a fully trusted client.\n\nThe impact of that access is set by what the daemon's request handlers allow. One handler takes a module path from the request and loads and invokes it; because an absolute path resolves regardless of the lookup constraints in place, a caller who can write a file anywhere on the machine — their own home directory suffices — and connect to the socket can have the daemon execute it, as the user running the daemon. Other handlers expose workspace file contents, the project graph, and task hashes to the same unauthenticated caller.\n\n## Credits\n\nReported by researchers at the University of Sydney:\n\n- Liyi\n- Ziyue\n- Strick\n- Maurice\n- Chenchen",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T23:28:43Z",
+    "Severity": "HIGH",
+    "Summary": "Nx daemon and plugin worker sockets are accessible to other local users",
+    "UpdatedAt": "2026-10-05T23:28:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "23.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 23.0.0, \u003c 23.1.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.7.9"
+      },
+      "VulnerableVersionRange": "\u003e= 14.6.0, \u003c 22.7.9"
+    }
+  ]
+}

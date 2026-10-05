@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T23:47:11Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pymongo"
+  },
+  "Advisory": {
+    "DatabaseId": 506551,
+    "Id": "GSA_kwCzR0hTQS12NHg5LTM1NDktY3J3ds4AB7q3",
+    "GhsaId": "GHSA-v4x9-3549-crwv",
+    "References": [
+      {
+        "Url": "https://github.com/mongodb/mongo-python-driver/security/advisories/GHSA-v4x9-3549-crwv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-96749"
+      },
+      {
+        "Url": "https://github.com/mongodb/mongo-python-driver/pull/3066"
+      },
+      {
+        "Url": "https://github.com/mongodb/mongo-python-driver/commit/640dd2383a1a2fb1a10e5222d50ebc0b22a61bd7"
+      },
+      {
+        "Url": "https://github.com/mongodb/mongo-python-driver/commit/6ab44be0e97c9d1d5a23725c4978fb25f3249485"
+      },
+      {
+        "Url": "https://github.com/mongodb/mongo-python-driver/blob/4.18.2/doc/changelog.rst"
+      },
+      {
+        "Url": "https://github.com/mongodb/mongo-python-driver/releases/tag/4.18.2"
+      },
+      {
+        "Url": "https://www.mongodb.com/community/forums/t/pymongo-4-18-2-released/343732"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v4x9-3549-crwv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v4x9-3549-crwv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-96749"
+      }
+    ],
+    "Description": "An integer overflow in the BSON document encoding component of the MongoDB Python Driver's bundled native extension may occur when a single document is built from an unusually large amount of caller-supplied data. Size arithmetic is performed in a signed 32-bit type, and the guard meant to catch the overflow is written in a form whose behavior is not defined by the C language standard. A party with no privileges who can place a very large value into data that an application encodes may, depending on how the native extension was built, cause a write outside the bounds of an allocated buffer inside the application's own process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T23:47:10Z",
+    "Severity": "HIGH",
+    "Summary": "PyMongo: PYTHON-5996 Heap out-of-bounds write via signed size overflow in BSON document encoding",
+    "UpdatedAt": "2026-10-05T23:47:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.4,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.18.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.18.2"
+    }
+  ]
+}

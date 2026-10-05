@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-05T22:52:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@opentelemetry/instrumentation-oracledb"
+  },
+  "Advisory": {
+    "DatabaseId": 506508,
+    "Id": "GSA_kwCzR0hTQS1xcW1wLXdmMzctOThmOc4AB7qM",
+    "GhsaId": "GHSA-qqmp-wf37-98f9",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js-contrib/security/advisories/GHSA-qqmp-wf37-98f9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104872"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js-contrib/pull/3585"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js-contrib/commit/27e172a9e0d549559056ccd58f27d13467454156"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js-contrib/commit/5b7dd0e102e940d653e04b08b5a1b721a8271037"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qqmp-wf37-98f9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qqmp-wf37-98f9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104872"
+      }
+    ],
+    "Description": "### Impact\n\nMultiple `@opentelemetry/instrumentation-*` packages recorded the database connection username as the `db.user`\nspan attribute on every instrumented database operation. This attribute was emitted unconditionally — it was\nnot gated by `enhancedDatabaseReporting` or any other opt-in flag, and it was the **default** behaviour for\nall users of the affected packages until the patched releases shipped on 2026-07-23.\n\nThe attribute is forwarded to every configured observability backend (Jaeger, Zipkin, Datadog, OTLP\ncollectors, etc.).  Depending on the database account naming convention in use, the exported value may\nreveal:\n\n- Internal service account names that disclose architecture topology.\n- Role-encoded usernames (e.g. `admin_readwrite`, `app_readonly_prod`) useful for privilege inference.\n- Database account naming patterns useful for credential enumeration.\n\nAffected packages (all are vulnerable from the first published version through the version listed below):\n\n| Package | Vulnerable range | Patched version |\n|---------|-----------------|-----------------|\n| `@opentelemetry/instrumentation-cassandra-driver` | `\u003c 0.66.0` | `0.66.0` |\n| `@opentelemetry/instrumentation-knex`             | `\u003c 0.65.0` | `0.65.0` |\n| `@opentelemetry/instrumentation-mongoose`         | `\u003c 0.67.0` | `0.67.0` |\n| `@opentelemetry/instrumentation-mysql`            | `\u003c 0.67.0` | `0.67.0` |\n| `@opentelemetry/instrumentation-mysql2`           | `\u003c 0.67.0` | `0.67.0` |\n| `@opentelemetry/instrumentation-oracledb`         | `\u003c 0.46.0` | `0.46.0` |\n| `@opentelemetry/instrumentation-pg`               | `\u003c 0.73.0` | `0.73.0` |\n| `@opentelemetry/instrumentation-tedious`          | `\u003c 0.40.0` | `0.40.0` |\n\n### Patches\n\nFixed in the coordinated release on 2026-07-23 via\n[feat!: only emit stable http, network and database attributes (#3585)](https://github.com/open-telemetry/opentelemetry-js-contrib/pull/3585).\n\nUpgrade to the patched version listed in the table above for each instrumentation package in use.\n\n### Workarounds\n\nNo configuration-level workaround exists in the affected versions: the `db.user` attribute cannot be\nsuppressed without patching. As a partial mitigation, a custom `SpanProcessor` can be used to strip `db.user` from spans before they leave the process:\n\n```ts\n// Example: drop db.user in a custom SpanProcessor\nclass StripDbUserProcessor implements SpanProcessor {\n  onStart(span: Span) {\n    span.setAttribute('db.user', null);\n  }\n  onEnd() {}\n  shutdown() { return Promise.resolve(); }\n  forceFlush() { return Promise.resolve(); }\n}\n```\n\nUsers who control the downstream collector can also filter the attribute at the collector pipeline level.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:52:44Z",
+    "Severity": "MODERATE",
+    "Summary": "Multiple @opentelemetry/instrumentation-* packages expose database username via unconditional db.user span attribute",
+    "UpdatedAt": "2026-10-05T22:52:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.46.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.46.0"
+    }
+  ]
+}

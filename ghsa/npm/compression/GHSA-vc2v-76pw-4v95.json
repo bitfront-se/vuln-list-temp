@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T23:28:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "compression"
+  },
+  "Advisory": {
+    "DatabaseId": 506525,
+    "Id": "GSA_kwCzR0hTQS12YzJ2LTc2cHctNHY5Nc4AB7qd",
+    "GhsaId": "GHSA-vc2v-76pw-4v95",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/compression/security/advisories/GHSA-vc2v-76pw-4v95"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-87776"
+      },
+      {
+        "Url": "https://github.com/expressjs/compression/commit/151f63e91e1b64f8fb0b064e19321a4f28db6bff"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/compression/releases/tag/v1.8.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vc2v-76pw-4v95"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vc2v-76pw-4v95"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-87776"
+      }
+    ],
+    "Description": "### Impact\n\nA vulnerability in compression `\u003c 1.8.2` allows an attacker to trigger a Denial of Service (DoS) by disconnecting while a compressed response is being sent. When the client aborts the connection before the response finishes, the zlib stream created to compress that response is never destroyed, so each aborted compressed response leaks its native zlib memory. Repeated aborted requests can exhaust available memory. All applications using compression are affected.\n\n### Patches\n\nUsers should upgrade to `1.8.2`.\n\n### Workarounds\n\nNone.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T23:28:01Z",
+    "Severity": "HIGH",
+    "Summary": "compression vulnerable to Denial of Service via memory leak on premature response close",
+    "UpdatedAt": "2026-10-05T23:28:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.8.2"
+      },
+      "VulnerableVersionRange": "\u003c 1.8.2"
+    }
+  ]
+}

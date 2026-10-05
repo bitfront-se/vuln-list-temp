@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-05T22:59:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 503095,
+    "Id": "GSA_kwCzR0hTQS00M3J2LWpyZmgtOW1ycs4AB603",
+    "GhsaId": "GHSA-43rv-jrfh-9mrr",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-489w-w794-jq94"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-100723"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/4f2508abeb252aa86eb6761c78b3b000248fb089"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/5214b02ef13b82497fcb917b45320dfd014ffd09"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.12.2-memory-disclosure-via-zlib-buffer-pool"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-43rv-jrfh-9mrr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-43rv-jrfh-9mrr"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-489w-w794-jq94. This link is maintained to preserve external references.\n\n## Original Description\nvm2 before 3.12.2 does not apply its Buffer backing-store ownership invariant (byteOffset === 0 and buffer.byteLength === length) to Buffers returned from host builtin modules. When an application explicitly exposes Node's zlib module through NodeVM's builtin allowlist (require: { builtin: ['zlib'] }), zlib.deflateSync can return a Buffer backed by Node's shared small-buffer pool whose .buffer is the entire pool. Untrusted guest code can construct a full-width view of that ArrayBuffer (Buffer.from(result.buffer, 0, result.buffer.byteLength)) to read and modify bytes belonging to unrelated host buffers, disclosing and corrupting host-realm memory across the sandbox boundary.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-27T03:31:03Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: vm2: NodeVM zlib Buffers expose pooled host memory across the VM boundary",
+    "UpdatedAt": "2026-10-05T22:59:46Z",
+    "WithdrawnAt": "2026-10-05T22:59:44Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.12.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.12.2"
+    }
+  ]
+}

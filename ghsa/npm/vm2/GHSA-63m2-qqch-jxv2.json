@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-05T22:35:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496472,
+    "Id": "GSA_kwCzR0hTQS02M20yLXFxY2gtanh2Ms4AB5NY",
+    "GhsaId": "GHSA-63m2-qqch-jxv2",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-x6m4-chr9-cg97"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92936"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.11.0-before-3.11.7-information-disclosure-via-error-stack"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-63m2-qqch-jxv2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-63m2-qqch-jxv2"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-x6m4-chr9-cg97. This link is maintained to preserve external references.\n\n## Original Description\nvm2 versions 3.11.0 through 3.11.6 leak absolute host filesystem paths to sandboxed code through error stack formatting. Attacker-supplied code can force the host-realm source transformer to throw a SyntaxError (for example by calling eval with malformed source) and then read the error's .stack property; the bridge forwards the .stack read to the host-realm formatter, bypassing the sandbox-side host-path redaction introduced for GHSA-v27g-jcqj-v8rw. The returned stack string discloses absolute paths from vm2, Node.js internals, and the embedding application's own source tree, along with host function names. Default new VM() and new NodeVM() configurations are affected without any special options, and the issue persists when string eval is disabled because the host-side transformer throws before eval is handled. The impact is information disclosure only; no code execution results. Fixed in vm2 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:14Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: vm2 leaks absolute host filesystem paths to sandbox code via error stack formatting",
+    "UpdatedAt": "2026-10-05T22:35:19Z",
+    "WithdrawnAt": "2026-10-05T22:35:16Z",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.11.0, \u003c= 3.11.6"
+    }
+  ]
+}

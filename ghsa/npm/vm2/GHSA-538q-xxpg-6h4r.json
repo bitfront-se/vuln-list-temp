@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-05T22:34:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496478,
+    "Id": "GSA_kwCzR0hTQS01MzhxLXh4cGctNmg0cs4AB5Ne",
+    "GhsaId": "GHSA-538q-xxpg-6h4r",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-wjwh-qqvp-g4p4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92956"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.10.1-through-3.11.6-sandbox-escape-via-webassembly-compilestreaming"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-538q-xxpg-6h4r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-538q-xxpg-6h4r"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-wjwh-qqvp-g4p4. This link is maintained to preserve external references.\n\n## Original Description\nvm2 versions 3.10.1 through 3.11.6 contain a sandbox escape reachable from a default `new VM()` sandbox when running on Node.js 26. WebAssembly.compileStreaming and WebAssembly.instantiateStreaming can produce a raw host-realm Promise that rejects with a host-realm error object; by controlling Symbol.species via Promise.prototype.finally, sandbox code receives that raw host error, walks from the host error constructor to the host Function constructor, and recovers the real host `process` object, gaining host Node.js capabilities (e.g. access to host modules such as fs) in the context of the process running the sandbox. No NodeVM, require permission, host object injection, or otherwise unsafe configuration is required. This is a bypass of the fix for GHSA-6j2x-vhqr-qr7q, which removed the JSPI entry points WebAssembly.promising and WebAssembly.Suspending. The issue is fixed in 3.11.7.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:16Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: vm2 sandbox escape via WebAssembly.compileStreaming Promise species bypass",
+    "UpdatedAt": "2026-10-05T22:34:15Z",
+    "WithdrawnAt": "2026-10-05T22:34:14Z",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 3.10.1, \u003c= 3.11.6"
+    }
+  ]
+}

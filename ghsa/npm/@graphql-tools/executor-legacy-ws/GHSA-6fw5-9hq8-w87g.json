@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T22:56:58Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@graphql-tools/executor-legacy-ws"
+  },
+  "Advisory": {
+    "DatabaseId": 506518,
+    "Id": "GSA_kwCzR0hTQS02Znc1LTlocTgtdzg3Z84AB7qW",
+    "GhsaId": "GHSA-6fw5-9hq8-w87g",
+    "References": [
+      {
+        "Url": "https://github.com/ardatan/graphql-tools/security/advisories/GHSA-6fw5-9hq8-w87g"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-103921"
+      },
+      {
+        "Url": "https://github.com/ardatan/graphql-tools/pull/8426"
+      },
+      {
+        "Url": "https://github.com/ardatan/graphql-tools/commit/3831a0661514c91d99971052f983552556880402"
+      },
+      {
+        "Url": "https://github.com/ardatan/graphql-tools/releases/tag/@graphql-tools/executor-legacy-ws@1.1.35"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6fw5-9hq8-w87g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6fw5-9hq8-w87g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-103921"
+      }
+    ],
+    "Description": "## Impact\n\n`buildWSLegacyExecutor()` in `@graphql-tools/executor-legacy-ws` previously hardcoded `rejectUnauthorized: false` when creating WebSocket connections over WSS. This disabled TLS certificate validation, allowing a network-positioned attacker to perform a Man-in-the-Middle (MITM) attack against applications that use this executor with a `wss://` endpoint. Credentials passed via `connectionParams` or `headers` could be intercepted, and subscription data could be tampered with.\n\n**Who is impacted:** Applications using `@graphql-tools/executor-legacy-ws` (directly or via `@graphql-tools/url-loader` with `SubscriptionProtocol.LEGACY_WS`) to connect to a `wss://` endpoint from Node.js while sending authentication material over the connection.\n\nBrowser WebSocket clients are unaffected by this option (browsers always validate certificates).\n\n## Patches\n\nUpgrade to `@graphql-tools/executor-legacy-ws@1.1.35` or later (and `@graphql-tools/url-loader@9.1.9` or later if you use the loader). TLS certificate validation is enabled by default. Callers that intentionally use self-signed certificates in trusted environments can opt out with `rejectUnauthorized: false`.\n\n## Workarounds\n\n- Prefer the modern `graphql-ws` / `SubscriptionProtocol.WS` path where possible.\n- Until upgraded, avoid sending secrets over legacy WSS connections, or terminate TLS at a trusted proxy and use `ws://` only on trusted networks.\n- Supply a custom `webSocketImpl` that enforces certificate validation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:56:56Z",
+    "Severity": "HIGH",
+    "Summary": "GraphQL Tools: TLS Certificate Validation Disabled in Legacy GraphQL WebSocket Executor",
+    "UpdatedAt": "2026-10-05T22:56:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.35"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.34"
+    }
+  ]
+}

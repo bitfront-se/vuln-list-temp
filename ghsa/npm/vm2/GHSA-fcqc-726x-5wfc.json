@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-05T22:34:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 506489,
+    "Id": "GSA_kwCzR0hTQS1mY3FjLTcyNngtNXdmY84AB7p5",
+    "GhsaId": "GHSA-fcqc-726x-5wfc",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-fcqc-726x-5wfc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92947"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/4f2508abeb252aa86eb6761c78b3b000248fb089"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.7"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.11.7-memory-disclosure-via-buffer-pool"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fcqc-726x-5wfc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fcqc-726x-5wfc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-92947"
+      }
+    ],
+    "Description": "### Summary\nSandboxed code is able to disclose host memory used by small allocations by `Buffer.from`, `Buffer.concat`.\n\n### Details\nvm2 exposes `Buffer` object to sandboxed code by default. Small [`Buffer` allocations](https://nodejs.org/api/buffer.html#static-method-bufferallocunsafesize) (for example, [Buffer.allocUnsafe()](https://nodejs.org/api/buffer.html#static-method-bufferallocunsafesize), [Buffer.from(array)](https://nodejs.org/api/buffer.html#static-method-bufferfromarray), [Buffer.from(string)](https://nodejs.org/api/buffer.html#static-method-bufferfromstring-encoding), and [Buffer.concat()](https://nodejs.org/api/buffer.html#static-method-bufferconcatlist-totallength)) use the same Buffer pool, which is shared with the sandbox. This allows sandboxed code to disclose host memory used by the functions listed above.\n\n### PoC\nTested against `vm2@3.11.5` in the node REPL.\n```javascript\nBuffer.from('host-memory-should-not-leak-to-sandbox')\nnew (require('vm2').VM)().run(`Buffer.from(Buffer.from([0]).buffer, 0, Buffer.from([0]).buffer.byteLength).toString('ascii')`)\n```\n\n\u003cimg width=\"1044\" height=\"104\" alt=\"Screenshot 2026-07-23 at 17 54 15\" src=\"https://github.com/user-attachments/assets/987b860c-6702-4818-bfaa-c77919c777e5\" /\u003e\n\n### Impact\nSince sandbox acquires an ArrayBuffer that is used by the host, it can disclose sensitive data going through functions mentioned above and even write to these buffers, which can lead to sensitive data exposure and potentially denial-of-service.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:34:35Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2: Sandboxed code can read and write host-realm memory via Node's shared Buffer pool",
+    "UpdatedAt": "2026-10-05T22:34:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.7"
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.6"
+    }
+  ]
+}

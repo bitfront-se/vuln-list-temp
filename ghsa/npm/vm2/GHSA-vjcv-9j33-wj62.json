@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T22:34:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 496452,
+    "Id": "GSA_kwCzR0hTQS12amN2LTlqMzMtd2o2Ms4AB5NE",
+    "GhsaId": "GHSA-vjcv-9j33-wj62",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-r4fx-v8hh-22mv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92942"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-before-3.11.7-timeout-bypass-via-finalizationregistry"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vjcv-9j33-wj62"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vjcv-9j33-wj62"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-r4fx-v8hh-22mv. This link is maintained to preserve external references.\n\n## Original Description\nvm2 before 3.11.7 (affected versions \u003c= 3.11.6) does not enforce the VM({ timeout }) option on code executed outside the synchronous VM#run() call. The timeout only wraps the single call to _runScript() via doWithTimeout() in lib/vm.js, and FinalizationRegistry and WeakRef are exposed to sandboxed code unmodified (they are not among the hardened globals in lib/setup-sandbox.js). Sandboxed code can register a FinalizationRegistry cleanup callback against an object and then drop the only strong reference to it; vm.run() returns within the configured timeout, but when the V8 garbage collector later reclaims the object it invokes the sandboxed cleanup callback outside any vm2 timeout accounting. A busy loop in that callback blocks the host event loop for an unbounded period, resulting in denial of service. The time of invocation depends on the garbage collector (e.g. under memory pressure or with --expose-gc).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-17T15:32:14Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: vm2: timeout Option Bypass via FinalizationRegistry Cleanup Callback (Unbounded Host Event-Loop Block)",
+    "UpdatedAt": "2026-10-05T22:34:59Z",
+    "WithdrawnAt": "2026-10-05T22:34:58Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 3.11.6"
+    }
+  ]
+}

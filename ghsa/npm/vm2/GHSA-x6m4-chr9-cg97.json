@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-05T22:35:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 506492,
+    "Id": "GSA_kwCzR0hTQS14Nm00LWNocjktY2c5N84AB7p8",
+    "GhsaId": "GHSA-x6m4-chr9-cg97",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-x6m4-chr9-cg97"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-92936"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/commit/5d5ba5343af571c688a3a81cefad2de25b94180a"
+      },
+      {
+        "Url": "https://github.com/patriksimek/vm2/releases/tag/v3.11.7"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-3.11.0-before-3.11.7-information-disclosure-via-error-stack"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x6m4-chr9-cg97"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x6m4-chr9-cg97"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-92936"
+      }
+    ],
+    "Description": "## Summary\n\nAttacker-controlled code can trigger a host-realm syntax error and read its stack through the vm2 bridge. Host-realm stack formatting bypasses the sandbox-side redaction, so the returned value exposes absolute paths from vm2, Node.js internals, and the embedding application. Default VM and NodeVM configurations are affected without requiring special options.\n\n## PoC\n\nA default-configured `VM` runs attacker-supplied code. Calling `eval` with deliberately malformed source makes the host-side source transformer throw a `SyntaxError`; reading `.stack` on the caught error exposes the host call stack to the sandbox.\n\n```js\nconst { VM } = require(\"vm2\");\nconsole.log(new VM().run(`\n  var s; try { eval(\"@@@ catch\") } catch (e) { s = e.stack }\n  s;\n`));\n```\n\n### Observed output\n\n```text\nSyntaxError: Unexpected character '@'\n    at makeNiceSyntaxError (.../lib/transformer.js:41:16)\n    at transformer (.../lib/transformer.js:116:8)\n    at Object.transformAndCheck (.../lib/vm.js:76:14)\n    at Object.apply (.../lib/setup-sandbox.js:2585:16)\n    at VM.run (.../lib/vm.js:529:16)\n```\n\nThe stack string returned to the sandbox contains absolute host paths for `lib/transformer.js`, `lib/vm.js`, `lib/setup-sandbox.js`, Node internals, and the embedding application's own source file.\n\n## Impact\n\nSandboxed code running under the default `new VM()` or `new NodeVM()` configuration can read absolute filesystem paths of the embedding application's source tree plus host function names, bypassing the host-path redaction added for GHSA-v27g-jcqj-v8rw. On a multi-tenant code-runner this discloses deployment layout such as `/home/app/...` or `/var/task/...`, useful for fingerprinting and for chaining into further attacks. The bridge forwards `.stack` reads to the host-realm formatter (`lib/bridge.js:1482`), so the sandbox-side stack redaction never runs; the leak does not require special configuration and persists when string eval is disabled, because the host-side transformer throws before eval is handled. Information disclosure only, no code execution.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:35:31Z",
+    "Severity": "MODERATE",
+    "Summary": "vm2 leaks absolute host filesystem paths to sandbox code via error stack formatting",
+    "UpdatedAt": "2026-10-05T22:35:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.11.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.11.0, \u003c= 3.11.6"
+    }
+  ]
+}

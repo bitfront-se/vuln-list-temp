@@ -1,0 +1,101 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-05T22:53:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@capacitor/android"
+  },
+  "Advisory": {
+    "DatabaseId": 506509,
+    "Id": "GSA_kwCzR0hTQS1ydm0zLTU2Nm0tdjdmds4AB7qN",
+    "GhsaId": "GHSA-rvm3-566m-v7fv",
+    "References": [
+      {
+        "Url": "https://github.com/ionic-team/capacitor/security/advisories/GHSA-rvm3-566m-v7fv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-103922"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/430356a91e1419fc66862dc09835081aa501677e"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/745b5f805bf77bc6463977cc7d718cd9de44ccbc"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/80b6c5e81d062e1e158914040f49e044d95b7ccb"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/85ccc44151fdd5ae5e0d806d875766ef4b84ad5d"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/af9a287fef45f0ac68ce640cb42fed2d06b0f1b4"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/d5e3170ba0ff155fc542b7e6d16cff5201406540"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/commit/ee586ae680887ba99d066616f976db149542d922"
+      },
+      {
+        "Url": "https://github.com/ionic-team/capacitor/releases/tag/8.5.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rvm3-566m-v7fv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rvm3-566m-v7fv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-103922"
+      }
+    ],
+    "Description": "### Impact\n\nCapacitor's WebView navigation guard validated only the **host and scheme** of a\ntarget URL, not its **path**. Because the internal HTTP proxy path\n(`/_capacitor_http_interceptor_`) is served at the application's own origin, a\nframe navigation to it was always treated as in-app navigation and allowed.\n\nLoading that path as a document caused the native layer to fetch an arbitrary,\ncaller-specified URL and return the response body to the WebView **at the app's\nown origin**. Script in that response then ran with full same-origin trust:\naccess to `localStorage`, cookies, and every native capability the application\nexposes through its registered Capacitor plugins.\n\nThe proxy handler was additionally served **regardless of whether the\n`CapacitorHttp` plugin was enabled**, so applications that never enabled\n`CapacitorHttp` were also affected.\n\nExploitation requires a victim to activate a link inside the application's\nWebView. Any Capacitor application that renders user-controlled or unsanitized\nlinks (chat messages, comments, rich-text content) is a viable delivery surface.\n\nBoth **Android and iOS** are affected.\n\n### Patches\n\nTwo changes on each platform:\n\n1. The navigation guard now blocks frame navigations whose path is the internal\n   proxy path.\n2. The proxy handler is served only when `CapacitorHttp` is enabled, and never\n   for a document (main frame) request.\n\nLegitimate `CapacitorHttp` usage is unaffected. `fetch` and `XMLHttpRequest` are\nsubresource requests and do not pass through the navigation guard.\n\nUpgrade to a patched version, then rebuild and redistribute your application.\n\n### Workarounds\n\nIf you cannot upgrade immediately, note first that **disabling `CapacitorHttp`\nis not sufficient** on affected versions, because the proxy path is served\nregardless of that setting.\n\nRegistered plugins are consulted before the navigation guard runs, so a small\nplugin can block the path. On Android, override `shouldOverrideLoad(Uri url)` and\nreturn `true` when `url.getPath()` starts with `/_capacitor_http_interceptor_`.\nOn iOS, implement `shouldOverrideLoad(_:)` and return `true` for the same path.\nReturning `true` cancels the navigation; return `null`/`nil` for all other URLs\nso normal navigation is unchanged.\n\nIndependently, sanitize user-controlled link targets before rendering them in the\nWebView.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:53:10Z",
+    "Severity": "CRITICAL",
+    "Summary": "Capacitor Android and iOS: remote content can be loaded at the app origin via the internal HTTP proxy path",
+    "UpdatedAt": "2026-10-05T22:53:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.3.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.4.3"
+      },
+      "VulnerableVersionRange": "\u003e= 8.3.5, \u003c 8.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.5.1"
+      },
+      "VulnerableVersionRange": "\u003e= 8.5.0, \u003c 8.5.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.6.9"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.6.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c 6.2.2"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-05T22:49:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "quart"
+  },
+  "Advisory": {
+    "DatabaseId": 506503,
+    "Id": "GSA_kwCzR0hTQS12ODUzLXA3MnEtNGNmd84AB7qH",
+    "GhsaId": "GHSA-v853-p72q-4cfw",
+    "References": [
+      {
+        "Url": "https://github.com/pallets/quart/security/advisories/GHSA-v853-p72q-4cfw"
+      },
+      {
+        "Url": "https://github.com/pallets/quart/commit/e8eb3b8a0cb98e7574bf3841312fc7f96883d055"
+      },
+      {
+        "Url": "https://github.com/pallets/quart/releases/tag/0.23.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v853-p72q-4cfw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v853-p72q-4cfw"
+      }
+    ],
+    "Description": "### Summary\nQuart 0.23.0 contains a stray debug statement (`print(data)`) inside `Body.__await__` in `quart/wrappers/request.py`. Any request whose body is awaited — `await request.form`, `await request.get_data()`, WTForms `validate_on_submit()`, etc. — has its raw, unparsed body printed to stdout, including plaintext form fields such as passwords and CSRF tokens. Confirmed present in 0.23.0, confirmed absent in 0.22.0.\n\n### Details\nIn `src/quart/wrappers/request.py`, `Body.__await__` accumulates the request body into a bytearray:\n\n​```python\ndata = bytearray()\nwhile not self._queue.empty():\n    data.extend(self._queue.get_nowait())\n    print(data)          # \u003c-- not present in 0.22.0\n    if (\n        self._max_content_length is not None\n        and len(data) \u003e self._max_content_length\n    ):\n        raise RequestEntityTooLarge()\n​```\n\nThis fires for every request that awaits its body — the overwhelming majority of POST/PUT routes in a typical Quart app (form submissions, JSON APIs via `request.get_json()`, file uploads, etc.).\n\n### PoC\n1. `pip install quart==0.23.0` (requires Python 3.13+)\n2. Minimal route:\n​```python\n@app.route(\"/login\", methods=[\"POST\"])\nasync def login():\n    form_data = await request.form\n    ...\n​```\n3. Submit a POST with form data, e.g. a login form with `staff_id`/`password` fields.\n4. Observe stdout: the full raw body is printed as `bytearray(b'csrf_token=...\u0026staff_id=...\u0026password=...')`.\n\nConfirmed via source diff against 0.22.0's `request.py`, where this line does not exist.\n\n### Impact\nAny app that captures stdout in logs (terminal redirect, systemd/journald, Docker logs, cloud log aggregation, etc.) will have every submitted form body — including login credentials — written to logs in plaintext. This affects any Quart 0.23.0 app handling authentication or any sensitive form data, and is trivially triggerable by any user simply submitting a form (no attacker action required beyond normal use).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:49:44Z",
+    "Severity": "HIGH",
+    "Summary": "Quart leaks raw request body (incl. plaintext passwords) to stdout via stray debug print in Body.__await__",
+    "UpdatedAt": "2026-10-05T22:49:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.23.1"
+      },
+      "VulnerableVersionRange": "= 0.23.0"
+    }
+  ]
+}

