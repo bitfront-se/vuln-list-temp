@@ -1,0 +1,67 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-06T13:39:59Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "langflow"
+  },
+  "Advisory": {
+    "DatabaseId": 507007,
+    "Id": "GSA_kwCzR0hTQS1qOGY3LXg4am0td21tNM4AB7x_",
+    "GhsaId": "GHSA-j8f7-x8jm-wmm4",
+    "References": [
+      {
+        "Url": "https://github.com/langflow-ai/langflow/security/advisories/GHSA-j8f7-x8jm-wmm4"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/pull/13016"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/pull/13395"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/pull/13643"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/pull/14033"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/pull/14071"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/commit/94859df33acd70b2a1f816e26d68f5e89a7e5639"
+      },
+      {
+        "Url": "https://github.com/langflow-ai/langflow/releases/tag/v1.10.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j8f7-x8jm-wmm4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j8f7-x8jm-wmm4"
+      }
+    ],
+    "Description": "### Summary\n\nBefore **Langflow 1.10.3**, several built-in components sent server-side HTTP requests to URLs the flow author controls, with no SSRF enforcement. An authenticated user who can build or run flows could make the Langflow server reach loopback, RFC 1918 / private networks, link-local addresses and cloud metadata endpoints (for example `http://169.254.169.254/latest/meta-data/`), and in many cases read the response back through the component output.\n\nTwo things combined to cause this:\n\n1. **Protection disabled / warn-only.** The SSRF guard (`lfx/utils/ssrf_protection.py`, added in 1.7.0 by #10544) shipped with `ssrf_protection_enabled = False`, and its only caller, the **API Request** component, called `validate_url_for_ssrf(url, warn_only=True)`. So even with protection turned on, blocked URLs were only logged.\n2. **Inconsistent coverage.** Other components that take a user-supplied URL or base URL did not call the guard at all: RSS Reader, SearXNG, Web Search (fetching result / RSS URLs), Home Assistant, Glean Search and Docling Serve (remote).\n\nThe problem was fixed across several PRs and is fully fixed in **Langflow 1.10.3** (and 1.11.0+). With the default settings, outbound requests from these components are now validated after DNS resolution, pinned to the validated IP (to prevent DNS rebinding) and **blocked** when they target private, loopback, link-local or metadata addresses, unless the operator allowlists the host.\n\n### Affected versions\n\n| Package (PyPI) | Vulnerable | Patched |\n|---|---|---|\n| `langflow` | `\u003c 1.10.3` | `1.10.3` |\n| `langflow-base` | `\u003c 0.10.3` | `0.10.3` |\n| `lfx` | `\u003c 1.10.3` | `1.10.3` |\n| `lfx-docling` (Docling Serve component) | `\u003c 0.1.2` | `0.1.2` |\n\nHow the fix rolled out:\n\n| Release | Change |\n|---|---|\n| `\u003c 1.7.0` | No SSRF guard. All URL-taking components make unrestricted requests. |\n| `1.7.0` – `1.9.2` | Guard exists, but `ssrf_protection_enabled=False` by default and API Request uses `warn_only=True`. |\n| `1.9.3` | #13016: protection **on by default**, API Request **blocks** (DNS pinning / anti-rebinding). Other components still unprotected. |\n| `1.10.1` | #13395 (RSS Reader, SearXNG) and #13643 (Home Assistant, Glean, plus model-provider URL components) route requests through SSRF-safe helpers. |\n| `1.10.3` | #14033 (Docling Serve) and #14071 (Web Search result/RSS fetching). **All components cited in this report are protected.** |\n\n### Details\n\nVulnerable pattern (for example `rss.py` before #13395):\n\n```python\nresponse = requests.get(self.rss_url, timeout=self.timeout)\n```\n\nAPI Request before #13016:\n\n```python\n# TODO: In next major version (2.0), remove warn_only=True to enforce blocking\nvalidate_url_for_ssrf(url, warn_only=True)\n```\n\nwith `ssrf_protection_enabled: bool = False` in the settings.\n\n**Clarifications on the original report.** Some sinks in the report are not exploitable SSRF:\n\n- `web_search.py`: the DuckDuckGo search request and the Google News RSS request, and `news_search.py:131`. The host is hard-coded (`html.duckduckgo.com` / `news.google.com`) and user input only goes into `quote_plus`-encoded path and query segments, so the destination cannot be redirected. The real Web Search sink was fetching the **result URLs**, which is fixed in #14071.\n- `langflow/load/utils.py` `get_flow()`: this is a client-side SDK helper (`from langflow.load import get_flow`) that the caller runs against their own Langflow URL. No API route calls it, so it is not a backend SSRF endpoint.\n\n### PoC (vulnerable versions)\n\n1. Log in as any user who can create flows.\n2. Add an **RSS Reader** (or SearXNG / Home Assistant / Glean / Docling Serve) component and set its URL to `http://169.254.169.254/latest/meta-data/` (or an internal host such as `http://10.0.0.1/`).\n3. Run the component. The Langflow server issues the request, and the response or error is shown in the component output.\n\nOn patched versions the same run fails with `SSRFProtectionError: Access to IP address 169.254.169.254 is blocked by SSRF protection`.\n\n### Impact\n\n- Access to cloud instance metadata (IAM credentials / tokens) on AWS, GCP and Azure deployments.\n- Probing and interaction with internal services and private networks reachable from the Langflow host.\n- Requires an authenticated account with permission to build or run flows. Deployments where every user is already fully trusted are less affected.\n\n### Fix\n\n- **#13016**: sets `ssrf_protection_enabled = True` by default, changes `warn_only` to default `False`, drops `warn_only=True` from API Request, and adds `validate_and_resolve_url()` plus `SSRFProtectedTransport` (DNS pinning).\n\n  ```diff\n  -    ssrf_protection_enabled: bool = False\n  +    ssrf_protection_enabled: bool = True\n  ```\n- **#13395**: adds `lfx.utils.ssrf_requests.ssrf_safe_get` (per-hop validation and pinning for `requests`) and uses it in RSS Reader and SearXNG.\n\n  ```diff\n  -            response = requests.get(self.rss_url, timeout=self.timeout)\n  +            response = ssrf_safe_get(self.rss_url, timeout=self.timeout)\n  ```\n- **#13643**: adds `lfx.utils.ssrf_httpx` (`ssrf_safe_httpx_get/post`, protected client kwargs) and applies it to Home Assistant, Glean and the model-provider base-URL components.\n- **#14033**: Docling Serve builds its `httpx.Client` with `ssrf_protected_httpx_client_kwargs_for_url(base_url)`.\n- **#14071** (release-1.10.3) / **#14073** (forward-port to 1.11.0): Web Search validates and pins each result URL before fetching it, with redirects disabled.\n\nNote: connector-style components (for example Home Assistant, Ollama, LM Studio) keep a documented loopback exemption (#14146), so a self-hosted user can reach a local service on `localhost`. Private-network and metadata addresses stay blocked. Operators can tighten or relax this with `LANGFLOW_SSRF_ALLOWED_HOSTS` and `LANGFLOW_CONNECTOR_SSRF_VALIDATION_ENABLED`.\n\n### Remediation\n\n- Upgrade to `langflow \u003e= 1.10.3` (or `langflow-base \u003e= 0.10.3` / `lfx \u003e= 1.10.3` / `lfx-docling \u003e= 0.1.2`).\n- Do not set `LANGFLOW_SSRF_PROTECTION_ENABLED=false`. If you need to reach internal hosts on purpose, allowlist only those hosts with `LANGFLOW_SSRF_ALLOWED_HOSTS`.\n- On versions that cannot be upgraded right away, restrict outbound network access from the Langflow host (for example, block `169.254.169.254` and use IMDSv2 on AWS).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-06T13:39:57Z",
+    "Severity": "MODERATE",
+    "Summary": "Langflow: SSRF in URL-taking components (protection disabled by default / warn-only, not applied to RSS, SearXNG, Web Search, Home Assistant, Glean, Docling)",
+    "UpdatedAt": "2026-10-06T13:39:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.10.3"
+      },
+      "VulnerableVersionRange": "\u003c 1.10.3"
+    }
+  ]
+}

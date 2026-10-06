@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-06T15:22:30Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vyper"
+  },
+  "Advisory": {
+    "DatabaseId": 507020,
+    "Id": "GSA_kwCzR0hTQS0ycjN4LTRtcnYtbWN4Zs4AB7yM",
+    "GhsaId": "GHSA-2r3x-4mrv-mcxf",
+    "References": [
+      {
+        "Url": "https://github.com/vyperlang/vyper/security/advisories/GHSA-2r3x-4mrv-mcxf"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/pull/2186"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/commit/74ba67d4bec5f8be4f05759e37d2bfb1463e0441"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/releases/tag/v0.2.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2r3x-4mrv-mcxf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2r3x-4mrv-mcxf"
+      }
+    ],
+    "Description": "### Impact\nWhen performing a function call inside a tuple or as an argument inside another function call, there is a memory corruption issue that occurs because of an incorrect pointer to the the tip of the stack.\n\nExample code:\n```python\n@internal\ndef _foo(a: uint256, b: uint256, c: uint256) -\u003e (uint256, uint256, uint256, uint256, uint256):\n    return 1, a, b, c, 5\n\n@internal\ndef _foo2() -\u003e uint256:\n    a: uint256[10] = [6,7,8,9,10,11,12,13,15,16]\n    return 4\n\n@external\ndef foo() -\u003e (uint256, uint256, uint256, uint256, uint256):\n    return self._foo(2, 3, self._foo2())\n```\n\nPlease see #2186 for further information\n\n### Patches\nThis problem was fixed in #2186, and released as a part of [`v0.2.6`](https://github.com/vyperlang/vyper/releases/tag/v0.2.6).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-06T15:22:29Z",
+    "Severity": "MODERATE",
+    "Summary": "Vyper: Memory corruption using function calls within tuples / nested calls",
+    "UpdatedAt": "2026-10-06T15:22:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.6"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.6"
+    }
+  ]
+}

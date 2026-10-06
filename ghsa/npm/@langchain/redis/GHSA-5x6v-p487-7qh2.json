@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-06T15:32:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@langchain/redis"
+  },
+  "Advisory": {
+    "DatabaseId": 507060,
+    "Id": "GSA_kwCzR0hTQS01eDZ2LXA0ODctN3FoMs4AB7y0",
+    "GhsaId": "GHSA-5x6v-p487-7qh2",
+    "References": [
+      {
+        "Url": "https://github.com/langchain-ai/langchainjs/security/advisories/GHSA-5x6v-p487-7qh2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105799"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langchainjs/pull/10701"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langchainjs/commit/880e3969ea643a2147777a4d5e8bd606a697edf7"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langchainjs/releases/tag/@langchain/redis@1.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5x6v-p487-7qh2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5x6v-p487-7qh2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105799"
+      }
+    ],
+    "Description": "## Summary\n\n`@langchain/redis` did not properly escape values used to construct structured RediSearch TAG and TEXT filters. An application that passes attacker-controlled values into these filters could allow the attacker to alter the resulting search query.\n\n## Affected versions\n\n`@langchain/redis` versions through 1.1.0 are affected.\n\n## Impact\n\nAn attacker who can control values passed to the affected structured TAG or TEXT filters can inject RediSearch syntax and alter or broaden the resulting search query. In applications that use an attacker-influenceable filter as a tenant or document-access boundary, this may expose indexed documents outside the attacker's intended scope.\n\n## Remediation\n\nUpgrade to `@langchain/redis` 1.1.1 or later.\n\nThe fix escapes RediSearch special characters, validates field names and structured filter types, and applies these protections across fluent filter builders and custom-schema query construction.\n\n## Credits\n\nThanks to @thesanjok and @shovanchakraborty for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-06T15:32:34Z",
+    "Severity": "LOW",
+    "Summary": "LangChain: RediSearch Filter Injection via Unescaped Tag/Text Values",
+    "UpdatedAt": "2026-10-06T15:32:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.0"
+    }
+  ]
+}

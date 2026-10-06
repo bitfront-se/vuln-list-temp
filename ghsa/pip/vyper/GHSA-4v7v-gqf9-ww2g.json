@@ -1,0 +1,58 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-06T15:22:24Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vyper"
+  },
+  "Advisory": {
+    "DatabaseId": 507019,
+    "Id": "GSA_kwCzR0hTQS00djd2LWdxZjktd3cyZ84AB7yL",
+    "GhsaId": "GHSA-4v7v-gqf9-ww2g",
+    "References": [
+      {
+        "Url": "https://github.com/vyperlang/vyper/security/advisories/GHSA-4v7v-gqf9-ww2g"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/issues/2183"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/pull/2184"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/commit/0be02b7331e8febe79d5a4218829c72e30417a29"
+      },
+      {
+        "Url": "https://github.com/vyperlang/vyper/releases/tag/v0.2.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4v7v-gqf9-ww2g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4v7v-gqf9-ww2g"
+      }
+    ],
+    "Description": "### Impact\nWhen we pass a multi-dimensional array (like `[[1, 2], [3, 4]]`) as an argument to internal/external functions we get incorrect output. This is due to a stack management issue, because it was assumed that the size of each subtype of an array/struct is 32, which is not always correct.\n\nExample code:\n```python\n@internal\ndef test_input(arr: int128[2][1], i: int128) -\u003e (int128[2][1], int128):\n    return arr, i\n\n@external\ndef test_values(arr: int128[2][1], i: int128) -\u003e (int128[2][1], int128):\n    return self.test_input(arr, i)\n```\n\nPlease see #2183 for further information\n\n### Patches\nThis problem was fixed in #2184, and released as a part of [`v0.2.6`](https://github.com/vyperlang/vyper/releases/tag/v0.2.6).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-06T15:22:23Z",
+    "Severity": "MODERATE",
+    "Summary": "Vyper: Call stack corruption when passing complex type containing non-base type members as argument",
+    "UpdatedAt": "2026-10-06T15:22:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.6"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.6"
+    }
+  ]
+}
