@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-05T23:48:40Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Werkzeug"
+  },
+  "Advisory": {
+    "DatabaseId": 506556,
+    "Id": "GSA_kwCzR0hTQS1nNngyLWhjY20taGg0bc4AB7q8",
+    "GhsaId": "GHSA-g6x2-hccm-hh4m",
+    "References": [
+      {
+        "Url": "https://github.com/pallets/werkzeug/security/advisories/GHSA-g6x2-hccm-hh4m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102598"
+      },
+      {
+        "Url": "https://github.com/pallets/werkzeug/pull/3309"
+      },
+      {
+        "Url": "https://github.com/pallets/werkzeug/commit/8d77320bcdf3a34941ec06dcf16b03c065cd21b6"
+      },
+      {
+        "Url": "https://github.com/pallets/werkzeug/releases/tag/3.1.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g6x2-hccm-hh4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g6x2-hccm-hh4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102598"
+      }
+    ],
+    "Description": "Werkzeug's `safe_join` function allows Windows device names as filenames when they have an empty ADS marker on NTFS.\n\nThis was previously reported as https://github.com/pallets/werkzeug/security/advisories/GHSA-hgf8-39gv-g3f2, but the added filtering failed to account for the fact Windows allows special device names with an empty ADS marker, such as `NUL:`.\n\n`send_from_directory` uses `safe_join` to safely serve files at user-specified paths under a directory. If the application is running on Windows and NTFS, and the requested path ends with a special device name, the file will be opened successfully, but reading will hang indefinitely.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-05T23:48:39Z",
+    "Severity": "MODERATE",
+    "Summary": "Werkzeug safe_join() allows Windows special device names",
+    "UpdatedAt": "2026-10-05T23:48:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.9"
+      },
+      "VulnerableVersionRange": "\u003c 3.1.9"
+    }
+  ]
+}
