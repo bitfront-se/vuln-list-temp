@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T20:29:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/plugin-multi-tenant"
+  },
+  "Advisory": {
+    "DatabaseId": 507834,
+    "Id": "GSA_kwCzR0hTQS14aG05LWd3Z3ctM3Eycc4AB7-6",
+    "GhsaId": "GHSA-xhm9-gwgw-3q2q",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-xhm9-gwgw-3q2q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105864"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/commit/b8fc06a18afb6974dc07f95ac1e541c716e5926b"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/releases/tag/v3.90.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xhm9-gwgw-3q2q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xhm9-gwgw-3q2q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105864"
+      }
+    ],
+    "Description": "### Impact\nAn authenticated user limited to one tenant could create a record in another tenant. This requires the multi-tenant plugin with at least one tenant-enabled collection.\n\nReads and direct edits to an existing target-tenant document were not bypassed.\n\nYou are affected if:\n- You are using @payloadcms/plugin-multi-tenant\n\n### Patches\nUsers should upgrade Payload packages to `\u003e= 3.90.0` or `\u003e= 4.0.0-canary.34`.\n\n### Workarounds\nYou can add access control with `accessResultOverride` on the multi-tenant collection config to ensure a user has access to the tenant before creating.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:29:27Z",
+    "Severity": "MODERATE",
+    "Summary": "@payloadcms/plugin-multi-tenant has a cross-tenant create issue",
+    "UpdatedAt": "2026-10-07T20:29:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0-canary.34"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-canary.0, \u003c 4.0.0-canary.34"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.90.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.90.0"
+    }
+  ]
+}

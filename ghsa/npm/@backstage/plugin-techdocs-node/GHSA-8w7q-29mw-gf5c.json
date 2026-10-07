@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T16:23:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-techdocs-node"
+  },
+  "Advisory": {
+    "DatabaseId": 507692,
+    "Id": "GSA_kwCzR0hTQS04dzdxLTI5bXctZ2Y1Y84AB78s",
+    "GhsaId": "GHSA-8w7q-29mw-gf5c",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-8w7q-29mw-gf5c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106509"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/02cd7cdbb18b687446277b5602adaee7f1d53cbb"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/a900a9953c8f7ad3ba1906d1d257725a9996cc9d"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.50.5"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8w7q-29mw-gf5c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8w7q-29mw-gf5c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106509"
+      }
+    ],
+    "Description": "### Impact\n\nWhen TechDocs is configured to build documentation locally or in a container, a user with write access to a registered repository can include configuration values in `mkdocs.yml` that cause arbitrary code execution during the documentation build process.\n\n### Patches\n\nPatched in `@backstage/plugin-techdocs-node` version `1.15.4`\n\n### Workarounds\n\n- Configure TechDocs with `techdocs.generator.runIn: 'docker'` instead of `'local'` to provide container isolation, though this does not fully mitigate the risk.\n- Restrict write access to repositories registered in the Backstage catalog to trusted users.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:23:30Z",
+    "Severity": "HIGH",
+    "Summary": "Backstage: Improper validation of MkDocs theme configuration in TechDocs",
+    "UpdatedAt": "2026-10-07T16:23:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.15.4"
+    }
+  ]
+}

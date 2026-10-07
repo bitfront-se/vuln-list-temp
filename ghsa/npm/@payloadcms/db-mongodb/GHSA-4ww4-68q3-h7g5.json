@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T16:19:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/db-mongodb"
+  },
+  "Advisory": {
+    "DatabaseId": 507690,
+    "Id": "GSA_kwCzR0hTQS00d3c0LTY4cTMtaDdnNc4AB78q",
+    "GhsaId": "GHSA-4ww4-68q3-h7g5",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-4ww4-68q3-h7g5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106100"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/commit/2a69863deb0e3c87e36c1b3b17ab2d5b02fcb941"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/commit/8f77dffa9552885ec2710768cfee15b57e389935"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/releases/tag/v3.87.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4ww4-68q3-h7g5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4ww4-68q3-h7g5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106100"
+      }
+    ],
+    "Description": "### Impact\nA vulnerability in field-level access control could allow an authenticated user to modify fields they are not permitted to change on documents they can otherwise update.\n\nYou are affected if:\nPayload version \u003c `3.87.0` (or a `4.0.0-canary` release before `4.0.0-canary.20`) using the MongoDB adapter (`@payloadcms/db-mongodb`) with any collection that relies on field-level access control to restrict writes under certain conditions.\n\nRelational adapters (Postgres, SQLite) are not affected.\n\n### Patches\nHandling of incoming field data has been hardened so field-level access control is enforced consistently.\n\nUsers should upgrade to `3.87.0` (or `4.0.0-canary.20` on the `4.x` line) or later.\n\n### Workarounds\nThere is no complete workaround. Upgrading to `3.87.0` (or `4.0.0-canary.20` on the `4.x` line) is recommended.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:19:57Z",
+    "Severity": "HIGH",
+    "Summary": "Payload: Field-level write access bypass in Payload on MongoDB",
+    "UpdatedAt": "2026-10-07T16:19:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0-canary.20"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-canary.0, \u003c 4.0.0-canary.20"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.87.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.87.0"
+    }
+  ]
+}

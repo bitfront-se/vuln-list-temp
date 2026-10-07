@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T18:01:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507715,
+    "Id": "GSA_kwCzR0hTQS0yOWd4LWgybTMteHc0NM4AB79D",
+    "GhsaId": "GHSA-29gx-h2m3-xw44",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-29gx-h2m3-xw44"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106462"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/6fb2a41ea47da37eafe5ea744050"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/6fb2a41ea47da37eafe5ea744050ef90be6820c0"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-29gx-h2m3-xw44"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-29gx-h2m3-xw44"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106462"
+      }
+    ],
+    "Description": "### Impact\n\nScaffolder actions that interact with source control systems may not consistently enforce the intended credential boundaries under certain configurations. An authenticated user could perform operations with broader access than intended.\n\n### Patches\n\n- `@backstage/plugin-scaffolder-backend` version `4.1.0`\n- `@backstage/plugin-scaffolder-backend-module-azure` version `0.2.25`\n- `@backstage/plugin-scaffolder-backend-module-bitbucket-cloud` version `0.3.10`\n- `@backstage/plugin-scaffolder-backend-module-bitbucket-server` version `0.2.25`\n- `@backstage/plugin-scaffolder-backend-module-github` version `0.9.13`\n- `@backstage/plugin-scaffolder-backend-module-gitlab` version `0.11.10`\n\nThe fix introduces a new configuration option that enforces user-provided credentials for supported SCM actions. The new behavior is opt-in for compatibility. After upgrading, set:\n\n```yaml\nscaffolder:\n  requireScmUserCredentials: true\n```\n\nBefore enabling this setting, review and update your templates as described in the software templates documentation referred to below.\n\n### Workarounds\n\nIf you cannot upgrade and enable the setting immediately:\n\n- Restrict who can create Scaffolder tasks and which templates they can execute.\n- Limit SCM integration credentials to the minimum repository read and mutation permissions required.\n- Remove integration credentials for SCM hosts where all required operations can use explicitly supplied user tokens.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T18:01:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage's scaffolder credential handling may allow unintended GitHub authentication fallback",
+    "UpdatedAt": "2026-10-07T18:01:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.0"
+    }
+  ]
+}

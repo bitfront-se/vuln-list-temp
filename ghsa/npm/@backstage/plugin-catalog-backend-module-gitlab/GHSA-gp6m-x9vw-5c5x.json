@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T18:01:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-catalog-backend-module-gitlab"
+  },
+  "Advisory": {
+    "DatabaseId": 507714,
+    "Id": "GSA_kwCzR0hTQS1ncDZtLXg5dnctNWM1eM4AB79C",
+    "GhsaId": "GHSA-gp6m-x9vw-5c5x",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-gp6m-x9vw-5c5x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106463"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/c211b4b67d28efd2f4fac63e35e2ac515e305cb3"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gp6m-x9vw-5c5x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gp6m-x9vw-5c5x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106463"
+      }
+    ],
+    "Description": "### Impact\n\nDeployments that enable GitLab organization event ingestion and rely on scoped catalog users as an access boundary may admit an unintended catalog identity. Depending on sign-in and permission configuration, this may allow unauthorized access with the permissions of a standard authenticated user.\n\n### Patches\n\n- Upgrade `@backstage/plugin-catalog-backend-module-gitlab` to version `0.8.7`.\n\n### Workarounds\n\n- Disable event-driven GitLab organization ingestion and rely on scheduled discovery until upgrading.\n- Enforce organization membership independently at the authenticating proxy or sign-in resolver.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T18:01:39Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage has improper authorization in GitLab organizational user ingestion",
+    "UpdatedAt": "2026-10-07T18:01:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.7"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.7"
+    }
+  ]
+}

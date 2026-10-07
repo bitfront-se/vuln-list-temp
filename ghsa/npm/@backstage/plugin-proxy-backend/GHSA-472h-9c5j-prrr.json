@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T20:25:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-proxy-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507815,
+    "Id": "GSA_kwCzR0hTQS00NzJoLTljNWotcHJycs4AB7-n",
+    "GhsaId": "GHSA-472h-9c5j-prrr",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-472h-9c5j-prrr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106456"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/9df92923ac32558bb80edeceafd8de780c44e218"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.55.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-472h-9c5j-prrr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-472h-9c5j-prrr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106456"
+      }
+    ],
+    "Description": "### Impact\n\nAn operator can configure overlapping proxy paths with different credential requirements. When a parent path permits unauthenticated access and a nested path requires credentials, the parent exemption can also cover requests handled by the nested proxy. An unauthenticated caller may therefore reach the nested upstream through Backstage, including with static upstream credentials configured for that proxy.\n\nExploitation requires this specific overlapping route configuration. The resulting confidentiality and integrity impact depends on the capabilities exposed by the nested upstream.\n\n### Patches\n\nUpgrade `@backstage/plugin-proxy-backend` to version `0.6.18` or later. The fixed package is available in [Backstage v1.55.0](https://github.com/backstage/backstage/releases/tag/v1.55.0).\n\n### Workarounds\n\n- Avoid nesting a credential-protected proxy path below a path configured with `dangerously-allow-unauthenticated`.\n- Apply the same credential requirement to overlapping proxy paths.\n- Restrict direct network access to the Backstage backend until the patched package is deployed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:25:13Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage: Inconsistent credential enforcement for overlapping proxy routes",
+    "UpdatedAt": "2026-10-07T20:25:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.18"
+      },
+      "VulnerableVersionRange": "\u003e= 0.5.0, \u003c 0.6.18"
+    }
+  ]
+}

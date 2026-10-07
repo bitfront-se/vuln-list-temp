@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T16:23:54Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-techdocs-node"
+  },
+  "Advisory": {
+    "DatabaseId": 507694,
+    "Id": "GSA_kwCzR0hTQS1wNzV4LWpoN3AtcHBjeM4AB78u",
+    "GhsaId": "GHSA-p75x-jh7p-ppcx",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-p75x-jh7p-ppcx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106505"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/a7d995f11a5d27f0efbdbe8bb6c21b06988c79c9"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/ef92d3d2b76046205c580e7152956514c15640db"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.50.5"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p75x-jh7p-ppcx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p75x-jh7p-ppcx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106505"
+      }
+    ],
+    "Description": "### Impact\n\nUsers with the ability to commit changes to a repository that uses TechDocs can circumvent the MkDocs configuration file sanitizer introduced in response to CVE-2026-25153 and execute arbitrary code on the TechDocs backend host during documentation generation.\n\n### Patches\n\nPatched in`@backstage/plugin-techdocs-node` version `1.15.4`\n\n### Workarounds\n\nIf you cannot upgrade immediately:\n\n- Use Docker mode with restricted access: Configure TechDocs with `runIn: docker` instead of `runIn: local`. This provides container isolation, though it does not fully mitigate the risk.\n- Limit repository write access to trusted parties, since exploitation requires the ability to commit files to a repository with TechDocs enabled.\n- Review incoming changes to MkDocs configuration files as part of your code review process.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:23:52Z",
+    "Severity": "HIGH",
+    "Summary": "Backstage: Bypass of MkDocs configuration sanitizer in TechDocs backend",
+    "UpdatedAt": "2026-10-07T16:23:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.15.4"
+    }
+  ]
+}

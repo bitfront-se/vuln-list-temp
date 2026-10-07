@@ -1,0 +1,50 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-07T16:05:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "PraisonAI"
+  },
+  "Advisory": {
+    "DatabaseId": 507665,
+    "Id": "GSA_kwCzR0hTQS1nNmo3LXBmZnAtOHdoZ84AB78R",
+    "GhsaId": "GHSA-g6j7-pffp-8whg",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-g6j7-pffp-8whg"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g6j7-pffp-8whg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g6j7-pffp-8whg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62176"
+      }
+    ],
+    "Description": "### Summary\nThe `deploy/api.py` module generates Python server code by directly interpolating the `agents_file` parameter into an f-string that is then written to a file and executed via `subprocess.Popen()`. An attacker who controls the `agents_file` value (via CLI argument, configuration, or upstream API) can inject arbitrary Python code.\n\n### Details\n\n`src/praisonai/praisonai/deploy/api.py` (line 80):\n\n```python\ncode = f'''...\n    praisonai = PraisonAI(agent_file=\"{agents_file}\")\n...\n    \"agent_file\": \"{agents_file}\"\n...'''\n```\n\nThe generated code is then executed (line 190):\n```python\nsubprocess.Popen(['python', server_file])\n```\n\n`agents_file` is never sanitized or validated. A malicious value breaks out of the string context:\n\n```python\nagents_file = '\"); import os; os.system(\"id\"); #'\n# Generated code becomes:\n# praisonai = PraisonAI(agent_file=\"\"); import os; os.system(\"id\"); #\")\n```\n\nThe same pattern exists in `deploy/docker.py` (line 33) for Dockerfile generation.\n\n\n### PoC\n\n```python\n# The injection:\nagents_file = '\"); import os; os.system(\"id\"); #'\n\n# What the generated code looks like:\ntemplate = f'praisonai = PraisonAI(agent_file=\"{agents_file}\")'\nprint(template)\n# Output: praisonai = PraisonAI(agent_file=\"\"); import os; os.system(\"id\"); #\")\n```\n\n### Impact\n- **Arbitrary code execution** on the machine running the deploy command\n- **Supply chain risk** if `agents_file` comes from a configuration file or CI/CD pipeline",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:05:53Z",
+    "Severity": "CRITICAL",
+    "Summary": "PraisonAI: Code Injection via f-string Interpolation in Deploy API Server Generation",
+    "UpdatedAt": "2026-10-07T16:05:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.78"
+      },
+      "VulnerableVersionRange": "\u003c= 4.6.77"
+    }
+  ]
+}

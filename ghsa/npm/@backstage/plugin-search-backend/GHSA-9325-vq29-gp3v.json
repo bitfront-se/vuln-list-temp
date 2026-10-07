@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T18:02:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-search-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507718,
+    "Id": "GSA_kwCzR0hTQS05MzI1LXZxMjktZ3Azds4AB79G",
+    "GhsaId": "GHSA-9325-vq29-gp3v",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-9325-vq29-gp3v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106562"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/2d5d3e77d630455d6d48cfa8f31fd3c126fd6f29"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9325-vq29-gp3v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9325-vq29-gp3v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106562"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated Backstage user subject to a `DENY` policy for search document types could receive search results they were not authorized to view. This affects deployments with `permission.enabled: true` and an Elasticsearch or OpenSearch search backend.\n\n### Patches\n\n- Upgrade `@backstage/plugin-search-backend` to 2.1.6\n- Upgrade `@backstage/plugin-search-backend-module-elasticsearch` to 1.8.7\n\n### Workarounds\n\nIf you are unable to upgrade immediately:\n\n- Temporarily modify permission policies to use `CONDITIONAL` decisions with per-result filtering rather than blanket `DENY` for search document types\n- Restrict Elasticsearch/OpenSearch index access at the cluster level so that the search service account can only reach expected Backstage indices, limiting the blast radius if the authorization bypass is triggered.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T18:02:52Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage has incorrect authorization in search engine permission filtering",
+    "UpdatedAt": "2026-10-07T18:02:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.6"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.6"
+    }
+  ]
+}

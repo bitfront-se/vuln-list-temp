@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T16:22:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-techdocs-node"
+  },
+  "Advisory": {
+    "DatabaseId": 507691,
+    "Id": "GSA_kwCzR0hTQS1mN3YzLXhobTYtdzI0Nc4AB78r",
+    "GhsaId": "GHSA-f7v3-xhm6-w245",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-f7v3-xhm6-w245"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/017ace52d9b327ededc6704cf17799c875ae0f29"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/2d9de4ca117a529de4b6ed7dfb7aa507ca7b3f91"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.50.5"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f7v3-xhm6-w245"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f7v3-xhm6-w245"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106557"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated user who can register or modify documentation sources may cause a TechDocs build to access resources outside the intended documentation boundary. Depending on deployment configuration, this may expose sensitive backend-host data or internal network resources.\n\n### Patches\n\nPatched in `@backstage/plugin-techdocs-node` version `1.15.4`.\n\nAdopters must also use `pymdown-extensions` version `10.21.3` or newer, normally through `mkdocs-techdocs-core` version `1.7.0` or newer. `@backstage/plugin-techdocs-node` does not control the Python dependencies used by the generator; with an older PyMdown release, snippets may remain vulnerable to file inclusion even after their configuration is sanitized.\n\n### Workarounds\n\n- Generate TechDocs only from trusted repositories with reviewed MkDocs configuration.\n- Use isolated build environments with restricted filesystem access and network egress.\n- Prefer externally generated TechDocs with appropriately sandboxed CI.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:22:58Z",
+    "Severity": "HIGH",
+    "Summary": "Backstage has improper input validation in TechDocs Markdown extension configuration",
+    "UpdatedAt": "2026-10-07T16:22:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.15.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.15.4"
+    }
+  ]
+}

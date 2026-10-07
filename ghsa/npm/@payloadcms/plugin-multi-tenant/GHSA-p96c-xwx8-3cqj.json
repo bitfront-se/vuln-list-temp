@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T20:29:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/plugin-multi-tenant"
+  },
+  "Advisory": {
+    "DatabaseId": 507837,
+    "Id": "GSA_kwCzR0hTQS1wOTZjLXh3eDgtM2Nxas4AB7-9",
+    "GhsaId": "GHSA-p96c-xwx8-3cqj",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-p96c-xwx8-3cqj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105860"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/commit/19b58692d20d3947f31124bf7a88ac14a5ebf02e"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/releases/tag/v3.90.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p96c-xwx8-3cqj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p96c-xwx8-3cqj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105860"
+      }
+    ],
+    "Description": "## Impact\n\nWhen using the default tenant array field access, an authenticated user could assign themselves to other tenants.\n\n**You are affected if:**\n\n- You are using `@payloadcms/plugin-multi-tenant`\n\nIf you configure the tenants arrayFieldAccess.create/update functions, a secured replacement membership field, you are not affected by this specific default behavior.\n\n## Patches\n\nUsers should upgrade Payload packages to `\u003e= 3.90.0` or `\u003e= 4.0.0-canary.34`.\n\n## Workarounds\n\nConfigure tenants arrayFieldAccess.create and tenants arrayFieldAccess.update so only trusted users authorized for all tenants can modify memberships.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:29:53Z",
+    "Severity": "HIGH",
+    "Summary": "Payload has a tenant authorization bypass in Multi-Tenant Plugin",
+    "UpdatedAt": "2026-10-07T20:29:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0-canary.34"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-canary.0, \u003c 4.0.0-canary.34"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.90.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.90.0"
+    }
+  ]
+}

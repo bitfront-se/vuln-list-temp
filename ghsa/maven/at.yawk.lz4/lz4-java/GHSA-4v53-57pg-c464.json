@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T16:17:51Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "at.yawk.lz4:lz4-java"
+  },
+  "Advisory": {
+    "DatabaseId": 507680,
+    "Id": "GSA_kwCzR0hTQS00djUzLTU3cGctYzQ2NM4AB78g",
+    "GhsaId": "GHSA-4v53-57pg-c464",
+    "References": [
+      {
+        "Url": "https://github.com/yawkat/lz4-java/security/advisories/GHSA-4v53-57pg-c464"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106452"
+      },
+      {
+        "Url": "https://github.com/yawkat/lz4-java/commit/bb83dd16163cdb71231af06b0a5651881148a634"
+      },
+      {
+        "Url": "https://github.com/yawkat/lz4-java/releases/tag/v1.11.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4v53-57pg-c464"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4v53-57pg-c464"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106452"
+      }
+    ],
+    "Description": "### Summary\n\n`LZ4BlockInputStream` grows its compressed-input buffer to the attacker-controlled `compressedLen` value from the legacy `LZ4Block` stream header before reading any payload bytes. A header-only input can therefore trigger a near-2 GiB allocation and exhaust the JVM heap.\n\n### Details\n\nIn `net.jpountz.lz4.LZ4BlockInputStream`, `refill()` validates that `compressedLen` is nonnegative but does not cap it before allocation:\n\n```java\ncase COMPRESSION_METHOD_LZ4:\n  if (compressedBuffer.length \u003c compressedLen) {\n    compressedBuffer = new byte[Math.max(compressedLen, compressedBuffer.length * 3 / 2)];\n  }\n  readFully(compressedBuffer, compressedLen);\n```\n\nThe paired `LZ4BlockOutputStream` never emits such a block. If compression is not smaller than the original block, it writes the block as RAW:\n\n```java\nif (compressedLength \u003e= o) {\n  compressMethod = COMPRESSION_METHOD_RAW;\n  compressedLength = o;\n} else {\n  compressMethod = COMPRESSION_METHOD_LZ4;\n}\n```\n\nExisting readers generally accept noncanonical LZ4-method blocks where `compressedLen \u003e= originalLen`, but no canonical writer found produces them.\n\n### Impact\n\nApplications that pass attacker-controlled legacy `LZ4Block` streams to `LZ4BlockInputStream` can suffer heap exhaustion from a header-only input. The impact is availability-only and requires no valid compressed payload.\n\n### Patch\n\nAs of lz4-java 1.11.2, lz4-java rejects lz4 blocks where the compressed length is larger than uncompressed. Readers would generally emit these as raw blocks instead. You can use the new `acceptOversizedBlocks` flag to restore the old behavior, but this reintroduces the DoS vector.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:17:50Z",
+    "Severity": "MODERATE",
+    "Summary": "yawkat LZ4 Java: LZ4BlockInputStream allocates an unvalidated compressed length from the stream header",
+    "UpdatedAt": "2026-10-07T16:17:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.11.2"
+      },
+      "VulnerableVersionRange": "\u003c= 1.11.1"
+    }
+  ]
+}

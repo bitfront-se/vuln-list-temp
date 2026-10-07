@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T20:25:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend-module-sentry"
+  },
+  "Advisory": {
+    "DatabaseId": 507813,
+    "Id": "GSA_kwCzR0hTQS1nNzM0LWZocDQtN21mcM4AB7-l",
+    "GhsaId": "GHSA-g734-fhp4-7mfp",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-g734-fhp4-7mfp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106459"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/b0170fad7962fb8c3d71366b5265cf283c7bbcf7"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.8"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.55.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g734-fhp4-7mfp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g734-fhp4-7mfp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106459"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated internal user who can execute the affected actions may cause the backend to contact unintended destinations and disclose Sentry integration credentials. Subsequent impact depends on network reachability and the privileges granted to the configured token.\n\n### Patches\n\nUpgrade `@backstage/plugin-scaffolder-backend-module-sentry` to version `0.3.8` or later. The fixed package is available in [Backstage v1.54.8](https://github.com/backstage/backstage/releases/tag/v1.54.8) and [Backstage v1.55.0](https://github.com/backstage/backstage/releases/tag/v1.55.0).\n\nThe update removes custom action-level `apiBaseUrl` values. Move any such value to `scaffolder.sentry.apiBaseUrl` before upgrading.\n\n### Workarounds\n\n- Disable the affected actions until the patched package is deployed.\n- Restrict `scaffolder.action.execute` permission for the affected Sentry actions to trusted users and templates.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:25:01Z",
+    "Severity": "HIGH",
+    "Summary": "Backstage: Improper input validation in Sentry scaffolder actions",
+    "UpdatedAt": "2026-10-07T20:25:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.8"
+      },
+      "VulnerableVersionRange": "\u003e= 0.3.0, \u003c 0.3.8"
+    }
+  ]
+}

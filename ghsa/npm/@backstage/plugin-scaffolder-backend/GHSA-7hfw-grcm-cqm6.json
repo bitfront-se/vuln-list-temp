@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T17:58:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507698,
+    "Id": "GSA_kwCzR0hTQS03aGZ3LWdyY20tY3FtNs4AB78y",
+    "GhsaId": "GHSA-7hfw-grcm-cqm6",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-7hfw-grcm-cqm6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106461"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/0253c50673f2832b0b1e9f73348186434e7bd09e"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7hfw-grcm-cqm6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7hfw-grcm-cqm6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106461"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated internal user may be able to view metadata for scaffolder tasks outside the visibility intended by a deployment's permission policy. Stored task secrets are not included in the affected response, and no integrity or availability impact was identified.\n\n### Patches\n\nPatched in `@backstage/plugin-scaffolder-backend` version `4.1.0`\n\n### Workarounds\n\n- Restrict the scaffolder task-list endpoint at the ingress or authenticating proxy to users who are permitted to view all tasks.\n- Avoid placing sensitive values in template input parameters until the patched package is deployed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T17:58:55Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage: Incorrect authorization in scaffolder task listing",
+    "UpdatedAt": "2026-10-07T17:58:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.0"
+    }
+  ]
+}

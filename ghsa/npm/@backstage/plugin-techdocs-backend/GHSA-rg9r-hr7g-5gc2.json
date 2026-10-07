@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T18:00:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-techdocs-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507710,
+    "Id": "GSA_kwCzR0hTQS1yZzlyLWhyN2ctNWdjMs4AB78-",
+    "GhsaId": "GHSA-rg9r-hr7g-5gc2",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-rg9r-hr7g-5gc2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106489"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/bf6bbf7326ada7d96d7b2c4ebc4a71546106f311"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rg9r-hr7g-5gc2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rg9r-hr7g-5gc2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106489"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated user with access to one TechDocs documentation site could craft a URL able to read documentation belonging to a different entity. This only affects deployments using the external TechDocs builder with an external storage provider (S3, GCS, etc.) and the permission framework enabled. Instances that do not use the permission framework are unaffected, since TechDocs content is visible to all authenticated users by design.\n\n### Patches\n\nPatched in `@backstage/plugin-techdocs-backend` version `2.2.4`\n\n### Workarounds\n\n- None other than upgrading. Deployments that serve TechDocs from local storage are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T18:00:06Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage: Improper authorization enforcement for TechDocs static content",
+    "UpdatedAt": "2026-10-07T18:00:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.4"
+      },
+      "VulnerableVersionRange": "\u003c 2.2.4"
+    }
+  ]
+}

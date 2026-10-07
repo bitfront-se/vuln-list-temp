@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T20:25:09Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-catalog-backend-module-bitbucket-server"
+  },
+  "Advisory": {
+    "DatabaseId": 507814,
+    "Id": "GSA_kwCzR0hTQS1jMzZjLWNmNnItZ2hnas4AB7-m",
+    "GhsaId": "GHSA-c36c-cf6r-ghgj",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-c36c-cf6r-ghgj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106458"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/989db63b6f87c8fc04d440f296ad89e10c79b363"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.55.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c36c-cf6r-ghgj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c36c-cf6r-ghgj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106458"
+      }
+    ],
+    "Description": "### Impact\n\nDeployments using event-driven updates in the Bitbucket Server catalog provider may ingest catalog locations from repositories that are excluded by the provider's configured project, repository, or archived-repository filters.\n\nAn authenticated Bitbucket Server user who can push to a filtered-out repository that remains readable by the configured Backstage integration can trigger a legitimate repository event. The affected event path may then add a Location for that repository even though scheduled discovery excludes it. This can cause catalog entities and metadata to be ingested from a repository that the operator did not intend to trust.\n\nDeployments that do not enable event support for the Bitbucket Server catalog provider, do not configure repository filters, or whose integration credentials cannot read the filtered-out repositories are not affected.\n\n### Patches\n\nUpgrade `@backstage/plugin-catalog-backend-module-bitbucket-server` to version `0.5.15` or later. The fixed package is available in [Backstage v1.55.0](https://github.com/backstage/backstage/releases/tag/v1.55.0).\n\n### Workarounds\n\n- Disable event-driven updates for the Bitbucket Server catalog provider and rely on scheduled discovery until the patched package is deployed.\n- Restrict the configured Bitbucket Server integration credentials so that they cannot read repositories that must remain outside the catalog trust boundary.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:25:08Z",
+    "Severity": "MODERATE",
+    "Summary": " Backstage: Inconsistent repository filtering in Bitbucket Server catalog event updates",
+    "UpdatedAt": "2026-10-07T20:25:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.5.15"
+      },
+      "VulnerableVersionRange": "\u003e= 0.4.0, \u003c 0.5.15"
+    }
+  ]
+}

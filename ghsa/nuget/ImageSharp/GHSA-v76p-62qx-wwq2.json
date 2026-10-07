@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T16:18:57Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "ImageSharp"
+  },
+  "Advisory": {
+    "DatabaseId": 507687,
+    "Id": "GSA_kwCzR0hTQS12NzZwLTYycXgtd3dxMs4AB78n",
+    "GhsaId": "GHSA-v76p-62qx-wwq2",
+    "References": [
+      {
+        "Url": "https://github.com/SixLabors/ImageSharp/security/advisories/GHSA-v76p-62qx-wwq2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106118"
+      },
+      {
+        "Url": "https://github.com/SixLabors/ImageSharp/pull/3176"
+      },
+      {
+        "Url": "https://github.com/SixLabors/ImageSharp/commit/9ee7d1dd5b62d8c9f16cc755e76828386bc2191f"
+      },
+      {
+        "Url": "https://github.com/SixLabors/ImageSharp/releases/tag/v4.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v76p-62qx-wwq2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v76p-62qx-wwq2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106118"
+      }
+    ],
+    "Description": "## Summary\n\nWhen decoding a tiled TIFF with fax compression (T4/T6/MH), `DecodeTilesChunky` allocates each tile buffer from **TileWidth** (`ceil(TileWidth*bpp/8)*TileLength` bytes) but constructs the fax decompressor with **frame.Width**: `TiffDecompressorsFactory` ignores the `isTiled/tileWidth/tileHeight` parameters entirely. The T4/T6/MH decompressors treat the full image width as the scanline length and advance (and really write, via read-modify-write bit ops) `frame.Width` bits per row, with no bounds check against the tile buffer. The very first tile therefore writes linearly out of bounds — about `ImageWidth/8` bytes per row × TileLength rows into a `TileWidth`-sized buffer. With ImageWidth=4,000,000, TileWidth=16, TileLength=16 this writes ~2 MB past a 32-byte buffer and kills the process deterministically; a T6 all-white variant advances the bit offset by \u003e512 MB silently, showing an alarm-free heap-corruption window for the same defect. A crafted file fully controls the OOB length per tile and works with perfectly legal per-row run codes (no overlong runs needed).\n\nVerified at commit `5cd4d0d26a82a9549f297a237aea9cf665bddff8` (main; latest release v4.1.0, the supported major).\n\n## Details\n\nRoot cause: a size mismatch between tile buffer allocation and decompressor width, because the factory drops the tile parameters.\n\n- Allocation: [TiffDecoderCore.cs#L792-L794](https://github.com/SixLabors/ImageSharp/blob/5cd4d0d26a82a9549f297a237aea9cf665bddff8/src/ImageSharp/Formats/Tiff/TiffDecoderCore.cs#L792-L794) — `bytesPerTileRow = RoundUpToMultipleOfEight(tileWidth*bitsPerPixel)`; tile buffer = `bytesPerTileRow*tileLength` bytes (32 bytes in the PoC)\n- Mismatch: [TiffDecoderCore.cs#L797](https://github.com/SixLabors/ImageSharp/blob/5cd4d0d26a82a9549f297a237aea9cf665bddff8/src/ImageSharp/Formats/Tiff/TiffDecoderCore.cs#L797) — `CreateDecompressor\u003cTPixel\u003e(frame.Width, ..., isTiled: true, tileWidth, tileLength)` passes the full frame width\n- Factory drops tile params: [TiffDecompressorsFactory.cs#L56-L64](https://github.com/SixLabors/ImageSharp/blob/5cd4d0d26a82a9549f297a237aea9cf665bddff8/src/ImageSharp/Formats/Tiff/Compression/TiffDecompressorsFactory.cs#L56-L64) — T4/T6/MH decompressors receive only `width` (= frame.Width); `isTiled/tileWidth/tileHeight` ignored\n- OOB write sink: [T4TiffCompression.cs#L69-L119](https://github.com/SixLabors/ImageSharp/blob/5cd4d0d26a82a9549f297a237aea9cf665bddff8/src/ImageSharp/Formats/Tiff/Compression/Decompressors/T4TiffCompression.cs#L69-L119), `T6TiffCompression.cs#L76-L108` — per-row advance of `this.width` bits via `BitWriterUtils.WriteBits` with no buffer-length check ([BitWriterUtils.cs#L51](https://github.com/SixLabors/ImageSharp/blob/5cd4d0d26a82a9549f297a237aea9cf665bddff8/src/ImageSharp/Formats/Tiff/Compression/BitWriterUtils.cs#L51)); note `TiffDecoderCore.cs:829-831` later reads the buffer in `bytesPerTileRow` strides, confirming the protocol expects tile-width rows\n\nAttack surface: `Image.Load(stream)` on an attacker-supplied tiled TIFF (`TiffDecoderCore.DecodeImageWithTiles` → `DecodeTilesChunky`). Default configuration; only requirement is a standard tiled TIFF header (TileWidth=16, TileLength=16) + Compression=3 (T4; T6 also constructible).\n\n**Suggested remediation:**\n1. Short-term: when `isTiled`, construct the T4/T6/MH decompressor with `tileWidth` (not frame width), or clip row writes to the caller-provided buffer length.\n2. Root fix: bound the write side of `BitWriterUtils` (pass remaining bits), and validate every fax row advance against buffer capacity on both tiled and strip paths.\n3. Regression tests: Compression=2/3/4 × tiled with TileWidth \u003c ImageWidth, including a T6 black-pixel row (forces real `WriteBit`).\n\n## PoC\n\nFull PoC posted as the first comment below: `Program.cs` (driver), `poc-tiled-t4.tif` (crafted file, ~9.8 KB, base64 inline), README.\n\n1. Build a small console project referencing `src/ImageSharp/ImageSharp.csproj` and run it against the crafted file (or call `Image.Load` on it from any host).\n2. Observed with ImageWidth=4,000,000, TileWidth=16, TileLength=16, T4 with 400 makeup codes + EOL per row:\n\n   ```\n   tile payload 9642 bytes; rows write ~2,048,000 bytes into a 32-byte buffer\n   Fatal error. System.AccessViolationException: Attempted to read or write protected memory.\n      at SixLabors.ImageSharp.Formats.Tiff.Compression.BitWriterUtils.WriteBits(Span`1\u003cByte\u003e, IntPtr, IntPtr, Byte)\n      at ...T4TiffCompression.WritePixelRun(...)\n      at ...T4TiffCompression.Decompress(...)\n   Aborted (core dumped); exit=134\n   ```\n\n3. Controls: the same file with Compression=None decodes normally (container is fine); a T6 all-white-rows variant advances \u003e512 MB of bit offset without a real write (silent corruption window) before tripping on a directory-level TileOffsets count check.\n\n## Impact\n\n- **What it is:** out-of-bounds write (CWE-787). For any service decoding untrusted tiled TIFFs: remote, default-configuration, deterministic process crash (DoS), plus a heap OOB write whose per-tile length and row width are attacker-tunable — a potential code-execution surface. This is a vulnerability in the library itself, in scope of your SECURITY.md.\n- **Who is impacted:** applications decoding untrusted TIFF with SixLabors.ImageSharp at the current major (verified on main past v4.1.0); tiled + fax-compressed files are the trigger, which ordinary TIFF writers can produce.\n\n---\n\n---\n\nReported by **Kimi Security Team** (bug-report@moonshot.ai).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:18:57Z",
+    "Severity": "HIGH",
+    "Summary": "ImageSharp: Tiled fax TIFF: tile buffer sized by TileWidth but fax decompressor writes scanlines of ImageWidth — heap OOB write",
+    "UpdatedAt": "2026-10-07T16:18:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 4.1.1"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T17:59:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-scaffolder-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507701,
+    "Id": "GSA_kwCzR0hTQS1tZnZxLXg3dnItcmdxZ84AB781",
+    "GhsaId": "GHSA-mfvq-x7vr-rgqg",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-mfvq-x7vr-rgqg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106499"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/dc30fae2d96cb1606d36cc40b242f9b9e539bd70"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mfvq-x7vr-rgqg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mfvq-x7vr-rgqg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106499"
+      }
+    ],
+    "Description": "### Impact\n\nDeployments that configure sensitive `scaffolder.defaultEnvironment.secrets` and allow an attacker to create or modify Scaffolder templates are affected. A template author could cause secret-derived values used during template iteration to be persisted in task logs, exposing those values to users with access to the resulting task logs.\n\n### Patches\n\nPatched in `@backstage/plugin-scaffolder-backend` version `4.1.0`\n\n### Workarounds\n\n- Restrict permission to create or update Template entities to fully trusted parties, as recommended by the Backstage threat model.\n- If that restriction cannot be guaranteed, remove sensitive values from `scaffolder.defaultEnvironment.secrets` until a patched version is available.\n\nNo complete workaround is known that preserves both untrusted template authoring and access to sensitive default-environment secrets.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T17:59:14Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage: Secret-derived values may be exposed in scaffolder task logs",
+    "UpdatedAt": "2026-10-07T17:59:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.1.0"
+    }
+  ]
+}

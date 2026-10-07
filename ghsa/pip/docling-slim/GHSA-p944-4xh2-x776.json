@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T20:41:09Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "docling-slim"
+  },
+  "Advisory": {
+    "DatabaseId": 507857,
+    "Id": "GSA_kwCzR0hTQS1wOTQ0LTR4aDIteDc3Ns4AB7_R",
+    "GhsaId": "GHSA-p944-4xh2-x776",
+    "References": [
+      {
+        "Url": "https://github.com/docling-project/docling/security/advisories/GHSA-p944-4xh2-x776"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105748"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/pull/4417"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/commit/d4bb776884aba9aa3132f54773f420853cf7afe4"
+      },
+      {
+        "Url": "https://github.com/docling-project/docling/releases/tag/v2.131.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p944-4xh2-x776"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p944-4xh2-x776"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105748"
+      }
+    ],
+    "Description": "### Summary\n\ndocling accepts serialized `DoclingDocument` JSON as an input format (`InputFormat.JSON_DOCLING`, enabled by default). A crafted JSON file can set a picture's image `uri` to a local file path. When the converted document is exported with embedded images (`ImageRefMode.EMBEDDED`, the CLI default for Markdown and HTML), the referenced file is read and embedded as base64 in the output.\n\n### Details\n\n`docling/backend/json/docling_json_backend.py` validates the JSON into a `DoclingDocument` without checking image references. The file is then read by docling-core:\n\n- `DoclingDocument._with_embedded_pictures` opens `file://` and plain-path URIs with PIL.\n- `ImageRef.pil_image` checks `allow_image_file_uri` for `file://` URIs but not for plain `Path` values. docling's picture enrichment models load images through this property.\n\nOnly files that PIL can decode as an image are disclosed. Other files, such as text files or keys, fail to decode and are not embedded. The different error behaviour does reveal whether a path exists.\n\n### Impact\n\nDisclosure of image files readable by the converting process (for example other users' uploads or page images in a shared service), and disclosure of whether a local path exists.\n\n### Proof of concept\n\n```python\nfrom pathlib import Path\nfrom docling_core.types.doc import DoclingDocument, ImageRef\nfrom docling_core.types.doc.base import Size\n\ndoc = DoclingDocument(name=\"poc\")\ndoc.add_picture(image=ImageRef(mimetype=\"image/png\", dpi=72, size=Size(width=1, height=1),\n                               uri=Path(\"/srv/uploads/other-user/scan.png\")))\ndoc.save_as_json(\"poc.json\")\n```\n\n`docling poc.json --to md` embeds the referenced PNG as base64 in `poc.md`.\n\n### Patches\n\nFixed in docling 2.131.0 by [#4417](https://github.com/docling-project/docling/pull/4417). The Docling JSON backend now drops image references that point at local files (paths, `file:` URIs and any scheme other than `data:` and `http(s)`) and logs a warning. Callers that need to load local images from JSON they trust can opt in with `DoclingJSONFormatOption(backend_options=DeclarativeBackendOptions(enable_local_fetch=True))`; the CLI has no such option.\n\nCode that loads untrusted JSON directly with docling-core (`DoclingDocument.load_from_json`) and exports it with embedded images is not covered by this fix; that part is tracked in docling-core.\n\n### Workarounds\n\nUpgrade to 2.131.0. For older versions:\n\n- Remove `InputFormat.JSON_DOCLING` from `allowed_formats` when converting untrusted input.\n- Export with `ImageRefMode.PLACEHOLDER` or `ImageRefMode.REFERENCED` instead of `EMBEDDED`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:41:08Z",
+    "Severity": "MODERATE",
+    "Summary": "Docling: Crafted DoclingDocument JSON embeds local image files into converted output",
+    "UpdatedAt": "2026-10-07T20:41:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.131.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.92.0, \u003c 2.131.0"
+    }
+  ]
+}

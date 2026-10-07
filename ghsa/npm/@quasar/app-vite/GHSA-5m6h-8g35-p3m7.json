@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T16:16:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@quasar/app-vite"
+  },
+  "Advisory": {
+    "DatabaseId": 507674,
+    "Id": "GSA_kwCzR0hTQS01bTZoLThnMzUtcDNtN84AB78a",
+    "GhsaId": "GHSA-5m6h-8g35-p3m7",
+    "References": [
+      {
+        "Url": "https://github.com/quasarframework/quasar/security/advisories/GHSA-5m6h-8g35-p3m7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106107"
+      },
+      {
+        "Url": "https://github.com/quasarframework/quasar/commit/91271c38859bec51e154b60c24497a637ce903d7"
+      },
+      {
+        "Url": "https://github.com/quasarframework/quasar/releases/tag/@quasar/app-vite-v3.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5m6h-8g35-p3m7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5m6h-8g35-p3m7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106107"
+      }
+    ],
+    "Description": "Several @quasar/app-vite SSR and SSG renderer paths interpolate `ssrContext.nonce` directly into quoted HTML attributes. An application that derives or overrides the nonce using untrusted data can allow a quote to terminate the nonce attribute and inject additional attributes or markup into generated HTML.\n\nCryptographically generated base64 or base64url nonces are not directly affected because they do not contain HTML attribute delimiters. Exploitation requires an application to place attacker-controlled or otherwise unsafe data in `ssrContext.nonce`.\n\nThe remediation centralizes nonce handling across development SSR/SSG, production SSR, production SSG, critical CSS, store-state scripts, and Vue Devtools. It validates the value as a non-empty base64/base64url CSP nonce and HTML-encodes the attribute value before rendering.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:16:03Z",
+    "Severity": "HIGH",
+    "Summary": "Quasar Framework: App Vite SSR and SSG nonce attributes are not safely constrained",
+    "UpdatedAt": "2026-10-07T16:16:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.2.0"
+    }
+  ]
+}

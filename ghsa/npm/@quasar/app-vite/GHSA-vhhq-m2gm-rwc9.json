@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T16:14:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@quasar/app-vite"
+  },
+  "Advisory": {
+    "DatabaseId": 507673,
+    "Id": "GSA_kwCzR0hTQS12aGhxLW0yZ20tcndjOc4AB78Z",
+    "GhsaId": "GHSA-vhhq-m2gm-rwc9",
+    "References": [
+      {
+        "Url": "https://github.com/quasarframework/quasar/security/advisories/GHSA-vhhq-m2gm-rwc9"
+      },
+      {
+        "Url": "https://github.com/quasarframework/quasar/commit/cdd4daeec839215540221122763c7a17cd478abc"
+      },
+      {
+        "Url": "https://github.com/quasarframework/quasar/releases/tag/@quasar/app-vite-v3.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vhhq-m2gm-rwc9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vhhq-m2gm-rwc9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106108"
+      }
+    ],
+    "Description": "## Summary\n\nDuring an SSG build, page definitions returned by `getSsgPages()` can provide custom `dir` and `filename` values. The builder joined those values to `build.distDir` and wrote the generated page without verifying that the final destination remained inside the distribution directory.\n\n## Details\n\nA page definition containing parent-directory traversal could cause the build to create a new HTML file outside `build.distDir`. An existing symlink below the distribution directory could also redirect a generated file or newly created directories outside the output tree.\n\nQuasar application configuration and SSG page definitions are trusted input by default, so this is not normally a remote file-write primitive. The issue becomes relevant when an application derives SSG page definitions from external or otherwise untrusted content, or when build configuration is compromised. Existing files are protected by the SSG renderer's no-overwrite behavior, but new files and directories can be created with the permissions of the build user.\n\n## Impact\n\nAn attacker able to influence an application's SSG page definitions could create files outside the intended build output directory during `quasar build -m ssg`.\n\n## Remediation\n\nResolve each page destination against the real `build.distDir`, reject absolute and parent-traversing paths, reject destinations that resolve to the output root where a file is expected, and verify existing ancestors after resolving symlinks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:14:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Quasar Framework: App Vite SSG page output paths can escape the configured distribution directory",
+    "UpdatedAt": "2026-10-07T16:14:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.0, \u003c= 3.2.0"
+    }
+  ]
+}

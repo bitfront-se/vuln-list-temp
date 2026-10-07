@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T17:59:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/backend-defaults"
+  },
+  "Advisory": {
+    "DatabaseId": 507706,
+    "Id": "GSA_kwCzR0hTQS1jcTd2LXJmZ2MtNWM3ds4AB786",
+    "GhsaId": "GHSA-cq7v-rfgc-5c7v",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-cq7v-rfgc-5c7v"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106492"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/40346245c53e1bf26dee56601e95c5c4ab9cc124"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/bc80ffdafbc92ff7b8c72347eace13cb8688fd33"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.49.6"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cq7v-rfgc-5c7v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cq7v-rfgc-5c7v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106492"
+      }
+    ],
+    "Description": "### Impact\n\nAn external service credential configured with access restrictions (e.g., read-only) could bypass those restrictions by routing requests through plugin delegation paths. This could allow a restricted service to perform operations beyond its intended scope, including write operations on plugins it was restricted to read-only access for.\n\n### Patches\n\nPatched in `@backstage/backend-defaults` version `0.17.8`\n\n### Workarounds\n\nIf you're unable to upgrade immediately:\n\n- If practical, replace restricted credentials with separate, purpose-specific unrestricted credentials scoped to trusted consumers.\n- Restrict network-level access to Backstage backend API endpoints to trusted callers only.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T17:59:43Z",
+    "Severity": "HIGH",
+    "Summary": "Backstage: Improper preservation of access restrictions during service credential delegation",
+    "UpdatedAt": "2026-10-07T17:59:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.17.8"
+      },
+      "VulnerableVersionRange": "\u003c 0.17.8"
+    }
+  ]
+}

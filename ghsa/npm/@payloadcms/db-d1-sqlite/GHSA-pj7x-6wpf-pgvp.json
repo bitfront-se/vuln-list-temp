@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-07T20:30:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/db-d1-sqlite"
+  },
+  "Advisory": {
+    "DatabaseId": 507839,
+    "Id": "GSA_kwCzR0hTQS1wajd4LTZ3cGYtcGd2cM4AB7-_",
+    "GhsaId": "GHSA-pj7x-6wpf-pgvp",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-pj7x-6wpf-pgvp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105856"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/commit/03b78c7e0901d19c67f07bdf6396a276010adbcc"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/releases/tag/v3.90.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pj7x-6wpf-pgvp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pj7x-6wpf-pgvp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-105856"
+      }
+    ],
+    "Description": "### Impact\n\nAn attacker who has read plus create or update access to a collection can submit a request that includes a SQL injection targeting a specific field path shape and operators in Payload's SQLite and Postgres.\n\n#### You are affected if:\n\n- You use `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`.\n- You use `@payloadcms/db-postgres` or `@payloadcms/db-vercel-postgres` `\u003c 3.73.0`.\n- A readable collection has a `json` field, or a` blocks` field with `blocksAsJSON: true`.\n- The attacker has read plus create or update access on it.\n\n#### You are not affected if:\n- You have no `json or `blocksAsJSON` fields. `richText` is not affected.\n- You run a patched version.\n\n### Patches\n\nThe patched version sanitizes the query input to prevent injection.\n\nUsers should upgrade Payload packages to `\u003e= 3.90.0` or `\u003e= 4.0.0-canary.34`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:30:04Z",
+    "Severity": "HIGH",
+    "Summary": "Payload: SQL injection in SQLite/Postgres",
+    "UpdatedAt": "2026-10-07T20:30:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0-canary.34"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-canary.0, \u003c 4.0.0-canary.34"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.90.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.90.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T16:19:23Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 507689,
+    "Id": "GSA_kwCzR0hTQS1oNnc3LXFtY20tcTZ4cs4AB78p",
+    "GhsaId": "GHSA-h6w7-qmcm-q6xr",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-h6w7-qmcm-q6xr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106123"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2052"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/daca1875cdb8b8c0acce78f71103b21a05478446"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.35.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h6w7-qmcm-q6xr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h6w7-qmcm-q6xr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106123"
+      }
+    ],
+    "Description": "### Summary\nWhen property-file/Map-based `ConnectionFactory` setup fails while parsing the `uri` key, the library wraps the underlying exception with the raw connection string — including the plaintext username and password — baked verbatim into the new exception's message.\n\n### Details\n`ConnectionFactoryConfigurator.load(ConnectionFactory, Map\u003cString,String\u003e, String)` (`src/main/java/com/rabbitmq/client/ConnectionFactoryConfigurator.java`, lines 142-155):\n\n    String uri = properties.get(prefix + \"uri\");\n    if (uri != null) {\n        try {\n            cf.setUri(uri);\n        } catch (URISyntaxException e) {\n            throw new IllegalArgumentException(\"Error while setting AMQP URI: \" + uri, e);\n        } catch (NoSuchAlgorithmException e) {\n            throw new IllegalArgumentException(\"Error while setting AMQP URI: \" + uri, e);\n        } catch (KeyManagementException e) {\n            throw new IllegalArgumentException(\"Error while setting AMQP URI: \" + uri, e);\n        }\n    }\n\n`uri` is the full AMQP URI — `amqp(s)://username:password@host:port/vhost` — concatenated verbatim into the exception message on any of the three catch branches. No masking/redaction exists anywhere in this class or in `ConnectionFactory.setUri()`. This is the library's documented Spring-Boot/ops-config entry point (`ConnectionFactory.load(...)`, available since 4.4.0), not obscure internal code.\n\nRabbitMQ's own AMQP URI spec (rabbitmq.com/docs/uri-spec) explicitly warns the password \"should avoid leaking... the full URI should not appear in exception messages or log records.\" A sibling method twenty lines away (`ConnectionFactory.setUri(URI)`) already avoids this exact mistake for a different malformed-URI case — this path wasn't caught by that same care.\n\nNote: `KeyManagementException` is declared in the throws clause but not actually reachable via the current `setUri(String)` → `setUri(URI)` call chain — the two real, reachable leak surfaces are the `URISyntaxException` branch (trivial, deterministic, scheme-independent) and the `NoSuchAlgorithmException` branch (real but narrower — `amqps://` only, requires a restricted/FIPS-style default TLS provider).\n\n### PoC\n    Map\u003cString, String\u003e props = new HashMap\u003c\u003e();\n    props.put(\"uri\", \"amqp://svc-account:P@ssW0rd With Space!@broker.internal:5672/prod\");\n    ConnectionFactory cf = new ConnectionFactory();\n    ConnectionFactoryConfigurator.load(cf, props, \"\");\n\nThrows:\n\n    java.lang.IllegalArgumentException: Error while setting AMQP URI: amqp://svc-account:P@ssW0rd With Space!@broker.internal:5672/prod\n\nA password containing a space is entirely ordinary under common corporate password policies, and `java.net.URI` rejects such input outright — this isn't a contrived edge case.\n\n### Impact\nDefault Spring Boot startup-failure logging, an APM/error tracker, a CI job log, or an engineer pasting a stack trace into an internal or public ticket now holds the plaintext broker password, in a system typically far less access-controlled than wherever the credential is normally stored. Note the underlying `URISyntaxException` also carries the same string in its own message, chained as the cause of RabbitMQ's `IllegalArgumentException` — so removing RabbitMQ's own `+ uri` concatenation alone would not fully close this; the raw secret-bearing string also shouldn't be handed to `new URI()` for error-reporting purposes at all.\n\nSuggested fix: don't include the raw `uri` string in the wrapped exception's message — redact the userinfo component (or omit the URI entirely) before including it in any exception text.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:19:22Z",
+    "Severity": "MODERATE",
+    "Summary": "RabbitMQ Java client: plaintext broker credentials leaked in exception message from ConnectionFactoryConfigurator.load()",
+    "UpdatedAt": "2026-10-07T16:19:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.35.0"
+      },
+      "VulnerableVersionRange": "\u003c= 5.34.0"
+    }
+  ]
+}

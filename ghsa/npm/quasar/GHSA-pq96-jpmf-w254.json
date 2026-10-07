@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-07T16:14:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "quasar"
+  },
+  "Advisory": {
+    "DatabaseId": 507670,
+    "Id": "GSA_kwCzR0hTQS1wcTk2LWpwbWYtdzI1NM4AB78W",
+    "GhsaId": "GHSA-pq96-jpmf-w254",
+    "References": [
+      {
+        "Url": "https://github.com/quasarframework/quasar/security/advisories/GHSA-pq96-jpmf-w254"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106102"
+      },
+      {
+        "Url": "https://github.com/quasarframework/quasar/commit/11505afe5b5218f2c468f130181815b898fd1e40"
+      },
+      {
+        "Url": "https://github.com/quasarframework/quasar/releases/tag/quasar-v2.22.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pq96-jpmf-w254"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pq96-jpmf-w254"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106102"
+      }
+    ],
+    "Description": "## Vulnerability Details\n\n**File**: `ui/src/utils/meta/Meta.js` — actually `ui/src/plugins/meta/Meta.js` (lines 149-176: `getAttr()` and `getHead()`)\n**Sink**: `injectServerMeta()` (same file) → `ctx.headTags += getHead(data)`, interpolated verbatim into the raw HTTP response `\u003chead\u003e` by the production SSR template (`app-vite/templates/entry/ssr-prod-webserver.js` + `app-vite/lib/plugins/vite.html.js`)\n**Entry point**: the public `useMeta()` composable (`ui/src/composables/use-meta/use-meta.js`) — the single documented way apps set page title/meta/link/script tags\n\n### Root Cause\n`getHead()` is Quasar's SSR-only serializer that turns the meta/link/script/title data collected from every `useMeta()` call into a literal HTML string, using plain template-literal interpolation with **zero HTML-entity escaping and zero attribute-quote escaping**:\n\n```js\nfunction getAttr(seed) {\n  return att =\u003e {\n    const val = seed[att]\n    return att + (val !== true \u0026\u0026 val !== void 0 ? `=\"${val}\"` : '')\n  }\n}\n\nfunction getHead(meta) {\n  let output = ''\n  if (meta.title) {\n    output += `\u003ctitle\u003e${meta.title}\u003c/title\u003e`\n  }\n  ...\n}\n```\n\nContrast this with the client-side equivalent, `apply()` (same file, used only in the browser post-hydration), which builds the same tags via `document.createElement(...)` + `tag.setAttribute(att, val)` — the browser DOM API automatically escapes attribute values, so **the client-side path is not vulnerable**. `getHead()` is a separate, parallel implementation for the SSR case that never received the same protection.\n\nAny string containing `\u003c/title\u003e`, `\"`, or `\u003e` in a `title`, `meta.*.content`, `link.*.href`, or any other attribute value passed to `useMeta()` breaks out of its intended HTML context and injects arbitrary markup — including a live `\u003cscript\u003e` tag — directly into the raw HTML response sent to every visitor.\n\n### Attack Scenario\n1. A Quasar SSR application renders dynamic page metadata via the standard, documented `useMeta()` pattern — e.g. `useMeta(() =\u003e ({ title: post.title, meta: { description: { name: 'description', content: post.excerpt } } }))` for a blog/CMS/product page.\n2. An attacker who can influence that underlying text (submit a blog post/comment, set their own profile display name, control a field in an integrated CMS/API) sets it to `My Post\u003c/title\u003e\u003cscript\u003ealert(document.cookie)\u003c/script\u003e`.\n3. On every SSR render of that page — for every visitor — `getHead()` emits this payload unescaped directly into the `\u003chead\u003e` of the raw HTML response.\n4. The victim's browser parses the HTML top-to-bottom; the injected `\u003cscript\u003e` executes immediately, before hydration, with full access to `document.cookie` and the DOM.\n\n### Impact\n- **Type**: CWE-79 Cross-Site Scripting\n- **Auth required**: No (attacker only needs to influence any text that reaches `useMeta()` — an extremely common pattern, e.g. blog titles, product names, user display names)\n- **Consequence**: Full client-side script execution in the victim site's origin — session/cookie theft, credential phishing overlays, account takeover, defacement. Unlike a typical XSS bug requiring a specific unusual injection point, this affects the single most common `useMeta()` use case (rendering any dynamic title/description), so it can be triggered even by ordinary content containing `\u0026`, `\u003c`, or `\"` without malicious intent, in addition to being trivially exploitable deliberately.\n\n### Vulnerable Code (`ui/src/plugins/meta/Meta.js` lines 149-176)\n```js\nfunction getAttr(seed) {\n  return att =\u003e {\n    const val = seed[att]\n    return att + (val !== true \u0026\u0026 val !== void 0 ? `=\"${val}\"` : '')\n  }\n}\n\nfunction getHead(meta) {\n  let output = ''\n  if (meta.title) {\n    output += `\u003ctitle\u003e${meta.title}\u003c/title\u003e`\n  }\n  ;['meta', 'link', 'script'].forEach(type =\u003e {\n    const metaType = meta[type]\n    for (const att in metaType) {\n      const attrs = Object.keys(metaType[att])\n        .filter(item =\u003e item !== 'innerHTML')\n        .map(getAttr(metaType[att]))\n      output += `\u003c${type} ${attrs.join(' ')} data-qmeta=\"${att}\"\u003e`\n      if (type === 'script') {\n        output += (metaType[att].innerHTML || '') + '\u003c/script\u003e'\n      }\n    }\n  })\n  return output\n}\n```\n\n### Recommended Fix\n```js\nfunction escapeHtml(val) {\n  return String(val)\n    .replaceAll('\u0026', '\u0026amp;')\n    .replaceAll('\u003c', '\u0026lt;')\n    .replaceAll('\u003e', '\u0026gt;')\n    .replaceAll('\"', '\u0026quot;')\n}\n\nfunction getAttr(seed) {\n  return att =\u003e {\n    const val = seed[att]\n    return att + (val !== true \u0026\u0026 val !== void 0 ? `=\"${escapeHtml(val)}\"` : '')\n  }\n}\n\nfunction getHead(meta) {\n  let output = ''\n  if (meta.title) {\n    output += `\u003ctitle\u003e${escapeHtml(meta.title)}\u003c/title\u003e`\n  }\n  // ... rest unchanged, script innerHTML intentionally left raw (JSON-LD use case)\n}\n```\n\n### Verification\nConfirmed end-to-end on v2.21.1 via a local Node.js HTTP lab harness that imports the real, unmodified `Meta.js` source and reproduces the exact `useMeta()` → `injectServerMeta()` call sequence a real SSR app performs, reached via actual `curl` requests (not just isolated function calls):\n\n1. `POST /submit` with `{\"title\":\"My Post\u003c/title\u003e\u003cscript\u003ealert(document.cookie)\u003c/script\u003e\",\"description\":\"\\\"\u003e\u003cscript\u003ealert(document.domain)\u003c/script\u003e\"}`\n2. `GET /render/1` returned a raw HTTP response whose `\u003chead\u003e` contained: `\u003ctitle\u003eMy Post\u003c/title\u003e\u003cscript\u003ealert(document.cookie)\u003c/script\u003e\u003c/title\u003e\u003cmeta name=\"description\" content=\"\"\u003e\u003cscript\u003ealert(document.domain)\u003c/script\u003e\" data-qmeta=\"description\"\u003e`\n3. Verified via `grep`: 0 occurrences of `\u0026lt;` (nothing was escaped), 1 occurrence of a literal, unescaped `\u003cscript\u003ealert(...)\u003c/script\u003e` tag in the actual HTTP response body.\n\nA fix branch (`fix/xss-meta-tag-escaping`) is ready with the minimal patch above (adds an `escapeHtml()` helper used in `getAttr()`/`getHead()`); re-running the same PoC against the patched code shows the payload fully HTML-entity-encoded (`\u0026lt;script\u0026gt;...`) with no live `\u003cscript\u003e` tag, while normal titles containing `\u0026` still render correctly (`\u0026amp;`).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T16:14:22Z",
+    "Severity": "CRITICAL",
+    "Summary": "Quasar Framework: Stored/Reflected XSS via unescaped SSR meta tag rendering in getHead()",
+    "UpdatedAt": "2026-10-07T16:14:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.22.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.22.0"
+    }
+  ]
+}

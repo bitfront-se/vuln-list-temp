@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T18:02:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-kubernetes-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 507717,
+    "Id": "GSA_kwCzR0hTQS1yOXBoLTM2MzctNTVweM4AB79F",
+    "GhsaId": "GHSA-r9ph-3637-55px",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-r9ph-3637-55px"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106563"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/2d5d3e77d630455d6d48cfa8f31fd3c126fd6f29"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r9ph-3637-55px"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r9ph-3637-55px"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106563"
+      }
+    ],
+    "Description": "### Impact\n\nAn authenticated user with Kubernetes read permissions could access Kubernetes workload data beyond their intended scope by supplying crafted entity data to the deprecated services endpoint. The exposure is limited to read-only access to Kubernetes object metadata across configured clusters.\n\n### Patches\n\nPatched in `@backstage/plugin-kubernetes-backend` version 0.21.8.\n\n### Workarounds\n\n- Disable the deprecated `/services/:serviceId` route by deploying a custom Kubernetes router that omits it.\n- Restrict access to the `kubernetes.resources.read` permission to limit the set of users who can reach the endpoint.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T18:02:37Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage: Improper entity validation in deprecated Kubernetes services endpoint",
+    "UpdatedAt": "2026-10-07T18:02:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.21.8"
+      },
+      "VulnerableVersionRange": "\u003c 0.21.8"
+    }
+  ]
+}

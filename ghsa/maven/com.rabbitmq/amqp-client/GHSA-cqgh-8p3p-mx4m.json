@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-07T20:42:34Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.rabbitmq:amqp-client"
+  },
+  "Advisory": {
+    "DatabaseId": 507861,
+    "Id": "GSA_kwCzR0hTQS1jcWdoLThwM3AtbXg0bc4AB7_V",
+    "GhsaId": "GHSA-cqgh-8p3p-mx4m",
+    "References": [
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/security/advisories/GHSA-cqgh-8p3p-mx4m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106121"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/pull/2100"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/commit/25fad817291feff3195c32620117d295598f8b41"
+      },
+      {
+        "Url": "https://github.com/rabbitmq/rabbitmq-java-client/releases/tag/v5.37.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cqgh-8p3p-mx4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cqgh-8p3p-mx4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106121"
+      }
+    ],
+    "Description": "## Summary\n\n`com.rabbitmq.tools.json.JSONReader.read()` never returns when its input ends inside a quoted string or a `//` line comment. Both scanners walk the input with `StringCharacterIterator.next()` but only compare against a delimiter, so once the iterator reaches `CharacterIterator.DONE` (`￿`) they loop forever. The string scanner (`string()`, line 210, `while (c != sep)`) also appends `￿` to a `StringBuilder` every iteration, so it fills the heap and throws `OutOfMemoryError`, taking down the JVM. The comment scanner (`skipWhiteSpace()`, lines 89-92, `while (c != '\\n')`) pins a thread at 100% CPU with no allocation.\n\nThis is reachable with a single message. `JsonRpcServer` and `JsonRpcClient` fall back to `DefaultJsonRpcMapper` whenever no mapper is passed (`JsonRpcServer.java:84` and `:114`, `JsonRpcClient.java:186`), and that mapper hands the raw message body straight to `JSONReader.read()` (`DefaultJsonRpcMapper.java:42` for the server request, `:52` for the client reply). A caller that can publish to the RPC request queue hangs the server; a malicious or MITM'd JSON-RPC service does the same to a client.\n\n## Proof of concept\n\nAgainst `amqp-client` 5.36.0 from Maven Central:\n\n```java\nimport com.rabbitmq.tools.jsonrpc.DefaultJsonRpcMapper;\n\npublic class Poc {\n    public static void main(String[] args) {\n        DefaultJsonRpcMapper mapper = new DefaultJsonRpcMapper();\n        mapper.parse(\"{\\\"method\\\":\\\"x\", String.class); // unterminated string\n        // mapper.parse(\"//\", String.class);           // unterminated // comment\n        System.out.println(\"unreachable\");\n    }\n}\n```\n\n`java -Xmx64m -cp amqp-client-5.36.0.jar:. Poc` throws `OutOfMemoryError: Java heap space` in about 0.1s and never prints. Swapping in the `//` line spins at 100% CPU and never returns. A well-formed body such as `{\"method\":\"x\"}` returns immediately.\n\n## Impact\n\nAvailability. One small, unauthenticated message stops a JSON-RPC endpoint: the unterminated string exhausts the heap, the unterminated comment pins a thread forever. Neither is recoverable per request - `JsonRpcServer.doCall` only catches `ClassCastException`, and an `OutOfMemoryError` affects the whole process.\n\n## Scope and fix\n\nOnly applications using the JSON-RPC-over-AMQP tooling (`com.rabbitmq.tools.jsonrpc`) with the default `DefaultJsonRpcMapper` are affected. `DefaultJsonRpcMapper` and `JSONReader` are deprecated in favour of `JacksonJsonRpcMapper`, but both still ship and remain the default when no mapper is supplied. The fix is to stop both loops at `CharacterIterator.DONE`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T20:42:33Z",
+    "Severity": "MODERATE",
+    "Summary": "RabbitMQ: JSONReader in the default JSON-RPC mapper never terminates on truncated input, causing DoS",
+    "UpdatedAt": "2026-10-07T20:42:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.36.1"
+      },
+      "VulnerableVersionRange": "\u003c= 5.36.0"
+    }
+  ]
+}

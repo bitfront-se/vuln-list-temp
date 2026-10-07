@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-07T17:59:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-catalog-backend-module-azure"
+  },
+  "Advisory": {
+    "DatabaseId": 507708,
+    "Id": "GSA_kwCzR0hTQS14dmg5LTM1dzktNDJtNM4AB788",
+    "GhsaId": "GHSA-xvh9-35w9-42m4",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-xvh9-35w9-42m4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106493"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/47ddbd8b4a3efd812309f759c38f4877fbd9e5ff"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xvh9-35w9-42m4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xvh9-35w9-42m4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-106493"
+      }
+    ],
+    "Description": "### Impact\n\nCatalog entity providers for Azure Blob Storage and AWS S3 did not sufficiently validate storage object paths, which could allow catalog descriptors to be read from outside the intended storage boundary. Access is limited to locations reachable by the backend's configured credentials.\n\n### Patches\n\n- `@backstage/plugin-catalog-backend-module-azure` version `0.3.21`\n- `@backstage/plugin-catalog-backend-module-aws` version `0.4.27`\n- `@backstage/backend-defaults` version `0.7.18`\n\n### Workarounds\n\n- Restrict blob and object creation or renaming in configured catalog storage sources to trusted principals.\n- Scope Backstage's Azure and AWS reader credentials and network access to the intended storage boundaries.\n- Disable an affected catalog provider if those restrictions cannot be enforced.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T17:59:55Z",
+    "Severity": "LOW",
+    "Summary": "Backstage: Cloud storage catalog locations may cross configured storage boundaries",
+    "UpdatedAt": "2026-10-07T17:59:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.3.21"
+      },
+      "VulnerableVersionRange": "\u003c 0.3.21"
+    }
+  ]
+}
