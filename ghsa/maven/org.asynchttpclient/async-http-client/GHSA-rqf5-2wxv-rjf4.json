@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T16:23:37Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 508240,
+    "Id": "GSA_kwCzR0hTQS1ycWY1LTJ3eHYtcmpmNM4AB8FQ",
+    "GhsaId": "GHSA-rqf5-2wxv-rjf4",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-rqf5-2wxv-rjf4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107231"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/8376866aa9b5a7653ad19db9d472692f875caa83"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/c8d639bf6ac341d377d610a93570bcd15565f1a6"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-2.16.1"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-3.0.13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rqf5-2wxv-rjf4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rqf5-2wxv-rjf4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107231"
+      }
+    ],
+    "Description": "### Impact\nA Digest challenge that does not yield a usable nonce is treated as a Basic challenge. The client then answers it with `Authorization: Basic`, which carries the username and password base64 encoded and so recoverable by anyone who sees the request.\n\nAny of these is enough, sent by whoever writes the 401 or 407:\n\n```\nWWW-Authenticate: Digest realm=\"protected\"\nWWW-Authenticate: Digest realm=\"protected\", nonce=\"\"\n```\n\nThe challenge announces itself as Digest, so it passes the check that would otherwise reject a non-Digest challenge for a Digest realm. It then fails to produce a nonce, and the absence of a nonce is what selected Basic. A server offering plain `Basic` to a Digest realm gets nothing, so labelling the challenge Digest and leaving the nonce out is what makes the difference.\n\nThis is reachable by anyone who can write the challenge: a malicious or compromised origin, a proxy, or an attacker on a plaintext hop. Digest exists precisely to keep the password off those hops. A server that stores only HA1, and anyone impersonating the real origin, does not otherwise learn the password itself, so the disclosure enables reuse against other services.\n\nBoth the target and the proxy paths are affected, through `parseWWWAuthenticateHeader` and `parseProxyAuthenticateHeader`.\n\n### Affected versions\n* 3.x: up to and including 3.0.12\n* 2.x: up to and including 2.16.0\n\nThis is long-standing behaviour on both lines, not a recent regression. On 3.0.12 there is one additional way to reach it: a quoted parameter ending in an unescaped backslash, such as `realm=\"C:\\\"`, makes the closing quote read as escaped so the nonce is never found. That trigger is specific to 3.0.12. The downgrade it led to is fixed, but the nonce is still lost on such a challenge: every conformant reader treats the closing quote as escaped. The exchange now fails instead of falling back to Basic.\n\n### Patches\nFixed in 3.0.13 on the 3.x line and in 2.16.1 on the 2.x line. The scheme now comes from the challenge itself instead of being inferred from whether a nonce was found, so a Digest challenge stays Digest even when it cannot be read. With no nonce it produces no Authorization header at all, which fails the exchange rather than downgrading it.\n\nThe 3.x fix also corrects quoted-pair handling so that a backslash before any character other than a quote or another backslash is kept as written, matching Apache HttpComponents. That repairs a 3.0.12 regression where an unescaped realm such as `DOMAIN\\Users` was corrupted to `DOMAINUsers` and failed every digest comparison. This is a deliberate deviation from a strict reading of RFC 9110 Section 5.6.4, under which a backslash before any character is a quoted-pair. Reading it strictly is what corrupts the unescaped spelling that servers actually send, and the decoding is not reversible either way, so the client follows the same rule as Apache HttpComponents.\n\n### Workarounds\nNo configuration prevents this. Until you can upgrade, do not use Digest authentication against a server you do not control, and do not use it over plaintext HTTP.\n\n### Details\n`Realm.Builder.parseWWWAuthenticateHeader` and `parseProxyAuthenticateHeader` selected the scheme with `isNonEmpty(nonce) ? AuthScheme.DIGEST : AuthScheme.BASIC`, so any challenge that produced no nonce became a Basic challenge and `Unauthorized401Interceptor` resent the request using `computeBasicAuthentication`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T16:23:36Z",
+    "Severity": "HIGH",
+    "Summary": "AsyncHttpClient: Digest challenge without a usable nonce downgrades to Basic and sends the password in cleartext",
+    "UpdatedAt": "2026-10-08T16:23:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.16.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.13"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0.Beta1, \u003c= 3.0.12"
+    }
+  ]
+}

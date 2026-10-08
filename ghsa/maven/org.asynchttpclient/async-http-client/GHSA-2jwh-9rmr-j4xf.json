@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-08T16:50:04Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 508263,
+    "Id": "GSA_kwCzR0hTQS0yandoLTlybXItajR4Zs4AB8Fn",
+    "GhsaId": "GHSA-2jwh-9rmr-j4xf",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-2jwh-9rmr-j4xf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107228"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/fd9763620725126c1c8bb0af1ceb9a7523099a5f"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-3.0.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2jwh-9rmr-j4xf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2jwh-9rmr-j4xf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107228"
+      }
+    ],
+    "Description": "### Impact\n\nWith the cookie store enabled, which is the default, a `Cookie` header that the caller sets on a request with `setHeader` or `addHeader` is thrown away whenever the store holds any cookie for the request's origin: the request's cookie list is written into that header afterwards and replaces it. CVE-2024-53990 fixed the same problem for cookies added with `addCookie`, but that fix works on the cookie list, and a header set directly never reaches it.\n\nThis is not limited to a cookie of the same name. A store cookie of any name erases the caller's header, so a request meant to carry the caller's session cookie goes out with only the store's cookies, and where the store has a cookie of the caller's name, the store's value is sent instead.\n\nIt matters most where one client acts for several users. An application that puts each user's session on the request itself, and shares one client and its default cookie store, sends one user's request with a session cookie the store took from a response to another user. The request runs as that other user, so a user of such an application can have their request served under someone else's session, or someone else's under theirs.\n\n### Affected versions\n\n* 3.x: up to and including 3.0.13\n* 2.x: from 2.1.0 up to and including 2.16.1\n\n### Patches\n\nFixed in 3.0.14. The store's cookies are added to a caller's `Cookie` header instead of replacing it, and where both name the same cookie the caller's is kept. The caller's text is kept as written, and several `Cookie` headers are folded into one, as RFC 6265 Section 5.4 requires.\n\nThe 2.x line is end of life and will not receive a fix. Upgrade to 3.0.14.\n\n### Workarounds\n\nWhere requests carry per-user cookies, use a separate client per user, or disable the cookie store with `setCookieStore(null)`.\n\n### References\n\nIncomplete fix of CVE-2024-53990 (GHSA-mfj5-cf8g-g2fv). Reported by @1diot9.\n\n### Attribution\n\nAI-assisted tools were used to support discovery and analysis.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T16:50:03Z",
+    "Severity": "MODERATE",
+    "Summary": "AsyncHttpClient CookieStore Silently Overrides Caller's Explicit Cookie Header via setHeader (Bypass of CVE-2024-53990 Fix)",
+    "UpdatedAt": "2026-10-08T16:50:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.1.0, \u003c= 2.16.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.14"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.0.13"
+    }
+  ]
+}

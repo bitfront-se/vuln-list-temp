@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-08T17:40:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "msgpack5"
+  },
+  "Advisory": {
+    "DatabaseId": 508275,
+    "Id": "GSA_kwCzR0hTQS0yNndxLXAyNWMtajZmds4AB8Fz",
+    "GhsaId": "GHSA-26wq-p25c-j6fv",
+    "References": [
+      {
+        "Url": "https://github.com/mcollina/msgpack5/security/advisories/GHSA-26wq-p25c-j6fv"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/commit/85da345bf1acc18ca441741e5cf4aa0ed0d69314"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/releases/tag/v6.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-26wq-p25c-j6fv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-26wq-p25c-j6fv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107299"
+      }
+    ],
+    "Description": "### Impact\n\nThe reserved MessagePack byte `0xc1` is incorrectly treated as incomplete input. When it appears at the start of a decoder stream, all subsequent data is retained while the decoder waits for bytes that can never make the value valid, allowing memory exhaustion.\n\n### Patches\n\nThe decoder now rejects `0xc1` as invalid input. Streaming decoders release buffered input and stop after unrecoverable decoding errors.\n\n### Workarounds\n\nReject `0xc1` before streaming input to msgpack5, and enforce stream byte and time limits.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T17:40:01Z",
+    "Severity": "MODERATE",
+    "Summary": "msgpack5: Reserved byte can cause unbounded stream buffering",
+    "UpdatedAt": "2026-10-08T17:40:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.0"
+    }
+  ]
+}

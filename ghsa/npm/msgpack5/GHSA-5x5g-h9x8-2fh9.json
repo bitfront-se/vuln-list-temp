@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T17:40:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "msgpack5"
+  },
+  "Advisory": {
+    "DatabaseId": 508276,
+    "Id": "GSA_kwCzR0hTQS01eDVnLWg5eDgtMmZoOc4AB8F0",
+    "GhsaId": "GHSA-5x5g-h9x8-2fh9",
+    "References": [
+      {
+        "Url": "https://github.com/mcollina/msgpack5/security/advisories/GHSA-5x5g-h9x8-2fh9"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/commit/77fbef144d05def5d16fc22c37caa64c0a7efeba"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/releases/tag/v6.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5x5g-h9x8-2fh9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5x5g-h9x8-2fh9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107300"
+      }
+    ],
+    "Description": "### Impact\n\nThe streaming decoder recursively invokes itself for every complete value remaining in a chunk. A single chunk containing many small valid MessagePack values can exhaust the JavaScript call stack and interrupt the process or stream.\n\n### Patches\n\nThe streaming decoder now drains concatenated values iteratively with constant call-stack depth.\n\n### Workarounds\n\nLimit the number of MessagePack values accepted in one chunk, or split large batches before passing them to the decoder stream.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T17:40:06Z",
+    "Severity": "HIGH",
+    "Summary": "msgpack5: Many buffered values can exhaust the streaming decoder stack",
+    "UpdatedAt": "2026-10-08T17:40:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.0"
+    }
+  ]
+}

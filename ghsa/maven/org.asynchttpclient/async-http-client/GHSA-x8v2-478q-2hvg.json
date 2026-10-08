@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T16:49:54Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 508261,
+    "Id": "GSA_kwCzR0hTQS14OHYyLTQ3OHEtMmh2Z84AB8Fl",
+    "GhsaId": "GHSA-x8v2-478q-2hvg",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-x8v2-478q-2hvg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107227"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/b61637f30327f314b7693418f12ce141ac6b2b30"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-3.0.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x8v2-478q-2hvg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x8v2-478q-2hvg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107227"
+      }
+    ],
+    "Description": "### Impact\n\nWith WebSocket compression enabled, the client inflates `permessage-deflate` messages with no limit on the decompressed size. It installed Netty's shared `WebSocketClientCompressionHandler.INSTANCE`, whose inflater is unbounded, and `webSocketMaxFrameSize` and `webSocketMaxBufferSize` only bound the compressed bytes, because the frame aggregator sits in front of the inflater.\n\nA malicious or compromised WebSocket server, or anyone on the path of a `ws://` connection, can therefore send a message of about 2 MiB that inflates to about 2 GiB, the most a Netty buffer can hold. The client then copies the inflated message again to hand it to the listener. That exhausts the heap of a typically sized JVM. Netty catches the resulting `OutOfMemoryError` and closes that connection, but while the buffer is live any other allocation in the process can fail too, and a server that keeps sending such messages, on one connection or several, keeps the client at heap exhaustion.\n\n### Who is Impacted\n\nOnly applications that enable WebSocket compression with `setEnablewebSocketCompression(true)`, which is off by default, and connect to a WebSocket server that is untrusted, compromised, or reached over cleartext `ws://`.\n\n### Affected versions\n\n* 3.x: up to and including 3.0.13\n* 2.x: from 2.2.0, when WebSocket compression was added, up to and including 2.16.1\n\n### Patches\n\nFixed in 3.0.14. A new setting, `webSocketMaxDecompressedFrameSize` (`setWebSocketMaxDecompressedFrameSize`, or the `org.asynchttpclient.webSocketMaxDecompressedFrameSize` property), bounds how far a message may inflate, and a message that would go past it fails the connection. It defaults to 128000000 bytes, the same as `webSocketMaxBufferSize`, so a message is bounded alike whether or not it was compressed; a compressed message that inflates past that, which was accepted before, now fails the connection. With `aggregateWebSocketFrameFragments` turned off, the bound applies to each frame instead, and fragments are delivered one at a time. Set it lower if you enable compression and do not expect large messages. `0` disables the limit.\n\nThe 2.x line is end of life and will not receive a fix. Upgrade to 3.0.14.\n\n### Workarounds\n\nLeave WebSocket compression disabled, which is the default.\n\n### Details\n\nAfter the handshake the inbound pipeline is `ws-decoder`, `ws-aggregator`, `PerMessageDeflateDecoder`, `ahc-ws`: the aggregator, which enforces `webSocketMaxBufferSize`, sees each message before it is inflated. `WebSocketClientCompressionHandler.INSTANCE` is built with `maxAllocation = 0`, which Netty treats as unbounded, and Netty has deprecated it in favour of a constructor that takes a limit. RFC 6455 Section 10.4 asks an implementation to limit the size of a message after reassembly, and under RFC 7692 Section 6.2 the message delivered to the application is the decompressed payload.\n\nThis is a different path from the HTTP response decompression fixed under CVE-2026-85721, which never reached the WebSocket pipeline.\n\n### Attribution\n\nAI-assisted tools were used to support discovery and analysis.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T16:49:53Z",
+    "Severity": "HIGH",
+    "Summary": "AsyncHttpClient: Unbounded WebSocket permessage-deflate decompression enables a decompression-bomb denial of service when compression is enabled",
+    "UpdatedAt": "2026-10-08T16:49:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.2.0, \u003c= 2.16.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.14"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.0.13"
+    }
+  ]
+}

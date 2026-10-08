@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-08T16:30:47Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 508242,
+    "Id": "GSA_kwCzR0hTQS1qbXFxLXg1ZzktOXAyd84AB8FS",
+    "GhsaId": "GHSA-jmqq-x5g9-9p2w",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-jmqq-x5g9-9p2w"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107282"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/15b254514a411623e5f1d8c99ea79c0f82f8a466"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/bbc31aed3b044f9f7a126cf689a8c8d7ad2ae1cb"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-2.16.1"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-3.0.13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jmqq-x5g9-9p2w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jmqq-x5g9-9p2w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107282"
+      }
+    ],
+    "Description": "### Impact\nWhen a request is replayed onto a different host, the client updates only the current request and leaves the target request pointing at the original host. Four consumers read that stale value, and each one sends the first host's request, credentials, or both to the second host.\n\nA replay happens through documented, ordinary features: a `ResponseFilter` that returns a different request, which is the supported failover pattern, and the IOException retry path. The attacker does not need to induce the replay; an application that uses failover produces it by design.\n\n* The socket to host B is filed in the connection pool under host A's key. A later request the application addresses to A is served over the connection to B, and A's `Authorization` header goes to B.\n* Over a CONNECT tunnel, the client tunnels to B and negotiates TLS with B correctly, then writes A's request into that tunnel. B receives A's path, A's `Host`, and A's `Authorization`. TLS does not protect against this, because the handshake really is with B, so no certificate mismatch occurs.\n* The replay reuses the original realm, so A's credentials are regenerated onto a replay request that carries no realm of its own. The cross-origin redirect path strips realms for exactly this reason; the replay path never did.\n* The stale value also decides whether TLS is used at all. When the original request was `http://` and the replay is `https://`, no SSL handler is installed and the replayed request, credentials included, is written in cleartext.\n\n### Affected versions\n* 3.x: up to and including 3.0.12\n* 2.x: up to and including 2.16.0\n\nBoth lines are affected identically. This is long-standing behaviour, not a recent regression.\n\n### Patches\nFixed in 3.0.13 on the 3.x line and in 2.16.1 on the 2.x line. The target request now moves when a request is replayed, and the proxy moves with it: the proxy is part of the connection pool key, so correcting only the host would convert a harmless pool miss into a hit and route a proxied connection to a direct request.\n\n### Workarounds\nDo not use a `ResponseFilter` that replays to a different host, and disable request retries, if the client is configured with credentials or used through a proxy. Replaying to the same host is not affected.\n\n### Details\n`NettyRequestSender.newNettyRequestAndResponseFuture` calls `setCurrentRequest` without `setTargetRequest`, and `replayRequest` does not move the target either. The stale target is then read by the pool key derivation in `NettyResponseFuture`, by `ConnectSuccessInterceptor` when it writes the tunnelled request, by the realm selection in `NettyRequestSender`, and by `NettyConnectListener` when it decides whether to install an SSL handler.\n\nExisting replay tests do not cover this, because all of them replay to the same host.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T16:30:46Z",
+    "Severity": "CRITICAL",
+    "Summary": "AsyncHttpClient: Replay to a different host sends the original host request and credentials to the new host",
+    "UpdatedAt": "2026-10-08T16:30:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.16.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.13"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c= 3.0.12"
+    }
+  ]
+}

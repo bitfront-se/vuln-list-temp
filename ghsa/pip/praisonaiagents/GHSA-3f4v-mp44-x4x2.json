@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-08T16:48:44Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonaiagents"
+  },
+  "Advisory": {
+    "DatabaseId": 370690,
+    "Id": "GSA_kwCzR0hTQS0zZjR2LW1wNDQteDR4Ms4ABagC",
+    "GhsaId": "GHSA-3f4v-mp44-x4x2",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-4xxv-6wmf-xf45"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61432"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/commit/1620b49f36945d8cc8ee5635b906c960df5097a0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/praisonai-fastcontext-before-path-traversal"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3f4v-mp44-x4x2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3f4v-mp44-x4x2"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-4xxv-6wmf-xf45. This link is maintained to preserve external references.\n\n### Original Description\nPraisonAI (praisonaiagents) before 1.6.78 contains a path traversal vulnerability in the FastContext feature (praisonaiagents.context.fast). FastContextAgent.execute_tool() prepends the configured workspace_path only for relative paths and neither rejects absolute paths nor canonicalizes joined paths before enforcing workspace containment. As a result, tool arguments or model-generated function calls to grep_search, glob_search, read_file, or list_directory can supply absolute paths or '../' traversal sequences to read, search, and enumerate files outside the intended workspace directory, with file contents returned to the caller or injected into the model's tool-result context.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-10T15:31:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: PraisonAI: FastContext path resolution permits absolute and traversal reads outside the workspace",
+    "UpdatedAt": "2026-10-08T16:48:44Z",
+    "WithdrawnAt": "2026-10-08T16:48:44Z",
+    "CVSS": {
+      "Score": 5.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.77"
+    }
+  ]
+}

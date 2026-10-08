@@ -1,0 +1,98 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T19:42:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mariadb"
+  },
+  "Advisory": {
+    "DatabaseId": 508358,
+    "Id": "GSA_kwCzR0hTQS1yM3J2LWptM3ItNjJxMs4AB8HG",
+    "GhsaId": "GHSA-r3rv-jm3r-62q2",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-r3rv-jm3r-62q2"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/6995c8cf8e51b2ad055de63dcaa4094eebbef5ce"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/7670d90949307e735c0ae148d80b3776478a599d"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/95886df9fa0cca991e2be339caa6c3979be61553"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/e5a9d732d9574177749488336319b73074072779"
+      },
+      {
+        "Url": "https://hackerone.com/reports/3889197"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.2.5"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.3.4"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.4.7"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-nodejs/releases/tag/3.5.4"
+      },
+      {
+        "Url": "https://jira.mariadb.org/browse/CONJS-368"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r3rv-jm3r-62q2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r3rv-jm3r-62q2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107385"
+      }
+    ],
+    "Description": "### Description\nWhen escaping string and binary parameters for the text protocol, the connector always escaped the quote character with a backslash, without ever consulting the session's NO_BACKSLASH_ESCAPES SQL mode. The server status flag was declared (STATUS_NO_BACKSLASH_ESCAPES) but never read.\n\nUnder a server or session running with NO_BACKSLASH_ESCAPES, the backslash is an ordinary character and the quote must be escaped by doubling it. The escaped value produced by the connector therefore closed the string literal, and a value passed through a placeholder was interpreted as SQL.\n\nAll text-protocol escaping entry points were affected, including Connection.escape().\n\n### Impact\nAn attacker able to influence any value the application passes as a query parameter could execute arbitrary SQL with the privileges of the application's database user: read, modify or delete any data reachable by that connection.\n\nExposure requires a deployment where NO_BACKSLASH_ESCAPES is enabled — server-wide, through the connector's sessionVariables / initSql options, or by an application-issued SET sql_mode. It is not implied by the ANSI, ORACLE or TRADITIONAL compound modes on MariaDB 11.4, so it has to be set deliberately. Where it is enabled, no unusual application code is needed: the standard placeholder API is the injection point.\n\nexecute() and batch() are not affected: the binary prepared-statement and bulk protocols send parameter values out of band.\n\n### Resolution\nThe escaping routines now branch on the session status flag, doubling the quote and leaving the backslash untouched when NO_BACKSLASH_ESCAPES is set\n\n### Workarounds\nUse execute() or batch(), or do not enable NO_BACKSLASH_ESCAPES, until upgraded.\n\n### Credit\nReported by fg0x0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T19:42:28Z",
+    "Severity": "HIGH",
+    "Summary": "MariaDB Connector/Node.js: SQL injection in the text protocol when the session uses NO_BACKSLASH_ESCAPES",
+    "UpdatedAt": "2026-10-08T19:42:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0-rc.0, \u003c 3.5.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.0, \u003c 3.4.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.4"
+      },
+      "VulnerableVersionRange": "\u003e= 3.3.0, \u003c 3.3.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.5"
+      },
+      "VulnerableVersionRange": "\u003c 3.2.5"
+    }
+  ]
+}

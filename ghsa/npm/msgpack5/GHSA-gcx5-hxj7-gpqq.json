@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-08T17:39:47Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "msgpack5"
+  },
+  "Advisory": {
+    "DatabaseId": 508272,
+    "Id": "GSA_kwCzR0hTQS1nY3g1LWh4ajctZ3Bxcc4AB8Fw",
+    "GhsaId": "GHSA-gcx5-hxj7-gpqq",
+    "References": [
+      {
+        "Url": "https://github.com/mcollina/msgpack5/security/advisories/GHSA-gcx5-hxj7-gpqq"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/commit/e4827641d3105e295cbbd56e9c5389978547eab4"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/releases/tag/v6.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gcx5-hxj7-gpqq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gcx5-hxj7-gpqq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107297"
+      }
+    ],
+    "Description": "### Impact\n\nThe streaming decoder reparses an incomplete container from the beginning whenever another chunk arrives. A remote peer can split one valid MessagePack value across many small chunks, causing quadratic CPU usage and blocking the event loop.\n\n### Patches\n\nThe decoder now preserves incremental container state so completed elements are not parsed again when more input arrives.\n\n### Workarounds\n\nBuffer each complete MessagePack value before decoding it, or limit the number of chunks accepted for a single value.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T17:39:46Z",
+    "Severity": "MODERATE",
+    "Summary": "msgpack5: Quadratic parsing in the streaming decoder",
+    "UpdatedAt": "2026-10-08T17:39:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.0"
+    }
+  ]
+}

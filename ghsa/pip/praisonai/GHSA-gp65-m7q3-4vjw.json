@@ -1,0 +1,58 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T19:36:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonai"
+  },
+  "Advisory": {
+    "DatabaseId": 372700,
+    "Id": "GSA_kwCzR0hTQS1ncDY1LW03cTMtNHZqd84ABa_c",
+    "GhsaId": "GHSA-gp65-m7q3-4vjw",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-2gpf-2492-q9jh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61435"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/commit/2a855c470077c7d2e2479a575f7ef7f548d51c33"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/commit/846568c7a5d8ce9e71e56e4c213f027c04909753"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/praisonai-before-authentication-bypass-via-host-header-spoofing"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gp65-m7q3-4vjw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gp65-m7q3-4vjw"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-2gpf-2492-q9jh. This link is maintained to preserve external references.\n\n### Original Description\nPraisonAI before 4.6.78 contains an authentication bypass in the Call API agent invocation endpoints (src/praisonai/praisonai/api/agent_invoke.py) when PRAISONAI_CALL_AUTH=disabled is configured. The safeguard intended to restrict the disabled-auth opt-out to localhost binding derives the bind host from request.url.hostname, which is taken from the client-controlled HTTP Host header. A remote, unauthenticated attacker who can reach the service over the network can send a spoofed 'Host: 127.0.0.1' header to bypass the localhost-only restriction and list (GET /api/v1/agents) and invoke (POST /api/v1/agents/{agent_id}/invoke) registered agents without authentication.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-15T12:32:03Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: PraisonAI: Call API localhost-only authentication bypass via spoofed Host header",
+    "UpdatedAt": "2026-10-08T19:36:15Z",
+    "WithdrawnAt": "2026-10-08T19:36:15Z",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 4.6.77"
+    }
+  ]
+}

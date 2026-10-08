@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-08T17:40:52Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pydantic-ai"
+  },
+  "Advisory": {
+    "DatabaseId": 508280,
+    "Id": "GSA_kwCzR0hTQS12MzZnLWpjdzkteDdjd84AB8F4",
+    "GhsaId": "GHSA-v36g-jcw9-x7cw",
+    "References": [
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/security/advisories/GHSA-v36g-jcw9-x7cw"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/pull/8984"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/pull/8985"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/commit/2b247add4950bef61d352e7ca8aefbd20539180c"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/commit/2fd38792693da00a3ca5412aeffb436787af3545"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/releases/tag/v1.107.7"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/releases/tag/v2.52.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v36g-jcw9-x7cw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v36g-jcw9-x7cw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107287"
+      }
+    ],
+    "Description": "### Summary\n\nApplications using Pydantic AI's local web-fetch tool can experience excessive CPU and memory use when it converts attacker-controlled HTML. An agent must fetch the affected page; provider-native web fetching is not affected.\n\n### Details\n\nNested block elements cause HTML-to-Markdown conversion to reprocess accumulated text at each level and can greatly expand the intermediate output. The response-body limit bounds downloaded bytes, while the returned-content limit is applied only after conversion. On current releases, conversion runs in a worker thread but can still consume substantial resources and delay other work in the process. Older releases performed conversion on the event loop.\n\n### Mitigation\n\nUpgrade to a patched release of `pydantic-ai` or `pydantic-ai-slim`. If you cannot upgrade yet, avoid using local web fetching for attacker-controlled HTML.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T17:40:50Z",
+    "Severity": "MODERATE",
+    "Summary": "Pydantic AI: Excessive resource use when local web fetching converts nested HTML",
+    "UpdatedAt": "2026-10-08T17:40:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.52.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0b1, \u003c 2.52.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.107.7"
+      },
+      "VulnerableVersionRange": "\u003e= 1.77.0, \u003c 1.107.7"
+    }
+  ]
+}

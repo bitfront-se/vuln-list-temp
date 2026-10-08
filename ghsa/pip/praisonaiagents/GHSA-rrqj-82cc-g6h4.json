@@ -1,0 +1,55 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-08T16:36:29Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonaiagents"
+  },
+  "Advisory": {
+    "DatabaseId": 370675,
+    "Id": "GSA_kwCzR0hTQS1ycnFqLTgyY2MtZzZoNM4ABafz",
+    "GhsaId": "GHSA-rrqj-82cc-g6h4",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-qjw5-xwrp-xwpq"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-60089"
+      },
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/commit/3aa9cbc2bd49c23a32be0a89a5e620d13d843eab"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/praisonai-before-path-traversal-via-config-toml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rrqj-82cc-g6h4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rrqj-82cc-g6h4"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-qjw5-xwrp-xwpq. This link is maintained to preserve external references.\n\n### Original Description\nPraisonAI (pip package praisonaiagents) before 1.6.78 automatically loads defaults from a project-local .praisonai/config.toml when constructing an Agent, and does not validate the defaults.output.output_file path. A repository-controlled config file can set output_file to an absolute or '..' traversal path; when the developer subsequently calls agent.start() without explicitly passing an output parameter, PraisonAI writes the agent response to that path (creating parent directories as needed), allowing an untrusted checked-out project to overwrite files outside the project root with the privileges of the user running PraisonAI.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-10T15:31:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: PraisonAI: Project config can auto-save agent output outside the project root",
+    "UpdatedAt": "2026-10-08T16:36:29Z",
+    "WithdrawnAt": "2026-10-08T16:36:28Z",
+    "CVSS": {
+      "Score": 5.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.77"
+    }
+  ]
+}

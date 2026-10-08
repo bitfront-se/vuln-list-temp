@@ -1,0 +1,74 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-08T22:10:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.hazelcast:hazelcast"
+  },
+  "Advisory": {
+    "DatabaseId": 508458,
+    "Id": "GSA_kwCzR0hTQS02djI1LTh3cTYteHE0as4AB8Iq",
+    "GhsaId": "GHSA-6v25-8wq6-xq4j",
+    "References": [
+      {
+        "Url": "https://github.com/hazelcast/hazelcast/security/advisories/GHSA-6v25-8wq6-xq4j"
+      },
+      {
+        "Url": "https://github.com/hazelcast/hazelcast/commit/361979da12f18950c24719db832ca6c5e7c0534f"
+      },
+      {
+        "Url": "https://docs.hazelcast.com/hazelcast/5.7/release-notes/community"
+      },
+      {
+        "Url": "https://docs.hazelcast.com/hazelcast/5.7/release-notes/enterprise"
+      },
+      {
+        "Url": "https://github.com/hazelcast/hazelcast/releases/tag/v5.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6v25-8wq6-xq4j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6v25-8wq6-xq4j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107726"
+      }
+    ],
+    "Description": "### Impact\n\nA flaw has been found in Hazelcast Enterprise Edition and Community Edition, which would allow a low-privileged malicious client to read arbitrary data in memory from any cluster member (including Java heap memory, off-heap data, and JVM process address space). Additionally, such a client may be able to cause one or more cluster members to crash, or in some Enterprise Edition configurations also corrupt memory contents, potentially leading to remote code execution. Both slim and full distributions are affected.\n\n### Patches\n\nEnterprise customers should upgrade to a fixed version of Hazelcast Enterprise Edition:\n * 5.7.0\n * 5.6.1\n * 5.5.10\n * 5.4.5\n \nCustomers with extended support contracts should contact Hazelcast Support for information on patches for older versions.\n\nCommunity Edition users should upgrade to version 5.7.0.\n\nHazelcast also recommends all customers follow the advice in our [Security Hardening guide](https://docs.hazelcast.com/hazelcast/5.7/secure-cluster/hardening-recommendations), including:\n\n * Ensure [Hazelcast Security](https://docs.hazelcast.com/hazelcast/5.7/security/enable-security) is enabled and [client authorization](https://docs.hazelcast.com/hazelcast/5.7/security/client-authorization) is enforced.\n * Define an [explicit allowlist for zero config Compact serialization](https://docs.hazelcast.com/hazelcast/5.7/serialization/compact-serialization#zero-config-filter).\n * Avoid deploying clients on internet-facing non-secure networks or non-secure hosts.\n * Ensure your Hazelcast cluster is appropriately protected by firewall rules.\n * Disable any features you are not using.\n\n### Workarounds\nIf you cannot update to a fixed version immediately, restrict cluster access to trusted clients only and ensure clients are hardened against compromise.\n\n### References\n\n[Security Advisory on the Hazelcast Support Portal](https://support.hazelcast.com/s/article/Security-Advisory-GHSA-6v25-8wq6-xq4j)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T22:10:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "Hazelcast allows arbitrary member memory access by low-privileged client",
+    "UpdatedAt": "2026-10-08T22:10:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.7.0"
+      },
+      "VulnerableVersionRange": "\u003c 5.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 5.5.0, \u003c 5.5.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.7.0"
+      },
+      "VulnerableVersionRange": "= 5.6.0"
+    }
+  ]
+}

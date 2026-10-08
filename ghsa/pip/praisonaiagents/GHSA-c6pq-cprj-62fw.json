@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T16:48:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonaiagents"
+  },
+  "Advisory": {
+    "DatabaseId": 370676,
+    "Id": "GSA_kwCzR0hTQS1jNnBxLWNwcmotNjJmd84ABaf0",
+    "GhsaId": "GHSA-c6pq-cprj-62fw",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-4gfv-wg42-7jw5"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61437"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/praisonai-before-remote-code-execution-via-tools-py"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c6pq-cprj-62fw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c6pq-cprj-62fw"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-4gfv-wg42-7jw5. This link is maintained to preserve external references.\n\n### Original Description\nPraisonAI (pip package praisonaiagents) before 1.6.78 contains an unsafe dynamic module loading vulnerability in AgentFlow._resolve_pydantic_class (src/praisonai-agents/praisonaiagents/workflows/workflows.py). When a workflow step uses a string output_pydantic reference, the framework locates and imports a sibling tools.py from the workflow file's directory via importlib exec_module without sandboxing, ignoring the PRAISONAI_ALLOW_*_TOOLS environment variables. An attacker who controls a workflow file and its sibling tools.py can execute arbitrary Python code with the workflow runner's privileges when the workflow is executed via WorkflowManager or after load_yaml.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-10T15:31:42Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: PraisonAI: Unsafe Dynamic Module Loading Leads to Arbitrary Code Execution via tools.py in AgentFlow",
+    "UpdatedAt": "2026-10-08T16:48:48Z",
+    "WithdrawnAt": "2026-10-08T16:48:47Z",
+    "CVSS": {
+      "Score": 7.8,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.77"
+    }
+  ]
+}

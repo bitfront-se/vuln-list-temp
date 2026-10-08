@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T16:49:47Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.asynchttpclient:async-http-client"
+  },
+  "Advisory": {
+    "DatabaseId": 508260,
+    "Id": "GSA_kwCzR0hTQS12Mmo1LTIyZnItajYycs4AB8Fk",
+    "GhsaId": "GHSA-v2j5-22fr-j62r",
+    "References": [
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-v2j5-22fr-j62r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107230"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/commit/d3bb4d68b41acf5d3ab7541afa9fdfe7ec3ba054"
+      },
+      {
+        "Url": "https://github.com/AsyncHttpClient/async-http-client/releases/tag/async-http-client-project-3.0.14"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v2j5-22fr-j62r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v2j5-22fr-j62r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107230"
+      }
+    ],
+    "Description": "### Impact\nThe fix for GHSA-vvp4-63h8-v5pm in 3.0.13 folded the authenticated principal into the HTTP/1.1 connection pool key, so that a connection one principal authenticated with NTLM, Kerberos or SPNEGO is not handed to another. It left three cases out. In each, a socket that one identity authenticated can still be drawn by a request belonging to a different identity, and the server serves that request as the first one.\n\n1. **A login with no configured principal.** Kerberos and SPNEGO against the ticket cache or the default JAAS login, which is the usual deployment, leave the realm's principal unset, and the key stayed unscoped in that case. A request to the same host that carries no credentials at all draws the authenticated socket and is served as the service identity.\n2. **The proxy realm.** Only the origin realm went into the key. A connection authenticated to a proxy with NTLM or Negotiate is handed to requests of another proxy identity, or of none, and the proxy acts for them as the first identity.\n3. **Identities that share a user name.** Only the principal string went into the key, so `CORP\\alice` and `OTHER\\alice` shared connections, as did two realms differing only in password, login context, keytab or service principal. The Kerberos login cache in `SpnegoEngine` had the same collision, and it was an unsynchronised map, so concurrent first use could hand one caller's login to another.\n\n### Who is Impacted\nApplications that authenticate with NTLM, Kerberos or SPNEGO, to an origin or to a proxy, and send requests under different identities, or both with and without credentials, to the same host through one client. The sharpest case is a service that calls an internal host under its own Kerberos identity and also fetches user-supplied URLs: a URL on that host is fetched as the service. Basic and Digest are not affected.\n\n### Affected versions\n* 3.x: 3.0.13\n* 2.x: 2.16.1\n\nEarlier versions are covered by GHSA-vvp4-63h8-v5pm.\n\n### Patches\nFixed in 3.0.14. The pool key now carries a digest of every field of the realm that decides which identity the connection ends up as, for the origin and the proxy separately, and a realm that authenticates the connection is scoped whether or not it names a principal. `SpnegoEngine` caches logins in a concurrent map keyed by every other field of that identity, and replaces a cached login when the password changes.\n\nThe 2.x line is end of life and will not receive a fix. Upgrade to 3.0.14.\n\n### Workarounds\nUse a separate `AsyncHttpClient` instance per identity, and do not share one between authenticated and unauthenticated requests to a host that uses NTLM or Negotiate. Disabling connection pooling also removes the reuse.\n\nIncomplete fix of GHSA-vvp4-63h8-v5pm.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T16:49:46Z",
+    "Severity": "HIGH",
+    "Summary": "AsyncHttpClient: Pooled connections can still be shared across NTLM, Negotiate and proxy logins",
+    "UpdatedAt": "2026-10-08T16:49:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 2.16.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.14"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.0.14"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-08T17:40:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "msgpack5"
+  },
+  "Advisory": {
+    "DatabaseId": 508277,
+    "Id": "GSA_kwCzR0hTQS04ZjM0LWY1NngtOXhwaM4AB8F1",
+    "GhsaId": "GHSA-8f34-f56x-9xph",
+    "References": [
+      {
+        "Url": "https://github.com/mcollina/msgpack5/security/advisories/GHSA-8f34-f56x-9xph"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/commit/15443a1f2aa682a6aa37f1705ac628de5b866ad1"
+      },
+      {
+        "Url": "https://github.com/mcollina/msgpack5/releases/tag/v6.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8f34-f56x-9xph"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8f34-f56x-9xph"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107302"
+      }
+    ],
+    "Description": "### Impact\n\nA truncated `map32` header causes an out-of-bounds buffer read and throws `RangeError` instead of `IncompleteBufferError`. Applications that rely on `IncompleteBufferError` to wait for additional bytes may terminate a request, stream, or worker unexpectedly. No adjacent memory is disclosed because the buffer implementation checks bounds.\n\n### Patches\n\nThe decoder now validates the complete five-byte `map32` header before reading its length and reports truncated input as `IncompleteBufferError`.\n\n### Workarounds\n\nRequire at least five bytes before decoding a value beginning with `0xdf`, or catch `RangeError` and treat it as incomplete input only for truncated `map32` headers.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-08T17:40:10Z",
+    "Severity": "HIGH",
+    "Summary": "msgpack5: Truncated map32 headers throw an unexpected error",
+    "UpdatedAt": "2026-10-08T17:40:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.1.0"
+      },
+      "VulnerableVersionRange": "\u003c 6.1.0"
+    }
+  ]
+}
