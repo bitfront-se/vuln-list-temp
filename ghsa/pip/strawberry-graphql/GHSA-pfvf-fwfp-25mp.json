@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-09T14:07:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "strawberry-graphql"
+  },
+  "Advisory": {
+    "DatabaseId": 508663,
+    "Id": "GSA_kwCzR0hTQS1wZnZmLWZ3ZnAtMjVtcM4AB8L3",
+    "GhsaId": "GHSA-pfvf-fwfp-25mp",
+    "References": [
+      {
+        "Url": "https://github.com/strawberry-graphql/strawberry/security/advisories/GHSA-pfvf-fwfp-25mp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107728"
+      },
+      {
+        "Url": "https://github.com/strawberry-graphql/strawberry/pull/4605"
+      },
+      {
+        "Url": "https://github.com/strawberry-graphql/strawberry/commit/2ebb79796c0e5ebb43cae1abd2b5a21363b1c00e"
+      },
+      {
+        "Url": "https://github.com/strawberry-graphql/strawberry/releases/tag/0.326.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pfvf-fwfp-25mp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pfvf-fwfp-25mp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107728"
+      }
+    ],
+    "Description": "### Summary\n\n`PermissionExtension.resolve()` evaluates the return value of `has_permission()` for truthiness on the synchronous path. `supports_sync` only classifies a permission as asynchronous when `has_permission` is declared with `async def` (via `inspect.iscoroutinefunction`), so a plain `def` that returns an awaitable is treated as synchronous. An awaitable is always truthy, so the check passes even when it resolves to `False` and the protected resolver runs.\n\nThe resolve path is chosen by the field resolver, not by the execution method, so any field with a synchronous resolver is affected under both `execute_sync()` and `execute()`. Permissions declared with `async def has_permission()`, or a plain `def` returning a boolean, are not affected.\n\n### Details\n\nThe affected code is `PermissionExtension.resolve()` in `strawberry/permission.py`. A permission attached to a field whose `has_permission` is a normal `def` returning an awaitable reaches this path; the awaitable is never awaited and its truthiness grants access. `resolve_async()` is not affected because it uses `await_maybe()`.\n\n### PoC\n\n```python\nimport strawberry\nfrom strawberry.permission import BasePermission\n\n\nclass DenyViaAwaitable(BasePermission):\n    message = \"denied\"\n\n    def has_permission(self, source, info, **kwargs):\n        async def result():\n            return False\n\n        return result()\n\n\n@strawberry.type\nclass Query:\n    @strawberry.field(permission_classes=[DenyViaAwaitable])\n    def secret(self) -\u003e str:\n        return \"secret\"\n\n\nschema = strawberry.Schema(Query)\nprint(schema.execute_sync(\"{ secret }\").data)  # {'secret': 'secret'} instead of a permission error\n```\n\n### Impact\n\nAn application using a custom permission whose `has_permission` is a normal `def` returning an awaitable can unintentionally grant access to the protected field. Standard permissions (a `def` returning a boolean, or an `async def`) are not affected, so exploitability depends on the application using this specific permission shape.\n\n### Fix\n\nThe synchronous path now fails closed: if `has_permission()` returns an awaitable, an error is raised instead of granting access.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-09T14:07:16Z",
+    "Severity": "HIGH",
+    "Summary": "Strawberry GraphQL: Synchronous permission checks can treat an awaitable authorization result as truthy",
+    "UpdatedAt": "2026-10-09T14:07:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.326.1"
+      },
+      "VulnerableVersionRange": "\u003e= 0.217.0, \u003c= 0.326.0"
+    }
+  ]
+}

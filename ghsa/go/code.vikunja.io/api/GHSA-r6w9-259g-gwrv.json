@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-09T20:49:15Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "code.vikunja.io/api"
+  },
+  "Advisory": {
+    "DatabaseId": 508832,
+    "Id": "GSA_kwCzR0hTQS1yNnc5LTI1OWctZ3dyds4AB8Og",
+    "GhsaId": "GHSA-r6w9-259g-gwrv",
+    "References": [
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/security/advisories/GHSA-r6w9-259g-gwrv"
+      },
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/commit/00fd2c6155c01faae99be4226b931d8091fd6323"
+      },
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/commit/3a0ea15d8c18ff960bc98ae39950fa7a14b0af7d"
+      },
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/commit/e31ea2de5040fa63bc97cf4df63bafed3bd9ad85"
+      },
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/releases/tag/v2.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r6w9-259g-gwrv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r6w9-259g-gwrv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62376"
+      }
+    ],
+    "Description": "### Summary\n\nVikunja stores password-reset, email-confirmation, and account-deletion tokens in the `user_tokens` table in **plaintext**. If an attacker gains read access to the database through a backup leak, misconfigured storage, or SQL-level exposure, they can immediately use pending tokens to take over user accounts without knowing passwords.\n\n### Details\n\n`pkg/user/token.go` — `genToken()` stores the raw random string directly:\n```go\nfunc genToken(u *User, kind TokenKind) (*Token, error) {\n    tokenStr, err := utils.CryptoRandomString(tokenSize)\n    ...\n    return \u0026Token{\n        UserID: u.ID,\n        Kind:   kind,\n        Token:  tokenStr,  // stored as-is, no hashing\n    }, nil\n}\n```\n\nLookup also uses plaintext equality:\n```go\nfunc getToken(s *xorm.Session, token string, kind TokenKind) (t *Token, err error) {\n    has, err := s.Where(\"kind = ? AND token = ?\", kind, token).Get(t)\n}\n```\n\nAffected token types:\n- `TokenPasswordReset` (`pkg/user/user_password_reset.go:120`)\n- `TokenEmailConfirm` (`pkg/user/user_create.go:101`, `pkg/user/update_email.go:88`)\n- `TokenAccountDeletion` (`pkg/user/delete.go:102`)\n\nNote: CalDAV tokens correctly use `generateHashedToken` with bcrypt — the same protection is absent for the above types.\n\n### PoC\n\n```sql\n-- Attacker with DB read dumps all pending password-reset tokens:\nSELECT u.email, t.token FROM user_tokens t\nJOIN users u ON u.id = t.user_id WHERE t.kind = 1;\n\n-- Then takes over any account:\ncurl -X POST https://vikunja.example.com/api/v1/user/password/reset \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"token\": \"\u003cplaintext_from_db\u003e\", \"new_password\": \"AttackerPass1!\"}'\n```\n\n### Impact\n\nAny read access to the database (leaked backup, cloud misconfiguration, secondary SQLi) allows an attacker to take over every user account with a pending reset token within the 24-hour token lifetime. Full account takeover including admin accounts.\n\n### Fix\n\nReplace `genToken` with `generateHashedToken` for `TokenPasswordReset`, `TokenEmailConfirm`, and `TokenAccountDeletion`. Update the corresponding lookup to use bcrypt comparison (`bcrypt.CompareHashAndPassword`) rather than direct SQL equality, mirroring the existing CalDAV token implementation in the same file.\n\nIf possible, please apply for a CVE number when posting.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-09T20:49:13Z",
+    "Severity": "HIGH",
+    "Summary": "Vikunja: Plaintext storage of password-reset/email-confirm tokens in database enables account takeover on DB read access",
+    "UpdatedAt": "2026-10-09T20:49:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003c= 2.3.0"
+    }
+  ]
+}

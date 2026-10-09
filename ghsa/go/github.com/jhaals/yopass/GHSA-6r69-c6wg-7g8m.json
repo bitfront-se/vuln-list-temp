@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-09T20:42:59Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/jhaals/yopass"
+  },
+  "Advisory": {
+    "DatabaseId": 508827,
+    "Id": "GSA_kwCzR0hTQS02cjY5LWM2d2ctN2c4bc4AB8Ob",
+    "GhsaId": "GHSA-6r69-c6wg-7g8m",
+    "References": [
+      {
+        "Url": "https://github.com/jhaals/yopass/security/advisories/GHSA-6r69-c6wg-7g8m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107840"
+      },
+      {
+        "Url": "https://github.com/jhaals/yopass/pull/3773"
+      },
+      {
+        "Url": "https://github.com/jhaals/yopass/commit/61e31ead04a4fc27ce80bed226af41c7c0426ccf"
+      },
+      {
+        "Url": "https://github.com/jhaals/yopass/commit/78d0c14f7085048130199662a2ec8a18ec8d6ebb"
+      },
+      {
+        "Url": "https://github.com/jhaals/yopass/releases/tag/14.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6r69-c6wg-7g8m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6r69-c6wg-7g8m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107840"
+      }
+    ],
+    "Description": "The Prometheus metrics middleware in pkg/server/server.go used r.Method directly as a label value on request counter and duration histogram metrics. Since the mux catch-all route matches any HTTP method, an unauthenticated attacker can send requests with arbitrary method strings (e.g. curl -X \"M1\" http://host/), each creating new counter and histogram time series in the Prometheus registry. The registry's internal maps never evict entries.\n\nAn attacker issuing requests with unique method values causes monotonic memory growth until the process is OOM-killed. Additionally, /metrics scrape latency degrades proportionally, eventually timing out and blinding monitoring.\n\nRemediation: Upgrade to 14.7.0 or later, which clamps the method label to a fixed allowlist (GET, POST, PUT, DELETE, OPTIONS, HEAD, CONNECT, TRACE) and maps everything else to other.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-09T20:42:58Z",
+    "Severity": "HIGH",
+    "Summary": "yopass Prometheus metrics middleware allows remote memory exhaustion through unbounded method labels",
+    "UpdatedAt": "2026-10-09T20:42:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260727191436-61e31ead04a4"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260727191436-61e31ead04a4"
+    }
+  ]
+}

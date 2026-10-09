@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-09T20:42:26Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "code.vikunja.io/api"
+  },
+  "Advisory": {
+    "DatabaseId": 397523,
+    "Id": "GSA_kwCzR0hTQS1wNHI0LThjeHctcGp4N84ABhDT",
+    "GhsaId": "GHSA-p4r4-8cxw-pjx7",
+    "References": [
+      {
+        "Url": "https://github.com/go-vikunja/vikunja/security/advisories/GHSA-rj9j-8772-4h6c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-68582"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vikunja-broken-object-level-authorization-via-link-share-token"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p4r4-8cxw-pjx7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p4r4-8cxw-pjx7"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-rj9j-8772-4h6c. This link is maintained to preserve external references.\n\n### Original Description\nVikunja versions \u003e= 0.24.0 and \u003c= 2.3.0 contain a broken object level authorization (BOLA) vulnerability in the task-collection endpoint (GET /api/v1/projects/{project}/views/{view}/tasks). The endpoint loads the requested project view from the URL path without verifying the caller is authorized for it. For a link-share token holder, the task scope is pinned to the share's own project, but the view is taken from the attacker-controlled path and never re-validated. As a result, a holder of any project share link can read any other tenant's kanban bucket records — bucket titles and the full created_by user object (username, name, id) — for every view in the instance. The same missing pre-authorization view load also creates a project/view-ID existence oracle (404 vs. non-404) usable by link shares and ordinary authenticated users. Task contents remain constrained to the share's own project and are not disclosed. Fixed in 2.4.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-08-02T15:30:21Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: Vikunja: Link-share token reads any tenant's kanban buckets and enumerates usernames/IDs instance-wide (BOLA)",
+    "UpdatedAt": "2026-10-09T20:42:26Z",
+    "WithdrawnAt": "2026-10-09T20:42:24Z",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.24.0, \u003c= 2.3.0"
+    }
+  ]
+}
