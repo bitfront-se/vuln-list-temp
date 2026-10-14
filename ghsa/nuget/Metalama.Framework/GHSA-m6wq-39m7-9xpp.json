@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-14T19:24:55Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Metalama.Framework"
+  },
+  "Advisory": {
+    "DatabaseId": 513085,
+    "Id": "GSA_kwCzR0hTQS1tNndxLTM5bTctOXhwcM4AB9Q9",
+    "GhsaId": "GHSA-m6wq-39m7-9xpp",
+    "References": [
+      {
+        "Url": "https://github.com/metalama/Metalama/security/advisories/GHSA-m6wq-39m7-9xpp"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/pull/1719"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/commit/09911349a916e82194b1cfaa6d0a38acad928fc9"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/commit/92c4feecfce86d18fcb007ab6d3a1b4383326a2e"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/commit/ab9407263203c66d7c5680a34c28dba31f9951c9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m6wq-39m7-9xpp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m6wq-39m7-9xpp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62847"
+      }
+    ],
+    "Description": "## Summary\n\nMetalama loaded and executed compile-time assemblies, auxiliary executable tools, and embedded helper assemblies from predictable temporary directories. On Linux and macOS the default cache location was the world-writable system temporary directory (`Path.GetTempPath()`, i.e. `/tmp`), and previously-generated artifacts were trusted based on the presence of a sentinel/`.completed` marker file rather than on any integrity verification.\n\nA local, unprivileged user on a shared machine or CI/build agent can pre-create the deterministic cache directory structure and plant a malicious DLL together with the matching sentinel file. When a higher-privileged user (or build/service account) subsequently runs a build, Metalama finds the sentinel, skips regeneration, and loads and executes the attacker-supplied assembly inside the compiler / IDE / MSBuild process.\n\nAffected load-and-execute paths:\n- the cache of compile-time assemblies that Metalama generates from your aspects;\n- auxiliary executable tools that Metalama extracts to a local directory and then launches;\n- embedded .NET helper assemblies that Metalama extracts to a local directory and loads into the build / IDE process.\n\n## Impact\n\nArbitrary code execution in the security context of the building user — i.e. a local privilege escalation across user accounts on shared POSIX systems (multi-user developer machines, CI/build agents). The attacker obtains code execution as the victim without holding the victim's privileges, and can read source/secrets, tamper with build output (supply-chain injection), or disrupt builds.\n\n## Affected configurations\n\n- **Linux and macOS, default configuration — affected.** The shipped default uses the world-writable system temp directory.\n- **Windows, default configuration — not affected.** The default per-user temporary directory is protected by OS ACLs, so cross-user planting is not possible.\n- The `METALAMA_TEMP` environment variable is a deployer-controlled override and is **out of scope**: pointing it at an insecure (e.g. world-writable or attacker-owned) location is a deployment misconfiguration, not a defect in the product.\n\n## Severity\n\nCVSS v3.1: `AV:L/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H` = **8.2 (High)** for the affected POSIX default configuration (Scope:Changed reflects the cross-user privilege escalation).\n\nCVSS v4.0 cross-check: `CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:P/VC:L/VI:H/VA:L/SC:L/SI:H/SA:H` = 6.0 (Medium), which more granularly attributes low impact to the cache itself and high impact to the subsequent build process. The honest range is therefore Medium-High depending on the scoring model and platform.\n\n## Fix\n\nCaches and extraction directories were relocated from the world-writable system temp directory to per-user application-data locations (`$XDG_CACHE_HOME` / `~/.cache/Metalama` on POSIX), relying on OS-enforced per-user ownership as the trust boundary. Fixed in **2026.1.19**.\n\n## Weaknesses\n\n- CWE-377: Insecure Temporary File\n- CWE-427: Uncontrolled Search Path Element\n\n## Affected packages\n\n- Metalama.Framework \u003c 2026.1.19, \n- Metalama.Tool \u003c 2026.1.19\n\nInternal tracking: metalama/Metalama#1650.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-14T19:24:53Z",
+    "Severity": "MODERATE",
+    "Summary": "Metalama allows local code execution through DLL planting in shared temporary directories",
+    "UpdatedAt": "2026-10-14T19:24:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.0.25"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.0.0-preview, \u003c 2026.0.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.1.18"
+      },
+      "VulnerableVersionRange": "\u003c 2025.1.18"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.1.19"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.1.0-preview, \u003c 2026.1.19"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-14T20:11:31Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.OpenApi.YamlReader"
+  },
+  "Advisory": {
+    "DatabaseId": 513087,
+    "Id": "GSA_kwCzR0hTQS03cHhyLTU5cnItaHFqMs4AB9Q_",
+    "GhsaId": "GHSA-7pxr-59rr-hqj2",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/security/advisories/GHSA-7pxr-59rr-hqj2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72923"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/pull/3000"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/pull/3005"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/pull/3020"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/commit/1f9aea9bdcbf4066b59ce33b3bd8f97ed9cb4766"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/commit/21793261d6860fb6e607b71fd95c0bd320724764"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/commit/4db9af07d112cdf45170b7a946f956ffe74fa14e"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/releases/tag/v1.6.30"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/releases/tag/v2.12.0"
+      },
+      {
+        "Url": "https://github.com/microsoft/OpenAPI.NET/releases/tag/v3.10.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7pxr-59rr-hqj2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7pxr-59rr-hqj2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-72923"
+      }
+    ],
+    "Description": "### Impact\n\nA small YAML OpenAPI document containing nested anchors and aliases can cause uncontrolled resource consumption in Microsoft.OpenApi.YamlReader and Microsoft.OpenApi.Readers. The issue affects OpenAPI document parsing through the public YAML reader APIs and can cause the parsing process to allocate excessive memory and terminate through out-of-memory conditions.\n\n## Affected versions\n\n### Microsoft.OpenApi.YamlReader\n\n* `\u003e= 2.0.0-preview.11, \u003c 2.12.0`\n* `\u003e= 3.0.0, \u003c 3.10.0`\n\n### Microsoft.OpenApi.Readers\n\n* `\u003c 1.6.30`\n\n### Patches\n\n* For the 1.X major version, versions 1.6.30 and above are patched.\n* For the 2.X major version, versions 2.12.0 and above are patched.\n* For the 3.X major version, versions 3.10.0 and above are patched.\n\n## Impact\n\nApplications, CLIs, developer tools, or services that parse untrusted YAML OpenAPI documents in-process may be terminated by a crafted YAML document containing nested anchors and aliases.\n\nThe impact is availability/process termination only. This report does not claim remote code execution, authentication bypass, credential exposure, privilege escalation, data exposure, or Microsoft hosted service impact.\n\n## Details\n\nMicrosoft.OpenApi.YamlReader and Microsoft.OpenApi.Readers parses YAML through SharpYaml. SharpYaml represents aliases as shared `YamlNode` instances in a directed acyclic graph, so the initial parsed YAML graph remains small. During conversion to `System.Text.Json.Nodes.JsonNode`, aliases must be materialized as independent nodes because `JsonNode` instances cannot be attached to multiple parents.\n\nWithout a bound on that conversion work, a small YAML document using nested anchors and aliases can expand exponentially during conversion. With `N` nested anchors each referenced `k` times, conversion can require `k^N` materialized JSON nodes, leading to excessive memory allocation and possible process termination.\n\nThis is an uncontrolled resource consumption vulnerability, also known as a \"billion laughs\" style denial of service.\n\n### Example payload\n\n```yaml\nopenapi: 3.0.0\ninfo:\n  title: Test\n  version: 0.0.1\npaths: {}\nx-a: \u0026a [\"lol\", \"lol\", \"lol\", \"lol\", \"lol\", \"lol\", \"lol\", \"lol\", \"lol\"]\nx-b: \u0026b [*a, *a, *a, *a, *a, *a, *a, *a, *a]\nx-c: \u0026c [*b, *b, *b, *b, *b, *b, *b, *b, *b]\nx-d: \u0026d [*c, *c, *c, *c, *c, *c, *c, *c, *c]\nx-e: \u0026e [*d, *d, *d, *d, *d, *d, *d, *d, *d]\nx-f: \u0026f [*e, *e, *e, *e, *e, *e, *e, *e, *e]\n```\n\n## Remediation\n\nUsers should upgrade to Microsoft.OpenApi.YamlReader `2.12.0` or `3.10.0`, or Microsoft.OpenApi.Readers `1.6.30`, depending on the major version line they consume.\n\nThe patched versions bound YAML-to-JSON conversion work and fail fast instead of allowing unbounded expansion. The default limits are:\n\n* Maximum materialized node count: `5,000,000`\n* Maximum nesting depth: `64`\n\nWhen the limits are exceeded, `OpenApiYamlReader.Read` reports an `OpenApiDiagnostic` error and does not return a parsed document.\n\nThe limits are exposed as process-wide static properties on `YamlConverter` for consumers that need to tune them for trusted workloads:\n\n* `YamlConverter.MaxNodeCount`\n* `YamlConverter.MaxDepth`\n\nApplications that parse OpenAPI documents from untrusted sources should avoid parsing those documents in the primary application process when possible. Running parsing in an isolated process can reduce the blast radius of parser failures.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-14T20:11:29Z",
+    "Severity": "HIGH",
+    "Summary": "Microsoft.OpenApi.YamlReader vulnerable to denial of service via YAML alias expansion",
+    "UpdatedAt": "2026-10-14T20:11:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0-preview.11, \u003c 2.12.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.10.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.10.0"
+    }
+  ]
+}
