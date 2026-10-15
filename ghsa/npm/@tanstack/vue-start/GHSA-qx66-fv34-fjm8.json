@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-15T20:22:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tanstack/vue-start"
+  },
+  "Advisory": {
+    "DatabaseId": 513514,
+    "Id": "GSA_kwCzR0hTQS1xeDY2LWZ2MzQtZmptOM4AB9Xq",
+    "GhsaId": "GHSA-qx66-fv34-fjm8",
+    "References": [
+      {
+        "Url": "https://github.com/TanStack/router/security/advisories/GHSA-qx66-fv34-fjm8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102989"
+      },
+      {
+        "Url": "https://github.com/TanStack/router/pull/8573"
+      },
+      {
+        "Url": "https://github.com/TanStack/router/commit/d521abd71c69f1ff010bb3def4d417cb5fa058cb"
+      },
+      {
+        "Url": "https://github.com/TanStack/router/releases/tag/release-2026-09-30-1747"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qx66-fv34-fjm8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qx66-fv34-fjm8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102989"
+      }
+    ],
+    "Description": "## Impact\n\nAn unauthenticated attacker can craft a URL to a server function in an affected TanStack Start app. If someone opens the link, the app can return attacker-controlled HTML from its own origin and run the attacker's JavaScript there. The script can access same-origin data available to that visitor and make requests with their authority.\n\n## Cause\n\nThe server-function transport can pass request payload fields into internal middleware state instead of limiting them to public input fields. A malformed payload can leave an attacker-controlled result in the error path. Response handling can then treat a response-shaped object as an HTTP response.\n\n## Affected versions\n\nPublished versions of `@tanstack/start-server-core`, `@tanstack/react-start`, `@tanstack/solid-start`, and `@tanstack/vue-start` from `1.143.12` up to, but not including, their respective patched versions are affected. The patched versions are `@tanstack/start-server-core@1.169.39`, `@tanstack/react-start@1.168.60`, `@tanstack/solid-start@1.168.57`, and `@tanstack/vue-start@1.168.56`.\n\n## Fix\n\nThe fix limits client-supplied server-function input to public fields and validates responses at the server boundary. Upgrade to the corresponding patched package version.\n\n## Temporary mitigations\n\nFor the configured server-function path, usually `/_serverFn/*`, an edge or WAF rule can consider blocking requests without the literal `x-tsr-serverFn: true` header and browser document navigations such as `Sec-Fetch-Mode: navigate` or `Accept: text/html`. A restrictive Content Security Policy on server-function responses can provide another browser-side restriction. These are mitigation suggestions, not a complete fix. The header is client-controlled and is not authentication. Test rules against legitimate GET and POST server functions and use a matching version-specific backport where possible.\n\n## Credits\n\nLovable helped us discover and report this issue. We thank them for their help.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:22:20Z",
+    "Severity": "CRITICAL",
+    "Summary": "TanStack Router: Unauthenticated reflected XSS in TanStack Start server-function responses",
+    "UpdatedAt": "2026-10-15T20:22:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.168.56"
+      },
+      "VulnerableVersionRange": "\u003e= 1.143.12, \u003c 1.168.56"
+    }
+  ]
+}

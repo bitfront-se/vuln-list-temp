@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-15T20:16:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "tinytag"
+  },
+  "Advisory": {
+    "DatabaseId": 513492,
+    "Id": "GSA_kwCzR0hTQS0yNGNjLTkzNTItaDJwZ84AB9XU",
+    "GhsaId": "GHSA-24cc-9352-h2pg",
+    "References": [
+      {
+        "Url": "https://github.com/tinytag/tinytag/security/advisories/GHSA-24cc-9352-h2pg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104266"
+      },
+      {
+        "Url": "https://github.com/tinytag/tinytag/pull/326"
+      },
+      {
+        "Url": "https://github.com/tinytag/tinytag/commit/9ada221ba44990cb02cd9002d992186e037b515e"
+      },
+      {
+        "Url": "https://github.com/tinytag/tinytag/releases/tag/2.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-24cc-9352-h2pg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-24cc-9352-h2pg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104266"
+      }
+    ],
+    "Description": "### Impact\nAn M4A file containing a sub-atom with a size of zero in the `----` atom makes the parser enter an infinite loop, resulting in a denial-of-service for programs reading such files with tinytag.\n\n### Patches\nThe issue has been fixed in tinytag 2.3.0, by reusing the primary atom parsing code path that contains appropriate size checks.\n\n### Workarounds\nNo workarounds exist. Users must upgrade to tinytag 2.3.0.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:16:47Z",
+    "Severity": "MODERATE",
+    "Summary": "tinytag: Infinite loop when parsing certain M4A files containing invalid atoms",
+    "UpdatedAt": "2026-10-15T20:16:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.3.0"
+    }
+  ]
+}

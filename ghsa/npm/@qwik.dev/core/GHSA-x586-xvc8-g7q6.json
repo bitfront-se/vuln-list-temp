@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-15T20:22:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@qwik.dev/core"
+  },
+  "Advisory": {
+    "DatabaseId": 513506,
+    "Id": "GSA_kwCzR0hTQS14NTg2LXh2YzgtZzdxNs4AB9Xi",
+    "GhsaId": "GHSA-x586-xvc8-g7q6",
+    "References": [
+      {
+        "Url": "https://github.com/QwikDev/qwik/security/advisories/GHSA-x586-xvc8-g7q6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-84994"
+      },
+      {
+        "Url": "https://github.com/QwikDev/qwik/pull/8655"
+      },
+      {
+        "Url": "https://github.com/QwikDev/qwik/commit/c1e7444402f9592b5cf9096e10bf303ab4640511"
+      },
+      {
+        "Url": "https://github.com/QwikDev/qwik/releases/tag/@builder.io/qwik@1.20.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x586-xvc8-g7q6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x586-xvc8-g7q6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84994"
+      }
+    ],
+    "Description": "### Summary\n\nA Qwik server in the default configuration can be crashed with one unauthenticated HTTP request. During qwik-json body parsing, `ResourceSerializer.$fill$` does `Promise.resolve(resource._resolved)`. If `_resolved` is a plain object whose `.then` is a QRL for an unregistered symbol, the async QRL rejects, the rejection is orphaned, and Node terminates the process via its default unhandled-rejection policy.\n\n### Impact\n\nOne unauthenticated request crashes the server. Looping keeps every replica dead as long as the attacker sends requests.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:22:00Z",
+    "Severity": "HIGH",
+    "Summary": "Qwik: Crashing any Qwik Server via Resource thenable",
+    "UpdatedAt": "2026-10-15T20:22:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.0-beta37"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.0-beta37"
+    }
+  ]
+}

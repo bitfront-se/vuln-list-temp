@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-15T20:15:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt-og-image"
+  },
+  "Advisory": {
+    "DatabaseId": 513484,
+    "Id": "GSA_kwCzR0hTQS0yeDZmLXJwODItcHBtas4AB9XM",
+    "GhsaId": "GHSA-2x6f-rp82-ppmj",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt-modules/og-image/security/advisories/GHSA-2x6f-rp82-ppmj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102527"
+      },
+      {
+        "Url": "https://github.com/nuxt-modules/og-image/pull/638"
+      },
+      {
+        "Url": "https://github.com/nuxt-modules/og-image/commit/e6c5b53ce7f434ab8cbc91298dccfb2b515c56a5"
+      },
+      {
+        "Url": "https://github.com/nuxt-modules/og-image/releases/tag/v6.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2x6f-rp82-ppmj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2x6f-rp82-ppmj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102527"
+      }
+    ],
+    "Description": "**Vendor:** Nuxt\n**Product:** Nuxt OG Image\n**Version:** 6.2.5\n**Description:** Due to the specifics of caching and key generation in the Open Graph image cache created by the module, an unauthenticated attacker can modify the content of the image (for example, the `title` parameter) that is delivered to the user. \n**Impact:** Content Spoofing\n**Vulnerable component:** route `/_og/d/*.png`\n**Exploitation conditions:** Access to the application\n**Mitigation:** Upgrade to 6.7.2 and set a sufficiently secure `secret` in config `ogImage`\n**Researcher:** Dmitry Vanin (Positive Technologies)\n\n## Research\nDuring [the previous vulnerability research](https://github.com/nuxt-modules/og-image/security/advisories/GHSA-6c86-prf5-hj4h), it was discovered that version 6.2.5 changed the mechanism for generating cache indexes; it now takes into account the parameters passed during image generation.\n\nHowever, the image is still generated from data transmitted to the attacker.\n\n_Listing 1. New code for generating indexes in cache_\n```\nexport function resolvePathCacheKey(e: H3Event, path: string, resolvedOptions?: Record\u003cstring, any\u003e) {\n  const siteConfig = getSiteConfig(e, {\n    resolveRefs: true,\n  })\n  const basePath = withoutTrailingSlash(withoutLeadingSlash(normalizeKey(path)))\n  const hashParts: any[] = [\n    basePath,\n    import.meta.prerender ? '' : siteConfig.url,\n  ]\n  // Hash resolved options (not raw query string) so unknown/extra query params\n  // cannot produce unique cache keys and bypass the cache.\n  if (resolvedOptions)\n    hashParts.push(hash(resolvedOptions))\n  return [\n    (!basePath || basePath === '/') ? 'index' : basePath,\n    hash(hashParts),\n  ].join(':')\n}\n```\nIn this case, `basePath` is obtained from the `_path` parameter, `resolvedOptions` are the normalized settings of the component, for example:\n\n_Listing 2. An example of `resolvedOptions`_\n```\n{\"emojis\":\"noto\",\"extension\":\"png\",\"width\":1200,\"height\":600,\"cacheMaxAgeSeconds\":259200,\"component\":\"OgImageDefaultImageTakumi\"}\n```\nFrom the analysis of `resolvedOptions`, it was concluded that, in general, all parameters are known either from the direct link to the OG Image or from the server response.\n\n## Vulnerability reproduction\n\n1. Find the route to OG Image.\n_Figure 1. Demonstration of finding the route to OG Image_\n\u003cimg width=\"974\" height=\"361\" alt=\"image\" src=\"https://github.com/user-attachments/assets/d3ee6b54-d545-4a3b-8cbf-f82df99ed4d0\" /\u003e\n\n2. Retrieve parameters from the server’s response, especially `cacheMaxAgeSeconds` (`cache-control` header, `s-maxage` key), the other parameters are known from the meta tags as well as from the `c_\u003ccomponent name\u003e` parameter.\n_Figure 2. Obtaining parameters_\n\u003cimg width=\"974\" height=\"245\" alt=\"image\" src=\"https://github.com/user-attachments/assets/84a4cd8b-9281-47ef-b524-0047a0f6077a\" /\u003e\n\n3. Generate a cache key using a script.\n_Listing 3. Srcipt_\n```\nimport {hash} from \"ohash\";\n\nvar url = \"https://contoso.com\"\n\nvar obj = JSON.parse(`{\"emojis\":\"noto\",\"extension\":\"png\",\"width\":1200,\"height\":600,\"cacheMaxAgeSeconds\":259200,\"component\":\"OgImageBlogPostTakumi\"}`)\n\nvar basePath = '/'\n\nvar hashParts = [\n    basePath,\n    url\n  ]\n  \nif (obj)\n\thashParts.push(hash(obj))\n\nconsole.log([\n    (!basePath || basePath === '/') ? 'index' : basePath,\n    hash(hashParts),\n  ].join(':'))\n```\n4. Repeat the steps as in [the vulnerability 1](https://github.com/nuxt-modules/og-image/security/advisories/GHSA-6c86-prf5-hj4h), but transmit the obtained `cacheKey` in addition.  \n5. Thus, the same result as in [the vulnerability 1](https://github.com/nuxt-modules/og-image/security/advisories/GHSA-6c86-prf5-hj4h) was obtained.\n_Figure 4. Server response_\n\u003cimg width=\"974\" height=\"729\" alt=\"image\" src=\"https://github.com/user-attachments/assets/5895c0e8-e497-410d-bef9-f6f2f9649261\" /\u003e\n\n## Credits\nResearcher: Dmitry Vanin (Positive Technologies)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:15:27Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt OG Image cache poisoning through derivable cache keys on unsigned dynamic image routes",
+    "UpdatedAt": "2026-10-15T20:15:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 6.2.5, \u003c 6.7.0"
+    }
+  ]
+}

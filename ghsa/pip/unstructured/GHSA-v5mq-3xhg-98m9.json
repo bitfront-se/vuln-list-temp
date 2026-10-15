@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-15T20:16:20Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "unstructured"
+  },
+  "Advisory": {
+    "DatabaseId": 513489,
+    "Id": "GSA_kwCzR0hTQS12NW1xLTN4aGctOThtOc4AB9XR",
+    "GhsaId": "GHSA-v5mq-3xhg-98m9",
+    "References": [
+      {
+        "Url": "https://github.com/Unstructured-IO/unstructured/security/advisories/GHSA-v5mq-3xhg-98m9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104250"
+      },
+      {
+        "Url": "https://github.com/Unstructured-IO/unstructured/pull/4394"
+      },
+      {
+        "Url": "https://github.com/Unstructured-IO/unstructured/commit/cda16b3f2170019be9c6ea5635946fb3eaa2d66f"
+      },
+      {
+        "Url": "https://github.com/Unstructured-IO/unstructured/releases/tag/0.24.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-v5mq-3xhg-98m9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-v5mq-3xhg-98m9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104250"
+      }
+    ],
+    "Description": "### Summary\n\nWhen `unstructured` parses an untrusted document and outputs the result as HTML, malicious markup contained in the document (e.g. `\u003cimg src=x onerror=...\u003e`) is left in the output HTML without escaping. When that output is displayed in a browser, the script embedded in the document executes in the viewer's browser.\n\n### Details\n\n`partition_html(html_parser_version=\"v2\")` (and the VLM partitioner) preserve the input document's element tags, attributes, and text into `metadata.text_as_html`, and `elements_to_html()` outputs that as an HTML document.\n\nThe function that builds HTML on this path, `to_html()` in `unstructured/documents/ontology.py`, performs no escaping at all. As a result, event handlers such as `onerror` / `onmouseover` / `onload` originating from the input document are left in the output HTML as-is (literal `\u003cscript\u003e` tags are stripped by the parser, but attribute-based vectors and `javascript:` URLs are not). In addition, link URLs are not scheme-filtered, so `\u003ca href=\"javascript:...\"\u003e` is also emitted.\n\nRelevant source: `documents/ontology.py` (`to_html`, `_construct_attribute_string`, `_generate_final_html`); `partition/html/transformations.py` (`text_as_html = ontology_element.to_html()`); `partition/html/convert.py` (`elements_to_html`).\n\n### PoC\n\nEnvironment: `downloads.unstructured.io/unstructured-io/unstructured:latest`, `unstructured` 0.23.3.\n\n```python\nfrom unstructured.partition.html import partition_html\nfrom unstructured.partition.html.convert import elements_to_html\n\nmalicious = ('\u003cbody class=\"Document\"\u003e'\n             '\u003cp class=\"Paragraph\" onmouseover=\"alert(1)\"\u003ehello'\n             '\u003cimg src=x onerror=\"alert(document.domain)\"\u003e\u003c/p\u003e'\n             '\u003ca class=\"Hyperlink\" href=\"javascript:alert(document.cookie)\"\u003eclick me\u003c/a\u003e'\n             '\u003c/body\u003e')\nels = partition_html(text=malicious, html_parser_version=\"v2\")\nopen(\"xss_output.html\", \"w\").write(elements_to_html(list(els), no_group_by_page=True))\n```\n\n`elements_to_html()` output body — the unescaped vectors survive:\n\n```html\n\u003cp class=\"NarrativeText\" id=\"...\" onmouseover=\"alert(1)\"\u003e\n  \u003cp class=\"Paragraph\"\u003ehello\u003c/p\u003e\n  \u003cimg class=\"Image\" onerror=\"alert(document.domain)\" src=\"x\"/\u003e\n\u003c/p\u003e\n\u003ca class=\"UncategorizedText\" href=\"javascript:alert(document.cookie)\" id=\"...\"\u003eclick me\u003c/a\u003e\n```\n\nOpening `xss_output.html` in a browser fires `alert` automatically (via `\u003cimg onerror\u003e`), with no interaction. Per-vector confirmation (each payload labelled, each verified in a browser):\n\n| Vector | Trigger | Cause |\n|---|---|---|\n| `\u003cimg onerror\u003e` | open file (auto) | element `text` not escaped |\n| `\u003csvg onload\u003e` (via `title='\"\u003e\u003csvg ...\u003e'`) | open file (auto) | attribute value not escaped (`\"` breakout) |\n| `\u003ca href=javascript:\u003e` | click | link URL scheme not filtered |\n| `onmouseover` | hover | source attribute preserved as-is |\n\n### Impact\n\nStored XSS caused by improper output encoding. Anyone who renders the HTML or `text_as_html` generated from an untrusted document is affected. In an ingestion pipeline where uploaded documents are parsed and a staff member reviews their contents in a web UI, a low-privileged or external submitter can inject malicious HTML; when a privileged reviewer later opens the parsed result, `\u003cimg onerror\u003e` fires in their session with no interaction, leading to cross-record information disclosure and privileged actions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:16:18Z",
+    "Severity": "MODERATE",
+    "Summary": "unstructured: Stored XSS via unescaped HTML generation",
+    "UpdatedAt": "2026-10-15T20:16:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.24.1"
+      },
+      "VulnerableVersionRange": "\u003c= 0.24.0"
+    }
+  ]
+}

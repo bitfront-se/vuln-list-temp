@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-15T20:11:46Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/0xJacky/Nginx-UI"
+  },
+  "Advisory": {
+    "DatabaseId": 513470,
+    "Id": "GSA_kwCzR0hTQS0yZ2M3LWo5OTgtNXh4Ns4AB9W-",
+    "GhsaId": "GHSA-2gc7-j998-5xx6",
+    "References": [
+      {
+        "Url": "https://github.com/0xJacky/nginx-ui/security/advisories/GHSA-2gc7-j998-5xx6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-84314"
+      },
+      {
+        "Url": "https://github.com/0xJacky/nginx-ui/commit/23d1934099b05b2a01589b48129dc3d3159d91c2"
+      },
+      {
+        "Url": "https://github.com/0xJacky/nginx-ui/releases/tag/v2.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2gc7-j998-5xx6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2gc7-j998-5xx6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-84314"
+      }
+    ],
+    "Description": "### Summary\n`POST /api/users/:id` allows any authenticated user to change any other user's password without `RequireSecureSession` (2FA verification). In contrast, the self password change endpoint `POST /api/user/password` correctly requires `RequireSecureSession`. This inconsistency enables any authenticated user to take over the initial admin account (user ID 1) by simply changing its password.\n\n### Details\nnginx-ui enforces `RequireSecureSession` middleware on sensitive operations such as self password change (`api/user/router.go:55`), self profile update (`api/user/router.go:54`), settings modification (`api/settings/router.go:12`), and config file deletion/rename (`api/config/router.go:16-21`).\n\nHowever, the user management endpoint registered in `InitManageUserRouter` (`api/user/user.go:31-68`) is mounted on the `g` router group (`router/routers.go:92`) which only applies `middleware.AuthRequired()` and `middleware.Proxy()` — **no `RequireSecureSession()`**.\n\nAs a result, `POST /api/users/:id` with a `password` field in the JSON body updates the target user's password with only basic JWT authentication. No 2FA or secure session verification is performed, even if the target user has 2FA enabled.\n\nThe attack flow:\n\n1. Attacker authenticates as any user (e.g., user ID 2).\n2. Attacker sends `POST /api/users/1` with `{\"password\": \"attacker-chosen\"}`.\n3. Admin (user ID 1) password is changed. All existing admin tokens are invalidated (`api/user/user.go:48-49`).\n4. Attacker logs in as admin with the new password.\n5. Admin is locked out.\n\n\n### PoC\n[poc.zip](https://github.com/user-attachments/files/26971275/poc.zip)\n\nPlease extract the uploaded compressed file before proceeding\n\n1. docker compose up -d\n2. python3 poc.py\n\n\u003cimg width=\"501\" height=\"55\" alt=\"스크린샷 2026-04-22 오후 10 26 29\" src=\"https://github.com/user-attachments/assets/6562ede2-7c11-48da-b905-be9964f4f7b1\" /\u003e\n\n\n### Impact\n- Any authenticated user can change any other user's password, including the initial admin (user ID 1).\n- Full account takeover of the admin account.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T20:11:45Z",
+    "Severity": "HIGH",
+    "Summary": "Nginx UI: Account Takeover via Missing `RequireSecureSession` on User Management Endpoint",
+    "UpdatedAt": "2026-10-15T20:11:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.10-0.20260703131214-23d1934099b0"
+      },
+      "VulnerableVersionRange": "\u003c 1.9.10-0.20260703131214-23d1934099b0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-15T18:07:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/cli/cli/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 513363,
+    "Id": "GSA_kwCzR0hTQS00ZmpnLTJoNHEtZndnM84AB9VT",
+    "GhsaId": "GHSA-4fjg-2h4q-fwg3",
+    "References": [
+      {
+        "Url": "https://github.com/cli/cli/security/advisories/GHSA-4fjg-2h4q-fwg3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-64653"
+      },
+      {
+        "Url": "https://github.com/cli/cli/commit/0c2eea6338a2323cfff000160b9b5a56a38d2a06"
+      },
+      {
+        "Url": "https://github.com/cli/cli/releases/tag/v2.97.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4fjg-2h4q-fwg3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4fjg-2h4q-fwg3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-64653"
+      }
+    ],
+    "Description": "### Summary\n\nA path traversal vulnerability has been identified in the GitHub CLI where some HTTP request URLs, REST API calls in particular, were built without properly escaping their variable path components. A value containing URL path metacharacters can alter the request path and cause `gh` to address a different resource than intended.\n\n### Details\n\nNot all request URLs in the codebase were built with proper escaping of their variable path components. When a component is interpolated into the path without percent encoding, and that component contains URL path metacharacters, it breaks out of its intended segment and changes the effective request path.\n\nIn `2.97.0`, request URLs are constructed in a safe manner, so a variable component can no longer escape its intended segment.\n\n### Impact\n\nAn attacker who can control a value that flows into a request path can cause `gh` to send the request to a different API endpoint than intended. This can lead the CLI to read or act on a resource other than the one the user meant to target.\n\n### Remediation and Mitigation\n\n1. Upgrade `gh` to `2.97.0`.\n2. Be cautious when running `gh` against untrusted repositories or inputs whose names you do not control.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-15T18:07:14Z",
+    "Severity": "LOW",
+    "Summary": "GitHub CLI allows path traversal through unescaped request URL components",
+    "UpdatedAt": "2026-10-15T18:07:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.97.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.97.0"
+    }
+  ]
+}
