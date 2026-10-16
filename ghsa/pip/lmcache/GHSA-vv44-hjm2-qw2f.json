@@ -1,0 +1,58 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-16T20:08:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "lmcache"
+  },
+  "Advisory": {
+    "DatabaseId": 507585,
+    "Id": "GSA_kwCzR0hTQS12djQ0LWhqbTItcXcyZs4AB77B",
+    "GhsaId": "GHSA-vv44-hjm2-qw2f",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-105192"
+      },
+      {
+        "Url": "https://github.com/LMCache/LMCache"
+      },
+      {
+        "Url": "https://github.com/LMCache/LMCache/blob/v0.3.9/lmcache/v1/multiprocess/custom_types.py"
+      },
+      {
+        "Url": "https://github.com/LMCache/LMCache/blob/v0.5.5/lmcache/v1/platform/base/ipc_wrapper.py"
+      },
+      {
+        "Url": "https://pypi.org/project/lmcache"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vv44-hjm2-qw2f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vv44-hjm2-qw2f"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-w5f2-9q9c-ff4h. This link is maintained to preserve external references.\n\n## Original Description\nLMCache multiprocess mode, also called distributed mode, opens an unauthenticated ZeroMQ ROUTER so worker processes can register and share KV cache blocks. Messages on that socket are msgpack. Extension code 1 is passed to DeviceIPCWrapper.Deserialize, which calls pickle.loads, while the server is still decoding request arguments and before the handler runs. A single unauthenticated ZMQ DEALER message to the transport port (default 5555) therefore executes code as the user the LMCache process runs as. Official container images run that process as root. The transport binds to localhost unless the operator sets a routable address with --host, which is how multi-node deployments let peers connect.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-07T12:31:58Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: Remote code execution via unsafe deserialization in multiprocess mode transport",
+    "UpdatedAt": "2026-10-16T20:08:51Z",
+    "WithdrawnAt": "2026-10-16T20:08:50Z",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.3.9, \u003c 0.5.6"
+    }
+  ]
+}

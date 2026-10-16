@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-16T19:44:38Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "claude-agent-sdk"
+  },
+  "Advisory": {
+    "DatabaseId": 516389,
+    "Id": "GSA_kwCzR0hTQS1oNG13LWo3cXAtOG13bc4AB-El",
+    "GhsaId": "GHSA-h4mw-j7qp-8mwm",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-agent-sdk-python/security/advisories/GHSA-h4mw-j7qp-8mwm"
+      },
+      {
+        "Url": "https://github.com/anthropics/claude-agent-sdk-python/pull/1123"
+      },
+      {
+        "Url": "https://github.com/anthropics/claude-agent-sdk-python/commit/347a1cb88d7652199399db1b7f914e0a459a6662"
+      },
+      {
+        "Url": "https://github.com/anthropics/claude-agent-sdk-python/releases/tag/v0.2.121"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h4mw-j7qp-8mwm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h4mw-j7qp-8mwm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-96620"
+      }
+    ],
+    "Description": "The Claude Agent SDK for Python passed the `resume` option to the Claude CLI without validation, allowing a value beginning with `-` to be interpreted as a separate CLI flag. An attacker who controlled the `resume` value could inject an `--mcp-config` flag defining a stdio MCP server, resulting in arbitrary command execution at CLI startup that bypassed the SDK's permission controls. Exploitation required an application to pass untrusted input as the session ID to resume.\n\nUsers are advised to update to the latest version of the claude-agent-sdk package.\n\nThank you to hackerone.com/moamenmahmood for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-16T19:44:37Z",
+    "Severity": "CRITICAL",
+    "Summary": "Claude Agent SDK: Argument Injection via resume Option Allows Arbitrary Command Execution",
+    "UpdatedAt": "2026-10-16T19:44:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.2.121"
+      },
+      "VulnerableVersionRange": "\u003c 0.2.121"
+    }
+  ]
+}

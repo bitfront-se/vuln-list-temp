@@ -1,0 +1,53 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-16T19:17:30Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "ClickMigrate"
+  },
+  "Advisory": {
+    "DatabaseId": 516385,
+    "Id": "GSA_kwCzR0hTQS12Z2Y5LTlteHgtaHE1NM4AB-Eh",
+    "GhsaId": "GHSA-vgf9-9mxx-hq54",
+    "References": [
+      {
+        "Url": "https://github.com/QueueForge/ClickMigrate/security/advisories/GHSA-vgf9-9mxx-hq54"
+      },
+      {
+        "Url": "https://github.com/QueueForge/ClickMigrate/commit/6b1f2c0202630a82252b3331aa57e64327e112b6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vgf9-9mxx-hq54"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vgf9-9mxx-hq54"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-68549"
+      }
+    ],
+    "Description": "### Impact\nA path traversal vulnerability in the `revision` command allowed a crafted migration name supplied via the `-m` argument to escape the intended migrations directory.\n\nUnder specific conditions, an attacker could cause the tool to create a `.sql` file in an arbitrary location writable by the user executing the command.\n\nThis issue is only exploitable if an attacker can influence the migration name passed to the `revision` command, such as through an insecure automation or CI/CD pipeline that forwards untrusted input.\n\n### Patches\nThe vulnerability has been fixed in version 1.0.3 by validating and sanitizing the migration name to prevent directory traversal.\n\nUsers should upgrade to version 1.0.3 or later.\n\n### Workarounds\nDo not pass untrusted input to the `revision -m` argument.\n\nIf upgrading is not immediately possible, ensure that only trusted users or automation can invoke the `revision` command and that migration names are validated before being passed to the tool.\n\n### References\n- Fix commit: https://github.com/QueueForge/ClickMigrate/commit/6b1f2c0202630a82252b3331aa57e64327e112b6",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-16T19:17:28Z",
+    "Severity": "LOW",
+    "Summary": "ClickMigrate has Path Traversal in \"revision -m\" argument",
+    "UpdatedAt": "2026-10-16T19:17:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.3"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.3"
+    }
+  ]
+}
