@@ -1,0 +1,56 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-19T16:49:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mercury"
+  },
+  "Advisory": {
+    "DatabaseId": 517498,
+    "Id": "GSA_kwCzR0hTQS1ydjRtLXhtM2YtM2Njcc4AB-V6",
+    "GhsaId": "GHSA-rv4m-xm3f-3ccq",
+    "References": [
+      {
+        "Url": "https://github.com/mljar/mercury/security/advisories/GHSA-rv4m-xm3f-3ccq"
+      },
+      {
+        "Url": "https://github.com/mljar/mercury/commit/73a40ceb0becf057f495a5738ad7f5a5222a53e1"
+      },
+      {
+        "Url": "https://github.com/mljar/mercury/releases/tag/3.2.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rv4m-xm3f-3ccq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rv4m-xm3f-3ccq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111058"
+      }
+    ],
+    "Description": "Mercury runs a JupyterLab server with **anonymous access by default** (`mercury_app/__main__.py` sets `--IdentityProvider.token=''` when no `--token`/`MERCURY_TOKEN` is given; when tokenless it also sets `--ServerApp.disable_check_xsrf=True`). It relies on a **blocklist** (`mercury_app/block_handler.py` `BLOCKED_PATTERNS`: `/lab`, `/api/terminals`, `/api/shutdown`, `/files`) to keep anonymous users off dangerous Jupyter endpoints.\n\n## The vulnerability\n`/api/kernels` is **NOT** in the blocklist (and cannot be — Mercury needs kernels to run notebooks), and `patch_kernel_websocket_handler()` (`mercury_app/idle_timeout.py`) only tracks the idle-timeout: it wraps `on_message` to call `self.application._timeout_manager.touch()` and then invokes the original handler with **no filtering of `execute_request`**. So any unauthenticated network client can:\n\n```\nPOST /api/kernels {\"name\":\"python3\"}        -\u003e 201, returns kernel id\nopen websocket /api/kernels/\u003cid\u003e/channels\nsend an execute_request with arbitrary code -\u003e arbitrary Python execution = RCE\n```\n\n## Distinct from GHSA-f8c7-rwf9-fmgm (incomplete fix)\nGHSA-f8c7 was \"Unauthenticated RCE via `/api/terminals`\" — a missing-comma blocklist bypass. Its fix (add the comma so `/api/terminals` is blocked) does **NOT** address `/api/kernels`, which remains exploitable. The blocklist approach is fundamentally unable to cover kernels, so this is not a variant that another blocklist entry fixes.\n\n## Runtime-proven (on the patched version)\nOn **mercury 3.2.4** — the release that fixed GHSA-f8c7 — with the default (tokenless) config, as an unauthenticated client: `POST /api/terminals` returns **403** (the f8c7 fix is present), but `POST /api/kernels` returns **201**; opening the kernel websocket and sending an `execute_request` executed attacker-supplied Python (ran `whoami` as the server process user and wrote a marker file `/tmp/PWNED_MERCURY_RCE`). Full unauthenticated remote code execution. Deterministic PoC (client script + notebook) included.\n\n## Impact\nUnauthenticated, network-reachable arbitrary code execution as the Mercury server process user on every default deployment — complete compromise of the host/container and any data/secrets it can reach. \n\n## Fix\nThe blocklist cannot secure an anonymous kernel-backed server. Require real per-request authentication (a token or password) by default, or restrict the kernel message channel so anonymous websocket clients cannot issue `execute_request` outside Mercury's own controlled execution flow.\n\n## Dedup (3-method)\nOSV.dev CLEAN(0) for `mercury` and `mljar-mercury`; the repo's only advisory (GHSA-f8c7-rwf9-fmgm) covers `/api/terminals` only (description does not mention kernels); no issue/PR describes the `/api/kernels` RCE (#219/#134/#262 are \"add auth\" feature requests that merely confirm anonymous-by-default). Sink independently confirmed on current HEAD (blocklist omits `/api/kernels`; `token=''` default; `patch_kernel_websocket_handler` does no execute filtering).\n\nFinder: Abdullah Kareem (GitHub: CyberKareem).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-19T16:49:08Z",
+    "Severity": "CRITICAL",
+    "Summary": "Mercury: Unauthenticated Remote Code Execution via /api/kernels",
+    "UpdatedAt": "2026-10-19T16:49:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.6"
+      },
+      "VulnerableVersionRange": "\u003c= 3.2.5"
+    }
+  ]
+}
