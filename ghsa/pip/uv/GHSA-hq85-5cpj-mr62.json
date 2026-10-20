@@ -1,0 +1,55 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-20T19:37:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "uv"
+  },
+  "Advisory": {
+    "DatabaseId": 518113,
+    "Id": "GSA_kwCzR0hTQS1ocTg1LTVjcGotbXI2Ms4AB-fh",
+    "GhsaId": "GHSA-hq85-5cpj-mr62",
+    "References": [
+      {
+        "Url": "https://github.com/astral-sh/uv/security/advisories/GHSA-hq85-5cpj-mr62"
+      },
+      {
+        "Url": "https://github.com/certifi/python-certifi/security/advisories/GHSA-6q48-6c7w-9gw2"
+      },
+      {
+        "Url": "https://emudhra.we-have-a-problem.com"
+      },
+      {
+        "Url": "https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/0R3XLJL6FuE/m/0XofdebrAAAJ"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hq85-5cpj-mr62"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hq85-5cpj-mr62"
+      }
+    ],
+    "Description": "By default, uv verifies TLS connections against a vendored copy of the `webpki-root-certs` bundle. Versions before 0.13.4 include the `emSign ECC Root CA - G3` root. Eight eMudhra intermediate CA certificates that chain to that root have compromised private keys, and the CA has revoked them.\n\nAn attacker with one of the compromised keys can issue certificates that uv accepts for any hostname, and can be used to issue certificates to enable MITM attacks.\n\nuv 0.13.4 removes the root from its vendored bundle, following `webpki-root-certs` 1.0.10. Upgrade to 0.13.4 or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T19:37:52Z",
+    "Severity": "CRITICAL",
+    "Summary": "uv's bundled CA store trusts an emSign root whose intermediate CA keys are compromised",
+    "UpdatedAt": "2026-10-20T19:37:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.13.4"
+      },
+      "VulnerableVersionRange": "\u003c 0.13.4"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-20T17:52:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@angular/router"
+  },
+  "Advisory": {
+    "DatabaseId": 518023,
+    "Id": "GSA_kwCzR0hTQS01N3hxLXJqeDItdjV4aM4AB-eH",
+    "GhsaId": "GHSA-57xq-rjx2-v5xh",
+    "References": [
+      {
+        "Url": "https://github.com/angular/angular/security/advisories/GHSA-57xq-rjx2-v5xh"
+      },
+      {
+        "Url": "https://github.com/angular/angular/issues/70908"
+      },
+      {
+        "Url": "https://github.com/angular/angular/pull/70953"
+      },
+      {
+        "Url": "https://github.com/angular/angular/commit/319a3c4f3268f4f96ac4acdbb118737d2261e0be"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-57xq-rjx2-v5xh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-57xq-rjx2-v5xh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111751"
+      }
+    ],
+    "Description": "A denial of service (DoS) vulnerability was identified in `@angular/router` when Server-Side Rendering (SSR) is enabled on Node.js (V8) and `RouterLink` directives are rendered with `queryParamsHandling: 'merge'` or `'preserve'`, configured either per link or globally via `defaultQueryParamsHandling`.\n\nStarting in v21.2.0 ([angular/angular#66181](https://github.com/angular/angular/pull/66181)), `RouterLink` internals were refactored to use signals, introducing a computed signal (`_urlTree`) that cached the returned `UrlTree` instance on the directive. Because each rendered link maintains an active `RouterLink` instance for the entire duration of the request lifecycle, the computed signal permanently pinned the `UrlTree` and its associated query parameter dictionary in the heap until the SSR response completed.\n\nWhen query parameter handling is set to `'merge'` or `'preserve'`, each link copies the incoming request's query parameters into its own `UrlTree`. During SSR, memory consumption scales multiplicatively:\n\n$$\\text{Heap Retention} \\approx (\\text{Number of affected links}) \\times (\\text{Size of parsed query parameter map})$$\n\nBecause parsed JavaScript objects and property dictionaries require substantially more heap space than the raw query string—particularly when property names trigger dense array allocations under V8 property-storage heuristics—an attacker can supply oversized query strings to amplify heap consumption by orders of magnitude per in-flight request.\n\n### Impact\n\nSuccessful exploitation allows an unauthenticated remote attacker to exhaust the Node.js old-space heap with modest concurrent request volume, terminating the SSR worker with an unrecoverable JavaScript heap out of memory fatal crash.\n\n* **Numeric Names Not Required:** Numeric query parameter names trigger larger V8 property-storage allocations (~558 KB per parsed dictionary in tests vs. ~197 KB for non-numeric equivalents), lowering the concurrency threshold needed for a crash. However, non-numeric query parameters also produce significant heap amplification and can exhaust worker memory with proportionally higher concurrency.\n* **Client-side SPAs Unaffected:** Pure client-side Angular applications (Single Page Applications without SSR) are not vulnerable, as local browser memory consumption does not cross a security boundary.\n\n### Attack Preconditions \u0026 Vulnerable Configurations\n\nAn application is affected only if all of the following conditions are met:\n\n1. **SSR Enabled:** The application runs in a Server-Side Rendering environment powered by Node.js / V8.\n2. **Merged or Preserved Query Parameters:** `RouterLink` elements rendered during SSR use `queryParamsHandling: 'merge'` or `'preserve'`, either bound explicitly on links or configured application-wide via `withRouterConfig({ defaultQueryParamsHandling: 'merge' })`.\n3. **Upstream Proxy Forwards Long Request Lines:** Reverse proxies or load balancers (e.g., Nginx, AWS ALB, Cloudflare) forward long query strings to the Node.js application rather than rejecting them at the edge. (For example, Nginx's default 8 KB `large_client_header_buffers` limit rejects 16 KB request lines unless explicitly increased).\n4. **Overlapping Renders:** Because retained memory is freed once each request completes, multiple concurrent requests must be processed simultaneously in the same Node.js worker instance (such as pages awaiting asynchronous data fetching, route resolvers, or external API calls during SSR).\n\n### Exploit Payload Example\n\nAn attacker issues concurrent HTTP requests containing dense query parameters to an SSR page that renders multiple merged links:\n\n```http\nGET /products?0\u002617\u002634\u002651\u002668\u002685\u0026...\u002648042 HTTP/1.1\nHost: example.com\n```\n\n### Patches\n\nThe issue is resolved by removing persistent `UrlTree` retention from `RouterLink` ([angular/angular#70953](https://github.com/angular/angular/pull/70953)). `RouterLink` now tracks route dependencies directly in `reactiveHref` and discards intermediate `UrlTree` instances immediately after computing the serialized href string. The `urlTree` getter and click handlers compute `UrlTree` instances on demand.\n\nAs a result, intermediate query parameter maps are short-lived allocations collected during young-generation GC scavenges rather than remaining pinned in the heap for the lifetime of the request, restoring the memory profile of Angular 21.1 and earlier.\n\nPatched versions:\n* `22.2.1`\n* `21.2.25`\n\nVersions prior to 21.2.0 (including Angular 20.x LTS and 21.1.x) do not retain `UrlTree` instances in `RouterLink` and are not vulnerable to this issue.\n\n### Workarounds \u0026 Mitigations\n\nIf you cannot immediately upgrade to a patched version, apply one or more of the following mitigations:\n\n1. **Avoid 'merge' and 'preserve' on Server-Rendered Links:**\n   Remove `defaultQueryParamsHandling: 'merge'` (or `'preserve'`) from global configuration. Explicitly bind only the specific query parameters each link requires (e.g., `[queryParams]=\"{ filter: filter() }\"`). Even on patched versions, this practice prevents unnecessary request-derived parameter propagation into generated DOM markup.\n\n2. **Limit Query String Length at Reverse Proxy or Middleware:**\n   Configure your edge proxy, web application firewall (WAF), or reverse proxy to reject requests with excessively long query strings (e.g., exceeding 2,048 bytes).\n\n   Alternatively, reject oversized query strings in Node.js before Angular SSR handles the request:\n   ```ts\n   // server.ts (before Angular SSR handler)\n   app.use((req, res, next) =\u003e {\n     const queryIndex = req.url.indexOf('?');\n     if (queryIndex !== -1 \u0026\u0026 req.url.length - queryIndex \u003e 2048) {\n       res.status(414).send('URI Too Long');\n       return;\n     }\n     next();\n   });\n   ```\n\n3. **Increase Node.js Old Space:**\n   Increasing `--max-old-space-size` (e.g., to 2048 MB or 4096 MB) increases the memory headroom and the concurrency threshold required to exhaust memory, though it does not fully eliminate vulnerability under sustained traffic.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T17:52:32Z",
+    "Severity": "HIGH",
+    "Summary": "@angular/router: Denial of Service via RouterLink Query Parameter Retention in Server-Side Rendering (SSR)",
+    "UpdatedAt": "2026-10-20T17:52:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.2.25"
+      },
+      "VulnerableVersionRange": "\u003e= 21.2.0, \u003c 21.2.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.2.1"
+      },
+      "VulnerableVersionRange": "\u003e= 22.0.0, \u003c 22.2.1"
+    }
+  ]
+}

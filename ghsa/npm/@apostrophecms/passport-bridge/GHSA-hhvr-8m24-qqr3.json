@@ -1,0 +1,50 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T18:09:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@apostrophecms/passport-bridge"
+  },
+  "Advisory": {
+    "DatabaseId": 518031,
+    "Id": "GSA_kwCzR0hTQS1oaHZyLThtMjQtcXFyM84AB-eP",
+    "GhsaId": "GHSA-hhvr-8m24-qqr3",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-hhvr-8m24-qqr3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-hhvr-8m24-qqr3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-hhvr-8m24-qqr3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113669"
+      }
+    ],
+    "Description": "**Summary**\nApostrophe's cross-domain session migration emits a single-use session token as a URL query parameter and stores it in the Mongo cache. Any client that presents the token silently adopts the target user's full session (including `passport.user`) with no credentials.\n\n**Details**\n`packages/apostrophe/modules/@apostrophecms/i18n/index.js`:\n- Token generation on cross-host/locale flows (L479–487) and passport-bridge cross-locale redirect (`passport-bridge/index.js` L557–593) places the token in the URL.\n- `acceptCrossDomainSessionToken` (L258–298) reads `?aposCrossDomainSessionToken`, `Object.assign`s the stored session (cookie + `passport.user`) onto `req.session`, then nulls the cache entry under namespace `@apostrophecms/i18n:cross-domain-sessions`.\n- Middleware without `before:` is registered for every URL (express `findModuleMiddlewareAndRoutes` L820–879); verified with `APOS_LOG_ALL_ROUTES=1`.\n\n**PoC**\n```\n# 0) Anonymous baseline: admin-only draft → 403\n# 1) Admin logs in legitimately (token minted into redirect URL):\ncurl -c admin.cookies -X POST -H \"Content-Type: application/json\" \\\n     --data '{\"username\":\"admin\",\"password\":\"adminpassword\",\"session\":true}' \\\n     http://localhost:3100/api/v1/@apostrophecms/login/login\n# 2) Attacker with NO credentials visits the leaked token URL:\ncurl -c atk.cookies \"http://localhost:3100/?aposCrossDomainSessionToken=HUNTING_TOKEN\"\n#    → 302 Location: / ; attacker now holds a vulnlab.sid SID cookie\n# 3) Attacker reads admin-only content via adopted session:\ncurl -b atk.cookies \".../api/v1/@apostrophecms/page/d576242ve1dkzb12jiiabujd:en:draft\"\n#    → 200  adopted-session read -\u003e Secret Private Page | secretData = TOP-SECRET-VALUE-abc123\n# 4) Cache entry consumed (single-use): {\"value\":null}\n```\n\n**Impact**\nSession hijack / account takeover of the migrated user for anyone who obtains the token, inheriting all the account's privileges. Exposure is realistic precisely because the token is in URLs: server/proxy/browser-access logs, browser history, and the Referer header when the destination host differs from the source (the intended use case). Single-use limits but does not remove the window.\n\n**Remediation** — Deliver the token via a short-lived HttpOnly signed SameSite cookie rather than a query parameter; bind consumption to the exact source/destination host pair, expire in seconds, and never log it.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:09:01Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS: Cross-domain session token in URL confers session takeover",
+    "UpdatedAt": "2026-10-20T18:09:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.6.1"
+    }
+  ]
+}

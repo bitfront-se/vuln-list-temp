@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-20T18:26:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@modelcontextprotocol/sdk"
+  },
+  "Advisory": {
+    "DatabaseId": 518049,
+    "Id": "GSA_kwCzR0hTQS0yMmptLWg0OXAtMjlxd84AB-eh",
+    "GhsaId": "GHSA-22jm-h49p-29qw",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-22jm-h49p-29qw"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/pull/2925"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/commit/727075b5bbeb77fbea22041b36b72a73042160fa"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-22jm-h49p-29qw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-22jm-h49p-29qw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111767"
+      }
+    ],
+    "Description": "### Summary\nIn affected versions, the experimental tasks feature (`taskStore`) did not check which session created a task. Clients sharing one `InMemoryTaskStore` could list, read and cancel each other's tasks.\n\nExperimental tasks are deprecated. The 2026-07-28 specification replaced them with a redesigned extension. The best course of action is to stop using them.\n\n### Am I affected?\nOnly if your HTTP server passes `taskStore` to `McpServer` or `Server`. If `grep -ri taskstore --exclude-dir=node_modules .` finds nothing, you are not affected.\n\nAffected versions: `@modelcontextprotocol/sdk` 1.24.0 through 1.31.0. The 2.x packages are not affected.\n\n### Fix\nUpgrade to `@modelcontextprotocol/sdk` 1.32.0 or later. Each task is now tied to the session that created it, so a client that starts a new session can no longer reach its earlier tasks.\n\nIf you cannot upgrade yet, remove `taskStore`, or create one `InMemoryTaskStore` per session.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:26:54Z",
+    "Severity": "HIGH",
+    "Summary": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
+    "UpdatedAt": "2026-10-20T18:26:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.32.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.24.0, \u003c 1.32.0"
+    }
+  ]
+}

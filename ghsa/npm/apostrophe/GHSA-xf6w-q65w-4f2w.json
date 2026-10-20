@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T18:26:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "apostrophe"
+  },
+  "Advisory": {
+    "DatabaseId": 518047,
+    "Id": "GSA_kwCzR0hTQS14ZjZ3LXE2NXctNGYyd84AB-ef",
+    "GhsaId": "GHSA-xf6w-q65w-4f2w",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-xf6w-q65w-4f2w"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/9500b8b0e1d630d5e07fbb5fd2c25ed0943845ce"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/f84fd41cbf6c22eb8d0008fc9c25df1f7130b350"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/releases/tag/apostrophe@4.33.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xf6w-q65w-4f2w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xf6w-q65w-4f2w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113653"
+      }
+    ],
+    "Description": "### Impact\nEven though it is correctly applied to guests, contributors, etc., `viewRole` is not applied to the general public. This means that a secured content type like `@apostrophecms/user` can in theory be accessed.\n\nThis is greatly mitigated by the fact that there is no automatic public REST API for any content type. One has to expressly allow it. However, it does mean that developers can make the mistake of setting up a relationship between a content type like a blog post, and `@apostrophecms/user`. This could potentially expose some sensitive information if templates were written poorly, e.g. if they JSON-serialized the entire object. Note that password hashes are NOT affected because they reside in a separate collection.\n\nThe public demo project and its various flavors must be updated first because it inadvertently relies on the bug.\n\n### Patches\n4.33.0\n\n### Workarounds\nNever create relationships with `@apostrophecms/user` that are intended for non-admin display. If you need a relationship that expresses authorship, create a separate author piece type to publicly represent that.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:26:02Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS: The general public can access @apostrophecms/user objects via a relationship (viewRole is not applied to the general public)",
+    "UpdatedAt": "2026-10-20T18:26:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.33.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.33.0"
+    }
+  ]
+}

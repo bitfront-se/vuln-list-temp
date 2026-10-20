@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T18:05:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@apostrophecms/login-recaptcha"
+  },
+  "Advisory": {
+    "DatabaseId": 518029,
+    "Id": "GSA_kwCzR0hTQS00NHFyLXJyamctMmNxcc4AB-eN",
+    "GhsaId": "GHSA-44qr-rrjg-2cqq",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-44qr-rrjg-2cqq"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/9500b8b0e1d630d5e07fbb5fd2c25ed0943845ce"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/f84fd41cbf6c22eb8d0008fc9c25df1f7130b350"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/releases/tag/@apostrophecms/form@1.5.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-44qr-rrjg-2cqq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-44qr-rrjg-2cqq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113667"
+      }
+    ],
+    "Description": "**Summary**\nForm and login CAPTCHA verification interpolate the user-supplied widget token unencoded into the server-side verification URL/body, allowing a crafted token to inject query parameters into the reCAPTCHA/hCaptcha verify request.\n\n**Details**\n- `packages/form/lib/recaptcha.js:39` — `recaptchaUri = 'https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}\u0026response=${input.recaptcha}'`\n- `packages/login-recaptcha/index.js:44` — same pattern for login\n- `packages/login-hcaptcha/index.js:47` — `body: 'response=${token}\u0026secret=${secret}'`\n\n**PoC**\n```\ninput.recaptcha = 'attacker_token\u0026secret=INJECTED_SECRET\u0026something=1'\n→ resulting verify URL:\n   https://www.google.com/recaptcha/api/siteverify?secret=\u003creal\u003e\u0026response=attacker_token\u0026secret=INJECTED_SECRET\u0026something=1\n# (replicated exactly from recaptcha.js:39)\n```\n\n**Impact**\nLow: a crafted token smuggles extra `key=value` pairs (`secret`, extra `response`) into the outbound verify call, forcing verification failures (DoS of the captcha gate and of captcha-gated login/form flows) and enabling automated bypass probing; no secret exfiltration.\n\n**Remediation** — Build the verify request with `URL` + `searchParams` (or `encodeURIComponent` on both `secret` and `response`), and validate the token against `^[A-Za-z0-9._-]{1,2048}$` before use.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:05:35Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS: CAPTCHA response token not URL-encoded",
+    "UpdatedAt": "2026-10-20T18:05:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.2.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.2.1"
+    }
+  ]
+}

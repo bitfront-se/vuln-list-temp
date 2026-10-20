@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-20T19:35:06Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "certifi"
+  },
+  "Advisory": {
+    "DatabaseId": 518112,
+    "Id": "GSA_kwCzR0hTQS02cTQ4LTZjN3ctOWd3Ms4AB-fg",
+    "GhsaId": "GHSA-6q48-6c7w-9gw2",
+    "References": [
+      {
+        "Url": "https://github.com/certifi/python-certifi/security/advisories/GHSA-6q48-6c7w-9gw2"
+      },
+      {
+        "Url": "https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576"
+      },
+      {
+        "Url": "https://emudhra.we-have-a-problem.com"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6q48-6c7w-9gw2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6q48-6c7w-9gw2"
+      }
+    ],
+    "Description": "Certifi versions before 2026.10.18 include the `emSign ECC Root CA - G3` root certificate in their bundled CA store. Eight eMudhra intermediate CA certificates that chain to this root have compromised private keys and the CA has revoked them. \n\nAn attacker with one of the compromised keys can issue valid-looking certificates for any hostname. If the attacker is also on-path, they can intercept or modify TLS traffic from clients that trust the certifi bundle. Examples include `requests`, `urllib3` and `pip`, and the Python.org macOS installer.\n\nCertifi 2026.10.18 removed all emSign roots from the bundle. Certifi 2026.10.19 restored the emSign roots that are not affected. Upgrade to 2026.10.19 or later, and rebuild container images that vendor certifi.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T19:35:05Z",
+    "Severity": "CRITICAL",
+    "Summary": "certifi bundles emSign root CAs with compromised intermediate CA keys",
+    "UpdatedAt": "2026-10-20T19:35:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.10.19"
+      },
+      "VulnerableVersionRange": "\u003e= 2019.03.09, \u003c 2026.10.19"
+    }
+  ]
+}

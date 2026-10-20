@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T18:03:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sanitize-html"
+  },
+  "Advisory": {
+    "DatabaseId": 518026,
+    "Id": "GSA_kwCzR0hTQS14M3E0LTloeHgtZ3g4bc4AB-eK",
+    "GhsaId": "GHSA-x3q4-9hxx-gx8m",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-x3q4-9hxx-gx8m"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/9500b8b0e1d630d5e07fbb5fd2c25ed0943845ce"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/f84fd41cbf6c22eb8d0008fc9c25df1f7130b350"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/releases/tag/sanitize-html@2.18.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x3q4-9hxx-gx8m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x3q4-9hxx-gx8m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113654"
+      }
+    ],
+    "Description": "## Summary\n\n`sanitize-html` discards the *content* of every element in `nonTextTags`. It delimits that region\nusing htmlparser2's close events, and ignores the `isImplied` flag htmlparser2 passes it. Closing a\nstill-open **ancestor** from inside a `\u003cnoscript\u003e` makes htmlparser2 unwind its stack past the\n`noscript`; the synthetic implied close it emits on the way ends the discard region early, and\neverything after it is treated as ordinary body content.\n\nA browser with scripting enabled parses `\u003cnoscript\u003e` content as **raw text**, so the same markup\nrenders as inert text there. The sanitizer therefore emits elements the page itself would not have.\n\n## Reproduction\n\n```js\nconst sanitizeHtml = require(\"sanitize-html\");\n\nsanitizeHtml('\u003cdiv\u003e\u003cnoscript\u003e\u003c/div\u003e\u003cimg src=\"http://evil.test/t.gif\"\u003e\u003c/noscript\u003e', {\n  allowedTags: [\"div\", \"img\"],\n  allowedAttributes: { img: [\"src\"] },\n  nonTextTags: [\"script\", \"style\", \"textarea\", \"option\", \"noscript\"],\n});\n// =\u003e '\u003cdiv\u003e\u003c/div\u003e\u003cimg src=\"http://evil.test/t.gif\" /\u003e'\n```\n\nChrome, given the same input, renders **no** `\u003cimg\u003e` — the whole payload is raw text inside the\nunclosed `\u003cnoscript\u003e`. Verified with Playwright, `srcdoc` into an iframe so the scripting flag is on.\n\nA `\u003c![CDATA[` variant hides the opening tag from the parser entirely and has the same effect:\n\n```\n\u003cp\u003eHi\u003c/p\u003e\u003c![CDATA[ x \u003e \u003cnoscript\u003e]]\u003e\u003ca href=\"…\"\u003eReset your password\u003c/a\u003e\u003cimg src=\"…beacon.gif\"\u003e\u003c/noscript\u003e\n```\n\nhtmlparser2 runs a CDATA token to `]]\u003e`; Chrome ends a bogus comment at the first `\u003e`, so the\n`\u003cnoscript\u003e` after it is real to the browser and invisible to the parser.\n\n## Where the behaviour is\n\n`index.js`:\n\n- `:154` — `nonTextTagsArray` (the default list, `['script','style','textarea','option','xmp']`).\n- `:638` — `onclosetag: function (name, isImplied)` — receives the flag.\n- `:644` — `skipTextDepth--` — decrements without consulting `isImplied`.\n\n## Suggested fix\n\nDo not end a discard region on an implied close. htmlparser2 already distinguishes them; the flag\nis passed and discarded. Something close to:\n\n```js\nonclosetag: function (name, isImplied) {\n  if (skipText) {\n    if (isImplied) return;   // an implied close must not end the region\n    skipTextDepth--;\n    …\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:03:22Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS sanitize-html: nonTextTags discard region ends early on an implied close, letting \u003cnoscript\u003e content render",
+    "UpdatedAt": "2026-10-20T18:03:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.18.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-20T20:06:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@modelcontextprotocol/server"
+  },
+  "Advisory": {
+    "DatabaseId": 518122,
+    "Id": "GSA_kwCzR0hTQS00NmpyLTR3eDgtdjQ1M84AB-fq",
+    "GhsaId": "GHSA-46jr-4wx8-v453",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-46jr-4wx8-v453"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/pull/2926"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/pull/2927"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/commit/6d8dbc6cb590edf766fcb66b636ca6b654e99c37"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/commit/fd26801b3b387742fe24a90ed4b275dd6072209f"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-46jr-4wx8-v453"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-46jr-4wx8-v453"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111768"
+      }
+    ],
+    "Description": "### Summary\nIn affected versions, servers put no limit on how many array elements and object keys they validated in one request. One HTTP request within the default 4 MiB size limit could exhaust the server's memory, and the process aborted with `JavaScript heap out of memory`.\n\nNo credentials are needed, unless you authenticate requests before they reach the SDK.\n\n### Am I affected?\nYes, if clients you do not fully trust can reach your server over HTTP. The risk is highest for `McpServer` tools whose input contains an array or a record. stdio-only servers are not affected.\n\nAffected versions:\n\n- `@modelcontextprotocol/sdk` 1.3.0 through 1.31.0\n- `@modelcontextprotocol/server` 2.0.0 through 2.2.0\n\n### Fix\nUpgrade to:\n\n- 1.x: `@modelcontextprotocol/sdk` 1.32.0 or later\n- 2.x: `@modelcontextprotocol/server` 2.3.0 or later\n\n**Upgrading alone changes nothing.** The patched versions add an `McpServer` option, `maxToolInputElements`, that is off by default. Make both of these changes:\n\n1. Set `maxToolInputElements` just above the largest input your tools need, for example `new McpServer(info, { maxToolInputElements: 10_000 })`. It counts array elements and object keys in a call's arguments. A call over the limit gets an `isError: true` result.\n2. Lower the request size limit to what your tools need. The option covers tool arguments only, and the size limit covers everything else. Set `maxRequestBodySize` on the transport or `createMcpHandler()`. If you parse the body yourself, for example with `express.json()` or Fastify, set that parser's limit.\n\nIf you cannot upgrade yet, make the second change. `maxRequestBodySize` needs `@modelcontextprotocol/sdk` 1.30.1 or `@modelcontextprotocol/server` 2.1.0. Below that, use a reverse proxy.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T20:06:35Z",
+    "Severity": "HIGH",
+    "Summary": "MCP TypeScript SDK: One HTTP request within the default size limit could exhaust server memory during validation",
+    "UpdatedAt": "2026-10-20T20:06:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.3.0"
+    }
+  ]
+}

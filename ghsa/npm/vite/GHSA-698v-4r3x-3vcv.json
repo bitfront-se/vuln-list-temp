@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T18:30:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vite"
+  },
+  "Advisory": {
+    "DatabaseId": 518050,
+    "Id": "GSA_kwCzR0hTQS02OTh2LTRyM3gtM3Zjds4AB-ei",
+    "GhsaId": "GHSA-698v-4r3x-3vcv",
+    "References": [
+      {
+        "Url": "https://github.com/vitejs/launch-editor/security/advisories/GHSA-698v-4r3x-3vcv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-112943"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/pull/155"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/commit/3c2f9bf2ff8fe63d056a8f9cc52d825b66ca79fc"
+      },
+      {
+        "Url": "https://github.com/vitejs/launch-editor/releases/tag/v2.14.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-698v-4r3x-3vcv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-698v-4r3x-3vcv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-112943"
+      }
+    ],
+    "Description": "### Summary\n\n`launch-editor` did not escape `%` on Windows when passing an argument to `cmd`. When an environment variable contained a malicious value, it was possible that that content to be executed.\n\n### Impact\n\nOnly apps that match all of the following conditions are affected:\n\n- The user uses Windows\n- An attacker can place a file with the malicious filename containing `\u0026` or `%`\n- Either of\n  - An attacker can inject an environment variable with a malicious value\n  - An attacker can add a NTFS alternate data stream to the file placed\n\n### Details\n\nUnlike `.sh` files, `.bat` / `.cmd` files on Windows cannot be called directly using [`child_process.spawn`](https://nodejs.org/docs/latest-v24.x/api/child_process.html#child_processspawncommand-args-options) and requires passing them as an argument of `cmd.exe`. To do so, launch-editor escapes the arguments passed to `cmd.exe`. But `launch-editor` did not escape `%` which is used for environment variables.\n\nBecause `launch-editor` checks if the argument matches an existing filename, the attack requires the attacker to be able to place a file.\n\n- If the attacker can inject an environment variable as well, they can include the subcommand in the env variable (e.g. set ` \u0026calc.exe ` to `%ENV%`) and call `launchEditor` with `something%ENV%`.\n- If the attacker can place a NTFS alternate data stream to the file (e.g. a NTFS alternate data stream named `~-38%calc.exe`), they can call `launchEditor` with `something %CMDCMDLINE:~-38%calc.exe`.\n- If the attacker can create a filename containing the `%CD%` and the subcommand (e.g. `\u0026calc.exe `), they can call `launchEditor` with `./%CD%`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T18:30:24Z",
+    "Severity": "MODERATE",
+    "Summary": "launch-editor: escapeCmdArgs() omits % escaping on Windows",
+    "UpdatedAt": "2026-10-20T18:30:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.4.4"
+      },
+      "VulnerableVersionRange": "\u003c= 6.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.3.7"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c= 7.3.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.1.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.2.4"
+      },
+      "VulnerableVersionRange": "\u003e= 8.2.0, \u003c= 8.2.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.3.3"
+      },
+      "VulnerableVersionRange": "\u003e= 8.3.0, \u003c= 8.3.2"
+    }
+  ]
+}
