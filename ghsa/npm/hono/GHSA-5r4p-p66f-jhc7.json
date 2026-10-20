@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-20T14:36:13Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 517984,
+    "Id": "GSA_kwCzR0hTQS01cjRwLXA2NmYtamhjN84AB-dg",
+    "GhsaId": "GHSA-5r4p-p66f-jhc7",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-5r4p-p66f-jhc7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-111757"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/8b05c774ef1555c70f5ba5e2991b7e77cc3635cc"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.13.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5r4p-p66f-jhc7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5r4p-p66f-jhc7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111757"
+      }
+    ],
+    "Description": "### Summary\n\n`serveStatic` decodes the request path a second time after Hono has already decoded it for routing. A crafted request can be routed as one path and served as another, so middleware mounted on a static prefix does not run for a file under that prefix.\n\n### Details\n\nHono decodes the request path once before routing. `serveStatic` decoded it again before resolving the file. With a malformed percent-encoded sequence, the first decode leaves part of the path encoded, the router matches the encoded form, and the second decode resolves the real directory. The file is still resolved inside the configured root; this is not a traversal outside it.\n\n### Impact\n\nAn unauthenticated attacker may reach static files without the middleware on their prefix running, for example an authentication check. This affects applications that mount middleware on part of the directory served by `serveStatic`. Applications that serve only public files are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T14:36:11Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: `serveStatic` decodes the request path a second time, leading to bypass of middleware on static paths",
+    "UpdatedAt": "2026-10-20T14:36:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.13.11"
+      },
+      "VulnerableVersionRange": "\u003e= 4.12.4, \u003c 4.13.11"
+    }
+  ]
+}

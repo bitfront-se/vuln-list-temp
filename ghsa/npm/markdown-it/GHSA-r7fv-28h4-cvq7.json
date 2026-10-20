@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-20T14:34:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "markdown-it"
+  },
+  "Advisory": {
+    "DatabaseId": 517982,
+    "Id": "GSA_kwCzR0hTQS1yN2Z2LTI4aDQtY3ZxN84AB-de",
+    "GhsaId": "GHSA-r7fv-28h4-cvq7",
+    "References": [
+      {
+        "Url": "https://github.com/markdown-it/markdown-it/security/advisories/GHSA-r7fv-28h4-cvq7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-111759"
+      },
+      {
+        "Url": "https://github.com/markdown-it/markdown-it/commit/1b379c1b6d0522421bd1a51b77337c79af2c8670"
+      },
+      {
+        "Url": "https://github.com/markdown-it/markdown-it/commit/cf27366035edf9196667110c47d9d67b030a4152"
+      },
+      {
+        "Url": "https://github.com/markdown-it/markdown-it/commit/daf5a3c32303e5d9de01b12eeb725fb5990b8162"
+      },
+      {
+        "Url": "https://github.com/markdown-it/markdown-it/releases/tag/14.3.2"
+      },
+      {
+        "Url": "https://github.com/markdown-it/markdown-it/releases/tag/15.0.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r7fv-28h4-cvq7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r7fv-28h4-cvq7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111759"
+      }
+    ],
+    "Description": "### Impact\n\nWhen `typographer: true` is enabled, specially crafted Markdown can cause quadratic processing time in the smartquotes rule, potentially leading to denial of service in applications processing untrusted input.\n\nMany opening double quotes followed by unmatched closing single quotes cause repeated scans of the entire opener stack. The same issue occurs with the quote types reversed.\n\nThe default configuration (`typographer: false`) is not affected, but this option is enabled with high probability.\n\n### Reproduction\n\n```js\nimport MarkdownIt from 'markdown-it'\nimport { performance } from 'node:perf_hooks'\n\nconst md = new MarkdownIt({ typographer: true })\n\nfor (const k of [2000, 4000, 8000, 16000, 32000]) {\n  const input = '\"a '.repeat(k) + \"b' \".repeat(k)\n  const start = performance.now()\n  md.render(input)\n  console.log(input.length, (performance.now() - start).toFixed(1), 'ms')\n}\n```\n\nResult:\n\n|input size|time|\n|-|-|\n|12000|18ms|\n|24000|47ms|\n|48000|115ms|\n|96000|428ms|\n|192000|1586ms|\n\n### Patches\n\nFixed in **15.0.2** and **14.3.2**.\n\n### Workarounds\n\nDisable typography with `typographer: false`, or disable only the smartquotes rule:\n\n```js\nmd.disable('smartquotes')\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T14:34:50Z",
+    "Severity": "HIGH",
+    "Summary": "markdown-it: Quadratic complexity in smartquotes with unmatched closing quotes",
+    "UpdatedAt": "2026-10-20T14:34:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "14.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 14.3.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 15.0.0, \u003c 15.0.2"
+    }
+  ]
+}
