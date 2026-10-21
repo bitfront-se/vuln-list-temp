@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-21T16:31:05Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "ognl:ognl"
+  },
+  "Advisory": {
+    "DatabaseId": 520007,
+    "Id": "GSA_kwCzR0hTQS1jcndjLXZ3MnItcXI2bc4AB-9H",
+    "GhsaId": "GHSA-crwc-vw2r-qr6m",
+    "References": [
+      {
+        "Url": "https://github.com/orphan-oss/ognl/security/advisories/GHSA-crwc-vw2r-qr6m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-113730"
+      },
+      {
+        "Url": "https://github.com/orphan-oss/ognl/commit/16396fa4b560221294c2ab9ca04b76b161115e7d"
+      },
+      {
+        "Url": "https://github.com/orphan-oss/ognl/commit/f4c17f794754d516ea799c36ed8524d1b7fb98e2"
+      },
+      {
+        "Url": "https://github.com/orphan-oss/ognl/releases/tag/OGNL_3_4_13"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-crwc-vw2r-qr6m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-crwc-vw2r-qr6m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113730"
+      }
+    ],
+    "Description": "### Summary\n\nOGNL's optional *stricter invocation* mode maintains a block list that prevents expressions from directly calling methods on dangerous classes such as `Runtime`, `ProcessBuilder`, and `ClassLoader`. The block list filters on the **declaring class of the method OGNL invokes**. Because `java.lang.reflect.Method` (and `Constructor`/`Field`) are not on the list, an expression can use reflection as a proxy — `someMethod.invoke(target, args)` — to reach a blocked method. The real call (e.g. `ProcessBuilder.start()`) then executes inside the JDK reflection machinery and never passes back through OGNL's `invokeMethod`, so the block list never sees it.\n\n### Proof of concept\n\nUnder the default OGNL context (public-only access, stricter invocation enabled), the following expression creates a file even though a direct `new ProcessBuilder(...).start()` is blocked:\n\n```\n(#pb=new java.lang.ProcessBuilder({\"/usr/bin/touch\",\"rce-proof.txt\"}),\n #methods=@java.lang.ProcessBuilder@class.getMethods(),\n #names=#methods.{ #this.getName() },\n #startIdx=#names.indexOf(\"start\"),\n #methods[#startIdx].invoke(#pb, null))\n```\n\n### Impact and scope — please read carefully\n\n**This is hardening of a defense-in-depth secondary layer, not a break of OGNL's primary security boundary.**\n\nIn OGNL the stricter-invocation block list is a *secondary* mitigation. The **primary** access-control gate is the `MemberAccess` implementation supplied by the integrating framework or application, which OGNL consults on every constructor and method call. Frameworks that evaluate untrusted expressions are expected to install a restrictive `MemberAccess` — for example, Apache Struts' `SecurityMemberAccess`, which excludes dangerous classes and the `java.lang.reflect` package. Against such a `MemberAccess` this PoC is blocked at the very first step (the `new ProcessBuilder(...)` constructor), before reflection is ever reachable.\n\nThe default context that ships with OGNL intentionally allows all public members and is **not** designed to sandbox untrusted input. An application that evaluates attacker-controlled expressions with that permissive default already has many paths to code execution, and this technique is not required to achieve it.\n\n**You are affected only if all of the following hold:** (1) your application evaluates untrusted/attacker-controlled OGNL expressions, (2) it uses OGNL's default permissive `MemberAccess` (or an equivalently permissive one that allows `java.lang.reflect`), and (3) it relies on the stricter-invocation block list as its sandbox. **Properly configured consumers — including Apache Struts with its `SecurityMemberAccess` — are not affected.** The actual protection for untrusted-expression scenarios remains a correctly configured `MemberAccess`; the block list should not be treated as a sandbox.\n\n### Fix\n\n`java.lang.reflect.Method`, `java.lang.reflect.Constructor`, and `java.lang.reflect.Field` are added to the stricter-invocation block list, so reflection objects can no longer be used as invocation proxies in stricter mode. The `java.lang.invoke.MethodHandle` path was verified not to be exploitable (its signature-polymorphic `invoke`/`invokeExact` fail through OGNL's reflection-based invocation), so no additional classes are required.\n\n### Credit\n\nReported responsibly through Tidelift by 毛锐 (youyi.mr@alibaba-inc.com).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-21T16:31:04Z",
+    "Severity": "MODERATE",
+    "Summary": "OGNL stricter-invocation block list bypass via java.lang.reflect reflection proxies",
+    "UpdatedAt": "2026-10-21T16:31:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.13"
+      },
+      "VulnerableVersionRange": "\u003c= 3.4.12"
+    }
+  ]
+}
