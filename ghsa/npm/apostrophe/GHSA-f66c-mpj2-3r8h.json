@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-21T17:17:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "apostrophe"
+  },
+  "Advisory": {
+    "DatabaseId": 520029,
+    "Id": "GSA_kwCzR0hTQS1mNjZjLW1wajItM3I4aM4AB-9d",
+    "GhsaId": "GHSA-f66c-mpj2-3r8h",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-f66c-mpj2-3r8h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-112952"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/06e4b377f3c360f9e89c32dccd7e505ad5ddf498"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/40b989b1a9dd23d30029b8ce7668634265cfe5ea"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/releases/tag/apostrophe@4.34.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f66c-mpj2-3r8h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f66c-mpj2-3r8h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-112952"
+      }
+    ],
+    "Description": "### Summary\nThe `slugTaken` endpoint returns a boolean indicating whether a slug is in use across\nall document types and visibility levels, with no permission or type filter. Any logged-in\nuser (including editors) can enumerate the slug space of private pages, drafts, and\narchived content.\n\n### Details\n`POST /api/v1/@apostrophecms/doc/slugTaken` with body `{ \"slug\": \"target-slug\" }` runs\na raw existence check against the documents collection. It does not:\n- Check whether the requesting user has read permission for documents of that type.\n- Filter by `visibility` (public, loginRequired, private).\n- Filter by `viewRole`.\n- Filter by publication status (draft vs published).\n\nA single authenticated session can iterate the slug space to enumerate the full content\ninventory of the CMS, including content the user is explicitly prohibited from viewing.\n\n### PoC\n```bash\n# Any authenticated session works — editor role sufficient\ncurl -b \"$EDITOR_JAR\" -X POST \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"slug\":\"known-private-page-slug\"}' \\\n  \"http://TARGET/api/v1/@apostrophecms/doc/slugTaken\"\n# → { \"taken\": true }  — confirms private page exists\n\ncurl -b \"$EDITOR_JAR\" -X POST \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"slug\":\"zzz-nonexistent\"}' \\\n  \"http://TARGET/api/v1/@apostrophecms/doc/slugTaken\"\n# → { \"taken\": false }\n```\n\n### Impact\nInformation disclosure. An attacker with any authenticated session can enumerate all\nslugs in the system, mapping the full content structure of the CMS including private and\nadmin-only content.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-21T17:17:00Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS: POST /api/v1/@apostrophecms/doc/slugTaken discloses existence of private/admin-only content to any authenticated user",
+    "UpdatedAt": "2026-10-21T17:17:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.34.0"
+      },
+      "VulnerableVersionRange": "\u003c 4.34.0"
+    }
+  ]
+}

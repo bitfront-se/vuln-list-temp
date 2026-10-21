@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-21T21:12:57Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pillow"
+  },
+  "Advisory": {
+    "DatabaseId": 520144,
+    "Id": "GSA_kwCzR0hTQS1nZzJyLXd2Zm0tcTlyeM4AB-_Q",
+    "GhsaId": "GHSA-gg2r-wvfm-q9rx",
+    "References": [
+      {
+        "Url": "https://github.com/python-pillow/Pillow/security/advisories/GHSA-gg2r-wvfm-q9rx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-112892"
+      },
+      {
+        "Url": "https://github.com/python-pillow/Pillow/commit/5dcb630b9798efd91929cb873d677aeee6ed0bb3"
+      },
+      {
+        "Url": "https://github.com/python-pillow/Pillow/releases/tag/13.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gg2r-wvfm-q9rx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gg2r-wvfm-q9rx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-112892"
+      }
+    ],
+    "Description": "### Summary\nThe MSP RLE decoder expands run-length data into an in-memory buffer with no cap tied to the declared image size. A small file that passes the pixel-count check can force hundreds of megabytes or more of allocation when the application loads pixels.\n\n### Details\nThe MSP decoder writes each run into an unbounded `io.BytesIO` and can expand roughly 85x per run:\n\n- `src/PIL/MspImagePlugin.py:144-146`\n\n### Impact\nMemory-exhaustion denial of service from a tiny crafted image in any application that loads pixels. The expansion is decoupled from the declared pixel count, so `MAX_IMAGE_PIXELS` does not bound it.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-21T21:12:56Z",
+    "Severity": "HIGH",
+    "Summary": "Pillow: MSP RLE decoder expands a tiny file into unbounded memory",
+    "UpdatedAt": "2026-10-21T21:12:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 4.1.0, \u003c 13.0.0"
+    }
+  ]
+}

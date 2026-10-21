@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-21T17:05:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "sanitize-html"
+  },
+  "Advisory": {
+    "DatabaseId": 520023,
+    "Id": "GSA_kwCzR0hTQS1jOXJ4LXg5NDctZnAzaM4AB-9X",
+    "GhsaId": "GHSA-c9rx-x947-fp3h",
+    "References": [
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/security/advisories/GHSA-c9rx-x947-fp3h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-113650"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/06e4b377f3c360f9e89c32dccd7e505ad5ddf498"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/commit/40b989b1a9dd23d30029b8ce7668634265cfe5ea"
+      },
+      {
+        "Url": "https://github.com/apostrophecms/apostrophe/releases/tag/sanitize-html@2.18.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c9rx-x947-fp3h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c9rx-x947-fp3h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113650"
+      }
+    ],
+    "Description": "### Summary\n\nSince 2.18.0, when an `\u003ciframe\u003e` is not allowed and `disallowedTagsMode` is `'discard'` (the defaults),\nits raw-text content is re-sanitized by a recursive call to `sanitizeHtml(text, options)` (the change\nfrom #5564, fixing #5550). The recursion has no bound and starts each nested call with a fresh state.\nTwo consequences, both absent from 2.17.7 and 2.17.4:\n\n1. A few kilobytes of unclosed `\u003ciframe\u003e` tags throw `RangeError: Maximum call stack size exceeded`\n   with the default options. Any application that sanitizes untrusted HTML with 2.18.0 can be made to\n   throw on a small crafted input.\n2. `nestingLimit` is not enforced across a discarded iframe: each nested iframe restarts the depth\n   count at zero, so the output can be nested arbitrarily deep regardless of the configured limit.\n\n### Affected versions\n\n- 2.18.0 (the current `latest`), and the `main` branch at the time of writing (the recursive call is\n  still in `packages/sanitize-html/index.js`, in the `ontext` handler, branch\n  `tag === 'iframe' \u0026\u0026 !tagAllowed(tag) \u0026\u0026 options.disallowedTagsMode === 'discard'`).\n- Not affected: 2.17.7 and 2.17.4 (tested with the same inputs below).\n\nTested with Node.js v26.7.0.\n\n### Reproduction 1: stack overflow with the default options\n\n```js\nconst sanitizeHtml = require('sanitize-html');\n\n// with 2.18.0:\nsanitizeHtml('\u003ciframe\u003e'.repeat(1000));  // 8,000 chars: returns ''\nsanitizeHtml('\u003ciframe\u003e'.repeat(2000));  // 16,000 chars: throws RangeError: Maximum call stack size exceeded\nsanitizeHtml('\u003ciframe\u003e'.repeat(20000)); // 160,000 chars: throws RangeError: Maximum call stack size exceeded\n```\n\nResults:\n\n| input | 2.17.4 | 2.17.7 | 2.18.0 |\n|---|---|---|---|\n| `'\u003ciframe\u003e'.repeat(1000)` | ok | ok | ok |\n| `'\u003ciframe\u003e'.repeat(2000)` | ok | ok | RangeError |\n| `'\u003ciframe\u003e'.repeat(20000)` | ok | ok | RangeError |\n\nThe threshold depends on the remaining stack, so it is lower when `sanitizeHtml` is called from an\nalready deep call stack (for example inside a server-side rendering pass).\n\n### Reproduction 2: `nestingLimit` is bypassed\n\n```js\nconst sanitizeHtml = require('sanitize-html');\n\nconst input = ('\u003ciframe\u003e' + '\u003cb\u003e'.repeat(3)).repeat(50) + 'x';\nconst out = sanitizeHtml(input, { allowedTags: ['b'], nestingLimit: 3 });\n// maximum nesting depth of \u003cb\u003e in `out`:\n//   2.17.4: 2    2.17.7: 0 (fallback escaped as text)    2.18.0: 150\n```\n\nWithout an iframe, the same options cap the output at three nested `\u003cb\u003e` in all three versions. With\n`k` repetitions of `'\u003ciframe\u003e' + '\u003cb\u003e'.repeat(3)`, 2.18.0 returns `3 * k` nested `\u003cb\u003e` (measured for\nk = 1, 5, 50: depth 3, 15, 150).\n\n### Cause\n\nIn 2.18.0 the `ontext` handler does:\n\n```js\n} else if (\n  tag === 'iframe' \u0026\u0026\n  !tagAllowed(tag) \u0026\u0026\n  options.disallowedTagsMode === 'discard'\n) {\n  result += sanitizeHtml(text, options);\n}\n```\n\nBecause htmlparser2 treats `\u003ciframe\u003e` as a raw-text element, the text of an unclosed iframe is the whole\nremainder of the input; re-parsing it can meet another unclosed `\u003ciframe\u003e`, and so on, one stack frame\n(and one full re-parse) per iframe. The nested call also starts with its own `depth`, so tags inside the\nfallback are not counted against `nestingLimit` together with the enclosing tags.\n\n### Possible directions\n\nNot a patch, only what would close both effects: bound the recursion (or process the fallback without\nrecursing), and carry the current depth into the nested sanitization so that `nestingLimit` applies to\nthe whole output.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-21T17:05:01Z",
+    "Severity": "MODERATE",
+    "Summary": "ApostropheCMS sanitize-html: unbounded recursion when re-sanitizing the fallback of a discarded iframe (stack overflow, nestingLimit not enforced)",
+    "UpdatedAt": "2026-10-21T17:05:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.18.1"
+      },
+      "VulnerableVersionRange": "\u003e= 2.18.0, \u003c 2.18.1"
+    }
+  ]
+}
