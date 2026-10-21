@@ -1,7 +1,10 @@
 {
   "id": "GHSA-hq85-5cpj-mr62",
-  "modified": "2026-10-20T19:45:04.322711511Z",
+  "modified": "2026-10-20T22:11:14.153464093Z",
   "published": "2026-10-20T19:37:52Z",
+  "aliases": [
+    "PYSEC-2026-4321"
+  ],
   "summary": "uv's bundled CA store trusts an emSign root whose intermediate CA keys are compromised",
   "details": "By default, uv verifies TLS connections against a vendored copy of the `webpki-root-certs` bundle. Versions before 0.13.4 include the `emSign ECC Root CA - G3` root. Eight eMudhra intermediate CA certificates that chain to that root have compromised private keys, and the CA has revoked them.\n\nAn attacker with one of the compromised keys can issue certificates that uv accepts for any hostname, and can be used to issue certificates to enable MITM attacks.\n\nuv 0.13.4 removes the root from its vendored bundle, following `webpki-root-certs` 1.0.10. Upgrade to 0.13.4 or later.",
   "affected": [

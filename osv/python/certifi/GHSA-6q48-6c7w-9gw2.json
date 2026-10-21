@@ -1,7 +1,10 @@
 {
   "id": "GHSA-6q48-6c7w-9gw2",
-  "modified": "2026-10-20T19:45:04.301786967Z",
+  "modified": "2026-10-20T22:11:14.336568839Z",
   "published": "2026-10-20T19:35:05Z",
+  "aliases": [
+    "PYSEC-2026-4320"
+  ],
   "summary": "certifi bundles emSign root CAs with compromised intermediate CA keys",
   "details": "Certifi versions before 2026.10.18 include the `emSign ECC Root CA - G3` root certificate in their bundled CA store. Eight eMudhra intermediate CA certificates that chain to this root have compromised private keys and the CA has revoked them. \n\nAn attacker with one of the compromised keys can issue valid-looking certificates for any hostname. If the attacker is also on-path, they can intercept or modify TLS traffic from clients that trust the certifi bundle. Examples include `requests`, `urllib3` and `pip`, and the Python.org macOS installer.\n\nCertifi 2026.10.18 removed all emSign roots from the bundle. Certifi 2026.10.19 restored the emSign roots that are not affected. Upgrade to 2026.10.19 or later, and rebuild container images that vendor certifi.",
   "affected": [
