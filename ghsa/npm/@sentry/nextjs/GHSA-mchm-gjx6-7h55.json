@@ -1,0 +1,92 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-22T15:55:08Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@sentry/nextjs"
+  },
+  "Advisory": {
+    "DatabaseId": 520585,
+    "Id": "GSA_kwCzR0hTQS1tY2htLWdqeDYtN2g1Nc4AB_GJ",
+    "GhsaId": "GHSA-mchm-gjx6-7h55",
+    "References": [
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/security/advisories/GHSA-mchm-gjx6-7h55"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114139"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/pull/24499"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/pull/24565"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/pull/24760"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/commit/878b685c85dc12045e47e1932c96f5381d7ac532"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/commit/c122aac4f29541eb6da494296822c91eab3cf5ae"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/commit/d525a2f6015b47384bc139c30d58e0d5435d52e5"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/releases/tag/10.75.2"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/releases/tag/11.0.0-rc.1"
+      },
+      {
+        "Url": "https://github.com/getsentry/sentry-javascript/releases/tag/9.47.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mchm-gjx6-7h55"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mchm-gjx6-7h55"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114139"
+      }
+    ],
+    "Description": "### Impact\n\nThe `tunnelRoute` option makes the SDK send browser events to a path on your own Next.js server (for example `/monitoring`), where a rewrite forwards them to Sentry to prevent ad blockers from blocking them. To keep those envelope requests from being rejected by your middleware, the SDK skips middleware for them.\n\nThe middleware skip was wider than the rewrite. The rewrite only serves requests to the tunnel path itself with the `o` and `p` parameters set. The skip applied to anything under the tunnel path. Requests in that gap go to your application instead of Sentry, and your middleware never runs on them.\n\nSkipping middleware does not grant the request any privileges. Routes that check the session server-side are still protected.\n\nYou are affected only if **all** of the following are true:\n\n1. `tunnelRoute` is set (a string path or `true`),\n2. your app is built with **webpack** (Turbopack builds are not affected),\n3. some route of your application resolves under the tunnel path. That could be a direct collision (`/monitoring/foo` with `tunnelRoute: '/monitoring'`) or a dynamic segment at the route root (`app/[locale]/…`), which matches any first path segment, and\n4. your middleware is the only place that enforces authorization for those routes.\n\nSentry's own services, and the data in your Sentry organization, are not affected.\n\n### Patches\n\nFixed in [9.47.2](https://github.com/getsentry/sentry-javascript/releases/tag/9.47.2), [10.75.2](https://github.com/getsentry/sentry-javascript/releases/tag/10.75.2) and [11.0.0-rc.1](https://github.com/getsentry/sentry-javascript/releases/tag/11.0.0-rc.1). The skip now matches only the requests the tunnel rewrite actually serves. No configuration change is needed.\n\n### Workarounds\n\n- Set `tunnelRoute` to a path no route of yours can resolve under, or remove the option.\n- Build with Turbopack (default for `next build` from Next.js 16).\n- Enforce authorization in the route, layout or data-access path as well as in middleware.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T15:55:07Z",
+    "Severity": "CRITICAL",
+    "Summary": "Sentry-Javascript: Middleware Bypass when using Tunnel route",
+    "UpdatedAt": "2026-10-22T15:55:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.0-rc.1"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0-alpha.0, \u003c 11.0.0-rc.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.75.2"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0-alpha.0, \u003c 10.75.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.47.2"
+      },
+      "VulnerableVersionRange": "\u003e= 9.36.0, \u003c 9.47.2"
+    }
+  ]
+}

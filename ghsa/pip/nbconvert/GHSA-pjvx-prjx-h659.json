@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-22T16:23:29Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "nbconvert"
+  },
+  "Advisory": {
+    "DatabaseId": 520604,
+    "Id": "GSA_kwCzR0hTQS1wanZ4LXByangtaDY1Oc4AB_Gc",
+    "GhsaId": "GHSA-pjvx-prjx-h659",
+    "References": [
+      {
+        "Url": "https://github.com/jupyter/nbconvert/security/advisories/GHSA-pjvx-prjx-h659"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114140"
+      },
+      {
+        "Url": "https://github.com/jupyter/nbconvert/commit/ce4bd99aec31d81d759fa8eeb8643179392ec66f"
+      },
+      {
+        "Url": "https://github.com/jupyter/nbconvert/releases/tag/v7.17.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pjvx-prjx-h659"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pjvx-prjx-h659"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114140"
+      }
+    ],
+    "Description": "### Summary\n\nnbconvert \u003c= v7.17.1 has an arbitrary file write vulnerability due to a path traversal in ipynb cell output metadata, more specifically on the filename attribute.\n\nVulnerable converters : `--to markdown`, `--to latex`, `--to rst`, `--to asciidoc`.\n\nIn `ExtractOutputPreprocessor`, `extractoutput.py:116-119` joins attacker-controlled  `path` to `output_files_dir` with no canonicalization check, enabling arbitrary file write.\n\nThis is a sibling vulnerability of https://github.com/advisories/GHSA-4c99-qj7h-p3vg.\n\n### Impact\n\nIf a victim runs nbconvert on a malicious ipynb file, it can create some files with arbitrary data in arbitrary locations, i.e. override authorized_keys.\n\nNote that running the cell with jupyter overrides the output, so it would \"clean up\" malicious cells.\n\n### PoC\n\nIn a ipynb file:\n\n```json\n\n\"cells\": [{\n        \"cell_type\": \"code\", \"id\": \"abc123\", \"execution_count\": 1,\n        \"metadata\": {}, \"source\": \"# PoC\",\n        \"outputs\": [{\n            \"output_type\": \"display_data\",\n            \"metadata\": {\n                \"filename\": \"../../../tmp/PWNED.png\"  # ← traverses outside output_dir\n            },\n            \"data\": {\n                # minimal valid PNG (1×1 pixel)\n                \"image/png\": \"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\"\n            }\n        }]\n    }]\n\n```\n\n\n### Patches\n\nFixed in \n- https://github.com/jupyter/nbconvert/commit/ce4bd99aec31d81d759fa8eeb8643179392ec66f\n- [7.17.2](https://github.com/jupyter/nbconvert/releases/tag/v7.17.2)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T16:23:28Z",
+    "Severity": "HIGH",
+    "Summary": "nbconvert: Arbitrary file write through path traversal in cell output filenames when exporting to md, latex, rst and asciidoc",
+    "UpdatedAt": "2026-10-22T16:23:29Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.17.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.4.0, \u003c= 7.17.1"
+    }
+  ]
+}
