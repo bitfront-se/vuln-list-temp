@@ -1,0 +1,113 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-22T16:47:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 520626,
+    "Id": "GSA_kwCzR0hTQS0ycDhjLWdyODctMjY3Ns4AB_Gy",
+    "GhsaId": "GHSA-2p8c-gr87-2676",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-2p8c-gr87-2676"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-113796"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53683"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53717"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53718"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53719"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53721"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/079b9b1594ee62c336adc3aa430d4c1cf62bd51e"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/0e6aca0618eeae50a18cfd50548b8688820629ed"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/652ef79ac79c6767b31e59b2f28d0d46114645e5"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/98940cb274bb6adcb7cdb2da2d4495ac83119670"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/a86ae4205ba2ba7ae60a6caa9d5d3a44321f2f9b"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.11.3"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v43.7.0"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v44.3.0"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v45.0.0-alpha.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2p8c-gr87-2676"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2p8c-gr87-2676"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113796"
+      }
+    ],
+    "Description": "### Impact\n\nPages opened into a new window from a link were loaded as if the app itself had navigated there rather than the page that contained the link, so the request was treated as same-site: `SameSite=Strict` cookies were sent and `Sec-Fetch-Site` did not identify the initiating page. Content shown in the app could use this to make a credentialed top-level request to another site that relies on SameSite cookies as a CSRF defence.\n\nApps are only affected if they load untrusted content and allow it to open new windows. Apps that deny new windows from untrusted content with `setWindowOpenHandler` are not affected.\n\n### Workarounds\n\nReturn `{ action: 'deny' }` from `setWindowOpenHandler` for windows opened by untrusted content.\n\n### Fixed Versions\n\n* `45.0.0-alpha.6`\n* `44.3.0`\n* `43.7.0`\n* `42.11.3`\n\n### For more information\n\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T16:47:54Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: SameSite cookie restrictions are not applied to windows opened from links",
+    "UpdatedAt": "2026-10-22T16:47:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.11.3"
+      },
+      "VulnerableVersionRange": "\u003c 42.11.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "43.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 43.0.0-alpha.1, \u003c 43.7.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "44.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 44.0.0-alpha.1, \u003c 44.3.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "45.0.0-alpha.6"
+      },
+      "VulnerableVersionRange": "\u003e= 45.0.0-alpha.1, \u003c 45.0.0-alpha.6"
+    }
+  ]
+}

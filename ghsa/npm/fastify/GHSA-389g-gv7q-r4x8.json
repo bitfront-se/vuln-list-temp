@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-22T16:40:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fastify"
+  },
+  "Advisory": {
+    "DatabaseId": 520618,
+    "Id": "GSA_kwCzR0hTQS0zODlnLWd2N3EtcjR4OM4AB_Gq",
+    "GhsaId": "GHSA-389g-gv7q-r4x8",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fastify/security/advisories/GHSA-389g-gv7q-r4x8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-107832"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/pull/7104"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/commit/3241fbd2f10a8ca1503533726836b53b6e8775a2"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/commit/35c32375731c111439682b2f9e6e0baed2694269"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/fastify/fastify/releases/tag/v5.12.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-389g-gv7q-r4x8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-389g-gv7q-r4x8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-107832"
+      }
+    ],
+    "Description": "### Impact\n\nFastify lowercases header names in a `headers` schema before compilation, because Node.js stores request header names in lowercase. This normalization does not reach the header names held in a `propertyNames` subschema's `enum` and `const`. A header-name deny-list written in the canonical header case, such as `propertyNames: { not: { enum: ['X-Debug-Override'] } }`, therefore never matches the lowercased request headers, and the forbidden header reaches the handler. Any application that uses a `propertyNames` deny-list or allow-list to constrain request header names does not get the constraint it expects. The same rule written in lowercase works, and the `not: { required: [...] }` form is unaffected, so this is a gap in the built-in normalization rather than a wrong schema. This is an incomplete fix of CVE-2026-84428 ([GHSA-9q9j-q6p8-xq58](https://github.com/fastify/fastify/security/advisories/GHSA-9q9j-q6p8-xq58)), whose normalization covered header names used as property keys but not those used as values inside `propertyNames`.\n\n### Patches\n\nUsers should upgrade to fastify `5.12.6` or later, which lowercases header names held in `enum` and `const` inside a `propertyNames` subschema so they match the lowercased request headers. Header-name constraints that cannot be normalized automatically, regular expressions (`propertyNames` `pattern` and `patternProperties` keys) and a `$ref` used inside `propertyNames`, are documented and, for the `$ref` case, warned at startup (`FSTSEC003`). Author those to match the lowercased request headers.\n\n### Workarounds\n\nWrite the `propertyNames` header-name constraint in lowercase (for example `enum: ['x-debug-override']`), or enforce the header check in an `onRequest` or `preValidation` hook instead of the schema.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T16:40:35Z",
+    "Severity": "LOW",
+    "Summary": "fastify is vulnerable to header validation bypass via case-sensitive propertyNames",
+    "UpdatedAt": "2026-10-22T16:40:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.6"
+      },
+      "VulnerableVersionRange": "\u003e= 5.12.2, \u003c 5.12.6"
+    }
+  ]
+}

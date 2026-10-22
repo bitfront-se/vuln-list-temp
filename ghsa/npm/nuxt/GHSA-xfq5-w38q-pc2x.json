@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-22T16:58:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 520632,
+    "Id": "GSA_kwCzR0hTQS14ZnE1LXczOHEtcGMyeM4AB_G4",
+    "GhsaId": "GHSA-xfq5-w38q-pc2x",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-xfq5-w38q-pc2x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114133"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/493565e99451a0f52330b1f6b979254a4a39e5d0"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v4.6.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xfq5-w38q-pc2x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xfq5-w38q-pc2x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114133"
+      }
+    ],
+    "Description": "## Impact\n\n`useHeadSafe` restricts head input to an allowlist of safe tags and attributes. For example, `bodyAttrs` is limited to `class` and `style`, event handler attributes are removed, and `\u003cscript\u003e` tags are only kept for JSON types.\n\nWhen `useHeadSafe` is called inside a server island (a `.server.vue` component or page, or a component rendered with `\u003cNuxtIsland\u003e`), the island renderer serialises the raw input of every head entry into the island response without the option that marks it as safe input. `\u003cNuxtIsland\u003e` then pushes that input into the page's head as a regular entry, both during server rendering and when hydrating or refetching on the client.\n\nAs a result, input that `useHeadSafe` would normally strip (such as `bodyAttrs.onload` or executable `\u003cscript\u003e` content) is rendered into the page. If an application passes user-controlled data to `useHeadSafe` inside a server island, an attacker who controls that data can achieve stored cross-site scripting on the application's origin.\n\n```vue\n\u003c!-- components/AuthorMeta.server.vue --\u003e\n\u003cscript setup lang=\"ts\"\u003e\nconst { data: author } = await useFetch('/api/author')\n// author.value.head is user-authored, e.g. { bodyAttrs: { onload: '...' } }\nuseHeadSafe(author.value.head)\n\u003c/script\u003e\n```\n\n## Mitigating factors\n\n- Server components are experimental. They are only active when the application defines a `.server.vue` component or page, or enables `experimental.componentIslands` and renders `\u003cNuxtIsland\u003e`.\n- Exploitation requires the application to pass attacker-controlled data to `useHeadSafe` inside a server island. `useHeadSafe` called from regular (non-island) components and pages is not affected.\n\n## Affected versions\n\n`nuxt` `\u003e=3.13.0`, when head support for server islands was introduced. Nuxt 2 is not affected.\n\n## Patches\n\nFixed in `nuxt@4.6.2`. Nuxt 3 reached end of life on 31 July 2026 and will not receive a fix.\n\nPatched releases apply Unhead's safe input filtering to `useHeadSafe` entries on the server before they are added to the island response, so `islandResponse.head` (including what `render:island` hooks see) only contains input that `useHeadSafe` allows.\n\n## Workarounds\n\nUpgrade to `nuxt@4.6.2`. If you cannot upgrade, including on Nuxt 3:\n\n1. Call `useHeadSafe` with untrusted input from a regular component or page rather than from inside a server island.\n2. Alternatively, validate untrusted head input against your own allowlist before passing it to `useHeadSafe` inside a server island.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T16:58:00Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt server islands render `useHeadSafe` input without sanitisation",
+    "UpdatedAt": "2026-10-22T16:58:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.2"
+      },
+      "VulnerableVersionRange": "\u003e= 3.13.0, \u003c 4.6.2"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-22T16:44:01Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 520621,
+    "Id": "GSA_kwCzR0hTQS05OTdxLWd2dmMtandteM4AB_Gt",
+    "GhsaId": "GHSA-997q-gvvc-jwmx",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-997q-gvvc-jwmx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114121"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53682"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53696"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53697"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53698"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/53699"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/25057643bf6d9a20bad69e45707551ccf546f5ce"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/8aa5414f73792ed3b2e3f9ab6391b1832e6dc2c3"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/92a783952891805f2f82f344c40a6917b98a7d98"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/e0a20d5277b567aea8603f8e9852a4341407a586"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/e3a400911084537bce7380ffea8af939572ce8dd"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.11.3"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v43.7.0"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v44.3.0"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v45.0.0-alpha.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-997q-gvvc-jwmx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-997q-gvvc-jwmx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114121"
+      }
+    ],
+    "Description": "### Impact\nRequests to open external protocol URLs could be attributed to a document other than the one that asked for them, so the `requestingUrl` passed to `session.setPermissionRequestHandler` was a trusted origin for a launch untrusted content had requested. An origin-based handler could therefore let untrusted content launch an OS-registered external application.\n\nApps are only affected if they grant `openExternal` based on the requesting origin and let untrusted content open or navigate windows. Apps whose permission handler denies `openExternal` for untrusted content are not affected.\n\n### Workarounds\nDeny the `openExternal` permission for untrusted content, or deny the windows it opens with `setWindowOpenHandler`.\n\n### Fixed Versions\n* `45.0.0-alpha.5`\n* `44.3.0`\n* `43.7.0`\n* `42.11.3`\n\n### For more information\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T16:43:59Z",
+    "Severity": "MODERATE",
+    "Summary": "Electron: openExternal permission requests can be attributed to the wrong origin",
+    "UpdatedAt": "2026-10-22T16:44:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "45.0.0-alpha.5"
+      },
+      "VulnerableVersionRange": "\u003e= 45.0.0-alpha.1, \u003c 45.0.0-alpha.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "44.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 44.0.0-alpha.1, \u003c 44.3.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "43.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 43.0.0-alpha.1, \u003c 43.7.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.11.3"
+      },
+      "VulnerableVersionRange": "\u003c 42.11.3"
+    }
+  ]
+}

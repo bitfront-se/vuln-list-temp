@@ -1,0 +1,113 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-22T16:44:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "electron"
+  },
+  "Advisory": {
+    "DatabaseId": 520622,
+    "Id": "GSA_kwCzR0hTQS1oM3Y1LWgyMzktcGcyOc4AB_Gu",
+    "GhsaId": "GHSA-h3v5-h239-pg29",
+    "References": [
+      {
+        "Url": "https://github.com/electron/electron/security/advisories/GHSA-h3v5-h239-pg29"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114124"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/54033"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/54036"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/54037"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/54038"
+      },
+      {
+        "Url": "https://github.com/electron/electron/pull/54047"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/24d8dbc661c6a109476ae59e9a2740b35d005cf4"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/64ae597deda8956037387b439e6361f0fe936c86"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/8d48be150c3fd53b0d02854124bdb7858598799c"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/d496507ffa1693edaa704a4be130fbcb8ecb4ada"
+      },
+      {
+        "Url": "https://github.com/electron/electron/commit/d7f87070a8d738e561245d1ade4d6fbb082db80a"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v42.11.6"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v43.7.3"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v44.4.3"
+      },
+      {
+        "Url": "https://github.com/electron/electron/releases/tag/v45.0.0-alpha.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h3v5-h239-pg29"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h3v5-h239-pg29"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114124"
+      }
+    ],
+    "Description": "### Impact\nIn offscreen rendering mode on macOS, frame data received from the GPU process was not fully validated by the main process. A compromised GPU process could cause the main process to read out-of-bounds memory while producing `paint` event images, disclosing memory or crashing the app. GHSA-pfmc-3mgc-p6fp covers the same issue on the other capture paths.\n\nApps are only affected if they use offscreen rendering (`webPreferences.offscreen`) on macOS and an attacker has separately gained code execution in the GPU process. Apps that do not use offscreen rendering are not affected.\n\n### Workarounds\nThere are no app side workarounds, you must update to a patched version of Electron.\n\n### Fixed Versions\n* `45.0.0-alpha.9`\n* `44.4.3`\n* `43.7.3`\n* `42.11.6`\n\n### For more information\nIf you have any questions or comments about this advisory, email us at [security@electronjs.org](mailto:security@electronjs.org)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-22T16:44:33Z",
+    "Severity": "LOW",
+    "Summary": "Electron: Off-screen rendering on macOS trusts GPU-supplied frame geometry",
+    "UpdatedAt": "2026-10-22T16:44:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.9,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:L/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "45.0.0-alpha.9"
+      },
+      "VulnerableVersionRange": "\u003e= 45.0.0-alpha.1, \u003c 45.0.0-alpha.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "44.4.3"
+      },
+      "VulnerableVersionRange": "\u003e= 44.0.0-alpha.1, \u003c 44.4.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "43.7.3"
+      },
+      "VulnerableVersionRange": "\u003e= 43.0.0-alpha.1, \u003c 43.7.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "42.11.6"
+      },
+      "VulnerableVersionRange": "\u003c 42.11.6"
+    }
+  ]
+}
