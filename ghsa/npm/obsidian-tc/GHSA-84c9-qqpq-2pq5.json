@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-23T17:29:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "obsidian-tc"
+  },
+  "Advisory": {
+    "DatabaseId": 521199,
+    "Id": "GSA_kwCzR0hTQS04NGM5LXFxcHEtMnBxNc4AB_Pv",
+    "GhsaId": "GHSA-84c9-qqpq-2pq5",
+    "References": [
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/security/advisories/GHSA-84c9-qqpq-2pq5"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/pull/72"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/commit/38b4992e87dc2715564236e1a42d005ab05a0194"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/releases/tag/v1.3.1"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/cve-2026-77366"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-84c9-qqpq-2pq5"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-84c9-qqpq-2pq5"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77366"
+      }
+    ],
+    "Description": "### Impact\nTool dispatch did not check the caller-supplied `input.vault` against the caller's bound vault (`ctx.vaultId`); the folder ACL was a single global instance and the JWT carried no vault claim. As a result, **any valid token could read, write, or delete any configured vault** by passing `input.vault`, defeating multi-tenant isolation across ~90 tool sites. (`resources/read` was the only surface that already guarded this.)\n\n### Patches\nFixed in **1.3.1** (the fix was developed on the `v1.3.0` tag, which never published to npm; 1.3.1 is the first published release with the fix). Upgrade to `\u003e= 1.3.1`.\n\n### Workarounds\nRun a single vault per server process, or isolate each tenant on a separate process/credential.\n\n### Fix\nA central `input.vault === ctx.vaultId` guard was added in dispatch before the scope check.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T17:29:17Z",
+    "Severity": "CRITICAL",
+    "Summary": "obsidian-tc tokens can access arbitrary configured vaults",
+    "UpdatedAt": "2026-10-23T17:29:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.3.1"
+    }
+  ]
+}

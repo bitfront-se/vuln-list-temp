@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T20:46:13Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Twisted"
+  },
+  "Advisory": {
+    "DatabaseId": 521256,
+    "Id": "GSA_kwCzR0hTQS0ycXJmLXBxZ3gtcWg5ds4AB_Qo",
+    "GhsaId": "GHSA-2qrf-pqgx-qh9v",
+    "References": [
+      {
+        "Url": "https://github.com/twisted/twisted/security/advisories/GHSA-2qrf-pqgx-qh9v"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/pull/12764"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/commit/3d125548bcbe955007cb97f480bb699a5e074741"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/releases/tag/twisted-26.10.0rc1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2qrf-pqgx-qh9v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2qrf-pqgx-qh9v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115774"
+      }
+    ],
+    "Description": "## Summary\n\nAn infinite-loop vulnerability (CWE-835) in the Twisted IMAP4 server lets an authenticated client freeze the whole process with one small command. `twisted.mail.imap4.parseNestedParens` reads an IMAP literal size with `int()` and never rejects a negative value. A negative size such as `{-100}` drives the parser cursor negative, and because a negative Python index wraps around the end of the string instead of raising, the scanning loop never terminates. It runs synchronously on the single-threaded reactor, so one `SEARCH` command holds the reactor at full CPU forever and every other connection stops being served.\n\n## Details\n\nMeeting an inline literal, `parseNestedParens` reads the size between the braces and advances the cursor past the body:\n\n```python\n# twisted/mail/imap4.py  parseNestedParens\nliteralSize = int(s[i + 1 : end])          # no sign check\ncontentStack[-1].append((s[end + 3 : end + 3 + literalSize],))\ni = end + 3 + literalSize                    # negative size -\u003e i goes negative\n```\n\n`int(b\"-100\")` is `-100`, so `i` goes negative; the loop condition `i \u003c len(s)` stays true and `s[i : i + 1]` on a negative index never raises, so the cursor cycles forever. The `_literalStringLimit` guard only covers the synchronizing-literal continuation path, not this inline branch. The call is reached from `select_SEARCH` through `arg_searchkeys`, dispatched only in the selected state, so a valid login and a selected mailbox (any low-privilege account) suffice. It runs in the reactor thread, and the connection timeout cannot fire because the reactor itself is frozen.\n\nAffected product: Twisted (`twisted.mail`), the IMAP4 server `twisted.mail.imap4.IMAP4Server`\nAffected versions: 26.4.0 and earlier\n\n## PoC\n\nLog in, select a mailbox, and send a `SEARCH` whose literal size is negative:\n\n```text\nC: t1 LOGIN testuser password-test\nC: t2 SELECT INBOX\nC: t3 SEARCH {-100}zzzzzzzzzz\n```\n\nThe server never responds and one core stays at 100 percent. In a measured run a health service co-hosted on the same reactor stopped answering the instant the command arrived, showing the freeze hits the whole process and not just the attacking connection. A valid `{5}zzzzz` completes normally and a non-numeric `{abc}` is rejected with a parse error, which isolates the cause to the missing negative-size check.\n\n## Impact\n\nA remote denial of service. One command of about ten bytes freezes the single-threaded reactor, so it stops serving not only every other IMAP connection but every other service co-hosted in the same process (for example SMTP and POP3 under `twistd mail`), and no timeout can recover it until the process is restarted. It requires an authenticated session, so any account holder can trigger it; there is no confidentiality or integrity impact and no code execution.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:46:12Z",
+    "Severity": "MODERATE",
+    "Summary": "Twisted: Denial of Service in the Twisted IMAP4 Server via a Negative Literal Size in SEARCH",
+    "UpdatedAt": "2026-10-23T20:46:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.10.0rc1"
+      },
+      "VulnerableVersionRange": "\u003c= 26.4.0"
+    }
+  ]
+}

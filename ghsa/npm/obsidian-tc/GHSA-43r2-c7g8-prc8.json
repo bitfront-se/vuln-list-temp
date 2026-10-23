@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T18:28:14Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "obsidian-tc"
+  },
+  "Advisory": {
+    "DatabaseId": 521201,
+    "Id": "GSA_kwCzR0hTQS00M3IyLWM3ZzgtcHJjOM4AB_Px",
+    "GhsaId": "GHSA-43r2-c7g8-prc8",
+    "References": [
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/security/advisories/GHSA-43r2-c7g8-prc8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77362"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/pull/75"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/commit/5ab2109274acf0070601fa71a62b14ddc9652309"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/releases/tag/v1.3.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-43r2-c7g8-prc8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-43r2-c7g8-prc8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77362"
+      }
+    ],
+    "Description": "### Impact\nBridge tool results filtered only the `items` array against the read ACL and passed sibling fields through unfiltered: `tasks_filter` emitted `groups` whose counts reflected denied notes, `makemd_query` returned `...result` siblings, and `list_templates` enumerated Templater template paths and parsed user-function bodies with no read-whitelist gate. A caller could infer or read data from notes outside its read ACL.\n\n### Patches\nFixed in **1.3.1**. Upgrade to `\u003e= 1.3.1`. All path-attributable fields are now scrubbed or fail-closed, and `list_templates` is gated on the read whitelist.\n\n### Workarounds\nDisable the affected bridge tools (`tasks_filter`, `makemd_query`, `list_templates`) via tool visibility.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T18:28:14Z",
+    "Severity": "MODERATE",
+    "Summary": "obsidian-tc Bridge tools leak denied-note data via unfiltered sibling fields",
+    "UpdatedAt": "2026-10-23T18:28:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.3.1"
+    }
+  ]
+}

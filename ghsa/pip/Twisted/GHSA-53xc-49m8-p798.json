@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:45:36Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Twisted"
+  },
+  "Advisory": {
+    "DatabaseId": 521255,
+    "Id": "GSA_kwCzR0hTQS01M3hjLTQ5bTgtcDc5OM4AB_Qn",
+    "GhsaId": "GHSA-53xc-49m8-p798",
+    "References": [
+      {
+        "Url": "https://github.com/twisted/twisted/security/advisories/GHSA-53xc-49m8-p798"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/pull/12771"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/commit/01f8cff7753c1edac132380b2ea939fa6bdbab30"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/commit/ac90fb7b0ab73688a581fcd9a7c0577ec8ca3059"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/releases/tag/twisted-26.10.0rc1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-53xc-49m8-p798"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-53xc-49m8-p798"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115776"
+      }
+    ],
+    "Description": "## Summary\n\nAn unbounded-buffer vulnerability (CWE-770) in the Twisted words IRC server lets any unauthenticated remote client exhaust server memory. `twisted.words.protocols.irc.IRC.dataReceived` appends every received byte to a per-connection buffer and only removes data at a line feed, with no maximum length. Because `IRC` is a plain `Protocol` and not a `LineReceiver`, one connection that streams bytes without a line feed grows the buffer without bound and drives the whole single-threaded process to out-of-memory, dropping every user at once. The `twistd words` server inherits the method unchanged through `IRCUser`, and the data is buffered before any authentication.\n\n## Details\n\n`IRC.dataReceived` keeps everything up to the last line feed in `self.buffer`:\n\n```python\n# twisted/words/protocols/irc.py\nclass IRC(protocol.Protocol):        # not a LineReceiver, so no MAX_LENGTH\n    buffer = \"\"\n    def dataReceived(self, data):\n        if isinstance(data, bytes):\n            data = data.decode(\"utf-8\")\n        lines = (self.buffer + data).split(LF)\n        self.buffer = lines.pop()    # no 3line feed -\u003e whole input stays buffered\n        ...\n```\n\nWith no line feed in the data, `lines.pop()` returns the entire accumulated content to `self.buffer`, so it grows by every chunk and is never bounded; `IRC` defines no `MAX_LENGTH`, no `lineLengthExceeded`, and no timeout, so the connection is never closed. The `twistd words` server protocol `IRCUser` subclasses `IRC` without overriding `dataReceived`, and the buffer is filled before any `PASS`, `NICK`, or `USER`, so no credentials are required.\n\nAffected product: Twisted (`twisted.words`), `twisted.words.protocols.irc.IRC` and its subclass `twisted.words.service.IRCUser`\nAffected versions: 26.4.0 and earlier\n\n## PoC\n\nOn a standard Twisted words IRC server (the server `twistd words` runs, using `IRCUser`), an unauthenticated client opens a single TCP connection and continuously sends data that contains no line feed, never completing a line. Every chunk is appended to the connection's line buffer, and because no complete line is ever formed none of it is consumed, so the buffer grows by the full volume sent.\n\nIn a measured run against a real `IRCFactory` server, one unauthenticated connection sending 60 MB of line-feed-free data raised the server process resident memory from about 47 MB to 2966 MB (roughly 49 MB per MB sent) with the connection still open and no limit triggered. Sending the same volume as normal line-feed-terminated commands leaves memory flat, which isolates the cause to the missing line-length bound.\n\n## Impact\n\nAn unauthenticated remote denial of service from allocation without limits (CWE-770) leading to uncontrolled resource consumption (CWE-400). A single credential-free connection exhausts the memory of the whole `twistd words` process, and because one process serves every user, the crash drops all connections at once and the service stays down until it is restarted. The quadratic buffer copy reaches the same effect faster. There is no confidentiality or integrity impact and no code execution.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:45:35Z",
+    "Severity": "HIGH",
+    "Summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted IRC Server via an Unbounded Line Buffer",
+    "UpdatedAt": "2026-10-23T20:45:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.10.0rc1"
+      },
+      "VulnerableVersionRange": "\u003c= 26.4.0"
+    }
+  ]
+}

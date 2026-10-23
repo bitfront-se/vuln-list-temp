@@ -1,0 +1,83 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:48:30Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "strands-agents"
+  },
+  "Advisory": {
+    "DatabaseId": 521259,
+    "Id": "GSA_kwCzR0hTQS00djZmLTd2amgtNng0bc4AB_Qr",
+    "GhsaId": "GHSA-4v6f-7vjh-6x4m",
+    "References": [
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/security/advisories/GHSA-4v6f-7vjh-6x4m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115419"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/pull/2628"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/pull/2696"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/commit/398343faad0e485f2e441dab70355c9a52382537"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/commit/403d87847e738e1c73909858d989cedcb67f0afa"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/commit/f8ba9376fe4b8330d526b6480b47c4440150e0cd"
+      },
+      {
+        "Url": "https://aws.amazon.com/security/security-bulletins/2026-146-aws"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/releases/tag/python/v1.43.0"
+      },
+      {
+        "Url": "https://github.com/strands-agents/harness-sdk/releases/tag/typescript/v1.5.0"
+      },
+      {
+        "Url": "https://pypi.org/project/strands-agents/1.43.0"
+      },
+      {
+        "Url": "https://www.npmjs.com/package/@strands-agents/sdk/v/1.5.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4v6f-7vjh-6x4m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4v6f-7vjh-6x4m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115419"
+      }
+    ],
+    "Description": "**Summary**  \nStrands Agents SDK is an open-source SDK, available for Python (strands-agents) and TypeScript (@strands-agents/sdk), for building and running AI agents. An issue exists where, under certain circumstances, the Agent2Agent (A2A) server shares conversation history across callers with different context\\_id values, allowing one caller to read and influence another caller's session.  \n  \n**Impact**  \nThe A2A server did not properly isolate conversation state between callers. In multi-tenant deployments, an authenticated remote user could access another caller's conversation history or influence model behavior for other callers (CWE-488: Unintended Disclosure of Data Element to Wrong Session). This affects any deployment where an A2A server is reachable by more than one user or tenant.  \n  \n**Impacted versions:**  \nstrands-agents (Python): all versions containing the multiagent.a2a module, \u003c 1.43.0  \n@strands-agents/sdk (TypeScript): \u003c 1.5.0  \n  \n**Patches**  \nThis issue has been addressed in strands-agents version 1.43.0 and @strands-agents/sdk version 1.5.0. The A2A server now uses an agent factory so conversation state is isolated per A2A context\\_id. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes.  \n  \n**Workarounds**  \nThere is no workaround that fully addresses this issue in affected versions. Until you upgrade, do not expose an A2A server to more than one user or tenant. If multiple callers need access, run a separate A2A server instance for each user or tenant.  \n  \n**References**  \nIf you have any questions or comments about this advisory, we ask that you contact AWS Security via our [vulnerability reporting page](https://aws.amazon.com/security/vulnerability-reporting) or directly via email to [aws-security@amazon.com](mailto:aws-security@amazon.com). Please do not create a public GitHub issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:48:29Z",
+    "Severity": "HIGH",
+    "Summary": "Strands Agents SDK: Exposure of data element to wrong session in the A2A Server",
+    "UpdatedAt": "2026-10-23T20:48:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.43.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.43.0"
+    }
+  ]
+}

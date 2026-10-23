@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:46:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mistune"
+  },
+  "Advisory": {
+    "DatabaseId": 521257,
+    "Id": "GSA_kwCzR0hTQS1oN3d3LTI3M3ctNmNtOM4AB_Qp",
+    "GhsaId": "GHSA-h7ww-273w-6cm8",
+    "References": [
+      {
+        "Url": "https://github.com/lepture/mistune/security/advisories/GHSA-h7ww-273w-6cm8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115355"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/commit/1bef343ade163fc3bb95572b15be720084cdb993"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/releases/tag/v3.3.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/mistune-before-3.3.0-path-traversal-and-xss-via-include-directive"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h7ww-273w-6cm8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h7ww-273w-6cm8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115355"
+      }
+    ],
+    "Description": "The Include directive in `src/mistune/directives/include.py` does not validate that the resolved file path stays within the source directory, allowing path traversal via `../` sequences to read arbitrary files.\n\nAdditionally, error messages and included file contents are rendered without HTML escaping, leading to XSS even when `escape=True`.\n\nAffected functions:\n- Path resolution (lines 27-31)\n- `block_error()` in html.py (line 140)\n- `render_html_include()` (line 72)\n\nThe Include plugin must be explicitly enabled via the plugins parameter.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:46:47Z",
+    "Severity": "HIGH",
+    "Summary": "Mistune: Path Traversal and XSS in Include directive",
+    "UpdatedAt": "2026-10-23T20:46:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.2.0"
+    }
+  ]
+}

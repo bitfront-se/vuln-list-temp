@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T18:47:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "obsidian-tc"
+  },
+  "Advisory": {
+    "DatabaseId": 521249,
+    "Id": "GSA_kwCzR0hTQS1yM2c3LXI0aHItbTI1OM4AB_Qh",
+    "GhsaId": "GHSA-r3g7-r4hr-m258",
+    "References": [
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/security/advisories/GHSA-r3g7-r4hr-m258"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115478"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/pull/978"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/commit/99f7914ca0fbeed92e7c4d39cc8c3e5830dab133"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/blob/v1.31.4/CHANGELOG.md"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/releases/tag/v1.31.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r3g7-r4hr-m258"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r3g7-r4hr-m258"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115478"
+      }
+    ],
+    "Description": "### Summary\n`create_entity`, `link_entities`, `rename_entity`, `unlink_entities` and `delete_entity` regenerate a memory note's body from SQLite at the computed `memory/\u003ctype\u003e/\u003cname\u003e.md` path. When a note already existed at that path and was not owned by the entity being written (a hand-authored note, or an orphan left by a different entity whose name sanitized to the same path), its entire body was overwritten on the next write naming that `(type, name)`, keeping only its frontmatter. Separately, several of these tools inserted or removed their SQLite row before the fallible filesystem step, so a refused note write could leave a relation gone, a retired status committed, or the wrong entity deleted.\n\n### Details\n- `create_entity` and `link_entities` inserted the SQL row or relation before materialization.\n- `rename_entity` seeded the destination path with a direct atomic write that bypassed the ownership check, and for a status-only rename could commit a retired status with the note write refused.\n- `unlink_entities` removed the relation row before discovering the source note's rematerialization would be refused.\n- `delete_entity`'s cascade could delete the target and its relations before a neighbour's note was found to be foreign.\n\nThe overwrite exists in every released version since `materializeEntity` shipped (`git show v1.0.1:packages/server/src/memory/materialize.ts`).\n\n### Impact\nAn authorized caller with memory-write scope (any agent using the M5 memory tools) can, without intending to, destroy the body of a vault note outside the entity it is writing, and can leave the memory graph inconsistent with the notes on disk. Snapshots-before-write (`restore_note`) mitigate the overwrite only where snapshots are enabled and the note had been written through obsidian-tc before.\n\n### Patches\nFixed in 1.31.4 at the shared primitive: `materializeEntity` refuses to write over a note whose `obsidian_tc_id` is missing or belongs to another entity; a new `assertNoteOwnership` pre-check runs before any SQLite mutation in the three lifecycle tools, so a refusal is a no-op; `create_entity` and `link_entities` roll back the row they had inserted. Verified by `test/m5-memory-ownership.test.ts`, which covers all five call sites and the rollback.\n\n### Workarounds\nNone that preserve the tools. Disabling the `write:memory` scope for callers prevents the write path entirely.\n\n### Credit\nFound by the maintainer while building `obsidian-tc memory import` (PR #978); the vulnerability class was independently confirmed by a cross-vendor adversarial review.\n\n### References\n- PR #978 (fix and test), CHANGELOG `## [1.31.4] ### Security`\n- `packages/server/src/memory/materialize.ts`, `packages/server/src/tools/m5/memory-lifecycle-tools.ts`\n\n---",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T18:47:25Z",
+    "Severity": "HIGH",
+    "Summary": "obsidian-tc: Memory-lifecycle tools overwrite unowned notes or partially commit lifecycle changes",
+    "UpdatedAt": "2026-10-23T18:47:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.31.4"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.1, \u003c= 1.31.3"
+    }
+  ]
+}

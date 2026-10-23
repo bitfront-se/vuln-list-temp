@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T20:55:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pydantic-ai-harness"
+  },
+  "Advisory": {
+    "DatabaseId": 519971,
+    "Id": "GSA_kwCzR0hTQS0zNTg5LXB4cDctM2dqOM4AB-8j",
+    "GhsaId": "GHSA-3589-pxp7-3gj8",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114386"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/pull/10362"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/commit/eb27b2b89fe76ae23ee9b6fc9eb4b227a4967949"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/blob/v2.58.0/src/pydantic_ai_harness/pydantic_ai_harness/code_mode/_toolset.py#L642-L680"
+      },
+      {
+        "Url": "https://github.com/pydantic/pydantic-ai/releases/tag/v2.59.0"
+      },
+      {
+        "Url": "https://pypi.org/project/pydantic-ai-harness/0.59.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/pydantic-ai-harness-before-0.59.0-codemode-tool-call-limit-bypass-via-run-code"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3589-pxp7-3gj8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3589-pxp7-3gj8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114386"
+      }
+    ],
+    "Description": "Pydantic AI Harness before 0.59.0 fails to enforce UsageLimits.tool_calls_limit on nested tool calls dispatched from run_code in the CodeMode toolset. Users or prompt-injected content can make the sandboxed program invoke tools via run_nested_call() without check_before_tool_call, exceeding operator limits on costly or side-effecting tools.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-21T15:42:26Z",
+    "Severity": "MODERATE",
+    "Summary": "Pydantic AI Harness tool-call limit bypass in nested CodeMode calls",
+    "UpdatedAt": "2026-10-23T20:55:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.59.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.59.0"
+    }
+  ]
+}

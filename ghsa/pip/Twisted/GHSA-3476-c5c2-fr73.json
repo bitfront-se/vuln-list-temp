@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:45:05Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Twisted"
+  },
+  "Advisory": {
+    "DatabaseId": 521253,
+    "Id": "GSA_kwCzR0hTQS0zNDc2LWM1YzItZnI3M84AB_Ql",
+    "GhsaId": "GHSA-3476-c5c2-fr73",
+    "References": [
+      {
+        "Url": "https://github.com/twisted/twisted/security/advisories/GHSA-3476-c5c2-fr73"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/pull/12751"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/commit/8873814bec8288e2466fad4d2c4d64039beb88b0"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/releases/tag/twisted-26.10.0rc1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3476-c5c2-fr73"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3476-c5c2-fr73"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115775"
+      }
+    ],
+    "Description": "## Summary\n\nAn allocation-without-limits vulnerability in the Twisted XML element stream lets any unauthenticated remote peer exhaust server memory over a single stream. When the peer opens a container element and streams child elements without ever closing the container, every element is materialised into an in-memory tree with no limit on depth or child count. An element is released only when its end tag arrives, so a container the attacker never closes retains everything beneath it until the process is killed.\n\n## Details\n\nIn `ExpatElementStream._onStartElement`, each start tag appends a new element to the current element's children and descends into it, with no depth or child-count check:\n\n```python\n# src/twisted/words/xish/domish.py  (ExpatElementStream._onStartElement)\nif self.documentStarted == 1:\n    if self.currElem != None:\n        self.currElem.children.append(e)   # append child: no depth/count cap\n        e.parent = self.currElem\n    self.currElem = e                      # descend into the new element\n```\n\nAn element is emitted and dropped only when its end tag arrives while it sits directly under the document root, so a container that is never closed keeps every child beneath it. The transport `XmlStream.dataReceived` feeds bytes to `self.stream.parse(data)` with no size limit, and in XMPP the stream is parsed during negotiation before authentication.\n\nAffected product: Twisted, `twisted.words.xish.domish` element stream\nAffected versions: confirmed against 26.4.0\n\n## PoC\n\nOn any endpoint that parses untrusted XML streams with this stack, such as an XMPP server, open a stream by sending the opening `stream:stream` tag and a container element, then stream child elements continuously and never send the container's closing tag. No credentials are required, because in XMPP the stream is parsed before authentication.\n\nEvery child is appended to the container and retained because the container is never emitted, and the transport applies no limit on the size of the unfinished document. Because each small element becomes a full object in memory the footprint is many times the traffic sent, so a modest-bandwidth peer, or several such streams, drives the process to memory exhaustion.\n\n## Impact\n\nThis is an unauthenticated remote denial of service by memory exhaustion. A single stream grows an in-memory element tree without bound, amplified by per-element object overhead, until the operating system kills the server. There is no confidentiality or integrity impact and no code execution. The affected surface is any deployment that parses untrusted XML streams with this stack, such as an XMPP server or component.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:45:04Z",
+    "Severity": "HIGH",
+    "Summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted words domish XML Element Stream via an Unbounded Element Tree",
+    "UpdatedAt": "2026-10-23T20:45:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.10.0rc1"
+      },
+      "VulnerableVersionRange": "\u003c= 26.4.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-23T18:29:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "obsidian-tc"
+  },
+  "Advisory": {
+    "DatabaseId": 521202,
+    "Id": "GSA_kwCzR0hTQS1wcWg4LTRwajctMzJ4eM4AB_Py",
+    "GhsaId": "GHSA-pqh8-4pj7-32xx",
+    "References": [
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/security/advisories/GHSA-pqh8-4pj7-32xx"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/pull/74"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/commit/6428bfe6fdfd43aa7b4b369be3aecd6a268fb928"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/releases/tag/v1.3.1"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/cve-2026-77363"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pqh8-4pj7-32xx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pqh8-4pj7-32xx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77363"
+      }
+    ],
+    "Description": "### Impact\nThe Streamable HTTP transport was constructed without `enableDnsRebindingProtection`/`allowedHosts`/`allowedOrigins` and performed no `Origin`-header validation. With the documented `auth.mode: \"none\"` loopback default, a **drive-by web page could `POST http://127.0.0.1/mcp`** and receive caller `http-local` with scopes `[\"*\"]` — full vault read/write — via DNS rebinding / a forged Origin.\n\n### Patches\nFixed in **1.3.1**. Upgrade to `\u003e= 1.3.1`. The transport now enables DNS-rebinding protection and allowed hosts/origins and returns HTTP 403 on an invalid Origin (per MCP 2025-11-25).\n\n### Workarounds\nDo not expose the HTTP transport with `auth.mode: \"none\"`; require JWT auth, or bind to a non-loopback interface behind a proxy that validates `Origin`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T18:29:02Z",
+    "Severity": "CRITICAL",
+    "Summary": "obsidian-tc HTTP transport lacks Origin/DNS-rebinding protection, enabling drive-by vault access on loopback",
+    "UpdatedAt": "2026-10-23T18:29:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.3.1"
+    }
+  ]
+}

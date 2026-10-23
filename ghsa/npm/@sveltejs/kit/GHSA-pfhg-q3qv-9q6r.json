@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-23T20:58:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@sveltejs/kit"
+  },
+  "Advisory": {
+    "DatabaseId": 521276,
+    "Id": "GSA_kwCzR0hTQS1wZmhnLXEzcXYtOXE2cs4AB_Q8",
+    "GhsaId": "GHSA-pfhg-q3qv-9q6r",
+    "References": [
+      {
+        "Url": "https://github.com/sveltejs/kit/security/advisories/GHSA-pfhg-q3qv-9q6r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114060"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/commit/91aae3547c6cd2935d79c09a53e27c740100000a"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/releases/tag/@sveltejs/kit@3.0.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/sveltekit-before-3.0.0-open-redirect-via-enhanced-form-actions"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pfhg-q3qv-9q6r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pfhg-q3qv-9q6r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114060"
+      }
+    ],
+    "Description": "### Impact\nApplications using enhanced form actions (`use:enhance`) on routes that accept paths beginning with `//`, such as catch-all routes, may be vulnerable to an open redirect.\n\n### Patches\nA fix has been prepared for `@sveltejs/kit` 3.0.0. Users should upgrade to 3.0.0 or later.\n\nThe fix preserves leading double slashes in action paths without generating protocol-relative URLs, restricts non-redirect action navigation to the current origin, and includes the origin when comparing action locations with the current page.\n\n### Workarounds\nReject requests whose parsed URL pathname begins with `//` before route resolution, for example in a reverse proxy or a SvelteKit `handle` hook.\n\nAlternatively, disable navigation for non-redirect enhanced form results by supplying a custom submission callback:\n\n```svelte\n\u003cform method=\"POST\" use:enhance={() =\u003e ({ update }) =\u003e update({ navigate: false })}\u003e\n  \u003c!-- form fields --\u003e\n\u003c/form\u003e\n```\n\nThis applies non-redirect results to the current page instead of navigating to the action location.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:58:24Z",
+    "Severity": "LOW",
+    "Summary": "SvelteKit: URL redirection to untrusted site via enhanced form submission",
+    "UpdatedAt": "2026-10-23T20:58:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.0.0"
+    }
+  ]
+}

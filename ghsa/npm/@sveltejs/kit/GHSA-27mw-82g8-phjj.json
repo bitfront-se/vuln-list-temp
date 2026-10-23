@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-23T20:43:31Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@sveltejs/kit"
+  },
+  "Advisory": {
+    "DatabaseId": 521250,
+    "Id": "GSA_kwCzR0hTQS0yN213LTgyZzgtcGhqas4AB_Qi",
+    "GhsaId": "GHSA-27mw-82g8-phjj",
+    "References": [
+      {
+        "Url": "https://github.com/sveltejs/kit/security/advisories/GHSA-27mw-82g8-phjj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114061"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/commit/d9d55b579743c80ee7cb59c272d864fd9253dae7"
+      },
+      {
+        "Url": "https://github.com/sveltejs/kit/releases/tag/@sveltejs/kit@3.0.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/sveltekit-before-3.0.0-xss-via-cache-control-header-in-prerendered-pages"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-27mw-82g8-phjj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-27mw-82g8-phjj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114061"
+      }
+    ],
+    "Description": "### Impact\n\nApplications that prerender pages and use `setHeaders` to set a `cache-control` header from an untrusted source are vulnerable to cross-site scripting (XSS).\n\nSvelteKit inserts the header value into a `\u003cmeta http-equiv=\"cache-control\"\u003e` tag without escaping it. An attacker who can influence this value at prerender time can break out of the `content` attribute and inject HTML or JavaScript into the generated page. The injected code can then execute when users visit the page.\n\n### Patches\n\nThe fix escapes the header value before inserting it into the generated HTML. Upgrade to `@sveltejs/kit` version 3.0.0 or later.\n\n### Workarounds\n\nAvoid forwarding untrusted `cache-control` header values with `setHeaders` on prerendered pages. Use a fixed, trusted cache policy instead.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:43:30Z",
+    "Severity": "LOW",
+    "Summary": "SvelteKit : XSS via untrusted cache-control header in prerendered page",
+    "UpdatedAt": "2026-10-23T20:43:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:N/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.0"
+      },
+      "VulnerableVersionRange": "\u003c 3.0.0"
+    }
+  ]
+}

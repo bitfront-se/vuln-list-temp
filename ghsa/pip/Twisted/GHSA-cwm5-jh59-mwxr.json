@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:45:27Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "Twisted"
+  },
+  "Advisory": {
+    "DatabaseId": 521254,
+    "Id": "GSA_kwCzR0hTQS1jd201LWpoNTktbXd4cs4AB_Qm",
+    "GhsaId": "GHSA-cwm5-jh59-mwxr",
+    "References": [
+      {
+        "Url": "https://github.com/twisted/twisted/security/advisories/GHSA-cwm5-jh59-mwxr"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/pull/12750"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/commit/073ba878c6c07d569cb61abc5ae76d46eff1b529"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/commit/5d91cc66a3591faba758a80a1479e0103602facc"
+      },
+      {
+        "Url": "https://github.com/twisted/twisted/releases/tag/twisted-26.10.0rc1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cwm5-jh59-mwxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cwm5-jh59-mwxr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115778"
+      }
+    ],
+    "Description": "## Summary\n\nAn allocation-without-limits vulnerability (CWE-770) in the Twisted conch telnet transport lets any unauthenticated remote peer exhaust server memory over a single connection. When the peer opens a telnet subnegotiation with `IAC SB` and then streams bytes without ever sending the `IAC SE` terminator, every byte is appended to a per-connection buffer that has no maximum length. The buffer persists across reads and is released only on the terminator the attacker withholds, so it grows without bound until the process is killed.\n\n## Details\n\nThe option-negotiation state machine in `Telnet.dataReceived` enters the `subnegotiation` state on `IAC SB` and sets an empty command list. In that state every non-`IAC` byte is appended to the list with no length check:\n\n```python\n# src/twisted/conch/telnet.py  (Telnet.dataReceived)\nelif self.state == \"subnegotiation\":\n    if b == IAC:\n        self.state = \"subnegotiation-escaped\"\n    else:\n        self.commands.append(b)      # unbounded: no len(self.commands) check\n```\n\n`self.commands` is an instance attribute that persists across `dataReceived` calls and is deleted only when `IAC SE` completes the subnegotiation. Negotiation runs at the transport layer before authentication, and the bytes are consumed inside `dataReceived` before any application callback, so an application cannot impose a bound. Twisted caps other parser buffers, for example `NetstringReceiver.MAX_LENGTH`, but not this one.\n\nAffected product: Twisted, `twisted.conch.telnet` transport\nAffected versions: confirmed against 26.4.0\n\n## PoC\n\nOn any endpoint that exposes the Twisted telnet transport, such as the Twisted manhole telnet service, open one connection and send the two bytes `IAC SB` (`0xFF 0xFA`), then stream any non-`0xFF` bytes continuously and never send the `IAC SE` terminator (`0xFF 0xF0`). No credentials are required, because option negotiation runs before authentication.\n\nEvery byte is appended to the per-connection subnegotiation buffer with no maximum, and the buffer is released only by the terminator the attacker withholds, so it grows for the life of the connection. Because each byte is retained as a separate element the memory consumed is several times the traffic sent, so a modest-bandwidth peer, or several such connections, drives the process to memory exhaustion.\n\n## Impact\n\nThis is an unauthenticated remote denial of service (CWE-770, CWE-400) by memory exhaustion. A single connection grows an in-memory buffer without bound at a cost proportional to the bytes sent, amplified by per-byte object overhead, until the operating system kills the server and every service it hosts. There is no confidentiality or integrity impact and no code execution. The affected surface is any deployment that exposes a Twisted telnet or manhole transport to untrusted peers.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:45:26Z",
+    "Severity": "HIGH",
+    "Summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted conch Telnet Transport via an Unbounded Subnegotiation Buffer",
+    "UpdatedAt": "2026-10-23T20:45:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.10.0rc1"
+      },
+      "VulnerableVersionRange": "\u003c= 26.4.0"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T17:28:42Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "obsidian-tc"
+  },
+  "Advisory": {
+    "DatabaseId": 521198,
+    "Id": "GSA_kwCzR0hTQS1jdnA4LXZ2Z2YtNjlxNM4AB_Pu",
+    "GhsaId": "GHSA-cvp8-vvgf-69q4",
+    "References": [
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/security/advisories/GHSA-cvp8-vvgf-69q4"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/pull/73"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/commit/74de320ddea855e1dec47d67beabe88491149dab"
+      },
+      {
+        "Url": "https://github.com/The-40-Thieves/obsidian-tc/releases/tag/v1.3.1"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/cve-2026-77364"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cvp8-vvgf-69q4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cvp8-vvgf-69q4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77364"
+      }
+    ],
+    "Description": "### Impact\nWith a default configuration, an undefined `readPaths`/`writePaths` meant allow-all, the `strictReadDefault` flag was inert, and the `.obsidian`/`.git`/`.trash` control directories were denied only during enumeration — not on the direct request path. A caller could read `.obsidian/plugins/*/data.json`, exfiltrating **plugin API keys and Obsidian Sync passwords** (live-reproduced), as well as any other in-vault file by path.\n\n### Patches\nFixed in **1.3.1**. Upgrade to `\u003e= 1.3.1`. The default now denies `.obsidian`/`.git`/`.trash` on read/write/delete and honors `strictReadDefault` on the request path.\n\n### Workarounds\nSet an explicit `readPaths`/`writePaths` whitelist that excludes the control directories.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T17:28:40Z",
+    "Severity": "MODERATE",
+    "Summary": "obsidian-tc: Default folder ACL is fail-open; .obsidian plugin secrets are readable by default",
+    "UpdatedAt": "2026-10-23T17:28:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.3.1"
+      },
+      "VulnerableVersionRange": "\u003c 1.3.1"
+    }
+  ]
+}

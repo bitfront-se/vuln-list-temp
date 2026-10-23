@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:53:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "body-parser"
+  },
+  "Advisory": {
+    "DatabaseId": 521268,
+    "Id": "GSA_kwCzR0hTQS0yN3IzLWp4bWgtcDgyOM4AB_Q0",
+    "GhsaId": "GHSA-27r3-jxmh-p828",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/body-parser/security/advisories/GHSA-27r3-jxmh-p828"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-111181"
+      },
+      {
+        "Url": "https://github.com/expressjs/body-parser/commit/1260c3845f54502a05a87594f09a334786bb34d7"
+      },
+      {
+        "Url": "https://github.com/expressjs/body-parser/commit/f7075eae3a84c3473ab4bf0a777da28db208e916"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/body-parser/releases/tag/1.20.9"
+      },
+      {
+        "Url": "https://github.com/expressjs/body-parser/releases/tag/v2.4.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-27r3-jxmh-p828"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-27r3-jxmh-p828"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-111181"
+      }
+    ],
+    "Description": "### Impact\n\nA single request can crash any application using `body-parser` with default options. When a request carries a `Content-Encoding` (for example `gzip`), `body-parser` pipes it into a decompression stream and, after reading the body, leaves that stream piped with no error listener. A payload of one valid compressed frame followed by trailing bytes decodes and the application responds normally, but the trailing bytes then reach the already-finished decoder, which emits an error that is re-thrown as an uncaught exception and terminates the process. No authentication or matching route is required, since parsing runs before routing.\n\n### Patches\n\nFixed in body-parser 2.4.0 and 1.20.9. Upgrade to one of these versions.\n\n### Workarounds\n\nPass `inflate: false` to the body-parser middleware if the application does not need to accept compressed request bodies. This rejects encoded requests before any decompression stream is created.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:53:11Z",
+    "Severity": "HIGH",
+    "Summary": "body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body",
+    "UpdatedAt": "2026-10-23T20:53:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.20.9"
+      },
+      "VulnerableVersionRange": "\u003c 1.20.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.4.0"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T20:49:50Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/labstack/echo/v4"
+  },
+  "Advisory": {
+    "DatabaseId": 521263,
+    "Id": "GSA_kwCzR0hTQS1oN3dyLTI4NGYtNXF2Y84AB_Qv",
+    "GhsaId": "GHSA-h7wr-284f-5qvc",
+    "References": [
+      {
+        "Url": "https://github.com/labstack/echo/security/advisories/GHSA-h7wr-284f-5qvc"
+      },
+      {
+        "Url": "https://github.com/labstack/echo/pull/3136"
+      },
+      {
+        "Url": "https://github.com/labstack/echo/commit/3fb0ba7e17645bb65611e2a08875d0a2f65c421f"
+      },
+      {
+        "Url": "https://github.com/labstack/echo/releases/tag/v4.16.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h7wr-284f-5qvc"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h7wr-284f-5qvc"
+      }
+    ],
+    "Description": "## Impact\n\nEcho v4's opt-in Decompress middleware exposed a gzip-decoded request stream without limiting its expanded size. A small compressed request could therefore produce a very large decoded body. Handlers that read or bind that body could consume excessive memory or CPU, and repeated or concurrent requests could cause denial of service.\n\nThe middleware is not enabled by default. A limit on the compressed request size alone does not bound the decompressed size. Applications that already apply an effective body limit after decompression have reduced exposure.\n\n## Affected versions and patch\n\nEcho v4 versions through v4.16.0 are affected. Upgrade to [v4.16.1](https://github.com/labstack/echo/releases/tag/v4.16.1).\n\nThe patch adds `DecompressConfig.MaxDecompressedSize`, defaulting to 100 MiB when zero. A value of `-1` explicitly disables the limit. Reading beyond the cap returns `ErrStatusRequestEntityTooLarge` (HTTP 413), including through JSON and XML binding. Bodies exactly at the configured limit remain valid. Streaming enforcement requires callers to handle body-read errors.\n\n[Fix commit](https://github.com/labstack/echo/commit/3fb0ba7e17645bb65611e2a08875d0a2f65c421f).\n\n## Workarounds\n\nDisable gzip request decompression on exposed routes, or place BodyLimit after Decompress so the application limit applies to decoded bytes. Apply suitable request deadlines and concurrency limits as well.\n\n## Credits\n\nReported by @q490107865. The exact-limit behavior incorporates @Shubham-Padkonde's work in [#3136](https://github.com/labstack/echo/pull/3136).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T20:49:49Z",
+    "Severity": "HIGH",
+    "Summary": "Echo: Decompress permits unbounded gzip expansion in v4",
+    "UpdatedAt": "2026-10-23T20:49:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.16.1"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.16.1"
+    }
+  ]
+}
