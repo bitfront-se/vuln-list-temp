@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T22:08:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "multer"
+  },
+  "Advisory": {
+    "DatabaseId": 521314,
+    "Id": "GSA_kwCzR0hTQS1xN3FwLXJqZzctcTI2bc4AB_Ri",
+    "GhsaId": "GHSA-q7qp-rjg7-q26m",
+    "References": [
+      {
+        "Url": "https://github.com/expressjs/multer/security/advisories/GHSA-q7qp-rjg7-q26m"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-113872"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/commit/80a2d9df1dfd63b5fab631b8b9966164ed647adf"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/expressjs/multer/releases/tag/v2.5.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q7qp-rjg7-q26m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q7qp-rjg7-q26m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-113872"
+      }
+    ],
+    "Description": "### Impact\n\nWhen `multer` is configured with an asynchronous `fileFilter`, a single request can crash the Node.js process. If a request is aborted (for example when one file is rejected) while another file's async `fileFilter` is still pending, the pending callback later resumes a parsing stream that multer has already torn down. busboy then emits an error on a stream that no longer has an error listener, which Node raises as an unhandled `'error'` event, and the process exits. A single unauthenticated request is enough, so any application using `multer` with an asynchronous `fileFilter` is affected, regardless of storage engine. Uploads using a synchronous `fileFilter` are not affected.\n\n### Patches\n\nUsers should upgrade to `multer` `2.5.0` or later.\n\n### Workarounds\n\nUse a synchronous `fileFilter`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T22:08:22Z",
+    "Severity": "HIGH",
+    "Summary": "multer vulnerable to Denial of Service via a pending asynchronous fileFilter after request teardown",
+    "UpdatedAt": "2026-10-23T22:08:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.5.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.5.0"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T22:13:18Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 521316,
+    "Id": "GSA_kwCzR0hTQS1mNzJ2LTZ3NDUtcTQ3Ms4AB_Rk",
+    "GhsaId": "GHSA-f72v-6w45-q472",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-f72v-6w45-q472"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109841"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/18bc8a1e09d15bc45815154a289dcf6fd5254d00"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/4f7ef6806e532ab9e29ccd6229b1b9d241e1b1f0"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v7.30.1"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v8.12.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f72v-6w45-q472"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f72v-6w45-q472"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-109841"
+      }
+    ],
+    "Description": "### Impact\n\nundici's `fetch()` verifies Subresource Integrity (SRI) metadata by looking up the algorithm token in a lowercase-only set, but the SRI specification defines a valid token by its ASCII-lowercase form. A correct but non-lowercase token such as `SHA256-...` or `Sha256-...` is therefore treated as unknown and skipped. When no recognized algorithm remains, undici treats the integrity list as empty and accepts the response, so a server that returns a body different from the pinned digest passes the check.\n\nAn application that pins a response with a valid uppercase or mixed-case SRI token receives attacker-controlled bytes with no integrity error. The attacker needs only to control the response body, not the application's integrity metadata. The issue affects response integrity only. The regression was introduced in undici 7.15.0; releases 7.14.0 and earlier lowercase the token and are not affected.\n\n### Patches\n\nUpgrade to `7.30.1` or `8.12.2`. undici now normalizes the algorithm token to ASCII lowercase before validating it and before selecting the strongest algorithm, so case variants of SHA-256, SHA-384, and SHA-512 are verified correctly.\n\n### Workarounds\n\nUse lowercase algorithm tokens (`sha256`, `sha384`, `sha512`) in `integrity` metadata.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T22:12:57Z",
+    "Severity": "MODERATE",
+    "Summary": "undici vulnerable to Subresource Integrity bypass via non-lowercase algorithm tokens",
+    "UpdatedAt": "2026-10-23T22:13:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.12.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.12.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 7.15.0, \u003c 7.30.1"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T22:06:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "langgraph-checkpoint-postgres"
+  },
+  "Advisory": {
+    "DatabaseId": 521312,
+    "Id": "GSA_kwCzR0hTQS02aG13LTk0MzItNjdxcc4AB_Rg",
+    "GhsaId": "GHSA-6hmw-9432-67qq",
+    "References": [
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-6hmw-9432-67qq"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/pull/9217"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/commit/bfcfea554ed5c7f7be562cebf8825e911b493ab1"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/releases/tag/checkpointpostgres%3D%3D3.1.3"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/releases/tag/checkpointsqlite%3D%3D3.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6hmw-9432-67qq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6hmw-9432-67qq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115883"
+      }
+    ],
+    "Description": "### Summary\n\nThe Postgres and SQLite stores save a namespace as its labels joined with `.`, so `(\"tenant\", \"bob\")` and `(\"tenant.bob\",)` map to the same stored namespace. `put` rejected labels containing `.`, but `get`, `search`, `delete`, `list_namespaces`, their async versions, and ops passed directly to `batch`/`abatch` did not. A caller that could pass such a label could read, overwrite or delete items in another namespace.\n\n### Details\n\n`BaseStore` checked namespace labels only in `put`/`aput`. The other methods passed the namespace on unchecked, and `batch`/`abatch` checked nothing, including the `PutOp` items inside them. `PostgresStore`, `AsyncPostgresStore`, `SqliteStore` and `AsyncSqliteStore` turn a namespace into text with `\".\".join(namespace)`, so a label containing `.` resolved to the namespace whose labels it spells out:\n\n- `get((\"tenant.bob\",), key)`, `search((\"tenant.bob\",))` and `list_namespaces(prefix=(\"tenant.bob\",))` returned data stored under `(\"tenant\", \"bob\")`.\n- `delete((\"tenant.alice\",), key)` deleted the item stored under `(\"tenant\", \"alice\")`.\n- `batch([PutOp((\"tenant.bob\",), key, value)])` overwrote the item stored under `(\"tenant\", \"bob\")`.\n\nAll releases of `langgraph-checkpoint-postgres` before 3.1.3 and `langgraph-checkpoint-sqlite` before 3.1.2 are affected. `InMemoryStore` compares namespaces as tuples and is not affected.\n\n### Impact\n\nYou may be affected if you use one of these stores, rely on namespaces to keep users or tenants apart, and let untrusted input choose a namespace label that reaches a read, delete or `batch` call. Such input could read, overwrite or delete another tenant's items. Labels written through `put` could never contain `.`, so no stored data becomes unreachable after upgrading.\n\nLangSmith Deployment: the HTTP store API already rejected such labels, but store calls made from graph code reached the same flaw. The Agent Server rejects these labels from versions 0.15.5 and 0.16.2. On LangSmith Cloud, new deployments and revisions already include the fix and existing deployments get it on their next revision; self-hosted deployments should upgrade.\n\n### Remediation\n\nUpgrade to `langgraph-checkpoint-postgres` 3.1.3 or `langgraph-checkpoint-sqlite` 3.1.2. Both require `langgraph-checkpoint` 4.3.0, where `get`, `search`, `delete` and `list_namespaces` reject labels that are empty, are not strings, or contain `.` with `InvalidNamespaceError`, and the Postgres and SQLite stores apply the same check to every op passed to `batch`/`abatch`. Stores outside this repository that turn namespaces into delimited text can call `langgraph.store.base.validate_op_namespace` for each op they run.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T22:06:44Z",
+    "Severity": "MODERATE",
+    "Summary": "LangGraph: Namespace labels containing `.` reach other namespaces in Postgres and SQLite stores",
+    "UpdatedAt": "2026-10-23T22:06:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.3"
+      },
+      "VulnerableVersionRange": "\u003c 3.1.3"
+    }
+  ]
+}

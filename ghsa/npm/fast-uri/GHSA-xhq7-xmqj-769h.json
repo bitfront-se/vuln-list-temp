@@ -1,0 +1,95 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-23T21:39:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-uri"
+  },
+  "Advisory": {
+    "DatabaseId": 521289,
+    "Id": "GSA_kwCzR0hTQS14aHE3LXhtcWotNzY5aM4AB_RJ",
+    "GhsaId": "GHSA-xhq7-xmqj-769h",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fast-uri/security/advisories/GHSA-xhq7-xmqj-769h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-110095"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/048bbd0a252971be86d6579f0dfc87f8de5b9c47"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/52774a5c35df36b0bbe439cd4c12c3dc0e50e3b9"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/7c19f8b97ec51f1f20b4e3d9d5820cb8d5176058"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/9eb8759a9825c046f57f7f695f1944bc39b88abd"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/acc5c5d60c4209571789496e1732468911c7e12a"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/b110a3571c37dfcf9d1c72ce2e2e178c78d1a424"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v2.4.8"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v3.1.9"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v4.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xhq7-xmqj-769h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xhq7-xmqj-769h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-110095"
+      }
+    ],
+    "Description": "### Impact\n\n`fast-uri`'s `normalize()` and `serialize()` apply RFC 3986 dot-segment removal (`remove_dot_segments`) to the path of a relative-path reference. RFC 3986 section 5.2.4 defines that algorithm only for the merged target path during resolution, not for the reference itself, so applied to the reference it drops leading `..` segments and can turn a document-relative reference into a root-relative one.\n\nFor example, `normalize('a/../b')` returns `/b` and `normalize('../x')` returns `x`, so `resolve(base, normalize(ref))` points at a different resource than `resolve(base, ref)`, and `equal()` treats distinct references as the same.\n\nApplications that normalize attacker-supplied or user-supplied relative references and then resolve them, or use them as cache, deduplication, or authorization keys, can have a reference escape its intended directory and point at a different resource.\n\n### Patches\n\nUpgrade to `fast-uri` `2.4.8`, `3.1.9`, or `4.2.3`.\n\n### Workarounds\n\nDo not normalize a relative reference before resolving it. Resolve it against the absolute base first, then normalize the absolute result.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T21:39:34Z",
+    "Severity": "LOW",
+    "Summary": "fast-uri vulnerable to improper path equivalence in relative reference normalization",
+    "UpdatedAt": "2026-10-23T21:39:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.2.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.9"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.1.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.8"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.8"
+    }
+  ]
+}

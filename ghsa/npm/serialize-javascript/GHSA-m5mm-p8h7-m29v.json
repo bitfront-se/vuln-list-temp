@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-23T22:09:53Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "serialize-javascript"
+  },
+  "Advisory": {
+    "DatabaseId": 521315,
+    "Id": "GSA_kwCzR0hTQS1tNW1tLXA4aDctbTI5ds4AB_Rj",
+    "GhsaId": "GHSA-m5mm-p8h7-m29v",
+    "References": [
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-m5mm-p8h7-m29v"
+      },
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/pull/235"
+      },
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/commit/2864b3c6260a3bfd52d2db3e70d1a079de108a61"
+      },
+      {
+        "Url": "https://github.com/yahoo/serialize-javascript/releases/tag/v7.1.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-m5mm-p8h7-m29v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-m5mm-p8h7-m29v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115897"
+      }
+    ],
+    "Description": "### Impact\n\n`serialize-javascript` escapes its output so it is safe to embed inside a\n`\u003cscript\u003e` element. Before 7.1.3 that guarantee did not hold for a **function\nvalue whose source ends in a bare `\u003c/script`**.\n\nEach function body is escaped on its own, and a bare `\u003c/script` was only\nneutralized when followed — within the same body — by a character the HTML\ntokenizer treats as ending the tag name (TAB, LF, FF, CR, SPACE, `/` or `\u003e`).\nA body ending exactly at `\u003c/script` has no following character, so it was\nemitted unescaped. The delimiter is then supplied by the surrounding output\n(for example the newline the `space` option emits after the value), and a\nlater serialized value can supply the closing `\u003e` followed by markup:\n\n```js\nconst serialize = require('serialize-javascript');\nfunction f() {} f.toString = () =\u003e 'function f(){ return 1 }//\u003c/script';\nfunction g() {} g.toString = () =\u003e 'function g(x){ return x } \u003e \u003cimg src=x onerror=alert(1)\u003e';\nserialize({ a: { f }, g }, { space: 2 });\n// {\n//   \"a\": {\n//     \"f\": function f(){ return 1 }//\u003c/script\n//   },\n//   \"g\": function g(x){ return x } \u003e \u003cimg src=x onerror=alert(1)\u003e\n// }\n```\n\nEmbedded in a `\u003cscript\u003e` element, the script ends at the injected tag and the\n`\u003cimg\u003e` becomes a live element in the page.\n\nExploitation requires an attacker to control the **source text** of a\nserialized function, in practice through a spoofed `toString()`. Real\nfunctions always end in `}`, so ordinary function values are not affected,\nand non-function values (including strings containing `\u003c/script`) are\nescaped correctly.\n\n### Patches\n\nFixed in **7.1.3** (#235). The bare `\u003c/script` form is now also matched at\nthe end of the function body, so it is escaped regardless of what follows it\nin the output.\n\n### Workarounds\n\nUpgrade to **7.1.3**. If you cannot upgrade, do not serialize function values\nwhose source text (or `toString()`) can be influenced by an attacker.\n\n### Credits\n\nReported by **ha_kr25** via the Yahoo bug bounty program.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T22:09:52Z",
+    "Severity": "LOW",
+    "Summary": "Serialize JavaScript: Cross-site scripting (XSS) via unescaped \u003c/script at the end of a serialized function body",
+    "UpdatedAt": "2026-10-23T22:09:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.1.3"
+      },
+      "VulnerableVersionRange": "\u003c 7.1.3"
+    }
+  ]
+}

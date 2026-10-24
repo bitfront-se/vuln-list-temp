@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-23T21:34:10Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mlflow"
+  },
+  "Advisory": {
+    "DatabaseId": 517759,
+    "Id": "GSA_kwCzR0hTQS13cW1oLXFjY3ctcHF3Zs4AB-Z_",
+    "GhsaId": "GHSA-wqmh-qccw-pqwf",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53995"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/pull/26842"
+      },
+      {
+        "Url": "https://github.com/SaiTeja-Erukude/CVE-2026-53995-mlflow-path-traversal"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/mlflow-path-traversal-via-trace-id-api"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/issues/26979"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/commit/31ff9e56f5038d61ec75344518912945f60dffec"
+      },
+      {
+        "Url": "https://github.com/mlflow/mlflow/releases/tag/v3.17.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wqmh-qccw-pqwf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wqmh-qccw-pqwf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53995"
+      }
+    ],
+    "Description": "MLflow 3.17.1 and earlier contains a path traversal vulnerability in the FileStore tracking backend that allows unauthenticated attackers to control filesystem paths by submitting a crafted trace ID containing traversal sequences to the POST /api/3.0/mlflow/traces endpoint. Attackers can exploit FileStore.start_trace() to write trace_info.yaml, request_metadata, and tag files with attacker-controlled metadata outside the intended experiment trace directory, subject to the server process's filesystem permissions. FileStore is the default tracking backend before MLflow 3.7.0 and opt-in thereafter (the default changed to a SQLite database), so deployments in the earlier part of the affected range are vulnerable without special configuration while later ones are affected only when FileStore is explicitly selected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-20T00:31:59Z",
+    "Severity": "HIGH",
+    "Summary": "MLflow FileStore trace IDs allow path traversal and arbitrary file writes",
+    "UpdatedAt": "2026-10-23T21:34:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.17.2"
+      },
+      "VulnerableVersionRange": "\u003c= 3.17.1"
+    }
+  ]
+}

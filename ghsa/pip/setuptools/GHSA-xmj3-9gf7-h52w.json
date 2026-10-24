@@ -1,0 +1,55 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-23T21:44:13Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "setuptools"
+  },
+  "Advisory": {
+    "DatabaseId": 521292,
+    "Id": "GSA_kwCzR0hTQS14bWozLTlnZjctaDUyd84AB_RM",
+    "GhsaId": "GHSA-xmj3-9gf7-h52w",
+    "References": [
+      {
+        "Url": "https://github.com/pypa/setuptools/security/advisories/GHSA-xmj3-9gf7-h52w"
+      },
+      {
+        "Url": "https://github.com/pypa/setuptools/pull/5329"
+      },
+      {
+        "Url": "https://github.com/pypa/setuptools/commit/6d07b8d17890dda58d944ac51e58f54af92d52af"
+      },
+      {
+        "Url": "https://github.com/pypa/setuptools/releases/tag/v84.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xmj3-9gf7-h52w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xmj3-9gf7-h52w"
+      }
+    ],
+    "Description": "### Summary\n\nOn Windows, attacker-controlled content in a wheel's\n`.dist-info/namespace_packages.txt` can cause setuptools' legacy wheel\ninstallation path to create an `__init__.py` outside the requested\n`destination_eggdir`.\n\nThe attacker can influence the destination path, but not the contents of\nthe created file.\n\n### Details\n\nTested setuptools commit:\n\n`6ead555c5fb29bc57fe6105b1bffc163f56fd558`\n\nRelevant source:\n\n`setuptools/wheel.py`\n\nSHA-256:\n\n`359b7e0d5dd8c3135653abe08a8ed5dc0352eadfd7df22cb5e2b5303b7c3cafd`\n\nThe relevant call path is:\n\n`Wheel(wheel_path).install_as_egg(destination)`\n→ `_install_as_egg`\n→ `_convert_metadata`\n→ `_fix_namespace_packages`\n\nA wheel can provide attacker-controlled content in:\n\n`\u003cdistribution\u003e.dist-info/namespace_packages.txt`\n\nThe namespace value is eventually used approximately as:\n\n```python\nmod_dir = os.path.join(destination_eggdir, *mod.split('.'))\nmod_init = os.path.join(mod_dir, '__init__.py')\n\nIf mod is a Windows drive-qualified absolute path containing no dots,\nmod.split('.') preserves it as a single component.\nOn Windows, os.path.join(destination_eggdir, absolute_component) discards\nthe original base directory and resolves to the attacker-supplied absolute\npath.\nThe existing wheel filename and ZIP traversal checks do not validate this\nmetadata value before it is subsequently interpreted as a filesystem path.\n\n```markdown\n### PoC\n\nThe reproduction was performed entirely inside a disposable temporary\ndirectory.\n\nLayout:\n\n```text\nsandbox/\n    destination/\n    outside/\n    input/\n    canary.txt\n```\n\nA synthetic wheel was created containing:\n\n`demo_pkg-1.0.dist-info/namespace_packages.txt`\n\nwhose content was the absolute path of:\n\n`sandbox\\outside`\n\nThe real acquired setuptools implementation was then invoked:\n\n```python\nsetuptools.wheel.Wheel(synthetic_wheel).install_as_egg(\n    sandbox_destination\n)\n```\n\nThe operation completed without exception.\n\nExpected metadata was created under:\n\n`sandbox\\destination\\EGG-INFO`\n\nbut setuptools also created:\n\n`sandbox\\outside\\__init__.py`\n\nThe file did not exist before execution.\n\nIts contents were:\n\n```python\n__import__('pkg_resources').declare_namespace(__name__)\n```\n\nThe unrelated canary remained byte-identical.\n\nThe sandbox was deleted after recording the evidence.\n```\n\n\n### Impact\n\nA crafted wheel can cause setuptools to create a fixed-content\n`__init__.py` outside the intended installation directory at a\nfilesystem path influenced by the wheel, with the permissions of the\nprocess performing the installation.\n\nThe demonstrated reproduction required the target parent directory to\nalready exist.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T21:44:11Z",
+    "Severity": "LOW",
+    "Summary": "setuptools: Windows path escape via namespace_packages.txt during legacy wheel installation  Description",
+    "UpdatedAt": "2026-10-23T21:44:13Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "84.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 38.2.2, \u003c 84.1.0"
+    }
+  ]
+}

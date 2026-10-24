@@ -1,0 +1,86 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-23T21:41:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-uri"
+  },
+  "Advisory": {
+    "DatabaseId": 521290,
+    "Id": "GSA_kwCzR0hTQS13NzR4LXY2ZjktajN4Z84AB_RK",
+    "GhsaId": "GHSA-w74x-v6f9-j3xg",
+    "References": [
+      {
+        "Url": "https://github.com/fastify/fast-uri/security/advisories/GHSA-w74x-v6f9-j3xg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-110306"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/39933a1f1422986f14e2d844f552238feb40f5d4"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/597f254c86d151568511eeb9a1df761fd12520b3"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/commit/e60e716f41d1d73717e2d803d20b68d2c6d20a0f"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v2.4.8"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v3.1.9"
+      },
+      {
+        "Url": "https://github.com/fastify/fast-uri/releases/tag/v4.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w74x-v6f9-j3xg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w74x-v6f9-j3xg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-110306"
+      }
+    ],
+    "Description": "### Impact\n\n`fast-uri` percent-decodes the scheme component with the legacy global `unescape()` before validating it, so an input whose decoded scheme is a valid but dangerous token is emitted as a live scheme. RFC 3986 section 3.1 does not allow percent-encoding in a scheme, so no RFC or WHATWG parser treats such input as having that scheme, but `fast-uri` does.\n\nFor example, `normalize('%6Aavascript:alert(1)')` returns `javascript:alert(1)`, `resolve('https://a.example/', '%6Aavascript:alert(1)')` returns `javascript:alert(1)`, and `parse('%6Aavascript:alert(1)').scheme` returns `javascript`. The `%uXXXX` form (`%u006Aavascript:`) produces the same result, and `equal('%68ttp://a/', 'http://a/')` returns `true`.\n\nAn application that screens dangerous schemes on the raw input and then stores or renders `normalize(input)` or `resolve(base, input)` turns an inert string into an executable `javascript:`, `data:`, or `vbscript:` URL, a stored or reflected cross-site scripting vector in the consuming application. `equal()` also treats an encoded and a plain scheme as the same, which can bypass equality-based allowlists.\n\n### Patches\n\nUpgrade to `fast-uri` `2.4.8`, `3.1.9`, or `4.2.3`.\n\n### Workarounds\n\nReject input whose scheme part (before the first `:`, and before any `/`, `?`, or `#`) contains `%`. Alternatively, check `parse(x).scheme` against an allowlist after normalization and use that same parsed result rather than the raw string.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-23T21:41:36Z",
+    "Severity": "MODERATE",
+    "Summary": "fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding",
+    "UpdatedAt": "2026-10-23T21:41:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.2.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.1.9"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.1.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.4.8"
+      },
+      "VulnerableVersionRange": "\u003c 2.4.8"
+    }
+  ]
+}
