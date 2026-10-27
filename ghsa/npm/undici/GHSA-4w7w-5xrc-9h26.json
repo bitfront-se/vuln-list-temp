@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-27T19:02:32Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "undici"
+  },
+  "Advisory": {
+    "DatabaseId": 522934,
+    "Id": "GSA_kwCzR0hTQS00dzd3LTV4cmMtOWgyNs4AB_q2",
+    "GhsaId": "GHSA-4w7w-5xrc-9h26",
+    "References": [
+      {
+        "Url": "https://github.com/nodejs/undici/security/advisories/GHSA-4w7w-5xrc-9h26"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109829"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/26c2bfb3def0b67241ce878e80657ed5d6c3efa8"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/commit/b20b82ad80a405a12b6ce1f341bcd418de390aa0"
+      },
+      {
+        "Url": "https://cna.openjsf.org/security-advisories.html"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v7.30.1"
+      },
+      {
+        "Url": "https://github.com/nodejs/undici/releases/tag/v8.12.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4w7w-5xrc-9h26"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4w7w-5xrc-9h26"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-109829"
+      }
+    ],
+    "Description": "### Impact\n\nWhen an originless `Agent` composes the redirect and cache interceptors as `compose(redirect(), cache())` with a shared cache (`type: 'shared'`), the cache builds its key from the original request URL before the redirect handler changes the origin. The response produced after a redirect is then stored under the original key, even when the redirect crossed to a different origin.\n\nAn attacker who controls the target of a redirect from a trusted URL can have their response cached under that trusted URL. A later caller requesting the trusted URL receives the attacker's body from the shared cache without either origin being contacted, allowing persistent cache poisoning. The same key confusion also discloses private data: when an authenticated request returns a `private, no-store` redirect to a user-specific resource, the final response is stored under the original URL and can be served to a later unauthenticated caller.\n\nThe cache interceptor was introduced in undici 7.0.0, and all 7.x and 8.x releases before the patched versions are affected. Applications are affected only when an originless `Agent`, a shared `MemoryCacheStore` or `SqliteCacheStore`, and the composition `compose(redirect(), cache())` are all used. Origin-bound `Client` and `Pool` dispatchers, and the reverse composition `compose(cache(), redirect())`, are not affected.\n\n### Patches\n\nUpgrade to `7.30.1` or `8.12.2`. Before storing a response, undici now verifies that the origin that produced it still matches the cache key, and preserves each redirect hop's cache-control policy, so cross-origin redirect responses and responses behind a `no-store` or `private` hop are no longer cached under the original key.\n\n### Workarounds\n\nCompose the interceptors as `compose(cache(), redirect())`, use per-origin dispatchers and cache stores, or disable shared caching on redirect-capable requests.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T19:02:31Z",
+    "Severity": "HIGH",
+    "Summary": "undici vulnerable to cache poisoning and cross-user disclosure via cross-origin redirects",
+    "UpdatedAt": "2026-10-27T19:02:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.12.2"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.12.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.30.1"
+    }
+  ]
+}

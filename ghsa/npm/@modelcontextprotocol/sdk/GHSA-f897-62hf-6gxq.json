@@ -1,0 +1,70 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-27T19:02:02Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@modelcontextprotocol/sdk"
+  },
+  "Advisory": {
+    "DatabaseId": 522929,
+    "Id": "GSA_kwCzR0hTQS1mODk3LTYyaGYtNmd4cc4AB_qx",
+    "GhsaId": "GHSA-f897-62hf-6gxq",
+    "References": [
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-f897-62hf-6gxq"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/pull/2698"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/pull/2717"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/commit/7b781ed4e25355a25d15974f3c76de81299694ed"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/commit/a9f6eb709b85459d01e8f2a9e881fef2621756c1"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/releases/tag/1.30.1"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/releases/tag/@modelcontextprotocol/hono@2.0.1"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/releases/tag/@modelcontextprotocol/node@2.1.0"
+      },
+      {
+        "Url": "https://github.com/modelcontextprotocol/typescript-sdk/releases/tag/@modelcontextprotocol/server@2.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f897-62hf-6gxq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f897-62hf-6gxq"
+      }
+    ],
+    "Description": "### Summary\nIn affected versions, MCP servers reachable over HTTP put no limit on the size of a POST body or on the number of messages in a JSON-RPC batch. Large requests could exhaust the server's memory, and one long batch could block it from serving anyone else. No credentials were needed, unless your application authenticates requests before they reach the SDK.\n\n### Am I affected?\nYes, if clients you do not fully trust can reach your server over Streamable HTTP. A body parser such as `express.json()` does not protect you, because it does not limit batch length. Servers that only use stdio are not affected.\n\nAffected versions:\n\n- `@modelcontextprotocol/sdk` 1.10.0 through 1.30.0\n- `@modelcontextprotocol/server` 2.0.0\n- `@modelcontextprotocol/node` 2.0.0\n- `@modelcontextprotocol/hono` 2.0.0\n\n### Fix\nUpgrade to:\n\n- 1.x: `@modelcontextprotocol/sdk` 1.30.1 or later\n- 2.x: `@modelcontextprotocol/server` 2.1.0, `@modelcontextprotocol/node` 2.1.0 and `@modelcontextprotocol/hono` 2.0.1 or later. Upgrade every one you have installed.\n\nBodies over 4 MiB now get `413`, and batches over 100 messages get `400`. If your clients send larger bodies, raise the new `maxRequestBodySize` option.\n\nIf you cannot upgrade yet, cap request body size in a reverse proxy.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T19:02:00Z",
+    "Severity": "HIGH",
+    "Summary": "MCP TypeScript SDK: HTTP server transports and handlers did not limit request body size or JSON-RPC batch length",
+    "UpdatedAt": "2026-10-27T19:02:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.30.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.10.0, \u003c 1.30.1"
+    }
+  ]
+}
