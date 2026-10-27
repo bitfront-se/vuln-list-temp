@@ -1,0 +1,64 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-27T14:45:48Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 500599,
+    "Id": "GSA_kwCzR0hTQS04cXBjLTZyeHgtNHB4Zs4AB6N3",
+    "GhsaId": "GHSA-8qpc-6rxx-4pxf",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-94624"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/51504"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/blob/v0.29.0/vllm/v1/kv_offload/tiering/p2p/control/zmq.py#L240-L260"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/blob/v0.29.0/vllm/v1/kv_offload/tiering/p2p/manager.py#L667-L677"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vllm-through-0.29.0-denial-of-service-via-unbounded-p2p-kv-offloading-sessions"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/vllm/PYSEC-2026-4006.yaml"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8qpc-6rxx-4pxf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8qpc-6rxx-4pxf"
+      }
+    ],
+    "Description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of GHSA-frvg-qw88-hww9. This link is maintained to preserve external references.\n\n## Original Description\nvLLM through 0.29.0 contains a denial of service vulnerability in P2P KV offloading when OffloadingConnector is configured with TieringOffloadingSpec and a peer-to-peer secondary tier. Attackers can supply arbitrary remote host and port values in kv_transfer_params to create unreachable peer sessions that retain ZeroMQ sockets until the context quota is exhausted, causing an uncaught ZMQError that crashes EngineCore and stops all inference.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-09-22T00:30:55Z",
+    "Severity": "HIGH",
+    "Summary": "Duplicate Advisory: vllm p2p never connected zmq_exhaustion",
+    "UpdatedAt": "2026-10-27T14:45:48Z",
+    "WithdrawnAt": "2026-10-27T14:45:47Z",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.30.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0, \u003c 0.30.0"
+    }
+  ]
+}

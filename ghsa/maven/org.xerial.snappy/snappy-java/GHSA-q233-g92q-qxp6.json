@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-27T15:33:24Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xerial.snappy:snappy-java"
+  },
+  "Advisory": {
+    "DatabaseId": 522768,
+    "Id": "GSA_kwCzR0hTQS1xMjMzLWc5MnEtcXhwNs4AB_oQ",
+    "GhsaId": "GHSA-q233-g92q-qxp6",
+    "References": [
+      {
+        "Url": "https://github.com/xerial/snappy-java/security/advisories/GHSA-q233-g92q-qxp6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-108106"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/pull/739"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/commit/943c6043a292568575e8347af4507d015e802c75"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/blob/v1.1.10.8/src/main/java/org/xerial/snappy/Snappy.java#L517"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/releases/tag/v1.1.10.9"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/xerial-snappy-java-before-1.1.10.9-unbounded-memory-allocation-denial-of-service"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q233-g92q-qxp6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q233-g92q-qxp6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-108106"
+      }
+    ],
+    "Description": "### Impact\nSeveral decompression paths in snappy-java allocate an output buffer sized by the uncompressed length declared in the first bytes of the compressed data, before decompressing or validating it. A few bytes of crafted input can therefore force an allocation of up to 2 GB, causing `OutOfMemoryError` (denial of service), or a `NegativeArraySizeException` for declared lengths of 2^31 or more.\n\nAffected entry points include `Snappy.uncompress(byte[])`, `Snappy.uncompressString`, the `Snappy.uncompress*Array` methods, `SnappyInputStream`, and `SnappyFramedInputStream`. The `maxChunkSize` limit added for CVE-2023-43642 bounds only the compressed chunk length, so it does not prevent this.\n\n### Patches\nFixed in 1.1.10.9 (#739). `Snappy.uncompressedLength()` now rejects negative declared lengths, and lengths larger than any valid Snappy stream of the given size can produce. The densest Snappy element expands 3 bytes to 64, so the limit is 64/3 of the compressed size. Allocations are therefore proportional to the input actually received.\n\n### Workarounds\nBefore decompressing untrusted data, check that `Snappy.uncompressedLength(input)` is within an application-specific limit.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T15:33:22Z",
+    "Severity": "HIGH",
+    "Summary": "snappy-java: Unbounded memory allocation from attacker-declared uncompressed lengtha",
+    "UpdatedAt": "2026-10-27T15:33:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.10.9"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.10.8"
+    }
+  ]
+}

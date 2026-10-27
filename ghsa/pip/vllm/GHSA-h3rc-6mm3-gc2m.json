@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-27T15:36:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 522773,
+    "Id": "GSA_kwCzR0hTQS1oM3JjLTZtbTMtZ2Mybc4AB_oV",
+    "GhsaId": "GHSA-h3rc-6mm3-gc2m",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-h3rc-6mm3-gc2m"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/58830"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/31f2e70cd3e403aaa471fb7fe3d33a7207aaf3cc"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/releases/tag/v0.31.0"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/cve-2026-114053"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vllm-0.7.3-before-0.31.0-rce-via-mm-processor-kwargs-code-revision"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h3rc-6mm3-gc2m"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h3rc-6mm3-gc2m"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114053"
+      }
+    ],
+    "Description": "## Summary\n\nAn untrusted multimodal request can set `mm_processor_kwargs.code_revision`. When vLLM serves a model whose Hugging Face processor uses dynamic `auto_map` code and the operator enabled `--trust-remote-code`, this request value reaches `AutoProcessor.from_pretrained` and selects the Python revision imported by Transformers.\n\nThis lets a client replace the operator-reviewed processor module with code from another revision of the same model repository. The operator-selected model/data `revision` remains pinned; only the executed processor code changes.\n\nImporting a Python module is arbitrary code execution in the vLLM API/renderer process. The PoC below demonstrates this with an import-time filesystem write. It is fully offline and does not require a GPU, model weights, or changes to a real Hub repository.\n\n## Affected snapshot\n\n- Repository: [`vllm-project/vllm`](https://github.com/vllm-project/vllm)\n- Verified commit: [`570735520942b6428ae98f1eb442c6d88adae55e`](https://github.com/vllm-project/vllm/commit/570735520942b6428ae98f1eb442c6d88adae55e)\n- Verified with Transformers 5.15.0 and 5.16.1\n- Affected release range has not been bisected\n\n## Affected configuration\n\nThe vulnerable path exists when all of the following are true:\n\n1. The served model's processor uses dynamic `auto_map.AutoProcessor` code.\n2. The operator enabled `trust_remote_code`.\n3. The server can fetch the request-selected revision, or it is already cached.\n4. The attacker can create or otherwise control a revision in the served model repository. An example is a [Hugging Face community pull-request ref](https://huggingface.co/docs/hub/en/repositories-pull-requests-discussions#where-in-the-git-repo-are-changes-stored) when that repository permits them.\n5. A multimodal request reaches the processor path.\n\nThe default `trust_remote_code=False` configuration is not affected.\n\n## Attack surface\n\n`mm_processor_kwargs` is accepted directly by public request models:\n\n- [`TokenizeChatRequest.mm_processor_kwargs`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/entrypoints/serve/tokenize/protocol.py#L111-L114)\n- [`ChatCompletionRequest.mm_processor_kwargs`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/entrypoints/openai/chat_completion/protocol.py#L372-L375)\n\n`/tokenize` is particularly relevant because vLLM's authentication middleware guards only `/v1`, `/v2`, `/inference`, and `/cohere` prefixes:\n\n- [`AuthenticationMiddleware`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/entrypoints/serve/middleware/authenticate.py#L11-L62)\n\nConsequently, `/tokenize` remains unauthenticated even when `--api-key` is configured, unless an external proxy protects it. The vLLM [Security Guide](https://docs.vllm.ai/en/latest/usage/security/#unprotected-endpoints-no-api-key-required) documents `/tokenize` as an unprotected endpoint.\n\n## Root cause\n\nThe request value follows this path:\n\n1. [`OnlineRenderer.preprocess_chat`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/renderers/online_renderer.py#L406-L435) places request `mm_processor_kwargs` in prompt extras.\n2. Multimodal rendering forwards those kwargs into processor construction through [`MMProcessorInputs`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/renderers/base.py#L751-L760) and [`_process_multimodal_async`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/renderers/base.py#L831-L847).\n3. [`MultiModalConfig.merge_mm_processor_kwargs`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/config/multimodal.py#L506-L518) overlays inference values on startup values, so the request wins.\n4. [`cached_get_processor_without_dynamic_kwargs`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/transformers_utils/processor.py#L344-L375) filters only recognized processor-call keys. `code_revision` is retained as a processor-construction kwarg.\n5. [`cached_processor_from_config`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/transformers_utils/processor.py#L380-L390) pins `revision` and `trust_remote_code`, but forwards the remaining kwargs without reserving `code_revision`.\n6. [`get_processor`](https://github.com/vllm-project/vllm/blob/570735520942b6428ae98f1eb442c6d88adae55e/vllm/transformers_utils/processor.py#L205-L245) calls `AutoProcessor.from_pretrained(..., revision=revision, trust_remote_code=trust_remote_code, **kwargs)`.\n7. Transformers [`AutoProcessor.from_pretrained`](https://github.com/huggingface/transformers/blob/v5.15.0/src/transformers/models/auto/processing_auto.py#L294-L302) uses `code_revision` to retrieve and import the dynamic module through [`get_class_from_dynamic_module`](https://github.com/huggingface/transformers/blob/v5.15.0/src/transformers/dynamic_module_utils.py#L474-L575), then removes it before loading processor data. This is why code comes from the attacker revision while configuration/data remain operator-pinned.\n\nRequest-time processor arguments are not separated from processor-construction arguments, and `code_revision` is not reserved.\n\n## Suggested remediation\n\n1. Separate processor-construction arguments from untrusted processor-call arguments. An allowlist of supported request-time preprocessing controls is safest.\n2. Reject `code_revision` and other loader/source controls in request `mm_processor_kwargs`, and pass `model_config.code_revision` explicitly as the only permitted processor-code revision.\n3. Add a regression test proving a request cannot change the loaded module revision while operator pins remain effective.\n4. Protect `/tokenize` with the configured authentication policy as defense in depth.\n\nExpected safe behavior is either a 4xx response for reserved request keys or silently ignoring them before processor construction. Rejection is preferable because it makes attempted misuse visible.\n\nA patch for this was merged here: https://github.com/vllm-project/vllm/pull/58830",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T15:36:17Z",
+    "Severity": "HIGH",
+    "Summary": "vLLM: Request-controlled mm_processor_kwargs.code_revision allows remote code execution",
+    "UpdatedAt": "2026-10-27T15:36:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.31.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.7.3, \u003c 0.31.0"
+    }
+  ]
+}

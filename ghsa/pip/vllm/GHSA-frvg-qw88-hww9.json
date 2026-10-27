@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-27T14:45:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 522530,
+    "Id": "GSA_kwCzR0hTQS1mcnZnLXF3ODgtaHd3Oc4AB_ki",
+    "GhsaId": "GHSA-frvg-qw88-hww9",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-frvg-qw88-hww9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-94624"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/51504"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/93d2cab35e8ae66bbaa1dea1c077986d5a79eb80"
+      },
+      {
+        "Url": "https://github.com/pypa/advisory-database/tree/main/vulns/vllm/PYSEC-2026-4006.yaml"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/blob/v0.29.0/vllm/v1/kv_offload/tiering/p2p/control/zmq.py#L240-L260"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/blob/v0.29.0/vllm/v1/kv_offload/tiering/p2p/manager.py#L667-L677"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/releases/tag/v0.32.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/vllm-through-0.29.0-denial-of-service-via-unbounded-p2p-kv-offloading-sessions"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-frvg-qw88-hww9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-frvg-qw88-hww9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-94624"
+      }
+    ],
+    "Description": "### Summary\n\nWhen the `OffloadingConnector` uses `TieringOffloadingSpec` with a P2P secondary tier, an API client can submit many unique non-listening peer addresses through `kv_transfer_params.prefill`. vLLM keeps every never-established P2P session and its ZeroMQ sockets after the request finishes. On vLLM 0.26.0, 340 such peers filled the default ZeroMQ context socket quota; creating the next peer raised an uncaught `ZMQError`, terminated `EngineCore`, and shut down the API server. The path was reproduced with a normal API key and no access to the internal P2P listener.\n\n### Details\n\n#### Root cause\n\nIn vLLM 0.26.0, `P2PSecondaryTierManager.on_new_request()` reads the following request-controlled fields:\n\n```json\n{\n  \"kv_transfer_params\": {\n    \"prefill\": {\n      \"kv_request_id\": \"id\",\n      \"remote_host\": \"127.0.0.1\",\n      \"remote_port\": 49101\n    }\n  }\n}\n```\n\n`on_new_request()` calls `_get_or_create_session(peer_id)`. This calls `ZmqTransport.connect()`, creates a `P2PSession`, and stores it in `_sessions` before the asynchronous ZeroMQ connection has been established.\n\n`ZmqTransport._open_connection()` creates a DEALER, enables a libzmq monitor, creates a PAIR socket for that monitor, calls `dealer.connect()`, and immediately stores the resulting `ZmqConnection` in `_connections`. Returning from `dealer.connect()` does not prove that the peer is reachable.\n\nThe monitor subscribes only to `zmq.EVENT_DISCONNECTED`. A peer that never accepts the initial connection produced `EVENT_CONNECT_DELAYED`, `EVENT_CONNECT_RETRIED`, and `EVENT_CLOSED`, but no `EVENT_DISCONNECTED` during a 60-second observation. The production monitor therefore never calls `mark_dead()`, and `ZmqConnection.alive` remains true.\n\nRequest completion calls `session.finish_request()`, but does not close or remove the peer session. The manager reaps only a session for which `session.connected and not session.alive` is true. A never-established peer remains `connected=True`, `alive=True`, and `ready=False`. There is no establishment deadline, idle eviction, or limit on pending or total peers.\n\nEach unique retained peer uses about three sockets in the same ZeroMQ context: the DEALER, the monitor endpoint created by libzmq, and the PAIR monitor client. With the measured default `MAX_SOCKETS=1023`, 340 peers use approximately 1,020 sockets in addition to the local ROUTER. The next peer fails while creating its monitor PAIR. The exception escapes through `on_new_request()` and the scheduler into the EngineCore loop:\n\n```text\nP2PSecondaryTierManager._get_or_create_session()\n  -\u003e ZmqTransport.connect()\n  -\u003e ZmqTransport._open_connection()\n  -\u003e monitor_sock = self._zmq_ctx.socket(zmq.PAIR)\n  -\u003e zmq.error.ZMQError: Too many open files\n  -\u003e EngineDeadError\n```\n\nThe process open-files limit was 65,536. The EngineCore had about 1,215 file descriptors at the failure point, so the failure was not the operating-system FD limit.\n\n#### Boundary and controls\n\nEach row below used a fresh vLLM process and pre-generated unique non-listening loopback ports.\n\n| Test | Result |\n|---|---|\n| Default `MAX_SOCKETS=1023`, 340 unique peers | 340 HTTP 200 responses; 340 active peers; service healthy |\n| Default limit, 344 unique peers, concurrency 4 | 340 HTTP 200 and 4 HTTP 500 responses; EngineCore and API exited |\n| Default limit, 344 unique peers, concurrency 1 | Same 340-peer ceiling and service exit |\n| Same endpoint repeated 512 times | 512 HTTP 200 responses; one active peer; service healthy |\n| 512 requests without P2P parameters | 512 HTTP 200 responses; no active peers; service healthy |\n\nA diagnostic A/B changed only the context `MAX_SOCKETS` value. Raising it from 1,023 to 2,048 moved the last fully successful point from 340 to 682 peers. The 683rd peer then raised the same `ZMQError` and terminated the service. The approximately 2.01x movement in the boundary identifies the ZeroMQ context quota as the exhausted resource.\n\nThe failure runs used logging-only instrumentation around `_open_connection()` to record the context limit, peer count, and process FD count. It did not add or close any ZeroMQ socket and re-raised the original exception.\n\n#### Related public work\n\n[PR #47843](https://github.com/vllm-project/vllm/pull/47843) is an open, unmerged proposal that identifies client-supplied P2P peer addresses as an SSRF risk and proposes API sanitization plus a configured peer allowlist. Those changes would block this public API trigger, but the PR does not add a connection deadline, session cleanup, or a capacity limit for never-established peers. This report adds the deterministic resource-exhaustion and service-exit impact of the retained state.\n\n[PR #49823](https://github.com/vllm-project/vllm/pull/49823) fixes cleanup and reconnection after a connection has been marked dead. A peer that never establishes does not receive the subscribed `EVENT_DISCONNECTED` event, so it never enters that dead-state cleanup path.\n\n### Impact\n\nThis is uncontrolled resource consumption leading to denial of service. An attacker needs network access to an OpenAI-compatible inference endpoint and a normal API key when `--api-key` is enabled. The attacker does not need access to the internal P2P control or data ports and does not need any peer to answer.\n\nOnly deployments that explicitly enable `OffloadingConnector`, `TieringOffloadingSpec`, and a P2P secondary tier are affected. Repeating a cheap one-token request with unique non-listening endpoints steadily consumes scheduler and ZeroMQ resources. In the tested default context, about 341 requests were enough to terminate EngineCore and stop all inference on the instance until restart. Confidentiality and integrity were not affected; the demonstrated impact is availability loss.\n\nThis advisory was fixed in [MR51504](https://github.com/vllm-project/vllm/pull/51504).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T14:45:53Z",
+    "Severity": "MODERATE",
+    "Summary": "vllm p2p never connected zmq_exhaustion",
+    "UpdatedAt": "2026-10-27T14:45:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.32.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.32.0"
+    }
+  ]
+}

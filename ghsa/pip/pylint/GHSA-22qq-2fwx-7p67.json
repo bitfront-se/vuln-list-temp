@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-27T14:46:51Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pylint"
+  },
+  "Advisory": {
+    "DatabaseId": 522532,
+    "Id": "GSA_kwCzR0hTQS0yMnFxLTJmd3gtN3A2N84AB_kk",
+    "GhsaId": "GHSA-22qq-2fwx-7p67",
+    "References": [
+      {
+        "Url": "https://github.com/pylint-dev/pylint/security/advisories/GHSA-22qq-2fwx-7p67"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114608"
+      },
+      {
+        "Url": "https://github.com/pylint-dev/pylint/commit/58c87cffca9de2b3e89aa07b89686cbc90cfea2d"
+      },
+      {
+        "Url": "https://github.com/pylint-dev/pylint/commit/5b241f66318220e9ba7b21ca631fbfe8e77682ca"
+      },
+      {
+        "Url": "https://github.com/pylint-dev/pylint/releases/tag/v4.0.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-22qq-2fwx-7p67"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-22qq-2fwx-7p67"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114608"
+      }
+    ],
+    "Description": "### Impact\n\nSince 2006 / pylint 0.15.2, pylint caches its stats as pickles in `PYLINT_HOME` and reload them on the next run with `pickle.load`. Someone without access to the configuration or linted code, but with access to the cache directory (predictable `PYLINT_HOME` on a multi-user host) can write a crafted pickle that will runs arbitrary code when pylint access its stat cache.\n\n### Patches\n\nFrom pylint 4.0.9, the result cache is now stored as JSON instead of pickle, preventing code-execution. \n\n### Workarounds\n\nUntil upgrading do not point `PYLINT_HOME` to an untrusted, shared, or group-writable directory. The default value, `~/.cache/pylint`, is writable only by the user running pylint.\n\n### Credits\n\n- Reported privately via Tidelift coordinated disclosure (Dan Lenz).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T14:46:51Z",
+    "Severity": "MODERATE",
+    "Summary": "Pylint: Arbitrary code execution via pickle deserialization of the stats cache in PYLINT_HOME",
+    "UpdatedAt": "2026-10-27T14:46:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.9"
+      },
+      "VulnerableVersionRange": "\u003c 4.0.9"
+    }
+  ]
+}

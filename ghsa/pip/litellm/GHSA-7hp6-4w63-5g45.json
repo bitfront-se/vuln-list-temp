@@ -1,0 +1,107 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-27T15:04:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "litellm"
+  },
+  "Advisory": {
+    "DatabaseId": 522537,
+    "Id": "GSA_kwCzR0hTQS03aHA2LTR3NjMtNWc0Nc4AB_kp",
+    "GhsaId": "GHSA-7hp6-4w63-5g45",
+    "References": [
+      {
+        "Url": "https://github.com/BerriAI/litellm/security/advisories/GHSA-7hp6-4w63-5g45"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114612"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/1d5fdc87fed66b49e1df8cf7d708ad93249eb7d0"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/9161d7f9d6073603ba61ee4aa5e2c0ef5b37a81b"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/9fa1a641119dd0d4fe43e93622eae5f482ceb63f"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/a80eacacee118fbed54e3d98f239d17a63fac818"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/commit/f7cd90f09e9716652b38daec9f0640cdf49d582b"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.100.4"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.101.3"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.102.2"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.103.1"
+      },
+      {
+        "Url": "https://github.com/BerriAI/litellm/releases/tag/v1.104.0-rc.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7hp6-4w63-5g45"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7hp6-4w63-5g45"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114612"
+      }
+    ],
+    "Description": "### Summary\n\nAn authenticated user with `internal_user` privileges can escalate to `proxy_admin` and achieve remote code execution. The proxy uses one encryption key for two purposes: sealing secrets at rest and minting session tokens. An attacker exploits this by requesting a new API key with a crafted metadata field containing a forged admin credential as the \"secret\" value. The proxy encrypts and returns this payload. When this value is then presented as a bearer token, the proxy decrypts it, trusts the forged admin identity, and grants full administrative access, including the ability to execute arbitrary commands via the MCP stdio endpoint.\n\n### Affected versions\n\nVersions later than 1.91.0 are exploitable in the default configuration. Versions 1.87.0 through 1.90.x are exploitable only if `EXPERIMENTAL_UI_LOGIN=true` was explicitly set.\n\n### Mitigation\n\nUpgrade to a patched version as soon as possible.\n\nIf you cannot upgrade immediately, set `EXPERIMENTAL_UI_LOGIN=false`. This disables the vulnerable authentication path but also breaks CLI SSO and Claude Code gateway login.\n\n### Impact\n\nAn internal user can escalate to proxy admin and execute arbitrary commands on the host.\n\n**Discovery Credit:** Hoa X. Nguyen (OPSWAT Unit 515)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T15:04:14Z",
+    "Severity": "HIGH",
+    "Summary": "LiteLLM: Privilege Escalation to Proxy Admin via Cross-Domain Reuse of the Salt Key",
+    "UpdatedAt": "2026-10-27T15:04:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.104.0rc2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.104.0rc1, \u003c 1.104.0rc2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.103.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.103.0, \u003c 1.103.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.102.2"
+      },
+      "VulnerableVersionRange": "\u003e= 1.102.0, \u003c 1.102.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.101.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.101.0, \u003c 1.101.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.100.4"
+      },
+      "VulnerableVersionRange": "\u003e= 1.91.0, \u003c 1.100.4"
+    }
+  ]
+}

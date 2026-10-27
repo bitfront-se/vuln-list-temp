@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-27T15:33:30Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xerial.snappy:snappy-java"
+  },
+  "Advisory": {
+    "DatabaseId": 522769,
+    "Id": "GSA_kwCzR0hTQS14cXJ4LXFoNDYtMzRtN84AB_oR",
+    "GhsaId": "GHSA-xqrx-qh46-34m7",
+    "References": [
+      {
+        "Url": "https://github.com/xerial/snappy-java/security/advisories/GHSA-xqrx-qh46-34m7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116590"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/pull/741"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/commit/2d7ca71c087a98f1219fb2d51909f3891c3ce77b"
+      },
+      {
+        "Url": "https://github.com/xerial/snappy-java/releases/tag/v1.1.10.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xqrx-qh46-34m7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xqrx-qh46-34m7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116590"
+      }
+    ],
+    "Description": "### Impact\n`Snappy.arrayCopy(Object src, int offset, int byteLength, Object dest, int destOffset)` called a native `memcpy` without validating the ranges. A negative or oversized `byteLength` or offset read or wrote outside the arrays and crashed the JVM. `SnappyOutputStream.rawWrite` and `SnappyInputStream.rawRead`, and therefore the typed-array `write`/`read` methods, pass caller-supplied ranges to this method.\n\n### Patches\nFixed in 1.1.10.9 (#741). `Snappy.arrayCopy` checks both ranges before copying. The stream `read`/`write` methods validate offsets and lengths, and reject typed-array ranges whose byte size overflows `int`.\n\n### Workarounds\nValidate offsets and lengths before calling these methods.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-27T15:33:30Z",
+    "Severity": "MODERATE",
+    "Summary": "snappy-java: JVM crash from unchecked ranges in Snappy.arrayCopy and SnappyOutputStream.rawWrite",
+    "UpdatedAt": "2026-10-27T15:33:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.10.9"
+      },
+      "VulnerableVersionRange": "\u003c= 1.1.10.8"
+    }
+  ]
+}
