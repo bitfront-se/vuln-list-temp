@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T21:17:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mem0ai"
+  },
+  "Advisory": {
+    "DatabaseId": 523779,
+    "Id": "GSA_kwCzR0hTQS01MzI0LTN3NTgtcXBwMs4AB_4D",
+    "GhsaId": "GHSA-5324-3w58-qpp2",
+    "References": [
+      {
+        "Url": "https://github.com/mem0ai/mem0/security/advisories/GHSA-5324-3w58-qpp2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116575"
+      },
+      {
+        "Url": "https://github.com/mem0ai/mem0/pull/6892"
+      },
+      {
+        "Url": "https://github.com/mem0ai/mem0/commit/71f2ebefa3494da21550fb525216818776cde67f"
+      },
+      {
+        "Url": "https://github.com/mem0ai/mem0/releases/tag/ts-v3.1.6"
+      },
+      {
+        "Url": "https://github.com/mem0ai/mem0/releases/tag/v2.0.18"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5324-3w58-qpp2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5324-3w58-qpp2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116575"
+      }
+    ],
+    "Description": "Summary\n\n_build_session_scope() in mem0/memory/main.py builds the conversation-history scope key used to fetch/store the last N raw messages by naively joining caller-supplied user_id/agent_id/run_id values with unescaped \u0026 and = delimiters:\n\ndef _build_session_scope(filters):\n    parts = []\n    for key in sorted([\"user_id\", \"agent_id\", \"run_id\"]):\n        val = filters.get(key)\n        if val:\n            parts.append(f\"{key}={val}\")\n    return \"\u0026\".join(parts)\n\n_validate_and_trim_entity_id() (the only validation applied to these values) rejects only empty/whitespace-only strings — it never forbids \u0026 or =. This scope string is then used as an exact-match key against a SQLite column (storage.py: WHERE session_scope = ?) to fetch the last 10 raw messages for a given scope (main.py, Phase 0 of _add_to_vector_store, both sync and async).\n\nImpact\n\nAny caller who controls only their own run_id (or agent_id) — a very common integration shape, since apps frequently pass a client-/session-supplied identifier straight through as run_id without namespacing — can craft a value containing \u0026user_id=\u003cvictim\u003e (or \u0026agent_id=\u003cvictim\u003e) that produces a scope string byte-for-byte identical to a different tenant's real scope string.\n\nConcretely: Tenant A calls add(msgs, user_id=\"alice\", run_id=\"proj-x\") → scope \"run_id=proj-x\u0026user_id=alice\". An attacker who can only set run_id calls add(msgs, run_id=\"proj-x\u0026user_id=alice\") → identical scope string. The attacker's next add() call:\n\n1. Reads Tenant A's raw prior conversation via get_last_messages(session_scope) and splices it verbatim into the attacker's own LLM fact-extraction prompt — a direct cross-tenant confidentiality leak (conversation content, potentially including PII, credentials, etc.).\n2. Writes into the same colliding row-set via save_messages(), whose eviction logic (DELETE FROM messages WHERE session_scope = ? AND id NOT IN (...)) can evict/interleave Tenant A's history — permanent cross-tenant data corruption, not just a read.\n\nReachable via the public Memory.add() / AsyncMemory.add() API, and by extension the REST server's POST /memories endpoint (which takes run_id/agent_id straight from the request body).\n\nReproduction\n\nfrom mem0.memory.main import _build_session_scope\n\n# Tenant A: real user_id + run_id\nscope_a = _build_session_scope({\"user_id\": \"alice\", \"run_id\": \"proj-x\"})\nprint(scope_a)  # \"run_id=proj-x\u0026user_id=alice\"\n\n# Attacker: controls only run_id, embeds a fake user_id inside it\nscope_c = _build_session_scope({\"run_id\": \"proj-x\u0026user_id=alice\"})\nprint(scope_c)  # \"run_id=proj-x\u0026user_id=alice\"\n\nassert scope_a == scope_c  # byte-for-byte collision\n\nA full end-to-end proof (actual add() calls, no mocking of the vulnerable functions) confirms the attacker's subsequent add() call receives the victim's raw prior message content via get_last_messages.\n\nSuggested Fix\n\nReject \u0026 and = in _validate_and_trim_entity_id(), alongside the existing whitespace check — this is the single validation chokepoint already used by every entry point (add, search, get_all, delete_all), so the fix is centralized. Alternatively/additionally, encode each component unambiguously (percent-encode each id, or use a length-prefixed/JSON-encoded scope key) so no valid-character combination in one field can ever collide with a different partition.\n\nAlso affected: TypeScript SDK (npm mem0ai)\n\nThe same flaw exists in mem0-ts/src/oss/src/memory/index.ts,\nMemory.buildSessionScope(), which joins agent_id/run_id/user_id into the same\n`key=value\u0026key=value` string with the delimiters unescaped:\n\n  private buildSessionScope(filters: SearchFilters): string {\n    const parts: string[] = [];\n    for (const key of [\"agent_id\", \"run_id\", \"user_id\"].sort()) {\n      const val = (filters as any)[key];\n      if (val) parts.push(`${key}=${val}`);\n    }\n    return parts.join(\"\u0026\");\n  }\n\nThe scope string is used the same way, as an exact-match key into the messages\ntable via SQLiteManager.getLastMessages() and saveMessages(), so the identical\nforge, cross-tenant read and eviction all apply.\n\nVerified against the current releases as of 2026-07-26: pip mem0ai v2.0.14 and\nnpm mem0ai ts-v3.1.2 both still contain the unescaped join.\n\nReporter: Abhinav Singh (GitHub: OfficialAbhinavSingh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:17:08Z",
+    "Severity": "MODERATE",
+    "Summary": "Mem0: Cross-tenant conversation leak via unescaped delimiter collision in session-scope key (_build_session_scope)",
+    "UpdatedAt": "2026-10-28T21:17:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.0.18"
+      },
+      "VulnerableVersionRange": "\u003c 2.0.18"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T21:13:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "langgraph-cli"
+  },
+  "Advisory": {
+    "DatabaseId": 523760,
+    "Id": "GSA_kwCzR0hTQS04cHJyLWY1ODItanFxM84AB_3w",
+    "GhsaId": "GHSA-8prr-f582-jqq3",
+    "References": [
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-8prr-f582-jqq3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115885"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/pull/8482"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/commit/1afaca35a0d4962fb0203a0e9133a07ffd6a553c"
+      },
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/releases/tag/cli%3D%3D0.4.32.dev0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8prr-f582-jqq3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8prr-f582-jqq3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115885"
+      }
+    ],
+    "Description": "### Summary\n\n`langgraph deploy --verbose` printed the temporary registry push token that the CLI uses to log Docker in to the deployment's image registry. Anyone who could read that output, for example in CI logs, could use the token until it expired.\n\n### Details\n\nWhen Docker is available, `langgraph deploy` builds the image locally, requests a push token from LangSmith, and runs `docker login --password-stdin` with the token on stdin. The CLI's subprocess helper printed each command's stdin when verbose output was on, and the login step inherited `--verbose`, so the token was printed right after the `docker login` command line.\n\n`langgraph-cli` 0.4.15 through 0.4.31 are affected. Starting with 0.4.32, the login step runs without verbose output. Deploys run without `--verbose`, and deploys that build the image remotely, never printed the token.\n\n### Impact\n\nYou may be affected if you ran `langgraph deploy --verbose` with an affected version and the output was kept or shared, for example in CI logs or terminal recordings. The token is short-lived (at most 12 hours) and limited to that deployment's image repository. Someone holding it before it expired could pull the deployment's images and push new images to that repository. Deployments reference their image by digest, so a pushed image does not run unless the deployment is updated to use it, which requires a LangSmith API key with access to the deployment.\n\n### Remediation\n\nUpgrade to `langgraph-cli` 0.4.32 or later. 0.4.37 also stops `--verbose` from printing the input of any command the CLI runs. Tokens printed more than 12 hours ago have expired.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:13:18Z",
+    "Severity": "MODERATE",
+    "Summary": "LangGraph CLI prints the registry push token in `langgraph deploy --verbose` output",
+    "UpdatedAt": "2026-10-28T21:13:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.4.32"
+      },
+      "VulnerableVersionRange": "\u003e= 0.4.15, \u003c= 0.4.31"
+    }
+  ]
+}

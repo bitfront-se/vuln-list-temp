@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T21:17:22Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "seroval"
+  },
+  "Advisory": {
+    "DatabaseId": 523781,
+    "Id": "GSA_kwCzR0hTQS13cDk3LXg0aHYtcXZocM4AB_4F",
+    "GhsaId": "GHSA-wp97-x4hv-qvhp",
+    "References": [
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/security/advisories/GHSA-wp97-x4hv-qvhp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116584"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/commit/cdcee3e3bc384ee844360844f8ea98fd2b275d69"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/releases/tag/seroval@1.6.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wp97-x4hv-qvhp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wp97-x4hv-qvhp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116584"
+      }
+    ],
+    "Description": "### Summary\n\n`fromJSON` and `fromCrossJSON` did not check that an array node's element list is an array. A small crafted payload could set the length the decoder used. That length controlled how much memory was allocated and how many times the decoder looped, and it did not depend on the size of the payload.\n\n### Impact\n\nA service that passes untrusted input to `fromJSON` or `fromCrossJSON` can be made unavailable by an unauthenticated request.\n\n- A small payload can allocate enough memory to end the process.\n- A small payload can block the thread for seconds, or without end.\n\nThis affects any framework that decodes request bodies with these functions before its own validation runs.\n\nThis issue is a bypass of the fix for GHSA-66fc-rw6m-c2q6 in 1.4.1.\n\n### Patches\n\nFixed in `seroval@1.6.8`. The deserializer now rejects any node whose element list is not an array, and throws `SerovalMalformedNodeError`.\n\n### Workarounds\n\nNone. Upgrade to 1.6.8.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:17:20Z",
+    "Severity": "HIGH",
+    "Summary": "Seroval `fromJSON`/`fromCrossJSON` denial of service via unvalidated array node length",
+    "UpdatedAt": "2026-10-28T21:17:22Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6.8"
+      },
+      "VulnerableVersionRange": "\u003e= 1.4.1, \u003c= 1.6.7"
+    }
+  ]
+}

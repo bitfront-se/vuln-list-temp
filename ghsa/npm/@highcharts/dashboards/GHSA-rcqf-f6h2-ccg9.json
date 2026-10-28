@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:56:57Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@highcharts/dashboards"
+  },
+  "Advisory": {
+    "DatabaseId": 523722,
+    "Id": "GSA_kwCzR0hTQS1yY3FmLWY2aDItY2NnOc4AB_3K",
+    "GhsaId": "GHSA-rcqf-f6h2-ccg9",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-rcqf-f6h2-ccg9"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/e65f8c21b9974dcccfa1c600a375d836acef4a7d"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/dashboards-v4.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rcqf-f6h2-ccg9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rcqf-f6h2-ccg9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118252"
+      }
+    ],
+    "Description": "### Impact\nThe component language strings shown in the edit mode sidebar are parsed as HTML rather than inserted as text. An attacker who controls those language options can supply markup carrying event handlers, which execute in the origin of the page hosting the dashboard once the sidebar renders the affected labels. Exploitation requires that untrusted data reach the Dashboards language configuration and that a user open the edit mode sidebar.\n\n### Workarounds\n\nUntil you can upgrade, patch `EditMode` once at application startup. The hook runs before the sidebar is built, so the labels are already harmless by the time they are rendered. Assigning a string to `textContent` and reading back `innerHTML` turns any markup into literal text, which is exactly what the fixed version renders.\n\nAfter importing the module, use this code snipped once, before any board is created.\n\n```js\n{\n    const EditMode = window.Dashboards?.EditMode;\n    const escapeHTML = (text) =\u003e text\n        .replace(/\u0026/g, '\u0026amp;')\n        .replace(/\u003c/g, '\u0026lt;')\n        .replace(/\u003e/g, '\u0026gt;');\n    const patched = new WeakSet();\n    const originalInit = EditMode.prototype.init;\n\n    EditMode.prototype.init = function (...args) {\n        const labels = this.lang?.sidebar;\n\n        if (labels \u0026\u0026 !patched.has(this)) {\n            patched.add(this);\n\n            for (const key of Object.keys(labels)) {\n                if (typeof labels[key] === 'string') {\n                    labels[key] = escapeHTML(labels[key]);\n                }\n            }\n        }\n\n        return originalInit.apply(this, args);\n    };\n}\n```\n\nIf your application does not need Edit Mode, leaving it disabled (`editMode.enabled: false`) removes the exposure as well.\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install @highcharts/dashboards@4.2.3`. If you load Highcharts Dashboards from a CDN, use a versioned URL, for example `https://code.highcharts.com/dashboards/4.2.3/dashboards.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/dashboards/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:56:57Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Dashboards parses sidebar component labels as HTML",
+    "UpdatedAt": "2026-10-28T19:56:57Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c= 4.2.2"
+    }
+  ]
+}

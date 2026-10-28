@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T21:17:28Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "seroval"
+  },
+  "Advisory": {
+    "DatabaseId": 523782,
+    "Id": "GSA_kwCzR0hTQS05N3IyLXFoOW0tNDc0aM4AB_4G",
+    "GhsaId": "GHSA-97r2-qh9m-474h",
+    "References": [
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/security/advisories/GHSA-97r2-qh9m-474h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116581"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/commit/cdcee3e3bc384ee844360844f8ea98fd2b275d69"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/commit/e176f9267e59ddd6c9de89cc9fe85c5b37a5b728"
+      },
+      {
+        "Url": "https://github.com/lxsmnsyc/seroval/releases/tag/seroval@1.6.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-97r2-qh9m-474h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-97r2-qh9m-474h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116581"
+      }
+    ],
+    "Description": "### Summary\n\n`fromJSON` and `fromCrossJSON` used two node fields without checking them.\n\n- An array node's element list was not checked to be an array. A small payload could set the length the decoder looped over. This part is also tracked in GHSA-wp97-x4hv-qvhp.\n- A sequence node's done index was not checked. A crafted value produced an iterator that never finished.\n\n### Impact\n\nA service that passes untrusted input to `fromJSON` or `fromCrossJSON` can be made unavailable by an unauthenticated request.\n\n- The array case blocks the thread while the decoder runs.\n- The sequence case makes any code that reads the resulting iterator to the end run forever.\n\n### Patches\n\nFixed in `seroval@1.6.8`.\n\n- Element lists must be arrays.\n- A sequence node's throw and done indices must be integers from -1 up to the last element index.\n\nInvalid input throws `SerovalMalformedNodeError`.\n\n### Workarounds\n\nNone. Upgrade to 1.6.8.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:17:27Z",
+    "Severity": "HIGH",
+    "Summary": "Seroval: fromJSON deserializer trusts node-supplied array length and sequence doneAt (unauthenticated event-loop DoS)",
+    "UpdatedAt": "2026-10-28T21:17:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.6.8"
+      },
+      "VulnerableVersionRange": "\u003c= 1.6.7"
+    }
+  ]
+}

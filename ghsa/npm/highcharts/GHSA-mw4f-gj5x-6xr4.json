@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:55:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "highcharts"
+  },
+  "Advisory": {
+    "DatabaseId": 523711,
+    "Id": "GSA_kwCzR0hTQS1tdzRmLWdqNXgtNnhyNM4AB_2_",
+    "GhsaId": "GHSA-mw4f-gj5x-6xr4",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-mw4f-gj5x-6xr4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116796"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/6cf359fb144aa51fdc105e2b9bbd013439b02c88"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/v13.1.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mw4f-gj5x-6xr4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mw4f-gj5x-6xr4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116796"
+      }
+    ],
+    "Description": "### Impact\nThe filter applied to markup in text options checks `href`, `src` and a few similar attributes against an allowed-scheme list, but accepts `xlink:href` without that check, so an SVG anchor whose `xlink:href` is a `javascript:` URL passes the filter, whether or not the option is rendered with `useHTML`. In the live page the attribute is written without the XLink namespace, so browsers do not treat the anchor as a link there.\n\nThe attribute is preserved verbatim in the chart's serialised output: the SVG produced by the exporting module, including the default SVG download, declares the XLink namespace and contains the anchor, and so does the markup of the chart container. Any document that parses that output again, such as the downloaded SVG opened in a browser or a page that inlines exported or server-rendered chart markup, then holds a working link, and an attacker who controls the chart configuration can thereby run script in the origin of that document when a user activates the link.\n\nExploitation requires that untrusted data reach a text option such as the title, that the chart be exported or its markup be serialised and parsed again, and that a user activate the link.\n\n### Workarounds\nDrop-in fix for all affected versions (10.3.2 - 13.1.0).\n\nAdd the below IIFE to run after Highcharts is loaded, before creating a chart.\n\n```\n!function(t){var e=t\u0026\u0026t.AST;if(e\u0026\u0026\"function\"==typeof e.filterUserAttributes\u0026\u0026!e.xlinkHrefPatched){var r=e.filterUserAttributes,n=Object.prototype.hasOwnProperty;e.filterUserAttributes=function(t){return t\u0026\u0026n.call(t,\"xlink:href\")\u0026\u0026!o(t[\"xlink:href\"])\u0026\u0026delete t[\"xlink:href\"],r.call(this,t)},e.xlinkHrefPatched=!0}function o(t){var r=e.allowedReferences||[\"https://\",\"http://\",\"mailto:\",\"/\",\"../\",\"./\",\"#\"];return\"string\"==typeof t\u0026\u0026r.some(function(e){return 0===t.indexOf(e)})}}(Highcharts);\n```\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install highcharts@13.1.1`. If you load Highcharts from the CDN, use the versioned URLs on code.highcharts.com, for example `https://code.highcharts.com/13.1.1/highcharts.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/getting-started/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:55:10Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Core: `javascript:` URL in an `xlink:href` attribute survives text filtering and reaches exported charts",
+    "UpdatedAt": "2026-10-28T19:55:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 13.1.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.6.2"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 12.6.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.9"
+      },
+      "VulnerableVersionRange": "\u003e= 10.3.2, \u003c 11.4.9"
+    }
+  ]
+}

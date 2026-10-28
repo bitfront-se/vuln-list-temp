@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T21:08:32Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "filelock"
+  },
+  "Advisory": {
+    "DatabaseId": 523745,
+    "Id": "GSA_kwCzR0hTQS1qOGY3LXJqeGMtbXI1Ns4AB_3h",
+    "GhsaId": "GHSA-j8f7-rjxc-mr56",
+    "References": [
+      {
+        "Url": "https://github.com/tox-dev/filelock/security/advisories/GHSA-j8f7-rjxc-mr56"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-112936"
+      },
+      {
+        "Url": "https://github.com/tox-dev/filelock/commit/4d45e83caf7e31f9a12fb44526bdc07f70114f04"
+      },
+      {
+        "Url": "https://github.com/tox-dev/filelock/releases/tag/4.0.9"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-j8f7-rjxc-mr56"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-j8f7-rjxc-mr56"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-112936"
+      }
+    ],
+    "Description": "### Summary\n\n`ReadWriteLock` and `AsyncReadWriteLock` resolve the lock path with `pathlib.Path.resolve()` and pass it to `sqlite3.connect()` without refusing a symlink. A local user who can create names in the lock's directory, such as `/tmp` or a shared cache, can plant a symlink at the lock path and make the victim's process create, lock, or write the file it points to, or break mutual exclusion between the victim's own processes.\n\n### Details\n\n`ReadWriteLock.__init__` stores `pathlib.Path(lock_file).resolve()`, which follows a final symlink, and every connection opens that path through `sqlite3.connect()` with no `O_NOFOLLOW` or regular-file check. SQLite's own VFS also resolves the final symlink in user space, so `fs.protected_symlinks` and the sticky bit do not help: the kernel never sees a symlink to refuse. The other lock classes do not follow a final symlink: `FileLock` opens with `O_NOFOLLOW`, and `SoftReadWriteLock` coordinates through `\u003cpath\u003e.rw/`.\n\n### Proof of concept\n\nOn Linux, with the victim and attacker as different users and `/shared` mode 1777 with `fs.protected_symlinks=1`:\n\n1. The attacker runs `ln -s /home/victim/private/pwned.flag /shared/app.rwlock.db`.\n2. The victim constructs `ReadWriteLock(\"/shared/app.rwlock.db\")`. A plain `os.open(..., O_NOFOLLOW)` on the same path fails, but the lock creates `/home/victim/private/pwned.flag`, owned by the victim, inside a directory the attacker cannot write.\n3. With `/shared/cache.rwlock.db -\u003e /shared/a.db`, one victim process holds the write lock. The attacker repoints the link to `/shared/b.db`, and a second victim process acquires the write lock while the first still holds it.\n\nThe same behavior reproduces on macOS, on Windows 11, and through `AsyncReadWriteLock`.\n\n### Impact\n\nA local attacker with write access to the lock directory can make the victim create empty files it owns at paths the attacker cannot write, make the victim hold a SQLite lock on another application's database so that application gets `database is locked`, and give two victim processes the write lock at once, letting them corrupt the resource the lock protects.\n\n### Workarounds\n\nKeep `ReadWriteLock` paths in directories that only trusted users can write.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:08:30Z",
+    "Severity": "MODERATE",
+    "Summary": "filelock: ReadWriteLock follows a symlink at the lock path into SQLite",
+    "UpdatedAt": "2026-10-28T21:08:32Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.1,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.9"
+      },
+      "VulnerableVersionRange": "\u003e= 3.20.4, \u003c= 4.0.8"
+    }
+  ]
+}

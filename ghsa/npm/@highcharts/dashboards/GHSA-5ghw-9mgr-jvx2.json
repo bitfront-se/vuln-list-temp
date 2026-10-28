@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:56:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@highcharts/dashboards"
+  },
+  "Advisory": {
+    "DatabaseId": 523717,
+    "Id": "GSA_kwCzR0hTQS01Z2h3LTltZ3ItanZ4Ms4AB_3F",
+    "GhsaId": "GHSA-5ghw-9mgr-jvx2",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-5ghw-9mgr-jvx2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116797"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/52abd4f8f8db87dd20eab7c01444112380e30e98"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5ghw-9mgr-jvx2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5ghw-9mgr-jvx2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116797"
+      }
+    ],
+    "Description": "### Impact\nThe input-type cell renderers copy every entry of the renderer's `attributes` option onto the input or select element they create, without checking the attribute names. An attacker who controls the Grid configuration can supply entries under a column's `cells.renderer.attributes` or `cells.editMode.renderer.attributes` whose names are event handlers, and those handlers execute in the origin of the page hosting the Grid. A view renderer places the handler on the input rendered in every row of the column as soon as the Grid renders; an edit-mode renderer places it on the input created when a cell enters edit mode, and that input is focused immediately, so a `focus` handler runs as soon as the user starts editing. Exploitation requires that untrusted data reach the Grid configuration and that a user hover over or focus one of the rendered inputs, or begin editing a cell. The Pro DataGrid that shipped inside the Dashboards package is included.\n\n### Workarounds\n\nIf your column configuration comes from a source you do not fully control, paste this snippet right after importing the `Grid` module:\n\n```ts\nconst ALLOWED_RENDERER_ATTRIBUTES = [\n    'autofocus', 'checked', 'max', 'maxlength', 'min', 'minlength',\n    'multiple', 'pattern', 'placeholder', 'size', 'step'\n];\n\nconst scrubColumn = (column) =\u003e {\n    const cells = column?.cells;\n\n    for (const renderer of [cells?.renderer, cells?.editMode?.renderer]) {\n        const attributes = renderer?.attributes;\n\n        if (attributes) {\n            for (const key of Object.keys(attributes)) {\n                if (!ALLOWED_RENDERER_ATTRIBUTES.includes(key.toLowerCase())) {\n                    delete attributes[key];\n                }\n            }\n        }\n    }\n\n    return column;\n};\n\nconst scrubOptions = (options) =\u003e {\n    scrubColumn(options?.columnDefaults);\n    (options?.columns || []).forEach(scrubColumn);\n    return options;\n};\n\nconst proto = Grid.Grid.prototype;\n\nconst loadUserOptions = proto.loadUserOptions;\nproto.loadUserOptions = function (options, ...rest) {\n    scrubOptions(Grid.defaultOptions);\n    return loadUserOptions.call(this, scrubOptions(options), ...rest);\n};\n\nconst updateColumn = proto.updateColumn;\nproto.updateColumn = function (columnId, options, ...rest) {\n    return updateColumn.call(this, columnId, scrubColumn(options), ...rest);\n};\n```\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install @highcharts/grid-lite@3.2.0`. If you load Highcharts Grid from a CDN, use a versioned URL, for example `https://cdn.jsdelivr.net/npm/@highcharts/grid-lite@3.2.0/grid-lite.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/grid/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:56:02Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Grid Pro: cell-renderer `attributes` map written with raw `setAttribute`",
+    "UpdatedAt": "2026-10-28T19:56:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0"
+      },
+      "VulnerableVersionRange": "= 3.6.0"
+    }
+  ]
+}

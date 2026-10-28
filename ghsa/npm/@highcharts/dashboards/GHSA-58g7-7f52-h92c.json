@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:57:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@highcharts/dashboards"
+  },
+  "Advisory": {
+    "DatabaseId": 523723,
+    "Id": "GSA_kwCzR0hTQS01OGc3LTdmNTItaDkyY84AB_3L",
+    "GhsaId": "GHSA-58g7-7f52-h92c",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-58g7-7f52-h92c"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/f97213bab745e40f628720c21f4e8b31ee3e768b"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/dashboards-v4.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-58g7-7f52-h92c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-58g7-7f52-h92c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118253"
+      }
+    ],
+    "Description": "### Impact\nThe edit mode fullscreen labels are parsed as HTML when the corresponding control is rendered. An attacker who controls the Dashboards language options can supply markup carrying event handlers, which then execute in the origin of the page hosting the dashboard. Exploitation requires that untrusted data reach the Dashboards language configuration and that the affected control be rendered. Script running this way has the same access to page data, storage and session state as the hosting application.\n\n### Workarounds\n\nUntil you can upgrade, replace `Fullscreen.prototype.setButtonText` atapplication startup. The replacement is the original method with `textContent` in place of `innerHTML`.\n\n#### If you install Dashboards from npm\n\nImport the module once, before any board is created.\n\n```js\nimport Fullscreen from '@highcharts/dashboards/es-modules/Dashboards/EditMode/Fullscreen.js';\n\nFullscreen.prototype.setButtonText = function () {\n    const editMode = this.board.editMode,\n        button = editMode?.tools.contextMenu?.items.viewFullscreen;\n\n    if (button?.innerElement) {\n        const lang = editMode.lang;\n\n        button.innerElement.textContent =\n            (this.isOpen ? lang.exitFullscreen : lang.viewFullscreen) || '';\n    }\n};\n```\n\n#### If you load Dashboards from a `\u003cscript\u003e` tag\n\nThe same replacement, taking `Fullscreen` from the global namespace. It must run after `modules/layout` and before any board is created.\n\n```html\n\u003cscript src=\"https://code.highcharts.com/dashboards/dashboards.js\"\u003e\u003c/script\u003e\n\u003cscript src=\"https://code.highcharts.com/dashboards/modules/layout.js\"\u003e\u003c/script\u003e\n\u003cscript\u003e\n{\n    const Fullscreen = window.Dashboards?.Fullscreen;\n\n    Fullscreen.prototype.setButtonText = function () {\n        const editMode = this.board.editMode,\n            button = editMode?.tools.contextMenu?.items.viewFullscreen;\n\n        if (button?.innerElement) {\n            const lang = editMode.lang;\n\n            button.innerElement.textContent =\n                (this.isOpen ? lang.exitFullscreen : lang.viewFullscreen) || '';\n        }\n    };\n}\n\u003c/script\u003e\n```\n\nIf your application does not need Edit Mode, leaving it disabled (`editMode.enabled: false`) removes the exposure as well. The same applies to the context menu — the label is only reachable when `viewFullscreen` is among `editMode.contextMenu.items`.\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install @highcharts/dashboards@4.2.3`. If you load Highcharts Dashboards from a CDN, use a versioned URL, for example `https://code.highcharts.com/dashboards/4.2.3/dashboards.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/dashboards/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:57:19Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Dashboards parses fullscreen labels as HTML",
+    "UpdatedAt": "2026-10-28T19:57:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.2.3"
+      },
+      "VulnerableVersionRange": "\u003e= 1.0.0, \u003c 4.2.3"
+    }
+  ]
+}

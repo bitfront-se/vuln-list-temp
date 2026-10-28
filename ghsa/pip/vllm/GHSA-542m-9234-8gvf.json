@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T21:14:54Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "vllm"
+  },
+  "Advisory": {
+    "DatabaseId": 523766,
+    "Id": "GSA_kwCzR0hTQS01NDJtLTkyMzQtOGd2Zs4AB_32",
+    "GhsaId": "GHSA-542m-9234-8gvf",
+    "References": [
+      {
+        "Url": "https://github.com/vllm-project/vllm/security/advisories/GHSA-542m-9234-8gvf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115911"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/pull/50300"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/commit/cff08b461e086523cee8bba5bd3c66d302625134"
+      },
+      {
+        "Url": "https://github.com/vllm-project/vllm/releases/tag/v0.32.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-542m-9234-8gvf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-542m-9234-8gvf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115911"
+      }
+    ],
+    "Description": "### Summary\nvLLM renders chat templates by passing the resolved Jinja2 source to `tokenizer.apply_chat_template()`, which compiles and `.render()`s it in an `ImmutableSandboxedEnvironment`. The sandbox prevents code-execution escapes but imposes **no wall-clock timeout, no output-size cap, and no nested-loop or binop limit**. The render runs in a `ThreadPoolExecutor` whose `max_workers` defaults to **1**, and CPython worker threads cannot be interrupted. An authenticated API client (or a malicious model repo loaded with `trust_remote_code=False`) can therefore submit a single short template and permanently wedge **all** chat-style endpoints (`/v1/chat/completions`, `/v1/responses`, `/tokenize`, `/pooling`-chat, `/invocations`-chat) for every tenant until the process is restarted. A string-multiplication variant instead OOM-kills the API-server process. Because of a separately-reported (GHSA-jmjw-q4x3-hmc2) gate omission on `/v1/responses`, the remote authenticated attacker vector works in **default `vllm serve` configuration** with no operator opt-in.\n\n### Impact\nA single authenticated request of \u003c100 bytes permanently denies all chat-style inference (`/v1/chat/completions`, `/v1/responses`, `/tokenize`, `/pooling`-chat, `/invocations`-chat) to **every tenant** of the API-server replica until the operator restarts the process. The string-multiplication variant OOM-kills the process. In a multi-tenant deployment this is a cross-tenant denial-of-service from any one tenant. From the malicious-model angle, a model repo whose `tokenizer_config.json` carries the hostile template wedges every replica that loads it on the first legitimate chat request, with `trust_remote_code=False`.\n\n**Preconditions:** any non-harmony model (`model_type != gpt_oss`); `renderer_num_workers` at its default of 1; for the default-config authenticated API attacker vector, `--chat-template` must be unset (the default because most HF models ship their own).\n**Blast radius:** API-server process, per replica. Engine/worker processes unaffected by the CPU variant (event loop survives); affected by the memory variant (process OOM).\n**Persistence:** until process restart. Survives client disconnect.\n\nThis advisory was fixed in [MR50300](https://github.com/vllm-project/vllm/pull/50300).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:14:52Z",
+    "Severity": "MODERATE",
+    "Summary": "vLLM: DoS via unbounded chat_template Jinja2 rendering exhausts the renderer thread pool",
+    "UpdatedAt": "2026-10-28T21:14:54Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.32.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.19.0, \u003c 0.32.0"
+    }
+  ]
+}

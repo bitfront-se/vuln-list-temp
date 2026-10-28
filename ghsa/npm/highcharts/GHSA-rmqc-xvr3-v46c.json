@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:56:20Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "highcharts"
+  },
+  "Advisory": {
+    "DatabaseId": 523720,
+    "Id": "GSA_kwCzR0hTQS1ybXFjLXh2cjMtdjQ2Y84AB_3I",
+    "GhsaId": "GHSA-rmqc-xvr3-v46c",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-rmqc-xvr3-v46c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118250"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/pull/25313"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/fd4ee8140732618bbe71295aba55398fb1f8fa9e"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/v13.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rmqc-xvr3-v46c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rmqc-xvr3-v46c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118250"
+      }
+    ],
+    "Description": "### Impact\nA dot-separated key path taken from `series.keys` is followed without filtering the individual segments. An attacker who controls `series.keys` and the matching point data can use a path such as `__proto__.polluted` to set arbitrary properties on `Object.prototype`. The resulting properties are visible to all JavaScript running in the page, not only to the chart. No user interaction is required beyond rendering the chart.\n\nThe injected properties are inert until other code on the page reads them, so consequences depend on the consuming application.\n\n### Workarounds\nDrop-in fix - for any versions affected (6.1.0-13.0.2). Add the below IIFE to run after Highcharts is loaded.\n\n```javascript\n((H)=\u003e{const X = H.isObject;H.Point.prototype.setNestedProperty = function setNestedProperty(t,e,i){let s=i.split(\".\");return s.some(t=\u003e\"__proto__\"===t||\"constructor\"===t)||s.reduce(function(t,i,s,o){let r=o.length-1===s;return t[i]=r?e:X(t[i],!0)?t[i]:{},t[i]},t),t};})(Highcharts);\n```\n\n[Live demo \u0026 testing](https://jsfiddle.net/BlackLabel/z3rbtm7u/)\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install highcharts@13.1.1`. If you load Highcharts from the CDN, use the versioned URLs on code.highcharts.com, for example `https://code.highcharts.com/13.1.1/highcharts.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/getting-started/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:56:18Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts: dotted series.keys paths write to Object.prototype",
+    "UpdatedAt": "2026-10-28T19:56:20Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.9"
+      },
+      "VulnerableVersionRange": "\u003e= 6.1.0, \u003c 11.4.9"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 13.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.6.1"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 12.6.1"
+    }
+  ]
+}

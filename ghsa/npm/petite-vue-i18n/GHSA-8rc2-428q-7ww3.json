@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-28T21:06:35Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "petite-vue-i18n"
+  },
+  "Advisory": {
+    "DatabaseId": 523738,
+    "Id": "GSA_kwCzR0hTQS04cmMyLTQyOHEtN3d3M84AB_3a",
+    "GhsaId": "GHSA-8rc2-428q-7ww3",
+    "References": [
+      {
+        "Url": "https://github.com/intlify/vue-i18n/security/advisories/GHSA-8rc2-428q-7ww3"
+      },
+      {
+        "Url": "https://github.com/intlify/vue-i18n/pull/2680"
+      },
+      {
+        "Url": "https://github.com/intlify/vue-i18n/commit/d657ce8f4b3b6b198a8f6e3d09e2b57a5d019fb8"
+      },
+      {
+        "Url": "https://github.com/intlify/vue-i18n/releases/tag/v11.4.14"
+      },
+      {
+        "Url": "https://github.com/intlify/vue-i18n/releases/tag/v12.0.0-alpha.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8rc2-428q-7ww3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8rc2-428q-7ww3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118256"
+      }
+    ],
+    "Description": "### Summary\n\nWhen `escapeParameter` is enabled (`escapeParameterHtml` in the Legacy API), Vue I18n escapes the interpolation parameters before formatting a message. `escapeParams()` escapes either the list values or the named values, but not both: the two branches are joined by `else`. When a single call passes both, for example `t(key, ['...'], { named: { ... } })`, the named values reach the message without being escaped.\n\n### Details\n\n`escapeParams()` in [`packages/core-base/src/translate.ts` (v11.4.13)](https://github.com/intlify/vue-i18n/blob/v11.4.13/packages/core-base/src/translate.ts):\n\n```ts\nfunction escapeParams(options: TranslateOptions) {\n  if (isArray(options.list)) {\n    options.list = options.list.map(item =\u003e (isString(item) ? escapeHtml(item) : item))\n  } else if (isObject(options.named)) {\n    // ...escapes the named values\n  }\n}\n```\n\n`t(key, list, options)` is a public overload, and `TranslateOptions` has a `named` field, so a call can carry both. The list is checked first, and the named values are then left as they are.\n\nThe translated string still goes through `sanitizeTranslatedHtml()` (added for CVE-2025-53892), which neutralizes event handler attributes and `javascript:` URLs. Other markup in the named values, such as links and forms, is inserted as is. Before the fix for GHSA-83rm-6c8r-g728, an `\u003ciframe srcdoc\u003e` in a named value also passes the sanitizer, and script runs. Versions without the sanitizer (before 9.14.5, 10.0.8 and 11.1.10, and 12.0.0-alpha.1 to alpha.3) insert the named values as HTML without any further check.\n\n`\u003ci18n-t\u003e` is not affected: it passes either list or named values, never both, and it does not render translations as HTML.\n\n### PoC\n\n```js\nimport { createI18n } from 'vue-i18n'\n\nconst i18n = createI18n({\n  legacy: false,\n  locale: 'en',\n  escapeParameter: true,\n  messages: {\n    en: { withList: '{0} {name}', withoutList: '{name}' }\n  }\n})\nconst t = i18n.global.t\n\nt('withoutList', { name: '\u003cb\u003ex\u003c/b\u003e' })\n// \u0026lt;b\u0026gt;x\u0026lt;\u0026#x2F;b\u0026gt;      escaped\n\nt('withList', ['a'], { named: { name: '\u003cb\u003ex\u003c/b\u003e' } })\n// a \u003cb\u003ex\u003c/b\u003e                   not escaped (v11.4.13)\n```\n\n### Impact\n\nApplications are affected when they enable `escapeParameter`, render translations as HTML (for example with `v-html`), and pass untrusted named values in the same call as a list. The named values are inserted as markup: phishing links, forms, or layout changes. Together with GHSA-83rm-6c8r-g728, or on versions without the sanitizer, this leads to script execution (DOM-based XSS).\n\n### Patches\n\nFixed in 11.4.14 and 12.0.0-alpha.5. `escapeParams()` now escapes both the list and the named values.\n\nThe fix also stops rewriting the named object that the caller passes. Before, the values of that object were replaced with their escaped form, so a second call with the same object escaped them twice.\n\nv9 and v10 are no longer supported and will not be fixed. Please migrate to v11.\n\n### Workarounds\n\n- Do not pass list and named values in the same call when `escapeParameter` is enabled.\n- Do not render translations that can contain untrusted values with `v-html`. Use component interpolation (`\u003ci18n-t\u003e`) instead.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:06:34Z",
+    "Severity": "LOW",
+    "Summary": "Vue I18n: `escapeParameter` does not escape named values when the same call also passes a list",
+    "UpdatedAt": "2026-10-28T21:06:35Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.0.0-alpha.5"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0-alpha.1, \u003c 12.0.0-alpha.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.14"
+      },
+      "VulnerableVersionRange": "\u003e= 9.2.0-alpha.7, \u003c 11.4.14"
+    }
+  ]
+}

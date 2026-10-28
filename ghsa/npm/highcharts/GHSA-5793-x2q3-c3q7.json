@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:56:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "highcharts"
+  },
+  "Advisory": {
+    "DatabaseId": 523721,
+    "Id": "GSA_kwCzR0hTQS01NzkzLXgycTMtYzNxN84AB_3J",
+    "GhsaId": "GHSA-5793-x2q3-c3q7",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-5793-x2q3-c3q7"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/pull/25315"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/9534773d0f41400aac0945bf8aaebc38dfc72aff"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/v13.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5793-x2q3-c3q7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5793-x2q3-c3q7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118251"
+      }
+    ],
+    "Description": "### Impact\nA `credits.href` value beginning with `javascript:` is assigned to the window location when the credits label is clicked, without being checked against an allowed-scheme list. An attacker who controls the chart configuration can therefore run script in the origin of the page hosting the chart. Exploitation requires that untrusted data reach the chart configuration and that a user click the credits label. Charts built with Highcharts Stock, Maps and Gantt are included, since those ship from the same package as Core.\n\n### Workarounds\nDrop-in fix - for any versions affected (5.0.0-13.0.2).\nAdd the below IIFE to run after Highcharts is loaded, but before a chart is created.\n\n```js\n!function(t){if(t\u0026\u0026t.Chart\u0026\u0026!t.Chart.prototype.creditsHrefPatched){var r=t.Chart.prototype,e=r.addCredits;r.addCredits=function(n){var o=t.merge(!0,this.options.credits,n);return o\u0026\u0026o.href\u0026\u0026!c(o.href)\u0026\u0026delete o.href,e.call(this,o)},r.creditsHrefPatched=!0}function c(r){var e=t.AST\u0026\u0026t.AST.allowedReferences||[\"https://\",\"http://\",\"mailto:\",\"/\",\"../\",\"./\",\"#\"];return\"string\"==typeof r\u0026\u0026e.some(function(t){return 0===r.indexOf(t)})}}(Highcharts);\n```\n[Live demo \u0026 testing](https://jsfiddle.net/BlackLabel/6a09ws1f/)\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install highcharts@ 13.1.0`. If you load Highcharts from the CDN, use the versioned URLs on code.highcharts.com, for example `https://code.highcharts.com/13.1.0/highcharts.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/getting-started/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:56:23Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts: `javascript:` URL in credits.href runs script on click",
+    "UpdatedAt": "2026-10-28T19:56:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 13.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.6.1"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 12.6.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.9"
+      },
+      "VulnerableVersionRange": "\u003c 11.4.9"
+    }
+  ]
+}

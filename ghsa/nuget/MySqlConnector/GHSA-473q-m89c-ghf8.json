@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T19:49:45Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "MySqlConnector"
+  },
+  "Advisory": {
+    "DatabaseId": 523702,
+    "Id": "GSA_kwCzR0hTQS00NzNxLW04OWMtZ2hmOM4AB_22",
+    "GhsaId": "GHSA-473q-m89c-ghf8",
+    "References": [
+      {
+        "Url": "https://github.com/mysql-net/MySqlConnector/security/advisories/GHSA-473q-m89c-ghf8"
+      },
+      {
+        "Url": "https://github.com/mysql-net/MySqlConnector/commit/86503613fe3b72ae26c03dd1ea92f0e1e6e208f9"
+      },
+      {
+        "Url": "https://github.com/mysql-net/MySqlConnector/releases/tag/2.6.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-473q-m89c-ghf8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-473q-m89c-ghf8"
+      }
+    ],
+    "Description": "## Summary\n\nWith `SslMode` set to `VerifyCA` or `VerifyFull` with no configured CA certificate, an unvalidated TLS connection is treated as secure and a clear-text password can be sent before the certificate is checked. This can occur when relying on the password to validate a self-signed cert, e.g., MariaDB's [zero-configuration TLS](https://mariadb.com/docs/server/security/encryption/data-in-transit-encryption/zero-configuration-ssl).\n\n## Impact\n\nAn attacker who can deploy a man-in-the-middle MySQL proxy presenting any self-signed certificate can capture the plaintext database password of a client that:\n\n- uses `SslMode = VerifyCA` or `VerifyFull`, and\n- does not use the `SslCa` connection string option, and\n- uses a non-empty password.\n\nThe attacker completes the TLS handshake with its own cert, requests a clear-text password authentication scheme (`mysql_clear_password`, or forces the `caching_sha2_password`/`sha256_password` clear-text fallback), and receives the password before the fingerprint check rejects the connection, defeating the man-in-the-middle protection `VerifyFull` is expected to provide. \n\nNot affected: a configured CA (`SslCa`), CA-validated TLS, local connections (Unix socket / loopback), or empty passwords. Using `SslMode` set to `Preferred` or `Required` is out of scope (this is documented as not authenticating the server).\n\n## Workarounds\n\nProvide `SslCa` with `VerifyCA`/`VerifyFull`, use a local/Unix-socket connection, or avoid clear-text authentication.\n\n## References\n\n- https://mariadb.org/mission-impossible-zero-configuration-ssl/",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:49:44Z",
+    "Severity": "MODERATE",
+    "Summary": "MySqlConnector: Account password disclosed to a man-in-the-middle in zero-configuration TLS mode (clear-text password sent before certificate is verified)",
+    "UpdatedAt": "2026-10-28T19:49:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.6.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.6.1"
+    }
+  ]
+}

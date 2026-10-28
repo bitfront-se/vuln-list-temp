@@ -1,0 +1,80 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:50:05Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "rucio"
+  },
+  "Advisory": {
+    "DatabaseId": 523703,
+    "Id": "GSA_kwCzR0hTQS01ajlyLWZ4NHgtcnB2Z84AB_23",
+    "GhsaId": "GHSA-5j9r-fx4x-rpvg",
+    "References": [
+      {
+        "Url": "https://github.com/rucio/rucio/security/advisories/GHSA-5j9r-fx4x-rpvg"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/64c0e6a6a93ae88427ff3b7d77532ce08c8a69ec"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/8bdc38994a8766658d0314d36afc104c9242c96f"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/8d9ba31514e6f5dca32b8c1db4738582cb37ec3a"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/35.9.0"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/38.6.0"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/41.0.0rc1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5j9r-fx4x-rpvg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5j9r-fx4x-rpvg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58273"
+      }
+    ],
+    "Description": "## Summary\nThe `/credentials/signurl` endpoint decides authorization from the client-supplied `X-Rucio-Account` HTTP header instead of the authenticated token's account. Any client holding **any** valid auth token (even a low-privilege account they legitimately own) can send `X-Rucio-Account: root` to pass the root-only permission check and have the Rucio server mint a presigned **read / write / delete** URL for an **arbitrary** object, signed with the RSE's stored S3 / GCS / Swift credentials.\n\n## Details\n`SignURL.get()` takes the authorization principal from a request header and\nnever uses the token-authenticated identity:\n\n```python\n# lib/rucio/web/rest/flaskapi/v1/credentials.py\naccount = request.headers.get('X-Rucio-Account', default=None)     # L165  (attacker-controlled)\n...\nresult = get_signed_url(account, rse=rse, service=service,         # L194\n                        operation=operation, url=url, lifetime=lifetime, vo=vo)\n```\n\nThe gateway then uses that header value as the `issuer` for the permission check:\n\n```python\n# lib/rucio/gateway/credential.py\nauth_result = permission.has_permission(issuer=account, vo=vo,     # L57\n                                        action='get_signed_url', kwargs=kwargs, ...)\n```\n\nand the permission function is root-only:\n\n```python\n# lib/rucio/core/permission/generic.py\ndef perm_get_signed_url(issuer, kwargs, session):\n    return _is_root(issuer)        # _is_root(x) -\u003e x.external == 'root'\n```\n\n`InternalAccount('root', vo).external == 'root'` unconditionally, so the gate passes whenever the header is `root`. The endpoint is on `AuthenticatedBlueprint`, whose `before_request` hook validates the token and sets `request.environ['issuer']` **from the token** — but nothing ever compares `X-Rucio-Account` to it:\n\n```python\n# lib/rucio/web/rest/flaskapi/v1/common.py  (request_auth_env)\nflask.request.environ['issuer'] = auth.get('account')             # L168  (the real account; unused by SignURL)\n```\n\nThis is anomalous: every other authenticated handler derives the account from `request.environ['issuer']`; `credentials.py` is the only one that trusts the header. Additionally, `core.credential.get_signed_url` never checks that the supplied `url`'s host/bucket belongs to the target RSE, so even a legitimate `root` caller gets an arbitrary-object signing oracle. In multi-VO the VO is also read from the `X-Rucio-VO` header, allowing cross-tenant targeting.\n\n## Proof of concept\nRequest (any valid token + spoofed account):\n```\nGET /credentials/signurl?rse=\u003ccloudRSE\u003e\u0026svc=s3\u0026op=delete\u0026url=https://victim-bucket.s3.amazonaws.com/important/dataset.root HTTP/1.1\nX-Rucio-Auth-Token: \u003cany valid token, even a low-privilege account\u003e\nX-Rucio-Account: root\nAccept: application/octet-stream\n```\nResponse: `200 OK` with a presigned DELETE URL the attacker replays directly against the storage backend.\n\n## Impact\nA low-privilege Rucio user can read, overwrite, and delete arbitrary objects on any cloud-backed (S3/GCS/Swift) RSE using the server's stored credentials — enabling data exfiltration, tampering, and destruction, and cross-tenant access in multi-VO deployments.\n\n## Credit\nReported by seankohjs. Found via static analysis + manual verification.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:50:05Z",
+    "Severity": "HIGH",
+    "Summary": "rucio has an Authorization Bypass on REST API endpoint for signing URLs",
+    "UpdatedAt": "2026-10-28T19:50:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.0.0rc1"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0rc1, \u003c 41.0.0rc1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.6.0"
+      },
+      "VulnerableVersionRange": "\u003e= 36.0.0rc1, \u003c 38.6.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "35.9.0"
+      },
+      "VulnerableVersionRange": "\u003e= 1.16.1, \u003c 35.9.0"
+    }
+  ]
+}

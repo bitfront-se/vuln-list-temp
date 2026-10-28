@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:55:25Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "highcharts"
+  },
+  "Advisory": {
+    "DatabaseId": 523712,
+    "Id": "GSA_kwCzR0hTQS02NWhnLWNmM2YtNW0zOc4AB_3A",
+    "GhsaId": "GHSA-65hg-cf3f-5m39",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-65hg-cf3f-5m39"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118244"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/abde7c576793bf50b0e0636e59b49630de6dd0d5"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/v13.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-65hg-cf3f-5m39"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-65hg-cf3f-5m39"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118244"
+      }
+    ],
+    "Description": "### Impact\nWhen the HTML text parser cannot obtain a document from `DOMParser` because the call throws, it falls back to assigning the raw markup to the `innerHTML` of an element created in the hosting document, and the allow-list is applied only to the resulting DOM afterwards. In Chromium the Trusted Types policy callback that the parser uses throws while a `beforeprint` handler is running, so if the hosting page re-renders the chart from a `beforeprint` handler, every HTML-rendered text option parsed at that moment, such as `useHTML` titles, axis labels and data labels or text set by responsive rules, is inserted unsanitized, and event handlers embedded in that markup run in the origin of the page hosting the chart. Exploitation requires that untrusted data reach the chart configuration, that the hosting page update the chart from a `beforeprint` handler in Chromium, and that printing be started, which the print item of the exporting menu does on its own. Charts built with Highcharts Stock, Maps and Gantt are included, since those ship from the same package as Core.\n\n### Workarounds\n**Drop-in fix - for any versions affected (12.0.0-13.0.2).**\nAdd the below IIFE to run after Highcharts is loaded. \n```\n((n)=\u003e{n.AST.prototype.parseMarkup=function parseMarkup(t){let e,i=[];t=t.trim().replace(/ style=([\"'])/g,\" data-style=$1\");try{e=new DOMParser().parseFromString(tI?tI.createHTML(t):t,\"text/html\")}catch{}if(!e)try{e=new DOMParser().parseFromString(t,\"text/html\")}catch{}e||((e=n.doc.implementation.createHTMLDocument(\"\")).body.innerHTML=t);let s=(t,e)=\u003e{let i=t.localName||t.nodeName.toLowerCase(),o={tagName:i};\"#text\"===i\u0026\u0026(o.textContent=t.textContent||\"\");let r=t.attributes;if(r){let t={};[].forEach.call(r,e=\u003e{\"data-style\"===e.name?o.style=tB.parseStyle(e.value):t[e.name]=e.value}),o.attributes=t}if(t.childNodes.length){let e=[];[].forEach.call(t.childNodes,t=\u003e{s(t,e)}),e.length\u0026\u0026(o.children=e)}e.push(o)};return[].forEach.call(e.body.childNodes,t=\u003es(t,i)),i};})(Highcharts);\n```\n[Live demo \u0026 testing](https://jsfiddle.net/BlackLabel/pb6jLf7g/)\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example npm install highcharts@13.1.0. If you load Highcharts from the CDN, use the versioned URLs on code.highcharts.com, for example https://code.highcharts.com/13.1.0/highcharts.js. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/getting-started/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:55:22Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Core: HTML text parsing falls back to unfiltered `innerHTML` during printing",
+    "UpdatedAt": "2026-10-28T19:55:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 13.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.6.1"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 12.6.1"
+    }
+  ]
+}

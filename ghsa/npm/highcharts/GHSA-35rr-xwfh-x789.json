@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:56:11Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "highcharts"
+  },
+  "Advisory": {
+    "DatabaseId": 523718,
+    "Id": "GSA_kwCzR0hTQS0zNXJyLXh3ZmgteDc4Oc4AB_3G",
+    "GhsaId": "GHSA-35rr-xwfh-x789",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-35rr-xwfh-x789"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118246"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/b0fafdaaee7d0cac2ecfeb0eaf37b11cd40594ef"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/v13.1.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-35rr-xwfh-x789"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-35rr-xwfh-x789"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118246"
+      }
+    ],
+    "Description": "### Impact\nThe breadcrumbs `style` option is applied to the breadcrumb button as SVG attributes rather than as CSS, and the attribute names are not filtered. An attacker who controls the chart configuration can supply keys under `breadcrumbs.style` that name event handlers, and those keys become live handlers on the breadcrumb button, so the attacker's script runs in the origin of the page hosting the chart. The option is reached through `drilldown.breadcrumbs`, `navigation.breadcrumbs` and the `breadcrumbs` option of the treemap, sunburst and treegraph series. Exploitation requires that untrusted data reach the chart configuration and that a user drill down, or traverse into a level of a hierarchical series, so that the breadcrumbs render, and then hover over or activate the breadcrumb button. Charts rendered in styled mode do not apply the option and are not affected. Charts built with Highcharts Stock, Maps and Gantt are included, since those ship from the same package as Core.\n\n### Workarounds\nVerified against published bundles on 10.0.0, 11.4.8, 12.3.0 and 13.0.2.\n\nLoad immediately after Highcharts, before any chart is created:\n\n```js\n// Workaround fix for all affected Highcharts versions: 10.0.0-13.0.2\n((H)=\u003e{const S=H.SVGElement.prototype,D=S._defaultSetter;S._defaultSetter=function _defaultSetter(v,k,e){/^on/i.test(k)||D.call(this,v,k,e)};})(Highcharts);\n// End of the workaround fix\n```\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install highcharts@13.1.0`. If you load Highcharts from the CDN, use the versioned URLs on code.highcharts.com, for example `https://code.highcharts.com/13.1.0/highcharts.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/getting-started/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:56:07Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Core: `breadcrumbs.style` keys become SVG event-handler attributes",
+    "UpdatedAt": "2026-10-28T19:56:11Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.1.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c= 13.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "12.6.1"
+      },
+      "VulnerableVersionRange": "\u003e= 12.0.0, \u003c 12.6.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.4.9"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c 11.4.9"
+    }
+  ]
+}

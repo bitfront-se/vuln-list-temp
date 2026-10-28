@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:57:36Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@highcharts/grid-lite"
+  },
+  "Advisory": {
+    "DatabaseId": 523724,
+    "Id": "GSA_kwCzR0hTQS1yNXdnLXE4ZmMtcDZ3Ms4AB_3M",
+    "GhsaId": "GHSA-r5wg-q8fc-p6w2",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-r5wg-q8fc-p6w2"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/1e8ded84d52191883965641b863cf0c73eb759aa"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/grid-v3.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r5wg-q8fc-p6w2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r5wg-q8fc-p6w2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118254"
+      }
+    ],
+    "Description": "### Impact\nThe pagination language strings are written into the DOM as markup rather than as text. An attacker who controls those language options can supply elements carrying event handlers, and those handlers execute in the origin of the page hosting the Grid when the pagination controls render. Exploitation requires that untrusted data reach the Grid language configuration and that pagination be enabled on the Grid.\n\n### Workarounds\nRun this once after loading the Grid, before creating any grid:\n```javascript\n{\n    const Pagination = Grid.Pagination;\n\n    const escapeLang = (pagination) =\u003e {\n        const lang = pagination.lang;\n        if (!lang) {\n            return;\n        }\n\n        for (const key of ['pageInfo', 'pageSizeLabel']) {\n            if (typeof lang[key] === 'string') {\n                lang[key] = lang[key].replace(/\u003c/g, '\u0026lt;');\n            }\n        }\n    };\n\n    for (const name of ['updatePageInfo', 'renderPageSizeSelector']) {\n        const original = Pagination.prototype[name];\n\n        Pagination.prototype[name] = function (...args) {\n            escapeLang(this);\n            return original.apply(this, args);\n        };\n    }\n}\n```\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install @highcharts/grid-lite@3.2.0`. If you load Highcharts Grid from a CDN, use a versioned URL, for example `https://cdn.jsdelivr.net/npm/@highcharts/grid-lite@3.2.0/grid-lite.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/grid/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:57:34Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Grid parses pagination language options as HTML",
+    "UpdatedAt": "2026-10-28T19:57:36Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 3.1.0"
+    }
+  ]
+}

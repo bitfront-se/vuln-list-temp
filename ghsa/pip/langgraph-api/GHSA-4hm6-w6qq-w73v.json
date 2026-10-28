@@ -1,0 +1,50 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T21:09:43Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "langgraph-api"
+  },
+  "Advisory": {
+    "DatabaseId": 523754,
+    "Id": "GSA_kwCzR0hTQS00aG02LXc2cXEtdzczds4AB_3q",
+    "GhsaId": "GHSA-4hm6-w6qq-w73v",
+    "References": [
+      {
+        "Url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-4hm6-w6qq-w73v"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4hm6-w6qq-w73v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4hm6-w6qq-w73v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118668"
+      }
+    ],
+    "Description": "## Summary\n\nLangGraph deployments using JavaScript or TypeScript custom authentication may fail to apply Store authorization changes returned by an authorization handler. In affected deployments, an authenticated user may be able to access Store data outside their authorized namespace.\n\n## Required conditions\n\nA deployment is affected only when all of the following conditions apply:\n\n- It uses an affected `langgraph-api` version.\n- It runs JavaScript or TypeScript custom authentication.\n- Its Store authorization handler relies on rewriting the requested namespace to restrict each user to their own data.\n- The attacker can authenticate as an ordinary user.\n- Multiple users' data is stored through the affected authorization path.\n\nPython custom authentication handlers are not affected. JavaScript or TypeScript handlers that reject unauthorized namespace requests instead of rewriting them are also not affected.\n\nThe attack does not require administrator privileges, user interaction, a race condition, or the bypass of another mitigation.\n\n## Impact\n\nAn authenticated user may be able to read, overwrite, search, or delete Store data belonging to another user.\n\n## Patches\n\nThe issue is fixed in `langgraph-api` version `0.15.0`. The server now carries changes made by a JavaScript or TypeScript authorization handler across the runtime boundary and applies them before performing the Store operation. It validates the resulting namespace after authorization and rejects the request if an authorization change is malformed or cannot be applied safely.\n\nUsers should upgrade to `langgraph-api\u003e=0.15.0`.\n\n## Workarounds\n\nDeployments that cannot upgrade immediately should change JavaScript or TypeScript Store authorization handlers to reject requests for unauthorized namespaces rather than relying on namespace rewriting.\n\nThis workaround must be applied to every Store action exposed by the deployment.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:09:42Z",
+    "Severity": "HIGH",
+    "Summary": "LangGraph JavaScript custom authentication may permit cross-user Store access",
+    "UpdatedAt": "2026-10-28T21:09:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.15.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.1.2, \u003c 0.15.0"
+    }
+  ]
+}

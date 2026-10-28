@@ -1,0 +1,74 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T21:16:39Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "onnx"
+  },
+  "Advisory": {
+    "DatabaseId": 523776,
+    "Id": "GSA_kwCzR0hTQS1xNjlnLWY0ZjUtdjhtN84AB_4A",
+    "GhsaId": "GHSA-q69g-f4f5-v8m7",
+    "References": [
+      {
+        "Url": "https://github.com/onnx/onnx/security/advisories/GHSA-q69g-f4f5-v8m7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115922"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/pull/8033"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/pull/8038"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/pull/8066"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/commit/05c1bc3bceceb8d3cf11e9e7fc7f19f971c44988"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/commit/8de2cf6aa47928e6515ac6d9e1a8b4758886a7df"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/commit/dce5876d6cc6cc30157af7d26a752ef44976da8e"
+      },
+      {
+        "Url": "https://github.com/onnx/onnx/releases/tag/v1.22.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q69g-f4f5-v8m7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q69g-f4f5-v8m7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115922"
+      }
+    ],
+    "Description": "## Summary\n\nONNX's Python tensor-materialization helpers could allocate memory according to attacker-controlled tensor dimensions without verifying that a packed sub-byte payload contained the declared number of elements.\n\nA very small model could therefore cause a disproportionately large allocation when an application called `onnx.numpy_helper.to_array()` or constructed `onnx.reference.ReferenceEvaluator` with the model. The issue affected `UINT2`, `INT2`, `UINT4`, `INT4`, and `FLOAT4E2M1` tensors stored in either `raw_data` or packed `int32_data`.\n\n## Technical details\n\nThe vulnerable `_unpack_2bit()` and `_unpack_4bit()` paths first allocated a small array based on the available packed bytes, then resized it to the shape declared in `TensorProto.dims`. They did not first confirm that the payload encoded enough logical elements for that shape.\n\nFor example, the reporter demonstrated a 66-byte model containing one packed byte and a declared dimension of 700,000,000. The model passed `onnx.checker.check_model()` and allocated approximately 700 MB while materializing the initializer, followed by another large allocation when executing the reference evaluator.\n\nLoading, checking, or running shape inference on the serialized model alone did not trigger the allocation. The vulnerable tensor had to be materialized.\n\n## Impact\n\nAn application that materializes packed tensors from an untrusted model can exhaust available memory, causing denial of service. Memory corruption and code execution were not demonstrated.\n\n## Affected versions\n\n- Affected: ONNX through 1.21.0\n- Patched: ONNX 1.22.0\n\n## Remediation\n\nUpgrade to ONNX 1.22.0 or later.\n\nThe primary fix validates the logical element count before resizing the unpacked NumPy array. A complementary checker change rejects an undersized packed payload before materialization.\n\n- Materialization fix: [onnx/onnx#8033](https://github.com/onnx/onnx/pull/8033)\n- Checker defense-in-depth: [onnx/onnx#8038](https://github.com/onnx/onnx/pull/8038)\n\nThe five affected tensor types and both storage formats were re-tested against the published ONNX 1.23.2 wheel and are rejected before the oversized allocation.\n\nTo verify the behavior using a released vulnerable package in an isolated environment, install `onnx==1.21.0` with `python -m pip install \"onnx==1.21.0\"`. Run memory-exhaustion demonstrations only with an appropriate process memory limit.\n\n## Severity\n\nThe vulnerable ONNX component processes the malicious model through a local library API or file boundary and is not itself bound to a network stack. Applications that expose ONNX model processing over a network should calculate an Environmental score with Modified Attack Vector set to Network.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T21:16:37Z",
+    "Severity": "MODERATE",
+    "Summary": "ONNX: Denial of service via unchecked expansion of packed sub-byte tensors in ONNX Python APIs",
+    "UpdatedAt": "2026-10-28T21:16:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.2,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.22.0"
+      },
+      "VulnerableVersionRange": "\u003c= 1.21.0"
+    }
+  ]
+}

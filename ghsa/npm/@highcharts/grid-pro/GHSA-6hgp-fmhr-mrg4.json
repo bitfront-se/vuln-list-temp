@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-28T19:57:51Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@highcharts/grid-pro"
+  },
+  "Advisory": {
+    "DatabaseId": 523725,
+    "Id": "GSA_kwCzR0hTQS02aGdwLWZtaHItbXJnNM4AB_3N",
+    "GhsaId": "GHSA-6hgp-fmhr-mrg4",
+    "References": [
+      {
+        "Url": "https://github.com/highcharts/highcharts/security/advisories/GHSA-6hgp-fmhr-mrg4"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/pull/25351"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/commit/45b74403acafbe9f621c4a343506721d9129e991"
+      },
+      {
+        "Url": "https://github.com/highcharts/highcharts/releases/tag/grid-v3.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6hgp-fmhr-mrg4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6hgp-fmhr-mrg4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118255"
+      }
+    ],
+    "Description": "### Impact\nAn attacker who controls the Grid configuration can set `credits.href` to a `javascript:` URL. The value is not validated against an allowed-scheme list before it is applied to the credits link, so activating that link runs attacker-supplied script in the origin of the page hosting the Grid. Exploitation requires that untrusted data reach the Grid configuration and that a user activate the credits link. Script running this way has the same access to page data, storage and session state as the hosting application.\n\n### Workarounds\nPaste in after the Grid Pro module is imported, before a Grid is created.\n\n```javascript\nconst { AST } = Grid;\n\nfunction sanitize(options) {\n    const credits = options \u0026\u0026 options.credits;\n\n    if (credits \u0026\u0026 typeof credits.href === 'string') {\n        const filtered = AST.filterUserAttributes({ href: credits.href });\n\n        if (!filtered.href) {\n            delete credits.href;\n        }\n    }\n\n    return options;\n}\n\n// Both Grid.grid() and grid.update() funnel through loadUserOptions, so one\n// hook covers both entry points.\nconst { prototype } = Grid.Grid;\nconst loadUserOptions = prototype.loadUserOptions;\n\nprototype.loadUserOptions = function (options, ...rest) {\n    sanitize(options);\n    return loadUserOptions.call(this, options, ...rest);\n};\n```\n\n### Obtaining the patched version\nThe patched releases are available from all the usual distribution channels. With npm, upgrade the affected package to the patched version listed above, for example `npm install @highcharts/grid-lite@3.2.0`. If you load Highcharts Grid from a CDN, use a versioned URL, for example `https://cdn.jsdelivr.net/npm/@highcharts/grid-lite@3.2.0/grid-lite.js`. For more on each installation method, see the [installation guide](https://www.highcharts.com/docs/grid/installation).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T19:57:48Z",
+    "Severity": "HIGH",
+    "Summary": "Highcharts Grid: `javascript:` URL in credits.href runs script on click",
+    "UpdatedAt": "2026-10-28T19:57:51Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c= 3.1.0"
+    }
+  ]
+}
