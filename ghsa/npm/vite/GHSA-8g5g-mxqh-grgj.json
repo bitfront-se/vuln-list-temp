@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-29T16:39:59Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "vite"
+  },
+  "Advisory": {
+    "DatabaseId": 524127,
+    "Id": "GSA_kwCzR0hTQS04ZzVnLW14cWgtZ3Jnas4AB_9f",
+    "GhsaId": "GHSA-8g5g-mxqh-grgj",
+    "References": [
+      {
+        "Url": "https://github.com/vitejs/vite/security/advisories/GHSA-8g5g-mxqh-grgj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118662"
+      },
+      {
+        "Url": "https://github.com/vitejs/vite/pull/22160"
+      },
+      {
+        "Url": "https://github.com/vitejs/vite/pull/23855"
+      },
+      {
+        "Url": "https://github.com/vitejs/vite/commit/91e40d7bf9777057bbd31c3eb036a54c9465697e"
+      },
+      {
+        "Url": "https://github.com/vitejs/vite/releases/tag/v6.4.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8g5g-mxqh-grgj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8g5g-mxqh-grgj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118662"
+      }
+    ],
+    "Description": "### Summary\n\nThe contents of files that are specified by [`server.fs.deny`](https://vite.dev/config/server-options#server-fs-deny) can be returned to the browser. This is the same as https://github.com/vitejs/vite/security/advisories/GHSA-v2wj-q39q-566r.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host))\n- the sensitive file exists in the allowed directories specified by [`server.fs.allow`](https://vite.dev/config/server-options#server-fs-allow)\n- the sensitive file is denied with a pattern that matches a file by [`server.fs.deny`](https://vite.dev/config/server-options#server-fs-deny)\n\n### Details\n\nOn the Vite dev server, files that should be blocked by `server.fs.deny` (e.g., `.env`, `*.crt`) can be retrieved with HTTP 200 responses when query parameters such as `?raw`, `?import\u0026raw`, or `?import\u0026url\u0026inline` are appended.\n\nFor the fix for https://github.com/vitejs/vite/security/advisories/GHSA-rq7h-c2jc-7f22, v6.4.4 back-ported https://github.com/vitejs/vite/pull/20410. But while that PR requires https://github.com/vitejs/vite/pull/22160 for https://github.com/vitejs/vite/security/advisories/GHSA-v2wj-q39q-566r, https://github.com/vitejs/vite/pull/22160 wasn't back-ported together causing v6 vulnerable to https://github.com/vitejs/vite/security/advisories/GHSA-v2wj-q39q-566r.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-29T16:39:56Z",
+    "Severity": "MODERATE",
+    "Summary": "Vite: `server.fs.deny` bypassed with queries",
+    "UpdatedAt": "2026-10-29T16:39:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.4.5"
+      },
+      "VulnerableVersionRange": "= 6.4.4"
+    }
+  ]
+}

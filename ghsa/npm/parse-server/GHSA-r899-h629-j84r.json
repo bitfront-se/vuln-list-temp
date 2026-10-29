@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-29T16:33:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "parse-server"
+  },
+  "Advisory": {
+    "DatabaseId": 524112,
+    "Id": "GSA_kwCzR0hTQS1yODk5LWg2Mjktajg0cs4AB_9Q",
+    "GhsaId": "GHSA-r899-h629-j84r",
+    "References": [
+      {
+        "Url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-r899-h629-j84r"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61448"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/parse-server-stored-xss-via-malformed-content-type"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r899-h629-j84r"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r899-h629-j84r"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61448"
+      }
+    ],
+    "Description": "### Impact\n\nParse Server's file upload validation uses the `fileUpload.fileExtensions` option (enabled by default with a blocklist) to reject files that browsers may render as active content, mitigating stored cross-site scripting (XSS). When an uploaded file's extension is not recognized by the `mime` package, Parse Server preserves the client-supplied `Content-Type` and passes it to the storage adapter. A malformed `Content-Type` that is not a valid `type/subtype` media type — for example `image` (no subtype), `image/` (empty subtype), or `image//svg+xml` (invalid token) — bypassed the blocklist and was stored unchanged. On storage adapters that persist and serve the uploaded `Content-Type` (such as Amazon S3, Google Cloud Storage, or Azure Blob Storage), a browser cannot parse the malformed `Content-Type` and falls back to MIME-sniffing the file content; a file whose body begins with HTML markup is then rendered as HTML, executing any embedded script in the application's origin. This allows a user permitted to upload files to store content that executes as script against other users who open the file URL. The default GridFS storage adapter is not affected, as it recomputes the `Content-Type` from the filename and serves files with `X-Content-Type-Options: nosniff`.\n\n### Patches\n\nThe file upload handler now validates that the client-supplied `Content-Type` is a well-formed media type (`type/subtype` with non-empty tokens per RFC 9110 §5.6.2) whenever the filename extension is not recognized by `mime`. Malformed values are rejected instead of being stored, while well-formed types — including custom or vendor types that the `mime` package does not recognize — continue to be accepted; only blocklisted subtypes are rejected.\n\n### Workarounds\n\nConfigure `fileUpload.fileExtensions` as a strict allowlist of only the extensions the application needs (for example `[\"^(png|jpe?g|gif|pdf)$\"]`). Additionally, serve uploaded files from a domain separate from the application so that any rendered content is isolated from the application's origin, and configure the storage/CDN layer to send `X-Content-Type-Options: nosniff`.\n\n### References\n\n- GitHub security advisory: https://github.com/parse-community/parse-server/security/advisories/GHSA-r899-h629-j84r\n- Fix Parse Server 9: https://github.com/parse-community/parse-server/pull/10521\n- Fix Parse Server 8: https://github.com/parse-community/parse-server/pull/10523",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-29T16:33:48Z",
+    "Severity": "LOW",
+    "Summary": "Parse Server vulnerable to stored XSS via malformed Content-Type bypassing file upload extension blocklist",
+    "UpdatedAt": "2026-10-29T16:33:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.6.84"
+      },
+      "VulnerableVersionRange": "\u003c= 8.6.83"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.10.0-alpha.2"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.10.0-alpha.2"
+    }
+  ]
+}

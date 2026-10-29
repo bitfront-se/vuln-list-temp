@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-29T16:34:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "praisonai"
+  },
+  "Advisory": {
+    "DatabaseId": 524113,
+    "Id": "GSA_kwCzR0hTQS0yNm1oLTU3cTctamZ2cs4AB_9R",
+    "GhsaId": "GHSA-26mh-57q7-jfvr",
+    "References": [
+      {
+        "Url": "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-26mh-57q7-jfvr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61438"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62248"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/praisonai-before-remote-code-execution-via-broken-ast-sandbox"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-26mh-57q7-jfvr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-26mh-57q7-jfvr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61438"
+      }
+    ],
+    "Description": "### Summary\nJobWorkflowExecutor._exec_inline_python() is designed to safely execute inline Python expressions from YAML workflow script: steps using AST validation. The function claims to block dangerous operations by (a) checking all AST nodes against an allowlist, and (b) providing a __builtins__ whitelist that omits __import__, exec, eval, and open.\n\nThe sandbox is broken. The module import allowlist (allowed_modules) explicitly includes 'os', and the AST allowlist permits ast.Import, ast.ImportFrom, ast.Call, and ast.Attribute nodes. This means the following malicious workflow script: step passes all AST validation checks and executes without error.\n\nAttack Scenario\n\nAttacker creates or contributes a YAML workflow file (type: job) with a script: step containing import os; os.system(...).\nA user or CI pipeline with PRAISONAI_ALLOW_JOB_WORKFLOWS=true executes the workflow via praisonai workflow run malicious.yaml.\nArbitrary OS commands execute with the privileges of the calling process.\n\n\nThis is particularly dangerous in multi-tenant or CI environments where YAML workflows may originate from untrusted sources (e.g., downloaded templates, shared repositories, AI-generated workflows).\n### PoC\n_Complete instructions, including specific configuration details, to reproduce the vulnerability._\n\n### Impact\n\nRoot Cause — Lines 364–372:\n\npythonallowed_modules = {'os', 'datetime', 'time', 'json', 'math', 're', 'collections', 'itertools'}\nif isinstance(node, ast.Import):\n    for alias in node.names:\n        if alias.name.split('.')[0] not in allowed_modules:\n            return {\"ok\": False, \"error\": f\"Import of '{alias.name}' not allowed...\"}\n\nos is trusted because it is commonly used for path operations (os.path, os.getcwd). However, os.system(), os.popen(), os.execvp(), os.spawn*(), and os._exit() are all accessible once the module is imported, none of which are individually blocked.\n\nThe __builtins__ restriction (blocking __import__) is irrelevant because the code uses a real import statement processed by the Python bytecode compiler — not a __import__() call.\n\nProof-of-Concept validation (static — no remote network call made):\n\npythonimport ast\n\n_ALLOWED_NODES = (\n    ast.Expression, ast.BoolOp, ast.BinOp, ast.UnaryOp, ast.Compare,\n    ast.IfExp, ast.Constant, ast.Name, ast.Load, ast.Store, ast.Subscript,\n    ast.List, ast.Tuple, ast.Dict, ast.Set,\n    ast.And, ast.Or, ast.Not, ast.Eq, ast.NotEq, ast.Lt, ast.LtE,\n    ast.Gt, ast.GtE, ast.In, ast.NotIn, ast.Add, ast.Sub, ast.Mult,\n    ast.Div, ast.Mod, ast.FloorDiv, ast.USub, ast.UAdd,\n    ast.Call, ast.Attribute, ast.keyword, ast.Starred,\n    ast.Module, ast.Assign, ast.Import, ast.ImportFrom, ast.alias,\n)\nallowed_modules = {'os', 'datetime', 'time', 'json', 'math', 're', 'collections', 'itertools'}\n\nmalicious = \"import os\\nresult = os.system('id')\"\ntree = ast.parse(malicious, mode=\"exec\")\n\nall_pass = True\nfor node in ast.walk(tree):\n    if not isinstance(node, _ALLOWED_NODES):\n        print(f\"BLOCKED: {type(node).__name__}\")\n        all_pass = False\n    if isinstance(node, ast.Import):\n        for alias in node.names:\n            if alias.name.split('.')[0] not in allowed_modules:\n                print(f\"IMPORT BLOCKED: {alias.name}\")\n                all_pass = False\n\nprint(\"SANDBOX BYPASSED\" if all_pass else \"sandbox holds\")\n# Output: SANDBOX BYPASSED\n\n\nRecommended Fix\n\nRemove 'os' from allowed_modules and replace it with only the safe submodule: 'os.path'. Then validate that the imported name is specifically os.path, not os:\n\npython# BEFORE (vulnerable)\nallowed_modules = {'os', 'datetime', 'time', 'json', 'math', 're', 'collections', 'itertools'}\n\n# AFTER (safe)\nallowed_modules = {'datetime', 'time', 'json', 'math', 're', 'collections', 'itertools', 'pathlib'}\n\n# If os.path is needed, handle it explicitly:\nif isinstance(node, ast.ImportFrom):\n    if node.module == 'os.path':\n        pass  # allow 'from os.path import join, exists' only\n    elif node.module and node.module.split('.')[0] not in allowed_modules:\n        return {\"ok\": False, \"error\": f\"Import of '{node.module}' not allowed.\"}\n\nAdditionally, block ast.Import of os entirely, and consider also removing re (which can be used for ReDoS/CPU exhaustion) and collections (which can be used to reach __subclasses__-style gadgets).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-29T16:34:26Z",
+    "Severity": "HIGH",
+    "Summary": "PraisonAI vulnerable to Remote Code Execution via Broken AST Sandbox",
+    "UpdatedAt": "2026-10-29T16:34:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.78"
+      },
+      "VulnerableVersionRange": "\u003c 4.6.78"
+    }
+  ]
+}
