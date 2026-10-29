@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-28T22:42:38Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@backstage/plugin-catalog-backend"
+  },
+  "Advisory": {
+    "DatabaseId": 523822,
+    "Id": "GSA_kwCzR0hTQS13NjU4LW1oOXAtd3c4Zs4AB_4u",
+    "GhsaId": "GHSA-w658-mh9p-ww8f",
+    "References": [
+      {
+        "Url": "https://github.com/backstage/backstage/security/advisories/GHSA-w658-mh9p-ww8f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115923"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/3214dc8f15d4a08a2fd07a72a8fe4d00aeac0db4"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/commit/737ff1c719dbd5a97f375b7f1db6d61416618419"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.54.10"
+      },
+      {
+        "Url": "https://github.com/backstage/backstage/releases/tag/v1.56.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w658-mh9p-ww8f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w658-mh9p-ww8f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-115923"
+      }
+    ],
+    "Description": "## Summary\n\n`@backstage/plugin-catalog-backend` matches URL-type locations against `catalog.rules` location patterns using the raw URL string submitted by the user, while URL readers resolve that same string in canonical form when fetching the location's content. A URL can therefore be crafted so that it appears to belong to a trusted location scope during rule evaluation, but is fetched from a different scope.\n\n## Details\n\nWhen a deployment restricts catalog kinds to trusted URL prefixes using `catalog.rules` location patterns, `DefaultCatalogRulesEnforcer` applies glob matching directly to the raw `location.target` string. The URL readers used for ingestion resolve the same target in canonical form, including normalizing percent-encoded dot segments. A registered location such as `https://\u003chost\u003e/trusted/%2e%2e/attacker/repo/blob/main/catalog-info.yaml` matches a `https://\u003chost\u003e/trusted/**` pattern as a raw string, but resolves to and is fetched from `https://\u003chost\u003e/attacker/repo/...` when its content is read.\n\nAn authenticated user with permission to register catalog locations (`catalog.location.create`) can use this to have an entity from an untrusted source admitted as if it originated from a trusted location scope.\n\n## Impact\n\nThe crossed boundary is the operator-configured catalog ingestion policy: entity content from outside the trusted location scope is ingested as if it were within it. Downstream consequences depend on deployment configuration, for example actions taken with integration credentials by processors or scaffolder when acting on the ingested entity. The assessment of this report found no basis for impact claims beyond the ingestion policy boundary itself.\n\n## Patches\n\nThis is fixed in `@backstage/plugin-catalog-backend` 3.9.2 (Backstage release 1.54.10) and 4.0.2 (Backstage release 1.56.1). Version 4.0.1 as published is not fixed.\n\n## Workarounds\n\nNo complete workaround is available for deployments that rely on URL location patterns to restrict catalog kinds. Restricting location registration permissions reduces exposure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T22:42:36Z",
+    "Severity": "MODERATE",
+    "Summary": "Backstage catalog rules can be bypassed for URL locations using encoded path segments",
+    "UpdatedAt": "2026-10-28T22:42:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.2"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0, \u003c 4.0.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.9.2"
+      },
+      "VulnerableVersionRange": "\u003c 3.9.2"
+    }
+  ]
+}

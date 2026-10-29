@@ -1,0 +1,68 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-28T22:43:46Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "tornado"
+  },
+  "Advisory": {
+    "DatabaseId": 523826,
+    "Id": "GSA_kwCzR0hTQS1wdzlwLXY3cjYtZ3g0cM4AB_4y",
+    "GhsaId": "GHSA-pw9p-v7r6-gx4p",
+    "References": [
+      {
+        "Url": "https://github.com/tornadoweb/tornado/security/advisories/GHSA-pw9p-v7r6-gx4p"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-116578"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/pull/3786"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/commit/940ea725bdd9bc68231d68a105eef17ea6e11233"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/commit/cc75ab0eb3af459c714895a49f682ad354f50117"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/commit/ccb6a2e5482f17997efd4a74b8200d5b4babc035"
+      },
+      {
+        "Url": "https://github.com/tornadoweb/tornado/releases/tag/v6.6.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pw9p-v7r6-gx4p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pw9p-v7r6-gx4p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-116578"
+      }
+    ],
+    "Description": "### Summary\n\n`tornado.web.RedirectHandler` builds its target URL by substituting parts of the request path into a template. Depending on where those substitutions appear in the template, an attacker can craft a request that redirects to a host of their choosing. This creates an open redirect on the application's domain, which can be used in phishing.\n\n### Impact\n\nApplications are affected if they use `RedirectHandler` with a URL template where a regex capture group can influence the scheme or host of the redirect. This includes:\n\n- **A substitution at the start of the path**, for example `(r\"/(.*)/target\", RedirectHandler, {\"url\": \"/{0}/destination\"})`. A request to `https://example.com//evil.com/target` redirects to `//evil.com/destination`, a protocol-relative URL pointing to evil.com. Variants using backslashes or encoded characters have the same effect, because browsers treat them as equivalent to `//`.\n- **A substitution directly after the host**, for example `(r\"/old(.*)\", RedirectHandler, {\"url\": \"https://new.example.com{0}\"})`. A request to `/old.evil.com/` or `/old@evil.com/` redirects to evil.com.\n- **A template that begins with a substitution** (such as `\"{0}\"`), which can be given an absolute URL.\n\nApplications are not affected if their `RedirectHandler` templates use only static URLs, or if every substitution comes after a fixed host and a `/` (for example `\"/static/{0}\"` or `\"https://example.com/{0}\"`). Other uses of `RequestHandler.redirect()` are not affected by this advisory, although applications that pass user-controlled input to `redirect()` should validate it themselves.\n\n### Patches\n\nFixed in Tornado 6.6. `RedirectHandler` now returns a 400 error if the substituted values would change the scheme or host of the redirect from what the template specifies. As a result, substitutions can no longer be used in the scheme or host part of a template. The similar check in `StaticFileHandler` has also been hardened against backslash and whitespace variants.\n\n### Workarounds\n\n- Change `RedirectHandler` templates so every substitution comes after a fixed prefix ending in `/`, or write capture-group regexes that cannot match characters such as `/`, `\\`, `@`, `.` or `:` where they could affect the host.\n- Alternatively, replace `RedirectHandler` with a custom handler that validates the target before calling `self.redirect()`.\n\n### Credit\n\nReported by Longwei Wang (@gn00295120).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-28T22:43:45Z",
+    "Severity": "LOW",
+    "Summary": "Tornado: Open redirect in RedirectHandler via protocol-relative URLs",
+    "UpdatedAt": "2026-10-28T22:43:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.6"
+      },
+      "VulnerableVersionRange": "\u003c 6.6"
+    }
+  ]
+}
