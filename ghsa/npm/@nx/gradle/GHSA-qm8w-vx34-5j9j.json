@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-30T14:42:16Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nx/gradle"
+  },
+  "Advisory": {
+    "DatabaseId": 524665,
+    "Id": "GSA_kwCzR0hTQS1xbTh3LXZ4MzQtNWo5as4ACAF5",
+    "GhsaId": "GHSA-qm8w-vx34-5j9j",
+    "References": [
+      {
+        "Url": "https://github.com/nrwl/nx/security/advisories/GHSA-qm8w-vx34-5j9j"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119282"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/pull/36626"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/commit/02c5d59e8dbbbe30963c0181c6a22cd8c1190a25"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/commit/60196b7cfcffcada35b6b90e53bf1a78d049b548"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/commit/c227f4780b054c512965c73aa480a48f9f781409"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/releases/tag/22.7.9"
+      },
+      {
+        "Url": "https://github.com/nrwl/nx/releases/tag/23.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qm8w-vx34-5j9j"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qm8w-vx34-5j9j"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119282"
+      }
+    ],
+    "Description": "## Summary\n\n`@nx/maven` and `@nx/gradle` spawn their project-graph analyzers through a shell and interpolate plugin options read from `nx.json` straight into the command line. Because a shell parses the whole line, an option value containing shell syntax is executed as a command by any `nx` command that constructs the project graph. Anyone who clones a hostile repository, or who checks out a pull request that edits `nx.json`, runs the injected command with their own privileges.\n\n## Severity\n\nA victim who runs an ordinary `nx` command in an attacker-supplied Maven or Gradle workspace gets code execution as themselves. In most such workspaces an attacker who can write `nx.json` can already run code through the repository's build files (`./mvnw`, `pom.xml`, and the Gradle equivalents), so the genuinely new exposure is narrow — for example CI building a fork's pull request where `nx.json` is writable but the build files are not. We have no evidence of exploitation in the wild.\n\n## Affected \u0026 Patched Versions\n\n| Package | Vulnerable | Patched |\n| --- | --- | --- |\n| `@nx/maven` | `\u003e= 22.0.2, \u003c 22.7.9`; `\u003e= 23.0.0, \u003c 23.1.2` | `22.7.9`, `23.1.2` |\n| `@nx/gradle` | `\u003e= 21.0.0, \u003c 22.7.9`; `\u003e= 23.0.0, \u003c 23.1.2` | `22.7.9`, `23.1.2` |\n\n\u003e [!IMPORTANT]\n\u003e Workspaces that register neither `@nx/maven` nor `@nx/gradle` in `nx.json` are unaffected — the vulnerable code only runs from those plugins' graph-construction paths, and no other Nx plugin shares this pattern.\n\n## Remediation\n\nUpgrade to **22.7.9** (22.x line) or **23.1.2** (23.x line) or later:\n\n```\nnx migrate 23.1.2\n```\n\nUpgrade both `nx` and the affected plugin (`@nx/maven` and/or `@nx/gradle`). The plugin's fix depends on code that ships in the `nx` package, so bumping the plugin without a matching `nx` upgrade will not resolve it.\n\nThere is no configuration to change — upgrading is the whole fix. If you cannot upgrade yet, only run `nx` commands in repositories you trust, since a malicious `nx.json` can execute code on a vulnerable version.\n\n## Details\n\nBoth plugins spawn their analyzer through a shell and interpolate `nx.json` plugin options into the command, so those option values are shell source. For Maven the injectable value is the `targetNamePrefix` option; for Gradle it is broader, since every plugin option is mapped into a `-P` argument and arbitrary option names are accepted, making both the name and value of any option injectable.\n\n## Credits\n\n- **Arkadiusz Marta** (RE:SOURCE) — Reporter",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T14:42:14Z",
+    "Severity": "HIGH",
+    "Summary": "@nx/maven and @nx/gradle have OS command injection via nx.json plugin options",
+    "UpdatedAt": "2026-10-30T14:42:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "23.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 23.0.0, \u003c 23.1.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "22.7.9"
+      },
+      "VulnerableVersionRange": "\u003e= 21.0.0, \u003c 22.7.9"
+    }
+  ]
+}

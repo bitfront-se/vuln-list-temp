@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T14:54:26Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "joserfc"
+  },
+  "Advisory": {
+    "DatabaseId": 524669,
+    "Id": "GSA_kwCzR0hTQS05cGc1LThjN3gtNWhmeM4ACAF9",
+    "GhsaId": "GHSA-9pg5-8c7x-5hfx",
+    "References": [
+      {
+        "Url": "https://github.com/authlib/joserfc/security/advisories/GHSA-9pg5-8c7x-5hfx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119284"
+      },
+      {
+        "Url": "https://github.com/authlib/joserfc/commit/397e04f4bbce0b94d86e31c1c003f4640af8fb39"
+      },
+      {
+        "Url": "https://github.com/authlib/joserfc/releases/tag/1.7.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9pg5-8c7x-5hfx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9pg5-8c7x-5hfx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119284"
+      }
+    ],
+    "Description": "## Summary\n\njoserfc 1.7.4 defines compact-JWS header, payload, and signature limits, but\ncalls `value.split(b\".\")` before validating them. Python `bytes.split()` copies\nthe attacker-controlled segments, so the current guard allocates roughly one\ncomplete payload before rejecting it.\n\n## Reproduction\n\n```bash\n.venv-research/bin/python 06-practical-testing/preauth-memory-profile.py\n```\n\nThe input is resident before a fork-isolated verifier runs, and every signature\nis invalid.\n\n| Input | Peak RSS delta | Amplification | Result |\n|---:|---:|---:|---|\n| 1 MiB | 1.11 MiB | 1.11× | size rejected |\n| 4 MiB | 4.04 MiB | 1.01× | size rejected |\n| 8 MiB | 8.04 MiB | 1.01× | size rejected |\n| 16 MiB | 16.04 MiB | 1.00× | size rejected |\n| 32 MiB | 31.74 MiB | 0.99× | size rejected |\n| 64 MiB | 63.80 MiB | 1.00× | size rejected |\n\nThe unconstrained profile is the primary evidence: joserfc allocates an\nadditional attacker-sized object before producing its intended\n`ExceededSizeError`. A separate baseline-plus-headroom stress test raises\n`MemoryError` when that copy cannot fit, but this report does not characterize\nan absolute `RLIMIT_AS` value as a realistic worker memory budget.\n\n## Security Argument\n\nThe issue is not that joserfc can prevent the transport layer from receiving a\nlarge header. The issue is narrower: once bytes reach `deserialize_compact()`,\nthe library's existing size guard cannot fulfill its allocation-limiting purpose\nbecause attacker-controlled segment copies are created first.\n\nThis differs from\n[GHSA-frfh-8v73-gjg4](https://github.com/authlib/joserfc/security/advisories/GHSA-frfh-8v73-gjg4),\nwhich concerned embedding already-loaded oversized segments in exception and log\nmessages. Here, the current implementation itself creates an additional\npayload-sized allocation before its fixed size exception.\n\n## Recommended Fix\n\nCheck `len(value)` against a maximum compact-serialization size before\n`split()`. If per-segment diagnostics are needed, locate delimiters with bounded\n`find()` operations or memory views, validate offsets and lengths, and only then\nmaterialize acceptable segments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T14:54:25Z",
+    "Severity": "MODERATE",
+    "Summary": "joserfc: Compact JWS size guard allocates attacker-controlled segments before rejection",
+    "UpdatedAt": "2026-10-30T14:54:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.7.6"
+      },
+      "VulnerableVersionRange": "\u003c 1.7.6"
+    }
+  ]
+}
