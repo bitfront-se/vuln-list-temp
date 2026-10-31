@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T23:09:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "minimatch"
+  },
+  "Advisory": {
+    "DatabaseId": 525013,
+    "Id": "GSA_kwCzR0hTQS1nM2h2LTc1d2ctbTI0Oc4ACALV",
+    "GhsaId": "GHSA-g3hv-75wg-m249",
+    "References": [
+      {
+        "Url": "https://github.com/isaacs/minimatch/security/advisories/GHSA-g3hv-75wg-m249"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118764"
+      },
+      {
+        "Url": "https://github.com/isaacs/minimatch/commit/77a0f5c4b80bdc641c3c930a1d9edf5ad2db57f8"
+      },
+      {
+        "Url": "https://github.com/isaacs/minimatch/releases/tag/v11.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-g3hv-75wg-m249"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-g3hv-75wg-m249"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118764"
+      }
+    ],
+    "Description": "minimatch 10.2.6 contains an attacker-controlled pattern amplification in firstPhasePreProcess() when optimizationLevel \u003e= 2.\n\nresearcher: Reid Downing (b1nv0id)\nfiles: \n\n- src/index.ts: 690-770\n- src/index.ts: 780-796\n\nissue:\ninput-controlled growth of globParts during first-phase preprocessing, followed by quadratic second-phase processing.\n\nthe **/../ transformation clones a globparts entry and appends the clone to the same globparts array:\n```\nparts.splice(gs, 1)\nconst other = parts.slice(0)\nother[gs] = '**'\nglobParts.push(other)\n```\nthis occurs inside a do...while (didSomething) fixpoint loop, allowing generated entries to be processed again.\n\nthe expanded globparts array is subsequently processed by secondPhasePreProcess(), which performs pairwise comparisons:\n```\nfor (let i = 0; i \u003c globParts.length - 1; i++) {\n  for (let j = i + 1; j \u003c globParts.length; j++) {\n    this.partsMatch(...)\n  }\n}\n```\nan attacker who can supply a glob pattern can therefore cause additional pattern entries to be generated during preprocessing, followed by quadratic pairwise processing, resulting in excessive cpu and memory consumption.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:09:55Z",
+    "Severity": "MODERATE",
+    "Summary": "minimatch has potential denial of service via globparts amplification",
+    "UpdatedAt": "2026-10-30T23:09:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.1"
+      },
+      "VulnerableVersionRange": "\u003c 11.0.1"
+    }
+  ]
+}

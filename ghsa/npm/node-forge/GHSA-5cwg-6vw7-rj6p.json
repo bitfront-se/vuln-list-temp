@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T23:02:10Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "node-forge"
+  },
+  "Advisory": {
+    "DatabaseId": 524996,
+    "Id": "GSA_kwCzR0hTQS01Y3dnLTZ2dzctcmo2cM4ACALE",
+    "GhsaId": "GHSA-5cwg-6vw7-rj6p",
+    "References": [
+      {
+        "Url": "https://github.com/digitalbazaar/forge/security/advisories/GHSA-5cwg-6vw7-rj6p"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119186"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/commit/236845d96c71207259f91638d0138bba8e2fd624"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/releases/tag/v1.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5cwg-6vw7-rj6p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5cwg-6vw7-rj6p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119186"
+      }
+    ],
+    "Description": "### Summary\n\nThe AES-GCM mode in forge.cipher does not validate the tagLength option passed to start(). With a tagLength of 0 or a value that converts to 0 (such as null, false, '' or '0'), the authentication tag is empty, and decipher.finish() returns true for any ciphertext and additional data when the supplied tag is empty or missing. Fixed in node-forge 1.4.1.\n\n### Details\n\n`modes.gcm.prototype.start()` in `lib/cipherModes.js` stored the `tagLength` option without validation, and `lib/cipher.js` documented it as accepting \"0-128\". After processing the data, `afterFinish()` truncates the 16-byte tag with `truncate(16 % (tagLength / 8))`. For a `tagLength` that converts to 0, this is `16 % 0 = NaN`, and truncating by `NaN` empties the tag. On decryption, the start-time check that the supplied `tag` has `tagLength / 8` bytes passes for an empty tag, and the final tag comparison compares two empty strings, so `decipher.finish()` returns `true` for any ciphertext and additional data.\n\nNIST SP 800-38D section 5.2.1.2 allows only tag lengths of 128, 120, 112, 104 and 96 bits, plus 64 and 32 bits for certain applications.\n\nThe fix validates `tagLength` in `start()`, for both encryption and decryption. A missing, `null` or `undefined` `tagLength` uses the default of 128 bits. Any other value is converted with `Number()` and must be one of 128, 120, 112, 104, 96, 64 or 32; otherwise `start()` throws \"Invalid tag length.\". Numeric strings such as `'128'` are still accepted. With a validated `tagLength`, an empty tag no longer matches the expected tag length and is rejected.\n\n### Patches\nFixed in node-forge 1.4.1. `cipher.start()` now throws an error unless `tagLength` is one of the tag lengths allowed by NIST SP 800-38D (128, 120, 112, 104, 96, 64 or 32 bits); a `null` or `undefined` `tagLength` means the default of 128 bits.\n\n### Workarounds\nDo not derive `tagLength` from received data. Pass a fixed `tagLength` (or omit it to use the default of 128 bits), and check that the received tag has the expected length before calling `start()`, for example `if(tag.length !== 16) { throw new Error('Invalid tag.'); }` before `decipher.start({iv: iv, tag: tag});`.\n\n### Proof of concept\n\nStart an AES-GCM decipher with `tagLength: 0` and an empty tag, as an application does when it derives the tag length from a received empty tag, and feed it arbitrary bytes that were never encrypted under the key:\n\n```js\nvar decipher = forge.cipher.createDecipher('AES-GCM', key);\ndecipher.start({iv: iv, tag: '', tagLength: 0});\ndecipher.update(forge.util.createBuffer('any attacker-chosen bytes'));\ndecipher.finish();\n// \u003c= 1.4.0: true\n// 1.4.1: start() throws \"Invalid tag length.\"\n```\n\n`tagLength` values `null`, `false` and `'0'` (with an empty tag), and `tagLength: 0` with no `tag` option, give the same result on \u003c= 1.4.0. The fix adds regression tests in `tests/unit/aes.js`.\n\n### Impact\n\nApplications that decrypt AES-GCM data with `forge.cipher.createDecipher()` (`'AES-GCM'`) and pass a zero-like `tagLength` are affected. Typical cases are a tag length derived from the received tag, or an unset configuration value:\n\n```js\nvar decipher = forge.cipher.createDecipher('AES-GCM', key);\ndecipher.start({iv: iv, tag: receivedTag, tagLength: receivedTag.length * 8});\ndecipher.update(forge.util.createBuffer(receivedCiphertext));\nif(decipher.finish()) { /* attacker-supplied data accepted */ }\n```\n\nAn attacker who can send a ciphertext with an empty tag to such an application can make it accept attacker-chosen ciphertext as authentic. Because GCM encryption is a stream cipher, an attacker who knows (part of) a captured message's plaintext can also change that plaintext to chosen values. The default (no `tagLength` option, 128 bits) and any fixed valid `tagLength` are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:02:09Z",
+    "Severity": "MODERATE",
+    "Summary": "Forge: AES-GCM authentication bypass via unvalidated tagLength option",
+    "UpdatedAt": "2026-10-30T23:02:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}

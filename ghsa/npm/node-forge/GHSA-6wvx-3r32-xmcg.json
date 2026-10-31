@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T23:02:39Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "node-forge"
+  },
+  "Advisory": {
+    "DatabaseId": 525001,
+    "Id": "GSA_kwCzR0hTQS02d3Z4LTNyMzIteG1jZ84ACALJ",
+    "GhsaId": "GHSA-6wvx-3r32-xmcg",
+    "References": [
+      {
+        "Url": "https://github.com/digitalbazaar/forge/security/advisories/GHSA-6wvx-3r32-xmcg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118777"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/commit/797c3f816a22748a96fceebb34eb3a6716853991"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/releases/tag/v1.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6wvx-3r32-xmcg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6wvx-3r32-xmcg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118777"
+      }
+    ],
+    "Description": "### Summary\nThe `forge.http` client stored cookies from `Set-Cookie` response headers in a plain object keyed by cookie name and path. A malicious server could use the cookie name `__proto__` to add properties to `Object.prototype`, use inherited names such as `constructor` to add properties to `Object`, and send an empty cookie value to delete `Object.prototype` properties. Fixed in node-forge 1.4.1.\n\n### Details\n`client.setCookie()` in `lib/http.js` stored a cookie with `client.cookies[cookie.name][cookie.path] = cookie`, creating `client.cookies[cookie.name]` only when `!(cookie.name in client.cookies)`. Both values come from the server's `Set-Cookie` header via `response.getCookies()`. Because `in` also sees inherited properties:\n\n- a cookie named `__proto__` skipped the initialization, `client.cookies['__proto__']` returned `Object.prototype`, and the cookie path was written as a new `Object.prototype` property, visible on every object;\n- a cookie named `constructor` wrote onto the global `Object` function the same way;\n- a cookie with an empty value calls `client.removeCookie(name, path)`, which used the same `in` checks and then `delete client.cookies[name][path]`, so `Set-Cookie: __proto__=; path=toString` deleted `Object.prototype.toString`. This path skipped the cookie's secure-flag and domain checks, so it also worked for `http://` clients.\n\n`forge.http` is not loaded by `require('node-forge')`. It is included in the `forge.all` browser bundle and is used with a socket pool, for example by `forge.xhr`.\n\nThe fix uses own-property checks for the cookie store and ignores cookies named `__proto__` or with the path `__proto__`.\n\n#### Patches\nFixed in node-forge 1.4.1. Cookies from a server can no longer add or remove properties of `Object.prototype` or `Object`.\n\n#### Workarounds\nDon't use `forge.http` or `forge.xhr` with servers that aren't trusted, or filter `Set-Cookie` headers named `__proto__`, `constructor` or other `Object.prototype` property names before they reach the client.\n\n#### Credits\nReported by @arunmozhivarman-dtx and @Dremig.\n\n### Proof of concept\nA server response for a `forge.http` client (`http.createClient({url: 'https://...', socketPool: ...})`) containing:\n\n    Set-Cookie: __proto__=evil; path=polluted\n\nOn 1.4.0, after the client processes the response, `({}).polluted` is the cookie object. With `Set-Cookie: __proto__=; path=toLocaleString`, `Object.prototype.toLocaleString` is deleted (for `http://` and `https://` clients). On 1.4.1 these cookies are ignored and `Object.prototype` is unchanged.\n\nRegression tests are in tests/security/ghsa-6wvx-3r32-xmcg.js.\n\n### Impact\nApplications that use the `forge.http` client (directly, or through `forge.xhr` in the `forge.all` browser bundle) against a server that can be malicious are affected. The server can add properties to `Object.prototype` and `Object` for the whole JavaScript realm, which can change application logic that reads properties from plain objects, and can delete built-in `Object.prototype` methods, breaking the page or process. Applications that don't use `forge.http` are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:02:35Z",
+    "Severity": "MODERATE",
+    "Summary": "Forge: Prototype Pollution in forge.http cookie handling via a malicious Set-Cookie",
+    "UpdatedAt": "2026-10-30T23:02:39Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}

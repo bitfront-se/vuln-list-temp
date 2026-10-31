@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T22:59:53Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mariadb.jdbc:mariadb-java-client"
+  },
+  "Advisory": {
+    "DatabaseId": 524982,
+    "Id": "GSA_kwCzR0hTQS1maHg1LTJ4cXctMmNnbc4ACAK2",
+    "GhsaId": "GHSA-fhx5-2xqw-2cgm",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/security/advisories/GHSA-fhx5-2xqw-2cgm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119210"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/4d2f8002399949ed7f138e9c0b75b69229538120"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/5812e0ca7574c3934915179b76f2e819a556d099"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/a4891f877f1c885a573194771c1ed0aacec0ce1d"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.3.7"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.4.5"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.5.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-fhx5-2xqw-2cgm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-fhx5-2xqw-2cgm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119210"
+      }
+    ],
+    "Description": "## Summary\n\nMariaDB Connector/J checked a server's LOAD DATA LOCAL INFILE file request by\nsearching the text of the command it had sent for\n`LOAD DATA LOCAL INFILE '\u003cfile\u003e'`. The search also matched inside quoted\nidentifiers, string literals and comments, so text returned by the server and\nre-used in a later query could satisfy it. A rogue or MitM server can read any\nfile the client JVM can read.\n\n## Details\n\nWhen a server answers a command with a LOCAL INFILE request (`0xFB` packet), the\nconnector opens the named file on the client host and streams it to the server,\nafter verifying that the file corresponds to a `LOAD DATA LOCAL INFILE` of the\ncommand it sent (`ClientMessage.validateLocalFileName()`). That verification was a\nregular expression whose prefix accepted any character, so it answered \"does the\ntext appear anywhere in the SQL\", including inside a backtick-quoted identifier.\n\nSeveral driver paths put identifiers returned by the server straight back into\ntheir next query: `DatabaseMetaData.getImportedKeys()` and `getExportedKeys()`\nre-use database and table names from `SHOW DATABASES`, `SHOW TABLES` and the\n`REFERENCES` clause of `SHOW CREATE TABLE` output, and updatable result sets build\ntheir `UPDATE` and refresh `SELECT` from the schema and table names of the column\ndefinition packets. A server returning an identifier such as\n``LOAD DATA LOCAL INFILE '/etc/passwd'`` makes the connector send\n``SHOW CREATE TABLE `LOAD DATA LOCAL INFILE '/etc/passwd'`.`accounts` ``; the\nserver answers it with a LOCAL INFILE request for `/etc/passwd`, the check\npasses, and the file content is sent. On the `getImportedKeys()` path the\nresulting error is swallowed and the application observes nothing. The same\napplies to an application that interpolates identifiers obtained from the\nserver into its own queries.\n\nThe fix parses the command instead of searching it: string literals, quoted\nidentifiers and comments are skipped, statements are split on `;`, and only a\n`LOAD DATA|XML [LOW_PRIORITY|CONCURRENT] LOCAL INFILE` found at the start of a\nstatement is considered, its file literal or bound parameter being compared\nexactly to the requested file.\n\n## Impact\n\nConfidentiality: a malicious or compromised server, or a MitM, can read arbitrary\nfiles from the host running the JDBC client (application configuration,\ncredential files, key stores, ...) through standard `java.sql` calls such as\n`DatabaseMetaData.getImportedKeys()`, `getExportedKeys()` or\n`ResultSet.updateRow()`. Exploitation requires control of the server side of the\nconnection and `allowLocalInfile` enabled (the default). Setting\n`allowLocalInfile=false` is a workaround when LOAD DATA LOCAL INFILE is not\nneeded. No integrity or availability impact.\n\n## Credit\n\nReported by buxuwa (buxu) through HackerOne",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T22:59:49Z",
+    "Severity": "MODERATE",
+    "Summary": "MariaDB Connector/J: LOAD DATA LOCAL INFILE file check could be satisfied by text inside quoted identifiers, letting a malicious server read client files",
+    "UpdatedAt": "2026-10-30T22:59:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.11"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0, \u003c 3.5.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.0, \u003c 3.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.3.7"
+    }
+  ]
+}

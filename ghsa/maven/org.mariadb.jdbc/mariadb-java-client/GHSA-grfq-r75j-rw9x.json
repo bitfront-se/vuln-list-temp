@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T22:59:48Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mariadb.jdbc:mariadb-java-client"
+  },
+  "Advisory": {
+    "DatabaseId": 524981,
+    "Id": "GSA_kwCzR0hTQS1ncmZxLXI3NWotcnc5eM4ACAK1",
+    "GhsaId": "GHSA-grfq-r75j-rw9x",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/security/advisories/GHSA-grfq-r75j-rw9x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119281"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/af5e565eb171cfc66ea8e948ddc616abed0c4623"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/d51b968c1b795c73d24e0b3f960205b7bc82d423"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/fdabe74a7df6dce1d6c099f4d0ca1e2acc25919a"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.3.7"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.4.5"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.5.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-grfq-r75j-rw9x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-grfq-r75j-rw9x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119281"
+      }
+    ],
+    "Description": "## Summary\n\nMariaDB Connector/J decodes every result as UTF-8 and guards\n`character_set_client` against a change to another charset, but did not guard\n`character_set_results`, and relied on the server's global\n`session_track_system_variables` list to be told about charset changes at all.\n\n## Details\n\nThe connector learns about session variable changes through session tracking,\nand closes the connection when `character_set_client` is switched away from UTF-8,\nso that its UTF-8 decoding stays correct. Two gaps remained:\n\n- `character_set_results` was not guarded: a server could switch it to another\n  charset, after which the bytes of every result were decoded as UTF-8 although\n  encoded otherwise.\n- the list of tracked variables came from the server's global\n  `session_track_system_variables`: a server configured, or made, not to track\n  the character set variables could change them silently.\n\nThe fix requests an explicit session tracking list that includes both character\nset variables whatever the server's global setting, and closes the connection\nwhen `character_set_results` is changed to a charset other than `utf8`, `utf8mb3`\nor `utf8mb4`, as it already did for `character_set_client`.\n\n## Impact\n\nIntegrity: a malicious or compromised server, or a MitM, can make the strings an\napplication reads differ from the bytes the server returned (inappropriate\nencoding for the output context), which can defeat application-side validation\nor escaping built on those values. Exploitation requires control of the server\nside of the connection; no confidentiality or availability impact.\n\n## Credit\n\nReported by fg0x0",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T22:59:45Z",
+    "Severity": "MODERATE",
+    "Summary": "MariaDB Connector/J: Server could switch character_set_results away from UTF-8 without the client noticing",
+    "UpdatedAt": "2026-10-30T22:59:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.11"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0, \u003c 3.5.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.0, \u003c 3.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.3.7"
+    }
+  ]
+}

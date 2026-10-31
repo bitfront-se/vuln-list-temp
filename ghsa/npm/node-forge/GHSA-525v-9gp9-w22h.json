@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T23:02:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "node-forge"
+  },
+  "Advisory": {
+    "DatabaseId": 525000,
+    "Id": "GSA_kwCzR0hTQS01MjV2LTlncDktdzIyaM4ACALI",
+    "GhsaId": "GHSA-525v-9gp9-w22h",
+    "References": [
+      {
+        "Url": "https://github.com/digitalbazaar/forge/security/advisories/GHSA-525v-9gp9-w22h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118778"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/commit/7be9fbd40df2e2f15f29fea2846b1c87d58f6888"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/releases/tag/v1.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-525v-9gp9-w22h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-525v-9gp9-w22h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118778"
+      }
+    ],
+    "Description": "### Summary\nThe forge TLS client's check for a missing server certificate read the wrong property and never ran. A malicious TLS server, or an on-path attacker who removes the server's Certificate message, can make `connection.process()` throw a `TypeError`, which crashes applications that use the forge TLS client. Fixed in node-forge 1.4.1.\n\n### Details\nAfter ServerHelloDone, `tls.handleServerHelloDone()` in `lib/tls.js` is meant to reject a server that sent no certificate with a fatal `insufficient_security` alert, after consulting the application's `verify` callback. The check tested `c.serverCertificate`, which is never set (the certificate is stored as `c.session.serverCertificate`), so it never ran. The client state machine allows ServerHelloDone directly after ServerHello, so the handshake continued to `tls.createClientKeyExchange()`, which reads `c.session.serverCertificate.publicKey` and throws a `TypeError` on the null certificate. The exception propagates out of `connection.process()` without calling the `verify` or `error` callbacks.\n\nThere is no authentication bypass: without a server certificate the client cannot build its RSA key exchange, so the handshake cannot complete.\n\nThe fix reads `c.session.serverCertificate` and always fails the handshake in that case, still calling `verify` so the application can customize the alert. Failing even when `verify` returns `true` is needed because the key exchange requires the certificate.\n\n#### Patches\nFixed in node-forge 1.4.1. The TLS client fails the handshake with an `insufficient_security` alert when the server sends no certificate.\n\n#### Workarounds\nCatch exceptions thrown by `connection.process()` in the code that feeds it network data, and close the connection when one occurs.\n\n#### Credits\nReported by @arpitjain099.\n\n### Proof of concept\nConnect a forge TLS client (`forge.tls.createConnection({server: false, ...})`) to a server whose first flight contains ServerHello and ServerHelloDone but no Certificate message. For example, run a forge TLS server and remove the Certificate handshake message (type 11) from its first flight before passing it to the client's `process()`.\n\nOn 1.4.0 the client's `process()` throws \"TypeError: Cannot read properties of null (reading 'publicKey')\", and the `verify` and `error` callbacks are not called. On 1.4.1 the client calls `verify` with `insufficient_security` and no certificates, calls `error` with \"No server certificate provided. Not enough security.\", sends a fatal alert and closes the connection.\n\nRegression tests are in tests/unit/tls.js (\"missing server certificate\").\n\n### Impact\nApplications that use the forge TLS client (`forge.tls.createConnection` with `server: false`) are affected. A malicious server the application connects to, or an on-path attacker who can modify the unauthenticated handshake, can make the client throw from `connection.process()`. Since `process()` is normally called from a socket data handler, the uncaught exception terminates a Node.js process. There is no confidentiality or integrity impact. Applications using Node.js's own TLS implementation are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:02:30Z",
+    "Severity": "MODERATE",
+    "Summary": "Forge: TLS client crash when the server sends no certificate",
+    "UpdatedAt": "2026-10-30T23:02:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T23:00:08Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mariadb.jdbc:mariadb-java-client"
+  },
+  "Advisory": {
+    "DatabaseId": 524984,
+    "Id": "GSA_kwCzR0hTQS03OTd4LXA0bWMtandwbc4ACAK4",
+    "GhsaId": "GHSA-797x-p4mc-jwpm",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/security/advisories/GHSA-797x-p4mc-jwpm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119279"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/30d4a883377a9b7762e02ee2c60d54567032ab99"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/bfd9f5ad666a6f7f5401a5b78f2ac2fbd6df8667"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/dbbadc3e215c47bdb913ddf50739ada09a7f23ea"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.3.7"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.4.5"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.5.10"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-797x-p4mc-jwpm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-797x-p4mc-jwpm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119279"
+      }
+    ],
+    "Description": "## Summary\n\nMariaDB Connector/J narrowed 8-byte length-encoded integers received from the\nserver to `int` without validation. A rogue or MitM server can send a value above\n`Integer.MAX_VALUE` whose truncation becomes a negative or arbitrary length.\n\n## Details\n\nThe protocol encodes lengths as length-encoded integers, whose 8-byte form the\ndecoder (`readLength()` and `readIntLengthEncodedNotNull()`) returned as\n`(int) readLong()`. A value above `Integer.MAX_VALUE` therefore wrapped to a\nnegative or unrelated `int`, used afterwards as a length to size allocations or\nreads, which ended in `NegativeArraySizeException`, out-of-bounds exceptions or\noversized allocations.\n\nThe fix rejects any length-encoded value that does not fit a non-negative `int`\nwith an explicit error.\n\n## Impact\n\nAvailability only: a malicious or compromised server, or a MitM, can crash the\nclient's connection handling with unchecked exceptions or drive oversized\nallocations. Exploitation requires control of the server side of the connection;\nno authentication bypass, confidentiality or integrity impact.\n\n## Credit\n\nReported by fg0x0",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:00:07Z",
+    "Severity": "MODERATE",
+    "Summary": "MariaDB Connector/J: Length-encoded integers larger than Integer.MAX_VALUE were truncated before being used as lengths",
+    "UpdatedAt": "2026-10-30T23:00:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.10"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0, \u003c 3.5.10"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.0, \u003c 3.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.3.7"
+    }
+  ]
+}

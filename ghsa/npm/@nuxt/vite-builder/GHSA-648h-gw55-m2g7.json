@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-10-30T23:00:44Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@nuxt/vite-builder"
+  },
+  "Advisory": {
+    "DatabaseId": 524987,
+    "Id": "GSA_kwCzR0hTQS02NDhoLWd3NTUtbTJnN84ACAK7",
+    "GhsaId": "GHSA-648h-gw55-m2g7",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-648h-gw55-m2g7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119199"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/12b58f9d8768682611c3ad4ea4d403875129dbca"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v4.6.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-648h-gw55-m2g7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-648h-gw55-m2g7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119199"
+      }
+    ],
+    "Description": "### Summary\n\nWith Nitro 2 (the default server engine in Nuxt 3 and Nuxt 4), the Nitro development server bundle written by `nuxt dev` can be fetched through the Vite dev server. Nitro inlines the resolved `runtimeConfig` into that bundle, so private runtime config values that were resolved at build time can be read by anyone with HTTP access to the dev server.\n\n### Impact\n\n`nuxt dev` writes the Nitro development server bundle to `\u003cbuildDir\u003e/dev/index.mjs` (by default `.nuxt/dev/index.mjs`). The build directory is inside the directories Nuxt passes to Vite's `server.fs.allow`, so the bundle is served by the dev server:\n\n```bash\ncurl http://\u003cdev-server\u003e/_nuxt/@fs/\u003cabsolute-path-to-project\u003e/.nuxt/dev/index.mjs\n```\n\nThe response contains every private (non-`public`) runtime config value that was resolved at build time. That includes values set in `nuxt.config`, such as a secret read from `.env`:\n\n```ts\nexport default defineNuxtConfig({\n  runtimeConfig: {\n    apiSecret: process.env.API_SECRET,\n  },\n})\n```\n\nFrom Nuxt 4.6.0, it also includes the generated development `appSecret`. Vite's default deny list blocks `.env` itself, but not the bundle containing values read from it.\n\nExploitation requires direct HTTP access to the dev server. `nuxt dev` listens on localhost by default, so this mainly affects dev servers that are exposed to a network (for example with `--host`, a published container port or a tunnel). As far as we can tell, a malicious website cannot read the file through a developer's browser: Vite's CORS and host checks prevent pages on other origins from reading the response.\n\nProduction builds are not affected, because the Vite dev server is not used and the server bundle is not served. Nuxt projects using Nitro 3 do not write the server bundle to disk in development and are not affected. Private runtime config values that are left empty in `nuxt.config` and supplied through `NUXT_*` environment variables are applied when the server starts, are not inlined into the bundle, and are not exposed.\n\n### Patches\n\nFixed in `@nuxt/vite-builder` 4.6.3, which `nuxt` 4.6.3 depends on. The dev server now adds Nitro's development output directory to Vite's `server.fs.deny`, keeping Vite's default deny list.\n\nNuxt 3 has reached end of life and will not receive a fix.\n\n### Workarounds\n\nAvoid exposing the dev server to untrusted networks. Alternatively, set private runtime config keys to an empty default in `nuxt.config` and provide their values with the matching `NUXT_*` environment variables (for example `runtimeConfig: { apiSecret: '' }` with `NUXT_API_SECRET` in `.env`).\n\nIf a dev server has been reachable by untrusted clients, rotate any credentials that were set through `runtimeConfig` in `nuxt.config`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:00:43Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt dev server exposes private runtime config through the Nitro dev bundle",
+    "UpdatedAt": "2026-10-30T23:00:44Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 4.6.3"
+    }
+  ]
+}

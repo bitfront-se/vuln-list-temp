@@ -1,0 +1,83 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-10-30T23:00:03Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.mariadb.jdbc:mariadb-java-client"
+  },
+  "Advisory": {
+    "DatabaseId": 524983,
+    "Id": "GSA_kwCzR0hTQS00anEyLTh2M2MtOTd3OM4ACAK3",
+    "GhsaId": "GHSA-4jq2-8v3c-97w8",
+    "References": [
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/security/advisories/GHSA-4jq2-8v3c-97w8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-119280"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/280efcfb4390055858fa2dd12b722d85a6a13ab8"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/47aba5a23548b35191865a428cc674316b95ee47"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/commit/e9d767103bfd178ed57caa4cb97bbfbf7e54da6b"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.3.7"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.4.5"
+      },
+      {
+        "Url": "https://github.com/mariadb-corporation/mariadb-connector-j/releases/tag/3.5.11"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4jq2-8v3c-97w8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4jq2-8v3c-97w8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119280"
+      }
+    ],
+    "Description": "## Summary\n\n`XAResource.recover()` in MariaDB Connector/J trusted the `gtrid_length` and\n`bqual_length` columns returned by `XA RECOVER` to allocate and split each Xid.\n\n## Details\n\n`MariaDbPoolConnection` and `MariaDbPoolPinnedConnection` built each `Xid` of\nthe recovery list by allocating `new byte[gtrid_length]` and\n`new byte[bqual_length]` and copying from the `data` column, without validating\nthe lengths against the XA specification bounds (`Xid.MAXGTRIDSIZE`,\n`Xid.MAXBQUALSIZE`) or the actual payload. Negative or oversized lengths, or\nlengths that do not fit the data, ended in large allocations or unchecked\nexceptions (`NegativeArraySizeException`, `ArrayIndexOutOfBoundsException`)\nduring recovery.\n\nThe fix validates the lengths before any allocation or copy and reports an\ninvalid row as an `XAException` (`XAER_RMFAIL`).\n\n## Impact\n\nAvailability only, and limited to applications running XA recovery: a malicious\nor compromised server, or a MitM, can crash the recovery or drive large\nallocations. Exploitation requires control of the server side of the connection.\n\n## Credit\n\nReported by fg0x0",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-10-30T23:00:01Z",
+    "Severity": "LOW",
+    "Summary": "MariaDB Connector/J: XA recover() trusted server-supplied gtrid and bqual lengths",
+    "UpdatedAt": "2026-10-30T23:00:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.11"
+      },
+      "VulnerableVersionRange": "\u003e= 3.5.0, \u003c 3.5.11"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 3.4.0, \u003c 3.4.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.7"
+      },
+      "VulnerableVersionRange": "\u003e= 3.0.0, \u003c 3.3.7"
+    }
+  ]
+}
