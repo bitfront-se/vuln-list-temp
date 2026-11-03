@@ -1,0 +1,52 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-03T17:36:24Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "flowise"
+  },
+  "Advisory": {
+    "DatabaseId": 366769,
+    "Id": "GSA_kwCzR0hTQS1xMnhwLWo4NXEtODgzaM4ABZix",
+    "GhsaId": "GHSA-q2xp-j85q-883h",
+    "References": [
+      {
+        "Url": "https://github.com/FlowiseAI/Flowise/security/advisories/GHSA-6933-jpx5-q87q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2025-71336"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/flowise-unsandboxed-remote-code-execution-via-custom-mcp"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q2xp-j85q-883h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q2xp-j85q-883h"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-6933-jpx5-q87q. This link is maintained to preserve external references.\n\n### Original Description\n\nFlowise before 3.0.6 (affected versions 2.2.7-patch.1 and earlier) contains an unsandboxed remote code execution vulnerability in the Custom MCP feature, which is designed to execute OS commands such as launching local MCP servers. Because Flowise's authentication and authorization model is minimal and lacks role-based access control, and the default installation runs without authentication unless FLOWISE_USERNAME and FLOWISE_PASSWORD are set, an attacker can send a crafted JSON payload with the header 'x-request-from: internal' to the /api/v1/node-load-method/customMCP endpoint to execute arbitrary OS commands, resulting in complete compromise of the platform container or server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T00:32:05Z",
+    "Severity": "CRITICAL",
+    "Summary": "Duplicate Advisory: Flowise has unsandboxed remote code execution via Custom MCP",
+    "UpdatedAt": "2026-11-03T17:36:24Z",
+    "WithdrawnAt": "2026-11-03T17:36:20Z",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.2.7-patch.1, \u003c 3.0.6"
+    }
+  ]
+}

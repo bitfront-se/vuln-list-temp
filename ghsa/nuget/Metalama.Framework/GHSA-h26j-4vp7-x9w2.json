@@ -1,0 +1,83 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-03T16:37:45Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Metalama.Framework"
+  },
+  "Advisory": {
+    "DatabaseId": 526001,
+    "Id": "GSA_kwCzR0hTQS1oMjZqLTR2cDcteDl3Ms4ACAax",
+    "GhsaId": "GHSA-h26j-4vp7-x9w2",
+    "References": [
+      {
+        "Url": "https://github.com/metalama/Metalama/security/advisories/GHSA-h26j-4vp7-x9w2"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62848"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/pull/1651"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/commit/5b4ced29f2b25631cc2e44d05b0fd5fe838b6cbe"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/commit/d97f52e1b53ffe4176b2b05c56ffdf1ccd2f53a9"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/releases/tag/release/2025.1.18"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/releases/tag/release/2026.0.25"
+      },
+      {
+        "Url": "https://github.com/metalama/Metalama/releases/tag/release/2026.1.19"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h26j-4vp7-x9w2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h26j-4vp7-x9w2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62848"
+      }
+    ],
+    "Description": "## Summary\n\nMetalama uses a local named-pipe channel to communicate between its Visual Studio processes — the Visual Studio UI process (`devenv`), the out-of-process Roslyn code-analysis process, and the CodeLens process. This channel deserialized messages from the pipe **without restricting which CLR types could be instantiated**. A local process able to write to the pipe can send a crafted message that instantiates arbitrary .NET types — a deserialization primitive in the same class as `BinaryFormatter` (CWE-502), and a well-known gadget-chain code-execution vector.\n\nThe flaw is present, via two successive serializers, in **every Metalama release from the first public version (2023.0) up to and including 2026.1.18**, and is fixed in **2026.1.19**.\n\nThe pipe name is predictable: `Metalama_{role}_{processId}_{hash(PackageVersion)}`, derived from the public package version and a locally-enumerable process id. This channel is used by the Visual Studio integration only (Windows named pipes); it is not used for command-line / MSBuild builds.\n\n## Mechanisms\n\n**JSON era — Metalama 2023.0 through 2026.0.x (Newtonsoft.Json).** The pipe formatter enabled polymorphic type embedding:\n```csharp\nformatter.JsonSerializer.TypeNameHandling = TypeNameHandling.All;   // ServiceEndpoint.cs (early), later BaseEndpoint.cs\n```\nThe accompanying `SerializationBinder` (added later for multi-version assembly support) only **remapped assembly names**; its `BindToType` resolved **any** type name from the wire (`assembly.GetType(typeName)`) with **no type allow-list**. `TypeNameHandling.All` is the canonical unsafe-deserialization setting and has publicly available gadget chains (e.g. ysoserial.net), so this era is at least as exploitable as the later one. (Introduced by commit `0554368737`, first shipped in `release/2023.0.101-rc`.)\n\n**MessagePack era — Metalama 2026.1.0 through 2026.1.18.** The 2026.1 line migrated the pipe serialization to MessagePack (PR #1299, commit `117b607805`, 2026-01-29), using **typeless** MessagePack (`TypelessObjectResolver`), which likewise embeds CLR type names on the wire and instantiates arbitrary types on receipt — again with no allow-list.\n\nBoth mechanisms share the same channel, the same predictable pipe name, the same impact, and the same access preconditions.\n\n## Impact\n\nPotential arbitrary code execution inside the Visual Studio process that hosts the affected component (the UI process, the code-analysis process, or the CodeLens process), with full loss of confidentiality, integrity and availability within that process.\n\n**Mitigating factor (limits practical severity to Medium):** the pipe is created with the default Windows ACL (no explicit `PipeSecurity`), which permits **only same-user processes to write**. All of the Visual Studio processes involved run as the same logged-in developer, so exploitation requires the attacker to already be executing code as that same user. There is **no privilege escalation** and no crossing of a security boundary; the practical value is code execution inside the developer's Visual Studio session (lateral movement / persistence within an already same-user-compromised context). This is why the practical severity is **Medium** despite the CVSS base score.\n\n## Severity\n\nCVSS v3.1: `AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H` = **7.3 (High)** base score; **practical severity Medium**, because the attacker gains no privilege beyond what they already had (same user, same Visual Studio session).\n\nCVSS v4.0 cross-check: `CVSS:4.0/AV:L/AC:H/AT:P/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N` = 7.0 (High). The Subsequent-System metrics are None because no security boundary is crossed.\n\n## Affected products and remediation\n\nAll affected products are part of the Visual Studio integration.\n\n| Product | Affected | Remediation |\n|---|---|---|\n| NuGet `Metalama.Framework` | all `\u003c 2026.1.19` | upgrade to **2026.1.19** (no backports) |\n| VS extension `PostSharpTechnologies.PostSharp` (\"Metalama + PostSharp\", maintained) | **2024.1 - 2026.1.4** | update to **2026.1.5** (bundles Metalama 2026.1.19) |\n| VS extension `PostSharpTechnologies.Metalama` (retired) | all versions | uninstall / migrate to PostSharp `\u003e= 2026.1.5` |\n| VS extension `PostSharpTechnologies.caravela` (retired) | all versions | uninstall / migrate to PostSharp `\u003e= 2026.1.5` |\n\nThe PostSharp extension was a separate, Metalama-free product before the 2024.1 merge (Metalama.Vsx issue #33843), so earlier PostSharp versions are not affected. GitHub has no Visual Studio Marketplace ecosystem, so only the NuGet package appears in the structured \"Affected products\" list.\n\n## Fix\n\nFixed in Metalama **2026.1.19** (commit `d97f52e1b5`, PR #1651): the type-name deserialization is wrapped in `RpcContractMessagePackOptions`, which enforces a `[RpcContract]` type allow-list on the wire; pipe access is restricted to the current user. The fix reaches the maintained Visual Studio extension in version **2026.1.5**. The retired Caravela and Metalama extensions will not be fixed.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-03T16:37:44Z",
+    "Severity": "HIGH",
+    "Summary": "Metalama: Unsafe deserialization over Metalama's Visual Studio inter-process named pipe enables local code execution",
+    "UpdatedAt": "2026-11-03T16:38:10Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.0.25"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.0.1-preview, \u003c 2026.0.25"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2025.1.18"
+      },
+      "VulnerableVersionRange": "\u003c 2025.1.18"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2026.1.19"
+      },
+      "VulnerableVersionRange": "\u003e= 2026.1.0-preview, \u003c 2026.1.19"
+    }
+  ]
+}

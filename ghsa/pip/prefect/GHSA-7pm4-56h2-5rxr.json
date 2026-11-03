@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-03T21:18:14Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "prefect"
+  },
+  "Advisory": {
+    "DatabaseId": 365440,
+    "Id": "GSA_kwCzR0hTQS03cG00LTU2aDItNXJ4cs4ABZOA",
+    "GhsaId": "GHSA-7pm4-56h2-5rxr",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5366"
+      },
+      {
+        "Url": "https://huntr.com/bounties/e2e88a0f-a8f6-49c9-94c5-e98dc385f07a"
+      },
+      {
+        "Url": "https://github.com/PrefectHQ/prefect/pull/21384"
+      },
+      {
+        "Url": "https://github.com/PrefectHQ/prefect/commit/6a9d9918716ce4ee0297b69f3046f7067ef1faae"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-7pm4-56h2-5rxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-7pm4-56h2-5rxr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-5366"
+      }
+    ],
+    "Description": "Prefect versions 3.1.11 through 3.6.24 are vulnerable to remote code execution due to improper handling of user-controlled input in the `GitRepository` storage class. The `commit_sha` parameter, which is passed to git commands, lacks validation and does not include a `--` separator to distinguish user input from git flags. This allows attackers to inject arbitrary git flags, such as `--upload-pack`, enabling execution of external programs. Additionally, the `directories` parameter can be exploited to inject git flags during sparse-checkout operations. These vulnerabilities allow any user with deployment creation permissions to execute arbitrary commands on worker machines, compromising shared work pools in multi-tenant environments.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-20T18:31:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "Prefect has Git Flag Injection via commit_sha and directories Parameters Leading to Remote Code Execution (RCE)",
+    "UpdatedAt": "2026-11-03T21:18:14Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.6.25"
+      },
+      "VulnerableVersionRange": "\u003e= 3.1.11, \u003c 3.6.25"
+    }
+  ]
+}
