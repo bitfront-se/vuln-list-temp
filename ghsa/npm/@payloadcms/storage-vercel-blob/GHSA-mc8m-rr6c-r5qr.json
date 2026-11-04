@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-04T17:00:40Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@payloadcms/storage-vercel-blob"
+  },
+  "Advisory": {
+    "DatabaseId": 526799,
+    "Id": "GSA_kwCzR0hTQS1tYzhtLXJyNmMtcjVxcs4ACAnP",
+    "GhsaId": "GHSA-mc8m-rr6c-r5qr",
+    "References": [
+      {
+        "Url": "https://github.com/payloadcms/payload/security/advisories/GHSA-mc8m-rr6c-r5qr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-93363"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/commit/47abe9bb5c444330dbfaa9a5bc2033337932270b"
+      },
+      {
+        "Url": "https://github.com/payloadcms/payload/releases/tag/v3.90.0"
+      },
+      {
+        "Url": "https://www.vulncheck.com/advisories/payload-cms-storage-vercel-blob-adapter-improper-access-control-on-upload-route"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mc8m-rr6c-r5qr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mc8m-rr6c-r5qr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-93363"
+      }
+    ],
+    "Description": "### Impact\nIn affected configurations, client upload access does not consistently align with the associated collection’s access configuration.\n\nYou are affected if:\n- You use client uploads with `@payloadcms/storage-vercel-blob`.\n- Authenticated users can access the client-upload route.\n\nApplications that do not enable client uploads are not affected.\n\n### Patches\nClient uploads now require authentication and the appropriate collection-level access before upload access is granted.\n\nUsers should upgrade Payload packages to `\u003e= 3.90.0` or `\u003e= 4.0.0-canary.34`.\n\n### Workarounds\nUpgrading to a patched version is recommended. Until you can upgrade, disable client uploads or configure the upload route’s access control to enforce the associated collection’s permissions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-04T17:00:39Z",
+    "Severity": "MODERATE",
+    "Summary": "@payloadcms/storage-vercel-blob has access control bypass of uploads in Vercel Storage adapter",
+    "UpdatedAt": "2026-11-04T17:00:40Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.0-canary.34"
+      },
+      "VulnerableVersionRange": "\u003e= 4.0.0-canary.0, \u003c 4.0.0-canary.34"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.90.0"
+      },
+      "VulnerableVersionRange": "\u003e= 3.25.0, \u003c 3.90.0"
+    }
+  ]
+}
