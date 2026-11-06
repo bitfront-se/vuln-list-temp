@@ -1,0 +1,52 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-06T18:06:44Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.hawkbit:hawkbit-ddi-resource"
+  },
+  "Advisory": {
+    "DatabaseId": 389685,
+    "Id": "GSA_kwCzR0hTQS1mM2o4LThnZ3EtZjl4Ms4ABfI1",
+    "GhsaId": "GHSA-f3j8-8ggq-f9x2",
+    "References": [
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/security/advisories/GHSA-92r3-p8c2-3fpx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-16454"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/work_items/196"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f3j8-8ggq-f9x2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f3j8-8ggq-f9x2"
+      }
+    ],
+    "Description": "### Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-92r3-p8c2-3fpx. This link is maintained to preserve external references.\n\n### Original Description\nIn Eclipse hawkBit versions 1.0.3 and prior, a privilege escalation vulnerability (CWE-284 / CWE-862) has been identified in the Direct Device Integration (DDI) Controller.\n\n\n\nThis vulnerability allows an authenticated device to escalate its permissions and bypass the strict boundaries of its assigned updates. Under normal operation, a device should be restricted strictly to the specific firmware artifacts explicitly assigned to it. However, this flaw enables any authenticated device to bypass this restriction and download any firmware artifact within the same tenant.\n\n\n\nThis is not an authentication bypass; the requesting device must possess valid credentials for its respective tenant. Instead, the issue stems from a flaw in object-level authorization validation.\n\n\n\nA related, lower-severity helper issue exists in the listing software modules artifacts metadata endpoint. This endpoint does not enforce assignment checks, enabling an authenticated device to list and enumerate available firmware artifacts, which can facilitate targeted exfiltration using the main download authorization bypass.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-07-21T18:31:02Z",
+    "Severity": "MODERATE",
+    "Summary": "Duplicate Advisory: Privilege Escalation in Eclipse hawkBit DDI allows Tenant-Isolated Firmware Exfiltration",
+    "UpdatedAt": "2026-11-06T18:06:45Z",
+    "WithdrawnAt": "2026-11-06T18:06:43Z",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.4"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.4"
+    }
+  ]
+}

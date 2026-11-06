@@ -1,0 +1,71 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-06T18:09:46Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.eclipse.hawkbit:hawkbit-ddi-resource"
+  },
+  "Advisory": {
+    "DatabaseId": 527791,
+    "Id": "GSA_kwCzR0hTQS05MnIzLXA4YzItM2ZweM4ACA2v",
+    "GhsaId": "GHSA-92r3-p8c2-3fpx",
+    "References": [
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/security/advisories/GHSA-92r3-p8c2-3fpx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-16454"
+      },
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/pull/3156"
+      },
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/pull/3161"
+      },
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/commit/6cb34fd77f6a60cfb0ee5b379093593cbe56591a"
+      },
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/commit/914b8b406bd77838cffbef80c1ea4cff5a15c710"
+      },
+      {
+        "Url": "https://github.com/eclipse-hawkbit/hawkbit/releases/tag/1.0.4"
+      },
+      {
+        "Url": "https://gitlab.eclipse.org/security/cve-assignment/-/work_items/196"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-92r3-p8c2-3fpx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-92r3-p8c2-3fpx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-16454"
+      }
+    ],
+    "Description": "## **Description**\nA privilege escalation vulnerability has been identified in the Direct Device Integration (DDI) Controller of **Eclipse hawkBit** (versions 1.0.3 and prior).\n\nThis vulnerability allows an authenticated device to escalate its permissions and bypass the strict boundaries of its assigned updates. Under normal operation, a device should be restricted **strictly to the specific firmware artifacts explicitly assigned to it**. However, this flaw enables any authenticated device to bypass this restriction and download any firmware artifact **within the same tenant**.\n\nThis is **not** an authentication bypass; the requesting device must possess valid credentials for its respective tenant. Instead, the issue stems from a flaw in object-level authorization validation.\n\nA related, lower-severity helper issue exists in the listing software modules artifacts metadata endpoint. This endpoint does not enforce assignment checks, enabling an authenticated device to list and enumerate available firmware artifacts, which can facilitate targeted exfiltration using the main download authorization bypass.\n\n---\n\n## **Impact**\n* **Severity:** Moderate\n* **Scope:** Tenant-isolated. An attacker must be an authenticated device within the target tenant to exploit this vulnerability.\n* **Confidentiality Impact:** **Low**. While firmware binaries can be retrieved, the impact is mitigated because access is restricted strictly to the scope of the pre-authenticated tenant, and no administrative or cross-tenant data is exposed. Additionally, production firmware binaries are by design not expected to contain highly sensitive or confidential data (such as hardcoded credentials or private keys), further supporting the Low confidentiality rating.\n\n---\n\n## **Affected Products and Versions**\n* **Product:** `eclipse-hawkbit/hawkbit`\n* **Affected Component:** `hawkbit-ddi/hawkbit-ddi-resource`, as well as the compiled binaries and Docker images that contain this component.\n* **Affected Versions:** `1.0.3` and prior versions.\n* **Patched Version:** `1.0.4`\n\n---\n\n## **Remediation**\nUpgrade to version **1.0.4** or later. \n\n**Fix details:** The download authorization logic has been corrected to ensure that assignment-based verification is executed on every artifact download request. Additionally, the software module metadata endpoint has been updated to enforce proper authorization, restricting access exclusively to software modules and artifacts that are explicitly assigned to or already installed on the requesting device.\n\n---\n\n## **Credits**\nEclipse would like to thank **Santosh Kumar Puppala** (GitHub: [Santoshkumarpuppala](https://github.com/Santoshkumarpuppala), Email: santhoshkumar7794@gmail.com) for discovering and reporting this vulnerability through coordinated disclosure.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-06T18:09:45Z",
+    "Severity": "MODERATE",
+    "Summary": "Eclipse hawkBit DDI has Privilege Escalation that allows Tenant-Isolated Firmware Exfiltration",
+    "UpdatedAt": "2026-11-06T18:09:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.4"
+      },
+      "VulnerableVersionRange": "\u003c= 1.0.3"
+    }
+  ]
+}
