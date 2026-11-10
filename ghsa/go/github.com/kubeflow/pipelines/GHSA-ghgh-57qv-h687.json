@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T22:48:03Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/kubeflow/pipelines"
+  },
+  "Advisory": {
+    "DatabaseId": 529224,
+    "Id": "GSA_kwCzR0hTQS1naGdoLTU3cXYtaDY4N84ACBNI",
+    "GhsaId": "GHSA-ghgh-57qv-h687",
+    "References": [
+      {
+        "Url": "https://github.com/kubeflow/pipelines/security/advisories/GHSA-ghgh-57qv-h687"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-88984"
+      },
+      {
+        "Url": "https://github.com/kubeflow/pipelines/pull/13288"
+      },
+      {
+        "Url": "https://github.com/kubeflow/pipelines/commit/186dd1f3b0403af841c9b4ea7ab94f405339ef6c"
+      },
+      {
+        "Url": "https://github.com/kubeflow/pipelines/releases/tag/2.16.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ghgh-57qv-h687"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ghgh-57qv-h687"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-88984"
+      }
+    ],
+    "Description": "## Summary\n\nIn multi-user mode, the Kubeflow Pipelines API server skipped authorization checks for shared/global pipelines with an empty namespace. This exception applied to write and delete operations as well as reads, allowing an authenticated user to modify or delete shared pipelines without the required Kubernetes RBAC permissions.\n\n## Impact\n\nUnauthorized modification compromises the integrity of shared pipeline definitions and versions. Unauthorized deletion can make shared pipelines unavailable.\n\nExecution of a modified pipeline can cause attacker-controlled workload behavior, but this is a conditional downstream consequence requiring the modified pipeline to be executed. Modification alone does not demonstrate immediate worker code execution.\n\nReading shared pipelines is intentionally permitted and remains permitted after the fix. Consequently, access to shared pipeline configuration does not establish an additional confidentiality impact from this write-authorization defect. The confidentiality metric is None; the integrity and availability metrics reflect unauthorized modification and deletion of shared pipelines.\n\nThe affected authorization boundary is shared pipelines in multi-user deployments. Single-user deployments intentionally bypass these multi-user authorization checks.\n\n## Patches\n\nFixed by [kubeflow/pipelines#13288](https://github.com/kubeflow/pipelines/pull/13288), with the fix included in 2.16.1.\n\nRead-only operations on shared pipelines remain allowed. For write and delete operations, the API server checks Kubernetes RBAC permissions against the KFP system namespace, because shared pipelines have no namespace of their own.\n\n## Scope of this fix\n\nThe 2.16.1 fix addresses the shared-pipeline authorization paths described above. It does not fix every shared-pipeline write path: the separate shared-pipeline upload authorization defect is tracked in [GHSA-rjr3-43j3-4q8g / CVE-2026-77596](https://github.com/kubeflow/pipelines/security/advisories/GHSA-rjr3-43j3-4q8g). Consult that advisory for its affected versions and remediation; 2.16.1 must not be interpreted as fixing that separate upload defect.\n\n## Workarounds\n\nUntil upgrading, restrict access to the Pipelines API to trusted users through deployment-level access controls. Namespace RBAC alone does not correct the affected shared-pipeline authorization path.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T22:48:03Z",
+    "Severity": "HIGH",
+    "Summary": "Kubeflow Pipelines: RBAC bypass on shared pipelines allows any authenticated user to delete or modify global pipelines",
+    "UpdatedAt": "2026-11-09T22:48:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260420170029-186dd1f3b040"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260420170029-186dd1f3b040"
+    }
+  ]
+}

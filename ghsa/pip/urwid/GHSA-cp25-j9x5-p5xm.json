@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-09T22:05:08Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "urwid"
+  },
+  "Advisory": {
+    "DatabaseId": 529207,
+    "Id": "GSA_kwCzR0hTQS1jcDI1LWo5eDUtcDV4bc4ACBM3",
+    "GhsaId": "GHSA-cp25-j9x5-p5xm",
+    "References": [
+      {
+        "Url": "https://github.com/urwid/urwid/security/advisories/GHSA-cp25-j9x5-p5xm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-103022"
+      },
+      {
+        "Url": "https://github.com/urwid/urwid/pull/1201"
+      },
+      {
+        "Url": "https://github.com/urwid/urwid/commit/b79d9a96843a6f5950bb2bfab5d059bdc61c538b"
+      },
+      {
+        "Url": "https://github.com/urwid/urwid/releases/tag/4.0.7"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cp25-j9x5-p5xm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cp25-j9x5-p5xm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-103022"
+      }
+    ],
+    "Description": "### Summary\nThe `handle_short_request()` function in `urwid/display/web.py` raises an unhandled `UnicodeEncodeError` when processing a POST request body containing non-ASCII bytes. The function reads POST input and encodes it to ASCII before writing to a named pipe. Any byte value above `0x7F` causes the CGI process to exit with an unhandled exception, returning an HTTP 500 error to the client. Additionally, a file descriptor opened earlier in the same function is not closed before the exception propagates, causing a file descriptor leak for the lifetime of the CGI process.\n\nA second instance of missing exception handling exists in the polling update path, where non-UTF-8 socket output causes an unhandled `UnicodeDecodeError`.\n\n### Impact\nAn attacker who observes a valid `X-Urwid-ID` session token (transmitted in plaintext HTTP response headers) can send repeated POST requests containing non-ASCII bytes to the `urwid` CGI endpoint. Each malformed request causes the CGI handler to crash with HTTP 500. This results in a Denial of Service (DoS) for legitimate users using the `urwid` web interface.\n\n### Affected Versions\n`urwid \u003c= 4.0.6`\n\n### Patches\nFixed in `urwid 4.0.7`. Users should upgrade to version `4.0.7` or later.\n\n### Workarounds\nNo direct workaround exists short of disabling the `urwid` web display interface.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T22:05:06Z",
+    "Severity": "MODERATE",
+    "Summary": "Urwid: handle_short_request() crashes on non-ASCII POST body (UnicodeEncodeError DoS)",
+    "UpdatedAt": "2026-11-09T22:05:08Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.7"
+      },
+      "VulnerableVersionRange": "\u003c= 4.0.6"
+    }
+  ]
+}

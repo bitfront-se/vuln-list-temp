@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T21:17:04Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/pocket-id/pocket-id/backend"
+  },
+  "Advisory": {
+    "DatabaseId": 529051,
+    "Id": "GSA_kwCzR0hTQS1xNHhtLXA3NWgtaDlwM84ACBKb",
+    "GhsaId": "GHSA-q4xm-p75h-h9p3",
+    "References": [
+      {
+        "Url": "https://github.com/pocket-id/pocket-id/security/advisories/GHSA-q4xm-p75h-h9p3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-62662"
+      },
+      {
+        "Url": "https://github.com/pocket-id/pocket-id/pull/1520"
+      },
+      {
+        "Url": "https://github.com/pocket-id/pocket-id/commit/8158452b37304115c97c61c3a56082ce938ce6f0"
+      },
+      {
+        "Url": "https://github.com/pocket-id/pocket-id/releases/tag/v2.10.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q4xm-p75h-h9p3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q4xm-p75h-h9p3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-62662"
+      }
+    ],
+    "Description": "## Summary\n\nThe client credentials grant (`grant_type=client_credentials`) does not validate the resource parameter before embedding it as the aud claim in the issued JWT. Any authenticated OIDC client can obtain a Pocket ID-signed access token claiming authorization for any arbitrary audience, including other registered OIDC clients. There is no check that the requested audience is a registered resource server, and no check that the requesting client has been granted permission to access it.\n\n## Details\n\nIn `backend/internal/service/oidc_service.go`, `createTokenFromClientCredentials` accepts the resource parameter from the token request and places it directly into the `aud` claim of the issued JWT without validation:\n\n```golang\n  audClaim := client.ID\n  if input.Resource != \"\" {\n      audClaim = input.Resource  // no validation performed\n  }\n  accessToken, err := s.jwtService.GenerateOAuthAccessToken(dummyUser, audClaim)\n```\n\nThe only guard in this function is `verifyClientCredentialsInternal`, which confirms the requesting client's credentials are valid. After that check passes, any value supplied as resource is accepted. There is no registry of permitted audiences, no per-client authorization policy controlling which resources a client may request tokens for, and no validation that the resource value corresponds to anything registered in Pocket ID.\n\nThe introspection endpoint (`/api/oidc/introspect`) does not mitigate this. It checks that the introspecting client's ID matches the token's `aud` claim, but since the attacker controls `aud`, a resource server calling introspection to validate an inbound token will receive `\"active\": true`. Pocket ID has no server-side record of which client requested the token or whether it was authorized to do so, so introspection cannot distinguish a legitimately issued token from one obtained through this vulnerability.\n\n## PoC\n\nGiven a Pocket ID instance with two registered OIDC clients — `client-a` (attacker-controlled) and `client-b` (target resource) — the following request causes Pocket ID to issue a signed JWT with `aud: [\"client-b\"]`, authenticated only as `client-a`:\n\n```\ncurl -X POST https://\u003cpocket-id-host\u003e/api/oidc/token \\\n    -d \"grant_type=client_credentials\" \\\n    -d \"client_id=client-a\" \\\n    -d \"client_secret=\u003cclient-a-secret\u003e\" \\\n    -d \"resource=client-b\"\n```\n\nThe response is a valid, Pocket ID-signed JWT with:\n\n```json\n{\n    \"sub\": \"client-client-a\",\n    \"aud\": [\"client-b\"],\n    \"iss\": \"https://\u003cpocket-id-host\u003e\",\n    \"type\": \"oauth-access-token\"\n}\n```\n\nThis token will pass signature and `aud` validation at any resource server that trusts Pocket ID's JWKS and accepts `client-b` as its audience identifier.\n\n## Impact\n\nAny OIDC client registered in Pocket ID that has valid credentials (client secret or federated identity) can obtain a Pocket ID-signed access token scoped to any other registered client or arbitrary audience string. In deployments where services use the client credentials grant and validate incoming bearer tokens against Pocket ID's JWKS, this allows a compromised or malicious client to bypass audience-based access controls and present tokens to resource servers it should not be authorized to access.\n\nThe severity depends on deployment: if no resource servers validate Pocket ID-issued access tokens, there is no immediate exploitable impact. In deployments that do rely on the client credentials grant for service-to-service authorization, the isolation between services is entirely broken.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T21:17:04Z",
+    "Severity": "HIGH",
+    "Summary": "Pocket ID: The client credentials grant allows any OIDC client to obtain tokens for arbitrary audiences",
+    "UpdatedAt": "2026-11-09T21:17:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.0/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260622164202-8158452b3730"
+      },
+      "VulnerableVersionRange": "\u003c 0.0.0-20260622164202-8158452b3730"
+    }
+  ]
+}

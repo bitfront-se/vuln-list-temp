@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T21:58:01Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/telepresenceio/telepresence/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 529203,
+    "Id": "GSA_kwCzR0hTQS02ajNoLXJwNzMtNnJ2Zs4ACBMz",
+    "GhsaId": "GHSA-6j3h-rp73-6rvf",
+    "References": [
+      {
+        "Url": "https://github.com/telepresenceio/telepresence/security/advisories/GHSA-6j3h-rp73-6rvf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102339"
+      },
+      {
+        "Url": "https://github.com/telepresenceio/telepresence/pull/4217"
+      },
+      {
+        "Url": "https://github.com/telepresenceio/telepresence/commit/1312482488b771742dbedd3015f9a81a27532de6"
+      },
+      {
+        "Url": "https://github.com/telepresenceio/telepresence/commit/36458b65a010d2b316af48cd90e193ba190785d9"
+      },
+      {
+        "Url": "https://github.com/telepresenceio/telepresence/releases/tag/v2.31.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6j3h-rp73-6rvf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6j3h-rp73-6rvf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102339"
+      }
+    ],
+    "Description": "## Summary\n\nThe Traffic Manager `Tunnel` gRPC streaming endpoint accepts a session ID from the first bytes of the client-controlled message payload. No verification confirms the caller owns the session. An attacker supplying a valid active session ID receives a fully routed tunnel for that session, gaining the network routing capabilities of the legitimate Telepresence client. Tested on HEAD v2.28.0, commit b2231a4.\n\n## Details\n\nThe `Tunnel` handler reads identity from a client-provided binary payload rather than from a verified credential or prior authenticated gRPC call:\n\n```go\n// cmd/traffic/cmd/manager/service.go:1057-1063\nfunc (s *service) Tunnel(server grpc.BidiStreamingServer[...]) error {\n    stream, err := tunnel.NewServerStream(ctx, tunnel.ClientToManager, server)\n    return s.state.Tunnel(ctx, stream)  // stream.SessionID() is client-controlled\n}\n```\n\n`state.Tunnel` looks up the session ID in the sessions map with no ownership proof:\n\n```go\n// cmd/traffic/cmd/manager/state/state.go:698-703\nfunc (s *State) Tunnel(ctx context.Context, stream tunnel.Stream) error {\n    id := stream.SessionID()   // from client payload bytes\n    if cs, ok := s.clients.Load(id); ok {\n        return s.clientTunnel(ctx, cs, stream)  // full dialer granted\n    }\n    return grpcErrors.Errorf(codes.NotFound, ...)\n}\n```\n\nThe session ID is parsed from the wire message with no binding to the transport-level identity of the caller (pkg/tunnel/message.go:209-214).\n\n## Proof of Concept\n\nPrecondition: a valid active session ID (obtainable via ArriveAsClient, which has no auth either).\n\n```go\nconn, _ := grpc.NewClient(\"traffic-manager.ambassador:8081\",\n    grpc.WithTransportCredentials(insecure.NewCredentials()))\nmgr := rpc.NewManagerClient(conn)\n\ntunnelStream, _ := mgr.Tunnel(ctx)\n\n// Send StreamInfo with victim session ID in payload\ntunnelStream.Send(\u0026rpc.TunnelMessage{Payload: buildStreamInfo(victimSessionID, ...)})\n\n// Traffic Manager routes tunnel traffic for victimSessionID\n// through this attacker-controlled bidirectional stream\n```\n\n## Impact\n\nA caller supplying a valid session ID of an active Telepresence client obtains a tunnel endpoint for that session's network routing context. Session IDs are UUID4s, making cold brute-force impractical; exploitation materialises when session IDs are obtainable via log leakage or cluster-internal channels. Combined with the unauthenticated ArriveAsClient endpoint, an attacker can\ncreate their own sessions and pivot to impersonate active developer sessions.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T21:58:00Z",
+    "Severity": "HIGH",
+    "Summary": "Telepresence: Tunnel endpoint accepts caller-supplied session ID with no ownership proof — active client sessions hijackable",
+    "UpdatedAt": "2026-11-09T21:58:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.31.0"
+      },
+      "VulnerableVersionRange": "\u003c 2.31.0"
+    }
+  ]
+}

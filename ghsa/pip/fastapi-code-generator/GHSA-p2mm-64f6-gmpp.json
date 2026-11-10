@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-09T19:48:09Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "fastapi-code-generator"
+  },
+  "Advisory": {
+    "DatabaseId": 529039,
+    "Id": "GSA_kwCzR0hTQS1wMm1tLTY0ZjYtZ21wcM4ACBKP",
+    "GhsaId": "GHSA-p2mm-64f6-gmpp",
+    "References": [
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/security/advisories/GHSA-p2mm-64f6-gmpp"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63471"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/commit/49301dbdb82170d7f50877419d994b05cb1fa2bc"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/commit/b3b9bd66e0b0c4d8c686fda700258104615a1332"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/releases/tag/0.8.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p2mm-64f6-gmpp"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p2mm-64f6-gmpp"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63471"
+      }
+    ],
+    "Description": "### Summary\n\nfastapi-code-generator (koxudaxi) emits the OpenAPI path into the generated main.py route decorator as a single-quoted string literal (`@app.get('/u/\u003cpath\u003e/x')`) without escaping the `'`. A `'` in the path closes the decorator string and, via concatenation, injects a live expression that the decorator argument evaluates when main.py is imported (the ASGI server imports it at startup) -- code execution, no request needed. The path is a pure data field. Verified on fastapi-code-generator 0.8.0 / Python 3 / FastAPI.\n\n### Details\n\n```python\n@app.get('/u/'+(__import__(\"os\").system('…') or \"\")+'/x', response_model=None)\ndef get_thing() -\u003e None:\n pass\n```\n\nThe generator post-processes output with black/isort, so a syntax-breaking payload aborts generation (DoS); a valid-Python concat (`'+expr+'`, kept valid with `(… or \"\")`) is written and runs at import. info.description (`description='…'`), tags, and parameter defaults are `'`-escaped; the path in @app.get('…') is the unescaped sink. Models come from datamodel-code-generator (repr-escaped, no RCE).\n\nNot a duplicate: distinct product from OpenAPI Generator's python-fastapi backend (different codebase/template/decorator); and distinct from the operation-summary docstring sink in the same product.\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates the app and merely imports main.py; the injected expression runs at decorator evaluation and writes a marker. Verified on 0.8.0.\n\n### Impact\n\nCode execution at import/startup in any application/CI that generates a FastAPI app with fastapi-code-generator from an attacker-controlled or attacker-influenced spec and imports/serves it. Estimated Critical, e.g. `CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N`.\n\n### Suggested fix\n\nEscape the path for the Python string literal (escape ', \\, newlines via repr) before emitting @app.get('…'), and validate path characters.\n\n[maintainer-report.txt](https://github.com/user-attachments/files/29534357/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29534358/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29534359/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T19:48:08Z",
+    "Severity": "CRITICAL",
+    "Summary": "fastapi-code-generator: Import-time RCE via route path -\u003e unescaped @app.get('...') decorator",
+    "UpdatedAt": "2026-11-09T19:48:09Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.1"
+    }
+  ]
+}

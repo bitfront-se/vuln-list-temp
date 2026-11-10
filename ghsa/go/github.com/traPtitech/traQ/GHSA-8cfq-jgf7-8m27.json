@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T20:55:18Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/traPtitech/traQ"
+  },
+  "Advisory": {
+    "DatabaseId": 529044,
+    "Id": "GSA_kwCzR0hTQS04Y2ZxLWpnZjctOG0yN84ACBKU",
+    "GhsaId": "GHSA-8cfq-jgf7-8m27",
+    "References": [
+      {
+        "Url": "https://github.com/traPtitech/traQ/security/advisories/GHSA-8cfq-jgf7-8m27"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63198"
+      },
+      {
+        "Url": "https://github.com/traPtitech/traQ/commit/5510fe8aa9bb15fc4755c78792381dbb03d576c3"
+      },
+      {
+        "Url": "https://github.com/traPtitech/traQ/releases/tag/v3.28.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-8cfq-jgf7-8m27"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-8cfq-jgf7-8m27"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63198"
+      }
+    ],
+    "Description": "In OAuth2 silent authorization (`prompt=none`), when the `scope` parameter was empty or omitted, all scopes registered for the OAuth client became eligible for issuance. However, the prior consent check was performed against the empty requested scope set. As a result, an attacker could obtain an access token with broader scopes than the user had previously consented to, without requiring additional consent.\n\n## Impact\n\nIf an attacker controls an OAuth client capable of receiving authorization codes, and a user has already consented to only a subset of that client’s scopes, the attacker may be able to obtain a token containing all scopes registered for that client by sending an authorization request with `prompt=none` and an empty or omitted `scope`.\n\nIf the user has not consented to the client at all, `consent_required` is returned as usual.\n\n## Patches\n\nThis issue has been fixed in v3.28.3. After the fix, the consent check for `prompt=none` verifies the scopes that will actually be issued, rather than the empty requested scope set. If the user has not consented to all scopes after expansion, `consent_required` is returned.\n\ntraQ also recommends revoking any existing OAuth tokens created before the fix if they were potentially affected.\n\n## Workarounds\n\nIf users cannot update immediately, they should apply the following mitigations:\n\n- Disable untrusted OAuth clients, minimize registered client scopes, and revoke existing tokens\n- Reject authorization requests with `prompt=none` where `scope` is empty or omitted",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T20:55:17Z",
+    "Severity": "HIGH",
+    "Summary": "traQ: Privilege escalation by OAuth prompt=none request",
+    "UpdatedAt": "2026-11-09T20:55:18Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.0.0-rc.2.0.20260629134940-5510fe8aa9bb"
+      },
+      "VulnerableVersionRange": "\u003c 1.0.0-rc.2.0.20260629134940-5510fe8aa9bb"
+    }
+  ]
+}

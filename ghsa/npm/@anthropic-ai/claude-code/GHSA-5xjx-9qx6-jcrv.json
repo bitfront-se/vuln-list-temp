@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T22:42:04Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@anthropic-ai/claude-code"
+  },
+  "Advisory": {
+    "DatabaseId": 529220,
+    "Id": "GSA_kwCzR0hTQS01eGp4LTlxeDYtamNyds4ACBNE",
+    "GhsaId": "GHSA-5xjx-9qx6-jcrv",
+    "References": [
+      {
+        "Url": "https://github.com/anthropics/claude-code/security/advisories/GHSA-5xjx-9qx6-jcrv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-88968"
+      },
+      {
+        "Url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.251"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5xjx-9qx6-jcrv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5xjx-9qx6-jcrv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-88968"
+      }
+    ],
+    "Description": "Claude Code validated Edit tool targets using point-in-time pathname and symlink resolution that was not bound to the underlying directory inodes or file descriptors. On macOS, a process running inside Claude Code's Bash sandbox could exploit the resulting time-of-check to time-of-use window by atomically swapping an in-workspace parent directory with a symlink after validation completed, causing the unsandboxed Edit implementation to overwrite an attacker-selected user-writable file outside the workspace. Exploiting this required the ability to run attacker-controlled code inside the sandbox, such as through a malicious repository or dependency script.\n\nUsers on standard Claude Code auto-update have received this fix automatically. Users performing manual updates are advised to update to the latest version.\n\nClaude Code thanks hackerone.com/mahoraga007 (Sunder Singh) for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T22:42:03Z",
+    "Severity": "HIGH",
+    "Summary": "Claude Code: TOCTOU Race in Edit Tool Allows File Writes Outside the Workspace",
+    "UpdatedAt": "2026-11-09T22:42:04Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.251"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.251"
+    }
+  ]
+}

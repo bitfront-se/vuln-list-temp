@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-09T18:50:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "fastapi-code-generator"
+  },
+  "Advisory": {
+    "DatabaseId": 529037,
+    "Id": "GSA_kwCzR0hTQS1oNjY3LTRqajItY2d2NM4ACBKN",
+    "GhsaId": "GHSA-h667-4jj2-cgv4",
+    "References": [
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/security/advisories/GHSA-h667-4jj2-cgv4"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63470"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/commit/49301dbdb82170d7f50877419d994b05cb1fa2bc"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/commit/b3b9bd66e0b0c4d8c686fda700258104615a1332"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/releases/tag/0.8.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h667-4jj2-cgv4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h667-4jj2-cgv4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63470"
+      }
+    ],
+    "Description": "### Summary\n\nfastapi-code-generator (koxudaxi) emits an operation's `summary` as the generated route handler's docstring, using a triple-quoted string without escaping `\"\"\"`. A `\"\"\"` in the summary closes the docstring and, via concatenation, injects a live expression that becomes an expression statement in the handler body -- which runs when the route handler is CALLED (the endpoint is hit). The summary is a pure data field. Verified on fastapi-code-generator 0.8.0 / Python 3 / FastAPI.\n\n### Details\n\n```python\ndef get_thing() -\u003e None:\n (\n \"\"\"\n x\"\"\"\n + (__import__(\"os\").system('…') or \"\")\n + \"\"\"y\n \"\"\"\n )\n pass\n```\n\nThe generator post-processes with black/isort, so a syntax-breaking payload aborts generation; a valid-Python breakout (`\"\"\"+expr+\"\"\"`, kept valid with `(… or \"\")`) is written and executes at call time. info.description, tags, parameter defaults are escaped; operation description is not emitted into the function body; the summary in the handler docstring is the unescaped sink. Models come from datamodel-code-generator (repr-escaped, no RCE).\n\nNot a duplicate: distinct product from OpenAPI Generator's python-fastapi; and distinct field/sink from the route path -\u003e @app.get('…') decorator (import-time) in the same product -- this is the operation summary in the handler docstring (call-time).\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates the app and calls the route handler; the injected expression runs and writes a marker. Verified on 0.8.0.\n\n### Impact\n\nCode execution on the server when the affected endpoint is invoked, in any app generated with fastapi-code-generator from an attacker-controlled or attacker-influenced spec.\n\n### Suggested fix\n\nEscape the summary for the docstring context (escape `\"\"\"`/backslashes via repr, or strip triple-quotes) before emitting it as the handler docstring; apply the same to any free-text field rendered into a docstring. [maintainer-report.txt](https://github.com/user-attachments/files/29534450/maintainer-report.txt) [make_spec.py](https://github.com/user-attachments/files/29534452/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29534453/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T18:50:00Z",
+    "Severity": "CRITICAL",
+    "Summary": "fastapi-code-generator: Call-time RCE via operation summary -\u003e unescaped route-handler docstring",
+    "UpdatedAt": "2026-11-09T18:50:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.1"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-09T19:46:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "fastapi-code-generator"
+  },
+  "Advisory": {
+    "DatabaseId": 529038,
+    "Id": "GSA_kwCzR0hTQS02eG12LWNqcjUtdzNxOM4ACBKO",
+    "GhsaId": "GHSA-6xmv-cjr5-w3q8",
+    "References": [
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/security/advisories/GHSA-6xmv-cjr5-w3q8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63469"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/commit/49301dbdb82170d7f50877419d994b05cb1fa2bc"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/commit/b3b9bd66e0b0c4d8c686fda700258104615a1332"
+      },
+      {
+        "Url": "https://github.com/koxudaxi/fastapi-code-generator/releases/tag/0.8.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6xmv-cjr5-w3q8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6xmv-cjr5-w3q8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63469"
+      }
+    ],
+    "Description": "### Summary\n\nfastapi-code-generator (koxudaxi) emits an operation's extra responses into the route decorator's responses={...} dict, using each response's status-code key as a single-quoted string literal without escaping the '. A ' in a status-code key closes the dict-key string and, via concatenation, injects a live expression that the decorator argument evaluates when main.py is imported (the ASGI server imports it at startup) -- code execution, no request. The status-code key is a pure data field. Verified on\nfastapi-code-generator 0.8.0 / Python 3 / FastAPI.\n\n### Details\n\n```python\n@app.get(\n '/u', response_model=None,\n responses={\n '404' + (__import__(\"os\").system('…') or \"\") + 'x': {'model': Thing}\n },\n)\ndef get_thing() -\u003e None:\n pass\n```\n\nThe responses={...} dict is emitted only when the operation has a second (non-primary) response, so the malicious key is any additional response status. The generator post-processes with black/isort, so a syntax-breaking payload aborts generation (DoS); a valid-Python concat ('+expr+', kept valid with (... or \"\")) is written and runs at import. The response content-type key is NOT a sink (normalized to 'model'). info.* are repr-escaped; operationId -\u003e function_name fails closed (DoS-resistant).\n\nNot a duplicate: same product as the path -\u003e @app.get('…') and summary -\u003e handler-docstring findings, but a different field (response status-code key) and position (the responses={...} decorator dict key). Distinct from OpenAPI Generator's python-fastapi. Models come from datamodel-code-generator (repr-escaped).\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates the app and merely imports main.py; the injected expression runs at decorator evaluation and writes a marker. Verified on 0.8.0.\n\n### Impact\n\nCode execution at import/startup in any application/CI that generates a FastAPI app with\nfastapi-code-generator from an attacker-controlled or attacker-influenced spec (multi-response operation)\nand imports/serves it. Estimated Critical, e.g. `CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N`.\n\n### Suggested fix\n\nEscape each response status-code key for the Python string literal (escape ', \\, newlines via repr) before emitting the responses={...} dict, and validate that status-code keys are numeric / a known pattern. [maintainer-report.txt](https://github.com/user-attachments/files/29534524/maintainer-report.txt) [make_spec.py](https://github.com/user-attachments/files/29534526/make_spec.py) [reproduce.sh](https://github.com/user-attachments/files/29534527/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T19:46:27Z",
+    "Severity": "CRITICAL",
+    "Summary": "fastapi-code-generator: Import-time RCE via response status-code key -\u003e unescaped @app.get(..., responses={...}) dict",
+    "UpdatedAt": "2026-11-09T19:46:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.8.1"
+      },
+      "VulnerableVersionRange": "\u003c 0.8.1"
+    }
+  ]
+}

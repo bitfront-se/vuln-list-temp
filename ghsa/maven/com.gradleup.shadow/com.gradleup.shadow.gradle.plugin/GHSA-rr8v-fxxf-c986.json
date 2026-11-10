@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T21:48:15Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin"
+  },
+  "Advisory": {
+    "DatabaseId": 529199,
+    "Id": "GSA_kwCzR0hTQS1ycjh2LWZ4eGYtYzk4Ns4ACBMv",
+    "GhsaId": "GHSA-rr8v-fxxf-c986",
+    "References": [
+      {
+        "Url": "https://github.com/GradleUp/shadow/security/advisories/GHSA-rr8v-fxxf-c986"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-75598"
+      },
+      {
+        "Url": "https://github.com/GradleUp/shadow/commit/0c2744fcc050e34a084f5131d5e167b13c342bfd"
+      },
+      {
+        "Url": "https://github.com/GradleUp/shadow/releases/tag/9.6.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-rr8v-fxxf-c986"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-rr8v-fxxf-c986"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-75598"
+      }
+    ],
+    "Description": "### Summary\nShadowCopyAction in the Shadow plugin does not validate or sanitize ZIP entry names before writing them to the output fat JAR. A malicious upstream dependency containing path traversal sequences (e.g. `../../../../tmp/pwned.txt`) in entry names will have those entries reproduced verbatim in the output shadow JAR.\n\n### Details\nThe vulnerability exists because Shadow relies entirely on Gradle's ZipFileTree for entry sanitization rather than implementing its own path validation. This means:\n\n1. Users on Gradle \u003c 7.6.2 / 8.x \u003c 8.2.0 are directly exploitable\n2. The produced shadow JAR becomes a Zip Slip weapon against any \ndownstream consumer using unprotected extraction (raw ZipInputStream, \nolder CI tooling, custom Java unpackers)\n3. If Shadow ever uses a non-ZipFileTree code path, protection \ndisappears silently\n\nAffected file: `src/main/kotlin/com/github/jengelman/gradle/plugins/shadow/internal/ShadowCopyAction.kt`\n\n### PoC\n1. Create a malicious JAR with path traversal entry:\n```python\nimport zipfile\nwith zipfile.ZipFile('evil.jar', 'w') as zf:\n    zf.writestr('../../../../tmp/zipslip_proof.txt', 'pwned')\n```\n2. Add as dependency in a shadow project\n3. Run `gradle shadowJar`\n4. Run `unzip -l build/libs/*.jar | grep \"\\.\\.\"`\n5. Traversal entry survives in output JAR\n\n### Impact\nAny tool extracting the shadow JAR with unprotected extraction is subject to arbitrary file overwrite. Users on older Gradle versions  are directly vulnerable at build time.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T21:48:13Z",
+    "Severity": "HIGH",
+    "Summary": "Gradle Shadow: Zip Slip path traversal in ShadowCopyAction — no independent entry-name sanitization",
+    "UpdatedAt": "2026-11-09T21:48:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.6.0"
+      },
+      "VulnerableVersionRange": "\u003c 9.6.0"
+    }
+  ]
+}

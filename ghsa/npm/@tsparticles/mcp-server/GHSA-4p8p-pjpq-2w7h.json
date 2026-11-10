@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-09T21:13:56Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tsparticles/mcp-server"
+  },
+  "Advisory": {
+    "DatabaseId": 529049,
+    "Id": "GSA_kwCzR0hTQS00cDhwLXBqcHEtMnc3aM4ACBKZ",
+    "GhsaId": "GHSA-4p8p-pjpq-2w7h",
+    "References": [
+      {
+        "Url": "https://github.com/tsparticles/tsparticles/security/advisories/GHSA-4p8p-pjpq-2w7h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-76892"
+      },
+      {
+        "Url": "https://github.com/tsparticles/tsparticles/pull/5875"
+      },
+      {
+        "Url": "https://github.com/tsparticles/tsparticles/commit/25fb70e7f527a91568adaef576570289083f243b"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4p8p-pjpq-2w7h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4p8p-pjpq-2w7h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-76892"
+      }
+    ],
+    "Description": "## Summary\n\nThe HTTP mode of `@tsparticles/mcp-server` parses incoming `/mcp` request bodies with `JSON.parse()` outside a request-local error boundary. A single malformed JSON request causes the async request handler to throw and terminates the Node.js process.\n\nThis was verified on `v4.3.0` at commit `0266d469aa2d719cb66a9c6bf09aded4186ec17c`. Version `4.3.1` appears to fix this by returning HTTP 400 for invalid JSON.\n\n## Affected Code\n\nThe vulnerable handler is:\n\n    if (req.method === \"POST\" \u0026\u0026 req.url === \"/mcp\") {\n      const body = await new Promise\u003cstring\u003e((resolve, reject) =\u003e {\n        const chunks: Buffer[] = [];\n        req.on(\"data\", (chunk) =\u003e chunks.push(Buffer.from(chunk)));\n        req.on(\"end\", () =\u003e resolve(Buffer.concat(chunks).toString(\"utf8\")));\n        req.on(\"error\", reject);\n      });\n\n      const parsedBody = body ? JSON.parse(body) : undefined;\n      await transport.handleRequest(req, res, parsedBody);\n    }\n\nThe `JSON.parse()` call is not wrapped in `try/catch`.\n\n## Reproduction\n\nStart the HTTP server and send this malformed request:\n\n    POST /mcp HTTP/1.1\n    Content-Type: application/json\n    Mcp-Protocol-Version: 2025-11-25\n\n    {\"jsonrpc\":\n\nObserved result in 3 out of 3 runs:\n\n    exit_code=1\n    SyntaxError: Unexpected end of JSON input\n    at Server.\u003canonymous\u003e (integrations/mcp-server/src/index.ts:407:38)\n\n## Impact\n\nAn unauthenticated remote attacker can terminate the exposed MCP process with a single malformed request. The service remains unavailable until restarted by an external supervisor.\n\n## Recommendation\n\nWrap request parsing in a local `try/catch` and return a bounded HTTP 400 response such as:\n\n    {\"error\":\"Invalid JSON\"}\n\nThe process should remain alive after malformed requests.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T21:13:55Z",
+    "Severity": "HIGH",
+    "Summary": "tsParticles: Malformed JSON requests can terminate the @tsparticles/mcp-server HTTP process",
+    "UpdatedAt": "2026-11-09T21:13:56Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.1"
+      },
+      "VulnerableVersionRange": "\u003c= 4.3.0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-09T21:14:52Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@tsparticles/mcp-server"
+  },
+  "Advisory": {
+    "DatabaseId": 529050,
+    "Id": "GSA_kwCzR0hTQS1oN2M0LXE0MjYtN2poOc4ACBKa",
+    "GhsaId": "GHSA-h7c4-q426-7jh9",
+    "References": [
+      {
+        "Url": "https://github.com/tsparticles/tsparticles/security/advisories/GHSA-h7c4-q426-7jh9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-76893"
+      },
+      {
+        "Url": "https://github.com/tsparticles/tsparticles/pull/5888"
+      },
+      {
+        "Url": "https://github.com/tsparticles/tsparticles/commit/d3b5672bd61bb847abfa21193c34eabf7aba6896"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h7c4-q426-7jh9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h7c4-q426-7jh9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-76893"
+      }
+    ],
+    "Description": "## Summary\n\nThe HTTP mode of `@tsparticles/mcp-server` creates a single stateful `StreamableHTTPServerTransport` instance and reuses it for all clients. The first anonymous client that initializes the MCP endpoint claims the shared transport state, and later clients cannot create their own sessions.\n\nThis was verified on `v4.3.0` at commit `0266d469aa2d719cb66a9c6bf09aded4186ec17c`. The same singleton transport pattern is still present in `v4.3.1` and current `main`.\n\n## Affected Code\n\nThe server creates one shared transport before accepting requests:\n\n    const transport = new StreamableHTTPServerTransport({\n      sessionIdGenerator: () =\u003e randomUUID(),\n    });\n\n    const httpServer = createServer(async (req, res) =\u003e {\n      ...\n      await transport.handleRequest(req, res, parsedBody);\n    });\n\nBecause the same transport object is reused across all requests, the first successful `initialize` call changes the state for all later clients.\n\n## Reproduction\n\nSend two independent `initialize` requests without a prior `mcp-session-id`.\n\nFirst request:\n\n    {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"clientInfo\":{\"name\":\"first-client\",\"version\":\"1.0.0\"}}}\n\nSecond request:\n\n    {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"clientInfo\":{\"name\":\"second-client\",\"version\":\"1.0.0\"}}}\n\nObserved result in 3 out of 3 runs:\n\n    first response: HTTP 200 with mcp-session-id\n    second response: HTTP 400\n    {\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32600,\"message\":\"Invalid Request: Server already initialized\"},\"id\":null}\n\n## Impact\n\nAn unauthenticated remote client can win the first-session race and prevent all later legitimate clients from establishing new MCP sessions until the process is restarted. The first session remains functional, but new clients are denied service.\n\n## Recommendation\n\nCreate a transport per session or maintain a bounded session-id-to-transport map. Do not reuse one stateful transport instance for all HTTP clients.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-09T21:14:51Z",
+    "Severity": "MODERATE",
+    "Summary": "tsParticles: A single anonymous MCP session can monopolize HTTP mode and deny new clients",
+    "UpdatedAt": "2026-11-09T21:14:52Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.3.2"
+      },
+      "VulnerableVersionRange": "\u003c 4.3.2"
+    }
+  ]
+}
