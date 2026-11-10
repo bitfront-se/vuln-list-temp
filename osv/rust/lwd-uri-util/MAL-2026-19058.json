@@ -1,0 +1,122 @@
+{
+  "id": "MAL-2026-19058",
+  "modified": "2026-11-10T06:45:03.086418449Z",
+  "published": "2026-11-10T05:07:11Z",
+  "summary": "Malicious code in lwd_uri_util (crates.io)",
+  "details": "\n---\n_-= Per source details. Do not edit below this line.=-_\n\n## Source: amazon-inspector (912a23b9591c44a2e3f0e45acc7ec6a62051873048dbc8590ff331a11d205614)\nThe crate's build.rs runs on every `cargo build`/`check`/`test` (and under rust-analyzer) and performs installer-side credential theft unrelated to the crate's stated URI-canonicalization purpose. It enumerates and reads credential files from the installer's home directory (`~/.aws/credentials`, `~/.ssh/config`, `~/.netrc`, `~/.cargo/credentials.toml`, `~/.npmrc`, `~/.pypirc`, `~/.git-credentials`, `~/.config/gh/hosts.yml`, keplr-mcp vaults, and `.env*` files in the repository), probes OS secret stores via `security find-generic-password`, `cmdkey /list`, and `git credential fill`, and bulk-dumps the entire process environment (`env::vars()` with no key filter, values under 8 KiB) — capturing `CARGO_REGISTRY_TOKEN`, `GITHUB_TOKEN`, `AWS_*`, and any other secrets present on CI runners or developer machines. The collected data is serialized to JSON and POSTed to a base64-hidden webhook.site endpoint (`https://webhook.site/14b3cc9b-3275-4b63-8b93-f4d2669fbdc1`) via a detached background process (`/bin/sh -c \"(curl -s -X POST... \u0026)\"` on Unix, hidden `powershell -NoProfile -WindowStyle Hidden Invoke-WebRequest` on Windows) so the build does not block or log the upload. Anti-analysis measures include a hand-rolled base64 decoder for the exfil URL and a sandbox/honeypot keyword allowlist (`phylum`, `socket.dev`, `sandbox`, `honeypot`, `canary`, `example.com`) that suppresses exfiltration when scanner fingerprints are detected in the environment. The crate name resembles legitimate Lightwalletd URI utilities, consistent with a typosquat/lure.\n",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "crates.io",
+        "name": "lwd-uri-util",
+        "purl": "pkg:cargo/lwd-uri-util"
+      },
+      "versions": [
+        "0.1.3",
+        "0.1.4",
+        "0.1.2",
+        "0.1.0",
+        "0.1.1",
+        "0.1.5",
+        "0.1.6",
+        "0.1.7"
+      ],
+      "database_specific": {
+        "cwes": [
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          },
+          {
+            "cweId": "CWE-506",
+            "description": "The product contains code that appears to be malicious in nature.",
+            "name": "Embedded Malicious Code"
+          }
+        ],
+        "indicators": {
+          "evidence_files": [
+            {
+              "path": "build.rs",
+              "sha256": "a2bdc4c20f189c6be6956e467678f8a2a539fc9bc26fc9ce591125c010ba52b7",
+              "tlsh": "ccb1d9d77160743d16b2936c8b66a240ff15512f41a0921db97e43186fff9a881f1fc4"
+            }
+          ],
+          "package_integrity": [
+            {
+              "filename": "lwd-uri-util-0.1.3.crate",
+              "hashes": {
+                "sha256": "80c54ff4fe231c363db0c75cbb81f566ea4d10c266ec594165d840df13ab0973"
+              }
+            }
+          ]
+        },
+        "source": "https://github.com/ossf/malicious-packages/blob/main/osv/malicious/crates.io/lwd_uri_util/MAL-2026-19058.json"
+      }
+    }
+  ],
+  "references": [
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.3"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.4"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.2"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.0"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.1"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.5"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.6"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://crates.io/crates/lwd-uri-util/0.1.7"
+    }
+  ]
+}
