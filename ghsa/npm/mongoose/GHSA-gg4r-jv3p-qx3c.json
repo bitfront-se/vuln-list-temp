@@ -1,0 +1,95 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-10T19:56:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mongoose"
+  },
+  "Advisory": {
+    "DatabaseId": 530124,
+    "Id": "GSA_kwCzR0hTQS1nZzRyLWp2M3AtcXgzY84ACBbM",
+    "GhsaId": "GHSA-gg4r-jv3p-qx3c",
+    "References": [
+      {
+        "Url": "https://github.com/Automattic/mongoose/security/advisories/GHSA-gg4r-jv3p-qx3c"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-125119"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/4bb659478be2f30655a7bdd78bc251bdf111cd29"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/4f4f9a79f860786a54133bee2c9af967ec691491"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/83eda6af1489e9ef60bb8eee8cf9ee005771b9d5"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/b8970c25998c23fbccd17f76c0398b902ff4911d"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/6.13.12"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/7.8.13"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/8.24.7"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/9.11.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gg4r-jv3p-qx3c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gg4r-jv3p-qx3c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-125119"
+      }
+    ],
+    "Description": "### Summary\n\nsanitizeFilter exists to stop query selector injection: it wraps operator objects such as `{ $ne: null }` in filter values in `$eq`, so they are matched literally. Set on a connection with `mongoose.connect()` or `createConnection(uri, { sanitizeFilter: true })`, the connection reports it as enabled but queries never apply it. An application that relies on the connection-level option and passes an attacker-controlled object into a filter therefore remains open to selector injection, and a password value of `{ $ne: null }` returns the account record without the password.\n\n### Details\n\n`NativeConnection#createClient()` at `lib/drivers/node-mongodb-native/connection.js:270-272` moves `options.sanitizeFilter` into `Connection.config` and deletes the original option. `Query#_castConditions()` at `lib/query.js:2413-2423` checks `Connection.options`, the global `options`, and the per-query options, but never `Connection.config`. The defense therefore does not run even though `Connection#get('sanitizeFilter')` returns true. This storage was introduced in Mongoose 6.0.0 and the same mismatch is present in 9.11.2.\n\n### Proof of concept\n\n```javascript\nimport mongoose from 'mongoose'\n\nconst conn = await mongoose.createConnection('\u003cMONGODB_URI\u003e', { sanitizeFilter: true }).asPromise()\nconst User = conn.model('User', new mongoose.Schema({\n  username: String,\n  password: String,\n  marker: String\n}))\n\nawait User.create({\n  username: 'victim',\n  password: 'correct-password',\n  marker: 'PROTECTED_RECORD'\n})\n\nconst filter = { username: 'victim', password: { $ne: null } }\nconsole.log(conn.get('sanitizeFilter'))\nconsole.log((await User.findOne(filter).lean()).marker)\n```\n\nA control query with a literal wrong password returned no document in the same run, confirming the filter is otherwise enforced.\n\n### Impact\n\nConnection-level `sanitizeFilter` option is not respected. Any user that relies on connection-level config and `sanitizeFilter` to defend against query selector injection is affected. Users that set `sanitizeFilter` globally using `mongoose.set('sanitizeFilter')` or on specific queries using `Model.find().sanitizeFilter()` are not affected.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T19:56:12Z",
+    "Severity": "HIGH",
+    "Summary": "Mongoose: Connection-level sanitizeFilter not applied",
+    "UpdatedAt": "2026-11-10T19:56:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.11.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.11.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.24.7"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.24.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.8.13"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.8.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.13.12"
+      },
+      "VulnerableVersionRange": "\u003e= 6.0.0, \u003c 6.13.12"
+    }
+  ]
+}

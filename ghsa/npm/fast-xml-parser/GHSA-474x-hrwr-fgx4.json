@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-10T21:09:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "fast-xml-parser"
+  },
+  "Advisory": {
+    "DatabaseId": 530136,
+    "Id": "GSA_kwCzR0hTQS00NzR4LWhyd3ItZmd4NM4ACBbY",
+    "GhsaId": "GHSA-474x-hrwr-fgx4",
+    "References": [
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-474x-hrwr-fgx4"
+      },
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/commit/0c3659348364959da62954b73728fb3bd05ebcb4"
+      },
+      {
+        "Url": "https://github.com/NaturalIntelligence/fast-xml-parser/releases/tag/v5.12.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-474x-hrwr-fgx4"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-474x-hrwr-fgx4"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126066"
+      }
+    ],
+    "Description": "### Summary\n\nWith the non-default stopNodes option, a stop node's body with many \"\u003ca \" fragments and no closing \"\u003e\" anywhere after makes readStopNodeData() rescan the entire remaining input from every \"\u003c\". The failed lookahead is neither cached nor bounded, so n fragments cost O(n²) before the parser throws. Availability-only (CPU exhaustion), needs the non-default stopNodes option — not benchmarked yet, see Proof of Concept.\n\n### Details\n\n**CWE-407** — Inefficient Algorithmic Complexity\n\n**Code**\n- `OrderedObjParser.js:520` — `parseXml()` calls `readStopNodeData()` after a matching stop node opens\n- `OrderedObjParser.js:810` — calls `readTagExp()` for every non-special `\u003c`\n- `OrderedObjParser.js:688-722` — `tagExpWithClosingIndex()` scans to end-of-input and returns `undefined` when no `\u003e` exists\n- `OrderedObjParser.js:812-818` — on failure, `i` isn't advanced, so the next `\u003c` repeats the same full scan\n- `OrderedObjParser.js:423` — the main parse loop throws immediately on the same failure; only the stop-node path retries\n\n**Root cause:** a failed closing-`\u003e` lookahead is neither cached nor bounded — `n` copies of `\u003ca ` with no later `\u003e` means `n` scans over the remaining input, O(n²) work, before it finally throws.\n\n**Fix**\n1. Throw immediately in `readStopNodeData()` when `readTagExp()` returns `undefined`\n2. Or break the loop on the first failed scan\n3. Or find the next `\u003e` once and reuse/bound that result\n4. Add a test asserting near-linear scaling when payload size doubles\n\n### Proof of concept\n\nNot benchmarked — static-analysis finding, confidence 0.5.\n\nTo confirm: configure `stopNodes` matching a root element. Build input as `'\u003cstop\u003e' + '\u003ca '.repeat(n)`. Time `parse()` until it throws `Unexpected end of \u003ctag\u003e`. Start around n=10,000 and double it — quadratic should show ~4x time per doubling, linear ~2x. Control: same input with a `\u003e` present, or `stopNodes` unset.\n\n### Impact\n\nCPU-exhaustion DoS in Node.js services parsing untrusted XML with `stopNodes` enabled. A ~100KB payload is estimated at ~10⁹ character operations (roughly a second or more of blocked event loop) — analytical estimate, not a benchmark. No confidentiality/integrity impact. CVSS 3.1: `AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L` (3.7, Low).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T21:09:44Z",
+    "Severity": "LOW",
+    "Summary": "fast-xml-parser: Quadratic CPU consumption scanning unterminated stop-node tags",
+    "UpdatedAt": "2026-11-10T21:09:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "5.12.0"
+      },
+      "VulnerableVersionRange": "\u003c= 5.11.2"
+    }
+  ]
+}

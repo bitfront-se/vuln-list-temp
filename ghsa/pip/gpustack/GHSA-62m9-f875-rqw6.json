@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-10T15:57:19Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "gpustack"
+  },
+  "Advisory": {
+    "DatabaseId": 529880,
+    "Id": "GSA_kwCzR0hTQS02Mm05LWY4NzUtcnF3Ns4ACBXY",
+    "GhsaId": "GHSA-62m9-f875-rqw6",
+    "References": [
+      {
+        "Url": "https://github.com/gpustack/gpustack/security/advisories/GHSA-62m9-f875-rqw6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-102894"
+      },
+      {
+        "Url": "https://github.com/gpustack/gpustack/pull/5753"
+      },
+      {
+        "Url": "https://github.com/gpustack/gpustack/pull/5923"
+      },
+      {
+        "Url": "https://github.com/gpustack/gpustack/commit/705edbe1b5feec63959306daecd640e1c70eced2"
+      },
+      {
+        "Url": "https://github.com/gpustack/gpustack/commit/adc6d82be34e48390720a1361df616e2ea9d6d45"
+      },
+      {
+        "Url": "https://github.com/gpustack/gpustack/releases/tag/v2.2.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-62m9-f875-rqw6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-62m9-f875-rqw6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-102894"
+      }
+    ],
+    "Description": "### Impact\n\nThe callback Base64-decodes the posted XML, reads NameID and attributes, resolves or provisions the user, and mints a gpustack_session JWT — but never calls OneLogin_Saml2_Auth.process_response(), the step that verifies the signature, issuer, audience, destination, and time conditions.\n\nNo credentials are required, and SAML SSO does not even need to be configured. The callback processes the payload and issues a session regardless of whether SAML is set up, so every deployment is affected, not only SAML-enabled ones. Anyone who can reach the endpoint over the network can authenticate as an arbitrary identity by posting a response that names it:\n\n- If the name matches an existing user (e.g. an administrator), the attacker receives that user's session — full account takeover, including administrator access.\n- Otherwise, a new non-admin user is provisioned.\n\nAdministrator access grants full control over the deployment and the infrastructure it manages. Because Response/Assertion IDs are never consumed, a captured signed response also replays indefinitely.\n\nPrecondition: network reachability to /auth/saml/callback. SAML SSO configuration is not required. A full proof-of-concept is available privately to maintainers.\n\n\n### Patches\n\nFixed in gpustack 2.2.2:\n- The SAML callback now validates the response via OneLogin_Saml2_Auth.process_response() — signature, issuer, audience, destination, and time conditions — and rejects responses that fail, so forged or replayed assertions are no longer accepted.\n- The SAML and OIDC login/callback routes are now gated to run only when that provider is the configured active provider, so a deployment that has not enabled the provider no longer parses attacker-supplied IdP payloads.\n\n### Workarounds\n\nThere is no effective configuration-level workaround — disabling or not configuring SAML does not mitigate this on affected versions, since the callback runs regardless. Until upgraded, block network access to /auth/saml/callback (e.g. at a reverse proxy / ingress).\n\n### Credit\n\nReported privately by Austin Chu, Sohee Kim, and Corban Villa (UC Berkeley\nsecurity research project), and independently, earlier, by a researcher who wishes to remain anonymous.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T15:57:15Z",
+    "Severity": "CRITICAL",
+    "Summary": "GPUStack: SAML callback trusts an unverified SAMLResponse, allowing authentication bypass and account takeover",
+    "UpdatedAt": "2026-11-10T15:57:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.2.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.7.1, \u003c 2.2.2"
+    }
+  ]
+}

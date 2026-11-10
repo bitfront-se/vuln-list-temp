@@ -1,0 +1,95 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-10T19:37:33Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mongoose"
+  },
+  "Advisory": {
+    "DatabaseId": 530122,
+    "Id": "GSA_kwCzR0hTQS1wY3J3LWg0NmgtYzkzaM4ACBbK",
+    "GhsaId": "GHSA-pcrw-h46h-c93h",
+    "References": [
+      {
+        "Url": "https://github.com/Automattic/mongoose/security/advisories/GHSA-pcrw-h46h-c93h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-125120"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/7e912af3fac52cb0eea4cd71e24d65318916831a"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/8b10d5760bb181f5bf5d01495cde161c8aed0557"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/b1df045aab076b740fdaec14a15a44c694b85b7d"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/b5003d3915db1cf9209c38a4b93cf3a92cddd710"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/6.13.11"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/7.8.12"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/8.24.3"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/9.9.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pcrw-h46h-c93h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pcrw-h46h-c93h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-125120"
+      }
+    ],
+    "Description": "### Impact\n\n`sanitizeFilter` is Mongoose's mechanism for protecting against query selector injection attacks. In older versions of Mongoose, `sanitizeFilter` was not applied for `countDocuments()` queries.\n\n### Patches\n\nPatches have been released for all supported Mongoose major release lines. Please upgrade to the following versions depending on which major version of Mongoose applications are using.\n\n1. `^9.9.2`\n2. `^8.24.3`\n3. `^7.8.12`\n4. `^6.13.11`\n\n### Workarounds\n\nMiddleware:\n\n```javascript\nmongoose.plugin(function() {\n  schema.pre('countDocuments', function() {\n    // This will always apply `sanitizeFilter` on `countDocuments`\n    mongoose.sanitizeFilter(this.getFilter());\n  });\n});\n```",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T19:37:32Z",
+    "Severity": "CRITICAL",
+    "Summary": "Mongoose: sanitizeFilter not applied on countDocuments",
+    "UpdatedAt": "2026-11-10T19:37:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.9.2"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.9.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.24.3"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.24.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.8.12"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.8.12"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.13.11"
+      },
+      "VulnerableVersionRange": "\u003c 6.13.11"
+    }
+  ]
+}

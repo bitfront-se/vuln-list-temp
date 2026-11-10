@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-10T15:57:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "node-forge"
+  },
+  "Advisory": {
+    "DatabaseId": 529891,
+    "Id": "GSA_kwCzR0hTQS05d2c1LW1qM3AtdjQ5cc4ACBXj",
+    "GhsaId": "GHSA-9wg5-mj3p-v49q",
+    "References": [
+      {
+        "Url": "https://github.com/digitalbazaar/forge/security/advisories/GHSA-9wg5-mj3p-v49q"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118774"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/commit/c7f42614d5166a77ddf11ce174b2601b14f6956b"
+      },
+      {
+        "Url": "https://github.com/digitalbazaar/forge/releases/tag/v1.4.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9wg5-mj3p-v49q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9wg5-mj3p-v49q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118774"
+      }
+    ],
+    "Description": "### Summary\n\nWhen verifying a certificate, node-forge chose the RSA padding scheme (PKCS#1 v1.5 or RSASSA-PSS) and PSS parameters from the issuer certificate's own signature algorithm instead of the certificate being verified. A certificate labeled as signed with RSASSA-PSS could pass `verifyCertificateChain()` with a PKCS#1 v1.5 signature. Fixed in node-forge 1.4.1.\n\n### Details\n\n`certificate.verify(child)` in `lib/x509.js` hashes the child's TBSCertificate with the digest of the child's signature algorithm, then calls `_verifySignature()` with the issuer certificate. `_verifySignature()` selected the padding scheme from that certificate's `signatureOid` and `signatureParameters`, so the child was verified with the issuer's own scheme rather than the one the child declares.\n\nAs a result, a child certificate whose signature algorithm says RSASSA-PSS was accepted with a PKCS#1 v1.5 signature when the issuer itself was signed with PKCS#1 v1.5. The outer `signatureAlgorithm` field of a certificate is not covered by the signature, so an existing PKCS#1 v1.5 (SHA-256) certificate can be relabeled as RSASSA-PSS and still pass verification. The signature itself must still be made with the issuer's private key over the certificate's contents; no certificate can be forged.\n\nThe same cause made correctly signed chains fail: a PKCS#1 v1.5 certificate issued by an RSASSA-PSS-signed certificate, or the reverse, was rejected.\n\nThe fix verifies with the child certificate's signature scheme and parameters and the issuer's public key.\n\n### Patches\nFixed in node-forge 1.4.1. Certificate signatures are verified with the scheme of the certificate's own signature algorithm.\n\n### Workarounds\nApplications that make decisions based on a certificate's signature algorithm can verify the signature themselves with that algorithm's scheme and the issuer's public key.\n\n### References\n- https://www.rfc-editor.org/rfc/rfc4055#section-3 (RSASSA-PSS signature algorithm in certificates)\n- https://www.rfc-editor.org/rfc/rfc5280#section-4.1.1.2 (Certificate signatureAlgorithm)\n- https://cwe.mitre.org/data/definitions/347.html (CWE-347: Improper Verification of Cryptographic Signature)\n\n### Severity\nCVSS 3.1: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N (3.7, Low)\nCVSS 4.0 (informational): CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N (6.3)\nCVSS 4.0 rates this Moderate because its integrity weighting is higher; the severity rating follows CVSS 3.1.\n\n### Credits\nReported by Brian Lee (@hibrian827, Georgia Tech SSLab, Team Atlanta), who also suggested the fix.\n\n### Proof of concept\n\nCreate a CA certificate signed with sha256WithRSAEncryption, and a leaf certificate whose signature algorithm fields (outer and in the TBSCertificate) are RSASSA-PSS with SHA-256/MGF1-SHA-256/salt 32, but sign the leaf's TBSCertificate with the CA key using PKCS#1 v1.5 (`caKey.sign(sha256)`).\n\nOn 1.4.0, `forge.pki.verifyCertificateChain(forge.pki.createCaStore([ca]), [leaf])` returns `true`, although verifying the leaf's signature with RSASSA-PSS fails. On 1.4.1 it throws \"Certificate signature is invalid.\".\n\nNo private key is needed for the same result: take any certificate signed by the CA with sha256WithRSAEncryption and replace only its outer signatureAlgorithm (outside the signed TBSCertificate) with the RSASSA-PSS identifier above. On 1.4.0 it still verifies and reports `signatureOid` as RSASSA-PSS; on 1.4.1 it is rejected.\n\nRegression tests are in tests/unit/x509.js (\"signature scheme of the child certificate\").\n\n### Impact\n\nApplications that rely on a certificate's declared signature algorithm, for example a policy that only accepts RSASSA-PSS-signed certificates, can be given a certificate labeled RSASSA-PSS whose signature was verified as PKCS#1 v1.5. The certificate must still have been signed by the trusted issuer's key, so the identity it certifies cannot be forged. There is no confidentiality or availability impact.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T15:57:48Z",
+    "Severity": "LOW",
+    "Summary": "Forge: Certificate signature verified with the issuer's RSA signature scheme",
+    "UpdatedAt": "2026-11-10T15:57:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.4.1"
+      },
+      "VulnerableVersionRange": "\u003c= 1.4.0"
+    }
+  ]
+}

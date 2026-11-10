@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-10T15:57:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "compose-lint"
+  },
+  "Advisory": {
+    "DatabaseId": 529874,
+    "Id": "GSA_kwCzR0hTQS02d2N2LXJqM2MtbWh2M84ACBXS",
+    "GhsaId": "GHSA-6wcv-rj3c-mhv3",
+    "References": [
+      {
+        "Url": "https://github.com/tmatens/compose-lint/security/advisories/GHSA-6wcv-rj3c-mhv3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-123368"
+      },
+      {
+        "Url": "https://github.com/tmatens/compose-lint/pull/917"
+      },
+      {
+        "Url": "https://github.com/tmatens/compose-lint/commit/c43204ad4dab11d54e20574a52bc4e5835246ca5"
+      },
+      {
+        "Url": "https://github.com/tmatens/compose-lint/releases/tag/v0.31.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6wcv-rj3c-mhv3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6wcv-rj3c-mhv3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-123368"
+      }
+    ],
+    "Description": "### Impact\n\ncompose-lint fills in `${VAR}` references from the `.env` file next to the Compose file. It is meant to read nothing outside the project directory, and `env_file:`, `include:` and `extends:` paths are checked for that. The `.env` read is not. If `.env` is a symlink, compose-lint follows it wherever it points.\n\nA pull request can add a `.env` symlink to any file on the CI runner and a Compose file that references a variable from it. compose-lint substitutes the value and quotes it in finding messages, which go to the log and to JSON and SARIF output.\n\nThe worst target is `/proc/self/environ`, the linter's own environment. The Compose file only needs to reference the name of the first variable in it: because that file separates variables with NUL bytes rather than newlines, the substituted value is the entire rest of the environment. On a CI runner that environment holds whatever the workflow put there, including secrets. GitHub masks registered secrets in the job log, but not in uploaded JSON or SARIF artifacts or in Code Scanning alert text.\n\nAn `include:` entry's `project_directory:` has the same gap from 0.28.0: a directory symlink named there makes compose-lint read `.env` from wherever the link points.\n\nPull requests from forks normally run without secrets, and GitHub masks registered secrets in the job log, so in the common setup what can be read is runner metadata and whatever unmasked values the job's environment holds. That is why this is scored as low confidentiality impact. The impact is high in a job that runs untrusted pull requests with secrets in its environment, such as a `pull_request_target` workflow, or on a CI system that does not mask secrets, and also wherever the JSON or SARIF output is uploaded. The pass/fail result is not affected.\n\nFound during an internal pre-1.0 security review.\n\n### Patches\n\nFixed in 0.31.0. Every `.env` read now applies the same containment check as `env_file:`. A `.env` that resolves outside the project is treated as missing and reported as an unread input. A `project_directory:` that resolves outside the project is refused, and that entry's files resolve against their own directories. A `.env` line containing a NUL byte is skipped.\n\n### Workarounds\n\n- Run with `--no-env`, which skips the sibling `.env` entirely.\n- Don't run compose-lint on untrusted pull requests in a job whose environment holds secrets.\n\n### Reproduction\n\n```\nproject/.env -\u003e /proc/self/environ      (symlink)\nproject/compose.yml:\n  services:\n    web:\n      image: \"${FIRST_VAR_NAME}\"\n```\n\n`compose-lint check compose.yml --format json` quotes the environment in the CL-0004 message (\"Image '...' has no tag\").",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T15:56:56Z",
+    "Severity": "LOW",
+    "Summary": "compose-lint: .env read through a symlink outside the project can expose the CI job's environment",
+    "UpdatedAt": "2026-11-10T15:57:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.31.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.22.0, \u003c= 0.30.0"
+    }
+  ]
+}

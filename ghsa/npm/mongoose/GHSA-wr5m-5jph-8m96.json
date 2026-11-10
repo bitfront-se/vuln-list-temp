@@ -1,0 +1,101 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-10T20:57:19Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "mongoose"
+  },
+  "Advisory": {
+    "DatabaseId": 530135,
+    "Id": "GSA_kwCzR0hTQS13cjVtLTVqcGgtOG05Ns4ACBbX",
+    "GhsaId": "GHSA-wr5m-5jph-8m96",
+    "References": [
+      {
+        "Url": "https://github.com/Automattic/mongoose/security/advisories/GHSA-wr5m-5jph-8m96"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-125116"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/0ecd8040d9b446f36535d79938c130c800f91766"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/18afab75bea861f625b7c5b54635c84567ec566c"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/390453c8ce1b36b6cfd1e63432a910da1f3d81d5"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/8cee51beead554df1f3d05645edb439c69eb2a9b"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/b26c43554233134ea978c5852babe13be858b2cf"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/commit/b68f90734b50cd22c89a669c8ca1469d7234b296"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/6.13.12"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/7.8.13"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/8.24.7"
+      },
+      {
+        "Url": "https://github.com/Automattic/mongoose/releases/tag/9.11.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-wr5m-5jph-8m96"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-wr5m-5jph-8m96"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-125116"
+      }
+    ],
+    "Description": "### Summary\n\nMongoose chooses which discriminator model or schema to use by looking up the discriminator key value (`__t` by default) in a plain object of registered discriminators, for example `Model.discriminators[doc.__t]`. That value comes from user documents and query filters. Because the lookup did not check own properties, a value that names a property inherited from `Object.prototype` resolves to that inherited value instead of a discriminator. Examples are `'constructor'`, `'toString'` and `'hasOwnProperty'`.\n\n- `__t: 'constructor'` resolves to the global `Object` function. Mongoose then calls `new Object(doc)`, which returns the raw user object where a Mongoose document is expected.\n- `__t: 'toString'` and similar names resolve to built-in functions that throw when used as a constructor or schema.\n\nThe most serious effect: through `bulkWrite()` `insertOne` with `skipValidation: true`, the raw user object is stored as-is, without schema casting or `strict` filtering. After that, every query that returns the stored document throws, until the document is removed from the database.\n\n### Details\n\nThe registries that hold discriminators are plain objects: `Model.discriminators`, `schema.discriminators`, and the embedded discriminator registries on document arrays and single nested subdocuments. Several code paths indexed them directly with a value taken from the document or filter:\n\n| Code path | Input |\n|---|---|\n| Model constructor (`new Model(doc)`) | document |\n| `Model.create()`, `insertMany()`, `bulkWrite()`, `bulkSave()` | documents |\n| Hydrating query results (`find()`, `findOne()`, etc.) and `Model.hydrate()` | stored documents |\n| Casting query filters, including flat paths such as `'events.__t'` and `$elemMatch` | query filter |\n| Casting updates and array filters | update filter, `arrayFilters` |\n| Document array `push()` / `create()`, document array and single nested casting | subdocuments |\n| Populate on embedded discriminators | stored subdocuments |\n\n`getDiscriminatorByValue()` already iterated the registry's own keys safely. But most callers tried the direct lookup first and only fell back to it afterwards, so a truthy inherited value took precedence.\n\nThe lookups only read inherited properties. They do not write to `Object.prototype` or any other shared object, and they do not change in-memory state that affects other requests. This is NOT a prototype pollution vector.\n\n### Proof of concept\n\n```js\nconst mongoose = require('mongoose');\n\nconst Base = mongoose.model('Base', new mongoose.Schema({ name: String, age: Number }));\nBase.discriminator('Child', new mongoose.Schema({ extra: String }));\n\n// Type confusion: the \"document\" is the raw input object\nconst doc = new Base({ name: 'x', __t: 'constructor' });\nconsole.log(doc instanceof mongoose.Document); // false\n```\n\n```js\n// Schema bypass and persistent poison document via bulkWrite + skipValidation\nawait Base.bulkWrite([{\n  insertOne: { document: { name: 'x', age: 'not a number', notInSchema: true, __t: 'constructor' } }\n}], { skipValidation: true });\n// Stored verbatim: { age: 'not a number', notInSchema: true, __t: 'constructor', ... }\n\nawait Base.find(); // throws: Cannot read properties of undefined (reading 'eachPath')\n```\n\n### Impact\n\n- **Crashing the request.** An attacker who controls the discriminator key of a document or filter can make the request fail. In most code paths that sent the value, this means a `TypeError` or a non-document object returned to application code. Ways in include `Model.create(req.body)`, `new Model(req.body)`, `Model.find(req.query)`-style filters, and pushing user input onto embedded discriminator arrays. The effect is limited to the request carrying the value.\n- **Schema bypass on `bulkWrite({ skipValidation: true })`.** When an application passes untrusted documents to `bulkWrite()` `insertOne` with `skipValidation: true`, the raw object is stored without casting or `strict` filtering. Fields the schema would normally strip are persisted, such as an `isAdmin` that isn't in the schema. Fields with wrong types are also persisted.\n- **Persistent denial of service for queries.** A stored document with such a discriminator key value makes hydration throw. Every query that returns that document fails, for all users, until the document is deleted directly in the database. Besides the `bulkWrite()` path above, the document can get into the collection through another application, the raw MongoDB driver, or any other writer that does not go through Mongoose casting.\n\nThis issue doesn't let an attacker modify `Object.prototype`, built-in functions, schemas or other shared in-memory state. The schema bypass requires the application to opt in to `skipValidation` with untrusted input.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T20:57:18Z",
+    "Severity": "MODERATE",
+    "Summary": "Mongoose: Discriminator key values matching inherited properties (e.g. __t: 'constructor') bypass schema casting and can poison collections",
+    "UpdatedAt": "2026-11-10T20:57:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.11.4"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.11.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.24.7"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.24.7"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.8.13"
+      },
+      "VulnerableVersionRange": "\u003e= 7.0.0, \u003c 7.8.13"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.13.12"
+      },
+      "VulnerableVersionRange": "\u003c 6.13.12"
+    }
+  ]
+}
