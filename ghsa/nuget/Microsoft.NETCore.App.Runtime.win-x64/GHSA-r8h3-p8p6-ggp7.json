@@ -1,0 +1,104 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-11T00:34:15Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.NETCore.App.Runtime.win-x64"
+  },
+  "Advisory": {
+    "DatabaseId": 531667,
+    "Id": "GSA_kwCzR0hTQS1yOGgzLXA4cDYtZ2dwN84ACBzT",
+    "GhsaId": "GHSA-r8h3-p8p6-ggp7",
+    "References": [
+      {
+        "Url": "https://github.com/dotnet/runtime/security/advisories/GHSA-r8h3-p8p6-ggp7"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114158"
+      },
+      {
+        "Url": "https://github.com/dotnet/announcements/issues/520"
+      },
+      {
+        "Url": "https://github.com/dotnet/runtime/issues/137295"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/blob/main/release-notes/10.0/10.0.15/10.0.15.md"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/blob/main/release-notes/11.0/11.0.0/11.0.0.md"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/blob/main/release-notes/8.0/8.0.34/8.0.34.md"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/blob/main/release-notes/9.0/9.0.23/9.0.23.md"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/releases/tag/v11.0.0"
+      },
+      {
+        "Url": "https://github.com/dotnet/runtime/releases/tag/v10.0.15"
+      },
+      {
+        "Url": "https://github.com/dotnet/runtime/releases/tag/v8.0.34"
+      },
+      {
+        "Url": "https://github.com/dotnet/runtime/releases/tag/v9.0.23"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-114158"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r8h3-p8p6-ggp7"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r8h3-p8p6-ggp7"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114158"
+      }
+    ],
+    "Description": "## Executive summary\n\nMicrosoft is releasing this security advisory to provide information about a vulnerability in .NET. This advisory provides guidance on updating affected applications and components.\n\nA Portable PDB `EmbeddedSource` record with parent RID 0 can trigger an out-of-bounds write.\n\n## CVSS Details\n\n- **Version:** 3.1\n- **Severity:** High\n- **Score:** 8.8 (base score)\n- **Vector:** `CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H/E:U/RL:O/RC:C`\n- **Weakness:** CWE-122\n\n## Affected Platforms\n\n- **Platforms:** Windows\n- **Architectures:** x86, x64, Arm64\n\n## \u003ca name=\"affected-packages\"\u003e\u003c/a\u003eAffected Packages\n\nMicrosoft.DiaSymReader.Native components bundled with the affected .NET versions listed below are affected when initializing the native reader with a crafted Portable PDB containing an `EmbeddedSource` record with parent RID 0. The Windows runtime's native stack-trace reader can reach this initialization through its native-reader fallback.\n\n### .NET on Windows\n\nProduct | Affected version | Patched version\n--- | --- | ---\n.NET 8.0 installed on Windows | \u003e= 8.0.0, \u003c 8.0.34 | 8.0.34\n.NET 9.0 installed on Windows | \u003e= 9.0.0, \u003c 9.0.23 | 9.0.23\n.NET 10.0 installed on Windows | \u003e= 10.0.0, \u003c 10.0.15 | 10.0.15\n.NET 11.0 installed on Windows | \u003e= 11.0.0-preview.1, \u003c 11.0.0 | 11.0.0\n\n### Windows runtime packages for self-contained applications\n\nThe following packages deliver the affected .NET native reader. Exposure requires the PDB-reading operation described above; the presence of the reader does not make every application or symbol-reading path vulnerable.\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[Microsoft.NETCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x86) | \u003e= 8.0.0, \u003c 8.0.34 | 8.0.34\n[Microsoft.NETCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x64) | \u003e= 8.0.0, \u003c 8.0.34 | 8.0.34\n[Microsoft.NETCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-arm64) | \u003e= 8.0.0, \u003c 8.0.34 | 8.0.34\n[Microsoft.NETCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x86) | \u003e= 9.0.0, \u003c 9.0.23 | 9.0.23\n[Microsoft.NETCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x64) | \u003e= 9.0.0, \u003c 9.0.23 | 9.0.23\n[Microsoft.NETCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-arm64) | \u003e= 9.0.0, \u003c 9.0.23 | 9.0.23\n[Microsoft.NETCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x86) | \u003e= 10.0.0, \u003c 10.0.15 | 10.0.15\n[Microsoft.NETCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x64) | \u003e= 10.0.0, \u003c 10.0.15 | 10.0.15\n[Microsoft.NETCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-arm64) | \u003e= 10.0.0, \u003c 10.0.15 | 10.0.15\n[Microsoft.NETCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x86) | \u003e= 11.0.0-preview.1, \u003c 11.0.0 | 11.0.0\n[Microsoft.NETCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x64) | \u003e= 11.0.0-preview.1, \u003c 11.0.0 | 11.0.0\n[Microsoft.NETCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-arm64) | \u003e= 11.0.0-preview.1, \u003c 11.0.0 | 11.0.0\n\n### Windows SDK updates\n\nThe following SDK updates include the corrected .NET runtime. Update each installed Windows SDK feature band:\n\nProduct | Affected version | Patched version\n--- | --- | ---\n.NET SDK 8.0.1xx on Windows | \u003e= 8.0.100-0, \u003c 8.0.134 | 8.0.134\n.NET SDK 8.0.4xx on Windows | \u003e= 8.0.400-0, \u003c 8.0.428 | 8.0.428\n.NET SDK 9.0.1xx on Windows | \u003e= 9.0.100-0, \u003c 9.0.124 | 9.0.124\n.NET SDK 9.0.3xx on Windows | \u003e= 9.0.300-0, \u003c 9.0.321 | 9.0.321\n.NET SDK 10.0.1xx on Windows | \u003e= 10.0.100-0, \u003c 10.0.115 | 10.0.115\n.NET SDK 10.0.4xx on Windows | \u003e= 10.0.400-0, \u003c 10.0.404 | 10.0.404\n.NET SDK 11.0.1xx on Windows | \u003e= 11.0.100-preview.1, \u003c 11.0.100 | 11.0.100\n\n## Advisory FAQ\n\n### \u003ca name=\"how-affected\"\u003e\u003c/a\u003eHow do I know if I am affected?\n\nApplications using Microsoft.DiaSymReader.Native components bundled with the affected .NET versions listed above to initialize the native reader with a crafted Portable PDB containing an `EmbeddedSource` record with parent RID 0 are exposed on x86, x64, and Arm64. The Windows runtime's native stack-trace reader can reach this initialization when PE metadata selects its native-reader fallback. See [affected packages](#affected-packages) for the affected .NET products on Windows.\n\n### \u003ca name=\"how-fix\"\u003e\u003c/a\u003eHow do I fix the issue?\n\nUpdate affected .NET installations and each installed SDK feature band to the versions listed above or later. If an SDK was installed through Visual Studio, update Visual Studio as well.\n\nFor applications that deploy their own .NET runtime, including self-contained applications, update the runtime used to build the application, rebuild, and redeploy. Updating a machine-wide runtime does not replace an application's embedded runtime. Restart processes that have loaded the affected native reader.\n\n\n## Announcement\n\nAnnouncement for this issue can be found at https://github.com/dotnet/announcements/issues/520\n\n## Other Information\n\n### Reporting Security Issues\n\nIf you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue).\n\nSecurity reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty.\n\n### Support\n\nYou can ask questions about this issue on GitHub in the .NET GitHub organization. The main repos are located at https://github.com/dotnet/runtime. The Announcements repo (https://github.com/dotnet/Announcements) will contain this bulletin as an issue and will include a link to a discussion issue. You can ask questions in the linked discussion issue.\n\n### Disclaimer\n\nThe information provided in this advisory is provided \"as is\" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exclusion or limitation of liability for consequential or incidental damages so the foregoing limitation may not apply.\n\n### External Links\n\n[CVE-2026-114158](https://www.cve.org/CVERecord?id=CVE-2026-114158)\n\n### Acknowledgements\n\n- [h4urek](https://x.com/h4urek) with [secsys lab](https://secsys.fudan.edu.cn/)\n\n### Revisions\n\nV1.0 (November 10, 2026): Advisory published.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-11T00:34:13Z",
+    "Severity": "HIGH",
+    "Summary": "Microsoft Security Advisory CVE-2026-114158 - Visual Studio Remote Code Execution Vulnerability",
+    "UpdatedAt": "2026-11-11T00:34:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.7,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H/E:U/RL:O/RC:C"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.0"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.0-preview.1, \u003c 11.0.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.15"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.0, \u003c 10.0.15"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.0.23"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.0.23"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.0.34"
+      },
+      "VulnerableVersionRange": "\u003e= 8.0.0, \u003c 8.0.34"
+    }
+  ]
+}

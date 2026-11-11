@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-10T23:24:49Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Aspire.Hosting.AppHost"
+  },
+  "Advisory": {
+    "DatabaseId": 531548,
+    "Id": "GSA_kwCzR0hTQS1mN3ZoLWg1ZzMtN2pyaM4ACBxc",
+    "GhsaId": "GHSA-f7vh-h5g3-7jrh",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/aspire/security/advisories/GHSA-f7vh-h5g3-7jrh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-120006"
+      },
+      {
+        "Url": "https://github.com/dotnet/announcements/issues/503"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/issues/22092"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/commit/f017f668fd6e0938e23058dc0450a1403f409809"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/releases/tag/v13.6.5"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-120006"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f7vh-h5g3-7jrh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f7vh-h5g3-7jrh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-120006"
+      }
+    ],
+    "Description": "## Executive summary\n\nMicrosoft is releasing this security advisory to provide information about a vulnerability in Aspire. This advisory provides guidance on updating affected applications and components.\n\nDisclosure of an Aspire Dashboard authentication cookie to a linked service can allow an attacker-controlled container to replay the authenticated session and execute code as the host developer.\n\n## Announcement\n\nAnnouncement for this issue can be found at https://github.com/dotnet/announcements/issues/503\n\n## CVSS Details\n\n- **Version:** 3.1\n- **Severity:** High\n- **Score:** 7.5\n- **Vector:** `CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:C/C:H/I:H/A:H`\n- **Weakness:** CWE-201 (Insertion of Sensitive Information Into Sent Data)\n\n## Affected Platforms\n\n- **Platforms:** macOS\n- **Architectures:** x64, Arm64\n\n## \u003ca name=\"affected-packages\"\u003e\u003c/a\u003eAffected Packages\n\n### Standalone Aspire\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[Aspire.Hosting.AppHost](https://www.nuget.org/packages/Aspire.Hosting.AppHost) | \u003c 13.6.5 | 13.6.5\n[Aspire.Hosting](https://www.nuget.org/packages/Aspire.Hosting) | \u003c 13.6.5 | 13.6.5\n\nThe affected scenario involves a Dashboard-authenticated AppHost workflow with an attacker-controlled container and a linked HTTPS YARP gateway. The affected hosting code is in `Aspire.Hosting`, a dependency of `Aspire.Hosting.AppHost`. `Aspire.AppHost.Sdk` supplies the AppHost package implicitly unless the project overrides the default references.\n\n## Advisory FAQ\n\n### \u003ca name=\"how-affected\"\u003e\u003c/a\u003eHow do I know if I am affected?\n\nThe reported scenario involves a developer starting an Aspire AppHost, authenticating to its Dashboard, and following a resource link that routes to an attacker-controlled container. All released versions through 13.6.4 are affected.\n\nAspire ships independently of .NET. Installing a .NET runtime or SDK update does not establish that the affected Aspire components have been updated.\n\n### \u003ca name=\"how-fix\"\u003e\u003c/a\u003eHow do I fix the issue?\n\nUpdate the AppHost project's `Aspire.Hosting.AppHost` package reference to version 13.6.5 or later. If the project obtains this package implicitly through `Aspire.AppHost.Sdk`, update that SDK reference to version 13.6.5 or later. Explicit package references or central version pins must also resolve `Aspire.Hosting` to version 13.6.5 or later. Restore dependencies, rebuild, and restart the AppHost after updating.\n\nUpdating only the .NET runtime, .NET SDK, Aspire CLI, or standalone Dashboard does not replace the AppHost project's hosting dependencies.\n\n## Other Information\n\n### Reporting Security Issues\n\nIf you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue).\n\nSecurity reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty.\n\n### Support\n\nYou can ask questions about this issue in the [Aspire repository](https://github.com/microsoft/aspire).\n\n### Disclaimer\n\nThe information provided in this advisory is provided \"as is\" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exclusion or limitation of liability for consequential or incidental damages so the foregoing limitation may not apply.\n\n### External Links\n\n[CVE-2026-120006](https://www.cve.org/CVERecord?id=CVE-2026-120006)\n\n### Acknowledgements\n\n- samthewhitehat\n\n### Revisions\n\nV1.0 (November 10, 2026): Advisory published.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-10T23:24:48Z",
+    "Severity": "HIGH",
+    "Summary": "Microsoft Security Advisory CVE-2026-120006 - Aspire Elevation of Privilege Vulnerability",
+    "UpdatedAt": "2026-11-10T23:24:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:C/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.6.5"
+      },
+      "VulnerableVersionRange": "\u003c 13.6.5"
+    }
+  ]
+}

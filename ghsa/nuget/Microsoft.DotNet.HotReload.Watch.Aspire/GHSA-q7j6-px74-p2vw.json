@@ -1,0 +1,104 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-11T00:09:47Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Microsoft.DotNet.HotReload.Watch.Aspire"
+  },
+  "Advisory": {
+    "DatabaseId": 531551,
+    "Id": "GSA_kwCzR0hTQS1xN2o2LXB4NzQtcDJ2d84ACBxf",
+    "GhsaId": "GHSA-q7j6-px74-p2vw",
+    "References": [
+      {
+        "Url": "https://github.com/dotnet/sdk/security/advisories/GHSA-q7j6-px74-p2vw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114155"
+      },
+      {
+        "Url": "https://github.com/dotnet/announcements/issues/502"
+      },
+      {
+        "Url": "https://github.com/dotnet/sdk/issues/57040"
+      },
+      {
+        "Url": "https://github.com/dotnet/dotnet/pull/10885"
+      },
+      {
+        "Url": "https://github.com/dotnet/dotnet/pull/10886"
+      },
+      {
+        "Url": "https://github.com/dotnet/dotnet/commit/032f564872d408f03fba11c8d03e5cd7386164cd"
+      },
+      {
+        "Url": "https://github.com/dotnet/dotnet/commit/c46253a634a2725fd34820ad8a36a3f106f5d01d"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/blob/main/release-notes/10.0/10.0.15/10.0.15.md"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/blob/main/release-notes/11.0/11.0.0/11.0.0.md"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/releases/tag/v10.0.15"
+      },
+      {
+        "Url": "https://github.com/dotnet/core/releases/tag/v11.0.0"
+      },
+      {
+        "Url": "https://github.com/dotnet/dotnet/releases/tag/v10.0.404"
+      },
+      {
+        "Url": "https://github.com/dotnet/dotnet/releases/tag/v11.0.100"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-114155"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q7j6-px74-p2vw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q7j6-px74-p2vw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-114155"
+      }
+    ],
+    "Description": "## Executive summary\n\nMicrosoft is releasing this security advisory to provide information about a vulnerability in the .NET SDK's dotnet-watch component. This advisory provides guidance on updating affected SDK installations.\n\nA local attacker who can replace or modify a temporary solution file used by dotnet-watch can alter a subsequent build. The fix stores generated solution files in a private temporary directory and keeps each file open with read-only sharing while the build uses it.\n\n## Announcement\n\nAnnouncement for this issue can be found at https://github.com/dotnet/announcements/issues/502\n\n## CVSS Details\n\n- **Version:** 3.1\n- **Severity:** High\n- **Score:** 7.5 (base score)\n- **Vector:** `CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:C/C:H/I:H/A:H/E:U/RL:O/RC:C`\n- **Weakness:** CWE-367\n- **MSRC severity:** Important\n- **Impact:** Elevation of Privilege\n\n## Affected Platforms\n\n- **Platforms:** Linux, macOS.\n- **Architectures:** Linux: Arm, Arm64, x64; macOS: Arm64, x64\n\nWindows is outside this advisory's affected scope when its temporary directory is private to the current user, as assumed by the implementation. Shared or insecurely configured Windows temporary directories are not covered by that assumption.\n\n## \u003ca name=\"affected-packages\"\u003e\u003c/a\u003eAffected Packages\n\nThe .NET SDK includes dotnet-watch and the Microsoft.DotNet.HotReload.Watch assembly.\n\nEach SDK feature band is a separate servicing line. Update an affected 10.0.3xx installation to the fixed 10.0.4xx SDK listed below.\n\n### .NET SDK 10.0.3xx\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[.NET SDK (dotnet-watch) 10.0.3xx](https://dotnet.microsoft.com/download/dotnet/10.0) | \u003e= 10.0.300, \u003c= 10.0.303 | 10.0.404\n\n### .NET SDK 10.0.4xx\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[.NET SDK (dotnet-watch) 10.0.4xx](https://dotnet.microsoft.com/download/dotnet/10.0) | \u003e= 10.0.400, \u003c= 10.0.403 | 10.0.404\n\n### .NET SDK 11.0.1xx\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[.NET SDK (dotnet-watch) 11.0.1xx](https://dotnet.microsoft.com/download/dotnet/11.0) | \u003e= 11.0.100-preview.3.26207.106, \u003c= 11.0.100-rc.3.26522.148 | 11.0.100\n\n### Separately restored Aspire watch tool\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[Microsoft.DotNet.HotReload.Watch.Aspire](https://www.nuget.org/packages/Microsoft.DotNet.HotReload.Watch.Aspire) | \u003e= 10.0.300, \u003c= 10.0.303 | 10.0.404\n[Microsoft.DotNet.HotReload.Watch.Aspire](https://www.nuget.org/packages/Microsoft.DotNet.HotReload.Watch.Aspire) | \u003e= 10.0.400, \u003c= 10.0.403 | 10.0.404\n[Microsoft.DotNet.HotReload.Watch.Aspire](https://www.nuget.org/packages/Microsoft.DotNet.HotReload.Watch.Aspire) | \u003e= 11.0.100-preview.3.26207.106, \u003c= 11.0.100-rc.3.26522.148 | 11.0.100\n\nThis tool has its own copy of the watch implementation. Updating the SDK does not necessarily replace a separately restored tool.\n\n## Advisory FAQ\n\n### \u003ca name=\"how-affected\"\u003e\u003c/a\u003eHow do I know if I am affected?\n\nRun `dotnet --version` from the directory where you run dotnet-watch to identify the selected SDK. Use `dotnet --info` and `dotnet --list-sdks` to check its installation path, OS, architecture, and other installed SDKs. Check the nearest applicable `global.json`, including its `version` and `rollForward` settings: installing a newer SDK does not necessarily change the SDK selected for a pinned project. See [.NET SDK selection](https://learn.microsoft.com/dotnet/core/versions/selection).\n\nReview use of dotnet-watch against the affected intervals above. Membership in a listed feature band alone does not establish that a specific SDK version is vulnerable. For Aspire or other tooling that separately restores Microsoft.DotNet.HotReload.Watch.Aspire, check the actual restored package version separately from the selected SDK.\n\n### \u003ca name=\"how-fix\"\u003e\u003c/a\u003eHow do I fix the issue?\n\nThe fixed SDK versions are 10.0.404 and 11.0.100, as applicable. Update each affected SDK installation and restart dotnet-watch. For SDKs installed through Visual Studio, update Visual Studio to a release that includes a fixed SDK. Updating only an application runtime does not replace SDK-bundled tools.\n\nEnsure that `global.json` and its SDK roll-forward policy select a fixed SDK, then rerun `dotnet --version` in the working directory to verify the selection. The SDK-bundled watch tool is installed beneath that selected SDK's `DotnetTools/dotnet-watch` directory.\n\nIf Microsoft.DotNet.HotReload.Watch.Aspire is restored separately, update its package reference or the consuming tool's version configuration to 10.0.404 or 11.0.100, as applicable, restore the tool, and restart the consuming process. An SDK update alone does not update that restored copy.\n\n## Other Information\n\n### Reporting Security Issues\n\nIf you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue).\n\nSecurity reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty.\n\n### Support\n\nYou can ask questions about this issue on GitHub in the .NET GitHub organization. The main repos are located at https://github.com/dotnet/runtime. The Announcements repo (https://github.com/dotnet/Announcements) will contain this bulletin as an issue and will include a link to a discussion issue. You can ask questions in the linked discussion issue.\n\n### Disclaimer\n\nThe information provided in this advisory is provided \"as is\" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exclusion or limitation of liability for consequential or incidental damages so the foregoing limitation may not apply.\n\n### External Links\n\n[CVE-2026-114155](https://www.cve.org/CVERecord?id=CVE-2026-114155)\n\n### Acknowledgements\n\n- [Ky0toFu](https://x.com/ky0tofu)\n\n### Revisions\n\nV1.0 (November 10, 2026): Advisory published.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-11T00:09:46Z",
+    "Severity": "MODERATE",
+    "Summary": "Microsoft Security Advisory CVE-2026-114155 - .NET Elevation of Privilege Vulnerability",
+    "UpdatedAt": "2026-11-11T00:09:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:C/C:H/I:H/A:H/E:U/RL:O/RC:C"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "11.0.100"
+      },
+      "VulnerableVersionRange": "\u003e= 11.0.100-preview.3.26207.106, \u003c= 11.0.100-rc.3.26522.148"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.404"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.400, \u003c= 10.0.403"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "10.0.404"
+      },
+      "VulnerableVersionRange": "\u003e= 10.0.300, \u003c= 10.0.303"
+    }
+  ]
+}

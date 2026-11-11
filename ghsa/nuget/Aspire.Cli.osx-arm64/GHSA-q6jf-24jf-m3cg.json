@@ -1,0 +1,71 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-11T00:31:25Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Aspire.Cli.osx-arm64"
+  },
+  "Advisory": {
+    "DatabaseId": 531561,
+    "Id": "GSA_kwCzR0hTQS1xNmpmLTI0amYtbTNjZ84ACBxp",
+    "GhsaId": "GHSA-q6jf-24jf-m3cg",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/aspire/security/advisories/GHSA-q6jf-24jf-m3cg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-120792"
+      },
+      {
+        "Url": "https://github.com/dotnet/announcements/issues/518"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/issues/22100"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/pull/22071"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/commit/c408ec5bf44e43203c278990a43aea93145248f3"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/releases/tag/v13.6.5"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-120792"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-q6jf-24jf-m3cg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-q6jf-24jf-m3cg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-120792"
+      }
+    ],
+    "Description": "## Executive summary\n\nMicrosoft is releasing this security advisory to provide information about a vulnerability in the Aspire CLI. This advisory provides guidance on updating affected applications and components.\n\nInsecure temporary files used by Aspire CLI can allow a local attacker to obtain sensitive configuration information.\n\n## Announcement\n\nAnnouncement for this issue can be found at https://github.com/dotnet/announcements/issues/518\n\n## CVSS Details\n\n- **Version:** 3.1\n- **Severity:** High\n- **Score:** 7.3\n- **Vector:** `CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:L`\n- **Weakness:** CWE-532 (Insertion of Sensitive Information into Log File)\n- **MSRC severity:** Important\n- **Impact:** Information Disclosure\n\n## Affected Platforms\n\n- **Platforms:** Linux, macOS\n- **Architectures:** x64, Arm64\n\n## \u003ca name=\"affected-packages\"\u003e\u003c/a\u003eAffected Packages\n\n### Standalone Aspire CLI\n\nPackage | Affected version | Patched version\n--- | --- | ---\nAspire CLI ([Aspire.Cli](https://www.nuget.org/packages/Aspire.Cli)) | \u003e= 13.2.0, \u003c 13.6.5 | 13.6.5\n[Aspire.Cli.linux-x64](https://www.nuget.org/packages/Aspire.Cli.linux-x64) | \u003e= 13.3.0, \u003c 13.6.5 | 13.6.5\n[Aspire.Cli.linux-arm64](https://www.nuget.org/packages/Aspire.Cli.linux-arm64) | \u003e= 13.3.0, \u003c 13.6.5 | 13.6.5\n[Aspire.Cli.linux-musl-x64](https://www.nuget.org/packages/Aspire.Cli.linux-musl-x64) | \u003e= 13.3.0, \u003c 13.6.5 | 13.6.5\n[Aspire.Cli.osx-x64](https://www.nuget.org/packages/Aspire.Cli.osx-x64) | \u003e= 13.3.0, \u003c 13.6.5 | 13.6.5\n[Aspire.Cli.osx-arm64](https://www.nuget.org/packages/Aspire.Cli.osx-arm64) | \u003e= 13.3.0, \u003c 13.6.5 | 13.6.5\n\n### Aspire CLI npm packages\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[@microsoft/aspire-cli](https://www.npmjs.com/package/@microsoft/aspire-cli) | \u003e= 13.4.2, \u003c 13.6.5 | 13.6.5\n[@microsoft/aspire-cli-linux-x64](https://www.npmjs.com/package/@microsoft/aspire-cli-linux-x64) | \u003e= 13.4.2, \u003c 13.6.5 | 13.6.5\n[@microsoft/aspire-cli-linux-arm64](https://www.npmjs.com/package/@microsoft/aspire-cli-linux-arm64) | \u003e= 13.4.2, \u003c 13.6.5 | 13.6.5\n[@microsoft/aspire-cli-linux-musl-x64](https://www.npmjs.com/package/@microsoft/aspire-cli-linux-musl-x64) | \u003e= 13.4.2, \u003c 13.6.5 | 13.6.5\n[@microsoft/aspire-cli-osx-x64](https://www.npmjs.com/package/@microsoft/aspire-cli-osx-x64) | \u003e= 13.4.2, \u003c 13.6.5 | 13.6.5\n[@microsoft/aspire-cli-osx-arm64](https://www.npmjs.com/package/@microsoft/aspire-cli-osx-arm64) | \u003e= 13.4.2, \u003c 13.6.5 | 13.6.5\n\nThe affected component is the Aspire CLI's deprecated MCP configuration scanner, which ships in the CLI packages listed above. Its temporary-file diagnostics can include configuration content and use a fixed path in a shared temporary directory.\n\n## Advisory FAQ\n\n### \u003ca name=\"how-affected\"\u003e\u003c/a\u003eHow do I know if I am affected?\n\nThe reported scenario involves running Aspire CLI agent or MCP initialization commands on a non-Windows system with a temporary directory shared by multiple users. Versions 13.2.0 through 13.6.4 are affected.\n\nAspire ships independently of .NET. Installing a .NET runtime or SDK update does not establish that the affected Aspire CLI has been updated.\n\n### \u003ca name=\"how-fix\"\u003e\u003c/a\u003eHow do I fix the issue?\n\nUpdate the Aspire CLI to version 13.6.5 or later. If installed as a .NET tool, update the Aspire.Cli package. If installed using npm, update @microsoft/aspire-cli to version 13.6.5 or later; its platform-specific dependency must also resolve to version 13.6.5 or later. Otherwise update the CLI through its installation method.\n\n## Other Information\n\n### Reporting Security Issues\n\nIf you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue).\n\nSecurity reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty.\n\n### Support\n\nYou can ask questions about this issue in the [Aspire repository](https://github.com/microsoft/aspire).\n\n### Disclaimer\n\nThe information provided in this advisory is provided \"as is\" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exclusion or limitation of liability for consequential or incidental damages so the foregoing limitation may not apply.\n\n### External Links\n\n[CVE-2026-120792](https://www.cve.org/CVERecord?id=CVE-2026-120792)\n\n### Acknowledgements\n\n- l8BL with [ENKI WhiteHat](https://enki.co.kr/)\n- 71C4\n\n### Revisions\n\nV1.0 (November 10, 2026): Advisory published.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-11T00:31:23Z",
+    "Severity": "HIGH",
+    "Summary": "Microsoft Security Advisory CVE-2026-120792 - Aspire Information Disclosure Vulnerability",
+    "UpdatedAt": "2026-11-11T00:31:25Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.3,
+      "VectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.6.5"
+      },
+      "VulnerableVersionRange": "\u003e= 13.3.0, \u003c 13.6.5"
+    }
+  ]
+}
