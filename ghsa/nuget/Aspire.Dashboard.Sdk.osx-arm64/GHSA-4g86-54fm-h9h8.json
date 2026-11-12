@@ -1,0 +1,68 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-12T17:17:48Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Aspire.Dashboard.Sdk.osx-arm64"
+  },
+  "Advisory": {
+    "DatabaseId": 532572,
+    "Id": "GSA_kwCzR0hTQS00Zzg2LTU0Zm0taDloOM4ACCBc",
+    "GhsaId": "GHSA-4g86-54fm-h9h8",
+    "References": [
+      {
+        "Url": "https://github.com/microsoft/aspire/security/advisories/GHSA-4g86-54fm-h9h8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-118740"
+      },
+      {
+        "Url": "https://github.com/dotnet/announcements/issues/526"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/issues/22148"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/commit/0b6bfe2f538d4eed8a9ae7e11651c09dbbe886b8"
+      },
+      {
+        "Url": "https://github.com/microsoft/aspire/releases/tag/v13.6.5"
+      },
+      {
+        "Url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-118740"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4g86-54fm-h9h8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4g86-54fm-h9h8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-118740"
+      }
+    ],
+    "Description": "## Executive summary\n\nMicrosoft is releasing this security advisory to provide information about a vulnerability in Aspire. This advisory provides guidance on updating affected applications and components.\n\nAspire Dashboard's unauthenticated NotFound route can permit telemetry deletion in both standalone and AppHost-hosted deployments. In standalone deployments using browser-token authentication, it can also expose the browser token.\n\n## Announcement\n\nAnnouncement for this issue can be found at https://github.com/dotnet/announcements/issues/526\n\n## CVSS Details\n\n- **Version:** 3.1\n- **Severity:** Critical\n- **Score:** 9.1\n- **Vector:** `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N`\n- **Weakness:** CWE-862\n\n## Affected Platforms\n\n- **Platforms:** Any supported OS\n- **Architectures:** x64, Arm64\n\n## \u003ca name=\"affected-packages\"\u003e\u003c/a\u003eAffected Packages\n\n### Standalone Aspire Dashboard\n\nPackage | Affected version | Patched version\n--- | --- | ---\nAspire Dashboard | \u003c 13.6.5 | 13.6.5\n\nBoth 13.6.3 and 13.6.4 contain the unauthenticated NotFound route.\n\n### Aspire Dashboard SDK packages\n\nPackage | Affected version | Patched version\n--- | --- | ---\n[Aspire.Dashboard.Sdk.linux-x64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.linux-x64) | \u003c 13.6.5 | 13.6.5\n[Aspire.Dashboard.Sdk.linux-arm64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.linux-arm64) | \u003c 13.6.5 | 13.6.5\n[Aspire.Dashboard.Sdk.linux-musl-x64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.linux-musl-x64) | \u003c 13.6.5 | 13.6.5\n[Aspire.Dashboard.Sdk.osx-x64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.osx-x64) | \u003c 13.6.5 | 13.6.5\n[Aspire.Dashboard.Sdk.osx-arm64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.osx-arm64) | \u003c 13.6.5 | 13.6.5\n[Aspire.Dashboard.Sdk.win-x64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.win-x64) | \u003c 13.6.5 | 13.6.5\n[Aspire.Dashboard.Sdk.win-arm64](https://www.nuget.org/packages/Aspire.Dashboard.Sdk.win-arm64) | \u003c 13.6.5 | 13.6.5\n\n## Advisory FAQ\n\n### \u003ca name=\"how-affected\"\u003e\u003c/a\u003eHow do I know if I am affected?\n\nAspire Dashboard releases through 13.6.4 are affected, whether deployed independently or launched by an Aspire AppHost. For an AppHost using Dashboard SDK packages, check the resolved Aspire.Dashboard.Sdk package versions against the affected ranges above. If the AppHost selects a CLI-bundled Dashboard or a custom Dashboard path, check the version of that Dashboard instead. Aspire ships independently of .NET; installing a .NET runtime or SDK update does not replace the Dashboard.\n\n### \u003ca name=\"how-fix\"\u003e\u003c/a\u003eHow do I fix the issue?\n\nUpdate Aspire Dashboard to version 13.6.5 or later. Neither 13.6.3 nor 13.6.4 is a fixed upgrade target.\n\nFor container deployments, explicitly set the Dashboard image to `mcr.microsoft.com/aspire/dashboard:13.6.5` and recreate or redeploy the container. Replace older version tags and nightly image references, including those in generated Docker Compose or Kubernetes manifests, with this fixed stable image. Updating AppHost package references alone does not replace an image reference in an existing deployment manifest.\n\nFor an AppHost using Dashboard SDK packages, update any explicit Aspire.Hosting.AppHost version, including a central package version, to 13.6.5 or later. If that reference is supplied implicitly by Aspire.AppHost.Sdk, update the SDK reference to 13.6.5 or later instead. Restore and rebuild the AppHost, verify that its resolved Aspire.Dashboard.Sdk packages are 13.6.5 or later, and restart the AppHost to run the updated Dashboard.\n\nIf your AppHost selects a CLI-bundled Dashboard or a custom Dashboard path, update the Dashboard in that selected bundle or location to 13.6.5 or later and restart the AppHost. Updating AppHost package references alone does not replace that Dashboard.\n\n## Other Information\n\n### Reporting Security Issues\n\nIf you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue).\n\nSecurity reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty.\n\n### Support\n\nYou can ask questions about this issue in the Aspire repository at https://github.com/microsoft/aspire. The Announcements repo (https://github.com/dotnet/Announcements) will contain this bulletin as an issue and will include a link to a discussion issue. You can ask questions in the linked discussion issue.\n\n### Disclaimer\n\nThe information provided in this advisory is provided \"as is\" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exclusion or limitation of liability for consequential or incidental damages so the foregoing limitation may not apply.\n\n### External Links\n\n[CVE-2026-118740](https://www.cve.org/CVERecord?id=CVE-2026-118740)\n\n### Acknowledgements\n\n- Weeraphat Srisutham\n\n### Revisions\n\nV1.0 (November 10, 2026): Advisory published.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T17:17:48Z",
+    "Severity": "CRITICAL",
+    "Summary": "Microsoft Security Advisory CVE-2026-118740 - Aspire Security Feature Bypass Vulnerability",
+    "UpdatedAt": "2026-11-12T17:17:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "13.6.5"
+      },
+      "VulnerableVersionRange": "\u003c 13.6.5"
+    }
+  ]
+}
