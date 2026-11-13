@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-12T23:30:46Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 532731,
+    "Id": "GSA_kwCzR0hTQS00aDdoLXJ2N2MtN20yds4ACCD7",
+    "GhsaId": "GHSA-4h7h-rv7c-7m2v",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-4h7h-rv7c-7m2v"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/d88fab372415277a9e540e895650943dd08eef4a"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.13.16"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4h7h-rv7c-7m2v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4h7h-rv7c-7m2v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126356"
+      }
+    ],
+    "Description": "### Summary\n\n`validator('form')` only recognizes a `multipart/form-data` `Content-Type` that carries nothing but a single `boundary` parameter. A request with another legal parameter, such as `charset`, or with extra whitespace after the `;` is not recognized as a form. The validation callback then receives an empty object, while `c.req.parseBody()` still parses the body as a form.\n\n### Details\n\nThe check that decides whether a request body is a form was written as a strict pattern over the whole `Content-Type` value. Any parameter list that does not look exactly like `; boundary=...` fails the check. When it fails, the middleware does not read the body and passes an empty object to the validation callback. If the callback accepts an empty object, the request proceeds to the handler, which can still read all submitted fields through `c.req.parseBody()` or `c.req.formData()`.\n\n`application/x-www-form-urlencoded` is not affected. Only the `multipart/form-data` branch has the strict pattern.\n\nThis issue arises when an application relies on `validator('form')` to reject or restrict fields and the validation callback does not fail on an empty object.\n\n### Impact\n\nAn unauthenticated client can send form fields that the `form` validator never sees, by adding a legal parameter to the `Content-Type` header.\n\nThis may lead to:\n\n- Allow-list or required-field checks in the validator being skipped\n- Fields the application intended to reject reaching the handler\n\nThis issue affects applications that use `validator('form')` with `multipart/form-data` requests and whose validation callback accepts an empty object.\n\n### Workarounds\n\nReject an empty object in the `validator('form')` callback, or validate the result of `await c.req.parseBody()` in the handler.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T23:30:45Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: `validator('form')` skips validation for `multipart/form-data` requests with extra parameters",
+    "UpdatedAt": "2026-11-12T23:30:46Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.13.16"
+      },
+      "VulnerableVersionRange": "\u003e= 4.5.1, \u003c= 4.13.15"
+    }
+  ]
+}

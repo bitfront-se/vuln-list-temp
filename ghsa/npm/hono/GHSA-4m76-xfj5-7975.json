@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-12T23:24:12Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 532730,
+    "Id": "GSA_kwCzR0hTQS00bTc2LXhmajUtNzk3Nc4ACCD6",
+    "GhsaId": "GHSA-4m76-xfj5-7975",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-4m76-xfj5-7975"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/34f90432a1794b28e52802670efcd01963f716d6"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.13.16"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-4m76-xfj5-7975"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-4m76-xfj5-7975"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126357"
+      }
+    ],
+    "Description": "### Summary\n\n`mount()` and `app.mount()` remove the mount prefix from the request path and forward the rest to the mounted application. Two mistakes in that step let a crafted request reach a route of the mounted application that the outer application protects with path-scoped middleware, such as an authentication check on `/app/admin/*`. The outer application routes on the original path, so the middleware does not run.\n\n### Details\n\n1. **Dynamic prefix** (all affected versions): for a mount such as `/api/:tenant/*`, the prefix was removed by the length of the route pattern, not of the matched prefix. A request with a longer or shorter first segment is cut in the middle, so `/api/a/xxxxx/admin/secret` reaches the mounted application as `/admin/secret`.\n2. **Re-normalization** (since 4.12.21): the forwarded path was built from the decoded request path and assigned to `url.pathname`, which turns a decoded backslash into `/` and collapses `..`. `/app/public%5C..%5Cadmin/secret` reaches the mounted application as `/admin/secret`.\n\nThe fix removes the prefix segment by segment from the raw pathname, using the matched parameter values for its length. Route patterns that cannot be handled safely now throw: duplicate parameter names and a wildcard inside the last segment such as `/assets*`. A trailing slash in an `app.mount()` prefix no longer removes an extra segment.\n\n### Impact\n\nAn unauthenticated client can reach a route of a mounted application that the outer application protects with path-scoped middleware.\n\nThis affects applications that use `mount()` or `app.mount()` and rely on middleware registered on a sub-path inside the mount prefix for authentication or authorization.\n\n### Workarounds\n\nRegister the authentication middleware inside the mounted application.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T23:24:11Z",
+    "Severity": "MODERATE",
+    "Summary": "Hono: `mount()` and `app.mount()` can forward a path that bypasses middleware scoped inside the mount prefix",
+    "UpdatedAt": "2026-11-12T23:24:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.13.16"
+      },
+      "VulnerableVersionRange": "\u003c 4.13.16"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-12T22:23:50Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "basic-ftp"
+  },
+  "Advisory": {
+    "DatabaseId": 532716,
+    "Id": "GSA_kwCzR0hTQS1yNGpoLTI5cGMtZ2Zxcs4ACCDs",
+    "GhsaId": "GHSA-r4jh-29pc-gfqr",
+    "References": [
+      {
+        "Url": "https://github.com/patrickjuchli/basic-ftp/security/advisories/GHSA-r4jh-29pc-gfqr"
+      },
+      {
+        "Url": "https://github.com/patrickjuchli/basic-ftp/commit/0495b906bdf891e68806721b07b333dba65ec88e"
+      },
+      {
+        "Url": "https://github.com/patrickjuchli/basic-ftp/releases/tag/v6.2.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r4jh-29pc-gfqr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r4jh-29pc-gfqr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126346"
+      }
+    ],
+    "Description": "### Summary\n\nClient.login() calls FTPContext.send() from inside the control-socket data event handler. send() throws on CR, LF or NUL, and nothing catches the throw. A password containing \\r\\n therefore raises an uncaught exception and terminates the whole Node.js process. It does not reject the returned promise. Any application that passes untrusted input as the FTP password can be crashed remotely with one request. The same pattern exists in the REST/RETR path of downloadTo() when the remote path contains control characters.\n\n### Details\n\nThe CRLF guard (FTPContext.send, src/FtpContext.ts ~L233) correctly refuses to send commands containing \\r, \\n or \\0:\n```ts\nsend(command: string) {\n    if (/[\\r\\n\\0]/.test(command)) {\n        throw new Error(`Invalid command: Contains control characters. (${command})`);\n    }\n```\n\nThat works when send() is called from handle(), because it runs inside a Promise executor and the throw becomes a rejection. But in two places send() runs inside a response handler, which is called synchronously from the socket’s data event:\n\nClient.login() (src/Client.ts ~L246-248): after the server answers 331 to USER, the handler calls this.ftp.send(\"PASS \" + password). The USER command was already sent and is valid, so the password is only checked at this point. The call chain is socket.on(\"data\") → _onControlSocketData → _passToHandler → responseHandler → send() → throw. No try/catch exists anywhere in that chain, so it becomes an uncaughtException.\ndownloadTo() (src/transfer.ts ~L368-370): when startAt \u003e 0, the initial command is REST n, which contains no user-controlled text. When the server answers 350, the handler calls config.ftp.send(\"RETR \" + config.remotePath). This remotePath was never checked before. A path with a control character throws in the data handler in the same way. (Found by code reading, not reproduced.)\n\nBecause the exception happens during data event dispatch, it can’t be handled with try/catch or .catch() around client.access() or downloadTo(). The application only survives if it has a global process.on(\"uncaughtException\") handler.\n\n### Proof of concept\n\nTested on Node.js v22.22.0 against basic-ftp 6.2.2 (built from source). It uses a minimal mock FTP server on localhost:\n\n```js\nconst net = require(\"net\")\nconst ftp = require(\"basic-ftp\")\n\nconst srv = net.createServer(s =\u003e {\n  s.write(\"220 hi\\r\\n\")\n  s.on(\"data\", d =\u003e {\n    const c = d.toString()\n    if (c.startsWith(\"USER\")) s.write(\"331 pw\\r\\n\")\n    else if (c.startsWith(\"PASS\")) s.write(\"230 ok\\r\\n\")\n    else s.write(\"200 ok\\r\\n\")\n  })\n})\n\nsrv.listen(0, async () =\u003e {\n  const c = new ftp.Client(2000)\n  try {\n    await c.access({\n      host: \"127.0.0.1\",\n      port: srv.address().port,\n      user: \"bob\",\n      password: \"x\\r\\nDELE important\"   // attacker-controlled value\n    })\n  } catch (e) {\n    console.log(\"rejected:\", e.message)  // never reached\n  }\n  console.log(\"handled gracefully\")      // never reached\n  process.exit(0)\n})\n```\nResult: the process terminates with an uncaught exception and neither catch nor the final console.log runs:\n```\nError: Invalid command: Contains control characters. (PASS x\nDELE important)\n    at FTPContext.send (dist/FtpContext.js:189:19)\n    at Object.responseHandler (dist/Client.js:186:26)\n    at FTPContext._passToHandler (dist/FtpContext.js:322:24)\n    at FTPContext._onControlSocketData (dist/FtpContext.js:312:18)\n    at Socket.\u003canonymous\u003e (dist/FtpContext.js:133:44)\n```\nThe server in the PoC is benign. Any normal FTP server that replies 331 to USER triggers the same crash.\n\n### Impact\n\nDenial of service (uncaught exception, process termination), CWE-248.\n\nIt affects applications that pass untrusted or user-influenced values as the FTP password, or as the remote path of a resumed download. Examples are web apps or services that let users enter their own FTP credentials, or file-transfer or backup tools driven by user-supplied paths. One request crashes the whole Node.js process and every other client it serves. It needs no authentication to the FTP server and no special server behaviour. The attacker only needs control over the string. Confidentiality and integrity are not affected, and the CRLF guard still blocks command injection.\n\nSuggested fix:\n\nIn FTPContext._passToHandler(), wrap the handler call in a try/catch that rejects the task and calls closeWithError(err).\nValidate password in login(), and remotePath in _downloadToStream(), before any I/O and reject early.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T22:23:50Z",
+    "Severity": "MODERATE",
+    "Summary": "basic-ftp: Uncaught exception crashes the Node.js process when a password (or resumed-download path) contains CR/LF",
+    "UpdatedAt": "2026-11-12T22:23:50Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "6.2.3"
+      },
+      "VulnerableVersionRange": "\u003c= 6.2.2"
+    }
+  ]
+}

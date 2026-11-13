@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-12T22:34:45Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@astrojs/solid-js"
+  },
+  "Advisory": {
+    "DatabaseId": 532721,
+    "Id": "GSA_kwCzR0hTQS1qbXYyLXFneGYtZjk5Nc4ACCDx",
+    "GhsaId": "GHSA-jmv2-qgxf-f995",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-jmv2-qgxf-f995"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/commit/290b196ddb48de11783ff128e2b7272c61490a20"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/releases/tag/@astrojs/solid-js@7.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jmv2-qgxf-f995"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jmv2-qgxf-f995"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126363"
+      }
+    ],
+    "Description": "## Summary\n\nThe `@astrojs/solid-js` renderer wraps named slot content passed to Solid components in an `\u003castro-slot\u003e` element, and writes the slot name into its `name` attribute without HTML escaping. A slot name containing `\"` could end the attribute and inject arbitrary HTML into the page.\n\nFor example, a page that takes a slot name from the request:\n\n```astro\n---\nimport Tabs from '../components/Tabs.jsx';\nconst tab = Astro.url.searchParams.get('tab');\n---\n\u003cTabs client:load active={tab}\u003e\u003cdiv slot={tab}\u003e…\u003c/div\u003e\u003c/Tabs\u003e\n```\n\nrendered with a Solid component that renders a slot by name:\n\n```jsx\nexport default function Tabs(props) {\n\treturn \u003cdiv\u003e{props[props.active]}\u003c/div\u003e;\n}\n```\n\nwould output a `tab` value such as `x\"\u003e\u003cimg src=x onerror=alert(1)\u003e` as live HTML.\n\n## Impact\n\nReflected cross-site scripting. An attacker who gets a user to open a crafted link can run JavaScript on the site's origin, but only in applications where all of the following are true:\n\n- The page passes request-controlled input (such as a query parameter) as a slot name.\n- The Solid component is hydrated with a `client:*` directive. For non-hydrated components the slot wrapper is removed from the output, together with its `name` attribute.\n- The Solid component renders the attacker-chosen slot, which in practice means accessing slot props by a dynamic name. Components that never render the slot only output Astro's already escaped fallback template.\n\nThis is the `@astrojs/solid-js` counterpart of GHSA-8hv8-536x-4wqp (CVE-2026-50146), which fixed the same issue in `astro` core.\n\n## Affected versions\n\n`@astrojs/solid-js` \u003e= 0.2.0, \u003c= 7.1.1.\n\n## Patches\n\nFixed in `@astrojs/solid-js` 7.1.2. Slot names are now HTML-escaped in the server renderer.\n\n## Workarounds\n\nUpgrade to `@astrojs/solid-js` 7.1.2 or later. Before upgrading, do not use request-controlled input as a slot name, or map it to a fixed set of known slot names before passing it to a component.\n\n## Credits\n\nReported by @manus-pi.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T22:34:44Z",
+    "Severity": "LOW",
+    "Summary": "Astro: Reflected XSS via unescaped slot names in @astrojs/solid-js",
+    "UpdatedAt": "2026-11-12T22:34:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 0.2.0, \u003c= 7.1.1"
+    }
+  ]
+}

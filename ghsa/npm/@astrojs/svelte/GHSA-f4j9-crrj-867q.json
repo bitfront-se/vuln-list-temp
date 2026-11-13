@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-12T22:34:05Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@astrojs/svelte"
+  },
+  "Advisory": {
+    "DatabaseId": 532720,
+    "Id": "GSA_kwCzR0hTQS1mNGo5LWNycmotODY3cc4ACCDw",
+    "GhsaId": "GHSA-f4j9-crrj-867q",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-f4j9-crrj-867q"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/commit/5e476365378e41aa2745d003b2383d02008d7b44"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/releases/tag/@astrojs/svelte@9.1.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-f4j9-crrj-867q"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-f4j9-crrj-867q"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126362"
+      }
+    ],
+    "Description": "## Summary\n\nThe `@astrojs/svelte` renderer wraps slotted content passed to Svelte components in an `\u003castro-slot\u003e` element, and writes the slot name into its `name` attribute without HTML escaping. A slot name containing `\"` could end the attribute and inject arbitrary HTML into the page.\n\nFor example, a page that takes a slot name from the request:\n\n```astro\n---\nimport Tabs from '../components/Tabs.svelte';\nconst tab = Astro.url.searchParams.get('tab');\n---\n\u003cTabs client:load active={tab}\u003e\u003cdiv slot={tab}\u003e…\u003c/div\u003e\u003c/Tabs\u003e\n```\n\nrendered with a Svelte 5 component that renders its snippets by name:\n\n```svelte\n\u003cscript\u003e\n\tlet { active, ...snippets } = $props();\n\u003c/script\u003e\n{@render snippets[active]?.()}\n```\n\nwould output a `tab` value such as `x\"\u003e\u003cimg src=x onerror=alert(1)\u003e` as live HTML.\n\n## Impact\n\nReflected cross-site scripting. An attacker who gets a user to open a crafted link can run JavaScript on the site's origin, but only in applications where all of the following are true:\n\n- The page passes request-controlled input (such as a query parameter) as a slot name.\n- The Svelte component is hydrated with a `client:*` directive. For non-hydrated components the slot wrapper is removed from the output, together with its `name` attribute.\n- The Svelte component renders the attacker-chosen slot, which in practice means a Svelte 5 component that renders snippets by a dynamic name. Components that never render the slot only output Astro's already escaped fallback template.\n\nThis is the `@astrojs/svelte` counterpart of GHSA-8hv8-536x-4wqp (CVE-2026-50146), which fixed the same issue in `astro` core. The same unescaped value was also used when hydrating the component in the browser.\n\n## Affected versions\n\n`@astrojs/svelte` \u003e= 5.7.3, \u003c= 9.1.1.\n\n## Patches\n\nFixed in `@astrojs/svelte` 9.1.2. Slot names are now HTML-escaped in the server renderer and in the client-side hydration code.\n\n## Workarounds\n\nUpgrade to `@astrojs/svelte` 9.1.2 or later. Before upgrading, do not use request-controlled input as a slot name, or map it to a fixed set of known slot names before passing it to a component.\n\n## Credits\n\nReported by @manus-pi.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T22:34:04Z",
+    "Severity": "LOW",
+    "Summary": "Astro: Reflected XSS via unescaped slot names in @astrojs/svelte",
+    "UpdatedAt": "2026-11-12T22:34:05Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.1.2"
+      },
+      "VulnerableVersionRange": "\u003e= 5.7.3, \u003c= 9.1.1"
+    }
+  ]
+}

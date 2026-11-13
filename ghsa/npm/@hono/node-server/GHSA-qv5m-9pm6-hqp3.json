@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-12T21:32:49Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@hono/node-server"
+  },
+  "Advisory": {
+    "DatabaseId": 532712,
+    "Id": "GSA_kwCzR0hTQS1xdjVtLTlwbTYtaHFwM84ACCDo",
+    "GhsaId": "GHSA-qv5m-9pm6-hqp3",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/node-server/security/advisories/GHSA-qv5m-9pm6-hqp3"
+      },
+      {
+        "Url": "https://github.com/honojs/node-server/commit/61cc0267e613e684401f17c27538ba3bf97339a4"
+      },
+      {
+        "Url": "https://github.com/honojs/node-server/releases/tag/v2.1.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-qv5m-9pm6-hqp3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-qv5m-9pm6-hqp3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126343"
+      }
+    ],
+    "Description": "### Summary\n\nWhile `@hono/node-server` waits for the Hono application to handle a WebSocket upgrade request, the socket has no error listener. If the client resets the TCP connection during that time, the resulting `ECONNRESET` is emitted as an unhandled `'error'` event and the process terminates.\n\n### Details\n\nThe upgrade handler awaits the application before attaching any listener to the socket. When middleware on the upgrade path does asynchronous work, such as an authentication lookup, a connection reset in that window has no handler. If a global `uncaughtException` handler swallows the error, the pending upgrade is never released and its entry is retained for the lifetime of the process.\n\nThe fix attaches error and close listeners to the socket before calling the application, releases the pending upgrade when the socket closes, and skips the handshake on a destroyed socket.\n\n### Impact\n\nAn unauthenticated client can terminate the server process with a single connection by sending a WebSocket upgrade request and resetting the connection before the application has responded. Where the crash is suppressed, repeated requests grow the heap.\n\nThis affects applications that enable WebSocket support in `@hono/node-server` and run asynchronous middleware or handlers on the upgrade path.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T21:32:48Z",
+    "Severity": "MODERATE",
+    "Summary": "@hono/node-server: Unhandled `ECONNRESET` on the socket during an asynchronous WebSocket upgrade crashes the process",
+    "UpdatedAt": "2026-11-12T21:32:49Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.0.0, \u003c 2.1.6"
+    }
+  ]
+}

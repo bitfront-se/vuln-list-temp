@@ -1,0 +1,56 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-12T23:22:37Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "hono"
+  },
+  "Advisory": {
+    "DatabaseId": 532728,
+    "Id": "GSA_kwCzR0hTQS0zZ2cyLTMzNW0tcnhjNs4ACCD4",
+    "GhsaId": "GHSA-3gg2-335m-rxc6",
+    "References": [
+      {
+        "Url": "https://github.com/honojs/hono/security/advisories/GHSA-3gg2-335m-rxc6"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/commit/15bbd96ad1b62a0b189db4fd8dc7bf8ef280c513"
+      },
+      {
+        "Url": "https://github.com/honojs/hono/releases/tag/v4.13.16"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3gg2-335m-rxc6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3gg2-335m-rxc6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126359"
+      }
+    ],
+    "Description": "### Summary\n\nThe `css` helper in `hono/css` escapes a `/` that follows `\u003c` inside an interpolated value so that a value cannot close the `\u003cstyle\u003e` element. The check only looks inside each value. When the text before a value ends with `\u003c`, whether that is the template itself or an earlier interpolated value, and the next value starts with `/`, the `/` is not escaped and the combined output contains an unescaped closing tag.\n\n### Details\n\nInterpolated string values are escaped one at a time before they are joined with the surrounding template text. The rule that neutralizes `\u003c/` therefore cannot see a `\u003c` that belongs to the template. A template such as a `content` declaration that opens with a literal `\u003c` and interpolates a string right after it produces a raw `\u003c/style\u003e` when that string starts with `/style\u003e`. During server-side rendering the `\u003cStyle /\u003e` element is closed early and the rest of the value is interpreted as HTML.\n\nThis issue arises only when `\u003c` is the last character before an interpolation in a `css` template, either written in the template or supplied by a preceding value, and the interpolated value is controlled by a client.\n\n### Impact\n\nA client that controls such a value can inject HTML, including script, into the page rendered on the server.\n\nThis may lead to:\n\n- Execution of attacker-controlled script in the browser of a user who views the page\n- Exposure of information available to that page\n\nThis issue affects applications that interpolate untrusted strings into a `css` template immediately after a `\u003c`, including two adjacent interpolations such as `${prefix}${name}` where both are untrusted. Other uses of the `css` helper are not affected.\n\n### Workarounds\n\nDo not interpolate untrusted values into `css` templates, or make sure the text before an interpolated value does not end with `\u003c`.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-12T23:22:36Z",
+    "Severity": "LOW",
+    "Summary": "Hono: `css` helper does not escape a closing tag split between the template and an interpolated value, allowing HTML injection",
+    "UpdatedAt": "2026-11-12T23:22:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 3.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.13.16"
+      },
+      "VulnerableVersionRange": "\u003e= 3.12.0, \u003c= 4.13.15"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-13T01:09:55Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "rucio"
+  },
+  "Advisory": {
+    "DatabaseId": 532764,
+    "Id": "GSA_kwCzR0hTQS14NTg1LTR2djgtMm1oMs4ACCEc",
+    "GhsaId": "GHSA-x585-4vv8-2mh2",
+    "References": [
+      {
+        "Url": "https://github.com/rucio/rucio/security/advisories/GHSA-x585-4vv8-2mh2"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/4d4a58571ba853f3a55aef16ad9eb0944fce7483"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/4df924feb539ef789b3e78cbc00712ef8cdf606e"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/8295d72a9e2d76abf9e98eb6f9a4ed5cb3bb1869"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/883d526c2f3c315cd775fb142038007053e3882b"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/b1725ee5477b683202174f0ec77ae00921bc3bd0"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/d7a3c2c2f933dce8edbcad07d8d076b9b782da35"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/e6525523e3bbe8ae34cbfc9b043ae52bda209b87"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/commit/f5db3546d9c0de4642dc9aa52e6a6e447911d680"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/35.9.1"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/35.9.1.post1"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/38.6.1"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/38.6.2"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/40.4.2"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/41.1.1"
+      },
+      {
+        "Url": "https://github.com/rucio/rucio/releases/tag/41.2.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x585-4vv8-2mh2"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x585-4vv8-2mh2"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-100397"
+      }
+    ],
+    "Description": "## Summary\n\nSSH challenge tokens are mistakenly accepted as valid credentials during the authentication token validation process.\n\nWhile an SSH challenge token is intended as a short-lived nonce for use in a subsequent SSH key exchange, the function to validate authentication tokens does not differentiate between these and actual authentication tokens. Because challenge tokens are generated based on an account name provided via headers without requiring prior authentication, an unauthenticated attacker can request a valid \"challenge\" token for any account (including administrative ones) and use it to authenticate against other API endpoints.\n\n## Proof of Concept\n\nThe vulnerability exists because SSH challenge tokens are stored in the same database table as regular authentication tokens and `validate_auth_token` in `lib/rucio/core/authentication.py` accepts these \"challenge\" tokens. An attacker can obtain a challenge token for an account such as “root” via the REST API and then present it as a valid authentication bearer token:\n\n1. Request a challenge token for an arbitrary account (e.g., \"root\"):\n   `curl -i -H \"X-Rucio-Account: root\" https://rucio/auth/ssh_challenge_token`\n2. The server returns a `200 OK` with the header `X-Rucio-SSH-Challenge-Token`.\n3. The attacker can then use this specific token within the ten-second challenge lifetime as an authentication credential in subsequent requests to the Rucio API:\n  `curl -H \"X-Rucio-Auth-Token: $CHALLENGE_TOKEN\"  https://rucio/accounts/whoami`",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T01:09:54Z",
+    "Severity": "CRITICAL",
+    "Summary": "Rucio: Unauthenticated administrator impersonation through SSH challenge tokens",
+    "UpdatedAt": "2026-11-13T01:09:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "41.1.1"
+      },
+      "VulnerableVersionRange": "\u003e= 41.0.0rc1, \u003c 41.1.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "40.4.2"
+      },
+      "VulnerableVersionRange": "\u003e= 39.0.0rc1, \u003c 40.4.2"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "38.6.1"
+      },
+      "VulnerableVersionRange": "\u003e= 36.0.0rc1, \u003c 38.6.1"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "35.9.1"
+      },
+      "VulnerableVersionRange": "\u003e= 1.14.0.post1, \u003c 35.9.1"
+    }
+  ]
+}
