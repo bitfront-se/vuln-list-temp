@@ -1,0 +1,62 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-13T18:39:55Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "astro"
+  },
+  "Advisory": {
+    "DatabaseId": 533467,
+    "Id": "GSA_kwCzR0hTQS1taDMyLWp4Y3ItbWg5Zs4ACCPb",
+    "GhsaId": "GHSA-mh32-jxcr-mh9f",
+    "References": [
+      {
+        "Url": "https://github.com/withastro/astro/security/advisories/GHSA-mh32-jxcr-mh9f"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-126361"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/pull/18520"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/commit/e023abac912d7cb6af2b9fb5107ef5dabc667096"
+      },
+      {
+        "Url": "https://github.com/withastro/astro/releases/tag/astro@7.4.5"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mh32-jxcr-mh9f"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mh32-jxcr-mh9f"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126361"
+      }
+    ],
+    "Description": "## Summary\n\nWhen a dynamic tag (`const Tag = ...; \u003cTag /\u003e`) resolves to a string, Astro renders it as a raw HTML element name. The name was filtered to remove characters that could inject attributes, but the filter did not handle `/`. Because HTML parsers treat `/` inside a tag as an attribute separator, a tag name such as `img/src/onerror=alert(1)` was rendered as an `\u003cimg\u003e` element with an `onerror` attribute. The JSX renderer used for MDX did not filter string tag names at all.\n\nFor example:\n\n```astro\n---\nconst Tag = Astro.url.searchParams.get('as') ?? 'div';\n---\n\u003cTag\u003ehello\u003c/Tag\u003e\n```\n\nrendered `?as=img/src/onerror=alert(1)` as live HTML.\n\n## Impact\n\nReflected or stored cross-site scripting, but only in applications that use untrusted input (such as a request parameter or an uncontrolled CMS field) as all or part of an element name. Astro itself never derives element names from request data.\n\nApplications that let content choose an element should map that input to a fixed set of known tags. Letting untrusted input choose an element name is unsafe even with a correct filter, because it can still select elements such as `script` or `iframe`.\n\n## Affected versions\n\n`astro` \u003c= 7.4.4.\n\n## Patches\n\nFixed in `astro` 7.4.5. String tag names in `.astro` dynamic tags, JSX, and MDX now render only the leading valid element name, so characters such as `/` or `=` can no longer change the generated markup. Strings that do not start with a valid element name now throw an error.\n\n## Workarounds\n\nUpgrade to `astro` 7.4.5 or later. Before upgrading, do not use untrusted input as an element name, or map it to a fixed set of known tags.\n\n## Credits\n\nReported by @uttej-badwane.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T18:39:54Z",
+    "Severity": "LOW",
+    "Summary": "Astro: XSS via attribute injection in dynamic tag names",
+    "UpdatedAt": "2026-11-13T18:39:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "7.4.5"
+      },
+      "VulnerableVersionRange": "\u003c= 7.4.4"
+    }
+  ]
+}

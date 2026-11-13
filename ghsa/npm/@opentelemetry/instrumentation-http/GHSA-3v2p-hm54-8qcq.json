@@ -1,0 +1,56 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-13T19:29:21Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@opentelemetry/instrumentation-http"
+  },
+  "Advisory": {
+    "DatabaseId": 533478,
+    "Id": "GSA_kwCzR0hTQS0zdjJwLWhtNTQtOHFjcc4ACCPm",
+    "GhsaId": "GHSA-3v2p-hm54-8qcq",
+    "References": [
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js/security/advisories/GHSA-3v2p-hm54-8qcq"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js/commit/e086dec7f9304107ef6d50b5877be88895c06aa7"
+      },
+      {
+        "Url": "https://github.com/open-telemetry/opentelemetry-js/releases/tag/experimental/v0.222.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3v2p-hm54-8qcq"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3v2p-hm54-8qcq"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128080"
+      }
+    ],
+    "Description": "### Summary\n\n`@opentelemetry/instrumentation-http` redacts sensitive URL query parameters on **outgoing (client) spans** but not on **incoming (server) spans**. The server-span path writes the raw query string verbatim into the `url.query` attribute, so credentials embedded in inbound request URLs — AWS presigned-URL signatures, Azure SAS tokens (`sig`), GCS signed-URL signatures — are exported in plaintext to the configured tracing backend.\n\nConfiguring the `redactedQueryParams` option **does not change this**, as this applies only to outgoing (client) spans.\n\n### Impact\n\n**Information disclosure / credential leakage** (CWE-200; CWE-532, insertion of sensitive information into telemetry data).\n\n**Who is impacted:** any Node.js service instrumented with `@opentelemetry/instrumentation-http` — directly or transitively via `@opentelemetry/auto-instrumentations-node` — that receives inbound requests carrying credentials in the query string. Common cases: services fronting presigned S3/GCS downloads, Azure SAS-token URLs, and signature-authenticated webhooks.\n\n**Consequence:** clients' still-valid credentials are written into server spans and stored by the tracing backend, readable by anyone with span-read access — observability vendor infrastructure, dashboard users, and internal audiences far broader than the credential's intended scope. Presigned-URL signatures typically remain valid for minutes to days after capture, so this is not merely historical exposure.\n\n**Severity:** Moderate. Exploitation requires read access to the telemetry backend, and inbound URLs must actually carry signed credentials. However, the gap is a documented mitigation that silently fails to apply, which defeats the mitigation operators would reach for.\n\n### Patches\n\nThis vulnerability has been patched in `@opentelemetry/instrumentation-http` version `0.222.0`.\nKnown sensitive query string values (as defined by Semantic Conventions) are redacted by default from span data for incoming spans.\nThe `redactedQueryParamsServer` configuration option was added for customization.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T19:29:20Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenTelemetry JavaScript: Insertion of Sensitive Information into Log File and Exposure of Sensitive Information to an Unauthorized Actor in @opentelemetry/instrumentation-http",
+    "UpdatedAt": "2026-11-13T19:29:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.222.0"
+      },
+      "VulnerableVersionRange": "\u003e= 0.204.0, \u003c 0.222.0"
+    }
+  ]
+}

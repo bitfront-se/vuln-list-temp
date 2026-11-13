@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-13T19:21:03Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "AutoMapper"
+  },
+  "Advisory": {
+    "DatabaseId": 533477,
+    "Id": "GSA_kwCzR0hTQS02dmhtLWo5aDctZjlnaM4ACCPl",
+    "GhsaId": "GHSA-6vhm-j9h7-f9gh",
+    "References": [
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/security/advisories/GHSA-6vhm-j9h7-f9gh"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/commit/4d51a4b8125b4d2302f2f1f455747c9648ad1acb"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/commit/639c2748cb9d3d07df8b86879ba7bcf211675c86"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/releases/tag/v15.1.4"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/releases/tag/v16.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6vhm-j9h7-f9gh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6vhm-j9h7-f9gh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128082"
+      }
+    ],
+    "Description": "### Summary\n`MaxDepth`, whether set explicitly or applied by default (64) to self-referential type maps, was not enforced when the recursion goes through constructor parameters. Mapping a deeply nested source to a destination built through its constructor, such as a positional `record`, recurses without bound and throws a `StackOverflowException`. That exception can't be caught and terminates the process. This bypasses the mitigation for CVE-2026-32933.\n\n### Details\nThe type depth used by `MaxDepth` was incremented only after the destination object was created. Constructor parameters, including child objects of the same type, are mapped while the destination is created, so each level recursed before its parent was counted, and the depth check never tripped.\n\nAffected:\n- destination types mapped through constructor parameters, including positional records\n- both an explicit `MaxDepth(n)` and the default limit of 64\n- `ConstructUsing` that maps recursively through `context.Mapper`\n\nWith `MaxDepth(10)`, a 100-level chain was mapped to all 100 levels. On a 1 MB stack (the Windows default), the process crashed at between 1,000 and 2,000 levels.\n\n### PoC\nThe type only has a constructor with positional arguments, and `MaxDepth` is set to 10:\n\n```csharp\nusing AutoMapper;\n\n\n// Setup configuration - with MaxDepth set\nvar mapper = new MapperConfiguration(cfg =\u003e\n    {\n        cfg.CreateMap\u003cCircularClass, CircularClass\u003e().MaxDepth(10);\n    })\n    .CreateMapper();\n\n// Create a deeply nested object (28,000+ levels)\nvar root = new CircularClass(null);\nvar current = root;\nfor (int i = 0; i \u003c 30000; i++)\n{\n    current.Next = new CircularClass(null);\n    current = current.Next;\n}\n\n// STACK OVERFLOW even though the max depth is set\nvar mappedRoot = mapper.Map\u003cCircularClass\u003e(root);\n\n\npublic class CircularClass\n{\n    public CircularClass(CircularClass? Next)\n    {\n        this.Next = Next;\n    }\n\n    public CircularClass? Next { get; set; }\n}\n```\n\n### Impact\nAny application that maps attacker-influenced, deeply nested data to a destination type built through a constructor, with a recursive member, can be crashed. Setting `MaxDepth` as recommended for CVE-2026-32933 doesn't protect these mappings.\n\n### Patches\nFixed in 16.3.0 and 15.1.4. The depth is now counted before the destination is created, so constructor mapping stops at the same depth as property mapping.\n\n### Workarounds\nIf the destination type has a parameterless constructor and settable properties, `cfg.DisableConstructorMapping()` makes AutoMapper map through the properties, where `MaxDepth` is enforced. Positional records have no workaround other than limiting input depth before mapping, or upgrading.\n\n### Credits\nReported by @mcambria, who found it while writing a test to confirm their `MaxDepth` mitigation for CVE-2026-32933.\n\n### Related\n- CVE-2026-32933 (GHSA-rvv3-g6hj-g44x)\n- GHSA-gpwp-5797-mjff: other paths that bypassed `MaxDepth` (polymorphic maps, runtime-typed members, dictionary and dynamic sources, recursive type converters), fixed in the same releases.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T19:21:02Z",
+    "Severity": "HIGH",
+    "Summary": "AutoMapper: Uncontrolled Recursion with Constructor Parameters",
+    "UpdatedAt": "2026-11-13T19:21:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.1.4"
+      },
+      "VulnerableVersionRange": "\u003c 15.1.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.3.0"
+    }
+  ]
+}

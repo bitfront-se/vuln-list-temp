@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-13T16:39:45Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "soupsieve"
+  },
+  "Advisory": {
+    "DatabaseId": 533349,
+    "Id": "GSA_kwCzR0hTQS02NjU1LTZxanAtang3eM4ACCNl",
+    "GhsaId": "GHSA-6655-6qjp-jx7x",
+    "References": [
+      {
+        "Url": "https://github.com/facelessuser/soupsieve/security/advisories/GHSA-6655-6qjp-jx7x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-126191"
+      },
+      {
+        "Url": "https://github.com/facelessuser/soupsieve/pull/300"
+      },
+      {
+        "Url": "https://github.com/facelessuser/soupsieve/commit/dbfa2854ff31a863326bd6660d4e55c6f068db9e"
+      },
+      {
+        "Url": "https://github.com/facelessuser/soupsieve/releases/tag/3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6655-6qjp-jx7x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6655-6qjp-jx7x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-126191"
+      }
+    ],
+    "Description": "### Summary\nThe IDENTIFIER/CSS_ESCAPES regex (css_parser.py:119-124) exhibits exponential backtracking on a run of ambiguous digit-escapes (`\\9`) in an attribute-name or tag position of an otherwise well-formed selector. It fires at compile time (before the SELECTOR_LIMIT guard) via the public `soupsieve.compile()` and BeautifulSoup `.select()`.\n\n### PoC (verified on soupsieve 2.9.2)\n\n    import soupsieve as sv\n    sv.compile('[a' + '\\\\9'*26 + '=x]')   # ~57 bytes -\u003e ~10s; ~16x time per +4 chars\n\n### Novelty\nDistinct from the patched GHSA-836r-... (VALUE regex) and GHSA-2wc2-... (comma-list) advisories, which are fixed in 2.9.2; this is a different regex/vector.\n\n### Reachability\nCSS selectors are usually developer-controlled, so exposure requires an application that compiles UNTRUSTED selector strings (web-scraping-as-a-service, no-code/query builders, user-defined extraction rules). Where selectors are user-supplied, a ~60-byte string hangs the worker.\n\n### Note\nThis issue was fixed in version 3.0.0, which has been yanked from the PyPI registry. Use versions 3.0.2 and above to upgrade.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T16:39:43Z",
+    "Severity": "HIGH",
+    "Summary": "Soup Sieve: Exponential ReDoS in selector compilation via \\9-run in CSS_ESCAPES/IDENTIFIER",
+    "UpdatedAt": "2026-11-13T16:39:45Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.0.2"
+      },
+      "VulnerableVersionRange": "\u003c= 2.10"
+    }
+  ]
+}

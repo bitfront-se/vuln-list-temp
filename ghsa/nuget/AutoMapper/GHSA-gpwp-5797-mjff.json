@@ -1,0 +1,65 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-13T18:47:19Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "AutoMapper"
+  },
+  "Advisory": {
+    "DatabaseId": 533469,
+    "Id": "GSA_kwCzR0hTQS1ncHdwLTU3OTctbWpmZs4ACCPd",
+    "GhsaId": "GHSA-gpwp-5797-mjff",
+    "References": [
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/security/advisories/GHSA-gpwp-5797-mjff"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/commit/aee81b50574c3c7005283cca2b2396e295bd8ed9"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/releases/tag/v15.1.4"
+      },
+      {
+        "Url": "https://github.com/LuckyPennySoftware/AutoMapper/releases/tag/v16.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gpwp-5797-mjff"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gpwp-5797-mjff"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128081"
+      }
+    ],
+    "Description": "### Summary\nThe default and explicit `MaxDepth` limits added for CVE-2026-32933 don't apply to several mapping paths. Mapping a deeply nested source through any of them recurses without bound and throws a `StackOverflowException`, which can't be caught and terminates the process.\n\n### Affected paths\n- **Polymorphic maps:** derived type maps (`Include` / `IncludeBase`) didn't inherit the base map's `MaxDepth`, and the default limit for self-referential maps was only applied to the base map. A chain of derived objects was mapped without a limit, even with `MaxDepth` set on the base map.\n- **Runtime-typed members:** members typed as `object` or an interface aren't seen by self-reference detection, so the default limit isn't applied.\n- **Dictionary and dynamic sources:** mapping a nested `Dictionary\u003cstring, object\u003e` or `ExpandoObject` (for example, deserialized JSON) onto typed destinations recurses with no depth tracking. `MaxDepth` has no effect.\n- **Recursive type converters:** `ConvertUsing` that calls `context.Mapper.Map` ignores `MaxDepth`.\n\n### Impact\nAn application that maps attacker-influenced, deeply nested data through one of these paths can be crashed. On a 1 MB stack (the Windows default), a few thousand levels of nesting are enough.\n\n### Fix\n- Derived type maps inherit `MaxDepth`, and the default limit is applied to them.\n- Every runtime map call checks for sufficient stack, and fails with a catchable `InsufficientExecutionStackException` instead of overflowing.\n\n### Workarounds\nSet `MaxDepth` explicitly on derived maps and on maps reached through `object` or interface members. There is no configuration workaround for dictionary or dynamic sources, or for recursive type converters, other than limiting input depth before mapping.\n\n### Related\n- CVE-2026-32933 (GHSA-rvv3-g6hj-g44x)\n- GHSA-6vhm-j9h7-f9gh: `MaxDepth` not enforced through constructor parameters and positional records, fixed in the same releases.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T18:47:17Z",
+    "Severity": "HIGH",
+    "Summary": "AutoMapper: Denial of Service via uncontrolled recursion that bypasses MaxDepth",
+    "UpdatedAt": "2026-11-13T18:47:19Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.1.4"
+      },
+      "VulnerableVersionRange": "\u003c 15.1.4"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 16.0.0, \u003c 16.3.0"
+    }
+  ]
+}

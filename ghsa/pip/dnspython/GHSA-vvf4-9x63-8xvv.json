@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-13T20:19:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "dnspython"
+  },
+  "Advisory": {
+    "DatabaseId": 533526,
+    "Id": "GSA_kwCzR0hTQS12dmY0LTl4NjMtOHh2ds4ACCQW",
+    "GhsaId": "GHSA-vvf4-9x63-8xvv",
+    "References": [
+      {
+        "Url": "https://github.com/rthalley/dnspython/security/advisories/GHSA-vvf4-9x63-8xvv"
+      },
+      {
+        "Url": "https://github.com/rthalley/dnspython/commit/388db14ee9923288f6e73f86e482c77706e59d73"
+      },
+      {
+        "Url": "https://github.com/rthalley/dnspython/commit/a62e1be066da0ed71b5b59f37435bb17cfa0070f"
+      },
+      {
+        "Url": "https://github.com/rthalley/dnspython/releases/tag/v2.9.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vvf4-9x63-8xvv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vvf4-9x63-8xvv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128089"
+      }
+    ],
+    "Description": "### Summary\n\nA maliciously crafted zone file could use a WKS record to consume excessive memory and CPU, possibly causing the process to exit due to memory exhaustion.\n\n### Details\n\nThe `from_text()` parser does not check that a WKS record service number is between 0 and 65535 inclusive.  It then uses this number to resize the bitmap to accommodate a bit with that offset.  This can cause extremely large memory allocations, and also extends the array very inefficiently, wasting CPU.\n\n### Proof of concept\n\nThis demonstrates the failure to limit the service number, though with a value that does not cause excessive memory or CPU consumption.\n\n```\nrd = dns.rdata.from_text(\"IN\", \"WKS\", \"10.0.0.1 udp 65536\")\n```\n\n### Impact\n\nIf dnspython is used to read zonefile format where the attacker can control the type and rdata text, the program may consume excessive memory or CPU, denying service.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-13T20:19:13Z",
+    "Severity": "HIGH",
+    "Summary": "dnspython has excessive memory and CPU use",
+    "UpdatedAt": "2026-11-13T20:19:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.9.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.9.2"
+    }
+  ]
+}
