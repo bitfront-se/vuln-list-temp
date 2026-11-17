@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T14:51:31Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534516,
+    "Id": "GSA_kwCzR0hTQS1oNGNjLWhtNWgtZm1tOc4ACCf0",
+    "GhsaId": "GHSA-h4cc-hm5h-fmm9",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-h4cc-hm5h-fmm9"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128131"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13362"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13391"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/d041d4d0fd48c3f0832084d33be16cf1c4835f85"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/d925a80539ffd227da1d93ab4a5bff123cc777db"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-h4cc-hm5h-fmm9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-h4cc-hm5h-fmm9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128131"
+      }
+    ],
+    "Description": "### Summary\n\nWhen decompressing a payload made up of many concatenated compressed members (gzip, deflate or zstd), each member was decoded by passing the entire remaining input to a new decompressor, resulting in quadratic CPU time. Empty members produce no output, so `client_max_size` and output backpressure did not limit the work.\n\n### Impact\n\nAn attacker could block the event loop of a server with a specially crafted compressed request body or WebSocket message. A malicious server could do the same to a client.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/d925a80539ffd227da1d93ab4a5bff123cc777db",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:51:27Z",
+    "Severity": "HIGH",
+    "Summary": "AIOHTTP: Concatenated compressed streams cause excessive CPU use",
+    "UpdatedAt": "2026-11-16T14:51:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

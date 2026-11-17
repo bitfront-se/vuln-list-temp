@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T22:09:07Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "code-review-mcp-server"
+  },
+  "Advisory": {
+    "DatabaseId": 534783,
+    "Id": "GSA_kwCzR0hTQS1qcTNxLTYyamMtZnFxOc4ACCj_",
+    "GhsaId": "GHSA-jq3q-62jc-fqq9",
+    "References": [
+      {
+        "Url": "https://github.com/Orcus2021/code-review-mcp-server/security/advisories/GHSA-jq3q-62jc-fqq9"
+      },
+      {
+        "Url": "https://github.com/Orcus2021/code-review-mcp-server/issues/56"
+      },
+      {
+        "Url": "https://github.com/Orcus2021/code-review-mcp-server/pull/57"
+      },
+      {
+        "Url": "https://github.com/Orcus2021/code-review-mcp-server/commit/d11642322b607556affaaa3fd631d4f8942c05d8"
+      },
+      {
+        "Url": "https://github.com/Orcus2021/code-review-mcp-server/releases/tag/v1.5.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jq3q-62jc-fqq9"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jq3q-62jc-fqq9"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-68934"
+      }
+    ],
+    "Description": "### Impact\n\n`code-review-mcp-server` exposes MCP tools (`getLocalGitDiff`, `codeReview`, `createPR`, `getPRTemplate`) that accept `folderPath` and `baseBranch` string parameters. These caller-controlled values were interpolated directly into shell command strings executed via `child_process.execSync()`, which runs commands through `/bin/sh`.\n\nA crafted value such as `baseBranch = \"main; \u003carbitrary command\u003e #\"` (or a `$(...)` command substitution, or a `folderPath` that breaks out of the surrounding quotes) results in **arbitrary command execution** on the host running the MCP server.\n\n### Patches\n\nFixed in **1.5.3**. Every `execSync()` call was replaced with `execFileSync()` using argument arrays, so inputs are passed directly to `git` / `gh` without going through a shell, eliminating the injection at its root.\n\n### Workarounds\n\nNone. Upgrade to `code-review-mcp-server@1.5.3` or later.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T22:09:06Z",
+    "Severity": "HIGH",
+    "Summary": "code-review-mcp-server: Command injection via unsanitized folderPath/baseBranch parameters",
+    "UpdatedAt": "2026-11-16T22:09:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.5.3"
+      },
+      "VulnerableVersionRange": "\u003c 1.5.3"
+    }
+  ]
+}

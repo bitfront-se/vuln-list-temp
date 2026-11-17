@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-16T15:00:43Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "nuxt"
+  },
+  "Advisory": {
+    "DatabaseId": 534528,
+    "Id": "GSA_kwCzR0hTQS1yOWpjLXc4OTgtM2Z2Ns4ACCgA",
+    "GhsaId": "GHSA-r9jc-w898-3fv6",
+    "References": [
+      {
+        "Url": "https://github.com/nuxt/nuxt/security/advisories/GHSA-r9jc-w898-3fv6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128074"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/commit/97424dd21c59b60cc7ece28576e15069ca0fdbc4"
+      },
+      {
+        "Url": "https://github.com/nuxt/nuxt/releases/tag/v4.6.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-r9jc-w898-3fv6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-r9jc-w898-3fv6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128074"
+      }
+    ],
+    "Description": "### Summary\n\nNuxt strips trailing slashes from the request path with a regular expression whose cost grows quadratically with the length of a run of consecutive slashes. A single unauthenticated request with a long run of slashes can occupy the server's event loop for a noticeable time, delaying every other request handled by the same process.\n\n### Impact\n\nWhen a page is rendered with payload extraction (any route covered by an `isr`, `swr` or `cache` route rule), Nuxt builds the `_payload.json` URL from the raw request path. A path such as `/blog/a` followed by 16,000 slashes and `x`, which fits within Node's default header size limit, takes roughly 0.1 to 0.4 seconds of synchronous CPU time per request, depending on hardware. Concurrent requests to the same process wait for it to finish, so a modest request rate can keep a process saturated.\n\nAn app is affected if it uses Nuxt 4.6.0 or later with server-side rendering and has a route rule like:\n\n```ts\nexport default defineNuxtConfig({\n  routeRules: {\n    '/blog/**': { swr: true },\n  },\n})\n```\n\nThe same pattern is also reachable through the opt-in `experimental.early404` option, for any request path.\n\nApps without `isr`, `swr` or `cache` route rules and without `experimental.early404` are not affected, nor are fully prerendered or client-only apps. The cost is bounded by the maximum request path length, so a reverse proxy with a smaller header limit reduces it further. There is no confidentiality or integrity impact.\n\n### Patches\n\nFixed in `nuxt` 4.6.4. Trailing slashes are now removed with a linear scan instead of a regular expression.\n\n### Workarounds\n\nReject request paths containing repeated slashes before they reach the renderer, for example at the reverse proxy or with a server middleware:\n\n```ts\n// server/middleware/reject-repeated-slashes.ts\nexport default defineEventHandler((event) =\u003e {\n  if (event.path.split('?')[0]!.includes('//')) {\n    throw createError({ statusCode: 404 })\n  }\n})\n```\n\nIf you use `experimental.early404`, you can also disable it until you upgrade.\n\n### Credits\n\nThanks to cryptofox9 for reporting this issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T15:00:41Z",
+    "Severity": "MODERATE",
+    "Summary": "Nuxt payload URL generation has quadratic cost for repeated slashes in the request path",
+    "UpdatedAt": "2026-11-16T15:00:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.4"
+      },
+      "VulnerableVersionRange": "\u003e= 4.6.0, \u003c 4.6.4"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-16T14:55:07Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534522,
+    "Id": "GSA_kwCzR0hTQS01cHY4LXZ2aGMtaDdqds4ACCf6",
+    "GhsaId": "GHSA-5pv8-vvhc-h7jv",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-5pv8-vvhc-h7jv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128125"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13930"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13942"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/6963ee0befec1502b6bb7b4db6c72d044c08f4fa"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/b1f6c87b2bd3bd80f2b6c22ff46e11d00921e412"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5pv8-vvhc-h7jv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5pv8-vvhc-h7jv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128125"
+      }
+    ],
+    "Description": "### Summary\n\n`Set-Cookie` parsing created additional cookies from unrecognised `name=value` attributes, and `CookieJar` had no limit on the number of cookies stored or sent. A server could make the client store a very large number of cookies and generate very large `Cookie` headers.\n\n### Impact\n\nA malicious server could cause excessive memory and CPU use in a client, repeated on every redirect, and cause later requests to the same domain to build an excessively large `Cookie` header.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/6963ee0befec1502b6bb7b4db6c72d044c08f4fa",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:55:06Z",
+    "Severity": "MODERATE",
+    "Summary": "AIOHTTP: Unbounded cookie storage in client CookieJar",
+    "UpdatedAt": "2026-11-16T14:55:07Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T14:56:37Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534523,
+    "Id": "GSA_kwCzR0hTQS1qbTN3LWd3MnAteGpmas4ACCf7",
+    "GhsaId": "GHSA-jm3w-gw2p-xjfj",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-jm3w-gw2p-xjfj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128124"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13943"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13945"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/766b882820da0651c84090e366a3b024b4a263c9"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/c6ac0e44c3c573ff9616f4a6a532992538b31e43"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jm3w-gw2p-xjfj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jm3w-gw2p-xjfj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128124"
+      }
+    ],
+    "Description": "### Summary\n\n`Application.add_domain()` compiled each `*` in a host mask to `[^:]*`. With two or more wildcards in a mask, matching a long `Host` header that does not match the mask took polynomial time on the event loop.\n\n### Impact\n\nAn attacker could stall a server that registers a domain mask with more than one wildcard by sending requests with a long `Host` header.\n\n### Workaround\n\nUse at most one `*` in a domain mask.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/c6ac0e44c3c573ff9616f4a6a532992538b31e43",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:56:35Z",
+    "Severity": "HIGH",
+    "Summary": "AIOHTTP: Event loop stall in add_domain() wildcard matching",
+    "UpdatedAt": "2026-11-16T14:56:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

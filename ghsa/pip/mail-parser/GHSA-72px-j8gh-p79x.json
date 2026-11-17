@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T22:11:55Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mail-parser"
+  },
+  "Advisory": {
+    "DatabaseId": 534787,
+    "Id": "GSA_kwCzR0hTQS03MnB4LWo4Z2gtcDc5eM4ACCkD",
+    "GhsaId": "GHSA-72px-j8gh-p79x",
+    "References": [
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/security/advisories/GHSA-72px-j8gh-p79x"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-129297"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/pull/167"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/commit/ce3cf3559db1ff806bda598b378de9f8c2a5be96"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/releases/tag/4.6.2"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72px-j8gh-p79x"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72px-j8gh-p79x"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-129297"
+      }
+    ],
+    "Description": "### Patches\n\nFixed in **4.6.2**. Upgrade with `pip install --upgrade mail-parser`.\n\nCandidate addresses are now selected by position, not by appearance — a bracketed address\nthe sender wrote is byte-identical to one the MTA wrote, so no amount of pattern matching\ncan tell them apart:\n\n- the first token of the `from` clause is the HELO name, whatever its shape, and is never a\n  candidate;\n- an explicit HELO marker inside a comment group is sender text and is excluded;\n- a candidate must sit inside a `(` / `[` group;\n- IPv4 and IPv6 matches are merged positionally, never family-first;\n- the walk stops at the first trusted hop naming no address, rather than continuing into\n  sender-written headers.\n\nThe IPv6 pattern was corrected to skip the `IPv6:` tag and to prefer the longest valid form.\n\n**Behaviour change.** `get_server_ipaddress()` now returns `None` rather than an unreliable\nvalue in two cases that previously returned an address: a `from` clause consisting of a bare\naddress with no HELO marker (indistinguishable from `EHLO \u003cthat address\u003e`), and a trusted hop\nnaming no address at all. Callers must handle `None`.\n\n### Workarounds\n\nNone within mail-parser. Callers who cannot upgrade should not treat the return value of\n`get_server_ipaddress()` as trustworthy, and should derive sender attribution from an\nauthenticated signal instead — the MTA's own logs, or SPF/DKIM/DMARC results computed\noutside this library.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T22:11:54Z",
+    "Severity": "HIGH",
+    "Summary": "mail-parser: Sender IP address spoofing in get_server_ipaddress()",
+    "UpdatedAt": "2026-11-16T22:11:55Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.2"
+      },
+      "VulnerableVersionRange": "\u003c= 4.6.1"
+    }
+  ]
+}

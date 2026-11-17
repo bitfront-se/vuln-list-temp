@@ -1,0 +1,74 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T14:51:02Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534515,
+    "Id": "GSA_kwCzR0hTQS01cm1jLTQ4aDItaHZjbc4ACCfz",
+    "GhsaId": "GHSA-5rmc-48h2-hvcm",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-5rmc-48h2-hvcm"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128132"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13393"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13545"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13546"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/0ae507423f681161efa77d20052b4054397c7fb6"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/5e54037933fa8422be5fa8a2002d118ed2d4e5e0"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/b62321b6fa264a89f4aca084ad60fc38a59ffa51"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-5rmc-48h2-hvcm"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-5rmc-48h2-hvcm"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128132"
+      }
+    ],
+    "Description": "### Summary\n\nThe WebSocket reader continued parsing frames already received after the receive queue had paused the transport, and empty messages were not counted towards the queue size. With permessage-deflate, a single read of compressed frames could add many megabytes of decompressed messages to the queue.\n\n### Impact\n\nAn attacker could cause excessive memory use in a WebSocket server, or a malicious server against a client, by sending many small or compressed messages faster than the application consumes them.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/0ae507423f681161efa77d20052b4054397c7fb6",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:51:01Z",
+    "Severity": "HIGH",
+    "Summary": "AIOHTTP: WebSocket receive queue limits bypassed by small or compressed messages",
+    "UpdatedAt": "2026-11-16T14:51:02Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

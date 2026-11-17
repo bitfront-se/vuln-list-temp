@@ -1,0 +1,65 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-16T22:20:33Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mail-parser"
+  },
+  "Advisory": {
+    "DatabaseId": 534791,
+    "Id": "GSA_kwCzR0hTQS14aHJxLTJtcXYtcTh3eM4ACCkH",
+    "GhsaId": "GHSA-xhrq-2mqv-q8wx",
+    "References": [
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/security/advisories/GHSA-xhrq-2mqv-q8wx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-129300"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/pull/171"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/commit/d69f6f9b6ad0bf74d731b373bbdeabb462c32b26"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/commit/e1d9fe6778045d6e2c44406bc8822e3464c1097f"
+      },
+      {
+        "Url": "https://github.com/SpamScope/mail-parser/releases/tag/4.6.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xhrq-2mqv-q8wx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xhrq-2mqv-q8wx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-129300"
+      }
+    ],
+    "Description": "### Impact\n\nA `Received` header whose trailing date carries an out-of-range year, or a timezone offset\nlarge enough to push the timestamp past the int64 epoch range, raises an exception that is\n**outside the `MailParser*` hierarchy**. A caller that catches only mail-parser exceptions\ndoes not catch it, and the parse of the entire message is aborted — the same class of issue\nas [GHSA-24mq-4vc6-2prf](https://github.com/SpamScope/mail-parser/security/advisories/GHSA-24mq-4vc6-2prf),\nwhich this survives (it is not a duplicate; 24mq is fixed in 4.6.2 and this reproduces on 4.6.2).\n\nAll entry points are affected: `parse_from_string()`, `parse_from_bytes()`, `parse_from_file()`,\n`parse_from_file_obj()` and the `mail-parser` CLI. The header is fully attacker-controlled and\na single line is enough, so any pipeline that parses untrusted mail can be made to lose the\nmessage — and, if one worker handles a queue, to drop the batch.\n\n```python\nimport mailparser\n\nraw = (\"Received: from x ([1.2.3.4]) by mx.victim.com; \"\n       \"Tue, 7 Mar 292277026596 14:29:24 +0000\\r\\n\\r\\nbody\\r\\n\")\nmailparser.parse_from_string(raw).mail_json\n# \u003c= 4.6.2 -\u003e OverflowError: signed integer is greater than maximum\n# 4.6.3    -\u003e parses; the unusable hop date is reported as \"date_utc\": null\n```\n\n**Root cause.** `receiveds_format()` in `src/mailparser/utils.py` guarded the date conversion\nwith `except (TypeError, ValueError)`, but `convert_mail_date()` → `email.utils.mktime_tz()` →\n`calendar.timegm()` raises `OverflowError` for years whose epoch seconds overflow int64, and\n`datetime.fromtimestamp()` reports `EOVERFLOW` as `OSError` for a sufficiently large timezone\noffset. The `date` and `timezone` properties already wrapped the same conversion in\n`except Exception`; only the `Received` path was left open.\n\n**Affected range.** Introduced by the date-handling change in `ca2aa6a`, first released in\n3.7.0. Reproduced on PyPI 3.7.0, 3.8.0, 3.9.3, 4.0.0, 4.5.0, 4.6.0, 4.6.2 and on `master`\nbefore the fix (Python 3.14). 3.6.0 is not affected.\n\n### Patches\n\nFixed in **4.6.3**. `receiveds_format()` now also catches `OverflowError` and `OSError` and\nrecords `date_utc = None` for that hop, so the rest of the message still parses:\n\n```python\ntry:\n    j[\"date_utc\"], _ = convert_mail_date(i[\"date\"])\nexcept (TypeError, ValueError, OverflowError, OSError):\n    j[\"date_utc\"] = None\n```\n\nA sweep of year magnitudes from 10^7 to 10^12 shows only `ValueError`, `OverflowError` and\n`OSError` are reachable on this path.\n\n### Workarounds\n\nUpgrade to 4.6.3. If you cannot upgrade, wrap every `parse_from_*` call in a bare\n`except Exception` rather than `except MailParserError`, and treat the message as unparsed.\n\n### References\n\n- Fix: https://github.com/SpamScope/mail-parser/pull/171\n- Related: [GHSA-24mq-4vc6-2prf](https://github.com/SpamScope/mail-parser/security/advisories/GHSA-24mq-4vc6-2prf)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T22:20:32Z",
+    "Severity": "MODERATE",
+    "Summary": "mail-parser: Uncaught `OverflowError` / `OSError` on an out-of-range `Received` date",
+    "UpdatedAt": "2026-11-16T22:20:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.6.3"
+      },
+      "VulnerableVersionRange": "\u003e= 3.7.0, \u003c 4.6.3"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T14:54:12Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534521,
+    "Id": "GSA_kwCzR0hTQS14Z3c4LThjY3gtcm1xaM4ACCf5",
+    "GhsaId": "GHSA-xgw8-8ccx-rmqh",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-xgw8-8ccx-rmqh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128126"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13738"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13741"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/615fec3d4f088f30d2ee72cad760152e92aa1c53"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/8b0100572936df28977b9de8a6cc7e464c0b521e"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-xgw8-8ccx-rmqh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-xgw8-8ccx-rmqh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128126"
+      }
+    ],
+    "Description": "### Summary\n\n`Request.post()` had no limit on the number of fields in a URL-encoded form body. Inserting a large number of repeated keys into a `MultiDict` took quadratic time on the event loop.\n\n### Impact\n\nAn attacker could block the event loop with a form POST within the default `client_max_size` to any handler that calls `Request.post()`.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/615fec3d4f088f30d2ee72cad760152e92aa1c53",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:54:10Z",
+    "Severity": "HIGH",
+    "Summary": "AIOHTTP: Too many URL-encoded form fields block the event loop",
+    "UpdatedAt": "2026-11-16T14:54:12Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

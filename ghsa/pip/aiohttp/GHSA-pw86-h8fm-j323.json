@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T14:52:06Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534518,
+    "Id": "GSA_kwCzR0hTQS1wdzg2LWg4Zm0tajMyM84ACCf2",
+    "GhsaId": "GHSA-pw86-h8fm-j323",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-pw86-h8fm-j323"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128129"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13501"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13511"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/3d850ee9b92573c7e913821cbcb96005beb3f4df"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/c207cadb257e0959b192ffca0548eca8c71eb96a"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pw86-h8fm-j323"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pw86-h8fm-j323"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128129"
+      }
+    ],
+    "Description": "### Summary\n\nWhile a request flagged as an upgrade (e.g. a WebSocket handshake) was being handled, all further data received on the connection was buffered with no size limit or flow control until the handler completed.\n\n### Impact\n\nAn attacker could cause unbounded memory use by streaming data behind an upgrade request to any handler that does not immediately accept or reject the upgrade.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/3d850ee9b92573c7e913821cbcb96005beb3f4df",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:52:05Z",
+    "Severity": "HIGH",
+    "Summary": "AIOHTTP: Unbounded buffering of data received during an upgrade request",
+    "UpdatedAt": "2026-11-16T14:52:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

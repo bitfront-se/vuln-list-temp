@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-16T14:52:42Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "aiohttp"
+  },
+  "Advisory": {
+    "DatabaseId": 534519,
+    "Id": "GSA_kwCzR0hTQS0zcnA4LXJ4ajgtbXZqd84ACCf3",
+    "GhsaId": "GHSA-3rp8-rxj8-mvjw",
+    "References": [
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/security/advisories/GHSA-3rp8-rxj8-mvjw"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-128128"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13415"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/pull/13494"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/8c8906a19f64e52ef6a7d44d65217eb3c5af413f"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/commit/8cfbe9abe5e11b84006a10f9bdf82bf607671dab"
+      },
+      {
+        "Url": "https://github.com/aio-libs/aiohttp/releases/tag/v3.14.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3rp8-rxj8-mvjw"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3rp8-rxj8-mvjw"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-128128"
+      }
+    ],
+    "Description": "### Summary\n\nThe `max_msg_size` check in the WebSocket reader added the declared frame length to the size of the partial message already buffered. In the C extension this addition is 64-bit arithmetic, so a declared length close to 2**63 overflowed and the check passed.\n\n### Impact\n\nAn attacker could bypass `max_msg_size` and cause unbounded memory use by streaming an oversized WebSocket message after a small non-final fragment.\n\n### Workaround\n\nIf unable to upgrade, the Python reader is unaffected and can be used with `AIOHTTP_NO_EXTENSIONS=1`.\n\n---\n\nPatch: https://github.com/aio-libs/aiohttp/commit/8cfbe9abe5e11b84006a10f9bdf82bf607671dab",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T14:52:40Z",
+    "Severity": "HIGH",
+    "Summary": "AIOHTTP: WebSocket max_msg_size bypass via integer overflow",
+    "UpdatedAt": "2026-11-16T14:52:42Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.14.4"
+      },
+      "VulnerableVersionRange": "\u003c= 3.14.3"
+    }
+  ]
+}

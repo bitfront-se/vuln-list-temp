@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-16T18:51:23Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "next"
+  },
+  "Advisory": {
+    "DatabaseId": 534742,
+    "Id": "GSA_kwCzR0hTQS1tZnI4LThxd3ctdjc2aM4ACCjW",
+    "GhsaId": "GHSA-mfr8-8qww-v76h",
+    "References": [
+      {
+        "Url": "https://github.com/vercel/next.js/security/advisories/GHSA-mfr8-8qww-v76h"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/commit/d605874e5a4b8b6b7dca1b6e07bcabb44d0e2e5b"
+      },
+      {
+        "Url": "https://github.com/vercel/next.js/releases/tag/v16.4.5"
+      },
+      {
+        "Url": "https://nextjs.org/blog/november-2026-security-release"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mfr8-8qww-v76h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mfr8-8qww-v76h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-119790"
+      }
+    ],
+    "Description": "Next.js applications with `'use cache'` can disclose cached data across root params when the same `'use cache'` function is called both directly during rendering and through `unstable_cache()`, and that function reads a root param. Root params are route parameters of the root layout, and applications commonly use them to scope data, for example per locale.\n\nDuring a cold process start, a cross-request deduplication race allowed an `unstable_cache()` call to join the in-flight fill of a concurrent direct call and receive its result, bypassing the root param check that would normally reject it. `unstable_cache()` then stored that result under a cache key without root params, so subsequent requests for other root param values received the same entry until it is revalidated or evicted. Cached data produced for one root param value is returned to requests for other values.\n\nExploitation requires the `unstable_cache()` request to arrive while the function's first fill after a process start is still in flight. Outside this race, the nesting already throws an error: `'use cache' inside unstable_cache() is unsupported`, and avoiding it is a complete workaround.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-16T18:51:22Z",
+    "Severity": "MODERATE",
+    "Summary": "Next.js: Information disclosure across root params when a 'use cache' function is called through unstable_cache()",
+    "UpdatedAt": "2026-11-16T18:51:23Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.4.5"
+      },
+      "VulnerableVersionRange": "\u003e= 16.3.0, \u003c= 16.4.4"
+    }
+  ]
+}
