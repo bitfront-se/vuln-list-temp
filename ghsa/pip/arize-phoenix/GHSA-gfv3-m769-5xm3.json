@@ -1,0 +1,62 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-17T20:02:30Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "arize-phoenix"
+  },
+  "Advisory": {
+    "DatabaseId": 535163,
+    "Id": "GSA_kwCzR0hTQS1nZnYzLW03NjktNXhtM84ACCp7",
+    "GhsaId": "GHSA-gfv3-m769-5xm3",
+    "References": [
+      {
+        "Url": "https://github.com/Arize-ai/phoenix/security/advisories/GHSA-gfv3-m769-5xm3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-53998"
+      },
+      {
+        "Url": "https://github.com/Arize-ai/phoenix/pull/13197"
+      },
+      {
+        "Url": "https://github.com/Arize-ai/phoenix/commit/e7224a685589f2ffae1fefcc68ff210bd6ad28b8"
+      },
+      {
+        "Url": "https://github.com/Arize-ai/phoenix/releases/tag/arize-phoenix-v15.7.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gfv3-m769-5xm3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gfv3-m769-5xm3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-53998"
+      }
+    ],
+    "Description": "- Summary\n\nA format string injection vulnerability in the applyChatTemplate GraphQL endpoint allows an attacker to read server-side environment variables, cryptographic secrets, and internal module attributes directly from the API response. On default Phoenix installations where authentication is disabled the endpoint is reachable with no credentials. On auth-enabled deployments, any account regardless of privilege level is sufficient to exploit it.\n\n- Impact\nServer filesystem paths, loaded Python module names, and internal configuration constants are fully disclosed, an attacker with network access can read the full server `os.environ` including the admin credentials hardcoded in `phoenix.auth`.\n\nSuccessful exploitation allows an attacker to extract PHOENIX_SECRET, the master key used to sign all JWTs and derive the Fernet encryption key protecting stored credentials (LLM API keys, OAuth tokens). With this key, an attacker can forge admin-level session tokens and decrypt all secrets stored in the database.\n\n- Affected Versions\n\nFirst vulnerable release: arize-phoenix-v13.0.0 (2026-02-13)\nLatest confirmed vulnerable release: arize-phoenix-v14.8.0 (2026-04-17)\n\n- Affected Component\n `applyChatTemplate` GraphQL query endpoint (`src/phoenix/server/api/queries.py:1638`)\n `FStringTemplateFormatter._format()` template rendering function (`src/phoenix/utilities/template_formatters.py:272`)\n `DotDict.__getattr__()` ineffective attribute access control (`src/phoenix/utilities/template_formatters.py:90`)\n\n- Proof of Concept\npayload as txt with an image performing the exploit below.\n\u003cimg width=\"1574\" height=\"766\" alt=\"PoC-Phoenix\" src=\"https://github.com/user-attachments/assets/55f56325-4c26-4c96-8aa9-89e44ff1ba53\" /\u003e\n- Payload:\n\n```\n{\n  \"query\": \"query($t: PromptChatTemplateInput!, $o: PromptTemplateOptions!) { applyChatTemplate(template: $t, templateOptions: $o) { messages { content { ... on TextContentPart { text { text } } } } } }\",\n  \"variables\": {\n    \"t\": { \"messages\": [{ \"role\": \"USER\", \"content\": [{ \"text\": { \"text\": \"{u.__class__.__bases__[0].__init__.__globals__[_os].environ}\" } }] }] },\n    \"o\": { \"format\": \"F_STRING\", \"variables\": { \"u\": { \"x\": 1 } } }\n  }\n}\n```\n\n\n- Suggested Fix\n\nThree mitigations are recommended in combination: restrict attribute traversal at the Formatter.get_field() level (not the wrapper class), add IsAuthenticated permission to the applyChatTemplate resolver, and limit F_STRING format to trusted system-defined templates only.\n\nBest Regards,\nOmar",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-17T20:02:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "Phoenix: Format String Injection in applyChatTemplate",
+    "UpdatedAt": "2026-11-17T20:02:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 10,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "15.7.0"
+      },
+      "VulnerableVersionRange": "\u003e= 13.0.0, \u003c 15.7.0"
+    }
+  ]
+}

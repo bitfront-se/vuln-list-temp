@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-17T20:39:21Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "software.amazon.jdbc:aws-advanced-jdbc-wrapper"
+  },
+  "Advisory": {
+    "DatabaseId": 535165,
+    "Id": "GSA_kwCzR0hTQS1jNXE0LTk3anctamdnaM4ACCp9",
+    "GhsaId": "GHSA-c5q4-97jw-jggh",
+    "References": [
+      {
+        "Url": "https://github.com/aws/aws-advanced-jdbc-wrapper/security/advisories/GHSA-c5q4-97jw-jggh"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-14265"
+      },
+      {
+        "Url": "https://aws.amazon.com/security/security-bulletins/2026-051-aws"
+      },
+      {
+        "Url": "https://github.com/aws/aws-advanced-jdbc-wrapper/releases/tag/4.0.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-c5q4-97jw-jggh"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-c5q4-97jw-jggh"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-14265"
+      }
+    ],
+    "Description": "### Impact\nThe AWS Advanced JDBC Wrapper is an open-source JDBC driver wrapper that extends a JDBC driver to enable Amazon Aurora and AWS Cloud features such as failover handling and caching. We identified CVE-2026-14265, an issue in the RemoteQueryCachePlugin of the AWS Advanced JDBC Wrapper. When this plugin is enabled, query results read from the shared Redis/Valkey cache are deserialized without class filtering. An actor with write access to the shared cache infrastructure could insert a crafted serialized Java object that, when read by an application, results in execution of arbitrary code on the application server.\n\n### Workarounds\nThe RemoteQueryCachePlugin is not enabled by default. Customers who cannot immediately upgrade can mitigate this issue by disabling the RemoteQueryCachePlugin, and by restricting write access to the Redis/Valkey cache infrastructure to trusted principals.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-17T20:39:21Z",
+    "Severity": "HIGH",
+    "Summary": "AWS-advanced-jdbc-wrapper: Java Deserialization RCE via Cache Poisoning",
+    "UpdatedAt": "2026-11-17T20:39:21Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "4.0.1"
+      },
+      "VulnerableVersionRange": "\u003e= 3.3.0, \u003c 4.0.1"
+    }
+  ]
+}
