@@ -1,0 +1,62 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-18T21:20:43Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "django-filer"
+  },
+  "Advisory": {
+    "DatabaseId": 536734,
+    "Id": "GSA_kwCzR0hTQS12Zjg1LThmZjItM3I5d84ACDCe",
+    "GhsaId": "GHSA-vf85-8ff2-3r9w",
+    "References": [
+      {
+        "Url": "https://github.com/django-cms/django-filer/security/advisories/GHSA-vf85-8ff2-3r9w"
+      },
+      {
+        "Url": "https://github.com/django-cms/django-filer/pull/1605"
+      },
+      {
+        "Url": "https://github.com/django-cms/django-filer/commit/29d20ec0de13d7f77fa2cea93166f8d50a3f508d"
+      },
+      {
+        "Url": "https://github.com/django-cms/django-filer/commit/742ba4c3094dd75e586ca3a05e6ad2703de4553b"
+      },
+      {
+        "Url": "https://github.com/django-cms/django-filer/releases/tag/3.5.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-vf85-8ff2-3r9w"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-vf85-8ff2-3r9w"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69131"
+      }
+    ],
+    "Description": "## Summary\n\nWhen django-filer's optional per-folder permission system is enabled (`FILER_ENABLE_PERMISSIONS=True`), the \"Delete files and/or folders\" admin action does **not** enforce per-folder edit permissions the way every other mutating action does. A staff user who is scoped **read-only** on a folder via `FolderPermission` (`can_edit = DENY`), but who holds the global Django model-level `delete_*` permission, can delete files and entire subfolders inside that folder — even though their move, rename, copy, and resize actions on the same folder are correctly denied.\n\nThis is an integrity / edit-control gap (unauthorized deletion). It is **not** a read-confidentiality issue: filer files are world-downloadable by design, so no confidentiality claim is made.\n\n## Affected versions\n\n- django-filer `\u003c= 3.4.4` (verified end-to-end on 3.4.4 and on `master` prior to   the fix).\n\nOnly installations running with `FILER_ENABLE_PERMISSIONS = True` (the optional per-folder `FolderPermission` system) are affected. Deployments that leave permissions disabled (the default) rely solely on Django model-level permissions and are not impacted by this specific gap.\n\n## Patched versions\n\n- Fixed in PR [#1605](https://github.com/django-cms/django-filer/pull/1605).   Upgrade to the first release containing that commit (`3.5.0` or later).\n\n## Details\n\nThe `delete_files_or_folders` admin action in `filer/admin/folderadmin.py` authorized deletion using only:\n\n1. `self.has_delete_permission(request)` — which returns `True` for `obj=None`, and\n2. the Django model-level `delete_file` / `delete_folder` / `delete_image`    permission (enforced downstream by the admin delete machinery).\n\nIt never called `check_folder_edit_permissions` or `check_files_edit_permissions`. Every sibling mutating action — move, rename, copy, resize — *does* call these helpers, which walk the selected objects (and their descendants) and enforce the per-folder `can_edit` grant from `FolderPermission`.\n\nBecause `FolderPermission` has no dedicated `can_delete` field, deletion is treated as an edit/management operation and is gated elsewhere on `can_edit`. The delete action's omission therefore let a folder-scoped read-only user bypass the per-folder control that constrains all their other write operations.\n\n### Precondition \n\nThe attacker must hold the Django model-level `delete_file` / `delete_folder` / `delete_image` permission. A purely read-only user (no model-level delete perm) receives `403` and cannot exploit this. This precondition matches the standard folder-scoped-staff deployment model, where staff hold model-level permissions and are further constrained per-folder by `FolderPermission`. \n\n## Mitigation\n\n- Upgrade to the patched release.\n- Until upgrading, avoid granting the model-level `delete_file` /\n  `delete_folder` / `delete_image` permission to staff who are meant to be\n  read-only on specific folders via `FolderPermission`.\n\n## Credit\n\nReported through coordinated disclosure. Fixed in PR #1605.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-18T21:20:42Z",
+    "Severity": "MODERATE",
+    "Summary": "django-filer: Missing per-object authorization on `discard` and `edit_redirect` version transitions",
+    "UpdatedAt": "2026-11-18T21:20:43Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.5.0"
+      },
+      "VulnerableVersionRange": "\u003c= 3.4.4"
+    }
+  ]
+}
