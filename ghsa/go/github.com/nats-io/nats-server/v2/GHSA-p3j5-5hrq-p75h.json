@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-20T23:32:00Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/nats-io/nats-server/v2"
+  },
+  "Advisory": {
+    "DatabaseId": 538824,
+    "Id": "GSA_kwCzR0hTQS1wM2o1LTVocnEtcDc1aM4ACDjI",
+    "GhsaId": "GHSA-p3j5-5hrq-p75h",
+    "References": [
+      {
+        "Url": "https://github.com/nats-io/nats-server/security/advisories/GHSA-p3j5-5hrq-p75h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58254"
+      },
+      {
+        "Url": "https://github.com/nats-io/nats-server/commit/cbe845932980b71563efac5cfa4cc751c88936cd"
+      },
+      {
+        "Url": "https://github.com/nats-io/nats-server/releases/tag/v2.12.8"
+      },
+      {
+        "Url": "https://github.com/nats-io/nats-server/releases/tag/v2.14.3"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p3j5-5hrq-p75h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p3j5-5hrq-p75h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58254"
+      }
+    ],
+    "Description": "### Background\n\nNATS.io is a high performance open source pub-sub distributed communication technology, built for the cloud, on-premise, IoT and edge computing.\n\nThe NATS Server supports leafnode connections between servers and message tracing through NATS headers.\n\n### Problem Description\n\nMessage trace destination checks were applied to ordinary client connections but not consistently to messages arriving through leafnode connections.\n\nA leafnode operator could cause trace events to be sent to subjects that would not otherwise be permitted and could use trace-only behavior to prevent normal delivery or storage of affected messages.\n\nTrace events can include routing, subscription, account, service import and JetStream metadata. The payload of the original application message is not chosen through the trace event itself.\n\n### Affected Versions\n\nVersions v2.14.2, v2.12.7 and below are vulnerable. The issue is fixed in v2.14.3 and v2.12.8.\n\n### Workarounds\n\nWhere possible, avoid granting publish paths from less-trusted leaf nodes into subjects for which trace-only behavior would affect delivery guarantees. No other known workarounds are available aside from upgrading to a fixed release.\n\n### References\n\n * GHSA advisory: \u003chttps://github.com/nats-io/nats-server/security/advisories/GHSA-p3j5-5hrq-p75h\u003e\n * Credit: Koda Reef",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T23:31:59Z",
+    "Severity": "MODERATE",
+    "Summary": "nats-server Leaf node connections bypass Nats-Trace-Dest permission check",
+    "UpdatedAt": "2026-11-20T23:32:00Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.14.3"
+      },
+      "VulnerableVersionRange": "\u003e= 2.14.0-RC.1, \u003c 2.14.3"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.12.8"
+      },
+      "VulnerableVersionRange": "\u003c 2.12.8"
+    }
+  ]
+}

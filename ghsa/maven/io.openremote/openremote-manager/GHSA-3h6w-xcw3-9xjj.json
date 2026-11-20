@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-20T14:56:59Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "io.openremote:openremote-manager"
+  },
+  "Advisory": {
+    "DatabaseId": 538604,
+    "Id": "GSA_kwCzR0hTQS0zaDZ3LXhjdzMtOXhqas4ACDfs",
+    "GhsaId": "GHSA-3h6w-xcw3-9xjj",
+    "References": [
+      {
+        "Url": "https://github.com/openremote/core/security/advisories/GHSA-3h6w-xcw3-9xjj"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104885"
+      },
+      {
+        "Url": "https://github.com/openremote/core/commit/51dce18d9e00d671a5e032d942ece186bdada560"
+      },
+      {
+        "Url": "https://github.com/openremote/core/releases/tag/1.31.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3h6w-xcw3-9xjj"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3h6w-xcw3-9xjj"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104885"
+      }
+    ],
+    "Description": "### Summary\n\nCross-realm MQTT session disconnect without authorization\n\n## Vulnerability\n\nThe `disconnectUserSession` endpoint in `UserResourceImpl.java` (line 443) accepts a `realm` path parameter but ignores it entirely, performing no authorization or realm-boundary check before force-disconnecting an MQTT session. Any authenticated user from any realm can disconnect MQTT broker sessions belonging to users in other realms by supplying the target session ID.\n\nFile: `manager/src/main/java/org/openremote/manager/security/UserResourceImpl.java`, lines 443-447\n\n```java\n@Override\npublic void disconnectUserSession(RequestParams requestParams, String realm, String sessionID) {\n    if (!mqttBrokerService.disconnectSession(sessionID)) {\n        throw new NotFoundException(\"User session not found\");\n    }\n}\n```\n\nThe REST interface at `model/src/main/java/org/openremote/model/security/UserResource.java` (line 201-204) maps this to `GET {realm}/disconnect/{sessionID}` with no `@RolesAllowed` annotation, so any authenticated user (not just admins) can call it.\n\n## Root Cause\n\nCVE-2026-54641 (commit de89b8d) fixed cross-realm information disclosure in three read methods of the same file (`get()`, `getUserClientRoles()`, `getUserRealmRoles()`) and also added a realm check to `getClientRoles()`. The fix added `throwIfCannotReadUserInRealm()` and `throwIfCannotAdminRealm()` guards. However, `disconnectUserSession` was not patched and remains unprotected. Every other mutating method in this class has either a `@RolesAllowed` annotation on the interface or an explicit realm check in the implementation. This one has neither.\n\n## Proof of Concept\n\nGiven two realms, \"master\" and \"building\":\n\n1. User A authenticates in the \"building\" realm (any role, no admin needed).\n2. User B has an active MQTT session in the \"master\" realm with session ID `S`.\n3. User A sends: `GET /api/master/user/master/disconnect/S` with their building-realm bearer token.\n4. The handler ignores the realm path segments, looks up session `S` in the global `connectionIDConnectionMap`, and calls `doForceDisconnect()`. User B's MQTT connection is terminated.\n\nSession IDs use the Netty `ChannelId.asLongText()` format (deterministic, partially sequential). While not trivially brute-forceable, IDs can leak through monitoring, logs, or correlated API calls. Within the same realm, any user (not just admins) can also disconnect sessions they should not have access to.\n\n## Impact\n\nIn a multi-tenant IoT deployment, an attacker authenticated in any realm can disrupt MQTT device connectivity in other realms. Since OpenRemote is used for building management, energy monitoring, and industrial IoT, forcibly disconnecting MQTT sessions can:\n\n- Knock IoT sensors and actuators offline across tenant boundaries\n- Disrupt safety-critical alarm monitoring (compounding the alarm IDOR fixed in CVE-2026-57168)\n- Cause denial of service against other tenants' device fleets\n\nThe method also uses HTTP GET for a destructive operation, making it susceptible to CSRF via image tags or link prefetch.\n\n## Suggested Fix\n\nAdd a realm administration check consistent with the pattern used elsewhere in this file:\n\n```java\n@Override\npublic void disconnectUserSession(RequestParams requestParams, String realm, String sessionID) {\n    throwIfCannotAdminRealm(realm);\n\n    RemotingConnection connection = mqttBrokerService.getConnectionByID(sessionID);\n    if (connection == null) {\n        throw new NotFoundException(\"User session not found\");\n    }\n\n    // Verify the session belongs to a user in the requested realm\n    // before disconnecting\n\n    if (!mqttBrokerService.disconnectSession(sessionID)) {\n        throw new NotFoundException(\"User session not found\");\n    }\n}\n```\n\nAt minimum, add `throwIfCannotAdminRealm(realm)` as the first line, and consider adding a `@RolesAllowed(Constants.WRITE_ADMIN_ROLE)` annotation to the interface method. The HTTP method should also be changed from GET to DELETE.\n\n### AI tooling\n\nAI assistance was used for the code audit and for drafting this report. The finding against the project's source at the location cited above was manually verified before reporting it, and the severity and impact assessment are the reporter's own.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T14:56:58Z",
+    "Severity": "MODERATE",
+    "Summary": "OpenRemote: Cross-realm MQTT session disconnect without authorization",
+    "UpdatedAt": "2026-11-20T14:56:59Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.31.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.31.0"
+    }
+  ]
+}

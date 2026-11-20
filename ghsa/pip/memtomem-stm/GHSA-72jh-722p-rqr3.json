@@ -1,0 +1,59 @@
+{
+  "Severity": "LOW",
+  "UpdatedAt": "2026-11-20T23:38:16Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "memtomem-stm"
+  },
+  "Advisory": {
+    "DatabaseId": 538829,
+    "Id": "GSA_kwCzR0hTQS03MmpoLTcyMnAtcnFyM84ACDjN",
+    "GhsaId": "GHSA-72jh-722p-rqr3",
+    "References": [
+      {
+        "Url": "https://github.com/memtomem/memtomem-stm/security/advisories/GHSA-72jh-722p-rqr3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-77331"
+      },
+      {
+        "Url": "https://github.com/memtomem/memtomem-stm/commit/761db1802df7ce4881ff4c3acee6d674925da498"
+      },
+      {
+        "Url": "https://github.com/memtomem/memtomem-stm/releases/tag/v0.1.34"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-72jh-722p-rqr3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-72jh-722p-rqr3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77331"
+      }
+    ],
+    "Description": "Concurrent surfacing RPC failures can trigger more than one reconnect for the same dirty session, and cancellation during a post-reconnect retry can leave the replacement session reusable despite an interrupted protocol exchange. The private fix introduces monotonic session generations, one shielded shared reconnect flight per dirty generation, and generation-aware cancellation handling across search, access-count, and scratch RPCs. The duplicate-reconnect subcase was introduced in 0.1.24; cancellation recovery affects the broader listed range.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T23:38:15Z",
+    "Severity": "LOW",
+    "Summary": "memtomem-stm: Concurrent LTM recovery can duplicate reconnects or reuse a cancelled transport session",
+    "UpdatedAt": "2026-11-20T23:38:16Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.1.34"
+      },
+      "VulnerableVersionRange": "\u003e= 0.1.2, \u003c= 0.1.33"
+    }
+  ]
+}

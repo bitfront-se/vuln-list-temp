@@ -1,0 +1,83 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-20T16:25:28Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "ckan"
+  },
+  "Advisory": {
+    "DatabaseId": 538674,
+    "Id": "GSA_kwCzR0hTQS02NDk5LWpnajQtMndwZs4ACDgy",
+    "GhsaId": "GHSA-6499-jgj4-2wpf",
+    "References": [
+      {
+        "Url": "https://github.com/ckan/ckan/security/advisories/GHSA-6499-jgj4-2wpf"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-104773"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/commit/6eae4e9c430e163b9d6cc75a3fd2ca82e79d80f6"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/commit/8f8e8b587461b66120ec7a85c17a34ecea213f57"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/commit/a25e2f3080a79a94eb04dcf02e16ded3e5fadeb2"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/commit/c30bae7fdd616d98a5d47cc31f9e8d5d1ad7bcd2"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/commit/c72815a5afd50cf689fcfb688f431dec21a85915"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/releases/tag/ckan-2.10.11"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/releases/tag/ckan-2.11.6"
+      },
+      {
+        "Url": "https://github.com/ckan/ckan/releases/tag/ckan-2.12.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6499-jgj4-2wpf"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6499-jgj4-2wpf"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-104773"
+      }
+    ],
+    "Description": "## Description\n\nWeb user registration form is vulnerable to session fixation if the site is configured with server-side session storage (CKAN uses cookie-based session storage by default). The attacker would need to either set a cookie on the victim's browser or steal the victim's currently valid session. Session identifiers are now regenerated after registration.\n\n## Patches\n\nThis vulnerability has been fixed in CKAN 2.10.11, 2.11.6 and 2.12.0\n\n## Workarounds\n\nswitch to cookie-based session storage (the default) or disable web user registration by setting `ckan.auth.create_user_via_web` to false (the default)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T16:25:26Z",
+    "Severity": "MODERATE",
+    "Summary": "CKAN: Session Fixation in Registration View",
+    "UpdatedAt": "2026-11-20T16:25:28Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.11.6"
+      },
+      "VulnerableVersionRange": "\u003e= 2.11.0, \u003c 2.11.6"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.10.11"
+      },
+      "VulnerableVersionRange": "\u003c 2.10.11"
+    }
+  ]
+}
