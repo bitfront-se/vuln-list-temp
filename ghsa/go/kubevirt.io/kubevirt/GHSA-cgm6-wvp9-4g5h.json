@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-20T05:13:38Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "kubevirt.io/kubevirt"
+  },
+  "Advisory": {
+    "DatabaseId": 366789,
+    "Id": "GSA_kwCzR0hTQS1jZ202LXd2cDktNGc1aM4ABZjF",
+    "GhsaId": "GHSA-cgm6-wvp9-4g5h",
+    "References": [
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-13318"
+      },
+      {
+        "Url": "https://access.redhat.com/security/cve/CVE-2026-13318"
+      },
+      {
+        "Url": "https://bugzilla.redhat.com/show_bug.cgi?id=2492659"
+      },
+      {
+        "Url": "https://github.com/kubevirt/kubevirt/pull/18753"
+      },
+      {
+        "Url": "https://github.com/kubevirt/kubevirt/commit/0f5fef3309417f454565412f56f571f48358853f"
+      },
+      {
+        "Url": "https://github.com/kubevirt/kubevirt/commit/df419a0f20aa7ddc9f4512431c3aed9a642ad1e1"
+      },
+      {
+        "Url": "https://github.com/kubevirt/kubevirt/releases/tag/v1.10.0-rc.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-cgm6-wvp9-4g5h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-cgm6-wvp9-4g5h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-13318"
+      }
+    ],
+    "Description": "A server-side request forgery (SSRF) flaw was found in KubeVirt's virt-api port-forward handler. When processing a port-forward request to a VirtualMachineInstance (VMI), virt-api reads the target IP from vmi.Status.Interfaces[0].IP and passes it directly to net.Dial() without validation. For VMIs using non-masquerade network bindings (bridge or secondary-only), this IP is reported by the QEMU guest agent running inside the VM and is fully controllable by the VM owner. An attacker with kubevirt.io:edit permissions can create a VM with a modified guest agent that reports an arbitrary IP address, then request port-forward to establish a bidirectional TCP tunnel from virt-api's cluster-internal network position to any routable destination, bypassing NetworkPolicy isolation.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-06-26T00:32:07Z",
+    "Severity": "MODERATE",
+    "Summary": "KubeVirt virt-api port-forward handler vulnerable to SSRF via guest-controlled VMI IP address",
+    "UpdatedAt": "2026-11-20T05:13:38Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 6.4,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.10.0-rc.0"
+      },
+      "VulnerableVersionRange": "\u003c 1.10.0-rc.0"
+    }
+  ]
+}

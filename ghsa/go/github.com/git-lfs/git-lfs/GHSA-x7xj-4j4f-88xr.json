@@ -1,0 +1,68 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-20T14:49:48Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/git-lfs/git-lfs"
+  },
+  "Advisory": {
+    "DatabaseId": 538598,
+    "Id": "GSA_kwCzR0hTQS14N3hqLTRqNGYtODh4cs4ACDfm",
+    "GhsaId": "GHSA-x7xj-4j4f-88xr",
+    "References": [
+      {
+        "Url": "https://github.com/git-lfs/git-lfs/security/advisories/GHSA-x7xj-4j4f-88xr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-69261"
+      },
+      {
+        "Url": "https://github.com/git-lfs/git-lfs/commit/12c92e05b3433494d4b8695943e7e230744d77d9"
+      },
+      {
+        "Url": "https://github.com/git-lfs/git-lfs/commit/256d371024e6d2cf19efe675d8b9ad089785d0a1"
+      },
+      {
+        "Url": "https://github.com/git-lfs/git-lfs/commit/537203a1fa08fdde4c16288fb039174ff0e692bb"
+      },
+      {
+        "Url": "https://github.com/git-lfs/git-lfs/commit/d65324a7d5104c7a5dcb8c4959933695c8bc10fa"
+      },
+      {
+        "Url": "https://github.com/git-lfs/git-lfs/releases/tag/v3.8.1"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x7xj-4j4f-88xr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x7xj-4j4f-88xr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-69261"
+      }
+    ],
+    "Description": "### Impact\n\nAfter receiving an HTTP redirection, Git LFS may forward certain HTTP headers to a host other than the one for which they were intended.  While `Authorization` headers are never forwarded to inappropriate hosts, `Cookie` headers may be forwarded incorrectly.\n\nGit LFS has resolved this issue by never forwarding `Cookie` headers to hosts other than the ones for which they were intended.  In particular, after an HTTP redirection is received to a URL with a different scheme, host, or port than found in the URL of the current request, any `Authorization` and `Cookie` headers from the current request will not be sent in the redirected request.\n\n### Patches\n\nThis problem exists in all versions since 0.5.0 and is patched in v3.8.1. All users should upgrade to v3.8.1.\n\n### Workarounds\n\nNo single workaround exists.  As far as possible, users and administrators should review their systems to confirm no unnecessary HTTP redirections are performed, and that HTTP headers other than `Authorization` do not contain privileged or confidential information.\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n* For general questions, start a discussion in the Git LFS [discussion forum](https://github.com/git-lfs/git-lfs/discussions).\n* For reports of additional vulnerabilities, please follow the Git LFS [security reporting policy](https://github.com/git-lfs/git-lfs/blob/main/SECURITY.md).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T14:49:47Z",
+    "Severity": "HIGH",
+    "Summary": "Git LFS may leak HTTP headers after redirections",
+    "UpdatedAt": "2026-11-20T14:49:48Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003e= 0.5.0, \u003c= 2.13.3"
+    }
+  ]
+}

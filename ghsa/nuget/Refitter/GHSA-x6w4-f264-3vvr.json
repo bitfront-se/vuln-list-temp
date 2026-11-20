@@ -1,0 +1,86 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-20T14:35:31Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Refitter"
+  },
+  "Advisory": {
+    "DatabaseId": 538591,
+    "Id": "GSA_kwCzR0hTQS14Nnc0LWYyNjQtM3Z2cs4ACDff",
+    "GhsaId": "GHSA-x6w4-f264-3vvr",
+    "References": [
+      {
+        "Url": "https://github.com/christianhelle/refitter/security/advisories/GHSA-x6w4-f264-3vvr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63184"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/pull/1173"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/commit/6ad20a3803561225100b0a4bb6b12f947d23db7b"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/releases/tag/2.1.1"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395269/reproduce.sh"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395271/maintainer-report.txt"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395272/advisory.md"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395283/reproduce.sh"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395284/maintainer-report.txt"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395285/advisory.md"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395286/listener.py"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395288/make_spec.py"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-x6w4-f264-3vvr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-x6w4-f264-3vvr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63184"
+      }
+    ],
+    "Description": "### Summary\n\nRefitter (the `refitter` dotnet tool, built on NJsonSchema for `$ref` resolution) fetches remote\n`http(s)` URLs and reads local files (including absolute paths and `../` traversal outside the input\ndirectory), inlining the referenced schema into the generated Refit interface/contracts. Running\n`refitter \u003cspec\u003e --output Out.cs` on a spec whose `$ref` points at an attacker/internal URL or an\narbitrary local file yields SSRF, remote file inclusion, and local file inclusion. Verified on\nRefitter 2.0.0.\n\n### Details\n\n- `$ref: http://attacker-or-internal/evil.json#/...` -\u003e build host fetches (SSRF) and inlines the\n  remote schema (RFI); confirmed property `REMOTE_REFIT_PROP`.\n- `$ref: /abs/path.json#/...` or `../../secret.json#/...` -\u003e out-of-tree local file read + inlined\n  (LFI); confirmed property `REFIT_LFI_MARKER`. Both absolute and relative traversal work.\n\nNo RCE: Refitter emits Refit interfaces with no baseUrl string literal (Refit sets the base address at\nruntime), enum values use C# verbatim-string doubling, and string defaults are escaped. The chain\nstops at SSRF + RFI + LFI.\n\nThe `$ref` resolution is performed by Refitter's NJsonSchema dependency, which Refitter ships and\ninvokes with these unsafe defaults.\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`, `listener.py`) attached: installs the .NET SDK + Refitter if needed,\nconfirms LFI (out-of-tree read), SSRF (listener hit during generation), and RFI (remote schema\ninlined). Verified on 2.0.0.\n\n### Impact\n\nBuild-time SSRF (CWE-918) from the developer or CI host, disclosure of arbitrary local files\n(CWE-22), and inclusion of untrusted remote content (CWE-829), from running Refitter on an\nattacker-controlled or attacker-influenced OpenAPI description. No code execution. Estimated\nMedium-High, e.g. `[reproduce.sh](https://github.com/user-attachments/files/29395269/reproduce.sh)` (the CNA sets the final score).\n\n### Suggested fix\n\nDon't resolve remote `$ref`s by default (opt-in + host allowlist); confine local `$ref` resolution to\nthe input directory tree (reject absolute paths and `../` escapes). Apply at all nesting levels.\nCoordinate with NJsonSchema, where the resolver lives.\n[maintainer-report.txt](https://github.com/user-attachments/files/29395271/maintainer-report.txt)\n[advisory.md](https://github.com/user-attachments/files/29395272/advisory.md)\n[reproduce.sh](https://github.com/user-attachments/files/29395283/reproduce.sh)\n[maintainer-report.txt](https://github.com/user-attachments/files/29395284/maintainer-report.txt)\n[advisory.md](https://github.com/user-attachments/files/29395285/advisory.md)\n[listener.py](https://github.com/user-attachments/files/29395286/listener.py)\n[make_spec.py](https://github.com/user-attachments/files/29395288/make_spec.py)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T14:35:29Z",
+    "Severity": "HIGH",
+    "Summary": "Refitter: Unrestricted OpenAPI references permit build-host SSRF and file inclusion",
+    "UpdatedAt": "2026-11-20T14:35:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.1"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.1"
+    }
+  ]
+}
