@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-19T20:39:27Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "com.softwaremill.sttp.tapir:tapir-openapi-codegen-core"
+  },
+  "Advisory": {
+    "DatabaseId": 537722,
+    "Id": "GSA_kwCzR0hTQS1ncGNjLTM2cHEtOHF4cs4ACDR6",
+    "GhsaId": "GHSA-gpcc-36pq-8qxr",
+    "References": [
+      {
+        "Url": "https://github.com/softwaremill/tapir/security/advisories/GHSA-gpcc-36pq-8qxr"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-76090"
+      },
+      {
+        "Url": "https://github.com/softwaremill/tapir/pull/5395"
+      },
+      {
+        "Url": "https://github.com/softwaremill/tapir/commit/e015939b78df2de0fa3d3b8ed02961425e02145e"
+      },
+      {
+        "Url": "https://github.com/softwaremill/tapir/releases/tag/v1.13.27"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-gpcc-36pq-8qxr"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-gpcc-36pq-8qxr"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-76090"
+      }
+    ],
+    "Description": "The OpenAPI code generator (tapir-openapi-codegen-core) builds Scala source by string templating and emitted several names/values from the (untrusted) OpenAPI document without escaping or validation, allowing injection of arbitrary Scala that runs at generated-code compile time and/or endpoint-assembly time (build/codegen-time RCE from an attacker-controlled spec).\n\nThis advisory covers the full class of sinks, all sharing one root cause and one fix (PR #5395, commit e015939b7): object property names (-\u003e case-class fields), query/header/path parameter names (-\u003e endpoint input DSL), and operation tags (-\u003e .tags(List(...))). The fix routes identifier-position names through validation/quoting and string-literal values through JavaEscape.escapeString.\n\nConsolidates the separately-reported query-param (GHSA-h3vr-jggp-jw5v), header-param (GHSA-3pjr-m3pf-r66v) and tag (GHSA-jc99-w66r-pcx5) sinks, which are the same issue.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-19T20:39:27Z",
+    "Severity": "HIGH",
+    "Summary": "Tapir: Construction/decode RCE via property name -\u003e raw case-class field (tapir-openapi-codegen)",
+    "UpdatedAt": "2026-11-19T20:39:27Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.13.27"
+      },
+      "VulnerableVersionRange": "\u003c 1.13.27"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-19T22:44:01Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "mistune"
+  },
+  "Advisory": {
+    "DatabaseId": 537943,
+    "Id": "GSA_kwCzR0hTQS13dzdxLW14cmotNWZmZ84ACDVX",
+    "GhsaId": "GHSA-ww7q-mxrj-5ffg",
+    "References": [
+      {
+        "Url": "https://github.com/lepture/mistune/security/advisories/GHSA-ww7q-mxrj-5ffg"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-97699"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/commit/b4dd3284e52ec741ed9a227db29ade9017828e90"
+      },
+      {
+        "Url": "https://github.com/lepture/mistune/releases/tag/v3.3.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-ww7q-mxrj-5ffg"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-ww7q-mxrj-5ffg"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-97699"
+      }
+    ],
+    "Description": "## Resolution\n\n**Fixed in Mistune 3.3.4.** Upgrade to 3.3.4 or later.\n\n- Affected versions: `\u003c 3.3.4`\n- First patched version: `3.3.4`\n- Fix: https://github.com/lepture/mistune/compare/v3.3.3...v3.3.4\n\nThe reported payload was reproduced against the 3.3.3 release tag and verified to scale approximately linearly against the 3.3.4 release tag.\n\n## Original report\n\nThe following report describes the issue before the fix.\n\n## Summary\nmistune's inline image parsing reaches `precedence_scan` for `![` openers because the two guards that keep the link path linear are both gated behind `not is_image`. A small default-renderer document of the form `\"![\" * N + \"x\" + \"]\" * N` produces O(N²) CPU with no plugins.\n\n## Root Cause\nFor `![` openers, `is_image` is True, so both linearizing guards are skipped: `if not is_image and pos \u003c= state.no_link_before` (inline_parser.py:141) and `has_nested_link = not is_image and _label_contains_link(...)` (:171). Execution reaches `precedence_scan` (:179) which runs `sc.search(state.src, mark_pos, end_pos)` over the whole image body — O(n) per outer opener, x O(n) openers -\u003e O(n²). `max_image_depth` never fires because the failing scans never produce an image token (`image_depth` stays 0).\n\n## Impact\nA single unauthenticated request pins a worker at 100% CPU. Measured on default `mistune.html`, no plugins: 6KB-\u003e0.28s, 12KB-\u003e1.07s, 24KB-\u003e4.20s, 48KB-\u003e15.8s (2x input -\u003e ~3.8x time).\n\n## Proof of Concept\n```python\nimport mistune\nmd = mistune.create_markdown()   # default, no plugins\nmd(\"![\" * 16000 + \"x\" + \"]\" * 16000)\n```\n\n## Attack Chain\n1. Entry: rendered markdown -\u003e `\"![\"*N + \"x\" + \"]\"*N` (no plugins). Guard: none on input size. Bypass proof: no global cap.\n2. Check: `not is_image` guards at inline_parser.py:141 (`no_link_before`) and :171 (`_label_contains_link`). Guard: high-water mark + nested-link short-circuit. Bypass proof: `is_image` is True for `![`, so BOTH guards are gated out; `max_image_depth` (:checked after) measured flat across all values because no image token is produced.\n3. Processing: reaches `precedence_scan` (:179) -\u003e `sc.search(state.src, mark_pos, end_pos)` over the full body per opener.\n4. Sink: O(N) openers x O(N) scan -\u003e O(N²) CPU.\n5. Impact: 48KB -\u003e ~16s single-threaded worker stall.\n\n## Bypass Evidence\n- The LINK payload `\"[\"*n+\"x\"+\"]\"*n` is LINEAR on HEAD (0.076s @ 16k, ~2x per 2x) because links get the `_label_contains_link` short-circuit; the IMAGE payload `\"![\"*n+\"x\"+\"]\"*n` is O(n²) (0.27-\u003e1.05-\u003e3.92s, ~3.8x). Same HEAD, only `is_image` differs — proves the guard asymmetry, not incidental input growth.\n- `max_image_depth` set across 0..100 leaves runtime flat (no image token produced by failing scans).\n\n## Affected Versions\n`\u003c= 3.3.3` (present on latest release tag v3.3.3 and HEAD).\n\n## Suggested Fix\nGeneralize the `no_link_before` high-water mark (and/or the `_label_contains_link` short-circuit) to cover the image path, so failed `![` scans do not each re-traverse the document.\n\n---\nReported by **zx (Jace)** — GitHub: @manus-use",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-19T22:44:00Z",
+    "Severity": "HIGH",
+    "Summary": "Mistune: Quadratic-time DoS in inline image parsing (precedence_scan) bypasses not-is-image guards",
+    "UpdatedAt": "2026-11-19T22:44:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "3.3.4"
+      },
+      "VulnerableVersionRange": "\u003c 3.3.4"
+    }
+  ]
+}

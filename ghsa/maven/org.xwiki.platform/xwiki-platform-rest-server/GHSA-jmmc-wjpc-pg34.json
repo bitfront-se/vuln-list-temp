@@ -1,0 +1,89 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-19T20:44:33Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.xwiki.platform:xwiki-platform-rest-server"
+  },
+  "Advisory": {
+    "DatabaseId": 537725,
+    "Id": "GSA_kwCzR0hTQS1qbW1jLXdqcGMtcGczNM4ACDR9",
+    "GhsaId": "GHSA-jmmc-wjpc-pg34",
+    "References": [
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/security/advisories/GHSA-jmmc-wjpc-pg34"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-61689"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/4d6a2cd9cd049d0c31823ce47bff0a95667967e3"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/62b034daceead8e292244d6c9e651c0ee8b1354c"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/ae540bc3def0d4a30210eb9bead4e559984b4462"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/commit/b63d383f2e2a41826c21a76d678b9b0e1ab0ce52"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/releases/tag/xwiki-platform-16.10.18"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/releases/tag/xwiki-platform-17.10.5"
+      },
+      {
+        "Url": "https://github.com/xwiki/xwiki-platform/releases/tag/xwiki-platform-18.2.0"
+      },
+      {
+        "Url": "https://jira.xwiki.org/browse/XWIKI-24061"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jmmc-wjpc-pg34"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jmmc-wjpc-pg34"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-61689"
+      }
+    ],
+    "Description": "### Impact\nThe query REST API allows executing HQL queries to filter the listed pages. While this properly checks access rights for the current user, the query can be used to combine when clauses and blind queries, to recover values, through FROM clause injection to join BaseObject and StringProperty tables, bypassing the HQL validator's SELECT column whitelist. This allows recovering any data that is stored in the database, including data from inaccessible pages, password hashes and passwords stored in configuration properties. For a typical password hash, this requires about 800 requests to the REST API (about one per bit). It should be assumed that when using more complex techniques, this even works when the attacker cannot read any wiki page. Password hashes use salted SHA1 in XWiki which can be cracked offline for weak passwords. Further, the executed database queries could be slow, affecting the availability of the system.\n\n### Patches\nThe vulnerability has been fixed in XWiki 16.10.18, 17.10.5 and 18.2.0 by disabling the HQL and WXQL queries in the REST API by default.\n\n### Workarounds\nThe requests to the `/rest/wikis/{wikiName}/query` endpoint could be blocked at the web server/reverse proxy level.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-19T20:44:32Z",
+    "Severity": "HIGH",
+    "Summary": "XWiki Platform: HQL injection in search allows unauthenticated database extraction including password hashes",
+    "UpdatedAt": "2026-11-19T20:44:33Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "17.10.5"
+      },
+      "VulnerableVersionRange": "\u003e= 17.0.0-rc-1, \u003c 17.10.5"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "18.2.0"
+      },
+      "VulnerableVersionRange": "\u003e= 18.0.0-rc-1, \u003c 18.2.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "16.10.18"
+      },
+      "VulnerableVersionRange": "\u003e= 4.3-milestone-1, \u003c 16.10.18"
+    }
+  ]
+}

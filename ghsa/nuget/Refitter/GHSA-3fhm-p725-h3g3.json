@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-20T00:06:06Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Refitter"
+  },
+  "Advisory": {
+    "DatabaseId": 537986,
+    "Id": "GSA_kwCzR0hTQS0zZmhtLXA3MjUtaDNnM84ACDWC",
+    "GhsaId": "GHSA-3fhm-p725-h3g3",
+    "References": [
+      {
+        "Url": "https://github.com/christianhelle/refitter/security/advisories/GHSA-3fhm-p725-h3g3"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63345"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/pull/1178"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/commit/793d2632899c2022511dfc15e30725ef69073973"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/releases/tag/2.1.2"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395228/maintainer-report.txt"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395229/make_spec.py"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395230/reproduce.sh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-3fhm-p725-h3g3"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-3fhm-p725-h3g3"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63345"
+      }
+    ],
+    "Description": "### Summary\n\nRefitter emits each OpenAPI path (the paths-object key) verbatim into a Refit `[Get(\"\u003cpath\u003e\")]`\nattribute string, without escaping `\"` or restricting characters. A crafted single-line, /-prefixed\npath survives Refitter's default OpenAPI validation yet closes the attribute string and the enclosing\ninterface + namespace, injects a top-level `file class` with a `[ModuleInitializer]` method, and\nreopens a namespace + interface so the file stays valid. .NET runs `[ModuleInitializer]` methods when\nthe generated assembly is loaded, so the attacker's code executes at application startup. Verified on\nRefitter 2.0.0 / .NET 8.\n\n### Details\n\n```\n[Get(\"/p\")] Task\u003cstring\u003e Dummy(); } }\nfile class Evil { [System.Runtime.CompilerServices.ModuleInitializer]\n  internal static void Init(){ /* attacker code */ } }\nnamespace N2 { public partial interface I2 { [Get(\"/q\")]\n        Task\u003cstring\u003e GetU(string id);\n    }\n}\n```\n\nNo `--skip-validation` is needed (the payload is a valid single-line path). The generated `.cs` is\ncompiled into the victim application; the module initializer runs at assembly load. This is distinct\nfrom the value sinks (enum/default), which are escaped; the path sink has no escaping. The\n`[Header(\"\u003cname\u003e\")]` attribute is likewise emitted raw (header parameter names), at minimum a\nbuild-breaking DoS.\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates with default validation, compiles into a console\napp, runs it (Main does not touch the client), and shows a marker written at assembly load. Verified\non 2.0.0.\n\n### Impact\n\nCode execution at assembly load (process startup) in any application that compiles a Refitter client\ngenerated from an attacker-controlled or attacker-influenced OpenAPI description.\n\n### Suggested fix\n\nEscape the route template before emitting it into `[Get(\"…\")]` (escape `\"`, `\\`, reject newlines) and\nvalidate that paths contain only legal URI-template characters. Apply the same encoding to\n`[Header(…)]`, `[Post/Put/Delete(…)]`, and every attribute that embeds a spec-derived string.\n[maintainer-report.txt](https://github.com/user-attachments/files/29395228/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29395229/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29395230/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T00:06:04Z",
+    "Severity": "CRITICAL",
+    "Summary": "Refitter allows arbitrary code execution through unescaped OpenAPI paths",
+    "UpdatedAt": "2026-11-20T00:06:06Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.2"
+    }
+  ]
+}

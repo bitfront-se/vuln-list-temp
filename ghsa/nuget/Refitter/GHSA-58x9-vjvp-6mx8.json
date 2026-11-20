@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-20T00:06:31Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Refitter"
+  },
+  "Advisory": {
+    "DatabaseId": 537987,
+    "Id": "GSA_kwCzR0hTQS01OHg5LXZqdnAtNm14OM4ACDWD",
+    "GhsaId": "GHSA-58x9-vjvp-6mx8",
+    "References": [
+      {
+        "Url": "https://github.com/christianhelle/refitter/security/advisories/GHSA-58x9-vjvp-6mx8"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63346"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/pull/1178"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/commit/63a19b03699a9c267d6fab5f758ec26484db83a1"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/releases/tag/2.1.2"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395048/maintainer-report.txt"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395050/make_spec.py"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29395051/reproduce.sh"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-58x9-vjvp-6mx8"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-58x9-vjvp-6mx8"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63346"
+      }
+    ],
+    "Description": "### Summary\n\nRefitter emits the spec's header parameter name (parameters[].name with in: header) verbatim into a Refit `[Header(\"\u003cname\u003e\")]` attribute string without escaping\n`\"`. A crafted value survives Refitter's default OpenAPI validation, breaks out of the attribute and\nthe enclosing interface + namespace, injects a top-level `file class` with a `[ModuleInitializer]`\nmethod, and reopens so the file stays valid. .NET runs `[ModuleInitializer]` methods at assembly\nload, so the attacker's code executes at application startup. Verified on Refitter 2.0.0 / .NET 8.\n\nNotable: the breakout starts from a PARAMETER-LIST position (it closes the params and method first).\nThe malicious input is a header parameter name. No `--skip-validation` is required. The query\n`AliasAs` and value sinks (enum, default) are escaped; the gap is in the attribute-string emission.\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates with default validation, compiles into a\nconsole app, runs it (Main does not touch the client), and shows a marker written at assembly load.\n\n### Impact\n\nCode execution at assembly load (process startup) in any application that compiles a Refitter client\ngenerated from an attacker-controlled or attacker-influenced OpenAPI description. Estimated Critical, e.g.\n`CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N` (the CNA sets the final score).\n\n### Suggested fix\n\nEscape every spec-derived string before emitting it into a Refit attribute (escape `\"`, `\\`,\nreject newlines) and validate characters. We recommend auditing all attribute emissions that embed\nspec-derived values, using one shared encoder.\n[maintainer-report.txt](https://github.com/user-attachments/files/29395048/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29395050/make_spec.py)\n[reproduce.sh](https://github.com/user-attachments/files/29395051/reproduce.sh)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T00:06:28Z",
+    "Severity": "CRITICAL",
+    "Summary": "Refitter allows code execution through unescaped OpenAPI header parameter names",
+    "UpdatedAt": "2026-11-20T00:06:31Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.2"
+    }
+  ]
+}

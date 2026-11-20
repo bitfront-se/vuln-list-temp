@@ -1,0 +1,71 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-20T00:06:53Z",
+  "Package": {
+    "Ecosystem": "NUGET",
+    "Name": "Refitter"
+  },
+  "Advisory": {
+    "DatabaseId": 537988,
+    "Id": "GSA_kwCzR0hTQS1wMzJ2LTh2OGotajUzNM4ACDWE",
+    "GhsaId": "GHSA-p32v-8v8j-j534",
+    "References": [
+      {
+        "Url": "https://github.com/christianhelle/refitter/security/advisories/GHSA-p32v-8v8j-j534"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63344"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/pull/1178"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/commit/ab4d8e439d6f0ee82ad49ee15323978d70fe5a67"
+      },
+      {
+        "Url": "https://github.com/christianhelle/refitter/releases/tag/2.1.2"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29394848/reproduce.sh"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29394851/maintainer-report.txt"
+      },
+      {
+        "Url": "https://github.com/user-attachments/files/29394853/make_spec.py"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-p32v-8v8j-j534"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-p32v-8v8j-j534"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63344"
+      }
+    ],
+    "Description": "### Summary\n\nRefitter emits the spec's content-type key (content map key in requestBody/responses) verbatim into a Refit `[Headers(\"Accept: \u003cct\u003e\", \"Content-Type: \u003cct\u003e\")]` attribute string without escaping\n`\"`. A crafted value survives Refitter's default OpenAPI validation, breaks out of the attribute and\nthe enclosing interface + namespace, injects a top-level `file class` with a `[ModuleInitializer]`\nmethod, and reopens so the file stays valid. .NET runs `[ModuleInitializer]` methods at assembly\nload, so the attacker's code executes at application startup. Verified on Refitter 2.0.0 / .NET 8.\n\nThe malicious input is a content-type KEY such as: content: { 'application/\u003cbreakout\u003e': {schema} }.\nNo `--skip-validation` is required.\n\n### PoC\n\n`reproduce.sh` (+ `make_spec.py`) attached: generates with default validation, compiles into a\nconsole app, runs it (Main does not touch the client), and shows a marker written at assembly load.\n\n### Impact\n\nCode execution at assembly load (process startup) in any application that compiles a Refitter client\ngenerated from an attacker-controlled or attacker-influenced OpenAPI description. Estimated Critical, e.g.\n`CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N` (the CNA sets the final score).\n\n### Suggested fix\n\nEscape every spec-derived string before emitting it into a Refit attribute (escape `\"`, `\\`,\nreject newlines) and validate characters. We recommend auditing all attribute emissions that embed\nspec-derived values, using one shared encoder.\n[reproduce.sh](https://github.com/user-attachments/files/29394848/reproduce.sh)\n[maintainer-report.txt](https://github.com/user-attachments/files/29394851/maintainer-report.txt)\n[make_spec.py](https://github.com/user-attachments/files/29394853/make_spec.py)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T00:06:52Z",
+    "Severity": "CRITICAL",
+    "Summary": "Refitter allows arbitrary code execution through unescaped OpenAPI content-type values",
+    "UpdatedAt": "2026-11-20T00:06:53Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.1.2"
+      },
+      "VulnerableVersionRange": "\u003c 2.1.2"
+    }
+  ]
+}

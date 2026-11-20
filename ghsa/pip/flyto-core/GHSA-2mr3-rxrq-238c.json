@@ -1,0 +1,56 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-20T00:10:15Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "flyto-core"
+  },
+  "Advisory": {
+    "DatabaseId": 537993,
+    "Id": "GSA_kwCzR0hTQS0ybXIzLXJ4cnEtMjM4Y84ACDWJ",
+    "GhsaId": "GHSA-2mr3-rxrq-238c",
+    "References": [
+      {
+        "Url": "https://github.com/flytohub/flyto-core/security/advisories/GHSA-2mr3-rxrq-238c"
+      },
+      {
+        "Url": "https://github.com/flytohub/flyto-core/commit/bbb6f1cfec22fee1ea0e6ecf1129d7103c85e09f"
+      },
+      {
+        "Url": "https://github.com/flytohub/flyto-core/releases/tag/v2.26.8"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2mr3-rxrq-238c"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2mr3-rxrq-238c"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-77315"
+      }
+    ],
+    "Description": "## Summary\n`http.paginate` validates only the initial `base_url`, then follows server-supplied pagination targets (RFC 5988 `Link: rel=\"next\"` headers, cursor/offset URLs) in a loop **without revalidating each follow-up URL**. An attacker's first-page response can point `next` at an internal address, causing a second-order SSRF whose internal body is aggregated into the returned items.\n\n## Root Cause\n`src/core/modules/atomic/http/paginate.py:495` validates `base_url` (first URL only). The pagination loop `_paginate_link_header` reads `next_url` via `_parse_link_header` (:203), sets `url=next_url` (:208), and calls `session.request(method, url)` (:196) with NO validate call in the loop (:186-208 has zero guard calls).\n\n## Impact\nReadable second-order SSRF that bypasses the SSRF control; internal/metadata body aggregated into `all_items` and returned to the caller (C:H, S:C).\n\n## Proof of Concept\nVerified live: `http.paginate` with allowlisted base `127.0.0.1` followed a `Link: \u003chttp://127.0.0.3/...\u003e; rel=\"next\"` (non-allowlisted) and returned `INTERNAL-NEXTPAGE-SECRET` in the aggregated items.\n```\nexecute_module http.paginate {\"url\":\"http://attacker.tld/p1\",\"strategy\":\"link_header\"}\nattacker p1 response header: Link: \u003chttp://\u003ccloud-metadata-ip\u003e/latest/meta-data/\u003e; rel=\"next\"\n```\n\n## Attack Chain\n1. Entry: `http.paginate {url:\"http://attacker.tld/p1\", strategy:\"link_header\"}`. Guard: `validate_url_with_env_config(base_url)` (paginate.py:495) — validates the FIRST url only.\n2. Sink: `_paginate_link_header` reads `next_url` (`_parse_link_header` :203), `url=next_url` (:208), `session.request(method,url)` (:196) — NO validate call in the loop. Bypass proof: only :495 validates; loop at :186-208 has zero guard calls.\n3. Impact: internal body aggregated into `all_items` and returned → readable second-order SSRF.\n\n## Bypass Evidence\nLive PoC followed a `Link` header into non-allowlisted loopback and returned the internal marker in aggregated results. Only `base_url` is validated; the follow loop never revalidates.\n\n## Affected Versions\n`\u003c= 2.26.6` — `paginate.py:495` + loop present on latest release tag.\n\n## Suggested Fix\nRun every follow-up URL (Link header, cursor, offset target) through `validate_url_with_env_config` before fetching it inside the pagination loop.\n\n## Credit\n\nVulnerability discovered by zx (Jace).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-20T00:10:14Z",
+    "Severity": "HIGH",
+    "Summary": "Flyto2 Core: http.paginate follows server-supplied next-page URLs (Link header / cursor) without SSRF revalidation",
+    "UpdatedAt": "2026-11-20T00:10:15Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.5,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "2.26.8"
+      },
+      "VulnerableVersionRange": "\u003c= 2.26.7"
+    }
+  ]
+}
