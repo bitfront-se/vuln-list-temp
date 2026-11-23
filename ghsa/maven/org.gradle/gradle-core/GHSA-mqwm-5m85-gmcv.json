@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-23T15:41:58Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.gradle:gradle-core"
+  },
+  "Advisory": {
+    "DatabaseId": 539576,
+    "Id": "GSA_kwCzR0hTQS1tcXdtLTVtODUtZ21jds4ACDu4",
+    "GhsaId": "GHSA-mqwm-5m85-gmcv",
+    "References": [
+      {
+        "Url": "https://github.com/gradle/gradle/security/advisories/GHSA-mqwm-5m85-gmcv"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-22865"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/commit/d38bfc0f1d4dabd38b305a67489bb8a6645138a1"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/commit/fa96c8bc7f7741e5dfa1da002c559afca3fa1fc1"
+      },
+      {
+        "Url": "https://docs.gradle.org/8.14.4/release-notes.html"
+      },
+      {
+        "Url": "https://docs.gradle.org/9.3.0/release-notes.html"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/releases/tag/v8.14.4"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/releases/tag/v9.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-mqwm-5m85-gmcv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-mqwm-5m85-gmcv"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22865"
+      }
+    ],
+    "Description": "### Impact\n\nWhen resolving dependencies, Gradle searches repositories in declaration order. If it encounters connection errors, Gradle will disable the repository and fail dependency resolution. This is necessary for both reproducibility and security reasons to prevent dependencies from being resolved from other repositories without warning. \n\nIn previous versions of Gradle, some exceptions were not treated as fatal errors and would not cause a repository to be disabled. If a build encountered one of these exceptions, Gradle would continue to the next repository in the list and potentially resolve dependencies from a different repository. \n\n#### Vulnerability caused by continuing after max retries on transient errors\n\nAn exception like [`NoHttpResponseException`](https://hc.apache.org/httpclient-legacy/exception-handling.html#org_apache_commons_httpclient_NoHttpResponseException) can indicate transient errors. If the errors persist after a maximum number of retries, Gradle would continue to the next repository. \n\nThis behavior could allow an attacker to disrupt the service of a repository and leverage another repository to serve malicious artifacts. This attack requires the attacker to have control over a repository after the disrupted repository.\n\n### Patches\n\nGradle has introduced a change in behavior in Gradle 9.3.0 and 8.14.4 to stop searching other repositories when encountering these errors. \n\nUpgrading to either version will protect you against the vulnerabilities described here.\n\n### Workarounds\n\nIf you are using strict [repository content filtering](https://docs.gradle.org/9.3.0/userguide/filtering_repository_content.html#header) and / or [dependency verification](https://docs.gradle.org/9.3.0/userguide/dependency_verification.html), your build is safe from the potential vulnerabilities described above.\n\nIf you cannot update to a newer Gradle version, configuring [dependency verification](https://docs.gradle.org/9.3.0/userguide/dependency_verification.html) is the best way to make sure your build resolves the dependencies you expect and nothing else.\n\nYou should also review which repositories your builds use to check for unused or outdated repository declarations. \n\n### Related\n* [Security feature of failing fast on bad repos does not seem to be implemented](https://github.com/gradle/gradle/issues/35927)\n* [Repository disabling](https://docs.gradle.org/current/userguide/graph_resolution.html#sec:repository-disabling)\n* [Advisory about repositories with unknown host](https://github.com/gradle/gradle/security/advisories/GHSA-w78c-w6vf-rw82)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-23T15:41:57Z",
+    "Severity": "HIGH",
+    "Summary": "Gradle causes failure to disable repositories exposing builds to malicious artifacts",
+    "UpdatedAt": "2026-11-23T15:41:58Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.3.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.14.4"
+      },
+      "VulnerableVersionRange": "\u003c 8.14.4"
+    }
+  ]
+}

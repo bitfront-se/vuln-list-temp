@@ -1,0 +1,77 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-23T15:33:35Z",
+  "Package": {
+    "Ecosystem": "MAVEN",
+    "Name": "org.gradle:gradle-core"
+  },
+  "Advisory": {
+    "DatabaseId": 539575,
+    "Id": "GSA_kwCzR0hTQS13NzhjLXc2dmYtcnc4Ms4ACDu3",
+    "GhsaId": "GHSA-w78c-w6vf-rw82",
+    "References": [
+      {
+        "Url": "https://github.com/gradle/gradle/security/advisories/GHSA-w78c-w6vf-rw82"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-22816"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/commit/4f2e3bbee4d0cee307dd97b684f11cfbe711b6f3"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/commit/e5707d0d8fce3d768c9c489004700d78eab1773a"
+      },
+      {
+        "Url": "https://docs.gradle.org/8.14.4/release-notes.html"
+      },
+      {
+        "Url": "https://docs.gradle.org/9.3.0/release-notes.html"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/releases/tag/v8.14.4"
+      },
+      {
+        "Url": "https://github.com/gradle/gradle/releases/tag/v9.3.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-w78c-w6vf-rw82"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-w78c-w6vf-rw82"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-22816"
+      }
+    ],
+    "Description": "### Impact\n\nWhen resolving dependencies, Gradle searches repositories in declaration order. If it encounters connection errors, Gradle will disable the repository and fail dependency resolution. This is necessary for both reproducibility and security reasons to prevent dependencies from being resolved from other repositories without warning. \n\nIn previous versions of Gradle, some exceptions were not treated as fatal errors and would not cause a repository to be disabled. If a build encountered one of these exceptions, Gradle would continue to the next repository in the list and potentially resolve dependencies from a different repository. \n\n#### Vulnerability caused by unresolvable host names\n\n[`UnknownHostException`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/UnknownHostException.html) are caused when a host name cannot be resolved to an IP address. This can be caused by DNS misconfiguration, host name typos or any problem that prevents host name resolution. \n\nIf a Gradle build used an unresolvable host name, Gradle would continue to work as long as all dependencies could be resolved from another repository. An unresolvable host name could be caused by allowing a repository's domain name registration to lapse or typo-ing the real domain name. \n\nThis behavior could allow an attacker to register a service under the host name used by the build and serve malicious artifacts. The attack requires the repository to be listed before others in the build configuration. \n\n### Patches\n\nGradle has introduced a change in behavior in Gradle 9.3.0 and 8.14.4 to stop searching other repositories when encountering these errors. \n\nUpgrading to either version will protect you against the vulnerabilities described here.\n\n### Workarounds\n\nIf you are using strict [repository content filtering](https://docs.gradle.org/9.3.0/userguide/filtering_repository_content.html#header) and / or [dependency verification](https://docs.gradle.org/9.3.0/userguide/dependency_verification.html), your build is safe from the potential vulnerabilities described above.\n\nIf you cannot update to a newer Gradle version, configuring [dependency verification](https://docs.gradle.org/9.3.0/userguide/dependency_verification.html) is the best way to make sure your build resolves the dependencies you expect and nothing else.\n\nYou should also review which repositories your builds use to check for unused or outdated repository declarations. \n\n### Related\n* [Security feature of failing fast on bad repos does not seem to be implemented](https://github.com/gradle/gradle/issues/35927)\n* [Repository disabling](https://docs.gradle.org/current/userguide/graph_resolution.html#sec:repository-disabling)\n* [Advisory about repositories failing to answer](https://github.com/gradle/gradle/security/advisories/GHSA-mqwm-5m85-gmcv)",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-23T15:33:34Z",
+    "Severity": "HIGH",
+    "Summary": "Gradle causes Failure to disable repositories can expose builds to malicious artifacts",
+    "UpdatedAt": "2026-11-23T15:39:17Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "9.3.0"
+      },
+      "VulnerableVersionRange": "\u003e= 9.0.0, \u003c 9.3.0"
+    },
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "8.14.4"
+      },
+      "VulnerableVersionRange": "\u003c 8.14.4"
+    }
+  ]
+}
