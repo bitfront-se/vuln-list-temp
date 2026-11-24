@@ -1,0 +1,68 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-23T21:07:03Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "isomorphic-git"
+  },
+  "Advisory": {
+    "DatabaseId": 539788,
+    "Id": "GSA_kwCzR0hTQS05eDgyLTRqNTQtODYzaM4ACDyM",
+    "GhsaId": "GHSA-9x82-4j54-863h",
+    "References": [
+      {
+        "Url": "https://github.com/isomorphic-git/isomorphic-git/security/advisories/GHSA-9x82-4j54-863h"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63476"
+      },
+      {
+        "Url": "https://github.com/isomorphic-git/isomorphic-git/pull/2370"
+      },
+      {
+        "Url": "https://github.com/isomorphic-git/isomorphic-git/pull/2373"
+      },
+      {
+        "Url": "https://github.com/isomorphic-git/isomorphic-git/commit/5c37ea69e9691183fc52d41ba7b6361263e9fedd"
+      },
+      {
+        "Url": "https://github.com/isomorphic-git/isomorphic-git/commit/823843d1cd19182df79bc907c767f5bcecb39a0b"
+      },
+      {
+        "Url": "https://github.com/isomorphic-git/isomorphic-git/releases/tag/v1.38.6"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-9x82-4j54-863h"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-9x82-4j54-863h"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63476"
+      }
+    ],
+    "Description": "### Summary\nWhen applying a delta object from a packfile, isomorphic-git reads a **server-controlled** `targetSize` and calls `Buffer.alloc(targetSize)` with no upper bound. A single malicious HTTP response to `git.clone()`/`git.fetch()` can force a ~2 GB allocation → memory exhaustion / DoS (process killed on memory-constrained hosts).\n\n### Details\n`src/utils/applyDelta.js`:\n\n```js\nconst sourceSize = readVarIntLE(reader)\nconst targetSize = readVarIntLE(reader)   // attacker-controlled\n…\ntarget = Buffer.alloc(targetSize)\n```\n\nA pack with one `OBJ_REF_DELTA` whose header declares `targetSize = 0x7FFFFFFF` (~2 GB) and a 1-byte op causes the full allocation up front. The subsequent size-mismatch error is swallowed in `GitPackIndex.fromPack`, so on a host with spare RAM it silently wastes ~2 GB; on a small host the OS `SIGKILL`s the process.\n\n#### Canonical git behavior (divergence)\ngit rejects the same 78-byte pack in ~96 ms — `error: delta replay has gone wild` / `fatal: … failed to apply delta` — with no large allocation and no hang (it bounds delta replay against the declared size rather than trusting it).\n\n### PoC\n`https://github.com/spiceoverflow/av4-oom` — open in a Codespace; a single clone/fetch against the bundled server, run under `--max-old-space-size=256`:\n\n```\n[AV-4] *** OOM ALLOCATION CONFIRMED — Buffer.alloc(targetSize) RAN ***\n[AV-4] External (Buffer) memory rose by 2048 MB during clone.\n```\n\n(The allocation is off-heap, so a Node heap cap does not mitigate it.)\n\n### Impact\nA denial of service via unbounded memory allocation: a single response from a malicious or MitM'd server to `git.clone()`/`git.fetch()` forces a multi-gigabyte allocation, crashing the process on memory-constrained hosts.\n\nAny application or service that clones or fetches from untrusted/compromised remotes with isomorphic-git — most acutely containers, serverless functions, and small VMs, where the OS OOM-kills the process.\n\n### Suggested fix\nDon't pre-allocate the untrusted `targetSize`: build the result from the actual delta ops and validate the total against `targetSize` before concatenating (and/or cap it against the advertised pack size).",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-23T21:07:02Z",
+    "Severity": "MODERATE",
+    "Summary": "isomorphic-git allows unbounded memory allocation from attacker-controlled delta target size (DoS)",
+    "UpdatedAt": "2026-11-23T21:07:03Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 4.3,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "1.38.6"
+      },
+      "VulnerableVersionRange": "\u003c 1.38.6"
+    }
+  ]
+}

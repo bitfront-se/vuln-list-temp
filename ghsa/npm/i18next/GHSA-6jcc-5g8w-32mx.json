@@ -1,0 +1,59 @@
+{
+  "Severity": "MODERATE",
+  "UpdatedAt": "2026-11-23T20:53:00Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "i18next"
+  },
+  "Advisory": {
+    "DatabaseId": 539773,
+    "Id": "GSA_kwCzR0hTQS02amNjLTVnOHctMzJteM4ACDx9",
+    "GhsaId": "GHSA-6jcc-5g8w-32mx",
+    "References": [
+      {
+        "Url": "https://github.com/i18next/i18next/security/advisories/GHSA-6jcc-5g8w-32mx"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63402"
+      },
+      {
+        "Url": "https://github.com/i18next/i18next/commit/642137b7786d83661ec3ee53027798dc4b81d30a"
+      },
+      {
+        "Url": "https://github.com/i18next/i18next/releases/tag/v26.3.4"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-6jcc-5g8w-32mx"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-6jcc-5g8w-32mx"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-63402"
+      }
+    ],
+    "Description": "### Summary\n\n`deepExtend` in `src/utils.js` (reached via the public `addResourceBundle(lng, ns, data, deep, overwrite)` API) checked key existence with the `in` operator, which walks the prototype chain. A source key matching an inherited built-in (e.g. `hasOwnProperty`, `toString`, `valueOf`) therefore caused the function to recurse into the shared object on `Object.prototype`. With `overwrite: true`, a nested value could overwrite a property of that shared built-in — for example setting `Object.prototype.hasOwnProperty.call` to a non-callable value — corrupting it process-wide and causing an unrecoverable denial of service.\n\nThis is distinct from CVE-2026-48713 (i18next-fs-backend) and CVE-2026-48714 (i18next-http-middleware), which are prototype pollution via `setPath`/key-walking in different packages. This issue is in i18next core, via a different mechanism (the `in` operator in `deepExtend`), and is gated behind a non-default call configuration.\n\n### Details\n\n`src/utils.js` (\u0026le; 26.3.3):\n\n```js\nexport const deepExtend = (target, source, overwrite) =\u003e {\n  for (const prop in source) {\n    if (prop !== '__proto__' \u0026\u0026 prop !== 'constructor') {\n      if (prop in target) {            // \u003c-- walks the prototype chain\n        if (isString(target[prop]) || target[prop] instanceof String ||\n            isString(source[prop]) || source[prop] instanceof String) {\n          if (overwrite) target[prop] = source[prop];\n        } else {\n          deepExtend(target[prop], source[prop], overwrite);\n        }\n      } else {\n        target[prop] = source[prop];\n      }\n    }\n  }\n  return target;\n};\n```\n\nFor `source = { hasOwnProperty: { call: \"corrupted\" } }` and `target = {}`: `\"hasOwnProperty\" in target` is `true` (inherited from `Object.prototype`), so the code recurses with `target = Object.prototype.hasOwnProperty`. In that call, `\"call\" in target` is `true` (inherited from `Function.prototype`), `source.call` is a string, and with `overwrite: true` the assignment sets an own `call` property on `Object.prototype.hasOwnProperty` to the string `\"corrupted\"`. Every subsequent `Object.prototype.hasOwnProperty.call(...)` then throws `TypeError`, including i18next's own internals.\n\nThe existing `__proto__`/`constructor` guard does not cover this, because the corruption target is an inherited built-in *function*, not the prototype object itself.\n\n### Proof of Concept\n\n```js\nimport i18next from 'i18next';\n\nawait i18next.init({ lng: 'en', resources: { en: { translation: {} } } });\n\nconst payload = { hasOwnProperty: { call: 'corrupted' } };\ni18next.addResourceBundle('en', 'translation', payload, /* deep */ true, /* overwrite */ true);\n\n// Process-wide corruption:\nObject.prototype.hasOwnProperty.call({}, 'test'); // TypeError: ... is not a function\n```\n\n### Impact\n\nDenial of service (process-wide, unrecoverable) and limited integrity impact (a shared built-in property is set to an attacker-supplied value).\n\n**Preconditions (why severity is Medium, not High):** the application must pass attacker-controlled data into `addResourceBundle` with **both** `deep: true` and `overwrite: true`. No standard i18next backend or integration does this; it only occurs in explicit application code that merges untrusted content. The default `addResourceBundle` path (no deep merge, or `overwrite` falsy) is not affected.\n\n### Patch\n\nFixed in i18next 26.3.4 by checking existence with `Object.prototype.hasOwnProperty.call(target, prop)` instead of the `in` operator, so inherited keys are copied as plain own data instead of triggering recursion.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-23T20:53:00Z",
+    "Severity": "MODERATE",
+    "Summary": "i18next deepExtend recurses into inherited built-ins, allowing corruption of shared built-in objects (DoS)",
+    "UpdatedAt": "2026-11-23T20:53:01Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 5.9,
+      "VectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "26.3.4"
+      },
+      "VulnerableVersionRange": "\u003c 26.3.4"
+    }
+  ]
+}

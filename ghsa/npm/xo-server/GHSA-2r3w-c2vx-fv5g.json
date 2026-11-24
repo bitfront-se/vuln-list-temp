@@ -1,0 +1,59 @@
+{
+  "Severity": "CRITICAL",
+  "UpdatedAt": "2026-11-23T17:29:30Z",
+  "Package": {
+    "Ecosystem": "NPM",
+    "Name": "xo-server"
+  },
+  "Advisory": {
+    "DatabaseId": 539583,
+    "Id": "GSA_kwCzR0hTQS0ycjN3LWMydngtZnY1Z84ACDu_",
+    "GhsaId": "GHSA-2r3w-c2vx-fv5g",
+    "References": [
+      {
+        "Url": "https://github.com/vatesfr/xen-orchestra/security/advisories/GHSA-2r3w-c2vx-fv5g"
+      },
+      {
+        "Url": "https://github.com/vatesfr/xen-orchestra/pull/10748"
+      },
+      {
+        "Url": "https://github.com/vatesfr/xen-orchestra/commit/50166fe3a49c02069d35ba9046ca4a1f77f4e11d"
+      },
+      {
+        "Url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-2r3w-c2vx-fv5g"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-2r3w-c2vx-fv5g"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-133469"
+      }
+    ],
+    "Description": "### Summary\n\nREST cookie parsing turns `authenticationToken=j:%7B%7D` into `{}`. REST authentication passes that object to the XO token provider without requiring a string. The token collection treats `{}` as an unfiltered lookup and returns its first token; the provider authenticates as that token's owner if it is unexpired. The authenticated `/rest/v0/users/me/authentication_tokens` route then returns reusable login token IDs.\n\n\n### Details\n\n1. In `packages/xo-server/src/api/session.mjs`, function  `signIn(credentials)` has **no `params` schema** (unlike the deprecated `signInWithToken`, which declares `token: { type: 'string' }`), so `credentials.token` can be any JSON value.\n2. `packages/xo-server/src/xo-mixins/authentication.mjs`, token provider:\n   ```js\n   this.registerAuthenticationProvider(async ({ token: tokenId }, { ip } = {}) =\u003e {\n     if (!tokenId) return          // {} is truthy → passes\n     const token = await app.getAuthenticationToken(tokenId)\n     ...\n     return { bypassOtp: true, expiration: token.expiration, userId: token.user_id }\n   ```\n3. `getAuthenticationToken(properties)` explicitly accepts an object, and `_getAuthenticationToken(id, properties)` does `this._tokens.first(properties ?? id)`.\n4. `Collection#first(properties)` -\u003e `_get(properties)`; in `collection/redis.mjs`, `if (isEmpty(properties)) return redis.sMembers(prefix + '_ids')…` → **all tokens**. Non-empty objects on indexed fields (`user_id`, `client_id`) do an index lookup → token of the chosen user.\n5. HTTP paths: `index.mjs` (`req.cookies.token` → `isValidAuthenticationToken`), `xo-mixins/rest-api.mjs` and `@xen-orchestra/rest-api` middleware (`cookies.authenticationToken ?? cookies.token` → `authenticateUser({ token })`). `cookie-parser` turns `j:`-prefixed cookie values into parsed JSON, so `authenticationToken=j:{}` yields `{}`.\n\n\n### Proof of concept\n\nThe object cookie returned 200 with unexpired token IDs, and one ID worked on a fresh request as an admin account. The attacker does not choose which token the empty-object lookup returns. Authentication succeeds only if the token returned first is unexpired and belongs to an existing user; if it is expired or its user was deleted, the request fails without trying another token.\n\n```bash\ncurl -b 'authenticationToken=j:{}' https://\u003cip\u003e/rest/v0/users\n```\n\n### Impact\n\nAn adversary can bypass authentication and perform actions with 'Admin' privilege. Xen Orchestra compromise can lead to arbitrary code execution on managed pools and a full XCP-ng node takeover as root.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-23T17:29:29Z",
+    "Severity": "CRITICAL",
+    "Summary": "Xen Orchestra: Empty-object login token",
+    "UpdatedAt": "2026-11-23T17:29:30Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 9.8,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": ""
+      },
+      "VulnerableVersionRange": "\u003c= 5.7.4"
+    }
+  ]
+}
