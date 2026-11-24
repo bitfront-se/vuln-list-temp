@@ -1,0 +1,67 @@
+{
+  "id": "GO-2026-6791",
+  "modified": "2026-11-23T20:30:11.270670887Z",
+  "published": "2026-10-19T21:08:35Z",
+  "aliases": [
+    "CVE-2026-95837",
+    "GHSA-p7v4-vr35-mj6f"
+  ],
+  "summary": "Checkpoint restore bypasses destination security context in github.com/containerd/containerd/v2",
+  "details": "Checkpoint restore bypasses destination security context in github.com/containerd/containerd/v2",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Go",
+        "name": "github.com/containerd/containerd/v2",
+        "purl": "pkg:golang/github.com/containerd/containerd/v2"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "2.1.0"
+            },
+            {
+              "fixed": "2.2.7"
+            },
+            {
+              "introduced": "2.3.0"
+            },
+            {
+              "fixed": "2.3.4"
+            }
+          ]
+        }
+      ],
+      "ecosystem_specific": {
+        "imports": [
+          {
+            "path": "github.com/containerd/containerd/v2/internal/cri/server",
+            "symbols": [
+              "criService.CRImportCheckpoint",
+              "criService.CreateContainer"
+            ]
+          }
+        ]
+      },
+      "database_specific": {
+        "source": "https://vuln.go.dev/ID/GO-2026-6791.json"
+      }
+    }
+  ],
+  "references": [
+    {
+      "type": "ADVISORY",
+      "url": "https://github.com/containerd/containerd/security/advisories/GHSA-p7v4-vr35-mj6f"
+    },
+    {
+      "type": "FIX",
+      "url": "https://github.com/containerd/containerd/commit/928c03c6898cad95f795300281fdff0dbc55a32f"
+    },
+    {
+      "type": "FIX",
+      "url": "https://github.com/containerd/containerd/pull/13913"
+    }
+  ]
+}
