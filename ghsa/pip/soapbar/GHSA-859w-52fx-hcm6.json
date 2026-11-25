@@ -1,0 +1,62 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-24T22:41:47Z",
+  "Package": {
+    "Ecosystem": "PIP",
+    "Name": "soapbar"
+  },
+  "Advisory": {
+    "DatabaseId": 540771,
+    "Id": "GSA_kwCzR0hTQS04NTl3LTUyZngtaGNtNs4ACEBj",
+    "GhsaId": "GHSA-859w-52fx-hcm6",
+    "References": [
+      {
+        "Url": "https://github.com/hitoshyamamoto/soapbar/security/advisories/GHSA-859w-52fx-hcm6"
+      },
+      {
+        "Url": "https://nvd.nist.gov/vuln/detail/CVE-2026-64855"
+      },
+      {
+        "Url": "https://github.com/hitoshyamamoto/soapbar/pull/71"
+      },
+      {
+        "Url": "https://github.com/hitoshyamamoto/soapbar/commit/8daaf221c1a681e6656a580b01f89f155ad97200"
+      },
+      {
+        "Url": "https://github.com/hitoshyamamoto/soapbar/releases/tag/v0.13.0"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-859w-52fx-hcm6"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-859w-52fx-hcm6"
+      },
+      {
+        "Type": "CVE",
+        "Value": "CVE-2026-64855"
+      }
+    ],
+    "Description": "### Impact\n\n`verify_envelope_bsp()` derived its trust anchor from the message it was\nverifying. It read the X.509 certificate out of the caller-untrusted\n`wsse:BinarySecurityToken`, validated **only** that certificate's not-before /\nnot-after dates, and then verified the signature against that same certificate.\nThere was no CA-chain validation, no issuer/subject allowlist, and no pinning.\n\nA successful `verify_envelope_bsp()` therefore proved only that the envelope was\nsigned by *whoever supplied the embedded certificate* — never that it was signed\nby a *trusted* party. An attacker who mints their own certificate, signs a\nforged envelope, and embeds that certificate in the token passes verification.\nAny consumer that treats a successful BSP verification as authentication can be\nimpersonated (signature forgery / authentication bypass).\n\n`verify_envelope()` (which pins a caller-supplied `x509_cert`) was **not**\naffected — the flaw was specific to the BSP variant whose trust anchor came\nfrom the message.\n\n### Affected versions\n\nsoapbar `\u003c 0.13.0` (all published versions exposing `verify_envelope_bsp`).\n\n### Patches\n\nFixed in **0.13.0**. `verify_envelope_bsp` now fails closed unless the caller\nanchors trust:\n\n- `trusted_certs=[...]` — pin the expected signer certificate(s); the embedded\n  certificate must equal one of them.\n- `ca_certs=[...]` — accept certificates directly issued by trusted CA(s).\n\nWith neither supplied, verification raises instead of trusting the message's own\ncertificate. The trust anchor is checked before the signature is relied upon.\n`verify_cert_trust=False` restores the old (insecure) behaviour explicitly.\n\n### Workarounds\n\nBefore upgrading:\n\n- Do not treat a successful `verify_envelope_bsp()` as authentication.\n- Prefer `verify_envelope(..., x509_cert=\u003cpinned cert\u003e)`, which pins the\n  expected certificate.\n- If BSP is required, validate the embedded certificate against your own trust\n  store before acting on the verification result.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-24T22:41:44Z",
+    "Severity": "HIGH",
+    "Summary": "soapbar: verify_envelope_bsp accepts an unauthenticated embedded certificate (signature forgery / authentication bypass)",
+    "UpdatedAt": "2026-11-24T22:41:47Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 8.2,
+      "VectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N"
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.13.0"
+      },
+      "VulnerableVersionRange": "\u003c 0.13.0"
+    }
+  ]
+}

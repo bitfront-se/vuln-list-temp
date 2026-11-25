@@ -1,0 +1,52 @@
+{
+  "Severity": "HIGH",
+  "UpdatedAt": "2026-11-24T21:13:37Z",
+  "Package": {
+    "Ecosystem": "GO",
+    "Name": "github.com/insomniacslk/dhcp"
+  },
+  "Advisory": {
+    "DatabaseId": 540587,
+    "Id": "GSA_kwCzR0hTQS1qcDNjLTZ2M2ctbXB4ds4ACD-r",
+    "GhsaId": "GHSA-jp3c-6v3g-mpxv",
+    "References": [
+      {
+        "Url": "https://github.com/insomniacslk/dhcp/pull/583"
+      },
+      {
+        "Url": "https://github.com/insomniacslk/dhcp/commit/c76316d4aa825673b208730779843d0711021e81"
+      },
+      {
+        "Url": "https://pkg.go.dev/vuln/GO-2026-6237"
+      },
+      {
+        "Url": "https://github.com/advisories/GHSA-jp3c-6v3g-mpxv"
+      }
+    ],
+    "Identifiers": [
+      {
+        "Type": "GHSA",
+        "Value": "GHSA-jp3c-6v3g-mpxv"
+      }
+    ],
+    "Description": "In github.com/insomniacslk/dhcp/dhcpv4/nclient4, BroadcastRawUDPConn.ReadFrom does not validate that the IPv4 payload length is sufficient to hold a UDP header before calculating the DHCP payload length. A frame with an IPv4 total-length field specifying fewer than eight payload bytes results in a negative DHCP length, causing a panic in buf.Consume due to a negative slice bound.",
+    "Origin": "UNSPECIFIED",
+    "PublishedAt": "2026-11-24T21:13:37Z",
+    "Severity": "HIGH",
+    "Summary": "github.com/insomniacslk/dhcp permits denial of service through a malformed IPv4 payload length",
+    "UpdatedAt": "2026-11-24T21:13:37Z",
+    "WithdrawnAt": "",
+    "CVSS": {
+      "Score": 0,
+      "VectorString": ""
+    }
+  },
+  "Versions": [
+    {
+      "FirstPatchedVersion": {
+        "Identifier": "0.0.0-20260719225207-c76316d4aa82"
+      },
+      "VulnerableVersionRange": "\u003e= 0.0.0-20190522091526-5dce45b2b680, \u003c 0.0.0-20260719225207-c76316d4aa82"
+    }
+  ]
+}
